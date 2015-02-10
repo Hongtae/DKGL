@@ -1,0 +1,636 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B748DBFC-45EA-4C3F-8D2B-58F6C42FB2B2}</ProjectGuid>
+    <RootNamespace>ExtDeps</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib />
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib />
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <Optimization>MinSpace</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib />
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <Optimization>MinSpace</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib />
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="bzip2\bzlib.h" />
+    <ClInclude Include="bzip2\bzlib_private.h" />
+    <ClInclude Include="CxImage\xfile.h" />
+    <ClInclude Include="CxImage\ximabmp.h" />
+    <ClInclude Include="CxImage\ximacfg.h" />
+    <ClInclude Include="CxImage\ximadef.h" />
+    <ClInclude Include="CxImage\ximage.h" />
+    <ClInclude Include="CxImage\ximagif.h" />
+    <ClInclude Include="CxImage\ximaico.h" />
+    <ClInclude Include="CxImage\ximaiter.h" />
+    <ClInclude Include="CxImage\ximajas.h" />
+    <ClInclude Include="CxImage\ximajbg.h" />
+    <ClInclude Include="CxImage\ximajpg.h" />
+    <ClInclude Include="CxImage\ximamng.h" />
+    <ClInclude Include="CxImage\ximapcx.h" />
+    <ClInclude Include="CxImage\ximapng.h" />
+    <ClInclude Include="CxImage\ximapsd.h" />
+    <ClInclude Include="CxImage\ximaraw.h" />
+    <ClInclude Include="CxImage\ximaska.h" />
+    <ClInclude Include="CxImage\ximatga.h" />
+    <ClInclude Include="CxImage\ximath.h" />
+    <ClInclude Include="CxImage\ximatif.h" />
+    <ClInclude Include="CxImage\ximawbmp.h" />
+    <ClInclude Include="CxImage\ximawmf.h" />
+    <ClInclude Include="CxImage\xiofile.h" />
+    <ClInclude Include="CxImage\xmemfile.h" />
+    <ClInclude Include="FreeType\include\config\ftconfig.h" />
+    <ClInclude Include="FreeType\include\config\ftheader.h" />
+    <ClInclude Include="FreeType\include\config\ftmodule.h" />
+    <ClInclude Include="FreeType\include\config\ftoption.h" />
+    <ClInclude Include="FreeType\include\config\ftstdlib.h" />
+    <ClInclude Include="jpeg\jconfig.h" />
+    <ClInclude Include="jpeg\jdct.h" />
+    <ClInclude Include="jpeg\jerror.h" />
+    <ClInclude Include="jpeg\jinclude.h" />
+    <ClInclude Include="jpeg\jmemsys.h" />
+    <ClInclude Include="jpeg\jmorecfg.h" />
+    <ClInclude Include="jpeg\jpegint.h" />
+    <ClInclude Include="jpeg\jpeglib.h" />
+    <ClInclude Include="jpeg\jversion.h" />
+    <ClInclude Include="libFLAC\include\FLAC\all.h" />
+    <ClInclude Include="libFLAC\include\FLAC\assert.h" />
+    <ClInclude Include="libFLAC\include\FLAC\callback.h" />
+    <ClInclude Include="libFLAC\include\FLAC\export.h" />
+    <ClInclude Include="libFLAC\include\FLAC\format.h" />
+    <ClInclude Include="libFLAC\include\FLAC\metadata.h" />
+    <ClInclude Include="libFLAC\include\FLAC\ordinals.h" />
+    <ClInclude Include="libFLAC\include\FLAC\stream_decoder.h" />
+    <ClInclude Include="libFLAC\include\FLAC\stream_encoder.h" />
+    <ClInclude Include="libFLAC\src\libFLAC\config.h" />
+    <ClInclude Include="libogg\include\ogg\ogg.h" />
+    <ClInclude Include="libogg\include\ogg\os_types.h" />
+    <ClInclude Include="libpng\png.h" />
+    <ClInclude Include="libpng\pngconf.h" />
+    <ClInclude Include="libpng\pngdebug.h" />
+    <ClInclude Include="libpng\pnginfo.h" />
+    <ClInclude Include="libpng\pnglibconf.h" />
+    <ClInclude Include="libpng\pngpriv.h" />
+    <ClInclude Include="libpng\pngstruct.h" />
+    <ClInclude Include="libtiff\t4.h" />
+    <ClInclude Include="libtiff\tiff.h" />
+    <ClInclude Include="libtiff\tiffconf.h" />
+    <ClInclude Include="libtiff\tiffio.h" />
+    <ClInclude Include="libtiff\tiffio.hxx" />
+    <ClInclude Include="libtiff\tiffiop.h" />
+    <ClInclude Include="libtiff\tiffvers.h" />
+    <ClInclude Include="libtiff\tif_config.h" />
+    <ClInclude Include="libtiff\tif_dir.h" />
+    <ClInclude Include="libtiff\tif_fax3.h" />
+    <ClInclude Include="libtiff\tif_predict.h" />
+    <ClInclude Include="libtiff\uvcode.h" />
+    <ClInclude Include="libvorbis\src\backends.h" />
+    <ClInclude Include="libvorbis\src\bitrate.h" />
+    <ClInclude Include="libvorbis\src\codebook.h" />
+    <ClInclude Include="libvorbis\src\codec_internal.h" />
+    <ClInclude Include="libvorbis\src\envelope.h" />
+    <ClInclude Include="libvorbis\src\highlevel.h" />
+    <ClInclude Include="libvorbis\src\lookup.h" />
+    <ClInclude Include="libvorbis\src\lookup_data.h" />
+    <ClInclude Include="libvorbis\src\lpc.h" />
+    <ClInclude Include="libvorbis\src\lsp.h" />
+    <ClInclude Include="libvorbis\src\masking.h" />
+    <ClInclude Include="libvorbis\src\mdct.h" />
+    <ClInclude Include="libvorbis\src\misc.h" />
+    <ClInclude Include="libvorbis\src\os.h" />
+    <ClInclude Include="libvorbis\src\psy.h" />
+    <ClInclude Include="libvorbis\src\registry.h" />
+    <ClInclude Include="libvorbis\src\scales.h" />
+    <ClInclude Include="libvorbis\src\smallft.h" />
+    <ClInclude Include="libvorbis\src\window.h" />
+    <ClInclude Include="FreeType\include\ft2build.h" />
+    <ClInclude Include="libxml2\include\libxml\c14n.h" />
+    <ClInclude Include="libxml2\include\libxml\catalog.h" />
+    <ClInclude Include="libxml2\include\libxml\chvalid.h" />
+    <ClInclude Include="libxml2\include\libxml\debugXML.h" />
+    <ClInclude Include="libxml2\include\libxml\dict.h" />
+    <ClInclude Include="libxml2\include\libxml\DOCBparser.h" />
+    <ClInclude Include="libxml2\include\libxml\encoding.h" />
+    <ClInclude Include="libxml2\include\libxml\entities.h" />
+    <ClInclude Include="libxml2\include\libxml\globals.h" />
+    <ClInclude Include="libxml2\include\libxml\hash.h" />
+    <ClInclude Include="libxml2\include\libxml\HTMLparser.h" />
+    <ClInclude Include="libxml2\include\libxml\HTMLtree.h" />
+    <ClInclude Include="libxml2\include\libxml\list.h" />
+    <ClInclude Include="libxml2\include\libxml\nanoftp.h" />
+    <ClInclude Include="libxml2\include\libxml\nanohttp.h" />
+    <ClInclude Include="libxml2\include\libxml\parser.h" />
+    <ClInclude Include="libxml2\include\libxml\parserInternals.h" />
+    <ClInclude Include="libxml2\include\libxml\pattern.h" />
+    <ClInclude Include="libxml2\include\libxml\relaxng.h" />
+    <ClInclude Include="libxml2\include\libxml\SAX.h" />
+    <ClInclude Include="libxml2\include\libxml\SAX2.h" />
+    <ClInclude Include="libxml2\include\libxml\schemasInternals.h" />
+    <ClInclude Include="libxml2\include\libxml\schematron.h" />
+    <ClInclude Include="libxml2\include\libxml\threads.h" />
+    <ClInclude Include="libxml2\include\libxml\tree.h" />
+    <ClInclude Include="libxml2\include\libxml\uri.h" />
+    <ClInclude Include="libxml2\include\libxml\valid.h" />
+    <ClInclude Include="libxml2\include\libxml\xinclude.h" />
+    <ClInclude Include="libxml2\include\libxml\xlink.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlautomata.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlerror.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlexports.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlIO.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlmemory.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlmodule.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlreader.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlregexp.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlsave.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlschemas.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlschemastypes.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlstring.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlunicode.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlversion.h" />
+    <ClInclude Include="libxml2\include\libxml\xmlwriter.h" />
+    <ClInclude Include="libxml2\include\libxml\xpath.h" />
+    <ClInclude Include="libxml2\include\libxml\xpathInternals.h" />
+    <ClInclude Include="libxml2\include\libxml\xpointer.h" />
+    <ClInclude Include="libxml2\include\win32config.h" />
+    <ClInclude Include="libxml2\include\wsockcompat.h" />
+    <ClInclude Include="libxml2\src\buf.h" />
+    <ClInclude Include="libxml2\src\config.h" />
+    <ClInclude Include="libxml2\src\elfgcchack.h" />
+    <ClInclude Include="libxml2\src\enc.h" />
+    <ClInclude Include="libxml2\src\libxml.h" />
+    <ClInclude Include="libxml2\src\save.h" />
+    <ClInclude Include="libxml2\src\timsort.h" />
+    <ClInclude Include="libxml2\src\xzlib.h" />
+    <ClInclude Include="sqlite\sqlite3.h" />
+    <ClInclude Include="sqlite\sqlite3ext.h" />
+    <ClInclude Include="zlib\crc32.h" />
+    <ClInclude Include="zlib\crypt.h" />
+    <ClInclude Include="zlib\deflate.h" />
+    <ClInclude Include="zlib\gzguts.h" />
+    <ClInclude Include="zlib\inffast.h" />
+    <ClInclude Include="zlib\inffixed.h" />
+    <ClInclude Include="zlib\inflate.h" />
+    <ClInclude Include="zlib\inftrees.h" />
+    <ClInclude Include="zlib\ioapi.h" />
+    <ClInclude Include="zlib\iowin32.h" />
+    <ClInclude Include="zlib\mztools.h" />
+    <ClInclude Include="zlib\trees.h" />
+    <ClInclude Include="zlib\unzip.h" />
+    <ClInclude Include="zlib\zconf.h" />
+    <ClInclude Include="zlib\zip.h" />
+    <ClInclude Include="zlib\zlib.h" />
+    <ClInclude Include="zlib\zutil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bzip2\blocksort.c" />
+    <ClCompile Include="bzip2\bzlib.c" />
+    <ClCompile Include="bzip2\compress.c" />
+    <ClCompile Include="bzip2\crctable.c" />
+    <ClCompile Include="bzip2\decompress.c" />
+    <ClCompile Include="bzip2\huffman.c" />
+    <ClCompile Include="bzip2\randtable.c" />
+    <ClCompile Include="CxImage\tif_xfile.cpp" />
+    <ClCompile Include="CxImage\ximabmp.cpp" />
+    <ClCompile Include="CxImage\ximadsp.cpp" />
+    <ClCompile Include="CxImage\ximaenc.cpp" />
+    <ClCompile Include="CxImage\ximaexif.cpp" />
+    <ClCompile Include="CxImage\ximage.cpp" />
+    <ClCompile Include="CxImage\ximagif.cpp" />
+    <ClCompile Include="CxImage\ximahist.cpp" />
+    <ClCompile Include="CxImage\ximaico.cpp" />
+    <ClCompile Include="CxImage\ximainfo.cpp" />
+    <ClCompile Include="CxImage\ximaint.cpp" />
+    <ClCompile Include="CxImage\ximajas.cpp" />
+    <ClCompile Include="CxImage\ximajbg.cpp" />
+    <ClCompile Include="CxImage\ximajpg.cpp" />
+    <ClCompile Include="CxImage\ximalpha.cpp" />
+    <ClCompile Include="CxImage\ximalyr.cpp" />
+    <ClCompile Include="CxImage\ximamng.cpp" />
+    <ClCompile Include="CxImage\ximapal.cpp" />
+    <ClCompile Include="CxImage\ximapcx.cpp" />
+    <ClCompile Include="CxImage\ximapng.cpp" />
+    <ClCompile Include="CxImage\ximapsd.cpp" />
+    <ClCompile Include="CxImage\ximaraw.cpp" />
+    <ClCompile Include="CxImage\ximasel.cpp" />
+    <ClCompile Include="CxImage\ximaska.cpp" />
+    <ClCompile Include="CxImage\ximatga.cpp" />
+    <ClCompile Include="CxImage\ximath.cpp" />
+    <ClCompile Include="CxImage\ximatif.cpp" />
+    <ClCompile Include="CxImage\ximatran.cpp" />
+    <ClCompile Include="CxImage\ximawbmp.cpp" />
+    <ClCompile Include="CxImage\ximawmf.cpp" />
+    <ClCompile Include="CxImage\ximawnd.cpp" />
+    <ClCompile Include="CxImage\xmemfile.cpp" />
+    <ClCompile Include="FreeType\src\base\ftxf86.c" />
+    <ClCompile Include="jpeg\jaricom.c" />
+    <ClCompile Include="jpeg\jcapimin.c" />
+    <ClCompile Include="jpeg\jcapistd.c" />
+    <ClCompile Include="jpeg\jcarith.c" />
+    <ClCompile Include="jpeg\jccoefct.c" />
+    <ClCompile Include="jpeg\jccolor.c" />
+    <ClCompile Include="jpeg\jcdctmgr.c" />
+    <ClCompile Include="jpeg\jchuff.c" />
+    <ClCompile Include="jpeg\jcinit.c" />
+    <ClCompile Include="jpeg\jcmainct.c" />
+    <ClCompile Include="jpeg\jcmarker.c" />
+    <ClCompile Include="jpeg\jcmaster.c" />
+    <ClCompile Include="jpeg\jcomapi.c" />
+    <ClCompile Include="jpeg\jcparam.c" />
+    <ClCompile Include="jpeg\jcprepct.c" />
+    <ClCompile Include="jpeg\jcsample.c" />
+    <ClCompile Include="jpeg\jctrans.c" />
+    <ClCompile Include="jpeg\jdapimin.c" />
+    <ClCompile Include="jpeg\jdapistd.c" />
+    <ClCompile Include="jpeg\jdarith.c" />
+    <ClCompile Include="jpeg\jdatadst.c" />
+    <ClCompile Include="jpeg\jdatasrc.c" />
+    <ClCompile Include="jpeg\jdcoefct.c" />
+    <ClCompile Include="jpeg\jdcolor.c" />
+    <ClCompile Include="jpeg\jddctmgr.c" />
+    <ClCompile Include="jpeg\jdhuff.c" />
+    <ClCompile Include="jpeg\jdinput.c" />
+    <ClCompile Include="jpeg\jdmainct.c" />
+    <ClCompile Include="jpeg\jdmarker.c" />
+    <ClCompile Include="jpeg\jdmaster.c" />
+    <ClCompile Include="jpeg\jdmerge.c" />
+    <ClCompile Include="jpeg\jdpostct.c" />
+    <ClCompile Include="jpeg\jdsample.c" />
+    <ClCompile Include="jpeg\jdtrans.c" />
+    <ClCompile Include="jpeg\jerror.c" />
+    <ClCompile Include="jpeg\jfdctflt.c" />
+    <ClCompile Include="jpeg\jfdctfst.c" />
+    <ClCompile Include="jpeg\jfdctint.c" />
+    <ClCompile Include="jpeg\jidctflt.c" />
+    <ClCompile Include="jpeg\jidctfst.c" />
+    <ClCompile Include="jpeg\jidctint.c" />
+    <ClCompile Include="jpeg\jmemmgr.c" />
+    <ClCompile Include="jpeg\jmemnobs.c" />
+    <ClCompile Include="jpeg\jquant1.c" />
+    <ClCompile Include="jpeg\jquant2.c" />
+    <ClCompile Include="jpeg\jutils.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\bitmath.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\bitreader.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\bitwriter.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\cpu.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\crc.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\fixed.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\float.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\format.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\lpc.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\md5.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\memory.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\metadata_iterators.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\metadata_object.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\ogg_decoder_aspect.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\ogg_encoder_aspect.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\ogg_helper.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\ogg_mapping.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\stream_decoder.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\stream_encoder.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\stream_encoder_framing.c" />
+    <ClCompile Include="libFLAC\src\libFLAC\window.c" />
+    <ClCompile Include="libpng\png.c" />
+    <ClCompile Include="libpng\pngerror.c" />
+    <ClCompile Include="libpng\pngget.c" />
+    <ClCompile Include="libpng\pngmem.c" />
+    <ClCompile Include="libpng\pngpread.c" />
+    <ClCompile Include="libpng\pngread.c" />
+    <ClCompile Include="libpng\pngrio.c" />
+    <ClCompile Include="libpng\pngrtran.c" />
+    <ClCompile Include="libpng\pngrutil.c" />
+    <ClCompile Include="libpng\pngset.c" />
+    <ClCompile Include="libpng\pngtrans.c" />
+    <ClCompile Include="libpng\pngwio.c" />
+    <ClCompile Include="libpng\pngwrite.c" />
+    <ClCompile Include="libpng\pngwtran.c" />
+    <ClCompile Include="libpng\pngwutil.c" />
+    <ClCompile Include="libtiff\mkg3states.c" />
+    <ClCompile Include="libtiff\tif_aux.c" />
+    <ClCompile Include="libtiff\tif_close.c" />
+    <ClCompile Include="libtiff\tif_codec.c" />
+    <ClCompile Include="libtiff\tif_color.c" />
+    <ClCompile Include="libtiff\tif_compress.c" />
+    <ClCompile Include="libtiff\tif_dir.c" />
+    <ClCompile Include="libtiff\tif_dirinfo.c" />
+    <ClCompile Include="libtiff\tif_dirread.c" />
+    <ClCompile Include="libtiff\tif_dirwrite.c" />
+    <ClCompile Include="libtiff\tif_dumpmode.c" />
+    <ClCompile Include="libtiff\tif_error.c" />
+    <ClCompile Include="libtiff\tif_extension.c" />
+    <ClCompile Include="libtiff\tif_fax3.c" />
+    <ClCompile Include="libtiff\tif_fax3sm.c" />
+    <ClCompile Include="libtiff\tif_flush.c" />
+    <ClCompile Include="libtiff\tif_getimage.c" />
+    <ClCompile Include="libtiff\tif_jbig.c" />
+    <ClCompile Include="libtiff\tif_jpeg.c" />
+    <ClCompile Include="libtiff\tif_jpeg_12.c" />
+    <ClCompile Include="libtiff\tif_luv.c" />
+    <ClCompile Include="libtiff\tif_lzma.c" />
+    <ClCompile Include="libtiff\tif_lzw.c" />
+    <ClCompile Include="libtiff\tif_next.c" />
+    <ClCompile Include="libtiff\tif_ojpeg.c" />
+    <ClCompile Include="libtiff\tif_open.c" />
+    <ClCompile Include="libtiff\tif_packbits.c" />
+    <ClCompile Include="libtiff\tif_pixarlog.c" />
+    <ClCompile Include="libtiff\tif_predict.c" />
+    <ClCompile Include="libtiff\tif_print.c" />
+    <ClCompile Include="libtiff\tif_read.c" />
+    <ClCompile Include="libtiff\tif_stream.cxx" />
+    <ClCompile Include="libtiff\tif_strip.c" />
+    <ClCompile Include="libtiff\tif_swab.c" />
+    <ClCompile Include="libtiff\tif_thunder.c" />
+    <ClCompile Include="libtiff\tif_tile.c" />
+    <ClCompile Include="libtiff\tif_version.c" />
+    <ClCompile Include="libtiff\tif_warning.c" />
+    <ClCompile Include="libtiff\tif_win32.c" />
+    <ClCompile Include="libtiff\tif_write.c" />
+    <ClCompile Include="libtiff\tif_zip.c" />
+    <ClCompile Include="libvorbis\src\analysis.c" />
+    <ClCompile Include="libvorbis\src\bitrate.c" />
+    <ClCompile Include="libvorbis\src\block.c" />
+    <ClCompile Include="libvorbis\src\codebook.c" />
+    <ClCompile Include="libvorbis\src\envelope.c" />
+    <ClCompile Include="libvorbis\src\floor0.c" />
+    <ClCompile Include="libvorbis\src\floor1.c" />
+    <ClCompile Include="libvorbis\src\info.c" />
+    <ClCompile Include="libvorbis\src\lookup.c" />
+    <ClCompile Include="libvorbis\src\lpc.c" />
+    <ClCompile Include="libvorbis\src\lsp.c" />
+    <ClCompile Include="libvorbis\src\mapping0.c" />
+    <ClCompile Include="libvorbis\src\mdct.c" />
+    <ClCompile Include="libvorbis\src\psy.c" />
+    <ClCompile Include="libvorbis\src\registry.c" />
+    <ClCompile Include="libvorbis\src\res0.c" />
+    <ClCompile Include="libvorbis\src\sharedbook.c" />
+    <ClCompile Include="libvorbis\src\smallft.c" />
+    <ClCompile Include="libvorbis\src\synthesis.c" />
+    <ClCompile Include="libvorbis\src\vorbisenc.c" />
+    <ClCompile Include="libvorbis\src\vorbisfile.c" />
+    <ClCompile Include="libvorbis\src\window.c" />
+    <ClCompile Include="libogg\src\bitwise.c" />
+    <ClCompile Include="libogg\src\framing.c" />
+    <ClCompile Include="FreeType\src\autofit\autofit.c" />
+    <ClCompile Include="FreeType\src\bdf\bdf.c" />
+    <ClCompile Include="FreeType\src\cff\cff.c" />
+    <ClCompile Include="FreeType\src\base\ftbase.c" />
+    <ClCompile Include="FreeType\src\base\ftbitmap.c" />
+    <ClCompile Include="FreeType\src\cache\ftcache.c" />
+    <ClCompile Include="FreeType\src\base\ftdebug.c" />
+    <ClCompile Include="FreeType\src\base\ftfstype.c" />
+    <ClCompile Include="FreeType\src\base\ftgasp.c" />
+    <ClCompile Include="FreeType\src\base\ftglyph.c" />
+    <ClCompile Include="FreeType\src\gzip\ftgzip.c" />
+    <ClCompile Include="FreeType\src\base\ftinit.c" />
+    <ClCompile Include="FreeType\src\lzw\ftlzw.c" />
+    <ClCompile Include="FreeType\src\base\ftstroke.c" />
+    <ClCompile Include="FreeType\src\base\ftsystem.c" />
+    <ClCompile Include="FreeType\src\smooth\smooth.c" />
+    <ClCompile Include="FreeType\src\base\ftbbox.c" />
+    <ClCompile Include="FreeType\src\base\ftgxval.c" />
+    <ClCompile Include="FreeType\src\base\ftlcdfil.c" />
+    <ClCompile Include="FreeType\src\base\ftmm.c" />
+    <ClCompile Include="FreeType\src\base\ftotval.c" />
+    <ClCompile Include="FreeType\src\base\ftpatent.c" />
+    <ClCompile Include="FreeType\src\base\ftpfr.c" />
+    <ClCompile Include="FreeType\src\base\ftsynth.c" />
+    <ClCompile Include="FreeType\src\base\fttype1.c" />
+    <ClCompile Include="FreeType\src\base\ftwinfnt.c" />
+    <ClCompile Include="FreeType\src\pcf\pcf.c" />
+    <ClCompile Include="FreeType\src\pfr\pfr.c" />
+    <ClCompile Include="FreeType\src\psaux\psaux.c" />
+    <ClCompile Include="FreeType\src\pshinter\pshinter.c" />
+    <ClCompile Include="FreeType\src\psnames\psmodule.c" />
+    <ClCompile Include="FreeType\src\raster\raster.c" />
+    <ClCompile Include="FreeType\src\sfnt\sfnt.c" />
+    <ClCompile Include="FreeType\src\truetype\truetype.c" />
+    <ClCompile Include="FreeType\src\type1\type1.c" />
+    <ClCompile Include="FreeType\src\cid\type1cid.c" />
+    <ClCompile Include="FreeType\src\type42\type42.c" />
+    <ClCompile Include="FreeType\src\winfonts\winfnt.c" />
+    <ClCompile Include="libxml2\src\buf.c" />
+    <ClCompile Include="libxml2\src\c14n.c" />
+    <ClCompile Include="libxml2\src\catalog.c" />
+    <ClCompile Include="libxml2\src\chvalid.c" />
+    <ClCompile Include="libxml2\src\debugXML.c" />
+    <ClCompile Include="libxml2\src\dict.c" />
+    <ClCompile Include="libxml2\src\DOCBparser.c" />
+    <ClCompile Include="libxml2\src\encoding.c" />
+    <ClCompile Include="libxml2\src\entities.c" />
+    <ClCompile Include="libxml2\src\error.c" />
+    <ClCompile Include="libxml2\src\globals.c" />
+    <ClCompile Include="libxml2\src\hash.c" />
+    <ClCompile Include="libxml2\src\HTMLparser.c" />
+    <ClCompile Include="libxml2\src\HTMLtree.c" />
+    <ClCompile Include="libxml2\src\legacy.c" />
+    <ClCompile Include="libxml2\src\list.c" />
+    <ClCompile Include="libxml2\src\nanoftp.c" />
+    <ClCompile Include="libxml2\src\nanohttp.c" />
+    <ClCompile Include="libxml2\src\parser.c" />
+    <ClCompile Include="libxml2\src\parserInternals.c" />
+    <ClCompile Include="libxml2\src\pattern.c" />
+    <ClCompile Include="libxml2\src\relaxng.c" />
+    <ClCompile Include="libxml2\src\SAX.c" />
+    <ClCompile Include="libxml2\src\SAX2.c" />
+    <ClCompile Include="libxml2\src\schematron.c" />
+    <ClCompile Include="libxml2\src\threads.c" />
+    <ClCompile Include="libxml2\src\tree.c" />
+    <ClCompile Include="libxml2\src\uri.c" />
+    <ClCompile Include="libxml2\src\valid.c" />
+    <ClCompile Include="libxml2\src\xinclude.c" />
+    <ClCompile Include="libxml2\src\xlink.c" />
+    <ClCompile Include="libxml2\src\xmlIO.c" />
+    <ClCompile Include="libxml2\src\xmlmemory.c" />
+    <ClCompile Include="libxml2\src\xmlmodule.c" />
+    <ClCompile Include="libxml2\src\xmlreader.c" />
+    <ClCompile Include="libxml2\src\xmlregexp.c" />
+    <ClCompile Include="libxml2\src\xmlsave.c" />
+    <ClCompile Include="libxml2\src\xmlschemas.c" />
+    <ClCompile Include="libxml2\src\xmlschemastypes.c" />
+    <ClCompile Include="libxml2\src\xmlstring.c" />
+    <ClCompile Include="libxml2\src\xmlunicode.c" />
+    <ClCompile Include="libxml2\src\xmlwriter.c" />
+    <ClCompile Include="libxml2\src\xpath.c" />
+    <ClCompile Include="libxml2\src\xpointer.c" />
+    <ClCompile Include="libxml2\src\xzlib.c" />
+    <ClCompile Include="sqlite\sqlite3.c" />
+    <ClCompile Include="zlib\adler32.c" />
+    <ClCompile Include="zlib\compress.c" />
+    <ClCompile Include="zlib\crc32.c" />
+    <ClCompile Include="zlib\deflate.c" />
+    <ClCompile Include="zlib\gzclose.c" />
+    <ClCompile Include="zlib\gzlib.c" />
+    <ClCompile Include="zlib\gzread.c" />
+    <ClCompile Include="zlib\gzwrite.c" />
+    <ClCompile Include="zlib\infback.c" />
+    <ClCompile Include="zlib\inffast.c" />
+    <ClCompile Include="zlib\inflate.c" />
+    <ClCompile Include="zlib\inftrees.c" />
+    <ClCompile Include="zlib\ioapi.c" />
+    <ClCompile Include="zlib\iowin32.c" />
+    <ClCompile Include="zlib\mztools.c" />
+    <ClCompile Include="zlib\trees.c" />
+    <ClCompile Include="zlib\uncompr.c" />
+    <ClCompile Include="zlib\unzip.c" />
+    <ClCompile Include="zlib\zip.c" />
+    <ClCompile Include="zlib\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="VERSION.TXT" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

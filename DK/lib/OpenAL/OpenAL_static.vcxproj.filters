@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ALC">
+      <UniqueIdentifier>{305523e1-2b58-4905-845c-20fca77b782c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALC\backends">
+      <UniqueIdentifier>{5a9ca782-784c-41c3-b4ba-9d5e98c95298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALC\effects">
+      <UniqueIdentifier>{1063a750-236e-4d69-80cd-98a3f859a7b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Build">
+      <UniqueIdentifier>{bbb3e9fa-b242-4417-abc3-ab47636064e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{6db83037-6c08-41d1-89df-6326263f8e6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenAL32">
+      <UniqueIdentifier>{836af9fc-d4c2-4581-aeaa-9854b37aa980}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Alc\ALc.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\alcConfig.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\alcRing.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\alcThread.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\ALu.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\bs2b.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\helpers.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\hrtf.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\mixer.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\mixer_c.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\mixer_sse.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\panning.c">
+      <Filter>ALC</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\backends\dsound.c">
+      <Filter>ALC\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\backends\loopback.c">
+      <Filter>ALC\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\backends\mmdevapi.c">
+      <Filter>ALC\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\backends\null.c">
+      <Filter>ALC\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\backends\wave.c">
+      <Filter>ALC\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\backends\winmm.c">
+      <Filter>ALC\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\chorus.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\dedicated.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\distortion.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\echo.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\equalizer.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\flanger.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\modulator.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\null.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Alc\effects\reverb.c">
+      <Filter>ALC\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alAuxEffectSlot.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alBuffer.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alEffect.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alError.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alExtension.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alFilter.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alListener.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alSource.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alState.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenAL32\alThunk.c">
+      <Filter>OpenAL32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="build\config.h">
+      <Filter>Build</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AL\al.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AL\alc.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AL\alext.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AL\efx-creative.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AL\efx-presets.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AL\efx.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DCActionController.cpp" />
+    <ClCompile Include="src\DCAffineTransform2.cpp" />
+    <ClCompile Include="src\DCAffineTransform3.cpp" />
+    <ClCompile Include="src\DCAnimatedTransform.cpp" />
+    <ClCompile Include="src\DCAnimation.cpp" />
+    <ClCompile Include="src\DCAnimationController.cpp" />
+    <ClCompile Include="src\DCAudioListener.cpp" />
+    <ClCompile Include="src\DCAudioPlayer.cpp" />
+    <ClCompile Include="src\DCAudioSource.cpp" />
+    <ClCompile Include="src\DCBlendState.cpp" />
+    <ClCompile Include="src\DCBoxShape.cpp" />
+    <ClCompile Include="src\DCCamera.cpp" />
+    <ClCompile Include="src\DCCapsuleShape.cpp" />
+    <ClCompile Include="src\DCCollisionObject.cpp" />
+    <ClCompile Include="src\DCCollisionShape.cpp" />
+    <ClCompile Include="src\DCColor.cpp" />
+    <ClCompile Include="src\DCCompoundShape.cpp" />
+    <ClCompile Include="src\DCConcaveShape.cpp" />
+    <ClCompile Include="src\DCConeShape.cpp" />
+    <ClCompile Include="src\DCConeTwistConstraint.cpp" />
+    <ClCompile Include="src\DCConstraint.cpp" />
+    <ClCompile Include="src\DCConvexHullShape.cpp" />
+    <ClCompile Include="src\DCConvexShape.cpp" />
+    <ClCompile Include="src\DCCylinderShape.cpp" />
+    <ClCompile Include="src\DCData.cpp" />
+    <ClCompile Include="src\DCDynamicsScene.cpp" />
+    <ClCompile Include="src\DCFixedConstraint.cpp" />
+    <ClCompile Include="src\DCFont.cpp" />
+    <ClCompile Include="src\DCFrame.cpp" />
+    <ClCompile Include="src\DCGearConstraint.cpp" />
+    <ClCompile Include="src\DCGeneric6DofConstraint.cpp" />
+    <ClCompile Include="src\DCGeneric6DofSpringConstraint.cpp" />
+    <ClCompile Include="src\DCGeometryBuffer.cpp" />
+    <ClCompile Include="src\DCHingeConstraint.cpp" />
+    <ClCompile Include="src\DCIndexBuffer.cpp" />
+    <ClCompile Include="src\DCLight.cpp" />
+    <ClCompile Include="src\DCLinearTransform2.cpp" />
+    <ClCompile Include="src\DCLinearTransform3.cpp" />
+    <ClCompile Include="src\DCMaterial.cpp" />
+    <ClCompile Include="src\DCMatrix2.cpp" />
+    <ClCompile Include="src\DCMatrix3.cpp" />
+    <ClCompile Include="src\DCMatrix4.cpp" />
+    <ClCompile Include="src\DCMesh.cpp" />
+    <ClCompile Include="src\DCModel.cpp" />
+    <ClCompile Include="src\DCMultiSphereShape.cpp" />
+    <ClCompile Include="src\DCNSTransform.cpp" />
+    <ClCompile Include="src\DCObject.cpp" />
+    <ClCompile Include="src\DCOpenGLContext.cpp" />
+    <ClCompile Include="src\DCPoint.cpp" />
+    <ClCompile Include="src\DCPoint2PointConstraint.cpp" />
+    <ClCompile Include="src\DCPolyhedralConvexShape.cpp" />
+    <ClCompile Include="src\DCQuaternion.cpp" />
+    <ClCompile Include="src\DCRect.cpp" />
+    <ClCompile Include="src\DCRenderer.cpp" />
+    <ClCompile Include="src\DCRenderTarget.cpp" />
+    <ClCompile Include="src\DCResource.cpp" />
+    <ClCompile Include="src\DCResourceLoader.cpp" />
+    <ClCompile Include="src\DCRigidBody.cpp" />
+    <ClCompile Include="src\DCRunLoopOperationResult.cpp" />
+    <ClCompile Include="src\DCRunLoopTimer.cpp" />
+    <ClCompile Include="src\DCScene.cpp" />
+    <ClCompile Include="src\DCScreen.cpp" />
+    <ClCompile Include="src\DCShader.cpp" />
+    <ClCompile Include="src\DCShaderProgram.cpp" />
+    <ClCompile Include="src\DCSize.cpp" />
+    <ClCompile Include="src\DCSkinMesh.cpp" />
+    <ClCompile Include="src\DCSliderConstraint.cpp" />
+    <ClCompile Include="src\DCSoftBody.cpp" />
+    <ClCompile Include="src\DCSphereShape.cpp" />
+    <ClCompile Include="src\DCSpline.cpp" />
+    <ClCompile Include="src\DCStaticMesh.cpp" />
+    <ClCompile Include="src\DCStaticPlaneShape.cpp" />
+    <ClCompile Include="src\DCStaticTriangleMeshShape.cpp" />
+    <ClCompile Include="src\DCStream.cpp" />
+    <ClCompile Include="src\DCTexture.cpp" />
+    <ClCompile Include="src\DCTexture2D.cpp" />
+    <ClCompile Include="src\DCTexture3D.cpp" />
+    <ClCompile Include="src\DCTextureCube.cpp" />
+    <ClCompile Include="src\DCTextureSampler.cpp" />
+    <ClCompile Include="src\DCTimer.cpp" />
+    <ClCompile Include="src\DCTransformUnit.cpp" />
+    <ClCompile Include="src\DCUSTransform.cpp" />
+    <ClCompile Include="src\DCVector2.cpp" />
+    <ClCompile Include="src\DCVector3.cpp" />
+    <ClCompile Include="src\DCVector4.cpp" />
+    <ClCompile Include="src\DCVertexBuffer.cpp" />
+    <ClCompile Include="src\DCWindow.cpp" />
+    <ClCompile Include="src\DCZipArchiver.cpp" />
+    <ClCompile Include="src\DCZipUnarchiver.cpp" />
+    <ClCompile Include="src\PyDKApplication.cpp" />
+    <ClCompile Include="src\PyDKCore.cpp" />
+    <ClCompile Include="src\PyDKInterpreter.cpp" />
+    <ClCompile Include="src\PyDKPython.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\DCAnimatedTransform.h" />
+    <ClInclude Include="src\DCCollisionObject.h" />
+    <ClInclude Include="src\DCCollisionShape.h" />
+    <ClInclude Include="src\DCConcaveShape.h" />
+    <ClInclude Include="src\DCConstraint.h" />
+    <ClInclude Include="src\DCConvexShape.h" />
+    <ClInclude Include="src\DCGeneric6DofConstraint.h" />
+    <ClInclude Include="src\DCGeometryBuffer.h" />
+    <ClInclude Include="src\DCMesh.h" />
+    <ClInclude Include="src\DCModel.h" />
+    <ClInclude Include="src\DCObject.h" />
+    <ClInclude Include="src\DCPolyhedralConvexShape.h" />
+    <ClInclude Include="src\DCResource.h" />
+    <ClInclude Include="src\DCScene.h" />
+    <ClInclude Include="src\DCStaticMesh.h" />
+    <ClInclude Include="src\DCTexture.h" />
+    <ClInclude Include="src\PyDK.h" />
+    <ClInclude Include="src\PyDKApi.h" />
+    <ClInclude Include="src\PyDKApplication.h" />
+    <ClInclude Include="src\PyDKInterpreter.h" />
+    <ClInclude Include="src\PyDKPython.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DK\DK.vcxproj">
+      <Project>{0ce28749-43b7-473e-b463-49ec2ef8b43b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9244B7CE-3AA1-4B36-B0B6-A5E4E42979FB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>PyDK</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_EXPORTS;DKLIB_DYNAMIC;Py_NO_ENABLE_SHARED;Py_DEBUG;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>Python/Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;python34_static_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_EXPORTS;DKLIB_DYNAMIC;Py_NO_ENABLE_SHARED;Py_DEBUG;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>Python/Win32_x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;python34_static_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_EXPORTS;DKLIB_DYNAMIC;Py_NO_ENABLE_SHARED;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>Python/Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;python34_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_EXPORTS;DKLIB_DYNAMIC;Py_NO_ENABLE_SHARED;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>Python/Win32_x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;python34_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

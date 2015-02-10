@@ -1,0 +1,6 @@
+OpenAL-soft-1.15.1  (git 2013-07-23 version)
+
+http://openal-soft.org
+git://repo.or.cz/openal-soft.git
+http://repo.or.cz/w/openal-soft.git
+
