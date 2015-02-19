@@ -1,0 +1,99 @@
+import _dk_core as core
+
+
+# predefined uniform/constant id
+class UNIFORM_ID:
+    MODEL_MATRIX = 1
+    MODEL_MATRIX_INVERSE = 2
+    VIEW_MATRIX = 3
+    VIEW_MATRIX_INVERSE = 4
+    PROJECTION_MATRIX = 5
+    PROJECTION_MATRIX_INVERSE = 6
+    VIEW_PROJECTION_MATRIX = 7
+    VIEW_PROJECTION_MATRIX_INVERSE = 8
+    MODEL_VIEW_MATRIX = 9
+    MODEL_VIEW_MATRIX_INVERSE = 10
+    MODEL_VIEW_PROJECTION_MATRIX = 11
+    MODEL_VIEW_PROJECTION_MATRIX_INVERSE = 12
+    LINEAR_TRANSFORM_ARRAY = 13
+    AFFINE_TRANSFORM_ARRAY = 14
+    POSITION_ARRAY = 15
+    TEXTURE_2D = 16
+    TEXTURE_3D = 17
+    TEXTURE_CUBE = 18
+    DIRECTIONAL_LIGHT_COLOR = 19
+    DIRECTIONAL_LIGHT_DIRECTION = 20
+    POINT_LIGHT_COLOR = 21
+    POINT_LIGHT_POSITION = 22
+    POINT_LIGHT_ATTENUATION = 23
+    AMBIENT_COLOR = 24
+    CAMERA_POSITION = 25
+    USER_DEFINE = 26
+
+
+# shader uniform type
+class UNIFORM_TYPE:
+    FLOAT1 = 1
+    FLOAT2 = 2
+    FLOAT3 = 3
+    FLOAT4 = 4
+    INT1 = 5
+    INT2 = 6
+    INT3 = 7
+    INT4 = 8
+    BOOL1 = 9
+    BOOL2 = 10
+    BOOL3 = 11
+    BOOL4 = 12
+    FLOAT2X2 = 13
+    FLOAT3X3 = 14
+    FLOAT4X4 = 15
+    SAMPLER_2D = 16
+    SAMPLER_CUBE = 17
+
+
+# predefined attribute/stream id
+class ATTRIBUTE_ID:
+    POSITION = 1
+    NORMAL = 2
+    COLOR = 3
+    TEXCOORD = 4
+    TANGENT = 5
+    BITANGENT = 6
+    BONE_INDICES = 7
+    BONE_WEIGHTS = 8
+    USER_DEFINED = 9
+
+# attribute type
+class ATTRIBUTE_TYPE:
+    FLOAT1 = 1
+    FLOAT2 = 2
+    FLOAT3 = 3
+    FLOAT4 = 4
+    FLOAT2X2 = 5
+    FLOAT3X3 = 6
+    FLOAT4X4 = 7
+    BYTE1 = 8
+    BYTE2 = 9
+    BYTE3 = 10
+    BYTE4 = 11
+    UBYTE1 = 12
+    UBYTE2 = 13
+    UBYTE3 = 14
+    UBYTE4 = 15
+    SHORT1 = 16
+    SHORT2 = 17
+    SHORT3 = 18
+    SHORT4 = 19
+    USHORT1 = 20
+    USHORT2 = 21
+    USHORT3 = 22
+    USHORT4 = 23
+
+
+TYPE_VERTEX_SHADER = 1
+TYPE_FRAGMENT_SHADER = 2
+TYPE_GEOMETRY_SHADER = 3
+
+Shader = core.Shader
+ShaderProgram = core.ShaderProgram
