@@ -44,7 +44,7 @@ You can build PyDK with or without python interpreter embedded.
     - Win32 x64: [python3.4.2_Win32_x64.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_Win32_x64.zip)
     - Mac OS X (Universal): [python3.4.2_OSX.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_OSX.zip)
     - Apple iOS (Universal): [python3.4.2_iOS.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_iOS.zip)
-2. Extract intoto PyDK/Python/  
+2. Extract into PyDK/Python/  
     `example for OSX: PyDK/Python/OSX/libpython3.4.a`
 3. Build!
 
