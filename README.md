@@ -61,7 +61,10 @@ You can build PyDK with or without python interpreter embedded.
 - It is strongly recommend to use dk module together. You can download dk module in this project. `Scripts/dk`
 
 ## Required Libraries (Included in this project)
-- OpenAL-soft-1.15.1 (Win32, Android only)
+- OpenAL-soft-1.15.1
+    - This is LGPL licensed, configured to build **dynamic-library**.
+    - Win32, Android only.
+    - Mac OS X, iOS use Apple's OpenAL framework.
 - BulletPhysics-2.82 (svn rev: 2719)
 - CxImage-7.02
 - FreeType-2.5.3
