@@ -48,13 +48,8 @@ You can build PyDK with or without python interpreter embedded.
     `example for OSX: PyDK/Python/OSX/libpython3.4.a`
 3. Build!
 
-##### Pre-built PyDK (interpreter embedded) downloaded:
-- http://github.com/tiff2766/DKDemo
-- DLL for Windows
-- Framework for OS X, iOS
-- You can build to static-library if necessary.
-
 ##### Pre-built module for python3.4 download:
+Extract file into your Python site-packages dir.
 - [Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_osx.zip)
 - [Windows i386](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32.zip)
 - [Windows x64](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32_x64.zip)
