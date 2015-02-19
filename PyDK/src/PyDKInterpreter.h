@@ -3,7 +3,7 @@
 #include "PyDKApi.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// PyDKInterpreter : 파이썬 인터프리터
+// PyDKInterpreter : Python sub interpreter
 
 class PYDK_API PyDKInterpreter
 {

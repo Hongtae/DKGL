@@ -1,6 +1,7 @@
 # Project DK, DKLib
 Game Library for C++ and Python (PyDK)  
-See demo: https://github.com/tiff2766/DKDemo
+See demo: https://github.com/tiff2766/DKDemo  
+pre-built executable are also available to [download]( https://bitbucket.org/tiff2766/dkdemo/downloads/DKDemoApp_Win32_En.zip).
 
 
 ## DK
@@ -46,6 +47,18 @@ You can build PyDK with or without python interpreter embedded.
 2. Extract intoto PyDK/Python/  
     `example for OSX: PyDK/Python/OSX/libpython3.4.a`
 3. Build!
+
+##### Pre-built PyDK (interpreter embedded) downloaded:
+- http://github.com/tiff2766/DKDemo
+- DLL for Windows
+- Framework for OS X, iOS
+- You can build to static-library if necessary.
+
+##### Pre-built module for python3.4 download:
+- [Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_osx.zip)
+- [Windows i386](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32.zip)
+- [Windows x64](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32_x64.zip)
+- It is strongly recommend to use dk module together. You can download dk module in this project. `Scripts/dk`
 
 ## Required Libraries (Included in this project)
 - OpenAL-soft-1.15.1 (Win32, Android only)

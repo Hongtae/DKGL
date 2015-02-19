@@ -1,3 +1,6 @@
+# Note:
+# This python source code based on bullet physics vehicle controller.
+
 import _dk_core as core
 import math
 from collections import namedtuple

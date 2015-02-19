@@ -4,10 +4,11 @@
 #include "PyDKInterpreter.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// PyDK
-// 파이썬 코어. 프로세스당 단 하나의 파이썬 객체가 있어야 한다.
-// 모듈 초기화 때문에 path 경로를 매개변수로 받는다.
-// 모든 인터프리터(PyDKInterpreter) 객체들이 이 객체(PyDK)를 공유한다.
+// PyDKPython
+// Python object. only one instance can be exist per process.
+// You have to provide python-stand library path dir with arguments when
+// create object.
+// All sub-interpreters shares this object.
 
 class PYDK_API PyDKPython : public PyDKInterpreter
 {
