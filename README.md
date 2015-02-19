@@ -2,6 +2,7 @@
 Game Library for C++ and Python (PyDK)  
 See demo: https://github.com/tiff2766/DKDemo  
 pre-built executable are also available to [download]( https://bitbucket.org/tiff2766/dkdemo/downloads/DKDemoApp_Win32_En.zip).
+(Win32 executable)
 
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
