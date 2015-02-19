@@ -824,7 +824,7 @@ size_t DKError::CopyStackFrames(StackFrame* s, size_t maxCount) const
 	return 0;
 }
 
-size_t DKError::RetraceStackFrames(size_t skip, size_t maxDepth)
+size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 {
 	if (stackFrames)
 		delete[] stackFrames;
