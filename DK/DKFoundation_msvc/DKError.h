@@ -63,7 +63,7 @@ namespace DKFoundation
 	class DKLIB_API DKError
 	{
 	public:
-		constexpr static int DefaultCallstackTraceDepth(void) {return 1024;}
+		static int DefaultCallstackTraceDepth(void) {return 1024;}
 
 		struct StackFrame
 		{

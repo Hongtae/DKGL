@@ -8,6 +8,7 @@
 #pragma once
 #include "../../DKFoundation.h"
 #include "../DKRect.h"
+#include "../DKVKey.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKWindowInterface
