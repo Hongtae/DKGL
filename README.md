@@ -10,18 +10,19 @@ This is low level game library written with C++.
 You can use Python-script to improve productivity.
 
 DK library has following contents with two frameworks layer.
-##### DKFoundation, `foundation classes, managing system tasks.`
+##### DKFoundation - `Foundation Classes, Managing System Tasks.`
 * C++ Metaprograms (Type Libraries, etc.)
 * Data Collections (Array, Map, Tuples, etc.)
 * Object Management (SmartPointers, WeakRef, Allocators, etc.)
 * Thread and Synchronize objects (Mutex, Condition, Atomics, etc.)
 * Thread Pool Interfaces
 * High Resolution Timer
-* RunLoop system (common type of Operations, Functors)
+* RunLoop System
+* Function Interface for Operations, Invocations, Functors
 * Data and Buffer objects
-* Rational for High-Precision Calculation.
+* Rational for High-Precision Calculation
 * Unicode String (UTF-8, UTF-16, UTF-32)
-* File, Directory and Stream (including Memory Mapping)
+* File, Directory and Stream (including File-Mapping)
 * Date Time class (ISO-8601 support)
 * Endianness Byte Order utilities
 * Logging Interface
@@ -30,7 +31,7 @@ DK library has following contents with two frameworks layer.
 * Hash Library (SHA1, SHA2, etc.)
 * Zip Archiver, Unarchiver
 
-##### DKFramework, `Game framework for Application`
+##### DKFramework - `Game Framework for Application`
 * Application Entry Point
 * Collision Detection Utilities
 * Convex Decomposition
@@ -38,7 +39,7 @@ DK library has following contents with two frameworks layer.
 * Dynamics Simulator with Physics
 * Node Based Scene Graph Management
 * Curve Interpolation (Spline, B-Spline, Bezier, etc.)
-* Data Marshaing with Common Interface
+* Data Marshalling
 * Animation (able to Retargeting, Blending)
 * Text Font (TTF, PS, etc.)
 * 3D Audio
@@ -47,7 +48,7 @@ DK library has following contents with two frameworks layer.
 * Resource Management
 * Material and Shader Management
 * Window, Screen Management
-* Voxel Interface
+* Voxel, Storage, Polygonizer Interfaces
 
 Each framework designed for modular, cross-platform.  
 You can use any classes without any dependencies.
