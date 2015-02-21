@@ -10,7 +10,7 @@ This is low level game library written with C++.
 You can use Python-script to improve productivity.
 
 DK library has following contents with two frameworks layer.
-* **DKFoundation**, foundation classes, managing system tasks
+* **DKFoundation**, `foundation classes, managing system tasks.`
   * C++ Metaprograms (Type Libraries, etc.)
   * Data Collections (Array, Map, Tuples, etc.)
   * Object Management (SmartPointers, WeakRef, Allocators, etc.)
@@ -29,7 +29,7 @@ DK library has following contents with two frameworks layer.
   * XMLParser (DOM, SAX)
   * Hash Library (SHA1, SHA2, etc.)
   * Zip Archiver, Unarchiver
-* **DKFramework**, game framework for Application
+* **DKFramework**, `Game framework for Application`
   * Application Entry Point
   * Collision Detection Utilities
   * Convex Decomposition
@@ -53,6 +53,7 @@ You can use any classes without any dependencies.
 You are also able to use single project for multiple-platforms without
 any modifictations that platform dependent.
 
+You can use DK with other UI Tools also. (MFC, Cocoa, wxWidgets, etc.)
 
 ### Key Features
 - 3D Audio
