@@ -15,9 +15,9 @@ DK library has following contents with two frameworks layer.
 * Data Collections (Array, Map, Tuples, etc.)
 * Object Management (SmartPointers, WeakRef, Allocators, etc.)
 * Thread and Synchronize objects (Mutex, Condition, Atomics, etc.)
-* Thread Pool Interfaces
+* Thread Pool for Asynchronous Operations
 * High Resolution Timer
-* RunLoop System
+* Run-Loop System
 * Function Interface for Operations, Invocations, Functors
 * Data and Buffer objects
 * Rational for High-Precision Calculation
@@ -36,7 +36,7 @@ DK library has following contents with two frameworks layer.
 * Collision Detection Utilities
 * Convex Decomposition
 * Physics Constraints
-* Dynamics Simulator with Physics
+* Dynamics Simulator
 * Node Based Scene Graph Management
 * Curve Interpolation (Spline, B-Spline, Bezier, etc.)
 * Data Marshalling
@@ -56,14 +56,6 @@ You are also able to use single project for multiple-platforms without
 any modifictations that platform dependent.
 
 You can use DK with other UI Tools also. (MFC, Cocoa, wxWidgets, etc.)
-
-### Key Features
-- 3D Audio
-- Game Physics
-- Data Marshaling
-- Animation Retarget, Blending
-- Modular Design
-- Voxel (restrictively)
 
 ### Running platforms.
 - Windows Vista or later.
