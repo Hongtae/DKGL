@@ -9,6 +9,50 @@ A Lightweighted cross-platform Game Library.
 This is low level game library written with C++.  
 You can use Python-script to improve productivity.
 
+DK library has following contents with two frameworks layer.
+* **DKFoundation**, foundation classes, managing system tasks
+  * C++ Metaprograms (Type Libraries, etc.)
+  * Data Collections (Array, Map, Tuples, etc.)
+  * Object Management (SmartPointers, WeakRef, Allocators, etc.)
+  * Thread and Synchronize objects (Mutex, Condition, Atomics, etc.)
+  * Thread Pool Interfaces
+  * High Resolution Timer
+  * RunLoop system (common type of Operations, Functors)
+  * Data and Buffer objects
+  * Rational for High-Precision Calculation.
+  * Unicode String (UTF-8, UTF-16, UTF-32)
+  * File, Directory and Stream (including Memory Mapping)
+  * Date Time class (ISO-8601 support)
+  * Endianness Byte Order utilities
+  * Logging Interface
+  * Error Handler (with Stack-Tracer)
+  * XMLParser (DOM, SAX)
+  * Hash Library (SHA1, SHA2, etc.)
+  * Zip Archiver, Unarchiver
+* **DKFramework**, game framework for Application
+  * Application Entry Point
+  * Collision Detection Utilities
+  * Convex Decomposition
+  * Physics Constraints
+  * Dynamics Simulator with Physics
+  * Node Based Scene Graph Management
+  * Spline
+  * Data Marshaing with Common Interface
+  * Animation (able to Retargeting, Blending)
+  * Text Font (TTF, PS, etc.)
+  * 3D Audio
+  * Mathematics (Matrices, Vectors, Quaternion, etc.)
+  * OpenGL Context Interface (OpenGL/OpenGL ES)
+  * Resource Management
+  * Material and Shader Management
+  * Window, Screen Management
+  * Voxel Interface
+
+Each framework designed for modular, cross-platform.  
+You can use any classes without any dependencies.
+You are also able to use single project for multiple-platforms without
+any modifictations that platform dependent.
+
 
 ### Key Features
 - 3D Audio
