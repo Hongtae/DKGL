@@ -1,8 +1,8 @@
 # Project DK, DKLib
 Game Library for C++ and Python (PyDK)  
 See demo: https://github.com/tiff2766/DKDemo  
-pre-built executable are also available to [download]( https://bitbucket.org/tiff2766/dkdemo/downloads/DKDemoApp_Win32_En.zip).
-(Win32 executable)
+Pre-built executable are also available to download: ([Windows]( https://bitbucket.org/tiff2766/dkdemo/downloads/DKDemoApp_Win32_En.zip),
+[Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/Demo_OSX.app.zip))
 
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
@@ -21,10 +21,10 @@ DK library has following contents with two frameworks layer.
 * Function Interface for Operations, Invocations, Functors
 * Data and Buffer objects
 * Rational for High-Precision Calculation
-* Unicode String (UTF-8, UTF-16, UTF-32)
+* Unicode String (UTF-8,16,32)
 * File, Directory and Stream (including File-Mapping)
 * Date Time class (ISO-8601 support)
-* Endianness Byte Order utilities
+* Endianness Byte Order Utilities
 * Logging Interface
 * Error Handler (with Stack-Tracer)
 * XMLParser (DOM, SAX)
