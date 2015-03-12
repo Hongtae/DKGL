@@ -527,7 +527,7 @@ void DKAudioPlayer::SetStreamFilter(StreamFilter* f)
 
 void DKAudioPlayer::SetBufferingTime(double t)
 {
-	bufferingTime = Max<double>(t, 0.05);
+	bufferingTime = Max(t, 0.05);
 }
 
 double DKAudioPlayer::BufferingTime(void) const

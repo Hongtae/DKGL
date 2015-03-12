@@ -278,7 +278,7 @@ DKAudioStream::Position DKAudioStreamWave::SeekRaw(Position pos)
 		if (context->formatExt.format.blockAlign > 0)
 			pos = pos - (pos % context->formatExt.format.blockAlign);
 
-		pos = context->stream->SetPos(static_cast<Position>(context->dataOffset) + Clamp<Position>(pos, 0, context->dataSize));
+		pos = context->stream->SetPos(static_cast<Position>(context->dataOffset) + Clamp(pos, 0, context->dataSize));
 		return Clamp<Position>(pos - context->dataOffset, 0, context->dataSize);
 	}
 	return 0;

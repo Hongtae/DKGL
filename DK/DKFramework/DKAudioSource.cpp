@@ -277,7 +277,7 @@ double DKAudioSource::TimePosition(void) const
 		alGetSourcei(sourceId, AL_BYTE_OFFSET, &bytesOffset);
 		// If last buffer is too small, playing over next buffer before unqueue.
 		// This can be time accuracy problem.
-		bytesOffset = Clamp<ALint>(bytesOffset, 0, (ALint)buffInfo.bytes);
+		bytesOffset = Clamp(bytesOffset, 0, (ALint)buffInfo.bytes);
 
 		double position = buffInfo.timeStamp + (static_cast<double>(bytesOffset) / static_cast<double>(buffInfo.bytesSecond));
 		return position;
@@ -334,7 +334,7 @@ double DKAudioSource::TimeOffset(void) const
 		alGetSourcei(sourceId, AL_BYTE_OFFSET, &bytesOffset);
 		// If last buffer is too small, playing over next buffer before unqueue.
 		// This can be time accuracy problem.
-		bytesOffset = Clamp<ALint>(bytesOffset, 0, (ALint)buffInfo.bytes);
+		bytesOffset = Clamp(bytesOffset, 0, (ALint)buffInfo.bytes);
 		
 		return static_cast<double>(bytesOffset) / static_cast<double>(buffInfo.bytesSecond);
 	}
@@ -386,7 +386,7 @@ DKAudioSource::AudioState DKAudioSource::State(void) const
 void DKAudioSource::SetPitch(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Max<float>(f, 0.0);
+	f = Max(f, 0.0);
 	alSourcef(this->sourceId, AL_PITCH, f);
 }
 
@@ -401,7 +401,7 @@ float DKAudioSource::Pitch(void) const
 void DKAudioSource::SetGain(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Max<float>(f, 0.0);
+	f = Max(f, 0.0);
 	alSourcef(sourceId, AL_GAIN, f);
 }
 
@@ -416,7 +416,7 @@ float DKAudioSource::Gain(void) const
 void DKAudioSource::SetMinGain(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Clamp<float>(f, 0.0, 1.0);
+	f = Clamp(f, 0.0, 1.0);
 	alSourcef(sourceId, AL_MIN_GAIN, f);
 }
 
@@ -431,7 +431,7 @@ float DKAudioSource::MinGain(void) const
 void DKAudioSource::SetMaxGain(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Clamp<float>(f, 0.0, 1.0);
+	f = Clamp(f, 0.0, 1.0);
 	alSourcef(sourceId, AL_MAX_GAIN, f);
 }
 
@@ -446,7 +446,7 @@ float DKAudioSource::MaxGain(void) const
 void DKAudioSource::SetMaxDistance(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Max<float>(f, 0.0);
+	f = Max(f, 0.0);
 	alSourcef(sourceId, AL_MAX_DISTANCE, f);
 }
 
@@ -461,7 +461,7 @@ float DKAudioSource::MaxDistance(void) const
 void DKAudioSource::SetRolloffFactor(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Max<float>(f, 0.0);
+	f = Max(f, 0.0);
 	alSourcef(this->sourceId, AL_ROLLOFF_FACTOR, f);
 }
 
@@ -476,7 +476,7 @@ float DKAudioSource::RolloffFactor(void) const
 void DKAudioSource::SetConeOuterGain(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Clamp<float>(f, 0.0, 1.0);
+	f = Clamp(f, 0.0, 1.0);
 	alSourcef(this->sourceId, AL_CONE_OUTER_GAIN, f);
 }
 
@@ -491,7 +491,7 @@ float DKAudioSource::ConeOuterGain(void) const
 void DKAudioSource::SetConeInnerAngle(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Clamp<float>(f, 0.0, 360.0);
+	f = Clamp(f, 0.0, 360.0);
 	alSourcef(this->sourceId, AL_CONE_INNER_ANGLE, f);
 }
 
@@ -506,7 +506,7 @@ float DKAudioSource::ConeInnerAngle(void) const
 void DKAudioSource::SetConeOuterAngle(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Clamp<float>(f, 0.0, 360.0);
+	f = Clamp(f, 0.0, 360.0);
 	alSourcef(this->sourceId, AL_CONE_OUTER_ANGLE, f);
 }
 
@@ -521,7 +521,7 @@ float DKAudioSource::ConeOuterAngle(void) const
 void DKAudioSource::SetReferenceDistance(float f)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
-	f = Max<float>(f, 0.0);
+	f = Max(f, 0.0);
 	alSourcef(this->sourceId, AL_REFERENCE_DISTANCE, f);
 }
 

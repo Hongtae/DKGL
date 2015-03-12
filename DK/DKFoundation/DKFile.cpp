@@ -526,7 +526,7 @@ size_t DKFile::Write(const void* p, size_t s)
 	size_t totalWritten = 0;
 	while (s > 0)
 	{
-		int toWrite = Min<size_t>(s, platformMaxSize);
+		int toWrite = Min(s, platformMaxSize);
 #ifdef _WIN32
 		DWORD numWrote = 0;
 		if (::WriteFile((HANDLE)this->file, cp + totalWritten, toWrite, &numWrote, 0) == 0)

@@ -681,7 +681,7 @@ size_t DKBuffer::CopyContent(void* p, size_t offset, size_t length) const
 	size_t ret = 0;
 	if (p && offset < contentLength)
 	{
-		length = Min<size_t>(length, contentLength - offset);
+		length = Min(length, contentLength - offset);
 		memcpy(p, &ptr[offset], length);
 		ret = length;
 	}

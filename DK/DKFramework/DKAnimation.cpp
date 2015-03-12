@@ -452,9 +452,9 @@ bool DKAnimation::ResampleNode(const Node& source, unsigned int frames, Keyframe
 	// using epsilon a bit greater than FLT_EPSILON.
 	// if epsilon is bigger, will lost detail actions. (lost frames)
 	// if epsilon is smaller, size will bigger. (too many frames)
-	float positionThreshold = Max<float>(threshold, 0.000001f);	// accuracy epsilon for position
-	float rotationThreshold = Max<float>(threshold, 0.000001f); // accuracy epsilon for rotate (-1.0 ~ 1.0)
-	float scaleThreshold = Max<float>(threshold, 0.000001f); // accuracy epsilon for scale
+	float positionThreshold = Max(threshold, 0.000001f);	// accuracy epsilon for position
+	float rotationThreshold = Max(threshold, 0.000001f);	// accuracy epsilon for rotate (-1.0 ~ 1.0)
+	float scaleThreshold = Max(threshold, 0.000001f);		// accuracy epsilon for scale
 
 	output.name = source.name;
 	output.translationKeys.Clear();

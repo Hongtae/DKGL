@@ -481,7 +481,7 @@ void DKVoxel32SparseVolume::UnloadOldBlocks(size_t num)
 					blocks.Insert(&b);
 			}
 
-			size_t n = Min<size_t>(num, blocks.Count());
+			size_t n = Min(num, blocks.Count());
 			for (size_t i = 0; i < n; ++i)
 			{
 				VolumetricBlock* p = blocks.Value(i);

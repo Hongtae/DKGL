@@ -96,7 +96,7 @@ DKOperationQueue::~DKOperationQueue(void)
 void DKOperationQueue::SetMaxConcurrentOperations(size_t maxConcurrent)
 {
 	threadCond.Lock();
-	maxConcurrentOperations = Max<size_t>(maxConcurrent, 1);
+	maxConcurrentOperations = Max(maxConcurrent, 1);
 	threadCond.Unlock();
 
 	UpdateThreadPool();

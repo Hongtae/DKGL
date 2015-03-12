@@ -809,7 +809,7 @@ size_t DKError::CopyStackFrames(StackFrame* s, size_t maxCount) const
 {
 	if (s)
 	{
-		size_t c = Min<size_t>(maxCount, numFrames);
+		size_t c = Min(maxCount, numFrames);
 		try
 		{
 			for (size_t i = 0; i < c; ++i)
@@ -836,7 +836,7 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 	stackFrames = NULL;
 	threadId = reinterpret_cast<void*>(DKThread::CurrentThreadId());
 
-	maxDepth = Clamp<int>(maxDepth, 0, 1024);
+	maxDepth = Clamp(maxDepth, 0, 1024);
 	if (maxDepth == 0 || skip > maxDepth)
 		return 0;
 	skip = Max<int>(0, skip);

@@ -849,10 +849,10 @@ DKObject<DKSerializer> DKMaterial::Serializer(void)
 					bs.blendFuncRGB = DKBlendState::StringToFunc(pFuncRGB->value.String());
 					bs.blendFuncAlpha = DKBlendState::StringToFunc(pFuncAlpha->value.String());
 					bs.constantColor = DKColor(
-						Clamp<float>(pConstColor->value.Vector4().x, 0.0f, 1.0f),
-						Clamp<float>(pConstColor->value.Vector4().y, 0.0f, 1.0f),
-						Clamp<float>(pConstColor->value.Vector4().z, 0.0f, 1.0f),
-						Clamp<float>(pConstColor->value.Vector4().w, 0.0f, 1.0f)).RGBA32Value();
+						Clamp(pConstColor->value.Vector4().x, 0.0f, 1.0f),
+						Clamp(pConstColor->value.Vector4().y, 0.0f, 1.0f),
+						Clamp(pConstColor->value.Vector4().z, 0.0f, 1.0f),
+						Clamp(pConstColor->value.Vector4().w, 0.0f, 1.0f)).RGBA32Value();
 
 					return true;
 				}

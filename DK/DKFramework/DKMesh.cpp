@@ -156,7 +156,7 @@ DKSphere DKMesh::ScaledBoundingSphere(void) const
 {
 	const DKVector3& center = this->boundingSphere.center;
 	float radius = this->boundingSphere.radius;
-	float scaleMax = Max<float>(Max<float>(this->scale.x, this->scale.y), this->scale.z);
+	float scaleMax = Max(this->scale.x, this->scale.y, this->scale.z);
 	return DKSphere(center, radius * scaleMax);
 }
 
@@ -237,7 +237,7 @@ bool DKMesh::Bind(DKSceneState& ss, RenderInfo* info, const DKBlendState* blendi
 						DKLOG_DEBUG("BindStream(%ls) failed\n", (const wchar_t*)vs.name);
 						return false;
 					}
-					minElements = Min<int>(minElements, verts);
+					minElements = Min(minElements, verts);
 				}
 				DKASSERT_DEBUG(minElements > 0);
 

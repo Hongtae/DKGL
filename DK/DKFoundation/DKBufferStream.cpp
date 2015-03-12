@@ -36,7 +36,7 @@ DKStream::Position DKBufferStream::SetPos(Position p)
 	if (this->data)
 	{
 		size_t contentSize = this->data->Length();
-		this->offset = Clamp<Position>(p, 0, contentSize);
+		this->offset = Clamp(p, 0, contentSize);
 	}
 	else
 	{
@@ -92,7 +92,7 @@ size_t DKBufferStream::Read(void* p, size_t s)
 		}
 		else
 		{
-			bytesRead = Min<size_t>(s, contentSize - this->offset);
+			bytesRead = Min(s, contentSize - this->offset);
 			memcpy(p, &ptr[this->offset], bytesRead);
 			this->offset = this->offset + bytesRead;
 		}

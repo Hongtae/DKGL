@@ -490,8 +490,8 @@ void DKRenderer::SetContentBounds(const DKRect& rc)
 	DKASSERT_DEBUG(rc.size.width > 0.0 && rc.size.height > 0.0);
 
 	this->contentBounds.origin = rc.origin;
-	this->contentBounds.size.width = Max<float>(rc.size.width, minimumScaleFactor);
-	this->contentBounds.size.height = Max<float>(rc.size.height, minimumScaleFactor);
+	this->contentBounds.size.width = Max(rc.size.width, minimumScaleFactor);
+	this->contentBounds.size.height = Max(rc.size.height, minimumScaleFactor);
 
 	this->UpdateTransform();
 }

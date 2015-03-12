@@ -307,7 +307,7 @@ size_t DKRenderTarget::MaxColorTextures(void)
 {
 	size_t maxTextures = Private::GetMaxColorAttachments();
 	size_t maxDrawBuff = Private::GetMaxDrawBuffers();
-	return Min<size_t>(maxTextures, maxDrawBuff);
+	return Min(maxTextures, maxDrawBuff);
 }
 
 bool DKRenderTarget::SetDepthTexture(DKTexture2D* tex)

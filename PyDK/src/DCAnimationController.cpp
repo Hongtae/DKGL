@@ -77,7 +77,7 @@ public:
 			}
 			Py_XDECREF(tmp);
 		});
-		return Max<float>(result, 0.0f);
+		return Max(result, 0.0f);
 	}
 	void Play(void) override
 	{

@@ -354,10 +354,10 @@ void DKRenderState::DisableVertexAttribArray(unsigned int index)
 
 void DKRenderState::ClearColor(float r, float g, float b, float a)
 {
-	r = Clamp<float>(r, 0.0, 1.0);
-	g = Clamp<float>(g, 0.0, 1.0);
-	b = Clamp<float>(b, 0.0, 1.0);
-	a = Clamp<float>(a, 0.0, 1.0);
+	r = Clamp(r, 0.0, 1.0);
+	g = Clamp(g, 0.0, 1.0);
+	b = Clamp(b, 0.0, 1.0);
+	a = Clamp(a, 0.0, 1.0);
 
 	if (clearColor[0] == r && clearColor[1] == g && clearColor[2] == b && clearColor[3] == a)
 		return;
@@ -371,7 +371,7 @@ void DKRenderState::ClearColor(float r, float g, float b, float a)
 
 void DKRenderState::ClearDepth(float d)
 {
-	d = Clamp<float>(d, 0.0, 1.0);
+	d = Clamp(d, 0.0, 1.0);
 
 	if (clearDepth == d)
 		return;
@@ -418,10 +418,10 @@ void DKRenderState::BlendFunc(unsigned int srcRGB, unsigned int srcAlpha, unsign
 
 void DKRenderState::BlendColor(float r, float g, float b, float a)
 {
-	r = Clamp<float>(r, 0.0, 1.0);
-	g = Clamp<float>(g, 0.0, 1.0);
-	b = Clamp<float>(b, 0.0, 1.0);
-	a = Clamp<float>(a, 0.0, 1.0);
+	r = Clamp(r, 0.0, 1.0);
+	g = Clamp(g, 0.0, 1.0);
+	b = Clamp(b, 0.0, 1.0);
+	a = Clamp(a, 0.0, 1.0);
 
 	if (blendColor[0] == r && blendColor[1] == g && blendColor[2] == b && blendColor[3] == a)
 		return;
@@ -516,8 +516,8 @@ void DKRenderState::Viewport(int x, int y, int w, int h)
 
 void DKRenderState::DepthRange(float n, float f)
 {
-	n = Clamp<float>(n, 0.0, 1.0);
-	f = Clamp<float>(f, 0.0, 1.0);
+	n = Clamp(n, 0.0, 1.0);
+	f = Clamp(f, 0.0, 1.0);
 
 	if (depthRangeNear == n && depthRangeFar == f)
 		return;

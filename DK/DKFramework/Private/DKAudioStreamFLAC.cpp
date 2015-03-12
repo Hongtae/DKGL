@@ -360,7 +360,7 @@ DKAudioStream::Position DKAudioStreamFLAC::SeekRaw(Position pos)
 	if (context->decoder)
 	{
 		pos = (pos / context->channels) / (context->bps / 8);		// raw to pcm(sample)
-		pos = Clamp<Position>(pos, 0, context->totalSamples);
+		pos = Clamp(pos, 0, context->totalSamples);
 		if (FLAC__stream_decoder_seek_absolute(context->decoder, pos))
 		{
 			FLAC__stream_decoder_process_single(context->decoder);
@@ -381,7 +381,7 @@ DKAudioStream::Position DKAudioStreamFLAC::SeekPcm(Position pos)
 {
 	if (context->decoder)
 	{
-		pos = Clamp<Position>(pos, 0, context->totalSamples);
+		pos = Clamp(pos, 0, context->totalSamples);
 		if (FLAC__stream_decoder_seek_absolute(context->decoder, pos))
 		{
 			FLAC__stream_decoder_process_single(context->decoder);
@@ -403,7 +403,7 @@ double DKAudioStreamFLAC::SeekTime(double s)
 	if (context->decoder)
 	{
 		FLAC__uint64 pos = s * context->sampleRate;
-		pos = Clamp<FLAC__uint64>(pos, 0, context->totalSamples);
+		pos = Clamp(pos, 0, context->totalSamples);
 		if (FLAC__stream_decoder_seek_absolute(context->decoder, pos))
 		{
 			FLAC__stream_decoder_process_single(context->decoder);

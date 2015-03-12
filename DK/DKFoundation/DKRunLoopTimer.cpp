@@ -85,7 +85,7 @@ DKObject<DKRunLoopTimer> DKRunLoopTimer::Create(const DKOperation* operation, do
 	};
 
 
-	interval = Max<double>(interval, 0.01);
+	interval = Max(interval, 0.01);
 
 	DKObject<RunLoopInvoker> invoker = DKObject<RunLoopInvoker>::New();
 	invoker->operation = const_cast<DKOperation*>(operation);

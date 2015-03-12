@@ -36,7 +36,7 @@ DKAudioListener::~DKAudioListener(void)
 
 void DKAudioListener::SetGain(float f)
 {
-	gain = Max<float>(f, 0.0);
+	gain = Max(f, 0.0);
 	alListenerf(AL_GAIN, gain);
 }
 

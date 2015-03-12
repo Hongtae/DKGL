@@ -208,8 +208,8 @@ namespace DKFramework
 					ti.imageWidth = image.GetWidth();
 					ti.imageHeight = image.GetHeight();
 
-					int width = Min<int>(ti.imageWidth, GetMaxTextureSize());
-					int height = Min<int>(ti.imageHeight, GetMaxTextureSize());
+					int width = Min(ti.imageWidth, GetMaxTextureSize());
+					int height = Min(ti.imageHeight, GetMaxTextureSize());
 					return CreateTexture(&image, width, height, ti);
 				}
 				return false;
@@ -226,8 +226,8 @@ namespace DKFramework
 					ti.imageWidth = image.GetWidth();
 					ti.imageHeight = image.GetHeight();
 
-					int width = Min<int>(ti.imageWidth, GetMaxTextureSize());
-					int height = Min<int>(ti.imageHeight, GetMaxTextureSize());
+					int width = Min(ti.imageWidth, GetMaxTextureSize());
+					int height = Min(ti.imageHeight, GetMaxTextureSize());
 					return CreateTexture(&image, width, height, ti);
 				}
 				return false;

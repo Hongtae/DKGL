@@ -185,7 +185,7 @@ void DKCondition::Wait(void) const
 bool DKCondition::WaitTimeout(double t) const
 {
 	DKASSERT_DEBUG(impl != NULL);
-	return reinterpret_cast<ConditionImpl*>(impl)->WaitTimeout(Max<double>(t, 0.0));
+	return reinterpret_cast<ConditionImpl*>(impl)->WaitTimeout(Max(t, 0.0));
 }
 
 void DKCondition::Signal(void) const

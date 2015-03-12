@@ -65,7 +65,7 @@ static PyObject* DCGeometryBufferUpdateSubContent(DCGeometryBuffer* self, PyObje
 	if (length < 0)
 		length = source.len;
 	else
-		length = Min<Py_ssize_t>(length, source.len);
+		length = Min(length, source.len);
 
 	bool result = false;
 	Py_BEGIN_ALLOW_THREADS

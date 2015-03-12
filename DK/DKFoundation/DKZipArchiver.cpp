@@ -101,7 +101,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 		}
 
 		int zip64 = (streamLength >= 0xffffffff) ? 1 : 0;
-		compressionLevel = Clamp<int>(compressionLevel, 0, 9);
+		compressionLevel = Clamp(compressionLevel, 0, 9);
 
 		zip_fileinfo	zinfo;
 		memset(&zinfo, 0, sizeof(zip_fileinfo));
@@ -148,7 +148,7 @@ bool DKZipArchiver::Write(const DKString& file, const void* data, size_t len, in
 			crcForCrypting = crc32(crcForCrypting, (const Bytef *)data, len);
 
 		int zip64 = (len >= 0xffffffff) ? 1 : 0;
-		compressionLevel = Clamp<int>(compressionLevel, 0, 9);
+		compressionLevel = Clamp(compressionLevel, 0, 9);
 
 		zip_fileinfo	zinfo;
 		memset(&zinfo, 0, sizeof(zip_fileinfo));
@@ -165,7 +165,7 @@ bool DKZipArchiver::Write(const DKString& file, const void* data, size_t len, in
 			const char* cdata = reinterpret_cast<const char*>(data);
 			while (len > 0)
 			{
-				int toWrite = Min<size_t>(len, 0x4000);
+				int toWrite = Min(len, 0x4000);
 				if (zipWriteInFileInZip(zipHandle, cdata + totalWritten, toWrite) < 0)
 				{
 					DKLog("[%s] zipWriteInFileInZip error!\n", DKLIB_FUNCTION_NAME); 

@@ -534,8 +534,8 @@ void DKFrame::SetContentScale(float w, float h)
 {
 	DKASSERT_DEBUG(w > 0.0f && h > 0.0f);
 	
-	w = Max<float>(w, DKRenderer::minimumScaleFactor);
-	h = Max<float>(h, DKRenderer::minimumScaleFactor);
+	w = Max(w, DKRenderer::minimumScaleFactor);
+	h = Max(h, DKRenderer::minimumScaleFactor);
 	
 	if (w == contentScale.width && h == contentScale.height)
 	{
