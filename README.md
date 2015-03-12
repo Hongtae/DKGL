@@ -116,14 +116,7 @@ Extract file into your Python site-packages dir.
 
 ## Author
 Hongtae Kim, (tiff2766@gmail.com)  
-LinkedIn: [www.linkedin.com/pub/hongtae-kim/b2/a2/ab3](http://www.linkedin.com/pub/hongtae-kim/b2/a2/ab3)
 
 
 ## Liense
 [MIT License](http://opensource.org/licenses/MIT)
-
-
-## Games using DKLib
-iOS games using DKLib on AppStore:
-- CookieCoo Dancing Star [iPhone](https://itunes.apple.com/us/app/cookiecoo-dancing-star/id489072048?mt=8&uo=4), [ipad](https://itunes.apple.com/us/app/cookiecoo-dancingstar-hd/id495611023?mt=8&uo=4)
-- [MakeOne](https://itunes.apple.com/us/app/make-one!!/id906261537?mt=8&uo=4)
