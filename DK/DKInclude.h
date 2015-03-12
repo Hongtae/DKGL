@@ -169,6 +169,10 @@ namespace DKFoundation
 	template <typename T> using _UnCV = typename std::remove_cv<T>::type;
 	template <typename T> using _UnRefCV = _UnCV<_UnRef<T>>;
 
+	template <typename T> auto Max(T&& lhs, T&& rhs)->T&&
+	{
+		return std::forward<T>((lhs > rhs) ? lhs : rhs);
+	}
 	template <typename T, typename U> auto Max(T&& lhs, U&& rhs)->_UnRefCV<T>
 	{
 		return static_cast<_UnRef<T>>(((lhs > rhs) ? lhs : rhs));
@@ -176,6 +180,10 @@ namespace DKFoundation
 	template <typename T, typename U, typename... V> auto Max(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
 	{
 		return Max(std::forward<T>(v1), Max(std::forward<U>(v2), std::forward<V>(rest)...));
+	}
+	template <typename T> auto Min(T&& lhs, T&& rhs)->T&&
+	{
+		return std::forward<T>((lhs < rhs) ? lhs : rhs);
 	}
 	template <typename T, typename U> auto Min(T&& lhs, U&& rhs)->_UnRefCV<T>
 	{
@@ -185,9 +193,9 @@ namespace DKFoundation
 	{
 		return Min<T>(std::forward<T>(v1), Min(std::forward<U>(v2), std::forward<V>(rest)...));
 	}
-	template <typename T, typename _MIN, typename _MAX> auto Clamp(T&& v, _MIN&& _min, _MAX&& _max)->_UnRefCV<T>
+	template <typename T, typename MinT, typename MaxT> auto Clamp(T&& v, MinT&& _min, MaxT&& _max)->_UnRefCV<T>
 	{
-		return Min(Max(std::forward<T>(v),std::forward<_MIN>(_min)), std::forward<_MAX>(_max));
+		return Min(Max(std::forward<T>(v), std::forward<MinT>(_min)), std::forward<MaxT>(_max));
 	}
 
 	DKLIB_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
