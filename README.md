@@ -1,8 +1,7 @@
 # Project DK, DKLib
-Game Library for C++ and Python (PyDK)  
-See demo: https://github.com/tiff2766/DKDemo  
-Pre-built executable are also available to download: ([Windows]( https://bitbucket.org/tiff2766/dkdemo/downloads/DKDemoApp_Win32_En.zip),
-[Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/Demo_OSX.app.zip))
+Game Library for C++ and Python  
+This project contains two modules, DK and PyDK.  
+DK is core library for C++ and PyDK is Python bindings for DK.
 
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
@@ -60,8 +59,8 @@ You can use DK with other UI Tools also. (MFC, Cocoa, wxWidgets, etc.)
 ### Running platforms.
 - Windows Vista or later.
 - Mac OS X 10.9 or later.
-- iOS 3.3 or later.
-- ~~Android 2.3 or later~~ (Not yet, I'm working)
+- iOS 7.0 or later. (for OpenGL ES 3.0)
+- ~~Android 4.3 or later~~ (Not yet, I'm working)
     - JNI birdge required (I'll merge project as soon as possible.)
 
 For other platforms including linux or android, You can implement
