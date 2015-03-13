@@ -270,7 +270,7 @@ DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation*
 		InternalCommandTick cmd;
 		cmd.operation = const_cast<DKOperation*>(operation);
 		cmd.result = DKOBJECT_NEW RunLoopResultCallback();
-		cmd.fire = DKTimer::SystemTick() + static_cast<DKTimer::Tick>(DKTimer::SystemTickFrequency() * Max<double>(delay, 0.0));
+		cmd.fire = DKTimer::SystemTick() + static_cast<DKTimer::Tick>(DKTimer::SystemTickFrequency() * Max(delay, 0.0));
 		InternalPostCommand(cmd);
 
 		return cmd.result;
@@ -369,7 +369,7 @@ bool DKRunLoop::GetNextLoopIntervalNL(double* d) const
 		double delay = 0;
 
 		if (numTickCmd > 0 && numTimeCmd > 0)
-			delay = Min<double>(tickDelay, timeDelay);
+			delay = Min(tickDelay, timeDelay);
 		else if (numTickCmd > 0)
 			delay = tickDelay;
 		else
@@ -388,7 +388,7 @@ void DKRunLoop::WaitNextLoop(void)
 	double d = 0.0;
 	if (GetNextLoopIntervalNL(&d))
 	{
-		d = Max<double>(d, 0.0);
+		d = Max(d, 0.0);
 		if (d > 0.0)
 			this->commandQueueCond.WaitTimeout(d);
 	}
@@ -407,7 +407,7 @@ bool DKRunLoop::WaitNextLoopTimeout(double t)
 		double d = 0.0;
 		if (GetNextLoopIntervalNL(&d))
 		{
-			double delay = Clamp<double>(d, 0.0, t);
+			double delay = Clamp(d, 0.0, t);
 			if (delay > 0.0)
 			{
 				this->commandQueueCond.WaitTimeout(delay);

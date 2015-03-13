@@ -216,7 +216,7 @@ void DKThread::Yield(void)
 
 void DKThread::Sleep(double d)
 {
-	d = Max<double>(d, 0.0);
+	d = Max(d, 0.0);
 
 #ifdef _WIN32
 	DWORD dwTime = static_cast<DWORD>(d * 1000.0f);

@@ -138,7 +138,7 @@ static PyObject* DCStreamWrite(DCStream* self, PyObject* args)
 	size_t written = 0;
 	size_t len = buffer.len;
 	if (length >= 0)
-		len = Min<size_t>(buffer.len, length);
+		len = Min(buffer.len, length);
 
 	if (len > 0)
 	{

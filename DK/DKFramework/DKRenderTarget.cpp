@@ -227,8 +227,8 @@ DKSize DKRenderTarget::Resolution(void) const
 	if (this->proxyQuery)
 	{
 		TargetQuery q = this->proxyQuery->Invoke();
-		int w = Max<int>(q.width, 1);
-		int h = Max<int>(q.height, 1);
+		int w = Max(q.width, 1);
+		int h = Max(q.height, 1);
 		return DKSize(w, h);
 	}
 	if (this->colorTextures.Count() > 0)

@@ -677,7 +677,7 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					DKSize s = cb.contentMinSize->Invoke(ownerWindow);
 					LONG w = floor(s.width + 0.5f);
 					LONG h = floor(s.height + 0.5f);
-					RECT rc = { 0, 0, Max<LONG>(w, 0), Max<LONG>(h, 0) };
+					RECT rc = { 0, 0, Max(w, 0), Max(h, 0) };
 
 					if (::AdjustWindowRectEx(&rc, style, menu, styleEx))
 					{
@@ -691,7 +691,7 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					DKSize s = cb.contentMaxSize->Invoke(ownerWindow);
 					LONG w = floor(s.width + 0.5f);
 					LONG h = floor(s.height + 0.5f);
-					RECT rc = { 0, 0, Max<LONG>(w, 0), Max<LONG>(h, 0) };
+					RECT rc = { 0, 0, Max(w, 0), Max(h, 0) };
 
 					if (::AdjustWindowRectEx(&rc, style, menu, styleEx))
 					{

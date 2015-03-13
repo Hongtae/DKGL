@@ -142,7 +142,7 @@ namespace DKFoundation
 				size_t totalRead = 0;
 				while (s > 0)
 				{
-					int toRead = Min<size_t>(s, platformMaxSize);
+					int toRead = Min(s, platformMaxSize);
 					int numRead = unzReadCurrentFile(handle, cp + totalRead, toRead);
 					if (numRead <= 0)
 						break;

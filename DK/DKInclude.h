@@ -164,11 +164,25 @@
 #include <type_traits>
 namespace DKFoundation
 {
-	// Min, Max, Clamp
 	template <typename T> using _UnRef = typename std::remove_reference<T>::type;
 	template <typename T> using _UnCV = typename std::remove_cv<T>::type;
 	template <typename T> using _UnRefCV = _UnCV<_UnRef<T>>;
 
+	// Min
+	template <typename T> auto Min(T&& lhs, T&& rhs)->T&&
+	{
+		return std::forward<T>((lhs < rhs) ? lhs : rhs);
+	}
+	template <typename T, typename U> auto Min(T&& lhs, U&& rhs)->_UnRefCV<T>
+	{
+		return static_cast<_UnRef<T>>((lhs < rhs) ? lhs : rhs);
+	}
+	template <typename T, typename U, typename... V> auto Min(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
+	{
+		return Min<T>(std::forward<T>(v1), Min(std::forward<U>(v2), std::forward<V>(rest)...));
+	}
+
+	// Max
 	template <typename T> auto Max(T&& lhs, T&& rhs)->T&&
 	{
 		return std::forward<T>((lhs > rhs) ? lhs : rhs);
@@ -181,17 +195,11 @@ namespace DKFoundation
 	{
 		return Max(std::forward<T>(v1), Max(std::forward<U>(v2), std::forward<V>(rest)...));
 	}
-	template <typename T> auto Min(T&& lhs, T&& rhs)->T&&
+
+	// Clamp
+	template <typename T> auto Clamp(T&& v, T&& _min, T&& _max)->T&&
 	{
-		return std::forward<T>((lhs < rhs) ? lhs : rhs);
-	}
-	template <typename T, typename U> auto Min(T&& lhs, U&& rhs)->_UnRefCV<T>
-	{
-		return static_cast<_UnRef<T>>((lhs < rhs) ? lhs : rhs);
-	}
-	template <typename T, typename U, typename... V> auto Min(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
-	{
-		return Min<T>(std::forward<T>(v1), Min(std::forward<U>(v2), std::forward<V>(rest)...));
+		return Min(Max(std::forward<T>(v), std::forward<T>(_min)), std::forward<T>(_max));
 	}
 	template <typename T, typename MinT, typename MaxT> auto Clamp(T&& v, MinT&& _min, MaxT&& _max)->_UnRefCV<T>
 	{

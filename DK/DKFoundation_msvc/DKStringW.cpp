@@ -654,7 +654,7 @@ DKStringW& DKStringW::TrimWhitespaces(void)
 
 DKStringW& DKStringW::RemoveWhitespaces(long begin, long count)
 {
-	begin = Max<long>(begin, 0);
+	begin = Max(begin, 0);
 
 	size_t length = Length();
 

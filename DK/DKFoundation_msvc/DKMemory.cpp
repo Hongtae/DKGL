@@ -297,7 +297,7 @@ namespace DKFoundation
 
 			if (newPtr)
 			{
-				size_t copyLength = Min<size_t>(s, sizeOld);
+				size_t copyLength = Min(s, sizeOld);
 				::memcpy(newPtr, p, copyLength);
 				MemFree(p);
 				return newPtr;
@@ -1218,7 +1218,7 @@ namespace DKFoundation
 			size_t pageSize = DKMemoryPageSize();
 			DKASSERT_DEBUG(pageSize != 0);
 
-			s = Max<size_t>(s, pageSize);
+			s = Max(s, pageSize);
 
 			if (s % pageSize)
 				s += pageSize - (s % pageSize);
@@ -1269,7 +1269,7 @@ namespace DKFoundation
 			size_t pageSize = DKMemoryPageSize();
 			DKASSERT_DEBUG(pageSize != 0);
 
-			s = Max<size_t>(s, pageSize);
+			s = Max(s, pageSize);
 
 			if (s % pageSize)
 				s += pageSize - (s % pageSize);

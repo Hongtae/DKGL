@@ -74,8 +74,8 @@ DKDateTime::DKDateTime(double d)
 DKDateTime::DKDateTime(long long s, int us)
 	: seconds(0), microseconds(0)
 {
-	seconds = Max<long long>(s, 0);
-	microseconds = Clamp<int>(us, 0, 999999);
+	seconds = Max(s, 0);
+	microseconds = Clamp(us, 0, 999999);
 }
 
 DKDateTime::DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, bool utc)
@@ -442,7 +442,7 @@ DKString DKDateTime::FormatISO8601(bool utc) const
 		strftime(buff, 1024, "%Y-%m-%dT%H:%M:%S", &date);
 
 		if (this->microseconds > 0)
-			ret = DKString::Format("%s.%06uZ", buff, Clamp<unsigned int>(this->microseconds, 0, 999999));
+			ret = DKString::Format("%s.%06uZ", buff, Clamp((unsigned int)this->microseconds, 0, 999999));
 		else
 			ret = DKString::Format("%sZ", buff);
 	}
@@ -458,7 +458,7 @@ DKString DKDateTime::FormatISO8601(bool utc) const
 		strftime(buff, 1024, "%Y-%m-%dT%H:%M:%S", &date);
 
 		if (this->microseconds > 0)
-			ret = DKString::Format("%s.%06u", buff, Clamp<unsigned int>(this->microseconds, 0, 999999));
+			ret = DKString::Format("%s.%06u", buff, Clamp((unsigned int)this->microseconds, 0, 999999));
 		else
 			ret.SetValue(buff);
 
@@ -479,11 +479,11 @@ bool DKDateTime::GetDateTime(DKDateTime& dtOut, int year, int month, int day, in
 	struct tm t;
 	memset(&t, 0, sizeof(tm));
 	t.tm_year = year - 1900;
-	t.tm_mon = Clamp<int>(month, 1, 12) - 1;
-	t.tm_mday = Clamp<int>(day, 1, 31);
-	t.tm_hour = Clamp<int>(hour, 0, 23);
-	t.tm_min = Clamp<int>(min, 0, 59);
-	t.tm_sec = Clamp<int>(sec, 0, 59);
+	t.tm_mon = Clamp(month, 1, 12) - 1;
+	t.tm_mday = Clamp(day, 1, 31);
+	t.tm_hour = Clamp(hour, 0, 23);
+	t.tm_min = Clamp(min, 0, 59);
+	t.tm_sec = Clamp(sec, 0, 59);
 
 	time_t seconds = 0;
 	if (utc)
@@ -502,7 +502,7 @@ bool DKDateTime::GetDateTime(DKDateTime& dtOut, int year, int month, int day, in
 	if (seconds >= 0)
 	{
 		dtOut.seconds = seconds;
-		dtOut.microseconds = Clamp<int>(msec, 0, 999999);
+		dtOut.microseconds = Clamp(msec, 0, 999999);
 		return true;
 	}
 	return false;
@@ -524,10 +524,10 @@ bool DKDateTime::GetDateTime(DKDateTime& dtOut, int year, int dayOfYear, int hou
 	struct tm t;
 	memset(&t, 0, sizeof(tm));
 	t.tm_year = year - 1900;
-	t.tm_yday = Clamp<int>(dayOfYear, 0, 365);
-	t.tm_hour = Clamp<int>(hour, 0, 23);
-	t.tm_min = Clamp<int>(min, 0, 59);
-	t.tm_sec = Clamp<int>(sec, 0, 59);
+	t.tm_yday = Clamp(dayOfYear, 0, 365);
+	t.tm_hour = Clamp(hour, 0, 23);
+	t.tm_min = Clamp(min, 0, 59);
+	t.tm_sec = Clamp(sec, 0, 59);
 	
 	time_t seconds = 0;
 	if (utc)
@@ -546,7 +546,7 @@ bool DKDateTime::GetDateTime(DKDateTime& dtOut, int year, int dayOfYear, int hou
 	if (seconds >= 0)
 	{
 		dtOut.seconds = seconds;
-		dtOut.microseconds = Clamp<int>(msec, 0, 999999);
+		dtOut.microseconds = Clamp(msec, 0, 999999);
 		return true;
 	}
 	return false;
