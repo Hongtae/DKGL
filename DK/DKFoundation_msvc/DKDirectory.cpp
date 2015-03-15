@@ -39,7 +39,8 @@ DKObject<DKDirectory> DKDirectory::OpenDir(const DKString& path)
 	DKString path2 = L"";
 
 #ifdef _WIN32
-	if (path.Length() >= 2 && (path[0] == L'\\' || path[0] == L'/') && (path[2] == L':'))		// C:, D:.. 절대경로
+	// make system absolute path string (begin with drive path, ie 'C:\', 'D:\')
+	if (path.Length() >= 2 && (path[0] == L'\\' || path[0] == L'/') && (path[2] == L':'))
 		path2 = path.Right(1).FilePathString();
 	else
 		path2 = path.FilePathString();
