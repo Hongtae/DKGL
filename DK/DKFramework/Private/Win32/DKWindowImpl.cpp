@@ -306,7 +306,9 @@ void DKWindowImpl::HoldMouse(int deviceId, bool hold)
 
 	isMouseHeld = hold;
 
-	mousePosition = MousePosition(deviceId);
+	mousePosition = MousePosition(0);
+	SetMousePosition(0, mousePosition);
+	mousePositionHeld = MousePosition(0);
 
 	::PostMessageW(windowHandle, WM_UPDATEMOUSECAPTURE, 0, 0);
 }
@@ -423,11 +425,10 @@ void DKWindowImpl::SetMousePosition(int deviceId, const DKPoint& pt)
 	DKPoint pt2(pt);
 	ConvertCoordinateOrigin(pt2);
 	POINT ptScreen;
-	ptScreen.x = pt2.x;
-	ptScreen.y = pt2.y;
+	ptScreen.x = floor(pt2.x + 0.5f);
+	ptScreen.y = floor(pt2.y + 0.5f);
 	::ClientToScreen(windowHandle, &ptScreen);
 	::SetCursorPos(ptScreen.x, ptScreen.y);
-
 	mousePosition = pt;
 }
 
@@ -437,7 +438,7 @@ DKPoint DKWindowImpl::MousePosition(int deviceId) const
 		return DKPoint(-1, -1);
 
 	POINT pt;
-	GetCursorPos(&pt);
+	::GetCursorPos(&pt);
 	::ScreenToClient(windowHandle, &pt);
 	DKPoint pt2(pt.x, pt.y);
 	ConvertCoordinateOrigin(pt2);
@@ -718,18 +719,35 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			DKPoint pos((MAKEPOINTS(lParam)).x, (MAKEPOINTS(lParam)).y);
 			ConvertCoordinateOrigin(pos);
-			if (pos != mousePosition)
+
+			LONG px = (LONG)floor(pos.x + 0.5f);
+			LONG py = (LONG)floor(pos.y + 0.5f);
+			if (px != (LONG)floor(mousePosition.x + 0.5f) ||
+				px != (LONG)floor(mousePosition.y + 0.5f))
 			{
-				DKVector2 delta = pos.Vector() - mousePosition.Vector();
+				bool postEvent = true;
 				if (isMouseHeld)
 				{
-					SetMousePosition(0, mousePosition);
+					if (px == (LONG)floor(mousePositionHeld.x + 0.5f) && py == (LONG)floor(mousePositionHeld.y + 0.5f))
+						postEvent = false;
+					else
+					{
+						SetMousePosition(0, mousePosition);
+						// In Windows8 (or later) with scaled-DPI mode, setting mouse position generate inaccurate result.
+						// We need to keep new position in hold-mouse state. (non-movable mouse)
+						mousePositionHeld = MousePosition(0);
+					}
 				}
 				else
 				{
 					mousePosition = pos;
 				}
-				ownerWindow->PostMouseEvent(DKWindow::EventMouseMove, 0, 0, mousePosition, delta, false);
+
+				if (postEvent)
+				{
+					DKVector2 delta = pos.Vector() - mousePosition.Vector();
+					ownerWindow->PostMouseEvent(DKWindow::EventMouseMove, 0, 0, mousePosition, delta, false);
+				}
 			}
 		}
 		break;
