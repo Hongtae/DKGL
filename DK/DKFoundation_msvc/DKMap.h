@@ -302,7 +302,10 @@ namespace DKFoundation
 				container.Insert(p);
 			return *this;
 		}
-		// lambda enumerator (VALUE&) 또는 (VALUE&, bool*) 형식의 함수객체
+		// EnumerateForward / EnumerateBackward: enumerate all items.
+		// You cannot insert, remove items while enumerating. (container is read-only)
+		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -321,7 +324,7 @@ namespace DKFoundation
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) 또는 (const VALUE&, bool*) 형식의 함수객체
+		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
