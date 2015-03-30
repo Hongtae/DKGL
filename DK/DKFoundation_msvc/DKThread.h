@@ -12,8 +12,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKThread
-// creating new thread with DKOperation.
-// becouse thread runs parallel, thread ownership will be shared with caller and callee.
+// Creating new thread with DKOperation. Because of threads run in parallel,
+// each thread ownership will be shared with caller and callee.
 // If you abandon ownership of thread, thread will be detached automatically.
 ////////////////////////////////////////////////////////////////////////////////
 
