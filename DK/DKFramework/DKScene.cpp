@@ -1128,7 +1128,7 @@ void DKScene::Render(const DKCamera& camera, int sceneIndex, bool enableCulling,
 			DKASSERT_DEBUG(mesh->scene == this);
 			DKASSERT_DEBUG(mesh->type == DKModel::TypeMesh);
 
-			if (!mesh->IsHidden())
+			if (!mesh->IsHidden() && !mesh->DidAncestorHideDescendants())
 			{
 				const DKMaterial* mat = mesh->Material();
 				if (mat && mat->renderingProperties.Count() > sceneIndex)

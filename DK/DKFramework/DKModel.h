@@ -78,6 +78,11 @@ namespace DKFramework
 		const DKModel* ChildAtIndex(unsigned int i) const		{ return children.Value(i); }
 		size_t NumberOfChildren(void) const						{ return children.Count(); }
 
+		// show/hide all descendants (not self)
+		void SetDescendantsHidden(bool hidden)			{ hideDescendants = hidden; }
+		bool AreDescendantsHidden(void) const			{ return hideDescendants; }
+		bool DidAncestorHideDescendants(void) const;
+
 		void Enumerate(Enumerator* e)					{ EnumerateInternal(e); }
 		void Enumerate(EnumeratorLoop* e)				{ EnumerateInternal(e); }
 		void Enumerate(ConstEnumerator* e) const		{ EnumerateInternal(e); }
@@ -162,6 +167,8 @@ namespace DKFramework
 		DKScene* scene;
 		DKFoundation::DKArray<DKFoundation::DKObject<DKModel>> children;
 		DKFoundation::DKObject<DKAnimatedTransform> animation;
+
+		bool hideDescendants;
 
 		// set true to call OnUpdateTreeReferences() when next update.
 		bool needResolveTree;

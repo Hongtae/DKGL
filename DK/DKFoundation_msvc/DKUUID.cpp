@@ -80,7 +80,7 @@ DKUUID::DKUUID(const DKString& str)
 
 		const wchar_t* inputStr = str;
 
-		// 스트링 파싱
+		// parse string
 		size_t index = 0;
 		for (size_t i = 0; i < inputLength && index < 16;)
 		{

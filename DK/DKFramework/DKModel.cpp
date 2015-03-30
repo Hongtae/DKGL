@@ -12,7 +12,7 @@ using namespace DKFoundation;
 using namespace DKFramework;
 
 DKModel::DKModel(Type t)
-: type(t), parent(NULL), scene(NULL), needResolveTree(true)
+: type(t), parent(NULL), scene(NULL), hideDescendants(false), needResolveTree(true)
 {
 }
 
@@ -146,6 +146,16 @@ DKModel* DKModel::FindDescendant(const DKFoundation::DKString& name)
 const DKModel* DKModel::FindDescendant(const DKFoundation::DKString& name) const
 {
 	return const_cast<DKModel&>(*this).FindDescendant(name);
+}
+
+bool DKModel::DidAncestorHideDescendants(void) const
+{
+	for (const DKModel* p = this->parent; p != NULL; p = p->parent)
+	{
+		if (p->hideDescendants)
+			return true;
+	}
+	return false;
 }
 
 bool DKModel::EnumerateInternal(Enumerator* e)
