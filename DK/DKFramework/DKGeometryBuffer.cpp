@@ -66,22 +66,24 @@ DKObject<DKBuffer> DKGeometryBuffer::CopyContent(void) const
 		return NULL;
 	}
 
-#ifdef GL_VERSION_1_5
+	DKObject<DKBuffer> ret = NULL;
 	if (Bind())
 	{
 		GLenum target = resourceType == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
-		DKObject<DKBuffer> ret = DKBuffer::Create(NULL, resourceSize);
+#ifdef DKLIB_OPENGL_ES
+		void* p = glMapBufferRange(target, 0, resourceSize, GL_MAP_READ_BIT);
+		ret = DKBuffer::Create(p, resourceSize);
+		glUnmapBuffer(target);
+#else
+		ret = DKBuffer::Create(NULL, resourceSize);
 		if (ret)
 		{
 			glGetBufferSubData(target, 0, resourceSize, ret->LockExclusive());
 			ret->UnlockExclusive();
 		}
-		return ret;
-	}
-#else
-	DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
 #endif
-	return NULL;
+	}
+	return ret;
 }
 
 bool DKGeometryBuffer::IsLocked(AccessMode* lock) const
@@ -97,23 +99,30 @@ bool DKGeometryBuffer::IsLocked(AccessMode* lock) const
 		if (mapped && lock)
 		{
 			GLint access = 0;
+#ifdef DKLIB_OPENGL_ES
+			glGetBufferParameteriv(target, GL_BUFFER_ACCESS_FLAGS, &access);
+
+			if (access & GL_MAP_READ_BIT && access & GL_MAP_WRITE_BIT)
+				*lock = AccessModeReadWrite;
+			else if (access & GL_MAP_READ_BIT)
+				*lock = AccessModeReadOnly;
+			else if (access & GL_MAP_WRITE_BIT)
+				*lock = AccessModeWriteOnly;
+			else
+				DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
+#else
 			glGetBufferParameteriv(target, GL_BUFFER_ACCESS, &access);
 
 			switch (access)
 			{
-#ifdef GL_READ_ONLY
-			case GL_READ_ONLY:	*lock = AccessModeReadOnly;		break;
-#endif
-#ifdef GL_WRITE_ONLY
-			case GL_WRITE_ONLY:	*lock = AccessModeWriteOnly;	break;
-#endif
-#ifdef GL_READ_WRITE
-			case GL_READ_WRITE:	*lock = AccessModeReadWrite;	break;
-#endif
+				case GL_READ_ONLY:	*lock = AccessModeReadOnly;		break;
+				case GL_WRITE_ONLY:	*lock = AccessModeWriteOnly;	break;
+				case GL_READ_WRITE:	*lock = AccessModeReadWrite;	break;
 				default:
 					DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
 					break;
 			}
+#endif
 		}
 		return mapped == GL_TRUE;
 	}
@@ -149,14 +158,14 @@ void* DKGeometryBuffer::Lock(AccessMode lock)
 	GLenum access = 0;
 	switch (lock)
 	{
-#ifdef GL_READ_ONLY
-	case AccessModeReadOnly:	access = GL_READ_ONLY;	break;	
-#endif
-#ifdef GL_WRITE_ONLY
-	case AccessModeWriteOnly:	access = GL_WRITE_ONLY;	break;
-#endif
-#ifdef GL_READ_WRITE
-	case AccessModeReadWrite:	access = GL_READ_WRITE;	break;
+#ifdef DKLIB_OPENGL_ES
+		case AccessModeReadOnly:	access = GL_MAP_READ_BIT;					break;
+		case AccessModeWriteOnly:	access = GL_MAP_WRITE_BIT;					break;
+		case AccessModeReadWrite:	access = GL_MAP_READ_BIT|GL_MAP_WRITE_BIT;	break;
+#else
+		case AccessModeReadOnly:	access = GL_READ_ONLY;	break;
+		case AccessModeWriteOnly:	access = GL_WRITE_ONLY;	break;
+		case AccessModeReadWrite:	access = GL_READ_WRITE;	break;
 #endif
 	default:
 		DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
@@ -166,7 +175,7 @@ void* DKGeometryBuffer::Lock(AccessMode lock)
 	if (Bind())
 	{
 		GLenum target = resourceType == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
-		return glMapBuffer(target, access);
+		return glMapBufferRange(target, 0, resourceSize, access);
 	}
 	return NULL;
 }
@@ -227,21 +236,15 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	GLenum usage = 0;
 	switch (u)
 	{
-#if defined(GL_STATIC_DRAW) && defined(GL_DYNAMIC_DRAW) && defined(GL_STREAM_DRAW)
 	case BufferUsageDraw:
 		usage = m == MemoryLocationStatic ? GL_STATIC_DRAW : (m == MemoryLocationDynamic ? GL_DYNAMIC_DRAW : GL_STREAM_DRAW);
 		break;
-#endif
-#if defined(GL_STATIC_READ) && defined(GL_DYNAMIC_READ) && defined(GL_STREAM_READ)
 	case BufferUsageRead:
 		usage = m == MemoryLocationStatic ? GL_STATIC_READ : (m == MemoryLocationDynamic ? GL_DYNAMIC_READ : GL_STREAM_READ);
 		break;
-#endif
-#if defined(GL_STATIC_COPY) && defined(GL_DYNAMIC_COPY) && defined(GL_STREAM_COPY)
 	case BufferUsageCopy:
 		usage = m == MemoryLocationStatic ? GL_STATIC_COPY : (m == MemoryLocationDynamic ? GL_DYNAMIC_COPY : GL_STREAM_COPY);
 		break;
-#endif
 	default:
 		DKLog("[%s] Unsupported buffer usage.\n", DKLIB_FUNCTION_NAME);
 		return false;

@@ -209,14 +209,9 @@ void DKOpenGLImpl::Present(void) const
 		{
 			if (target)
 			{
-				static bool EXT_discard_framebuffer_support = extensions.Contains(L"GL_EXT_discard_framebuffer");
-				
 				glBindFramebuffer(GL_FRAMEBUFFER, p->value.frameBufferId);
-				if (EXT_discard_framebuffer_support)
-				{
-					const GLenum discards[] = {GL_DEPTH_ATTACHMENT};
-					glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1, discards);
-				}
+				const GLenum discards[] = {GL_DEPTH_ATTACHMENT};
+				glInvalidateFramebuffer(GL_FRAMEBUFFER, 1, discards);
 				glBindRenderbuffer(GL_RENDERBUFFER, p->value.colorBufferId);
 				BOOL result = [context presentRenderbuffer:GL_RENDERBUFFER];
 				if (!result)

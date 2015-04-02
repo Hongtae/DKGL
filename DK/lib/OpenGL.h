@@ -1,102 +1,34 @@
 #pragma once
 
-#define GL_VERSION_1_2_DEPRECATED
-#define GL_VERSION_1_3_DEPRECATED
-#define GL_VERSION_1_4_DEPRECATED
-#define GL_VERSION_1_5_DEPRECATED
-#define GL_VERSION_2_0_DEPRECATED
-#define GL_VERSION_2_1_DEPRECATED
-#define GL_VERSION_3_0_DEPRECATED
-#define GL_ARB_imaging_DEPRECATED
-#define GL_ARB_framebuffer_object_DEPRECATED
-
 #if defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_OS_IPHONE
-#define DKLIB_OPENGL_ES
-#define DKLIB_OPENGL_ES_2
-#define DKLIB_OPENGL_IOS
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
-
-#define glGenVertexArrays		glGenVertexArraysOES
-#define glDeleteVertexArrays	glDeleteVertexArraysOES
-#define glBindVertexArray		glBindVertexArrayOES
-#define glIsVertexArray			glIsVertexArrayOES
-
-#define glGetBufferPointerv		glGetBufferPointervOES
-#define glMapBuffer				glMapBufferOES
-#define glUnmapBuffer			glUnmapBufferOES
-
-#define GL_DEPTH_COMPONENT24	GL_DEPTH_COMPONENT24_OES
-#define GL_WRITE_ONLY			GL_WRITE_ONLY_OES
-#define GL_BUFFER_MAP_POINTER	GL_BUFFER_MAP_POINTER_OES
-#define GL_BUFFER_ACCESS		GL_BUFFER_ACCESS_OES
-#define	GL_BUFFER_MAPPED		GL_BUFFER_MAPPED_OES
-
-#ifndef GL_MIN
-#define GL_MIN	GL_MIN_EXT
-#endif
-#ifndef GL_MAX
-#define GL_MAX	GL_MAX_EXT
-#endif
-
-#else
-
-#define DKLIB_OPENGL_OSX
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-
-#define glBindVertexArray		glBindVertexArrayAPPLE
-#define glDeleteVertexArrays	glDeleteVertexArraysAPPLE
-#define glGenVertexArrays		glGenVertexArraysAPPLE
-#define glIsVertexArray			glIsVertexArrayAPPLE
-
-#endif	//if TARGET_OS_IPHONE
+	#include <TargetConditionals.h>
+	#if TARGET_OS_IPHONE
+		#define DKLIB_OPENGL_ES
+		#define DKLIB_OPENGL_ES_3
+		#define DKLIB_OPENGL_IOS
+		#include <OpenGLES/ES3/gl.h>
+		#include <OpenGLES/ES3/glext.h>
+	#else
+		#define DKLIB_OPENGL_OSX
+		#include <OpenGL/gl3.h>
+		#include <OpenGL/gl3ext.h>
+	#endif	//if TARGET_OS_IPHONE
 #endif	//if defined(__APPLE__) && defined(__MACH__)
 
 #ifdef __ANDROID__
-#define DKLIB_OPENGL_ES
-#define DKLIB_OPENGL_ANDROID
-
-#ifdef DKLIB_OPENGLES_3
-#include <GLES3/gl3.h>
-#include <GLES3/gl3ext.h>
-//#define GL_BUFFER_ACCESS	GL_BUFFER_ACCESS_FLAGS
-//TODO: OpenGL ES 3 에서는 glMapBuffer 대신 glMapBufferRange 를 사용해야 함.
-#else
-#define DKLIB_OPENGL_ES_2
-#define GL_GLEXT_PROTOTYPES
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-
-#define glGenVertexArrays		glGenVertexArraysOES
-#define glDeleteVertexArrays	glDeleteVertexArraysOES
-#define glBindVertexArray		glBindVertexArrayOES
-#define glIsVertexArray			glIsVertexArrayOES
-
-#define glGetBufferPointerv		glGetBufferPointervOES
-#define glMapBuffer				glMapBufferOES
-#define glUnmapBuffer			glUnmapBufferOES
-
-#define GL_DEPTH_COMPONENT24	GL_DEPTH_COMPONENT24_OES
-#define GL_WRITE_ONLY			GL_WRITE_ONLY_OES
-#define GL_BUFFER_MAP_POINTER	GL_BUFFER_MAP_POINTER_OES
-#define GL_BUFFER_ACCESS		GL_BUFFER_ACCESS_OES
-#define	GL_BUFFER_MAPPED		GL_BUFFER_MAPPED_OES
-#endif	// DKLIB_OPENGES_3
+	#define DKLIB_OPENGL_ES
+	#define DKLIB_OPENGL_ANDROID
+	#define DKLIB_OPENGLES_3
+	#include <GLES3/gl3.h>
+	#include <GLES3/gl3ext.h>
 #endif	// ifdef __ANDROID__
 
 #ifdef _WIN32
-#define DKLIB_OPENGL_WIN32
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
-//#include <gl/glaux.h>
-
-// incldue OpenGL extension header files.
-#include "OpenGL/glext.h"
+	#define DKLIB_OPENGL_WIN32
+	#include <windows.h>
+	#include <gl/gl.h>
+	#include <gl/glu.h>
+	#include "OpenGL/glext.h"
 
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")

@@ -50,15 +50,15 @@ namespace DKFramework
 		bool Bind(void) const;
 
 		// Lock buffer and get temporary pointer. (UpdateContent, UpdateSubContent is faster)
-		// Note: OpenGL ES not supported.
 		void* Lock(AccessMode lock);
 		// Unlock buffer.
 		void Unlock(void);
 		bool IsLocked(AccessMode* lock) const;
-		void* AcquireLockedBuffer(void) const; // get locked buffer if buffer locked already.
 
-		// Copy content from buffer.
-		// Note: OpenGL ES not supported.
+		// Get data address where GL-buffer has been mapped.
+		void* AcquireLockedBuffer(void) const;
+
+		// Copy object contents into buffer object and return.
 		DKFoundation::DKObject<DKFoundation::DKBuffer> CopyContent(void) const;
 
 		// update sub content
