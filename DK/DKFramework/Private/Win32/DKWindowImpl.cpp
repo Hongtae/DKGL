@@ -723,8 +723,10 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			LONG px = (LONG)floor(pos.x + 0.5f);
 			LONG py = (LONG)floor(pos.y + 0.5f);
 			if (px != (LONG)floor(mousePosition.x + 0.5f) ||
-				px != (LONG)floor(mousePosition.y + 0.5f))
+				py != (LONG)floor(mousePosition.y + 0.5f))
 			{
+				DKVector2 delta = pos.Vector() - mousePosition.Vector();
+
 				bool postEvent = true;
 				if (isMouseHeld)
 				{
@@ -745,7 +747,6 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 				if (postEvent)
 				{
-					DKVector2 delta = pos.Vector() - mousePosition.Vector();
 					ownerWindow->PostMouseEvent(DKWindow::EventMouseMove, 0, 0, mousePosition, delta, false);
 				}
 			}
