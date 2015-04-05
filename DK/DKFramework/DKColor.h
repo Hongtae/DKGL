@@ -7,6 +7,8 @@
 
 #pragma once
 #include "../DKInclude.h"
+#include "DKVector3.h"
+#include "DKVector4.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKColor
@@ -202,6 +204,14 @@ namespace DKFramework
 		{
 			float inv = 1.0f / f;
 			return DKColor(r * inv, g * inv, b * inv, a * inv);
+		}
+		DKVector3 Vector3(void) const
+		{
+			return DKVector3(r, g, b);
+		}
+		DKVector4 Vector4(void) const
+		{
+			return DKVector4(r, g, b, a);
 		}
 
 		union
