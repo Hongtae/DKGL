@@ -82,6 +82,7 @@ namespace DKFramework
 			DKPoint windowOrigin;
 			BYTE savedKeyboardState[256];		// key states
 			DKPoint mousePosition;
+			DKPoint mousePositionHeld;		// result of SetCursorPos() with hold-position state.
 
 			static DKVirtualKey ConvertVKey(int key);
 			DKPoint& ConvertCoordinateOrigin(DKPoint& pt) const;
