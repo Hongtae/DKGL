@@ -229,6 +229,12 @@ static PyObject* DCModelRemoveFromParent(DCModel* self, PyObject*)
 	Py_RETURN_NONE;
 }
 
+static PyObject* DCModelDidAncestorHideDescendants(DCModel* self, PyObject*)
+{
+	DCOBJECT_VALIDATE(self->model, NULL);
+	return PyBool_FromLong(self->model->DidAncestorHideDescendants());
+}
+
 static PyObject* DCModelWorldTransform(DCModel* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->model, NULL);
@@ -355,6 +361,7 @@ static PyMethodDef methods[] = {
 	{ "numberOfDescendants", (PyCFunction)&DCModelNumberOfDescendants, METH_NOARGS },	
 	{ "findDescendant", (PyCFunction)&DCModelFindDescendant, METH_VARARGS },
 	{ "removeFromParent", (PyCFunction)&DCModelRemoveFromParent, METH_NOARGS },
+	{ "didAncestorHideDescendants", (PyCFunction)&DCModelDidAncestorHideDescendants, METH_NOARGS },
 	{ "worldTransform", (PyCFunction)&DCModelWorldTransform, METH_NOARGS },
 	{ "setWorldTransform", (PyCFunction)&DCModelSetWorldTransform, METH_VARARGS },
 	{ "localTransform", (PyCFunction)&DCModelLocalTransform, METH_NOARGS },
@@ -363,6 +370,33 @@ static PyMethodDef methods[] = {
 	{ "setAnimation", (PyCFunction)&DCModelSetAnimation, METH_VARARGS },
 	{ "clone", (PyCFunction)&DCModelClone, METH_NOARGS },
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */
+};
+
+static PyObject* DCModelDescendantsHidden(DCModel* self, void*)
+{
+	DCOBJECT_VALIDATE(self->model, NULL);
+	return PyBool_FromLong(self->model->AreDescendantsHidden());
+}
+
+static int DCModelSetDescendantsHidden(DCModel* self, PyObject* value, void*)
+{
+	DCOBJECT_VALIDATE(self->model, -1);
+	DCOBJECT_ATTRIBUTE_NOT_DELETABLE(value);
+
+	int h = PyObject_IsTrue(value);
+	if (h < 0)
+	{
+		PyErr_Clear();
+		PyErr_SetString(PyExc_TypeError, "attribute must be Boolean.");
+		return -1;
+	}
+	self->model->SetDescendantsHidden(h != 0);
+	return 0;
+}
+
+static PyGetSetDef getsets[] = {
+	{ "descendantsHidden", (getter)&DCModelDescendantsHidden, (setter)&DCModelSetDescendantsHidden, 0, 0 },
+	{ NULL }  /* Sentinel */
 };
 
 static PyTypeObject objectType = {
@@ -397,7 +431,7 @@ static PyTypeObject objectType = {
 	0,											/* tp_iternext */
 	methods,									/* tp_methods */
 	0,											/* tp_members */
-	0,											/* tp_getset */
+	getsets,									/* tp_getset */
 	DCResourceTypeObject(),						/* tp_base */
 	0,											/* tp_dict */
 	0,											/* tp_descr_get */

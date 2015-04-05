@@ -37,15 +37,15 @@
 //
 //
 // How to create object by using DKObject:
-// 1. DKObject::New()
+// 1. DKObject::New() function
 //     DKObject<OBJECT> p1 = DKObject<OBJECT>::New();
 //     DKObject<OBJECT> p2 = DKObject<OBJECT>::New( arg1, arg2 ...);
 //
-// 2. DKOBJECT_NEW 매크로
+// 2. DKOBJECT_NEW macro
 //     DKObject<OBJECT> p1 = DKOBJECT_NEW OBJECT();
 //     DKObject<OBJECT> p2 = DKOBJECT_NEW OBJECT( arg1, arg2, ...);
 //
-// 2. DKObject::Alloc()  - using custom allocator
+// 2. DKObject::Alloc() with custom allocator
 //     DKObject<OBJECT> p1 = DKObject<OBJECT>::Alloc( myAllocator );
 //     DKObject<OBJECT> p1 = DKObject<OBJECT>::Alloc( myAllocator, ...);
 //
@@ -245,7 +245,7 @@ namespace DKFoundation
 				return ref;
 			return 0;
 		}
-		// polymorphic determine
+		// determine base address of polymorphic type
 		void* BaseAddress(void) const
 		{
 			return BaseAddress(_target);
