@@ -1304,6 +1304,18 @@
 		8489263B18D155BD00CFF0E3 /* DKTextureSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8489263818D155BD00CFF0E3 /* DKTextureSampler.h */; };
 		8489263C18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
 		8489263D18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
+		84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
+		84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
+		84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
+		84A6A3A61ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
+		84A6A3A71ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3A21ADFFBDE001C1778 /* DKAllocatorChain.h */; };
+		84A6A3A81ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3A21ADFFBDE001C1778 /* DKAllocatorChain.h */; };
+		84A6A3A91ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3A21ADFFBDE001C1778 /* DKAllocatorChain.h */; };
+		84A6A3AA1ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3A21ADFFBDE001C1778 /* DKAllocatorChain.h */; };
+		84A6A3AC1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
+		84A6A3AD1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
+		84A6A3AE1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
+		84A6A3AF1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
 		84C907CF171445A500F62F3C /* DKGearConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C907CD171445A500F62F3C /* DKGearConstraint.cpp */; };
 		84C907D0171445A500F62F3C /* DKGearConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C907CD171445A500F62F3C /* DKGearConstraint.cpp */; };
 		84C907D1171445A500F62F3C /* DKGearConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C907CE171445A500F62F3C /* DKGearConstraint.h */; };
@@ -1727,6 +1739,9 @@
 		84A1E596141DD4B70091D2C0 /* DKVKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKVKey.h; sourceTree = "<group>"; };
 		84A1E599141DD4B70091D2C0 /* DKWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKWindow.cpp; sourceTree = "<group>"; };
 		84A1E59A141DD4B70091D2C0 /* DKWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKWindow.h; sourceTree = "<group>"; };
+		84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKAllocatorChain.cpp; sourceTree = "<group>"; };
+		84A6A3A21ADFFBDE001C1778 /* DKAllocatorChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKAllocatorChain.h; sourceTree = "<group>"; };
+		84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKFixedSizeAllocator.h; sourceTree = "<group>"; };
 		84B354FD15CF83EF00078470 /* DKEndianness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKEndianness.h; sourceTree = "<group>"; };
 		84B43D4F15D0F9A700C7A681 /* DKRational.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKRational.cpp; sourceTree = "<group>"; };
 		84B43D5015D0F9A700C7A681 /* DKRational.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRational.h; sourceTree = "<group>"; };
@@ -2057,6 +2072,8 @@
 			children = (
 				84A1E493141DD4B70091D2C0 /* DKAllocator.cpp */,
 				84A1E494141DD4B70091D2C0 /* DKAllocator.h */,
+				84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */,
+				84A6A3A21ADFFBDE001C1778 /* DKAllocatorChain.h */,
 				84A1E496141DD4B70091D2C0 /* DKArray.h */,
 				84A1E497141DD4B70091D2C0 /* DKAtomicNumber32.cpp */,
 				84A1E498141DD4B70091D2C0 /* DKAtomicNumber32.h */,
@@ -2090,6 +2107,7 @@
 				84A1E4A6141DD4B70091D2C0 /* DKFile.h */,
 				848E9D911558CACD00833B52 /* DKFileMap.cpp */,
 				848E9D921558CACD00833B52 /* DKFileMap.h */,
+				84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */,
 				84A1E4A7141DD4B70091D2C0 /* DKFunction.h */,
 				84A1E4A9141DD4B70091D2C0 /* DKHash.cpp */,
 				84A1E4AA141DD4B70091D2C0 /* DKHash.h */,
@@ -2417,6 +2435,7 @@
 				840CA5A61928952800689BB6 /* DKCompoundShape.h in Headers */,
 				840CA5C61928952800689BB6 /* DKHingeConstraint.h in Headers */,
 				840CA5991928952800689BB6 /* DKBox.h in Headers */,
+				84A6A3AE1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				840CA6161928952800689BB6 /* DKSphereShape.h in Headers */,
 				840CA5D81928952800689BB6 /* DKMatrix4.h in Headers */,
 				840CA6711928A2D600689BB6 /* DKAudioStreamVorbis.h in Headers */,
@@ -2476,6 +2495,7 @@
 				8436CDBB1928A78900F18892 /* DKAllocator.h in Headers */,
 				840CA5E91928952800689BB6 /* DKPolyhedralConvexShape.h in Headers */,
 				840CA66F1928A2D600689BB6 /* BulletUtils.h in Headers */,
+				84A6A3A91ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */,
 				8436CDEE1928A78900F18892 /* DKObjectRefCounter.h in Headers */,
 				840CA5971928952800689BB6 /* DKBlendState.h in Headers */,
 				8436CE121928A78900F18892 /* DKTypeList.h in Headers */,
@@ -2609,6 +2629,7 @@
 				84798C6619E51E7F009378A6 /* DKRigidBody.h in Headers */,
 				84798C5F19E51E7F009378A6 /* DKRect.h in Headers */,
 				84798C8919E51E80009378A6 /* DKVoxelIsosurfacePolygonizer.h in Headers */,
+				84A6A3AF1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84798C6219E51E7F009378A6 /* DKRenderTarget.h in Headers */,
 				84798C4C19E51E7F009378A6 /* DKLinearTransform2.h in Headers */,
 				84798C4319E51E7F009378A6 /* DKFrame.h in Headers */,
@@ -2668,6 +2689,7 @@
 				84798C8D19E51E96009378A6 /* DKAllocator.h in Headers */,
 				84798C4D19E51E7F009378A6 /* DKLinearTransform3.h in Headers */,
 				84798C7F19E51E80009378A6 /* DKVariant.h in Headers */,
+				84A6A3AA1ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */,
 				84798CAD19E51E96009378A6 /* DKObjectRefCounter.h in Headers */,
 				84798C5419E51E7F009378A6 /* DKModel.h in Headers */,
 				84798CC519E51E96009378A6 /* DKTypeList.h in Headers */,
@@ -2801,6 +2823,7 @@
 				840CA6591928957600689BB6 /* DKInclude.h in Headers */,
 				84211C8C1665E86400B9B9A2 /* DKRunLoopTimer.h in Headers */,
 				84211C8D1665E86400B9B9A2 /* DKSet.h in Headers */,
+				84A6A3AD1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84211C8E1665E86400B9B9A2 /* DKSharedInstance.h in Headers */,
 				84211C8F1665E86400B9B9A2 /* DKSharedLock.h in Headers */,
 				84211C901665E86400B9B9A2 /* DKSingleton.h in Headers */,
@@ -2860,6 +2883,7 @@
 				84211D231665E89700B9B9A2 /* DKFrame.h in Headers */,
 				84211D241665E89700B9B9A2 /* DKGeneric6DofConstraint.h in Headers */,
 				84211D251665E89700B9B9A2 /* DKGeneric6DofSpringConstraint.h in Headers */,
+				84A6A3A81ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */,
 				84211D261665E89700B9B9A2 /* DKGeometryBuffer.h in Headers */,
 				84211D271665E89700B9B9A2 /* DKHingeConstraint.h in Headers */,
 				84211D281665E89700B9B9A2 /* DKIndexBuffer.h in Headers */,
@@ -2993,6 +3017,7 @@
 				84211C451665E86300B9B9A2 /* DKRunLoop.h in Headers */,
 				84211C461665E86300B9B9A2 /* DKRunLoopTimer.h in Headers */,
 				84211C471665E86300B9B9A2 /* DKSet.h in Headers */,
+				84A6A3AC1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84211C481665E86300B9B9A2 /* DKSharedInstance.h in Headers */,
 				84211C491665E86300B9B9A2 /* DKSharedLock.h in Headers */,
 				84211C4A1665E86300B9B9A2 /* DKSingleton.h in Headers */,
@@ -3052,6 +3077,7 @@
 				84211CC11665E88E00B9B9A2 /* DKFont.h in Headers */,
 				84211CC21665E88E00B9B9A2 /* DKFrame.h in Headers */,
 				84211CC31665E88E00B9B9A2 /* DKGeneric6DofConstraint.h in Headers */,
+				84A6A3A71ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */,
 				84211CC41665E88E00B9B9A2 /* DKGeneric6DofSpringConstraint.h in Headers */,
 				84211CC51665E88E00B9B9A2 /* DKGeometryBuffer.h in Headers */,
 				84211CC61665E88E00B9B9A2 /* DKHingeConstraint.h in Headers */,
@@ -3348,6 +3374,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				8436CE071928A78900F18892 /* DKStringUE.cpp in Sources */,
 				840CA5841928952800689BB6 /* DKAffineTransform2.cpp in Sources */,
 				840CA5C11928952800689BB6 /* DKGeneric6DofSpringConstraint.cpp in Sources */,
@@ -3494,6 +3521,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A6A3A61ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				84798BA719E51DFB009378A6 /* DKStringUE.cpp in Sources */,
 				84798BE419E51E48009378A6 /* DKOpenGLContext.cpp in Sources */,
 				84798BEC19E51E48009378A6 /* DKRenderer.cpp in Sources */,
@@ -3640,6 +3668,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				840C3E3B178D396E00F57A8D /* DKTimer.cpp in Sources */,
 				840C3E3C178D396E00F57A8D /* DKTypeInfo.cpp in Sources */,
 				84211B611665E7FD00B9B9A2 /* DKAABox.cpp in Sources */,
@@ -3786,6 +3815,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				840C3E17178D396D00F57A8D /* DKTimer.cpp in Sources */,
 				840C3E18178D396D00F57A8D /* DKTypeInfo.cpp in Sources */,
 				84211AA81665E7FC00B9B9A2 /* DKAABox.cpp in Sources */,

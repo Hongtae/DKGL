@@ -96,6 +96,17 @@ namespace DKFoundation
 		{
 			enum {Result = N1 + Sum<Ns...>::Result};
 		};
+		// count matching integer in numbers
+		template <int... Ns> struct NumMatches
+		{
+			enum {Result = 0};
+		};
+		template <int Num, int N1, int... Ns> struct NumMatches<Num, N1, Ns...>
+		{
+			enum {Rest = NumMatches<Num, Ns...>::Result};
+			enum {Result = CondEnum<Num == N1, 1, 0>::Result + Rest};
+		};
+
 		// check T1 is convertible into T2.
 		template <typename T1, typename T2> struct ConversionTest
 		{
@@ -134,6 +145,12 @@ namespace DKFoundation
 	template <int... Ns> constexpr int DKSum(void)
 	{
 		return Private::Sum<Ns...>::Result;
+	}
+
+	// count number of matches with first integer(Num) in Ns
+	template <int Num, int... Ns> constexpr int DKNumMatches(void)
+	{
+		return Private::NumMatches<Num, Ns...>::Result;
 	}
 
 	// determine whether type Source is convertible into type Target.
