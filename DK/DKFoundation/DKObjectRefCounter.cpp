@@ -10,6 +10,7 @@
 #include "DKMap.h"
 #include "DKArray.h"
 #include "DKMemory.h"
+#include "DKFixedSizeAllocator.h"
 
 namespace DKFoundation
 {
@@ -18,7 +19,6 @@ namespace DKFoundation
 		enum {AllocatorTableLength = 977}; // should be prime-number.
 		struct AllocationNode
 		{
-			// TODO: provide allocator for reducing memory fragmentation.
 			struct NodeInfo
 			{
 				DKAllocator*								allocator;
@@ -27,7 +27,26 @@ namespace DKFoundation
 			};
 			typedef DKSpinLock							Lock;
 			typedef DKCriticalSection<Lock>				CriticalSection;
-			typedef DKMap<void*, NodeInfo, DKDummyLock> Container;
+
+			// use fixed-size allocator.
+			struct Allocator
+			{
+				enum { nodeSize = DKMap<void*, NodeInfo>::nodeSize };
+				using FixedAllocator = DKFixedSizeAllocator<nodeSize, 64, Lock>;
+
+				static void* Alloc(size_t s)
+				{
+					DKASSERT_DEBUG(s == nodeSize);
+					return FixedAllocator::Instance().Alloc(s);
+				}
+				static void Free(void* p)
+				{
+					FixedAllocator::Instance().Dealloc(p);
+				}
+			};
+
+			using Key = void*;
+			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparison<Key>, DKMapValueCopy<Key>, Allocator>;
 
 			Lock		lock;
 			Container	container;

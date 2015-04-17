@@ -62,6 +62,68 @@ namespace DKFoundation
 	>
 	class DKAVLTree
 	{
+		class Node
+		{
+		public:
+			Node(const VALUE& v, Node* parentNode)
+			: value(v), left(NULL), right(NULL), parent(parentNode), nodeHeight(1), leftHeight(0), rightHeight(0)
+			{
+			}
+			VALUE		value;
+			Node*		left;
+			Node*		right;
+			Node*		parent;
+			int			leftHeight;		// left-tree weights
+			int			rightHeight;	// right-tree weights
+			int			nodeHeight;		// self weights ( = max(left,right)+1)
+			Node* Duplicate(void) const
+			{
+				Node* node = new(Allocator::Alloc(sizeof(Node))) Node(value, NULL);
+				if (left)
+				{
+					node->left = left->Duplicate();
+					node->left->parent = node;
+				}
+				if (right)
+				{
+					node->right = right->Duplicate();
+					node->right->parent = node;
+				}
+				node->leftHeight = leftHeight;
+				node->rightHeight = rightHeight;
+				node->nodeHeight = nodeHeight;
+				return node;
+			}
+			template <typename R> bool EnumerateForward(R&& enumerator)
+			{
+				if (left && left->EnumerateForward(std::forward<R>(enumerator)))	return true;
+				if (enumerator(value))												return true;
+				if (right && right->EnumerateForward(std::forward<R>(enumerator)))	return true;
+				return false;
+			}
+			template <typename R> bool EnumerateBackward(R&& enumerator)
+			{
+				if (right && right->EnumerateBackward(std::forward<R>(enumerator)))	return true;
+				if (enumerator(value))												return true;
+				if (left && left->EnumerateBackward(std::forward<R>(enumerator)))	return true;
+				return false;
+			}
+			template <typename R> bool EnumerateForward(R&& enumerator) const
+			{
+				if (left && left->EnumerateForward(std::forward<R>(enumerator)))	return true;
+				if (enumerator(value))												return true;
+				if (right && right->EnumerateForward(std::forward<R>(enumerator)))	return true;
+				return false;
+			}
+			template <typename R> bool EnumerateBackward(R&& enumerator) const
+			{
+				if (right && right->EnumerateBackward(std::forward<R>(enumerator)))	return true;
+				if (enumerator(value))												return true;
+				if (left && left->EnumerateBackward(std::forward<R>(enumerator)))	return true;
+				return false;
+			}
+		};
+
 	public:
 		typedef VALUE				Value;
 		typedef KEY					Key;
@@ -72,6 +134,8 @@ namespace DKFoundation
 
 		typedef DKTypeTraits<Value>		ValueTraits;
 		typedef DKTypeTraits<Key>	SearchTratis;
+
+		enum { nodeSize = sizeof(Node) };
 
 		DKAVLTree(void)
 			: rootNode(NULL), count(0)
@@ -331,67 +395,6 @@ namespace DKFoundation
 			}
 		}
 	private:
-		class Node
-		{
-		public:
-			Node(const VALUE& v, Node* parentNode)
-				: value(v), left(NULL), right(NULL), parent(parentNode), nodeHeight(1), leftHeight(0), rightHeight(0)
-			{
-			}
-			VALUE		value;
-			Node*		left;
-			Node*		right;
-			Node*		parent;
-			int			leftHeight;		// left-tree weights
-			int			rightHeight;	// right-tree weights
-			int			nodeHeight;		// self weights ( = max(left,right)+1)
-			Node* Duplicate(void) const
-			{
-				Node* node = new(Allocator::Alloc(sizeof(Node))) Node(value, NULL);
-				if (left)
-				{
-					node->left = left->Duplicate();
-					node->left->parent = node;
-				}
-				if (right)
-				{
-					node->right = right->Duplicate();
-					node->right->parent = node;
-				}
-				node->leftHeight = leftHeight;
-				node->rightHeight = rightHeight;
-				node->nodeHeight = nodeHeight;
-				return node;
-			}
-			template <typename R> bool EnumerateForward(R&& enumerator)
-			{
-				if (left && left->EnumerateForward(std::forward<R>(enumerator)))	return true;
-				if (enumerator(value))												return true;
-				if (right && right->EnumerateForward(std::forward<R>(enumerator)))	return true;
-				return false;
-			}
-			template <typename R> bool EnumerateBackward(R&& enumerator)
-			{
-				if (right && right->EnumerateBackward(std::forward<R>(enumerator)))	return true;
-				if (enumerator(value))												return true;
-				if (left && left->EnumerateBackward(std::forward<R>(enumerator)))	return true;
-				return false;
-			}
-			template <typename R> bool EnumerateForward(R&& enumerator) const
-			{
-				if (left && left->EnumerateForward(std::forward<R>(enumerator)))	return true;
-				if (enumerator(value))												return true;
-				if (right && right->EnumerateForward(std::forward<R>(enumerator)))	return true;
-				return false;
-			}
-			template <typename R> bool EnumerateBackward(R&& enumerator) const
-			{
-				if (right && right->EnumerateBackward(std::forward<R>(enumerator)))	return true;
-				if (enumerator(value))												return true;
-				if (left && left->EnumerateBackward(std::forward<R>(enumerator)))	return true;
-				return false;
-			}
-		};
 		void DeleteNode(Node* node)
 		{
 			if (node->right)

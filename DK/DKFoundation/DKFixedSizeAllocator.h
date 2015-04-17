@@ -47,12 +47,12 @@ namespace DKFoundation
 		static_assert(sizeof(BitMaskType) * 8 == MaxUnits, "BitMaskType is invalid.");
 		static const BitMaskType fullOccupied = (BitMaskType)-1;
 
-		enum {MaxUnitsPerChunk = MaxUnits};
+		enum {maxUnitsPerChunk = MaxUnits};
+
+		using Unit = unsigned char[UnitSize];
 		struct Chunk
 		{
-			using Unit = unsigned char[UnitSize];
-
-			Unit units[MaxUnitsPerChunk];
+			Unit units[maxUnitsPerChunk];
 			BitMaskType occupied;
 			Chunk* next; /* linked-list */
 		};
@@ -90,7 +90,7 @@ namespace DKFoundation
 				if (ch->occupied != fullOccupied)
 				{
 					// chunk has one or more unoccupied units.
-					for (int i = 0; i < MaxUnitsPerChunk; ++i)
+					for (int i = 0; i < maxUnitsPerChunk; ++i)
 					{
 						unsigned int occupied = (ch->occupied >> i) & 1;
 						if (occupied)
@@ -103,7 +103,7 @@ namespace DKFoundation
 			}
 			// no space, create new chunk.
 			numChunks++;
-			Chunk* ch = BaseAllocator::Alloc(sizeof(Chunk));
+			Chunk* ch = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
 			ch->occupied = 1;
 			ch->next = NULL;
 			// add chunk to linked list
@@ -126,10 +126,10 @@ namespace DKFoundation
 			for (Chunk* ch = firstChunk; ch; ch = ch->next)
 			{
 				uintptr_t rangeBegin = reinterpret_cast<uintptr_t>(ch->units[0]);
-				uintptr_t rangeEnd = reinterpret_cast<uintptr_t>(ch->units[MaxUnitsPerChunk-1]);
+				uintptr_t rangeEnd = reinterpret_cast<uintptr_t>(ch->units[maxUnitsPerChunk-1]);
 				if (addr >= rangeBegin && addr <= rangeEnd)
 				{
-					unsigned int index = (addr - rangeBegin) / sizeof(Chunk::Unit);
+					unsigned int index = (addr - rangeBegin) / sizeof(Unit);
 					ch->occupied ^= (1 << index);
 					numAllocated--;
 					return;
@@ -148,7 +148,7 @@ namespace DKFoundation
 				{
 					Chunk* freeChunk = ch->next;
 					ch->next = freeChunk->next;
-					BaseAllocator::Dealloc(freeChunk);
+					BaseAllocator::Free(freeChunk);
 					numChunks--;
 				}
 			}
@@ -156,7 +156,7 @@ namespace DKFoundation
 			{
 				Chunk* freeChunk = firstChunk;
 				firstChunk = freeChunk->next;
-				BaseAllocator::Dealloc(freeChunk);
+				BaseAllocator::Free(freeChunk);
 				numChunks--;
 			}
 		}
@@ -170,7 +170,7 @@ namespace DKFoundation
 				Chunk* ch = nextChunk;
 				nextChunk = ch->next;
 
-				BaseAllocator::Dealloc(ch);
+				BaseAllocator::Free(ch);
 			}
 		}
 
