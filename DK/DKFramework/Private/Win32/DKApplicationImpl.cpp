@@ -234,7 +234,10 @@ int DKApplicationImpl::Run(DKArray<char*>& args)
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
 		}
+		PerformMainThreadOperations();
 	}
+
+	PerformMainThreadOperations();
 
 	AppFinalize(mainApp);
 

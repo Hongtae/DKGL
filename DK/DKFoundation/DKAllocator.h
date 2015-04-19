@@ -8,18 +8,16 @@
 #pragma once
 #include "../DKinclude.h"
 #include "DKMemory.h"
+#include "DKAllocatorChain.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-//
 // DKAllocator
-//
-// memory allocation management. (currently wrapper of malloc)
-//
+// interface class for memory allocation, deallocation.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFoundation
 {
-	class DKLIB_API DKAllocator
+	class DKLIB_API DKAllocator : public DKAllocatorChain
 	{
 	public:
 		virtual ~DKAllocator(void);
@@ -33,8 +31,8 @@ namespace DKFoundation
 		DKAllocator(void);
 
 	private:
-		DKAllocator(const DKAllocator&);
-		DKAllocator& operator = (const DKAllocator&);
+		DKAllocator(const DKAllocator&);				/* = deleted */
+		DKAllocator& operator = (const DKAllocator&);	/* = deleted */
 	};
 }
 

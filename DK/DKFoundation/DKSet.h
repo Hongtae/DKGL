@@ -58,6 +58,8 @@ namespace DKFoundation
 		// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
 
+		enum { nodeSize = Container::nodeSize };
+
 		DKSet(void)
 		{
 		}
