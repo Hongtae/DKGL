@@ -81,6 +81,8 @@ namespace DKFoundation
 		typedef IteratorT<Node, VALUE&> Iterator;
 		typedef IteratorT<const Node, const VALUE&> ConstIterator;
 
+		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
+
 		// lock is public. to provde lock object from outside!
 		Lock lock;
 

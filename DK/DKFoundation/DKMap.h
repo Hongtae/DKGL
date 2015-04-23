@@ -119,7 +119,7 @@ namespace DKFoundation
 			Copy copy;
 		};
 		typedef DKAVLTree<Pair, KEY, PairComparison, KeyComparison, PairCopy, Allocator> Container;
-		enum { nodeSize = Container::nodeSize };
+		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
 
 		// lock is public. to provde lock object from outside!
 		// FindNoLock, CountNoLock is usable regardless of locking.

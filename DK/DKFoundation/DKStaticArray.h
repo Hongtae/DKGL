@@ -74,6 +74,8 @@ namespace DKFoundation
 		typedef size_t					Index;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 
+		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+
 		static const Index invalidIndex = (size_t)-1;
 
 		// Iterator class for range-based for loop

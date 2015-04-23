@@ -132,10 +132,10 @@ namespace DKFoundation
 		typedef COPY				ValueCopy;
 		typedef ALLOC				Allocator;
 
-		typedef DKTypeTraits<Value>		ValueTraits;
+		typedef DKTypeTraits<Value>	ValueTraits;
 		typedef DKTypeTraits<Key>	SearchTratis;
 
-		enum { nodeSize = sizeof(Node) };
+		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
 
 		DKAVLTree(void)
 			: rootNode(NULL), count(0)

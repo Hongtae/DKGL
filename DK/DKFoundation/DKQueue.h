@@ -35,6 +35,8 @@ namespace DKFoundation
 		typedef DKCriticalSection<Lock>		CriticalSection;
 		typedef ALLOC						Allocator;
 
+		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+
 		// lock is public. enables object could be locked from outside.
 		// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
 		Lock	lock;

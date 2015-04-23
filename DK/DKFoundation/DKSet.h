@@ -50,15 +50,15 @@ namespace DKFoundation
 		typedef LOCK													Lock;
 		typedef COMPARE													Compare;
 		typedef ALLOC													Allocator;
-		typedef DKAVLTree<Value, Value, Compare, Compare, DKTreeValueCopy<VALUE>, Allocator>	Container;
 		typedef DKCriticalSection<Lock>									CriticalSection;
 		typedef DKTypeTraits<Value>										ValueTraits;
+		typedef DKAVLTree<Value, Value, Compare, Compare, DKTreeValueCopy<VALUE>, Allocator>	Container;
+
+		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
 
 		// lock is public. allow object being locked manually.
 		// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
-
-		enum { nodeSize = Container::nodeSize };
 
 		DKSet(void)
 		{

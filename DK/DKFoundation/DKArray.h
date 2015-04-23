@@ -58,13 +58,15 @@ namespace DKFoundation
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKArray
 	{
-		enum {InitialSize = 4,};
+		enum {initialSize = 4,};
 	public:
 		typedef LOCK					Lock;
 		typedef DKCriticalSection<Lock>	CriticalSection;
 		typedef size_t					Index;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 		typedef ALLOC					Allocator;
+
+		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
 		static const Index invalidIndex = (size_t)-1;
 		// lock is public. (object can be locked from outside, to use modify element directly.)
@@ -601,7 +603,7 @@ namespace DKFoundation
 		{
 			if (c > 0)
 			{
-				size_t minimum = c > InitialSize ? c : InitialSize;
+				size_t minimum = c > initialSize ? c : initialSize;
 
 				if (capacity < c + count || count == capacity)
 				{

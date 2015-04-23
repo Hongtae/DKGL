@@ -26,6 +26,8 @@ namespace DKFoundation
 		typedef ALLOC					Allocator;
 		typedef DKQueue<VALUE, LOCK, ALLOC>	Container;
 
+		constexpr static size_t NodeSize(void)	{ return Container::NodeSize(); }
+
 		DKStack(void) {}
 		~DKStack(void) {}
 		

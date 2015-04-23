@@ -37,6 +37,8 @@ namespace DKFoundation
 		typedef DKCriticalSection<LOCK>		CriticalSection;
 		typedef DKTypeTraits<VALUE>			ValueTraits;
 
+		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+
 		// OrderFunc, comparison function returns boolean,
 		// for ascending array, return lhs < rhs,
 		// for descending array, return lhs > rhs.

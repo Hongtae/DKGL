@@ -49,6 +49,8 @@ namespace DKFoundation
 		typedef typename Container::Index Index;
 		typedef typename Container::Allocator Allocator;
 
+		constexpr static size_t NodeSize(void)	{ return Allocator::NodeSize(); }
+
 		explicit DKCircularQueue(size_t capacity_)
 			: position(0)
 			, capacity(Max<size_t>(capacity_, MinimumCapacity))
