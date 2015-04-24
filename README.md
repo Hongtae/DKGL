@@ -59,9 +59,10 @@ You can use DK with other UI Tools also. (MFC, Cocoa, wxWidgets, etc.)
 ### Running platforms.
 - Windows Vista or later.
 - Mac OS X 10.9 or later.
-- iOS 7.0 or later. (for OpenGL ES 3.0)
-- ~~Android 4.3 or later~~ (Not yet, I'm working)
+- iOS 3.3 or later.
+- ~~Android 2.3 or later~~ (Not yet, I'm working)
     - JNI birdge required (I'll merge project as soon as possible.)
+    - You can see old version of JNI Bridge codes at https://github.com/tiff2766/DKTools_Legacy/tree/master/Extras/Android
 
 For other platforms including linux or android, You can implement
 DK interfaces to use DK library with other GUI OSes.
@@ -119,3 +120,6 @@ Hongtae Kim, (tiff2766@gmail.com)
 
 ## Liense
 [MIT License](http://opensource.org/licenses/MIT)
+
+## Demo app
+https://github.com/tiff2766/DKDemo 
