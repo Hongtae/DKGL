@@ -13,7 +13,6 @@
 		8455C6E11AED301E0003A417 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DB1AED301E0003A417 /* main.cpp */; };
 		8455C6E21AED301E0003A417 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DC1AED301E0003A417 /* stdafx.cpp */; };
 		8455C6E31AED301E0003A417 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DC1AED301E0003A417 /* stdafx.cpp */; };
-		8455C6EE1AED31600003A417 /* Images_iOS.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C6D91AED2F990003A417 /* Images_iOS.xcassets */; };
 		8455C6EF1AED31650003A417 /* Images_OSX.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C6B31AED2E010003A417 /* Images_OSX.xcassets */; };
 		8455C7221AED31E80003A417 /* DK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C6FC1AED318E0003A417 /* DK.framework */; };
 		8455C7231AED31E80003A417 /* DK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C6FC1AED318E0003A417 /* DK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -23,6 +22,7 @@
 		8455C72C1AED32030003A417 /* DK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C6FE1AED318E0003A417 /* DK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8455C72F1AED32030003A417 /* PyDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C7101AED31A00003A417 /* PyDK.framework */; };
 		8455C7301AED32030003A417 /* PyDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C7101AED31A00003A417 /* PyDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8455C78E1AEE6AA00003A417 /* Images_iOS.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C78D1AEE6AA00003A417 /* Images_iOS.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -176,17 +176,17 @@
 
 /* Begin PBXFileReference section */
 		8455C6A91AED2E000003A417 /* Launcher_OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launcher_OSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8455C6AD1AED2E000003A417 /* Launcher_OSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Launcher_OSX-Info.plist"; path = "../Launcher_OSX-Info.plist"; sourceTree = "<group>"; };
-		8455C6B31AED2E010003A417 /* Images_OSX.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images_OSX.xcassets; path = ../Images_OSX.xcassets; sourceTree = "<group>"; };
+		8455C6AD1AED2E000003A417 /* PyDKLauncher_OSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PyDKLauncher_OSX-Info.plist"; sourceTree = "<group>"; };
+		8455C6B31AED2E010003A417 /* Images_OSX.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images_OSX.xcassets; sourceTree = "<group>"; };
 		8455C6D71AED2E120003A417 /* Launcher_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launcher_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8455C6D81AED2E120003A417 /* Launcher_iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Launcher_iOS-Info.plist"; path = "/Users/tiff/Desktop/GIT/DKLib/Launcher/Launcher_iOS-Info.plist"; sourceTree = "<absolute>"; };
-		8455C6D91AED2F990003A417 /* Images_iOS.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images_iOS.xcassets; path = ../Images_iOS.xcassets; sourceTree = "<group>"; };
+		8455C6D81AED2E120003A417 /* PyDKLauncher_iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PyDKLauncher_iOS-Info.plist"; path = "/Users/tiff/Desktop/GIT/DKLib/PyDKLauncher/PyDKLauncher_iOS-Info.plist"; sourceTree = "<absolute>"; };
 		8455C6DA1AED301E0003A417 /* getpath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = getpath.mm; sourceTree = SOURCE_ROOT; };
 		8455C6DB1AED301E0003A417 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = SOURCE_ROOT; };
 		8455C6DC1AED301E0003A417 /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = SOURCE_ROOT; };
 		8455C6DD1AED301E0003A417 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = SOURCE_ROOT; };
 		8455C6F01AED318E0003A417 /* DK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DK.xcodeproj; path = ../DK/DK.xcodeproj; sourceTree = "<group>"; };
 		8455C6FF1AED31A00003A417 /* PyDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PyDK.xcodeproj; path = ../PyDK/PyDK.xcodeproj; sourceTree = "<group>"; };
+		8455C78D1AEE6AA00003A417 /* Images_iOS.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images_iOS.xcassets; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,10 +246,10 @@
 		8455C6AC1AED2E000003A417 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8455C6D91AED2F990003A417 /* Images_iOS.xcassets */,
+				8455C78D1AEE6AA00003A417 /* Images_iOS.xcassets */,
 				8455C6B31AED2E010003A417 /* Images_OSX.xcassets */,
-				8455C6D81AED2E120003A417 /* Launcher_iOS-Info.plist */,
-				8455C6AD1AED2E000003A417 /* Launcher_OSX-Info.plist */,
+				8455C6D81AED2E120003A417 /* PyDKLauncher_iOS-Info.plist */,
+				8455C6AD1AED2E000003A417 /* PyDKLauncher_OSX-Info.plist */,
 			);
 			name = "Supporting Files";
 			path = Launcher;
@@ -339,7 +339,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8455C6A41AED2E000003A417 /* Build configuration list for PBXProject "Launcher" */;
+			buildConfigurationList = 8455C6A41AED2E000003A417 /* Build configuration list for PBXProject "PyDKLauncher" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -447,7 +447,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8455C6EE1AED31600003A417 /* Images_iOS.xcassets in Resources */,
+				8455C78E1AEE6AA00003A417 /* Images_iOS.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,7 +604,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "Launcher_OSX-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/PyDKLauncher_OSX-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 			};
 			name = Debug;
@@ -614,7 +614,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "Launcher_OSX-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/PyDKLauncher_OSX-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 			};
 			name = Release;
@@ -626,7 +626,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "Launcher_iOS-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/PyDKLauncher_iOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -641,7 +641,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "Launcher_iOS-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/PyDKLauncher_iOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/Frameworks";
 				SDKROOT = iphoneos;
@@ -652,7 +652,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8455C6A41AED2E000003A417 /* Build configuration list for PBXProject "Launcher" */ = {
+		8455C6A41AED2E000003A417 /* Build configuration list for PBXProject "PyDKLauncher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8455C6C41AED2E010003A417 /* Debug */,

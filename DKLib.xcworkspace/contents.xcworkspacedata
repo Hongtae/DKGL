@@ -13,4 +13,7 @@
    <FileRef
       location = "group:PyDK/PyDK.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:PyDKLauncher/PyDKLauncher.xcodeproj">
+   </FileRef>
 </Workspace>

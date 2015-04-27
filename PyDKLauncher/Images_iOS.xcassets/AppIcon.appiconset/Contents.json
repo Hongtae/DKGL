@@ -1,158 +1,54 @@
 {
   "images" : [
     {
-      "idiom" : "iphone",
-      "size" : "29x29",
-      "scale" : "1x"
+      "idiom" : "mac",
+      "scale" : "1x",
+      "size" : "16x16"
     },
     {
-      "idiom" : "iphone",
-      "size" : "29x29",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "29x29",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "40x40",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "40x40",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "57x57",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "57x57",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "60x60",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "60x60",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "29x29",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "29x29",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "40x40",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "40x40",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "50x50",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "50x50",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "72x72",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "72x72",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "76x76",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "76x76",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "car",
-      "size" : "120x120",
-      "scale" : "1x"
-    },
-    {
-      "size" : "24x24",
-      "idiom" : "watch",
+      "idiom" : "mac",
       "scale" : "2x",
-      "role" : "notificationCenter",
-      "subtype" : "38mm"
+      "size" : "16x16"
     },
     {
-      "size" : "27.5x27.5",
-      "idiom" : "watch",
+      "idiom" : "mac",
+      "scale" : "1x",
+      "size" : "32x32"
+    },
+    {
+      "idiom" : "mac",
       "scale" : "2x",
-      "role" : "notificationCenter",
-      "subtype" : "42mm"
+      "size" : "32x32"
     },
     {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "role" : "companionSettings",
-      "scale" : "2x"
+      "idiom" : "mac",
+      "scale" : "1x",
+      "size" : "128x128"
     },
     {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "role" : "companionSettings",
-      "scale" : "3x"
-    },
-    {
-      "size" : "40x40",
-      "idiom" : "watch",
+      "idiom" : "mac",
       "scale" : "2x",
-      "role" : "appLauncher",
-      "subtype" : "38mm"
+      "size" : "128x128"
     },
     {
-      "size" : "44x44",
-      "idiom" : "watch",
-      "scale" : "2x",
-      "role" : "longLook",
-      "subtype" : "42mm"
+      "idiom" : "mac",
+      "scale" : "1x",
+      "size" : "256x256"
     },
     {
-      "size" : "86x86",
-      "idiom" : "watch",
+      "idiom" : "mac",
       "scale" : "2x",
-      "role" : "quickLook",
-      "subtype" : "38mm"
+      "size" : "256x256"
     },
     {
-      "size" : "98x98",
-      "idiom" : "watch",
+      "idiom" : "mac",
+      "scale" : "1x",
+      "size" : "512x512"
+    },
+    {
+      "idiom" : "mac",
       "scale" : "2x",
-      "role" : "quickLook",
-      "subtype" : "42mm"
+      "size" : "512x512"
     }
   ],
   "info" : {
