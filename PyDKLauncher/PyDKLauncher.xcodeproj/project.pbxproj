@@ -13,7 +13,6 @@
 		8455C6E11AED301E0003A417 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DB1AED301E0003A417 /* main.cpp */; };
 		8455C6E21AED301E0003A417 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DC1AED301E0003A417 /* stdafx.cpp */; };
 		8455C6E31AED301E0003A417 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DC1AED301E0003A417 /* stdafx.cpp */; };
-		8455C6EF1AED31650003A417 /* Images_OSX.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C6B31AED2E010003A417 /* Images_OSX.xcassets */; };
 		8455C7221AED31E80003A417 /* DK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C6FC1AED318E0003A417 /* DK.framework */; };
 		8455C7231AED31E80003A417 /* DK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C6FC1AED318E0003A417 /* DK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8455C7261AED31E80003A417 /* PyDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C70E1AED31A00003A417 /* PyDK.framework */; };
@@ -22,7 +21,8 @@
 		8455C72C1AED32030003A417 /* DK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C6FE1AED318E0003A417 /* DK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8455C72F1AED32030003A417 /* PyDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C7101AED31A00003A417 /* PyDK.framework */; };
 		8455C7301AED32030003A417 /* PyDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8455C7101AED31A00003A417 /* PyDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8455C78E1AEE6AA00003A417 /* Images_iOS.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C78D1AEE6AA00003A417 /* Images_iOS.xcassets */; };
+		8455C9DF1AEE78F90003A417 /* Images_iOS.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C78D1AEE6AA00003A417 /* Images_iOS.xcassets */; };
+		8455C9E21AEE796A0003A417 /* Images_OSX.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8455C6B31AED2E010003A417 /* Images_OSX.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -252,7 +252,6 @@
 				8455C6AD1AED2E000003A417 /* PyDKLauncher_OSX-Info.plist */,
 			);
 			name = "Supporting Files";
-			path = Launcher;
 			sourceTree = "<group>";
 		};
 		8455C6F11AED318E0003A417 /* Products */ = {
@@ -439,7 +438,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8455C6EF1AED31650003A417 /* Images_OSX.xcassets in Resources */,
+				8455C9E21AEE796A0003A417 /* Images_OSX.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,7 +446,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8455C78E1AEE6AA00003A417 /* Images_iOS.xcassets in Resources */,
+				8455C9DF1AEE78F90003A417 /* Images_iOS.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
