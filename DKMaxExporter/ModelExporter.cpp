@@ -611,15 +611,15 @@ DKArray<DKObject<DKMesh>> ModelExporter::ExportMesh(IGameMesh* pIGameMesh, const
 					pIGameMesh->GetTexVertex(face->texCoord[1]),
 					pIGameMesh->GetTexVertex(face->texCoord[2])
 				};
-				int minU = floor(Min<float>(tex[0].x, Min<float>(tex[1].x, tex[2].x)));
-				int minV = floor(Min<float>(tex[0].y, Min<float>(tex[1].y, tex[2].y)));
-				int maxU = ceil(Max<float>(tex[0].x, Max<float>(tex[1].x, tex[2].x)));
-				int maxV = ceil(Max<float>(tex[0].y, Max<float>(tex[1].y, tex[2].y)));
+				int minU = floor(Min(tex[0].x, tex[1].x, tex[2].x));
+				int minV = floor(Min(tex[0].y, tex[1].y, tex[2].y));
+				int maxU = ceil(Max(tex[0].x, tex[1].x, tex[2].x));
+				int maxV = ceil(Max(tex[0].y, tex[1].y, tex[2].y));
 
 				int sizeU = maxU - minU;
 				int sizeV = maxV - minV;
 
-				int length = Max<int>(sizeU, sizeV);
+				int length = Max(sizeU, sizeV);
 				if (uvLength < length)
 					uvLength = length;				
 			}
@@ -638,8 +638,8 @@ DKArray<DKObject<DKMesh>> ModelExporter::ExportMesh(IGameMesh* pIGameMesh, const
 
 			if (normalizeUV)		// 텍스쳐 좌표 범위 조정 (short 또는 unsigned short 으로)
 			{
-				float minU = floor(Min<float>(tex[0].x, Min<float>(tex[1].x, tex[2].x)));
-				float maxU = ceil(Max<float>(tex[0].x, Max<float>(tex[1].x, tex[2].x)));
+				float minU = floor(Min(tex[0].x, tex[1].x, tex[2].x));
+				float maxU = ceil(Max(tex[0].x, tex[1].x, tex[2].x));
 				float sizeU = maxU - minU;
 				if (sizeU > 1.0f)	// -1.0~1.0 사이로 범위 조정 (short)
 				{
@@ -671,8 +671,8 @@ DKArray<DKObject<DKMesh>> ModelExporter::ExportMesh(IGameMesh* pIGameMesh, const
 					tex[2].x -= minU;
 				}
 
-				float minV = floor(Min<float>(tex[0].y, Min<float>(tex[1].y, tex[2].y)));
-				float maxV = ceil(Max<float>(tex[0].y, Max<float>(tex[1].y, tex[2].y)));
+				float minV = floor(Min(tex[0].y, tex[1].y, tex[2].y));
+				float maxV = ceil(Max(tex[0].y, tex[1].y, tex[2].y));
 				float sizeV = maxV - minV;
 				if (sizeV > 1.0f)	// -1.0~1.0 사이로 범위 조정 (short)
 				{
@@ -1019,7 +1019,7 @@ DKArray<DKObject<DKMesh>> ModelExporter::ExportMesh(IGameMesh* pIGameMesh, const
 						for (int k = 0; k < 4; ++k)
 						{
 							sv16.indices[k] = vert.indices[k];
-							sv16.weights[k] = static_cast<unsigned short>(Clamp<float>(vert.weights[k], 0.0, 1.0) * static_cast<float>(0xffff));
+							sv16.weights[k] = static_cast<unsigned short>(Clamp(vert.weights[k], 0.0, 1.0) * static_cast<float>(0xffff));
 						}
 						skinData.Add(sv16);
 					}
@@ -1045,7 +1045,7 @@ DKArray<DKObject<DKMesh>> ModelExporter::ExportMesh(IGameMesh* pIGameMesh, const
 						for (int k = 0; k < 4; ++k)
 						{
 							sv12.indices[k] = static_cast<unsigned char>(vert.indices[k]);
-							sv12.weights[k] = static_cast<unsigned short>(Clamp<float>(vert.weights[k], 0.0, 1.0) * static_cast<float>(0xffff));
+							sv12.weights[k] = static_cast<unsigned short>(Clamp(vert.weights[k], 0.0, 1.0) * static_cast<float>(0xffff));
 						}
 						skinData.Add(sv12);
 					}

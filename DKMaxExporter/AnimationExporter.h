@@ -1,5 +1,5 @@
 #pragma once
-#include <DK.h>
+#include <DK/DK.h>
 #include "DKMaxExporter.h"
 
 using namespace DKFoundation;

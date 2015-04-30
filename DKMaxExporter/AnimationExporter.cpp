@@ -135,7 +135,7 @@ void AnimationExporter::ReadConfig()
 		exportKeyframes = DKPropertySet::DefaultSet().Value(exportKeyframesPropertyKey).Integer() != 0;
 
 	if (DKPropertySet::DefaultSet().Value(keyframeThresholdPropertyKey).ValueType() == DKVariant::TypeFloat)
-		keyframeThreshold = Max<float>(DKPropertySet::DefaultSet().Value(keyframeThresholdPropertyKey).Float(), KEYFRAME_THRESHOLD_DEFAULT);
+		keyframeThreshold = Max(DKPropertySet::DefaultSet().Value(keyframeThresholdPropertyKey).Float(), KEYFRAME_THRESHOLD_DEFAULT);
 
 	// exportFormat
 	if (DKPropertySet::DefaultSet().Value(exportFormatPropertyKey).ValueType() == DKVariant::TypeInteger)

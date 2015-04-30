@@ -114,7 +114,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../../DK;SDK/3ds Max 2012 SDK/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);SDK/3ds Max 2012 SDK/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;DKLIB_STATIC;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;ISOLATION_AWARE_ENABLED=1;_SECURE_SCL=0;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -170,7 +170,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../../DK;SDK/3ds Max 2015 SDK/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);SDK/3ds Max 2015 SDK/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;DKLIB_STATIC;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;ISOLATION_AWARE_ENABLED=1;_SECURE_SCL=0;WIN64;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -221,7 +221,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../../DK;SDK/3ds Max 2012 SDK/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);SDK/3ds Max 2012 SDK/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;DKLIB_STATIC;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;ISOLATION_AWARE_ENABLED=1;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -269,7 +269,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../../DK;SDK/3ds Max 2015 SDK/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);SDK/3ds Max 2015 SDK/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;DKLIB_STATIC;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;ISOLATION_AWARE_ENABLED=1;WIN64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -328,7 +328,7 @@
     <None Include="DKMaxExporter.def" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DK\DK_static.vcxproj">
+    <ProjectReference Include="..\DK\DK_static.vcxproj">
       <Project>{c7312831-a3f6-4e7d-962b-6786972f0a6a}</Project>
     </ProjectReference>
   </ItemGroup>
