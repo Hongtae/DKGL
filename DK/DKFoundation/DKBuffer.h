@@ -32,7 +32,8 @@ namespace DKFoundation
 	public:
 		DKBuffer(DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		DKBuffer(const DKData* p, DKAllocator& alloc = DKAllocator::DefaultAllocator());
-		DKBuffer(const void* p, size_t s, DKAllocator& alloc = DKAllocator::DefaultAllocator());	// p 가 NULL 이면 s 만큼 버퍼 생성함 (0 으로 초기화됨)
+		// if p is NULL, an empty buffer with given length s will be created.
+		DKBuffer(const void* p, size_t s, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		DKBuffer(const DKBuffer&);
 		DKBuffer(DKBuffer&&);
 		~DKBuffer(void);

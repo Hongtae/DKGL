@@ -63,8 +63,10 @@
 #endif
 
 #define mkdir(p,m) _mkdir(p)
+#if _MSC_VER < 1900
 #define snprintf _snprintf
 #define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)
+#endif
 #define HAVE_WIN32_THREADS
 
 #pragma comment(lib, "Ws2_32.lib")

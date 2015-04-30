@@ -23,9 +23,11 @@
 #define _CRT_NONSTDC_NO_DEPRECATE
 #define strcasecmp	_stricmp
 #define strncasecmp	_strnicmp
+#if _MSC_VER < 1900
 #define snprintf	_snprintf
-//#define isfinite	_finite
-//#define isnan		_isnan
+#endif
+/* #define isfinite	_finite */
+/* #define isnan	_isnan */
 
 #define HAVE__ALIGNED_MALLOC
 #define HAVE_SSE
