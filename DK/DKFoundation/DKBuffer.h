@@ -32,7 +32,7 @@ namespace DKFoundation
 	public:
 		DKBuffer(DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		DKBuffer(const DKData* p, DKAllocator& alloc = DKAllocator::DefaultAllocator());
-		// if p is NULL, an empty buffer with given length s will be created.
+		// if p is NULL, an empty buffer with given length will be created.
 		DKBuffer(const void* p, size_t s, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		DKBuffer(const DKBuffer&);
 		DKBuffer(DKBuffer&&);

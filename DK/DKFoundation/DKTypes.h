@@ -45,15 +45,15 @@ namespace DKFoundation
 	// type number
 	template <int i> struct DKNumber {enum {Value = i};	};
 	// boolean type value (for SFINAE)
-	using DKTrue = DKNumber<true>;
-	using DKFalse = DKNumber<false>;
+	using DKTrue = DKNumber<1>;
+	using DKFalse = DKNumber<0>;
 
 	namespace Private
 	{
 		template <typename T, bool isPolymorphic = DKTypeTraitsCppExt<T>::IsPolymorphic()> struct BaseAddress;
 		template <typename T> struct BaseAddress<T, true>
 		{
-			enum {isPolymorphic = 1};
+			enum {IsPolymorphic = 1};
 			static void* Cast(T* p)
 			{
 				return dynamic_cast<void*>(p);
@@ -61,7 +61,7 @@ namespace DKFoundation
 		};
 		template <typename T> struct BaseAddress<T, false>
 		{
-			enum {isPolymorphic = 0};
+			enum {IsPolymorphic = 0};
 			static void* Cast(T* p)
 			{
 				return static_cast<void*>(p);
@@ -77,15 +77,7 @@ namespace DKFoundation
 		{
 			using Result = U;
 		};
-		// conditional enum
-		template <bool C, int N1, int N2> struct CondEnum
-		{
-			enum {Result = N1};
-		};
-		template <int N1, int N2> struct CondEnum<false, N1, N2>
-		{
-			enum {Result = N2};
-		};
+
 		// sum of given integers in Ns...
 		// _Sum<1,2,3>::Result = 6
 		template <int... Ns> struct Sum
@@ -104,7 +96,7 @@ namespace DKFoundation
 		template <int Num, int N1, int... Ns> struct NumMatches<Num, N1, Ns...>
 		{
 			enum {Rest = NumMatches<Num, Ns...>::Result};
-			enum {Result = CondEnum<Num == N1, 1, 0>::Result + Rest};
+			enum {Result = Rest + (Num == N1 ? 1 : 0)};
 		};
 
 		// check T1 is convertible into T2.
@@ -134,12 +126,6 @@ namespace DKFoundation
 
 	// conditional type definition, if C is true result is T, else U.
 	template <bool C, typename T, typename U> using DKCondType = typename Private::CondType<C, T, U>::Result;
-
-	// conditional constant number, if C is true result is N1, else N2.
-	template <bool C, int N1, int N2> constexpr int DKCondEnum(void)
-	{
-		return Private::CondEnum<C, N1, N2>::Result;
-	}
 
 	// returns sum of integers in Ns...
 	template <int... Ns> constexpr int DKSum(void)

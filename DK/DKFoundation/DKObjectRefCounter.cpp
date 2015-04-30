@@ -31,12 +31,12 @@ namespace DKFoundation
 			// use fixed-size allocator.
 			struct Allocator
 			{
-				enum { nodeSize = DKMap<void*, NodeInfo>::NodeSize() };
-				using FixedAllocator = DKFixedSizeAllocator<nodeSize, 64, Lock>;
+				enum { NodeSize = DKMap<void*, NodeInfo>::NodeSize() };
+				using FixedAllocator = DKFixedSizeAllocator<NodeSize, 64, Lock>;
 
 				static void* Alloc(size_t s)
 				{
-					DKASSERT_DEBUG(s == nodeSize);
+					DKASSERT_DEBUG(s == NodeSize);
 					return FixedAllocator::Instance().Alloc(s);
 				}
 				static void Free(void* p)

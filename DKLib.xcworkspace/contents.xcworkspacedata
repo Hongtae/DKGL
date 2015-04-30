@@ -5,6 +5,9 @@
       location = "group:LICENSE">
    </FileRef>
    <FileRef
+      location = "group:NamingConv.txt">
+   </FileRef>
+   <FileRef
       location = "group:README.md">
    </FileRef>
    <FileRef

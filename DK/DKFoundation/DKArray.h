@@ -58,7 +58,7 @@ namespace DKFoundation
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKArray
 	{
-		enum {initialSize = 4,};
+		enum {InitialSize = 4,};
 	public:
 		typedef LOCK					Lock;
 		typedef DKCriticalSection<Lock>	CriticalSection;
@@ -603,7 +603,7 @@ namespace DKFoundation
 		{
 			if (c > 0)
 			{
-				size_t minimum = c > initialSize ? c : initialSize;
+				size_t minimum = c > InitialSize ? c : InitialSize;
 
 				if (capacity < c + count || count == capacity)
 				{

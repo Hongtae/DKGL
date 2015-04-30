@@ -215,9 +215,13 @@ namespace DKFoundation
 		using TypeList = DKTypeList<Types...>;
 
 		template <size_t Index> using TypeAt = typename TypeList::template TypeAt<Index>;
-		template <typename T> using IndexOf = typename TypeList::template IndexOf<T>;
 
-		template <typename T> static constexpr auto HasType(void)->bool
+		template <typename T> constexpr static auto IndexOf(void) -> int
+		{
+			return TypeList::template IndexOf<T>();
+		}
+
+		template <typename T> constexpr static auto HasType(void) -> bool
 		{
 			return TypeList::template Count<T>::Value > 0;
 		};

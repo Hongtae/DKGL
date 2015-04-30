@@ -83,7 +83,7 @@ namespace DKFoundation
 
 		template <typename... Ts> constexpr static bool CanInvokeWithParameterTypes(void)
 		{
-			return DKTypeList<Ts...>::template IsConvertible<typename ParameterTuple::TypeList>::Value;
+			return DKTypeList<Ts...>::template IsConvertible<typename ParameterTuple::TypeList>();
 		};
 	};
 
@@ -297,7 +297,7 @@ namespace DKFoundation
 				enum {IsObjectConst = DKTypeTraits<U>::IsConst}; // test object is const or not.
 				enum {IsFunctionConst = Traits::IsConst};        // test function is const or not.
 				// if object is const, member function must be const.
-				enum {IsCallable = DKCondEnum<IsObjectConst, IsFunctionConst, true>()};
+				enum {IsCallable = IsObjectConst ? IsFunctionConst : 1};
 			};
 			template <typename U> struct _FunctionTraits<U, false>
 			{
@@ -382,7 +382,7 @@ namespace DKFoundation
 
 				// determine 'U' can call 'Func'.
 				enum {ConversionTest = DKTypeConversionTest<ObjectType*, ClassType*>()};
-				enum {ConstTest = DKCondEnum<IsObjectConst, IsFunctionConst, true>()};
+				enum {ConstTest = IsObjectConst ? IsFunctionConst : 1};
 
 				enum {Result = ConversionTest && ConstTest};
 			};

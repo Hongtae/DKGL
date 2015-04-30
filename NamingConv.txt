@@ -1,0 +1,42 @@
+
+Naming Convention sample
+
+type name, enum is UpperCamelCase
+an instance or something has it’s own address should be lowerCamelCase.
+
+macro is UPPER_CASE with underscore.
+
+No underscore for all names except for macros.
+
+
+Sample:
+
+#define MACRO_IS_UPPER_CASE_WITH_UNDERSCORE	1
+
+class TestClass
+{
+public:
+	enum {
+		EnumConst = 0,
+		UsefulValue = 1
+	};
+
+	typedef int MyType;
+
+	int FunctionName(void) const;
+
+	static void StaticFunctionName(void);
+
+	int memberVariable1;
+
+private:
+	float memberVariable2;
+};
+
+
+int SomeFunction(int val)
+{
+	TestClass testInstance = new TestClass();
+	testInstance.memberVariable1 = 0;
+	return testInstance.FunctionName();
+}

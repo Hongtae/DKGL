@@ -23,10 +23,10 @@ namespace DKFoundation
 	template <typename... Types> class DKTypeList
 	{
 		// typedef of type located at Index. (error if index goes out of range)
-		template <unsigned Index> struct _TypeAt
+		template <int Index> struct _TypeAt
 		{
 			// decrease N by one, define type at N become to zero.
-			template <unsigned N, typename T, typename... Ts> struct _EnumTypes
+			template <int N, typename T, typename... Ts> struct _EnumTypes
 			{
 				using Result = typename _EnumTypes<N-1, Ts...>::Result;
 			};
@@ -36,6 +36,8 @@ namespace DKFoundation
 			};
 
 			static_assert(Index < sizeof...(Types), "Index must be less than count");
+			static_assert(Index >= 0, "Index cannot be negative value");
+
 			using Result = typename _EnumTypes<Index, Types...>::Result;
 		};
 		// get index of type T. (error if not exists)
@@ -100,15 +102,14 @@ namespace DKFoundation
 			template <typename T1, typename T2> struct IsSameType	{enum {Result = false};};
 			template <typename T> struct IsSameType<T, T>			{enum {Result = true};};
 
-			// count till given types are different. (in range of S)
-			template <unsigned S, typename L1, typename L2> struct _CountSameTypes
+			// count until given types are not matched. (in range of S)
+			template <int S, typename L1, typename L2> struct _CountSameTypes
 			{
-				enum {Result =
-					DKCondEnum<
-					IsSameType< typename L1::template TypeAt<S-1>, typename L2::template TypeAt<S-1>>::Result,
-					_CountSameTypes<S-1, L1, L2>::Result + 1,
-					0
-					>()};
+				enum {NextIndex = S-1};
+				using Type1 = typename L1::template TypeAt<NextIndex>;
+				using Type2 = typename L2::template TypeAt<NextIndex>;
+
+				enum {Result = IsSameType<Type1, Type2>::Result ? _CountSameTypes<NextIndex, L1, L2>::Result + 1 : 0};
 			};
 			template <typename L1, typename L2> struct _CountSameTypes<0, L1, L2>
 			{
@@ -116,7 +117,7 @@ namespace DKFoundation
 			};
 
 			enum {LengthA = sizeof...(Types), LengthB = sizeof...(Ts)};
-			enum {MinRange = DKCondEnum< (LengthA < LengthB), LengthA, LengthB>()};
+			enum {MinRange = LengthA < LengthB ? LengthA : LengthB};
 
 			using _List1 = DKTypeList<Types...>;
 			using _List2 = DKTypeList<Ts...>;
@@ -132,14 +133,13 @@ namespace DKFoundation
 		template <typename... Ts> struct _IsConvertible<DKTypeList<Ts...>>
 		{
 			// count till given type(L1) is not convertible to type(L2). (in range of S)
-			template <unsigned S, typename L1, typename L2> struct _CountCompatibles
+			template <int S, typename L1, typename L2> struct _CountCompatibles
 			{
-				enum {Result =
-					DKCondEnum<
-					DKTypeConversionTest< typename L1::template TypeAt<S-1>, typename L2::template TypeAt<S-1>>(),
-					_CountCompatibles<S-1, L1, L2>::Result + 1,
-					0
-					>()};
+				enum {NextIndex = S-1};
+				using Type1 = typename L1::template TypeAt<NextIndex>;
+				using Type2 = typename L2::template TypeAt<NextIndex>;
+
+				enum {Result = DKTypeConversionTest<Type1, Type2>() ? _CountCompatibles<NextIndex, L1, L2>::Result + 1 : 0};
 			};
 			template <typename L1, typename L2> struct _CountCompatibles<0, L1, L2>
 			{
@@ -147,7 +147,7 @@ namespace DKFoundation
 			};
 
 			enum {LengthA = sizeof...(Types), LengthB = sizeof...(Ts)};
-			enum {MinRange = DKCondEnum< (LengthA < LengthB), LengthA, LengthB>()};
+			enum {MinRange = LengthA < LengthB ? LengthA : LengthB};
 
 			using _List1 = DKTypeList<Types...>;
 			using _List2 = DKTypeList<Ts...>;
@@ -180,13 +180,13 @@ namespace DKFoundation
 			using Result = typename _EraseOne<T, Types...>::Result::template Remove<Ts...>;
 		};
 		// re-construct list without specific type at given Index.
-		template <unsigned Index> struct _RemoveIndex
+		template <int Index> struct _RemoveIndex
 		{
-			template <unsigned N, typename... Ts> struct _RemoveAt
+			template <int N, typename... Ts> struct _RemoveAt
 			{
 				using Result = DKTypeList<>;
 			};
-			template <unsigned N, typename T, typename... Ts> struct _RemoveAt<N, T, Ts...>
+			template <int N, typename T, typename... Ts> struct _RemoveAt<N, T, Ts...>
 			{
 				using _Rest = typename _RemoveAt<N+1, Ts...>::Result;
 				using Result = typename DKTypeList<T>::template Append<_Rest>;
@@ -197,17 +197,22 @@ namespace DKFoundation
 			};
 
 			static_assert(Index < sizeof...(Types), "Index must be less than count");
+			static_assert(Index >= 0, "Index cannot be negative value");
+
 			using Result = typename _RemoveAt<0, Types...>::Result;
 		};
 		// generate sub-list in range.
-		template <unsigned Begin, unsigned End> struct _SubListT
+		template <int Begin, int End> struct _SubListT
 		{
 			static_assert(Begin < sizeof...(Types), "Index must be less than count");
 			static_assert(End < sizeof...(Types), "Out of range");
 			static_assert(Begin <= End, "Invalid range");
 
-			template <unsigned, typename...> struct _SubList;
-			template <unsigned Index, typename T, typename... Ts> struct _SubList<Index, T, Ts...>
+			static_assert(Begin >= 0, "Index cannot be negative value");
+			static_assert(End >= 0, "Index cannot be negative value");
+
+			template <int, typename...> struct _SubList;
+			template <int Index, typename T, typename... Ts> struct _SubList<Index, T, Ts...>
 			{
 				using _Rest = typename _SubList<Index+1, Ts...>::Result;
 				using Result = DKCondType< Index < Begin, _Rest, typename DKTypeList<T>::template Append< _Rest > >;
@@ -221,12 +226,13 @@ namespace DKFoundation
 		};
 
 		// insert specific type at given location Index.
-		template <unsigned Index, typename... Ts> struct _InsertTypesAt
+		template <int Index, typename... Ts> struct _InsertTypesAt
 		{
-			static_assert( Index <= sizeof...(Types), "Index must be in range" );
+			static_assert(Index <= sizeof...(Types), "Index must be in range" );
+			static_assert(Index >= 0, "Index cannot be negative value");
 
-			template <unsigned, typename...> struct _InsertT;
-			template <unsigned N, typename T, typename... Ts2> struct _InsertT<N, T, Ts2...>
+			template <int, typename...> struct _InsertT;
+			template <int N, typename T, typename... Ts2> struct _InsertT<N, T, Ts2...>
 			{
 				using Result = typename DKTypeList<T>::template Append< typename _InsertT<N+1, Ts2...>::Result >;
 			};
@@ -255,19 +261,25 @@ namespace DKFoundation
 	public:
 		enum {Length = sizeof...(Types)};
 
-		template < template <typename...> class T > using TypesInto = T<Types...>;
+		template <template <typename...> class T> using TypesInto = T<Types...>;
 
 		// reversed list.
 		using Reverse = typename _Reverse<Types...>::Result;
 
 		// defines type at Index.
-		template <unsigned Index> using TypeAt = typename _TypeAt<Index>::Result;
+		template <int Index> using TypeAt = typename _TypeAt<Index>::Result;
 
 		// get Index of specific type.
-		template <typename T> using IndexOf = DKNumber<_IndexOf<T>::Result>;
+		template <typename T> constexpr static auto IndexOf(void) -> int
+		{
+			return _IndexOf<T>::Result;
+		}
 
 		// count number of given type T in list.
-		template <typename T> using Count = DKNumber<_CountType<T>::Result>;
+		template <typename T> constexpr static auto Count(void) -> int
+		{
+			return _CountType<T>::Result;
+		}
 
 		// append types into list.
 		// Note:
@@ -279,21 +291,27 @@ namespace DKFoundation
 		// insert specific type at Index.
 		// DKTypeList<...> assumed one type. If you need to insert types in other type list,
 		// you should use Append.
-		template <unsigned Index, typename... Ts> using InsertAt = typename _InsertTypesAt<Index, Ts...>::Result;
+		template <int Index, typename... Ts> using InsertAt = typename _InsertTypesAt<Index, Ts...>::Result;
 
 		// check lists are equal.
-		template <typename... Ts> using IsSame = DKCondType<_IsSame<Ts...>::Result, DKTrue, DKFalse>;
+		template <typename... Ts> constexpr static auto IsSame(void) -> bool
+		{
+			return _IsSame<Ts...>::Reult;
+		}
 
 		// check types in list can be convertible to others.
-		template <typename... Ts> using IsConvertible = DKCondType<_IsConvertible<Ts...>::Result, DKTrue, DKFalse>;
+		template <typename... Ts> constexpr static auto IsConvertible(void) -> bool
+		{
+			return _IsConvertible<Ts...>::Result;
+		}
 
 		// remove specific types in list.
 		template <typename... Ts> using Remove = typename _Remove<Ts...>::Result;
 		
 		// remove type at Index.
-		template <unsigned Index> using RemoveAt = typename _RemoveIndex<Index>::Result;
+		template <int Index> using RemoveAt = typename _RemoveIndex<Index>::Result;
 		
 		// generate sub list with given range.
-		template <unsigned Begin, unsigned End> using SubList = typename _SubListT<Begin, End>::Result;
+		template <int Begin, int End> using SubList = typename _SubListT<Begin, End>::Result;
 	};
 }
