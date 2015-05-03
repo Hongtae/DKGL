@@ -47,10 +47,7 @@ namespace DKFramework
 		{
 		}
 		DKColor(float red, float green, float blue, float alpha = 1.0f)
-			: r(red)
-			, g(green)
-			, b(blue)
-			, a(alpha)
+			: r(red), g(green), b(blue), a(alpha)
 		{
 		}
 		DKColor(RGBA32 rgba)
@@ -65,6 +62,14 @@ namespace DKFramework
 			, g(static_cast<float>(argb.g) / 255.0f)
 			, b(static_cast<float>(argb.b) / 255.0f)
 			, a(static_cast<float>(argb.a) / 255.0f)
+		{
+		}
+		explicit DKColor(const DKVector3& v)
+			: r(v.x), g(v.y), b(v.z), a(1.0)
+		{
+		}
+		explicit DKColor(const DKVector4& v)
+			: r(v.x), g(v.y), b(v.z), a(v.w)
 		{
 		}
 
