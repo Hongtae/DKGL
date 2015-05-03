@@ -179,7 +179,7 @@ namespace DKFoundation
 	}
 	template <typename T, typename U, typename... V> auto Min(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
 	{
-		return Min<T>(std::forward<T>(v1), Min(std::forward<U>(v2), std::forward<V>(rest)...));
+		return Min(std::forward<T>(v1), Min(std::forward<U>(v2), std::forward<V>(rest)...));
 	}
 
 	// Max
