@@ -1,16 +1,16 @@
 # Project DK, DKLib
-Game Library for C++ and Python  
+Game Library for C\++ and Python  
 This project contains two modules, DK and PyDK.  
-DK is core library for C++ and PyDK is Python bindings for DK.
+DK is core library for C\++ and PyDK is Python bindings for DK.
 
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
-This is low level game library written with C++.  
+This is low level game library written with C\++.  
 You can use Python-script to improve productivity.
 
 DK library has following contents with two frameworks layer.
 ##### DKFoundation - `Foundation Classes, Managing System Tasks.`
-* C++ Metaprograms (Type Libraries, etc.)
+* C\++ Metaprograms (Type Libraries, etc.)
 * Data Collections (Array, Map, Tuples, etc.)
 * Object Management (SmartPointers, WeakRef, Allocators, etc.)
 * Thread and Synchronize objects (Mutex, Condition, Atomics, etc.)
@@ -69,7 +69,7 @@ DK interfaces to use DK library with other GUI OSes.
 > You can see implementations for other OSes in `DKFramework/Private`
 
 ## Build Environments
-- Visual Studio 2013 for Windows
+- Visual Studio 2015 for Windows
 - Xcode6 for Mac, iOS
 - C\++11 compiler
 
@@ -77,6 +77,15 @@ DK interfaces to use DK library with other GUI OSes.
 Python bindings for DK. (Python 3.4 or later).   
 You can build PyDK with or without python interpreter embedded.
 
+### DK Scripts
+- Deferred Rendering System.
+- Game Physics & Collision Library
+- Useful Game Libraries
+- Extensible UI
+- Scene Editor
+
+
+### Build PyDK
 ###### You need python library to build PyDK with python interpreter embedded.
 1. Download prebuilt library for your platform.
     - Win32 i386: [python3.4.2_Win32.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_Win32.zip)

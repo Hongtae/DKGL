@@ -442,7 +442,7 @@ DKString DKDateTime::FormatISO8601(bool utc) const
 		strftime(buff, 1024, "%Y-%m-%dT%H:%M:%S", &date);
 
 		if (this->microseconds > 0)
-			ret = DKString::Format("%s.%06uZ", buff, Clamp<unsigned int>(this->microseconds, 0, 999999));
+			ret = DKString::Format("%s.%06uZ", buff, (unsigned int)Clamp(this->microseconds, 0, 999999));
 		else
 			ret = DKString::Format("%sZ", buff);
 	}
@@ -458,7 +458,7 @@ DKString DKDateTime::FormatISO8601(bool utc) const
 		strftime(buff, 1024, "%Y-%m-%dT%H:%M:%S", &date);
 
 		if (this->microseconds > 0)
-			ret = DKString::Format("%s.%06u", buff, Clamp<unsigned int>(this->microseconds, 0, 999999));
+			ret = DKString::Format("%s.%06u", buff, (unsigned int)Clamp(this->microseconds, 0, 999999));
 		else
 			ret.SetValue(buff);
 
