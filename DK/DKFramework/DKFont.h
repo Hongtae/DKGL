@@ -48,7 +48,7 @@ namespace DKFramework
 		// create object from stream, stream can be copied if necessary.
 		static DKFoundation::DKObject<DKFont> Create(DKFoundation::DKStream* stream);
 
-		const GlyphData* GetGlyphData(wchar_t c) const;
+		const GlyphData* GlyphDataForChar(wchar_t c) const;
 
 		// LineWidth: text pixel-width from baseline. not includes outline.
 		float LineWidth(const DKFoundation::DKString& str) const;
@@ -73,8 +73,10 @@ namespace DKFramework
 		bool SetStyle(int point, float embolden = 0, float outline = 0, DKPoint dpi = DKPoint(72,72), bool enableKerning = true, bool forceBitmap = false);
 		bool IsValid(void) const;
 
-		float Height(void) const;  // font pixel-height (includes outline)
-		float Width(void) const;   // font pixel-width (includes outline)
+		float Height(void) const;	// font pixel-height (includes outline)
+		float Width(void) const;	// font pixel-width (includes outline)
+
+		void ClearCache(void);		// clear glyph textures.
 
 	private:
 		float		outline;			// 0 for no-outline
@@ -100,6 +102,6 @@ namespace DKFramework
 		void* ftFace;
 		DKFoundation::DKSpinLock lock;
 		DKFoundation::DKObject<DKFoundation::DKData> fontData;
-		DKTexture2D* GetGlyphTexture(int width, int height, void* data, DKRect& rect) const;
+		DKTexture2D* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const;
 	};
 }

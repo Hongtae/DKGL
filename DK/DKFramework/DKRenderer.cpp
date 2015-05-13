@@ -1958,7 +1958,7 @@ void DKRenderer::RenderText(const DKRect& bounds, const DKMatrix3& transform, co
 	for (size_t i = 0; i < textLen; i++)
 	{
 		// get glyph info from font object
-		const DKFont::GlyphData* glyph = font->GetGlyphData(text[i]);
+		const DKFont::GlyphData* glyph = font->GlyphDataForChar(text[i]);
 		if (glyph == NULL)
 			continue;
 

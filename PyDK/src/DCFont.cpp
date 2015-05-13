@@ -184,6 +184,13 @@ static PyObject* DCFontBounds(DCFont* self, PyObject* args)
 	return DCRectFromObject(&rc);
 }
 
+static PyObject* DCFontClearCache(DCFont* self, PyObject* args)
+{
+	DCOBJECT_VALIDATE(self->font, NULL);
+	self->font->ClearCache();
+	Py_RETURN_NONE;
+}
+
 static PyObject* DCFontIsValid(DCFont* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->font, NULL);
@@ -197,6 +204,7 @@ static PyMethodDef methods[] = {
 	{ "lineWidth", (PyCFunction)&DCFontLineWidth, METH_VARARGS },
 	{ "kernAdvance", (PyCFunction)&DCFontKernAdvance, METH_VARARGS },
 	{ "bounds", (PyCFunction)&DCFontBounds, METH_VARARGS },
+	{ "clearCache", (PyCFunction)&DCFontClearCache, METH_NOARGS },
 	{ "isValid", (PyCFunction)&DCFontIsValid, METH_NOARGS },
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */
 };

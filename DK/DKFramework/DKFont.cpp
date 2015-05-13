@@ -154,7 +154,7 @@ DKObject<DKFont> DKFont::Create(DKStream* stream)
 	return NULL;
 }
 
-const DKFont::GlyphData* DKFont::GetGlyphData(wchar_t c) const
+const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 {
 	if (c == 0 || IsValid() == false)
 		return NULL;
@@ -244,7 +244,7 @@ const DKFont::GlyphData* DKFont::GetGlyphData(wchar_t c) const
 				// x_left: bitmap starting point from origin
 				// y_top: height from origin
 				data.position = DKPoint(x_left, y_top - ftBitmap.rows); 
-				data.texture = GetGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.rect); 
+				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.rect);
 			}
 
 			DKMemoryHeapFree(ftBitmap.buffer);
@@ -264,7 +264,7 @@ const DKFont::GlyphData* DKFont::GetGlyphData(wchar_t c) const
 				// bitmap_left: bitmap offset from origin
 				// bitmap_top: height from origin
 				data.position = DKPoint(glyph_bitmap->left, glyph_bitmap->top - glyph_bitmap->bitmap.rows);
-				data.texture = GetGlyphTexture(glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows, glyph_bitmap->bitmap.buffer, data.rect);
+				data.texture = CacheGlyphTexture(glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows, glyph_bitmap->bitmap.buffer, data.rect);
 			}
 			FT_Done_Glyph(glyph);
 		}
@@ -302,7 +302,7 @@ const DKFont::GlyphData* DKFont::GetGlyphData(wchar_t c) const
 					}
 				}
 				data.position = DKPoint(face->glyph->bitmap_left - outline, face->glyph->bitmap_top - face->glyph->bitmap.rows - outline);
-				data.texture = GetGlyphTexture(outer.width, outer.rows, outer.buffer, data.rect); 
+				data.texture = CacheGlyphTexture(outer.width, outer.rows, outer.buffer, data.rect);
 
 				FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &inner);
 				FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &outer);
@@ -311,7 +311,7 @@ const DKFont::GlyphData* DKFont::GetGlyphData(wchar_t c) const
 			{
 				FT_Bitmap_Embolden(Private::FTLibrary::GetLibrary(), &face->glyph->bitmap, boldStrength, boldStrength);
 				data.position = DKPoint(face->glyph->bitmap_left, face->glyph->bitmap_top - face->glyph->bitmap.rows + embolden); 
-				data.texture = GetGlyphTexture(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, data.rect); 
+				data.texture = CacheGlyphTexture(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, data.rect);
 			}
 		}
 	}
@@ -320,7 +320,7 @@ const DKFont::GlyphData* DKFont::GetGlyphData(wchar_t c) const
 	return &glyphMap.Value(c);
 }
 
-DKTexture2D* DKFont::GetGlyphTexture(int width, int height, void* data, DKRect& rect) const
+DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const
 {
 	// keep padding between each glyphs.
 	if (width <= 0 || height <= 0)
@@ -474,7 +474,7 @@ float DKFont::LineWidth(const DKString& str) const
 
 	for (size_t i = 0; i < len; ++i)
 	{
-		const GlyphData* glyph = GetGlyphData(str[i]);
+		const GlyphData* glyph = GlyphDataForChar(str[i]);
 		if (glyph)
 		{
 			lineLength += KernAdvance(str[i], str[i+1]).x + glyph->advance.width;
@@ -493,7 +493,7 @@ DKRect DKFont::Bounds(const DKFoundation::DKString& str) const
 
 	for (size_t i = 0; i < len; ++i)
 	{
-		const GlyphData* glyph = GetGlyphData(str[i]);
+		const GlyphData* glyph = GlyphDataForChar(str[i]);
 		if (glyph == NULL)
 			continue;
 
@@ -618,6 +618,15 @@ bool DKFont::SetStyle(int point, float embolden, float outline, DKPoint dpi, boo
 	this->resolution = DKPoint(resX2, resY2);
 	this->kerningEnabled = enableKerning;
 	return true;
+}
+
+void DKFont::ClearCache(void)
+{
+	DKCriticalSection<DKSpinLock> guard(lock);
+	glyphMap.Clear();
+	charIndexMap.Clear();
+	textures.Clear();
+	numGlyphsLoaded = 0;
 }
 
 bool DKFont::IsValid(void) const

@@ -243,6 +243,50 @@ void DKResourcePool::RemoveAll(void)
 	resourceData.Clear();
 }
 
+void DKResourcePool::ClearUnreferencedObjects(void)
+{
+	DKCriticalSection<DKSpinLock> guard(this->lock);
+	using ResInfo = DKMapPair<DKString, DKObject<DKResource>::Ref>;
+	using DataInfo = DKMapPair<DKString, DKObject<DKData>::Ref>;
+
+	// collect weak-refs of all objects.
+	DKArray<ResInfo> resRefs;
+	DKArray<DataInfo> dataRefs;
+
+	resRefs.Reserve(resources.Count());
+	dataRefs.Reserve(resourceData.Count());
+
+	resources.EnumerateForward([&resRefs](const ResourceMap::Pair& pair)
+	{
+		ResInfo info = {pair.key, pair.value};
+		resRefs.Add(info);
+	});
+	resourceData.EnumerateForward([&dataRefs](const DataMap::Pair& pair)
+	{
+		DataInfo info = {pair.key, pair.value};
+		dataRefs.Add(info);
+	});
+
+	// clear objects. unreferenced objects will be deleted.
+	resources.Clear();
+	resourceData.Clear();
+
+	// picking out alive objects only.
+	// accessing deleted object with weak-ref will produces NULL.
+	for (ResInfo& info : resRefs)
+	{
+		DKObject<DKResource> r = info.value;
+		if (r.Ptr() != NULL)
+			resources.Update(info.key, r);
+	}
+	for (DataInfo& info : dataRefs)
+	{
+		DKObject<DKData> d = info.value;
+		if (d.Ptr() != NULL)
+			resourceData.Update(info.key, d);
+	}
+}
+
 DKObject<DKResource> DKResourcePool::FindResource(const DKString& name) const
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);

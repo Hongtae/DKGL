@@ -98,6 +98,9 @@ namespace DKFramework
 		// remove everything in pool.
 		void RemoveAll(void);
 
+		// remove unreferenced objects only.
+		void ClearUnreferencedObjects(void);
+
 		// return absolute file path string, if specified file are exists in file-system directory.
 		DKFoundation::DKString ResourceFilePath(const DKFoundation::DKString& name) const;
 		// open resource as stream.
