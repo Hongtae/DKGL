@@ -23,6 +23,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PyDK_static", "PyDK\PyDK_st
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_dk_core.pyd", "PyDK\_dk_core.vcxproj", "{D9CE4EF2-C330-4A28-8406-3AF6547FB9D1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DKMaxExporter", "DKMaxExporter\DKMaxExporter.vcxproj", "{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PyDKLauncher", "PyDKLauncher\PyDKLauncher.vcxproj", "{0472B5B2-79E7-4FF2-9FF2-8383684A1001}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -99,6 +103,20 @@ Global
 		{D9CE4EF2-C330-4A28-8406-3AF6547FB9D1}.Release|Win32.Build.0 = Release|Win32
 		{D9CE4EF2-C330-4A28-8406-3AF6547FB9D1}.Release|x64.ActiveCfg = Release|x64
 		{D9CE4EF2-C330-4A28-8406-3AF6547FB9D1}.Release|x64.Build.0 = Release|x64
+		{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}.Debug|Win32.ActiveCfg = Debug|x64
+		{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}.Debug|x64.ActiveCfg = Debug|x64
+		{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}.Debug|x64.Build.0 = Debug|x64
+		{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}.Release|Win32.ActiveCfg = Release|x64
+		{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}.Release|x64.ActiveCfg = Release|x64
+		{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}.Release|x64.Build.0 = Release|x64
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Debug|Win32.Build.0 = Debug|Win32
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Debug|x64.ActiveCfg = Debug|x64
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Debug|x64.Build.0 = Debug|x64
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Release|Win32.ActiveCfg = Release|Win32
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Release|Win32.Build.0 = Release|Win32
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Release|x64.ActiveCfg = Release|x64
+		{0472B5B2-79E7-4FF2-9FF2-8383684A1001}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
