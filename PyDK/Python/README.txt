@@ -12,6 +12,7 @@ Download and extract prebuilt binaries here!
  Apple iOS (universal):
     https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_iOS.zip
 
+or you can build from source at https://github.com/tiff2766/Python
 
 directory structure for Xcode (iOS, OS X) is below
  ./iOS/libpython3.4.a
