@@ -2217,7 +2217,7 @@ size_t DKRenderer::RenderMesh(const DKMesh* mesh, DKSceneState& st, const DKBlen
 	return numInstancesDrawn;
 }
 
-void DKRenderer::RenderScene(const DKScene* scene, const DKCamera& camera, int sceneIndex, bool enableCulling, RenderSceneCallback* sc) const
+void DKRenderer::RenderScene(const DKScene* scene, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter, bool enableCulling, RenderSceneCallback* sc) const
 {
 	if (scene && IsDrawable() && this->Bind())
 	{
@@ -2284,6 +2284,6 @@ void DKRenderer::RenderScene(const DKScene* scene, const DKCamera& camera, int s
 			cb.objectColors = NULL;
 			cb.filter = NULL;
 		}
-		scene->Render(camera, sceneIndex, enableCulling, cb);
+		scene->Render(camera, sceneIndex, drawModes, groupFilter, enableCulling, cb);
 	}
 }

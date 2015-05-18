@@ -119,6 +119,8 @@ namespace DKFramework
 
 		virtual DKFoundation::DKObject<DKSerializer> Serializer(void) override;
 
+		unsigned int drawingGroupFlags;	// filtering bits mask
+
 	protected:
 		virtual bool BindTransform(DKSceneState&) const;
 		virtual bool BindPrimitiveIndex(DKPrimitive::Type*, int*, DKIndexBuffer::Type*) const = 0;

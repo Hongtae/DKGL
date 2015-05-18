@@ -38,7 +38,6 @@
 #include "DKFramework/DKGeometryBuffer.h"
 #include "DKFramework/DKHingeConstraint.h"
 #include "DKFramework/DKIndexBuffer.h"
-#include "DKFramework/DKLight.h"
 #include "DKFramework/DKLine.h"
 #include "DKFramework/DKLinearTransform2.h"
 #include "DKFramework/DKLinearTransform3.h"

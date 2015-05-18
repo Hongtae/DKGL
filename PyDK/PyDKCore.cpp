@@ -261,7 +261,6 @@ PyMODINIT_FUNC PyInit__dk_core(void)
 		CORE_TYPE_FUNC(BlendState),
 		CORE_TYPE_FUNC(Font),
 		CORE_TYPE_FUNC(Camera),
-		CORE_TYPE_FUNC(Light),
 		CORE_TYPE_FUNC(RenderTarget),
 		CORE_TYPE_FUNC(TextureSampler),
 		CORE_TYPE_FUNC(Resource),

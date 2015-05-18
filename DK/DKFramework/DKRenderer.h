@@ -176,7 +176,7 @@ namespace DKFramework
 			ObjectColorCallback* objectColors = NULL;
 			MeshFilter* meshFilter = NULL;
 		};
-		void RenderScene(const DKScene*, const DKCamera& camera, int sceneIndex, bool enableCulling = true, RenderSceneCallback* sc = NULL) const;
+		void RenderScene(const DKScene*, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter = 0xffffffff, bool enableCulling = true, RenderSceneCallback* sc = NULL) const;
 
 		// drawing text with font.
 		void RenderText(const DKRect& bounds, const DKMatrix3& transform, const DKFoundation::DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultAlpha) const;

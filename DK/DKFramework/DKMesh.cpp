@@ -22,6 +22,7 @@ DKMesh::DKMesh(void)
 , primitiveType(DKPrimitive::TypePoints)
 , scale(1, 1, 1)
 , hidden(false)
+, drawingGroupFlags(1)
 {
 }
 
@@ -373,6 +374,12 @@ DKObject<DKSerializer> DKMesh::Serializer(void)
 				DKFunction([p](ValueType& v){ p->SetHidden(v.Integer() != 0); }),
 				DKFunction([](const ValueType& v)->bool{return v.ValueType() == DKVariant::TypeInteger; }),
 				DKFunction([p]{ p->SetHidden(false); })->Invocation());
+
+			this->Bind(L"drawingGroupFlags",
+			   DKFunction([p](ValueType& v){ v.SetInteger(p->drawingGroupFlags); }),
+			   DKFunction([p](ValueType& v){ p->drawingGroupFlags = (unsigned int)v.Integer(); }),
+			   DKFunction([](const ValueType& v)->bool{return v.ValueType() == DKVariant::TypeInteger; }),
+			   DKValue(0));
 
 			return this;
 		}

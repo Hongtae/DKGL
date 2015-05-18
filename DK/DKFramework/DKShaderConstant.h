@@ -43,11 +43,6 @@ namespace DKFramework
 			UniformTexture2D,								// uint1	
 			UniformTexture3D,								// uint1	
 			UniformTextureCube,								// uint1	
-			UniformDirectionalLightColor,					// float3	
-			UniformDirectionalLightDirection,				// float3	
-			UniformPointLightColor,							// float3	
-			UniformPointLightPosition,						// float3
-			UniformPointLightAttenuation,					// float3	(x=const, y=linear, z=quadratic)
 			UniformAmbientColor,							// float3
 			UniformCameraPosition,							// float3
 			UniformUserDefine,								// user define
@@ -144,11 +139,6 @@ namespace DKFramework
 			case UniformTexture2D:								return L"Texture2D";
 			case UniformTexture3D:								return L"Texture3D";
 			case UniformTextureCube:							return L"TextureCube";
-			case UniformDirectionalLightColor:					return L"DirectionalLightColor";
-			case UniformDirectionalLightDirection:				return L"DirectionalLightDirection";
-			case UniformPointLightColor:						return L"PointLightColor";
-			case UniformPointLightPosition:						return L"PointLightPosition";
-			case UniformPointLightAttenuation:					return L"PointLightAttenuation";
 			case UniformAmbientColor:							return L"AmbientColor";
 			case UniformCameraPosition:							return L"CameraPosition";
 			case UniformUserDefine:								return L"UserDefine";
@@ -178,11 +168,6 @@ namespace DKFramework
 			else if (!str.CompareNoCase(UniformToString(UniformTexture2D)))								return UniformTexture2D;
 			else if (!str.CompareNoCase(UniformToString(UniformTexture3D)))								return UniformTexture3D;
 			else if (!str.CompareNoCase(UniformToString(UniformTextureCube)))							return UniformTextureCube;
-			else if (!str.CompareNoCase(UniformToString(UniformDirectionalLightColor)))					return UniformDirectionalLightColor;
-			else if (!str.CompareNoCase(UniformToString(UniformDirectionalLightDirection)))				return UniformDirectionalLightDirection;
-			else if (!str.CompareNoCase(UniformToString(UniformPointLightColor)))						return UniformPointLightColor;
-			else if (!str.CompareNoCase(UniformToString(UniformPointLightPosition)))					return UniformPointLightPosition;
-			else if (!str.CompareNoCase(UniformToString(UniformPointLightAttenuation)))					return UniformPointLightAttenuation;
 			else if (!str.CompareNoCase(UniformToString(UniformAmbientColor)))							return UniformAmbientColor;
 			else if (!str.CompareNoCase(UniformToString(UniformCameraPosition)))						return UniformCameraPosition;
 			else if (!str.CompareNoCase(UniformToString(UniformUserDefine)))							return UniformUserDefine;

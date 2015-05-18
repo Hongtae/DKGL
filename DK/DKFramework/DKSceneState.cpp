@@ -118,26 +118,6 @@ DKSceneState::FloatArray DKSceneState::GetFloatProperty(const DKShaderConstant& 
 		if (sc.type == DKShaderConstant::TypeFloat3 && this->positionArray.Count() > 0)
 			return FloatArray(this->positionArray.Value(0).val, this->positionArray.Count() * 3);
 		break;
-	case DKShaderConstant::UniformDirectionalLightColor:
-		if (sc.type == DKShaderConstant::TypeFloat3 && this->directionalLightColors.Count() > 0)
-			return FloatArray(this->directionalLightColors.Value(0).val, this->directionalLightColors.Count() * 3);
-		break;
-	case DKShaderConstant::UniformDirectionalLightDirection:
-		if (sc.type == DKShaderConstant::TypeFloat3 && this->directionalLightDirections.Count() > 0)
-			return FloatArray(this->directionalLightDirections.Value(0).val, this->directionalLightDirections.Count() * 3);
-		break;
-	case DKShaderConstant::UniformPointLightColor:
-		if (sc.type == DKShaderConstant::TypeFloat3 && this->pointLightColors.Count() > 0)
-			return FloatArray(this->pointLightColors.Value(0).val, this->pointLightColors.Count() * 3);
-		break;
-	case DKShaderConstant::UniformPointLightPosition:
-		if (sc.type == DKShaderConstant::TypeFloat3 && this->pointLightPositions.Count() > 0)
-			return FloatArray(this->pointLightPositions.Value(0).val, this->pointLightPositions.Count() * 3);
-		break;
-	case DKShaderConstant::UniformPointLightAttenuation:
-		if (sc.type == DKShaderConstant::TypeFloat3 && this->pointLightAttenuations.Count() > 0)
-			return FloatArray(this->pointLightAttenuations.Value(0).val, this->pointLightAttenuations.Count() * 3);
-		break;
 	case DKShaderConstant::UniformAmbientColor:
 		if (sc.type == DKShaderConstant::TypeFloat3 || sc.type == DKShaderConstant::TypeFloat4)
 			return FloatArray(this->ambientColor.val, 4);

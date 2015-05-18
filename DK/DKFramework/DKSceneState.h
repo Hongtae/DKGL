@@ -14,7 +14,6 @@
 #include "DKMatrix2.h"
 #include "DKMatrix3.h"
 #include "DKMatrix4.h"
-#include "DKLight.h"
 #include "DKColor.h"
 #include "DKMaterial.h"
 #include "DKCamera.h"

@@ -47,7 +47,6 @@
 		8455C7BA1AEE6C180003A417 /* DCGeometryBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206D1A600F9B00C92847 /* DCGeometryBuffer.cpp */; };
 		8455C7BB1AEE6C180003A417 /* DCHingeConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */; };
 		8455C7BC1AEE6C180003A417 /* DCIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420701A600F9B00C92847 /* DCIndexBuffer.cpp */; };
-		8455C7BD1AEE6C180003A417 /* DCLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420711A600F9B00C92847 /* DCLight.cpp */; };
 		8455C7BE1AEE6C180003A417 /* DCLinearTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420721A600F9B00C92847 /* DCLinearTransform2.cpp */; };
 		8455C7BF1AEE6C180003A417 /* DCLinearTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420731A600F9B00C92847 /* DCLinearTransform3.cpp */; };
 		8455C7C01AEE6C180003A417 /* DCMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420741A600F9B00C92847 /* DCMaterial.cpp */; };
@@ -156,7 +155,6 @@
 		8455C8271AEE6C190003A417 /* DCGeometryBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206D1A600F9B00C92847 /* DCGeometryBuffer.cpp */; };
 		8455C8281AEE6C190003A417 /* DCHingeConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */; };
 		8455C8291AEE6C190003A417 /* DCIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420701A600F9B00C92847 /* DCIndexBuffer.cpp */; };
-		8455C82A1AEE6C190003A417 /* DCLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420711A600F9B00C92847 /* DCLight.cpp */; };
 		8455C82B1AEE6C190003A417 /* DCLinearTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420721A600F9B00C92847 /* DCLinearTransform2.cpp */; };
 		8455C82C1AEE6C190003A417 /* DCLinearTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420731A600F9B00C92847 /* DCLinearTransform3.cpp */; };
 		8455C82D1AEE6C190003A417 /* DCMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420741A600F9B00C92847 /* DCMaterial.cpp */; };
@@ -265,7 +263,6 @@
 		8455C8941AEE6C1A0003A417 /* DCGeometryBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206D1A600F9B00C92847 /* DCGeometryBuffer.cpp */; };
 		8455C8951AEE6C1A0003A417 /* DCHingeConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */; };
 		8455C8961AEE6C1A0003A417 /* DCIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420701A600F9B00C92847 /* DCIndexBuffer.cpp */; };
-		8455C8971AEE6C1A0003A417 /* DCLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420711A600F9B00C92847 /* DCLight.cpp */; };
 		8455C8981AEE6C1A0003A417 /* DCLinearTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420721A600F9B00C92847 /* DCLinearTransform2.cpp */; };
 		8455C8991AEE6C1A0003A417 /* DCLinearTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420731A600F9B00C92847 /* DCLinearTransform3.cpp */; };
 		8455C89A1AEE6C1A0003A417 /* DCMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420741A600F9B00C92847 /* DCMaterial.cpp */; };
@@ -374,7 +371,6 @@
 		8455C9011AEE6C1B0003A417 /* DCGeometryBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206D1A600F9B00C92847 /* DCGeometryBuffer.cpp */; };
 		8455C9021AEE6C1B0003A417 /* DCHingeConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */; };
 		8455C9031AEE6C1B0003A417 /* DCIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420701A600F9B00C92847 /* DCIndexBuffer.cpp */; };
-		8455C9041AEE6C1B0003A417 /* DCLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420711A600F9B00C92847 /* DCLight.cpp */; };
 		8455C9051AEE6C1B0003A417 /* DCLinearTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420721A600F9B00C92847 /* DCLinearTransform2.cpp */; };
 		8455C9061AEE6C1B0003A417 /* DCLinearTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420731A600F9B00C92847 /* DCLinearTransform3.cpp */; };
 		8455C9071AEE6C1B0003A417 /* DCMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420741A600F9B00C92847 /* DCMaterial.cpp */; };
@@ -483,7 +479,6 @@
 		8455C96E1AEE6C1C0003A417 /* DCGeometryBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206D1A600F9B00C92847 /* DCGeometryBuffer.cpp */; };
 		8455C96F1AEE6C1C0003A417 /* DCHingeConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */; };
 		8455C9701AEE6C1C0003A417 /* DCIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420701A600F9B00C92847 /* DCIndexBuffer.cpp */; };
-		8455C9711AEE6C1C0003A417 /* DCLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420711A600F9B00C92847 /* DCLight.cpp */; };
 		8455C9721AEE6C1C0003A417 /* DCLinearTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420721A600F9B00C92847 /* DCLinearTransform2.cpp */; };
 		8455C9731AEE6C1C0003A417 /* DCLinearTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420731A600F9B00C92847 /* DCLinearTransform3.cpp */; };
 		8455C9741AEE6C1C0003A417 /* DCMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420741A600F9B00C92847 /* DCMaterial.cpp */; };
@@ -704,7 +699,6 @@
 		8414206E1A600F9B00C92847 /* DCGeometryBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCGeometryBuffer.h; sourceTree = "<group>"; };
 		8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCHingeConstraint.cpp; sourceTree = "<group>"; };
 		841420701A600F9B00C92847 /* DCIndexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCIndexBuffer.cpp; sourceTree = "<group>"; };
-		841420711A600F9B00C92847 /* DCLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCLight.cpp; sourceTree = "<group>"; };
 		841420721A600F9B00C92847 /* DCLinearTransform2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCLinearTransform2.cpp; sourceTree = "<group>"; };
 		841420731A600F9B00C92847 /* DCLinearTransform3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCLinearTransform3.cpp; sourceTree = "<group>"; };
 		841420741A600F9B00C92847 /* DCMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCMaterial.cpp; sourceTree = "<group>"; };
@@ -1022,7 +1016,6 @@
 				8414206E1A600F9B00C92847 /* DCGeometryBuffer.h */,
 				8414206F1A600F9B00C92847 /* DCHingeConstraint.cpp */,
 				841420701A600F9B00C92847 /* DCIndexBuffer.cpp */,
-				841420711A600F9B00C92847 /* DCLight.cpp */,
 				841420721A600F9B00C92847 /* DCLinearTransform2.cpp */,
 				841420731A600F9B00C92847 /* DCLinearTransform3.cpp */,
 				841420741A600F9B00C92847 /* DCMaterial.cpp */,
@@ -1642,7 +1635,6 @@
 				8455C85B1AEE6C190003A417 /* DCVector4.cpp in Sources */,
 				8455C8621AEE6C190003A417 /* PyDKInterpreter.cpp in Sources */,
 				8455C8111AEE6C190003A417 /* DCBoxShape.cpp in Sources */,
-				8455C82A1AEE6C190003A417 /* DCLight.cpp in Sources */,
 				8455C80B1AEE6C190003A417 /* DCAnimation.cpp in Sources */,
 				8455C85C1AEE6C190003A417 /* DCVertexBuffer.cpp in Sources */,
 				8455C8191AEE6C190003A417 /* DCConeShape.cpp in Sources */,
@@ -1742,7 +1734,6 @@
 				8455C9A21AEE6C1C0003A417 /* DCVector4.cpp in Sources */,
 				8455C9A91AEE6C1C0003A417 /* PyDKInterpreter.cpp in Sources */,
 				8455C9581AEE6C1C0003A417 /* DCBoxShape.cpp in Sources */,
-				8455C9711AEE6C1C0003A417 /* DCLight.cpp in Sources */,
 				8455C9521AEE6C1C0003A417 /* DCAnimation.cpp in Sources */,
 				8455C9A31AEE6C1C0003A417 /* DCVertexBuffer.cpp in Sources */,
 				8455C9601AEE6C1C0003A417 /* DCConeShape.cpp in Sources */,
@@ -1842,7 +1833,6 @@
 				8455C7EE1AEE6C180003A417 /* DCVector4.cpp in Sources */,
 				8455C7F51AEE6C180003A417 /* PyDKInterpreter.cpp in Sources */,
 				8455C7A41AEE6C180003A417 /* DCBoxShape.cpp in Sources */,
-				8455C7BD1AEE6C180003A417 /* DCLight.cpp in Sources */,
 				8455C79E1AEE6C180003A417 /* DCAnimation.cpp in Sources */,
 				8455C7EF1AEE6C180003A417 /* DCVertexBuffer.cpp in Sources */,
 				8455C7AC1AEE6C180003A417 /* DCConeShape.cpp in Sources */,
@@ -1942,7 +1932,6 @@
 				8455C8C81AEE6C1A0003A417 /* DCVector4.cpp in Sources */,
 				8455C8CF1AEE6C1A0003A417 /* PyDKInterpreter.cpp in Sources */,
 				8455C87E1AEE6C1A0003A417 /* DCBoxShape.cpp in Sources */,
-				8455C8971AEE6C1A0003A417 /* DCLight.cpp in Sources */,
 				8455C8781AEE6C1A0003A417 /* DCAnimation.cpp in Sources */,
 				8455C8C91AEE6C1A0003A417 /* DCVertexBuffer.cpp in Sources */,
 				8455C8861AEE6C1A0003A417 /* DCConeShape.cpp in Sources */,
@@ -2042,7 +2031,6 @@
 				8455C9351AEE6C1B0003A417 /* DCVector4.cpp in Sources */,
 				8455C93C1AEE6C1B0003A417 /* PyDKInterpreter.cpp in Sources */,
 				8455C8EB1AEE6C1B0003A417 /* DCBoxShape.cpp in Sources */,
-				8455C9041AEE6C1B0003A417 /* DCLight.cpp in Sources */,
 				8455C8E51AEE6C1B0003A417 /* DCAnimation.cpp in Sources */,
 				8455C9361AEE6C1B0003A417 /* DCVertexBuffer.cpp in Sources */,
 				8455C8F31AEE6C1B0003A417 /* DCConeShape.cpp in Sources */,

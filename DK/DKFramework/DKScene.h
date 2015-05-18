@@ -41,8 +41,7 @@ namespace DKFramework
 			virtual void DrawMeshes(MeshArray&, DKSceneState&) = 0;
 			virtual bool ObjectColors(const DKCollisionObject*, DKColor&, DKColor&) { return true; }
 		};
-		void Render(const DKCamera& camera, int sceneIndex, bool enableCulling, DrawCallback& dc) const;
-		void Render(const DKCamera& camera, int sceneIndex, bool enableCulling, DrawCallback& dc, unsigned int modes) const;
+		void Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const;
 
 		virtual void Update(double tickDelta, DKFoundation::DKTimeTick tick);
 
@@ -58,10 +57,8 @@ namespace DKFramework
 			DrawWireframe			= 1 << 7,
 			DrawSkeletalLines		= 1 << 8,
 		};
-		unsigned int drawMode;
 
 		DKColor ambientColor;
-		DKFoundation::DKArray<DKLight> lights;
 
 		typedef DKFoundation::DKFunctionSignature<float (DKCollisionObject*, float, const DKVector3&)> RayResultCallback;
 		typedef DKFoundation::DKFunctionSignature<float (const DKCollisionObject*, float, const DKVector3&)> ConstRayResultCallback;

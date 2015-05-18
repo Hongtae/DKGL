@@ -157,7 +157,6 @@
 		840CA5C61928952800689BB6 /* DKHingeConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84BBE62B164AD2D100B9B7F1 /* DKHingeConstraint.h */; };
 		840CA5C71928952800689BB6 /* DKIndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E530141DD4B70091D2C0 /* DKIndexBuffer.cpp */; };
 		840CA5C81928952800689BB6 /* DKIndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E531141DD4B70091D2C0 /* DKIndexBuffer.h */; };
-		840CA5C91928952800689BB6 /* DKLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E532141DD4B70091D2C0 /* DKLight.h */; };
 		840CA5CA1928952800689BB6 /* DKLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E533141DD4B70091D2C0 /* DKLine.cpp */; };
 		840CA5CB1928952800689BB6 /* DKLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E534141DD4B70091D2C0 /* DKLine.h */; };
 		840CA5CC1928952800689BB6 /* DKLinearTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E535141DD4B70091D2C0 /* DKLinearTransform2.cpp */; };
@@ -667,7 +666,6 @@
 		84211CC51665E88E00B9B9A2 /* DKGeometryBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E52F141DD4B70091D2C0 /* DKGeometryBuffer.h */; };
 		84211CC61665E88E00B9B9A2 /* DKHingeConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84BBE62B164AD2D100B9B7F1 /* DKHingeConstraint.h */; };
 		84211CC71665E88E00B9B9A2 /* DKIndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E531141DD4B70091D2C0 /* DKIndexBuffer.h */; };
-		84211CC81665E88E00B9B9A2 /* DKLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E532141DD4B70091D2C0 /* DKLight.h */; };
 		84211CC91665E88E00B9B9A2 /* DKLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E534141DD4B70091D2C0 /* DKLine.h */; };
 		84211CCA1665E88E00B9B9A2 /* DKLinearTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E536141DD4B70091D2C0 /* DKLinearTransform2.h */; };
 		84211CCB1665E88E00B9B9A2 /* DKLinearTransform3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E538141DD4B70091D2C0 /* DKLinearTransform3.h */; };
@@ -756,7 +754,6 @@
 		84211D261665E89700B9B9A2 /* DKGeometryBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E52F141DD4B70091D2C0 /* DKGeometryBuffer.h */; };
 		84211D271665E89700B9B9A2 /* DKHingeConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84BBE62B164AD2D100B9B7F1 /* DKHingeConstraint.h */; };
 		84211D281665E89700B9B9A2 /* DKIndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E531141DD4B70091D2C0 /* DKIndexBuffer.h */; };
-		84211D291665E89700B9B9A2 /* DKLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E532141DD4B70091D2C0 /* DKLight.h */; };
 		84211D2A1665E89700B9B9A2 /* DKLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E534141DD4B70091D2C0 /* DKLine.h */; };
 		84211D2B1665E89700B9B9A2 /* DKLinearTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E536141DD4B70091D2C0 /* DKLinearTransform2.h */; };
 		84211D2C1665E89700B9B9A2 /* DKLinearTransform3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E538141DD4B70091D2C0 /* DKLinearTransform3.h */; };
@@ -1164,7 +1161,6 @@
 		84798C4719E51E7F009378A6 /* DKGeometryBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E52F141DD4B70091D2C0 /* DKGeometryBuffer.h */; };
 		84798C4819E51E7F009378A6 /* DKHingeConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84BBE62B164AD2D100B9B7F1 /* DKHingeConstraint.h */; };
 		84798C4919E51E7F009378A6 /* DKIndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E531141DD4B70091D2C0 /* DKIndexBuffer.h */; };
-		84798C4A19E51E7F009378A6 /* DKLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E532141DD4B70091D2C0 /* DKLight.h */; };
 		84798C4B19E51E7F009378A6 /* DKLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E534141DD4B70091D2C0 /* DKLine.h */; };
 		84798C4C19E51E7F009378A6 /* DKLinearTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E536141DD4B70091D2C0 /* DKLinearTransform2.h */; };
 		84798C4D19E51E7F009378A6 /* DKLinearTransform3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E538141DD4B70091D2C0 /* DKLinearTransform3.h */; };
@@ -1644,7 +1640,6 @@
 		84A1E52F141DD4B70091D2C0 /* DKGeometryBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKGeometryBuffer.h; sourceTree = "<group>"; };
 		84A1E530141DD4B70091D2C0 /* DKIndexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKIndexBuffer.cpp; sourceTree = "<group>"; };
 		84A1E531141DD4B70091D2C0 /* DKIndexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKIndexBuffer.h; sourceTree = "<group>"; };
-		84A1E532141DD4B70091D2C0 /* DKLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKLight.h; sourceTree = "<group>"; };
 		84A1E533141DD4B70091D2C0 /* DKLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKLine.cpp; sourceTree = "<group>"; };
 		84A1E534141DD4B70091D2C0 /* DKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKLine.h; sourceTree = "<group>"; };
 		84A1E535141DD4B70091D2C0 /* DKLinearTransform2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKLinearTransform2.cpp; sourceTree = "<group>"; };
@@ -2257,7 +2252,6 @@
 				84BBE62B164AD2D100B9B7F1 /* DKHingeConstraint.h */,
 				84A1E530141DD4B70091D2C0 /* DKIndexBuffer.cpp */,
 				84A1E531141DD4B70091D2C0 /* DKIndexBuffer.h */,
-				84A1E532141DD4B70091D2C0 /* DKLight.h */,
 				84A1E533141DD4B70091D2C0 /* DKLine.cpp */,
 				84A1E534141DD4B70091D2C0 /* DKLine.h */,
 				84A1E535141DD4B70091D2C0 /* DKLinearTransform2.cpp */,
@@ -2449,7 +2443,6 @@
 				8436CE031928A78900F18892 /* DKStream.h in Headers */,
 				8436CDD31928A78900F18892 /* DKDummyLock.h in Headers */,
 				840CA5911928952800689BB6 /* DKAudioPlayer.h in Headers */,
-				840CA5C91928952800689BB6 /* DKLight.h in Headers */,
 				840CA59F1928952800689BB6 /* DKCapsuleShape.h in Headers */,
 				8436CDBE1928A78900F18892 /* DKAtomicNumber32.h in Headers */,
 				840CA5F31928952800689BB6 /* DKRenderer.h in Headers */,
@@ -2758,7 +2751,6 @@
 				84798C6C19E51E7F009378A6 /* DKShaderConstant.h in Headers */,
 				84798C3919E51E7F009378A6 /* DKConcaveShape.h in Headers */,
 				84798CA119E51E96009378A6 /* DKFileMap.h in Headers */,
-				84798C4A19E51E7F009378A6 /* DKLight.h in Headers */,
 				84798C9519E51E96009378A6 /* DKCircularQueue.h in Headers */,
 				84798C4119E51E7F009378A6 /* DKFixedConstraint.h in Headers */,
 				84798C2E19E51E7F009378A6 /* DKAudioSource.h in Headers */,
@@ -2887,7 +2879,6 @@
 				84211D261665E89700B9B9A2 /* DKGeometryBuffer.h in Headers */,
 				84211D271665E89700B9B9A2 /* DKHingeConstraint.h in Headers */,
 				84211D281665E89700B9B9A2 /* DKIndexBuffer.h in Headers */,
-				84211D291665E89700B9B9A2 /* DKLight.h in Headers */,
 				84211D2A1665E89700B9B9A2 /* DKLine.h in Headers */,
 				84211D2B1665E89700B9B9A2 /* DKLinearTransform2.h in Headers */,
 				84211D2C1665E89700B9B9A2 /* DKLinearTransform3.h in Headers */,
@@ -3082,7 +3073,6 @@
 				84211CC51665E88E00B9B9A2 /* DKGeometryBuffer.h in Headers */,
 				84211CC61665E88E00B9B9A2 /* DKHingeConstraint.h in Headers */,
 				84211CC71665E88E00B9B9A2 /* DKIndexBuffer.h in Headers */,
-				84211CC81665E88E00B9B9A2 /* DKLight.h in Headers */,
 				84211CC91665E88E00B9B9A2 /* DKLine.h in Headers */,
 				84211CCA1665E88E00B9B9A2 /* DKLinearTransform2.h in Headers */,
 				84211CCB1665E88E00B9B9A2 /* DKLinearTransform3.h in Headers */,

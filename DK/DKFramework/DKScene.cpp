@@ -847,7 +847,6 @@ using namespace DKFramework::Private;
 
 DKScene::DKScene(void)
 : context(NULL)
-, drawMode(DrawMeshes)
 , ambientColor(0, 0, 0)
 {
 	context = new CollisionWorldContext();
@@ -871,7 +870,6 @@ DKScene::DKScene(void)
 
 DKScene::DKScene(CollisionWorldContext* ctxt)
 : context(ctxt)
-, drawMode(DrawMeshes)
 , ambientColor(0, 0, 0)
 {
 	DKASSERT_DEBUG(context);
@@ -1005,12 +1003,7 @@ void DKScene::UpdateObjectSceneStates(void)
 	}
 }
 
-void DKScene::Render(const DKCamera& camera, int sceneIndex, bool enableCulling, DrawCallback& dc) const
-{
-	return this->Render(camera, sceneIndex, enableCulling, dc, this->drawMode);
-}
-
-void DKScene::Render(const DKCamera& camera, int sceneIndex, bool enableCulling, DrawCallback& dc, unsigned int modes) const
+void DKScene::Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -1128,7 +1121,8 @@ void DKScene::Render(const DKCamera& camera, int sceneIndex, bool enableCulling,
 			DKASSERT_DEBUG(mesh->scene == this);
 			DKASSERT_DEBUG(mesh->type == DKModel::TypeMesh);
 
-			if (!mesh->IsHidden() && !mesh->DidAncestorHideDescendants())
+			if ((mesh->drawingGroupFlags & groupFilter) &&
+				!mesh->IsHidden() && !mesh->DidAncestorHideDescendants())
 			{
 				const DKMaterial* mat = mesh->Material();
 				if (mat && mat->renderingProperties.Count() > sceneIndex)
@@ -1334,33 +1328,8 @@ void DKScene::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 	state.viewProjectionMatrix = cam.ViewProjectionMatrix();
 	state.viewProjectionMatrixInverse = DKMatrix4(state.viewProjectionMatrix).Inverse();
 
-	state.directionalLightDirections.Reserve(lights.Count());
-	state.directionalLightColors.Reserve(lights.Count());
-	state.pointLightColors.Reserve(lights.Count());
-	state.pointLightPositions.Reserve(lights.Count());
-	state.pointLightAttenuations.Reserve(lights.Count());
-
 	state.cameraPosition = cam.ViewPosition();
 	state.ambientColor = this->ambientColor;
-
-	for (const DKLight& light : this->lights)
-	{
-		switch (light.Type())
-		{
-		case DKLight::LightTypeDirectional:
-			state.directionalLightDirections.Add(light.Direction());
-			state.directionalLightColors.Add(DKVector3(light.color.r, light.color.g, light.color.b));
-			break;
-		case DKLight::LightTypePoint:
-			state.pointLightPositions.Add(light.position);
-			state.pointLightColors.Add(DKVector3(light.color.r, light.color.g, light.color.b));
-			state.pointLightAttenuations.Add(DKVector3(light.constAttenuation, light.linearAttenuation, light.quadraticAttenuation));
-			break;
-		default:
-			DKLog("Unknown light type(%x)!\n", light.Type());
-			break;
-		}
-	}
 }
 
 bool DKScene::AddObject(DKModel* obj)

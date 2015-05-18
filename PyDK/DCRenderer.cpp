@@ -632,14 +632,18 @@ static PyObject* DCRendererRenderScene(DCRenderer* self, PyObject* args, PyObjec
 	PyObject* sceneObj;
 	PyObject* cameraObj;
 	int sceneIndex;
+	unsigned int drawModes = DKScene::DrawMeshes;
+	unsigned int groupFilter = 0xffffffff;
 	int enableCulling = 1;
 	PyObject* materialDict = NULL;
 	PyObject* filterCb = NULL;
 	PyObject* colorCb = NULL;
 
-	char* kwlist[] = { "scene", "camera", "sceneIndex", "enableCulling", "materialInfo", "meshFilter", "objectColorCallback", NULL };
-	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OOi|p$OOO", kwlist,
-		&sceneObj, &cameraObj, &sceneIndex, &enableCulling, &materialDict, &filterCb, &colorCb))
+	char* kwlist[] = { "scene", "camera", "sceneIndex", "drawModes", "groupFilter", "enableCulling", "materialInfo", "meshFilter", "objectColorCallback", NULL };
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OOi|IIp$OOO", kwlist,
+									 &sceneObj, &cameraObj, &sceneIndex,
+									 &drawModes, &groupFilter,
+									 &enableCulling, &materialDict, &filterCb, &colorCb))
 		return NULL;
 
 	DKScene* scene = DCSceneToObject(sceneObj);
@@ -960,7 +964,7 @@ static PyObject* DCRendererRenderScene(DCRenderer* self, PyObject* args, PyObjec
 	cb.meshFilter = filter;
 	cb.objectColors = objectColorsCb;
 
-	self->renderer->RenderScene(scene, *camera, sceneIndex, enableCulling != 0, &cb);
+	self->renderer->RenderScene(scene, *camera, sceneIndex, drawModes, groupFilter, enableCulling != 0, &cb);
 
 	Py_END_ALLOW_THREADS
 

@@ -226,30 +226,6 @@ static PyObject* DCSceneAmbientColor(DCScene* self, PyObject*)
 	return DCColorFromObject(&self->scene->ambientColor);
 }
 
-static PyObject* DCSceneSetLights(DCScene* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->scene, NULL);
-
-	DKASSERT_DEBUG(PyTuple_Check(args));
-	Py_ssize_t numItems = PyTuple_GET_SIZE(args);
-
-	self->scene->lights.Clear();
-	self->scene->lights.Reserve(numItems);
-	for (int i = 0; i < numItems; ++i)
-	{
-		PyObject* obj = PyTuple_GET_ITEM(args, i);
-		DKLight* light = DCLightToObject(obj);
-		if (light == NULL)
-		{
-			self->scene->lights.Clear();
-			PyErr_SetString(PyExc_TypeError, "argument must be Light object.");
-			return NULL;
-		}		
-		self->scene->lights.Add(*light);
-	}
-	Py_RETURN_NONE;
-}
-
 static PyMethodDef methods[] = {
 	{ "addObject", (PyCFunction)&DCSceneAddObject, METH_VARARGS },
 	{ "removeAllObjects", (PyCFunction)&DCSceneRemoveAllObjects, METH_NOARGS },
@@ -258,34 +234,7 @@ static PyMethodDef methods[] = {
 	{ "update", (PyCFunction)&DCSceneUpdate, METH_VARARGS },
 	{ "setAmbientColor", (PyCFunction)&DCSceneSetAmbientColor, METH_VARARGS },
 	{ "ambientColor", (PyCFunction)&DCSceneAmbientColor, METH_VARARGS },
-	{ "setLights", (PyCFunction)&DCSceneSetLights, METH_VARARGS },
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */
-};
-
-static PyObject* DCSceneDrawMode(DCScene* self, void*)
-{
-	DCOBJECT_VALIDATE(self->scene, NULL);
-	return PyLong_FromLong(self->scene->drawMode);
-}
-
-static int DCSceneSetDrawMode(DCScene* self, PyObject* value, void*)
-{
-	DCOBJECT_VALIDATE(self->scene, -1);
-	DCOBJECT_ATTRIBUTE_NOT_DELETABLE(value);
-
-	long val = PyLong_AsLong(value);
-	if (PyErr_Occurred())
-	{
-		PyErr_SetString(PyExc_TypeError, "attribute must be Integer.");
-		return -1;
-	}
-	self->scene->drawMode = (unsigned int)val;
-	return 0;
-}
-
-static PyGetSetDef getsets[] = {
-	{ "drawMode", (getter)&DCSceneDrawMode, (setter)&DCSceneSetDrawMode, 0, 0 },
-	{ NULL }  /* Sentinel */
 };
 
 static PyTypeObject objectType = {
@@ -320,7 +269,7 @@ static PyTypeObject objectType = {
 	0,											/* tp_iternext */
 	methods,									/* tp_methods */
 	0,											/* tp_members */
-	getsets,									/* tp_getset */
+	0,											/* tp_getset */
 	0,											/* tp_base */
 	0,											/* tp_dict */
 	0,											/* tp_descr_get */
