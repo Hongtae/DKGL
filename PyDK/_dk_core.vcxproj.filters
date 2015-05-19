@@ -6,349 +6,346 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DCActionController.cpp">
+    <ClInclude Include="DCAnimatedTransform.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAffineTransform2.cpp">
+    </ClInclude>
+    <ClInclude Include="DCCollisionObject.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAffineTransform3.cpp">
+    </ClInclude>
+    <ClInclude Include="DCCollisionShape.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAnimatedTransform.cpp">
+    </ClInclude>
+    <ClInclude Include="DCConcaveShape.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAnimation.cpp">
+    </ClInclude>
+    <ClInclude Include="DCConstraint.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAnimationController.cpp">
+    </ClInclude>
+    <ClInclude Include="DCConvexShape.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAudioListener.cpp">
+    </ClInclude>
+    <ClInclude Include="DCGeneric6DofConstraint.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAudioPlayer.cpp">
+    </ClInclude>
+    <ClInclude Include="DCGeometryBuffer.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCAudioSource.cpp">
+    </ClInclude>
+    <ClInclude Include="DCMesh.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCBlendState.cpp">
+    </ClInclude>
+    <ClInclude Include="DCModel.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCBoxShape.cpp">
+    </ClInclude>
+    <ClInclude Include="DCObject.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCCamera.cpp">
+    </ClInclude>
+    <ClInclude Include="DCPolyhedralConvexShape.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCCapsuleShape.cpp">
+    </ClInclude>
+    <ClInclude Include="DCResource.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCCollisionObject.cpp">
+    </ClInclude>
+    <ClInclude Include="DCScene.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCCollisionShape.cpp">
+    </ClInclude>
+    <ClInclude Include="DCStaticMesh.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCColor.cpp">
+    </ClInclude>
+    <ClInclude Include="DCTexture.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCCompoundShape.cpp">
+    </ClInclude>
+    <ClInclude Include="PyDK.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCConcaveShape.cpp">
+    </ClInclude>
+    <ClInclude Include="PyDKApi.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCConeShape.cpp">
+    </ClInclude>
+    <ClInclude Include="PyDKApplication.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCConeTwistConstraint.cpp">
+    </ClInclude>
+    <ClInclude Include="PyDKInterpreter.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCConstraint.cpp">
+    </ClInclude>
+    <ClInclude Include="PyDKPython.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCConvexHullShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCConvexShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCCylinderShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCDynamicsScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCFixedConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCFont.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCFrame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCGearConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCGeneric6DofConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCGeneric6DofSpringConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCGeometryBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCHingeConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCIndexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCLinearTransform2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCLinearTransform3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCMatrix2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCMatrix3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCMatrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCMultiSphereShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCNSTransform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCOpenGLContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCPoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCPoint2PointConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCPolyhedralConvexShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCQuaternion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCRect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCRenderTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCResource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCResourceLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCRigidBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCRunLoopTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCShaderProgram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCSize.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCSkinMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCSliderConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCSoftBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCSphereShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCSpline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCStaticMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCStaticPlaneShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCStaticTriangleMeshShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTexture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTexture3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTextureCube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTextureSampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCTransformUnit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCUSTransform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCVector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCVector3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCVector4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCVertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCZipArchiver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCZipUnarchiver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PyDKApplication.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PyDKCore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PyDKInterpreter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PyDKPython.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DCRunLoopOperationResult.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DCAnimatedTransform.h">
+    <ClCompile Include="DCActionController.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCCollisionObject.h">
+    </ClCompile>
+    <ClCompile Include="DCAffineTransform2.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCCollisionShape.h">
+    </ClCompile>
+    <ClCompile Include="DCAffineTransform3.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCConcaveShape.h">
+    </ClCompile>
+    <ClCompile Include="DCAnimatedTransform.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DCAnimation.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCConvexShape.h">
+    </ClCompile>
+    <ClCompile Include="DCAnimationController.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCGeneric6DofConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DCAudioListener.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCGeometryBuffer.h">
+    </ClCompile>
+    <ClCompile Include="DCAudioPlayer.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCMesh.h">
+    </ClCompile>
+    <ClCompile Include="DCAudioSource.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCModel.h">
+    </ClCompile>
+    <ClCompile Include="DCBlendState.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCObject.h">
+    </ClCompile>
+    <ClCompile Include="DCBoxShape.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCPolyhedralConvexShape.h">
+    </ClCompile>
+    <ClCompile Include="DCCamera.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCResource.h">
+    </ClCompile>
+    <ClCompile Include="DCCapsuleShape.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCScene.h">
+    </ClCompile>
+    <ClCompile Include="DCCollisionObject.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCStaticMesh.h">
+    </ClCompile>
+    <ClCompile Include="DCCollisionShape.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DCTexture.h">
+    </ClCompile>
+    <ClCompile Include="DCColor.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PyDK.h">
+    </ClCompile>
+    <ClCompile Include="DCCompoundShape.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PyDKApplication.h">
+    </ClCompile>
+    <ClCompile Include="DCConcaveShape.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PyDKInterpreter.h">
+    </ClCompile>
+    <ClCompile Include="DCConeShape.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PyDKPython.h">
+    </ClCompile>
+    <ClCompile Include="DCConeTwistConstraint.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PyDKApi.h">
+    </ClCompile>
+    <ClCompile Include="DCConstraint.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="DCConvexHullShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCConvexShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCCylinderShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCDynamicsScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCFixedConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCFont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCGearConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCGeneric6DofConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCGeneric6DofSpringConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCGeometryBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCHingeConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCIndexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCLinearTransform2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCLinearTransform3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMatrix2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMatrix3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMatrix4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMultiSphereShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCNSTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCOpenGLContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCPoint2PointConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCPolyhedralConvexShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCQuaternion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCRect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCRenderTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCResourceLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCRigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCRunLoopOperationResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCRunLoopTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSkinMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSliderConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSoftBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSphereShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSpline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCStaticMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCStaticPlaneShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCStaticTriangleMeshShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTexture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTexture3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTextureCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTextureSampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCTransformUnit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCUSTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCVector2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCVector3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCVector4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCVertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCZipArchiver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DCZipUnarchiver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PyDKApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PyDKCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PyDKInterpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PyDKPython.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -178,9 +178,6 @@
     <ClCompile Include="DCIndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DCLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DCLinearTransform2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

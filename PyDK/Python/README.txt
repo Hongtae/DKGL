@@ -4,13 +4,13 @@ You need prebuilt-binary (static-libraries) to build PyDK.
 Download and extract prebuilt binaries here!
 
  Win32 (i386):
-    https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_Win32.zip
+    https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_Win32.zip
  Win32 (x64):
-    https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_Win32_x64.zip
+    https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_Win32_x64.zip
  Mac OS X (universal):
-    https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_OSX.zip
+    https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_OSX.zip
  Apple iOS (universal):
-    https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_iOS.zip
+    https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_iOS.zip
 
 or you can build from source at https://github.com/tiff2766/Python
 

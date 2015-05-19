@@ -313,7 +313,6 @@
     <ClInclude Include="DKFramework\DKGeometryBuffer.h" />
     <ClInclude Include="DKFramework\DKHingeConstraint.h" />
     <ClInclude Include="DKFramework\DKIndexBuffer.h" />
-    <ClInclude Include="DKFramework\DKLight.h" />
     <ClInclude Include="DKFramework\DKLine.h" />
     <ClInclude Include="DKFramework\DKLinearTransform2.h" />
     <ClInclude Include="DKFramework\DKLinearTransform3.h" />

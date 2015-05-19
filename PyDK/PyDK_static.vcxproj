@@ -82,7 +82,6 @@
     <ClCompile Include="DCGeometryBuffer.cpp" />
     <ClCompile Include="DCHingeConstraint.cpp" />
     <ClCompile Include="DCIndexBuffer.cpp" />
-    <ClCompile Include="DCLight.cpp" />
     <ClCompile Include="DCLinearTransform2.cpp" />
     <ClCompile Include="DCLinearTransform3.cpp" />
     <ClCompile Include="DCMaterial.cpp" />
