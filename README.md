@@ -5,7 +5,7 @@ DK is core library for C\++ and PyDK is Python bindings for DK.
 
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
-This is low level game library written with C\++.  
+This is low level game library written with C\++ and supports full multi-threaded, 64-bits environments.
 You can use Python-script to improve productivity.
 
 DK library has following contents with two frameworks layer.
@@ -88,15 +88,25 @@ You can build PyDK with or without python interpreter embedded.
 ### Build PyDK
 ###### You need python library to build PyDK with python interpreter embedded.
 1. Download prebuilt library for your platform.
-    - Win32 i386: [python3.4.2_Win32.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_Win32.zip)
-    - Win32 x64: [python3.4.2_Win32_x64.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_Win32_x64.zip)
-    - Mac OS X (Universal): [python3.4.2_OSX.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_OSX.zip)
-    - Apple iOS (Universal): [python3.4.2_iOS.zip](https://github.com/tiff2766/Python/releases/download/v3.4.2/python3.4.2_iOS.zip)
+    - Win32 i386
+        - [python3.4.3_Win32.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_Win32.zip)
+    - Win32 x64
+        - [python3.4.3_Win32_x64.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_Win32_x64.zip)
+    - Mac OS X (Universal)
+        - [python3.4.3_OSX.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_OSX.zip)
+    - Apple iOS (Universal)
+        - [python3.4.3_iOS.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_iOS.zip)
 2. Extract into PyDK/Python/  
     `example for OSX: PyDK/Python/OSX/libpython3.4.a`
 3. Build!
 
+- Or you can build from sources on GitHub
+    - https://github.com/tiff2766/Python
+
+
 ##### Pre-built module for python3.4 download:
+With this python module, you can write your codes with your favorite editors and system installed python.
+
 Extract file into your Python site-packages dir.
 - [Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_osx.zip)
 - [Windows i386](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32.zip)
