@@ -70,28 +70,28 @@ namespace DKFoundation
 	// you can provide your own allocator.
 	struct DKMemoryHMAllocator
 	{
-		enum {location = DKMemoryLocationHeap};
+		enum {Location = DKMemoryLocationHeap};
 		static void* Alloc(size_t s)			{return DKMemoryHeapAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryHeapRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryHeapFree(p);}
 	};
 	class DKMemoryVMAllocator
 	{
-		enum {location = DKMemoryLocationVirtual};
+		enum {Location = DKMemoryLocationVirtual};
 		static void* Alloc(size_t s)			{return DKMemoryVirtualAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryVirtualRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryVirtualFree(p);}
 	};
 	class DKMemoryFMAllocator
 	{
-		enum {location = DKMemoryLocationFile};
+		enum {Location = DKMemoryLocationFile};
 		static void* Alloc(size_t s)			{return DKMemoryFileAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryFileRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryFileFree(p);}
 	};	
 	class DKMemoryRVAllocator
 	{
-		enum {location = DKMemoryLocationReserved};
+		enum {Location = DKMemoryLocationReserved};
 		static void* Alloc(size_t s)			{return DKMemoryReservedAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryReservedRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryReservedFree(p);}

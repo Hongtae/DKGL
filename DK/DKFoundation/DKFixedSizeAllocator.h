@@ -10,6 +10,7 @@
 #include "DKTypes.h"
 #include "DKTypeTraits.h"
 #include "DKAllocatorChain.h"
+#include "DKAllocator.h"
 #include "DKMemory.h"
 #include "DKSpinLock.h"
 #include "DKCriticalSection.h"
@@ -72,7 +73,31 @@ namespace DKFoundation
 
 		static DKFixedSizeAllocator& Instance(void)
 		{
-			static DKFixedSizeAllocator instance;
+			static DKFixedSizeAllocator* ptr = NULL;
+			if (ptr == NULL)
+			{
+				static DKSpinLock lock;
+				lock.Lock();
+				if (ptr == NULL)
+				{
+					static DKFixedSizeAllocator instance;
+					ptr = &instance;
+				}
+				lock.Unlock();
+			}
+			return *ptr;
+		}
+
+		// DKAllocator interface. Useful to DKObject<T> allocation.
+		static DKAllocator& AllocatorInstance(void)
+		{
+			struct AllocatorWrapper : public DKAllocator
+			{
+				void* Alloc(size_t s) override					{ return Instance().Alloc(s); }
+				void Dealloc(void* p) override					{ return Instance().Dealloc(p); }
+				DKMemoryLocation Location(void) const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
+			};
+			static AllocatorWrapper instance;
 			return instance;
 		}
 
@@ -129,7 +154,7 @@ namespace DKFoundation
 				uintptr_t rangeEnd = reinterpret_cast<uintptr_t>(ch->units[maxUnitsPerChunk-1]);
 				if (addr >= rangeBegin && addr <= rangeEnd)
 				{
-					unsigned int index = (addr - rangeBegin) / sizeof(Unit);
+					unsigned int index = (unsigned int)((addr - rangeBegin) / sizeof(Unit));
 					ch->occupied ^= (1 << index);
 					numAllocated--;
 					return;

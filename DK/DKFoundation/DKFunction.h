@@ -11,6 +11,7 @@
 #include "DKTypeTraits.h"
 #include "DKInvocation.h"
 #include "DKObject.h"
+#include "DKFixedSizeAllocator.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKFunctionSignature
@@ -89,6 +90,16 @@ namespace DKFoundation
 
 	namespace Private
 	{
+		enum { MaximumObjectSizeForFixedAllocator = 16 };
+
+		// Choose allocator for DKFunction
+		template <typename T> constexpr DKAllocator& FunctionAllocator(void)
+		{
+			return sizeof(T) > MaximumObjectSizeForFixedAllocator ?
+				DKAllocator::DefaultAllocator() :
+				DKFixedSizeAllocator<sizeof(T)>::AllocatorInstance();
+		}
+
 		////////////////////////////////////////////////////////////////////////////////
 		// use tuple as function arguments (variadic templates)
 		template <int N, int Count, int... Ns> struct _TupleInvoker
@@ -155,20 +166,20 @@ namespace DKFoundation
 			DKObject<DKInvocation<R>> Invocation(Ps... vs) const override
 			{
 				Function& fn = const_cast<FunctionObjectInvoker&>(*this).function;
-				DKObject<_Invocation> inv = DKOBJECT_NEW _Invocation(fn, ParameterTuple(DKTupleValueSet(), std::forward<Ps>(vs)...));
-				return inv.template SafeCast<DKInvocation<R>>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				return new(alloc) _Invocation(fn, ParameterTuple(DKTupleValueSet(), std::forward<Ps>(vs)...));
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple& tuple) const override
 			{
 				Function& fn = const_cast<FunctionObjectInvoker&>(*this).function;
-				DKObject<_Invocation> inv = DKOBJECT_NEW _Invocation(fn, tuple);
-				return inv.template SafeCast<DKInvocation<R>>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				return new(alloc) _Invocation(fn, tuple);
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple&& tuple) const override
 			{
 				Function& fn = const_cast<FunctionObjectInvoker&>(*this).function;
-				DKObject<_Invocation> inv = DKOBJECT_NEW _Invocation(fn, static_cast<ParameterTuple&&>(tuple));
-				return inv.template SafeCast<DKInvocation<R>>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				return new(alloc) _Invocation(fn, static_cast<ParameterTuple&&>(tuple));
 			}
 
 			FunctionObjectInvoker(Function& fn) : function(fn) {}
@@ -215,20 +226,20 @@ namespace DKFoundation
 			DKObject<DKInvocation<R>> Invocation(Ps... vs) const override
 			{
 				Object& obj = const_cast<FunctionMemberObjectInvoker&>(*this).object;
-				DKObject<_Invocation> inv = DKOBJECT_NEW _Invocation(obj, function, ParameterTuple(DKTupleValueSet(), std::forward<Ps>(vs)...));
-				return inv.template SafeCast<DKInvocation<R>>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				return new(alloc) _Invocation(obj, function, ParameterTuple(DKTupleValueSet(), std::forward<Ps>(vs)...));
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple& tuple) const override
 			{
 				Object& obj = const_cast<FunctionMemberObjectInvoker&>(*this).object;
-				DKObject<_Invocation> inv = DKOBJECT_NEW _Invocation(obj, function, tuple);
-				return inv.template SafeCast<DKInvocation<R>>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				return new(alloc) _Invocation(obj, function, tuple);
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple&& tuple) const override
 			{
 				Object& obj = const_cast<FunctionMemberObjectInvoker&>(*this).object;
-				DKObject<_Invocation> inv = DKOBJECT_NEW _Invocation(obj, function, static_cast<ParameterTuple&&>(tuple));
-				return inv.template SafeCast<DKInvocation<R>>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				return new(alloc) _Invocation(obj, function, static_cast<ParameterTuple&&>(tuple));
 			}
 
 			using ObjectTraits = DKTypeTraits<Object>;
@@ -399,6 +410,7 @@ namespace DKFoundation
 
 	template <typename T> using DKFunctionTest = Private::IdentifyFunction<T>;
 	template <typename T> using DKFunctionType = Private::FunctionTypeSelector<typename DKFunctionTest<T>::Callable>;
+	template <typename T> constexpr auto DKFunctionAllocator(void)->DKAllocator& { return Private::FunctionAllocator<T>(); }
 
 	// functor or function pointer
 	template <typename Func> auto DKFunction(Func&& fn)-> DKObject<typename DKFunctionType<Func>::Signature>
@@ -413,7 +425,7 @@ namespace DKFoundation
 		using Invoker = typename FunctionType::Invoker;
 		using Signature = typename FunctionType::Signature;
 
-		return DKOBJECT_NEW Invoker(std::forward<Func>(fn));
+		return new(DKFunctionAllocator<Invoker>()) Invoker(std::forward<Func>(fn));
 	}
 
 	template <typename T, typename Func> using DKFunctionMemberTest = Private::IdentifyMemberFunction<T, Func>;
@@ -433,6 +445,6 @@ namespace DKFoundation
 		using Invoker = typename FunctionType::Invoker;
 		using Signature = typename FunctionType::Signature;
 
-		return DKOBJECT_NEW Invoker(std::forward<T>(obj), fn);
+		return new(DKFunctionAllocator<Invoker>()) Invoker(std::forward<T>(obj), fn);
 	}
 }
