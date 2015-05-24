@@ -73,19 +73,9 @@ namespace DKFoundation
 
 		static DKFixedSizeAllocator& Instance(void)
 		{
-			static DKFixedSizeAllocator* ptr = NULL;
-			if (ptr == NULL)
-			{
-				static DKSpinLock lock;
-				lock.Lock();
-				if (ptr == NULL)
-				{
-					static DKFixedSizeAllocator instance;
-					ptr = &instance;
-				}
-				lock.Unlock();
-			}
-			return *ptr;
+			static StaticInitializer init; // extend allocator life cycle.
+			static DKFixedSizeAllocator* instance = new DKFixedSizeAllocator();
+			return *instance;
 		}
 
 		// DKAllocator interface. Useful to DKObject<T> allocation.
@@ -97,8 +87,9 @@ namespace DKFoundation
 				void Dealloc(void* p) override					{ return Instance().Dealloc(p); }
 				DKMemoryLocation Location(void) const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
 			};
-			static AllocatorWrapper instance;
-			return instance;
+			static StaticInitializer init; // extend allocator life cycle.
+			static AllocatorWrapper* instance = new AllocatorWrapper();
+			return *instance;
 		}
 
 		void* Alloc(size_t s)
@@ -118,7 +109,7 @@ namespace DKFoundation
 					for (int i = 0; i < maxUnitsPerChunk; ++i)
 					{
 						unsigned int occupied = (ch->occupied >> i) & 1;
-						if (occupied)
+						if (!occupied)
 						{
 							ch->occupied |= (1 << i);
 							return ch->units[i];

@@ -5,6 +5,7 @@
 //  Copyright (c) 2015 Hongtae Kim. All rights reserved.
 //
 
+#include <new>
 #include "DKAllocatorChain.h"
 #include "DKSpinLock.h"
 #include "DKCriticalSection.h"
@@ -13,39 +14,103 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKAllocatorChain* first = NULL;
-		static DKSpinLock chainLock;
+		void CreateAllocationTable(void);
+		void DestroyAllocationTable(void);
+
+		using ScopedSpinLock = DKCriticalSection<DKSpinLock>;
+		struct Chain
+		{
+			using RefCount = unsigned int;
+
+			DKAllocatorChain* first;
+			DKSpinLock lock;
+			RefCount refCount;
+			static Chain* instance;
+
+			Chain(void)
+			{
+				CreateAllocationTable();
+				lock.Lock();
+				first = NULL;
+				instance = this;
+				refCount = 0;
+				lock.Unlock();
+			}
+			~Chain(void)
+			{
+				DestroyAllocationTable();
+				while (true)
+				{
+					lock.Lock();
+					DKAllocatorChain* p = first;
+					lock.Unlock();
+					if (p)
+						delete p;
+					else
+						break;
+				}
+
+				lock.Lock();
+				instance = NULL;
+				first = NULL;
+				lock.Unlock();
+			}
+			static Chain* Instance(void)
+			{
+				static Chain* p = new Chain();
+				return p->instance;
+			}
+			RefCount IncrementRef(void)
+			{
+				ScopedSpinLock guard(lock);
+				this->refCount++;
+				return this->refCount;
+			}
+			RefCount DecrementRef(void)
+			{
+				ScopedSpinLock guard(lock);
+				this->refCount--;
+				return this->refCount;
+			}
+		};
+		Chain* Chain::instance;
+
+		// default Chain-Holder
+		static DKAllocatorChain::StaticInitializer init;
 	}
 }
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
+
 DKAllocatorChain::DKAllocatorChain(void)
 : next(NULL)
 {
-	DKCriticalSection<DKSpinLock> guard(chainLock);
-	if (first)
+	Chain* c = Chain::Instance();
+	ScopedSpinLock guard(c->lock);
+	if (c->first)
 	{
-		DKAllocatorChain* last = first;
+		DKAllocatorChain* last = c->first;
 		while (last->next)
 			last = last->next;
 		last->next = this;
 	}
 	else
 	{
-		first = this;
+		c->first = this;
 	}
 }
 
 DKAllocatorChain::~DKAllocatorChain(void)
 {
-	DKCriticalSection<DKSpinLock> guard(chainLock);
-	if (first == this)
-		first = this->next;
+	Chain* c = Chain::Instance();
+	ScopedSpinLock guard(c->lock);
+	if (c->first == this)
+		c->first = this->next;
 	else
 	{
-		for (DKAllocatorChain* chain = first; chain; chain = chain->next)
+		for (DKAllocatorChain* chain = c->first; chain; chain = chain->next)
 		{
 			if (chain->next == this)
 			{
@@ -58,8 +123,9 @@ DKAllocatorChain::~DKAllocatorChain(void)
 
 void DKAllocatorChain::Cleanup(void)
 {
-	DKCriticalSection<DKSpinLock> guard(chainLock);
-	for (DKAllocatorChain* chain = first; chain; chain = chain->next)
+	Chain* c = Chain::Instance();
+	ScopedSpinLock guard(c->lock);
+	for (DKAllocatorChain* chain = c->first; chain; chain = chain->next)
 	{
 		chain->Purge();
 	}
@@ -67,11 +133,30 @@ void DKAllocatorChain::Cleanup(void)
 
 DKAllocatorChain* DKAllocatorChain::FirstAllocator(void)
 {
-	DKCriticalSection<DKSpinLock> guard(chainLock);
-	return first;
+	Chain* c = Chain::Instance();
+	ScopedSpinLock guard(c->lock);
+	return c->first;
 }
 
 DKAllocatorChain* DKAllocatorChain::NextAllocator(void)
 {
 	return next;
+}
+
+DKAllocatorChain::StaticInitializer::StaticInitializer(void)
+{
+	Chain* c = Chain::Instance();
+	DKASSERT_DEBUG( c != NULL );
+	Chain::RefCount ref = c->IncrementRef();
+	DKASSERT_DEBUG( ref >= 0);
+}
+
+DKAllocatorChain::StaticInitializer::~StaticInitializer(void)
+{
+	Chain* c = Chain::Instance();
+	DKASSERT_DEBUG( c != NULL );
+	Chain::RefCount ref = c->DecrementRef();
+	DKASSERT_DEBUG( ref >= 0);
+	if (ref == 0)
+		delete c;
 }

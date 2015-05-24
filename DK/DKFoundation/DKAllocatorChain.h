@@ -13,6 +13,20 @@
 // an abstract class, a memory allocator chain class.
 // implemented as linked-list.
 // subclass will be added to chain automatically when they are instantiated.
+//
+// Warning:
+//  If you need to use DKAllocator with static (global) object initialization,
+//  You have to hold StaticInitializer instance as static storage.
+//
+//  The StaticInitializer will postpone destruction of internal allocators and
+//  allocation pools until all StaticInitializer instances are destroyed.
+//  It is necessary to internal allocator become persistent even when main()
+//  function has been finished. (even after atexit() called)
+//
+//  StaticInitializer Usage:
+//    Just declare static instance before using any allocators in global scope.
+//    not necessary for function scope inside of main() routine.
+//
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFoundation
@@ -32,6 +46,15 @@ namespace DKFoundation
 		static void Cleanup(void);
 		static DKAllocatorChain* FirstAllocator(void);
 		DKAllocatorChain* NextAllocator(void);
+
+
+		// To extend static-object life cycle, a static-object which own
+		// DKAllocator, it should have StaticInitializer instance with static storage.
+		struct StaticInitializer
+		{
+			StaticInitializer(void);
+			~StaticInitializer(void);
+		};
 
 	private:
 		DKAllocatorChain* next;

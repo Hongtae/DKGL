@@ -16,6 +16,8 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+		static DKAllocator::StaticInitializer init;
+
 		enum {AllocatorTableLength = 977}; // should be prime-number.
 		struct AllocationNode
 		{
@@ -65,29 +67,42 @@ namespace DKFoundation
 		//  function as static-variable. it will be initialized on first call.
 		namespace
 		{
-			DKSpinLock spinLock;
+			struct AllocationTable
+			{
+				AllocationNode node[AllocatorTableLength];
+				DKSpinLock lock;
+			};
+			static AllocationTable* table;
 
 			AllocationNode& GetAllocationNode(void* ptr)
 			{
-				static AllocationNode* nodeTables = NULL;
-				if (nodeTables == NULL)
-				{
-					DKCriticalSection<DKSpinLock> guard(spinLock);
-					if (nodeTables == NULL)
-					{
-						static AllocationNode nodes[AllocatorTableLength];
-						nodeTables = nodes;
-					}
-				}
-				return nodeTables[reinterpret_cast<uintptr_t>(ptr) % AllocatorTableLength];
+				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
+				static DKAllocator::StaticInitializer init;
+
+				DKCriticalSection<DKSpinLock> guard(table->lock);
+				return table->node[reinterpret_cast<uintptr_t>(ptr) % AllocatorTableLength];
 			}
 			DKObjectRefCounter::RefIdValue GenerateRefId(void)
 			{
-				DKCriticalSection<DKSpinLock> guard(spinLock);
+				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
+				static DKAllocator::StaticInitializer init;
+
+				DKCriticalSection<DKSpinLock> guard(table->lock);
+
 				static DKObjectRefCounter::RefIdValue counter = 0;
 				DKObjectRefCounter::RefIdValue value = ++counter;
 				return value;
 			}
+		}
+
+		void CreateAllocationTable(void) // called by StaticInitializer
+		{
+			table = new AllocationTable();
+		}
+		void DestroyAllocationTable(void) // called by StaticInitializer
+		{
+			delete table;
+			table = NULL;
 		}
 	}
 }
