@@ -161,6 +161,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // useful templates (C++ only)
 #ifdef __cplusplus
+#include <stdexcept>
 #include <type_traits>
 namespace DKFoundation
 {
@@ -212,26 +213,32 @@ namespace DKFoundation
 ////////////////////////////////////////////////////////////////////////////////
 // Macros for error, exception (DKError), C++ only.
 
-#if			defined(_WIN32)
+#if defined(_WIN32)
 #define DKLIB_FUNCTION_NAME		__FUNCTION__
-#elif		defined(__GNUC__)
+#elif defined(__GNUC__)
 #define DKLIB_FUNCTION_NAME		__PRETTY_FUNCTION__
 #else
 #define DKLIB_FUNCTION_NAME		__func__
 #endif
 
-#define DKERROR_THROW(desc)			DKFoundation::DKErrorRaiseException(DKLIB_FUNCTION_NAME, __FILE__, __LINE__, desc)
-#define DKASSERT_DESC(expr, desc)	{if (!(expr)) DKERROR_THROW(desc);}
-#define DKASSERT(expr)				{if (!(expr)) DKERROR_THROW("");}
+#define DKERROR_THROW(desc)				DKFoundation::DKErrorRaiseException(DKLIB_FUNCTION_NAME, __FILE__, __LINE__, desc)
+#define DKASSERT_DESC(expr, desc)		{if (!(expr)) DKERROR_THROW(desc);}
+#define DKASSERT(expr)					{if (!(expr)) DKERROR_THROW("");}
+#define DKASSERT_STD_DESC(expr, desc)	{if (!(expr)) throw std::runtime_error(desc);}
+#define DKASSERT_STD(expr)				{if (!(expr)) throw std::runtime_error("");}
 
 #ifdef DKLIB_DEBUG_ENABLED
-#define DKERROR_THROW_DEBUG(desc)		DKERROR_THROW(desc)
-#define DKASSERT_DESC_DEBUG(expr, desc)	DKASSERT_DESC(expr, desc)
-#define DKASSERT_DEBUG(expr)			DKASSERT(expr)
+#define DKERROR_THROW_DEBUG(desc)			DKERROR_THROW(desc)
+#define DKASSERT_DESC_DEBUG(expr, desc)		DKASSERT_DESC(expr, desc)
+#define DKASSERT_DEBUG(expr)				DKASSERT(expr)
+#define DKASSERT_STD_DESC_DEBUG(expr, desc)	DKASSERT_STD_DESC(expr, desc)
+#define DKASSERT_STD_DEBUG(expr)			DKASSERT_STD(expr)
 #else
-#define DKERROR_THROW_DEBUG(desc)		(void)0
-#define DKASSERT_DESC_DEBUG(expr, desc)	(void)0
-#define DKASSERT_DEBUG(expr)			(void)0
+#define DKERROR_THROW_DEBUG(desc)			(void)0
+#define DKASSERT_DESC_DEBUG(expr, desc)		(void)0
+#define DKASSERT_DEBUG(expr)				(void)0
+#define DKASSERT_STD_DESC_DEBUG(expr, desc)	(void)0
+#define DKASSERT_STD_DEBUG(expr)			(void)0
 #endif
 
 #endif	// #ifdef __cplusplus

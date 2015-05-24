@@ -95,12 +95,7 @@ DKLIB_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
 {
 	void* p = a.Alloc(s);
 	bool b = DKObjectRefCounter::SetRefCounter(p, &a, 0, NULL);
-#ifdef DKLIB_DEBUG_ENABLED
-	if (!b)
-	{
-		throw std::runtime_error("DKObjectRefCounter failed");
-	}
-#endif
+	DKASSERT_STD_DESC_DEBUG(b, "DKObjectRefCounter failed.");
 	return p;
 }
 
@@ -108,11 +103,6 @@ DKLIB_API void operator delete (void* p, DKFoundation::DKAllocator& a)
 {
 	DKAllocator* alloc = NULL;
 	DKObjectRefCounter::UnsetRefCounter(p, 0, &alloc);
-#ifdef DKLIB_DEBUG_ENABLED
-	if (alloc != &a)
-	{
-		throw std::runtime_error("Wrong allocator object.");
-	}
-#endif
+	DKASSERT_STD_DESC_DEBUG(alloc == &a, "Wrong allocator object.");
 	a.Dealloc(p);
 }

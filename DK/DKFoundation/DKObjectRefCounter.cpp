@@ -38,7 +38,7 @@ namespace DKFoundation
 
 				static void* Alloc(size_t s)
 				{
-					DKASSERT_DEBUG(s == NodeSize);
+					DKASSERT_STD_DEBUG(s == NodeSize);
 					return FixedAllocator::Instance().Alloc(s);
 				}
 				static void Free(void* p)
@@ -71,14 +71,19 @@ namespace DKFoundation
 			{
 				AllocationNode node[AllocatorTableLength];
 				DKSpinLock lock;
+				static AllocationTable*& Instance(void)
+				{
+					static AllocationTable* table = NULL;
+					return table;
+				}
 			};
-			static AllocationTable* table;
 
 			AllocationNode& GetAllocationNode(void* ptr)
 			{
 				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
 				static DKAllocator::StaticInitializer init;
 
+				AllocationTable* table = AllocationTable::Instance();
 				DKCriticalSection<DKSpinLock> guard(table->lock);
 				return table->node[reinterpret_cast<uintptr_t>(ptr) % AllocatorTableLength];
 			}
@@ -87,6 +92,7 @@ namespace DKFoundation
 				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
 				static DKAllocator::StaticInitializer init;
 
+				AllocationTable* table = AllocationTable::Instance();
 				DKCriticalSection<DKSpinLock> guard(table->lock);
 
 				static DKObjectRefCounter::RefIdValue counter = 0;
@@ -97,12 +103,18 @@ namespace DKFoundation
 
 		void CreateAllocationTable(void) // called by StaticInitializer
 		{
-			table = new AllocationTable();
+			AllocationTable* table = AllocationTable::Instance();
+			if (table == NULL)
+			{
+				table = new AllocationTable();
+				AllocationTable::Instance() = table;
+			}
 		}
 		void DestroyAllocationTable(void) // called by StaticInitializer
 		{
+			AllocationTable* table = AllocationTable::Instance();
+			AllocationTable::Instance() = NULL;
 			delete table;
-			table = NULL;
 		}
 	}
 }
@@ -237,7 +249,7 @@ bool DKObjectRefCounter::DecrementRefCountAndUnsetIfEqual(void* p, RefCountValue
 		AllocationNode::Container::Pair* pair = node.container.Find(p);
 		if (pair)
 		{
-			DKASSERT_DEBUG(pair->value.refCount > 0);
+			DKASSERT_STD_DEBUG(pair->value.refCount > 0);
 
 			--(pair->value.refCount);
 

@@ -94,7 +94,7 @@ namespace DKFoundation
 
 		void* Alloc(size_t s)
 		{
-			DKASSERT_DEBUG(s == FixedLength);
+			DKASSERT_STD_DEBUG(s == FixedLength);
 			CriticalSection guard(lock);
 			numAllocated++;
 			if (maxAllocated < numAllocated)
@@ -152,7 +152,7 @@ namespace DKFoundation
 				}
 			}
 			// error: ptr was not allocated from this allocator!
-			DKASSERT_DESC_DEBUG(false, "Given address was not allocated from this allocator!");
+			DKASSERT_STD_DESC_DEBUG(false, "Given address was not allocated from this allocator!");
 		}
 
 		void Purge(void)	// delete unoccupied chunks
@@ -179,7 +179,7 @@ namespace DKFoundation
 
 		virtual ~DKFixedSizeAllocator(void)
 		{
-			DKASSERT_DEBUG(numAllocated == 0);
+			DKASSERT_STD_DEBUG(numAllocated == 0);
 			Chunk* nextChunk = firstChunk;
 			while (nextChunk)
 			{

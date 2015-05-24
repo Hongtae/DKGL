@@ -146,17 +146,17 @@ DKAllocatorChain* DKAllocatorChain::NextAllocator(void)
 DKAllocatorChain::StaticInitializer::StaticInitializer(void)
 {
 	Chain* c = Chain::Instance();
-	DKASSERT_DEBUG( c != NULL );
+	DKASSERT_STD_DEBUG( c != NULL );
 	Chain::RefCount ref = c->IncrementRef();
-	DKASSERT_DEBUG( ref >= 0);
+	DKASSERT_STD_DEBUG( ref >= 0);
 }
 
 DKAllocatorChain::StaticInitializer::~StaticInitializer(void)
 {
 	Chain* c = Chain::Instance();
-	DKASSERT_DEBUG( c != NULL );
+	DKASSERT_STD_DEBUG( c != NULL );
 	Chain::RefCount ref = c->DecrementRef();
-	DKASSERT_DEBUG( ref >= 0);
+	DKASSERT_STD_DEBUG( ref >= 0);
 	if (ref == 0)
 		delete c;
 }
