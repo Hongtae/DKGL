@@ -29,7 +29,7 @@
 //
 // Example:
 //   DKObject<OBJECT> obj1 = DKOBJECT_NEW Object();  // create new instance.
-//   DKObject<OBJECT> obj2 = obj2;          // share ownership with copy constructor.
+//   DKObject<OBJECT> obj2 = obj1;          // share ownership with copy constructor.
 //   OBJECT* raw_ptr = obj2;                // cast to raw-pointer.
 //   DKObject<OBJECT> obj3 = raw_ptr;       // share ownership with raw-pointer.
 //   DKObject<OBJECT>::Ref weak_ref = obj1; // cast to weak-reference.
