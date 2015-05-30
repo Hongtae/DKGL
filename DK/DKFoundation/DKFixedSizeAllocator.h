@@ -159,8 +159,8 @@ namespace DKFoundation
 
 		void Reserve(size_t n)		// preallocate
 		{
-			CriticalSection guard(lock);
 			size_t numAllocs = 0;
+			CriticalSection guard(lock);
 			if (numAllocs < n)
 			{				
 				if (firstChunk == NULL)
@@ -191,42 +191,6 @@ namespace DKFoundation
 					maxChunks = numChunks;
 			}
 		}
-
-		void Reserve(size_t n)
-		{
-			CriticalSection guard(lock);
-			size_t numAllocs = 0;
-			if (numAllocs < n)
-			{
-				Chunk* lastChunk = firstChunk;
-				if (lastChunk == NULL)
-				{
-					Chunk* ch = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
-					ch->occupied = 0;
-					ch->next = NULL;
-					firstChunk = ch;
-					lastChunk = ch;
-					numAllocs += MaxUnitsPerChunk;
-					numChunks++;
-				}
-				while (lastChunk->next)
-				{
-					numAllocs += MaxUnitsPerChunk;
-					lastChunk = lastChunk->next;
-				}
-
-				while (numAllocs < n)
-				{
-					numAllocs += MaxUnitsPerChunk;
-					numChunks++;
-					lastChunk->next = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
-					lastChunk = lastChunk->next;
-					lastChunk->occupied = 0;
-					lastChunk->next = NULL;
-				}
-			}
-		}
-
 
 		void Purge(void)	// delete unoccupied chunks
 		{
