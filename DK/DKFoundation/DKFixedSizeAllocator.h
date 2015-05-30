@@ -48,12 +48,12 @@ namespace DKFoundation
 		static_assert(sizeof(BitMaskType) * 8 == MaxUnits, "BitMaskType is invalid.");
 		static const BitMaskType fullOccupied = (BitMaskType)-1;
 
-		enum {maxUnitsPerChunk = MaxUnits};
+		enum {MaxUnitsPerChunk = MaxUnits};
 
 		using Unit = unsigned char[UnitSize];
 		struct Chunk
 		{
-			Unit units[maxUnitsPerChunk];
+			Unit units[MaxUnitsPerChunk];
 			BitMaskType occupied;
 			Chunk* next; /* linked-list */
 		};
@@ -94,7 +94,7 @@ namespace DKFoundation
 
 		void* Alloc(size_t s)
 		{
-			DKASSERT_STD_DEBUG(s == FixedLength);
+			DKASSERT_STD_DEBUG(s <= FixedLength);
 			CriticalSection guard(lock);
 			numAllocated++;
 			if (maxAllocated < numAllocated)
@@ -106,7 +106,7 @@ namespace DKFoundation
 				if (ch->occupied != fullOccupied)
 				{
 					// chunk has one or more unoccupied units.
-					for (int i = 0; i < maxUnitsPerChunk; ++i)
+					for (int i = 0; i < MaxUnitsPerChunk; ++i)
 					{
 						unsigned int occupied = (ch->occupied >> i) & 1;
 						if (!occupied)
@@ -132,6 +132,8 @@ namespace DKFoundation
 					last = last->next;
 				last->next = ch;
 			}
+			if (maxChunks < numChunks)
+				maxChunks = numChunks;
 			return ch->units[0];
 		}
 
@@ -142,7 +144,7 @@ namespace DKFoundation
 			for (Chunk* ch = firstChunk; ch; ch = ch->next)
 			{
 				uintptr_t rangeBegin = reinterpret_cast<uintptr_t>(ch->units[0]);
-				uintptr_t rangeEnd = reinterpret_cast<uintptr_t>(ch->units[maxUnitsPerChunk-1]);
+				uintptr_t rangeEnd = reinterpret_cast<uintptr_t>(ch->units[MaxUnitsPerChunk-1]);
 				if (addr >= rangeBegin && addr <= rangeEnd)
 				{
 					unsigned int index = (unsigned int)((addr - rangeBegin) / sizeof(Unit));
@@ -154,6 +156,77 @@ namespace DKFoundation
 			// error: ptr was not allocated from this allocator!
 			DKASSERT_STD_DESC_DEBUG(false, "Given address was not allocated from this allocator!");
 		}
+
+		void Reserve(size_t n)		// preallocate
+		{
+			CriticalSection guard(lock);
+			size_t numAllocs = 0;
+			if (numAllocs < n)
+			{				
+				if (firstChunk == NULL)
+				{
+					firstChunk = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
+					firstChunk->occupied = 0;
+					firstChunk->next = NULL;
+					numAllocs += MaxUnitsPerChunk;
+					numChunks++;
+				}
+				Chunk* lastChunk = firstChunk;
+				while (lastChunk->next)
+				{
+					numAllocs += MaxUnitsPerChunk;
+					lastChunk = lastChunk->next;
+				}
+				while (numAllocs < n)
+				{
+					lastChunk->next = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
+					lastChunk = lastChunk->next;
+					lastChunk->occupied = 0;
+					lastChunk->next = NULL;
+
+					numAllocs += MaxUnitsPerChunk;
+					numChunks++;
+				}
+				if (maxChunks < numChunks)
+					maxChunks = numChunks;
+			}
+		}
+
+		void Reserve(size_t n)
+		{
+			CriticalSection guard(lock);
+			size_t numAllocs = 0;
+			if (numAllocs < n)
+			{
+				Chunk* lastChunk = firstChunk;
+				if (lastChunk == NULL)
+				{
+					Chunk* ch = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
+					ch->occupied = 0;
+					ch->next = NULL;
+					firstChunk = ch;
+					lastChunk = ch;
+					numAllocs += MaxUnitsPerChunk;
+					numChunks++;
+				}
+				while (lastChunk->next)
+				{
+					numAllocs += MaxUnitsPerChunk;
+					lastChunk = lastChunk->next;
+				}
+
+				while (numAllocs < n)
+				{
+					numAllocs += MaxUnitsPerChunk;
+					numChunks++;
+					lastChunk->next = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
+					lastChunk = lastChunk->next;
+					lastChunk->occupied = 0;
+					lastChunk->next = NULL;
+				}
+			}
+		}
+
 
 		void Purge(void)	// delete unoccupied chunks
 		{
