@@ -10,6 +10,8 @@
 #include "DKStringUE.h"
 #include "DKStringU8.h"
 #include "DKStringW.h"
+#include "DKMap.h"
+#include "DKSet.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKString
@@ -21,4 +23,35 @@
 namespace DKFoundation
 {
 	typedef DKStringW DKString;
+
+	// Template Spealization for DKString. (for DKMap, DKSet)
+	template <> struct DKMapKeyComparison<DKStringW>
+	{
+		int operator () (const DKStringW& lhs, const DKStringW& rhs) const
+		{
+			return lhs.Compare(rhs);
+		}
+	};
+	template <> struct DKMapKeyComparison<DKStringU8>
+	{
+		int operator () (const DKStringU8& lhs, const DKStringU8& rhs) const
+		{
+			return lhs.Compare(rhs);
+		}
+	};
+	template <> struct DKSetComparison<DKStringW>
+	{
+		int operator () (const DKStringW& lhs, const DKStringW& rhs) const
+		{
+			return lhs.Compare(rhs);
+		}
+	};
+	template <> struct DKSetComparison<DKStringU8>
+	{
+		int operator () (const DKStringU8& lhs, const DKStringU8& rhs) const
+		{
+			return lhs.Compare(rhs);
+		}
+	};
+
 }
