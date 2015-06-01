@@ -132,14 +132,16 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.IsEmpty();
 		}
-		template <typename T> size_t Insert(const DKOrderedArray<VALUE, T>& value)
+		template <typename T, typename U>
+		size_t Insert(const DKOrderedArray<VALUE, T, U>& value)
 		{
-			typename DKOrderedArray<VALUE, T>::CriticalSection guard(value.lock);
+			typename DKOrderedArray<VALUE, T, U>::CriticalSection guard(value.lock);
 			return Insert((const VALUE*)value, value.Count());
 		}
-		template <typename T> size_t Insert(const DKArray<VALUE, T>& value)
+		template <typename T, typename U>
+		size_t Insert(const DKArray<VALUE, T, U>& value)
 		{
-			typename DKArray<VALUE, T>::CriticalSection guard(value.lock);
+			typename DKArray<VALUE, T, U>::CriticalSection guard(value.lock);
 			return Insert((const VALUE*)value, value.Count());
 		}
 		size_t Insert(const VALUE& value)
