@@ -971,6 +971,10 @@
 		8464DA7F171C1C2A00E1E9CD /* DKVoxelPolygonizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8464DA72171C1C2A00E1E9CD /* DKVoxelPolygonizer.cpp */; };
 		8464DA80171C1C2A00E1E9CD /* DKVoxelPolygonizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8464DA73171C1C2A00E1E9CD /* DKVoxelPolygonizer.h */; };
 		8464DA81171C1C2A00E1E9CD /* DKVoxelPolygonizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8464DA73171C1C2A00E1E9CD /* DKVoxelPolygonizer.h */; };
+		84768FD61B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
+		84768FD71B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
+		84768FD81B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
+		84768FD91B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
 		84798B8C19E51DFB009378A6 /* DKAllocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E493141DD4B70091D2C0 /* DKAllocator.cpp */; };
 		84798B8D19E51DFB009378A6 /* DKAtomicNumber32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E497141DD4B70091D2C0 /* DKAtomicNumber32.cpp */; };
 		84798B8E19E51DFB009378A6 /* DKAtomicNumber64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 842F125B17C24B0F004E66FB /* DKAtomicNumber64.cpp */; };
@@ -1506,6 +1510,7 @@
 		846B29691921FE6300918B1B /* DKFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFramework.h; sourceTree = "<group>"; };
 		846B296A1921FE6300918B1B /* DKInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKInclude.h; sourceTree = "<group>"; };
 		846B296B1921FE6300918B1B /* DK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DK.h; sourceTree = "<group>"; };
+		84768FD51B1D981D0006DD7C /* DKBitArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKBitArray.h; sourceTree = "<group>"; };
 		84798B7119E51CBA009378A6 /* DK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84798B8719E51CFA009378A6 /* DK_iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DK_iOS-Info.plist"; sourceTree = "<group>"; };
 		84826365164D52800038BB06 /* DKGeneric6DofSpringConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKGeneric6DofSpringConstraint.cpp; sourceTree = "<group>"; };
@@ -2075,6 +2080,7 @@
 				842F125B17C24B0F004E66FB /* DKAtomicNumber64.cpp */,
 				842F125C17C24B0F004E66FB /* DKAtomicNumber64.h */,
 				84A1E499141DD4B70091D2C0 /* DKAVLTree.h */,
+				84768FD51B1D981D0006DD7C /* DKBitArray.h */,
 				84A1E49C141DD4B70091D2C0 /* DKBuffer.cpp */,
 				8420D94F155C035E00ED07FA /* DKBuffer.h */,
 				84F03CE2145D3AF300EDFD66 /* DKBufferStream.cpp */,
@@ -2405,6 +2411,7 @@
 				840CA5D21928952800689BB6 /* DKMath.h in Headers */,
 				840CA6281928952800689BB6 /* DKTextureSampler.h in Headers */,
 				840CA5E51928952800689BB6 /* DKPoint.h in Headers */,
+				84768FD81B1D981D0006DD7C /* DKBitArray.h in Headers */,
 				8436CDCC1928A78900F18892 /* DKData.h in Headers */,
 				840CA5831928952800689BB6 /* DKActionController.h in Headers */,
 				840CA58F1928952800689BB6 /* DKAudioListener.h in Headers */,
@@ -2598,6 +2605,7 @@
 				84798C3419E51E7F009378A6 /* DKCapsuleShape.h in Headers */,
 				84798C4B19E51E7F009378A6 /* DKLine.h in Headers */,
 				84798C1519E51E58009378A6 /* DKWindowInterface.h in Headers */,
+				84768FD91B1D981D0006DD7C /* DKBitArray.h in Headers */,
 				84798C9819E51E96009378A6 /* DKData.h in Headers */,
 				84798C5D19E51E7F009378A6 /* DKPropertySet.h in Headers */,
 				84798C2B19E51E7F009378A6 /* DKApplication.h in Headers */,
@@ -2791,6 +2799,7 @@
 				84211C6E1665E86400B9B9A2 /* DKDirectory.h in Headers */,
 				84211C6F1665E86400B9B9A2 /* DKDummyLock.h in Headers */,
 				84211C701665E86400B9B9A2 /* DKEndianness.h in Headers */,
+				84768FD71B1D981D0006DD7C /* DKBitArray.h in Headers */,
 				84211C711665E86400B9B9A2 /* DKError.h in Headers */,
 				84211C721665E86400B9B9A2 /* DKFence.h in Headers */,
 				84211C731665E86400B9B9A2 /* DKFile.h in Headers */,
@@ -2984,6 +2993,7 @@
 				84211C281665E86300B9B9A2 /* DKDirectory.h in Headers */,
 				84211C291665E86300B9B9A2 /* DKDummyLock.h in Headers */,
 				84211C2A1665E86300B9B9A2 /* DKEndianness.h in Headers */,
+				84768FD61B1D981D0006DD7C /* DKBitArray.h in Headers */,
 				84211C2B1665E86300B9B9A2 /* DKError.h in Headers */,
 				84211C2C1665E86300B9B9A2 /* DKFence.h in Headers */,
 				84211C2D1665E86300B9B9A2 /* DKFile.h in Headers */,

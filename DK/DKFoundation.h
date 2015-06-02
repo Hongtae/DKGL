@@ -26,6 +26,7 @@
 
 // data collections
 #include "DKFoundation/DKArray.h"
+#include "DKFoundation/DKBitArray.h"
 #include "DKFoundation/DKCircularQueue.h"
 #include "DKFoundation/DKList.h"
 #include "DKFoundation/DKMap.h"
