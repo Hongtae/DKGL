@@ -297,6 +297,71 @@ namespace DKFoundation
 			return ValueAtIndexNL(i);
 		}
 
+		DKBitArray& operator = (DKBitArray&& other)
+		{
+			if (this != &other)
+			{
+				Clear();
+				if (data)
+					Allocator::Free(data);
+				data = other.data;
+				count = other.count;
+				capacity = other.capacity;
+				other.data = NULL;
+				other.count = 0;
+				other.capacity = 0;
+			}
+			return *this;
+		}
+		DKBitArray& operator = (const DKBitArray& value)
+		{
+			if (this == &value)
+				return *this;
+
+			Clear();
+			Add(value);
+			return *this;
+		}
+		DKBitArray& operator = (std::initializer_list<bool> il)
+		{
+			Clear();
+			Add(il);
+			return *this;
+		}
+		DKBitArray operator + (bool v) const
+		{
+			DKBitArray	ret(*this);
+			ret.Add(v);
+			return ret;
+		}
+		DKBitArray operator + (const DKBitArray& value) const
+		{
+			DKBitArray ret(*this);
+			ret.Add(value);
+			return ret;
+		}
+		DKBitArray operator + (std::initializer_list<bool> il) const
+		{
+			DKBitArray ret(*this);
+			ret.Add(il);
+			return ret;
+		}
+		DKBitArray& operator += (bool v) const
+		{
+			Add(v);
+			return *this;
+		}
+		DKBitArray& operator += (const DKBitArray& value)
+		{
+			Add(value);
+			return *this;
+		}
+		DKBitArray& operator += (std::initializer_list<bool> il)
+		{
+			Add(il);
+			return *this;
+		}
+
 	private:
 		void LeftShiftFromIndexNL(Index i, size_t c)
 		{
