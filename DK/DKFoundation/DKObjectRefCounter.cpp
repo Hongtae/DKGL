@@ -43,16 +43,17 @@ namespace DKFoundation
 			struct Allocator
 			{
 				enum { NodeSize = DKMap<void*, NodeInfo>::NodeSize() };
-				using FixedAllocator = DKFixedSizeAllocator<NodeSize, 64, Lock>;
+				enum { Alignment = sizeof(void*) };
+				using FixedAllocator = DKFixedSizeAllocator<NodeSize, Alignment, 1024, Lock>;
 
 				static void* Alloc(size_t s)
 				{
-					DKASSERT_STD_DEBUG(s == NodeSize);
-					return FixedAllocator::Instance().Alloc(s);
+					DKASSERT_STD_DEBUG(s <= NodeSize);
+					return FixedAllocator::AllocatorInstance().Alloc(s);
 				}
 				static void Free(void* p)
 				{
-					FixedAllocator::Instance().Dealloc(p);
+					FixedAllocator::AllocatorInstance().Dealloc(p);
 				}
 			};
 #endif

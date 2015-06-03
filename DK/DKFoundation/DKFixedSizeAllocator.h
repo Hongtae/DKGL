@@ -6,10 +6,8 @@
 //
 
 #pragma once
+#include <algorithm>
 #include "../DKinclude.h"
-#include "DKTypes.h"
-#include "DKTypeTraits.h"
-#include "DKAllocatorChain.h"
 #include "DKAllocator.h"
 #include "DKMemory.h"
 #include "DKSpinLock.h"
@@ -21,45 +19,169 @@
 // it is useful to template collection classes like DKMap, DKSet.
 ////////////////////////////////////////////////////////////////////////////////
 
+
 namespace DKFoundation
 {
 	template <
-		size_t UnitSize,			// allocation size (fixed size)
-		size_t MaxUnits = 32,		// max units per chunk
+		size_t UnitSize,				// allocation size (fixed size)
+		size_t Alignment = 1,
+		size_t MaxUnits = 1024,			// max units per chunk
 		typename Lock = DKSpinLock,
 		typename BaseAllocator = DKMemoryDefaultAllocator // for alloc chunks.
 	>
-	class DKFixedSizeAllocator : public DKAllocatorChain
+	class DKFixedSizeAllocator
 	{
 		static_assert(UnitSize > 0, "Size must be greater than zero.");
-		static_assert(DKNumMatches<MaxUnits, 8, 16, 32, 64>() == 1,
-					  "MaxUnits must be one of 8,16,32,64.");
+		static_assert(MaxUnits > 4, "MaxUnits must be greater than four.");
+		static_assert(Alignment > 0, "Alignment must be greater than zero.");
+		static_assert((Alignment & (Alignment - 1)) == 0, "Alignment must be power of two.");
 
-		// C++11 does not allow 'explicit spealization',
-		// to compile properly, we need specify one or more types which is not
-		// used but required. (type 'U' in below template struct)
-		template <int, typename U=void> struct _BitMaskType;
-		template <typename U> struct _BitMaskType< 8, U> { using Type = unsigned char; };
-		template <typename U> struct _BitMaskType<16, U> { using Type = unsigned short; };
-		template <typename U> struct _BitMaskType<32, U> { using Type = unsigned int; };
-		template <typename U> struct _BitMaskType<64, U> { using Type = unsigned long long; };
+		enum { MaxUnitsPerChunk = MaxUnits };
 
-		using BitMaskType = typename _BitMaskType<MaxUnits>::Type;
-		static_assert(sizeof(BitMaskType) * 8 == MaxUnits, "BitMaskType is invalid.");
-		static const BitMaskType fullOccupied = (BitMaskType)-1;
+		union Unit
+		{
+			enum { AlignedUnitSize = UnitSize + ((UnitSize % Alignment) ? (Alignment - (UnitSize % Alignment)) : 0) };
 
-		enum {MaxUnitsPerChunk = MaxUnits};
+			unsigned char data[AlignedUnitSize];
+			int nextUnitIndex;
+		};
+		static_assert((sizeof(Unit) % Alignment) == 0, "Invalid unit alignment");
 
-		using Unit = unsigned char[UnitSize];
 		struct Chunk
 		{
-			Unit units[MaxUnitsPerChunk];
-			BitMaskType occupied;
-			Chunk* next; /* linked-list */
-		};
-		static_assert(DKTypeTraits<Chunk>::IsPod(), "Invalid chunk type");
+			enum { BufferLength = sizeof(Unit) * MaxUnitsPerChunk + Alignment - 1 };
+			enum { EndOfUnits = -1 };
 
-		Chunk* firstChunk;
+			Unit* units;
+			int firstFreeUnitIndex;
+			int lastFreeUnitIndex;
+			int numFreeUnits;
+			unsigned char data[BufferLength];
+
+			Chunk(void)
+				: firstFreeUnitIndex(0)
+				, lastFreeUnitIndex(MaxUnitsPerChunk-1)
+				, numFreeUnits(MaxUnitsPerChunk)
+			{
+				uintptr_t ptr = reinterpret_cast<uintptr_t>(&this->data[0]);
+				if (ptr % Alignment)
+					ptr += Alignment - (ptr % Alignment);
+				DKASSERT_STD_DEBUG((ptr % Alignment) == 0);
+				this->units = reinterpret_cast<Unit*>(ptr);
+				for (int i = 0; i < MaxUnitsPerChunk-1; ++i)
+					this->units[i].nextUnitIndex = i+1;
+				this->units[MaxUnitsPerChunk-1].nextUnitIndex = EndOfUnits;
+			}
+			~Chunk(void)
+			{
+				DKASSERT_STD_DEBUG(this->firstFreeUnitIndex >= 0);
+				DKASSERT_STD_DEBUG(this->lastFreeUnitIndex >= 0);
+				DKASSERT_STD_DEBUG(this->numFreeUnits == MaxUnitsPerChunk);
+			}
+			void* Alloc(void)
+			{
+				DKASSERT_STD_DEBUG(this->numFreeUnits <= MaxUnitsPerChunk);
+				if (this->numFreeUnits > 0)
+				{
+					// chunk has one or more unoccupied units.
+					DKASSERT_STD_DEBUG(this->firstFreeUnitIndex >= 0);
+					DKASSERT_STD_DEBUG(this->lastFreeUnitIndex >= 0);
+
+					Unit& unit = this->units[this->firstFreeUnitIndex];
+					if (this->lastFreeUnitIndex == this->firstFreeUnitIndex)
+						this->lastFreeUnitIndex = unit.nextUnitIndex;
+					this->firstFreeUnitIndex = unit.nextUnitIndex;
+					this->numFreeUnits--;
+
+					DKASSERT_STD_DEBUG((reinterpret_cast<uintptr_t>(&(unit.data[0])) % Alignment) == 0);
+
+					return &(unit.data[0]);
+				}
+				return NULL;
+			}
+			bool Dealloc(uintptr_t p)
+			{
+				uintptr_t rangeBegin = this->FirstUnitAddress();
+				if (p >= rangeBegin && p <= this->LastUnitAddress())
+				{
+					int index = (int)((p - rangeBegin) / sizeof(Unit));
+					Unit& unit = this->units[index];
+					unit.nextUnitIndex = EndOfUnits;
+
+					if (this->lastFreeUnitIndex == EndOfUnits)
+					{
+						DKASSERT_STD_DEBUG(numFreeUnits == 0);
+						DKASSERT_STD_DEBUG(this->firstFreeUnitIndex == EndOfUnits);
+						this->firstFreeUnitIndex = index;
+						this->lastFreeUnitIndex = index;
+					}
+					else
+					{
+						this->units[this->lastFreeUnitIndex].nextUnitIndex = index;
+						this->lastFreeUnitIndex = index;
+					}
+					this->numFreeUnits++;
+					DKASSERT_STD_DEBUG(this->numFreeUnits <= MaxUnitsPerChunk);
+					return true;
+				}
+				return false;
+			}
+			uintptr_t FirstUnitAddress(void) const
+			{
+				return reinterpret_cast<uintptr_t>(&(units[0].data[0]));
+			}
+			uintptr_t LastUnitAddress(void) const
+			{
+				return reinterpret_cast<uintptr_t>(&(units[MaxUnitsPerChunk - 1].data[0]));
+			}
+		};
+
+		struct ChunkTable
+		{
+			uintptr_t address;
+			Chunk* chunk;
+		};
+
+		void SortChunkTable(void)
+		{
+			if (numChunks > 1)
+			{
+				std::sort(&chunkTable[0], &chunkTable[numChunks - 1],
+						  [](const ChunkTable& lhs, const ChunkTable& rhs)
+						  {
+							  return lhs.address < rhs.address;
+						  });
+			}
+		}
+		Chunk* FindChunk(uintptr_t addr, size_t start, size_t count)
+		{
+			if (count > 2)
+			{
+				size_t med = count / 2;
+				size_t medIndex = start + med;
+				if (addr < chunkTable[medIndex].address)
+					return FindChunk(addr, start, med);
+				else if (addr > chunkTable[medIndex + 1].address)
+					return FindChunk(addr, medIndex + 1, count - med - 1);
+				if (addr == chunkTable[medIndex + 1].address)
+					return chunkTable[medIndex + 1].chunk;
+				return chunkTable[medIndex].chunk;
+			}
+			if (count > 1)
+			{
+				if (addr >= chunkTable[start+1].address)
+					return chunkTable[start+1].chunk;
+			}
+			if (count > 0)
+			{
+				if (addr >= chunkTable[start].address)
+					return chunkTable[start].chunk;
+			}
+			return NULL;
+		}
+
+		ChunkTable* chunkTable;
+		Chunk* cachedChunk;				// for fast-alloc
 		size_t maxAllocated;
 		size_t numAllocated;
 		size_t maxChunks;
@@ -68,26 +190,33 @@ namespace DKFoundation
 		using CriticalSection = DKCriticalSection<Lock>;
 		Lock lock;
 
+		template <size_t BaseAlignment> struct _RebindAlignment
+		{
+			enum { AlignedUnitSize = UnitSize + ((UnitSize % BaseAlignment) ? (BaseAlignment - (UnitSize % BaseAlignment)) : 0) };
+			using Allocator = DKFixedSizeAllocator<AlignedUnitSize, BaseAlignment, MaxUnits, Lock, BaseAllocator>;
+		};
+
 	public:
 		enum { FixedLength = UnitSize };
+		enum { BaseAlignment = Alignment };
 
-		static DKFixedSizeAllocator& Instance(void)
-		{
-			static StaticInitializer init; // extend allocator life cycle.
-			static DKFixedSizeAllocator* instance = new DKFixedSizeAllocator();
-			return *instance;
-		}
+		template <size_t Align>
+		using RebindAlignment = typename _RebindAlignment<Align>::Allocator;
 
 		// DKAllocator interface. Useful to DKObject<T> allocation.
 		static DKAllocator& AllocatorInstance(void)
 		{
 			struct AllocatorWrapper : public DKAllocator
 			{
-				void* Alloc(size_t s) override					{ return Instance().Alloc(s); }
-				void Dealloc(void* p) override					{ return Instance().Dealloc(p); }
+				using Allocator = RebindAlignment<BaseAlignment>;
+				void* Alloc(size_t s) override	{ return allocator.Alloc(s); }
+				void Dealloc(void* p) override	{ allocator.Dealloc(p); }
+				void Purge(void) override		{ allocator.Purge(); }
+
 				DKMemoryLocation Location(void) const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
+				Allocator allocator;
 			};
-			static StaticInitializer init; // extend allocator life cycle.
+			static DKAllocatorChain::StaticInitializer init; // extend allocator life cycle.
 			static AllocatorWrapper* instance = new AllocatorWrapper();
 			return *instance;
 		}
@@ -100,58 +229,78 @@ namespace DKFoundation
 			if (maxAllocated < numAllocated)
 				maxAllocated = numAllocated;
 
-			// find unoccupied unit from each chunks
-			for (Chunk* ch = firstChunk; ch; ch = ch->next)
+			if (cachedChunk)
 			{
-				if (ch->occupied != fullOccupied)
+				void* p = cachedChunk->Alloc();
+				if (p)
+					return p;
+			}
+			// find unoccupied unit from each chunks.
+			for (size_t i = 0; i < numChunks; ++i)
+			{
+				Chunk* ch = chunkTable[i].chunk;
+				DKASSERT_STD_DEBUG(ch != NULL);
+				void* p = ch->Alloc();
+				if (p)
 				{
-					// chunk has one or more unoccupied units.
-					for (int i = 0; i < MaxUnitsPerChunk; ++i)
-					{
-						unsigned int occupied = (ch->occupied >> i) & 1;
-						if (!occupied)
-						{
-							ch->occupied |= (1 << i);
-							return ch->units[i];
-						}
-					}
+					cachedChunk = ch;
+					return p;
 				}
 			}
 			// no space, create new chunk.
+			Chunk* ch = ::new (BaseAllocator::Alloc(sizeof(Chunk))) Chunk();
 			numChunks++;
-			Chunk* ch = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
-			ch->occupied = 1;
-			ch->next = NULL;
-			// add chunk to linked list
-			if (firstChunk == NULL)
-				firstChunk = ch;
-			else
-			{
-				Chunk* last = firstChunk;
-				while (last->next)
-					last = last->next;
-				last->next = ch;
-			}
+			chunkTable = (ChunkTable*)BaseAllocator::Realloc(chunkTable, sizeof(ChunkTable) * numChunks);
+			ChunkTable& table = chunkTable[numChunks-1];
+			table.address = ch->FirstUnitAddress();
+			table.chunk = ch;
+			SortChunkTable();
+			cachedChunk = ch;
+
 			if (maxChunks < numChunks)
 				maxChunks = numChunks;
-			return ch->units[0];
+
+			return ch->Alloc();
+		}
+
+		bool ConditionalDealloc(void* ptr)
+		{
+			uintptr_t addr = reinterpret_cast<uintptr_t>(ptr);
+			CriticalSection guard(lock);
+			if (numChunks > 0)
+			{
+				if (addr >= chunkTable[0].address &&
+					addr <= chunkTable[numChunks-1].address + sizeof(Unit) * MaxUnitsPerChunk)
+				{
+					Chunk* ch = FindChunk(addr, 0, numChunks);
+					if (ch && ch->Dealloc(addr))
+					{
+						numAllocated--;
+
+						if (cachedChunk == NULL || cachedChunk->numFreeUnits < ch->numFreeUnits)
+							cachedChunk = ch;
+
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		void Dealloc(void* ptr)
 		{
 			uintptr_t addr = reinterpret_cast<uintptr_t>(ptr);
 			CriticalSection guard(lock);
-			for (Chunk* ch = firstChunk; ch; ch = ch->next)
+
+			Chunk* ch = FindChunk(addr, 0, numChunks);
+			if (ch && ch->Dealloc(addr))
 			{
-				uintptr_t rangeBegin = reinterpret_cast<uintptr_t>(ch->units[0]);
-				uintptr_t rangeEnd = reinterpret_cast<uintptr_t>(ch->units[MaxUnitsPerChunk-1]);
-				if (addr >= rangeBegin && addr <= rangeEnd)
-				{
-					unsigned int index = (unsigned int)((addr - rangeBegin) / sizeof(Unit));
-					ch->occupied ^= (1 << index);
-					numAllocated--;
-					return;
-				}
+				numAllocated--;
+
+				if (cachedChunk == NULL || cachedChunk->numFreeUnits < ch->numFreeUnits)
+					cachedChunk = ch;
+
+				return;
 			}
 			// error: ptr was not allocated from this allocator!
 			DKASSERT_STD_DESC_DEBUG(false, "Given address was not allocated from this allocator!");
@@ -159,82 +308,99 @@ namespace DKFoundation
 
 		void Reserve(size_t n)		// preallocate
 		{
-			size_t numAllocs = 0;
-			CriticalSection guard(lock);
-			if (numAllocs < n)
-			{				
-				if (firstChunk == NULL)
-				{
-					firstChunk = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
-					firstChunk->occupied = 0;
-					firstChunk->next = NULL;
-					numAllocs += MaxUnitsPerChunk;
-					numChunks++;
-				}
-				Chunk* lastChunk = firstChunk;
-				while (lastChunk->next)
-				{
-					numAllocs += MaxUnitsPerChunk;
-					lastChunk = lastChunk->next;
-				}
-				while (numAllocs < n)
-				{
-					lastChunk->next = (Chunk*)BaseAllocator::Alloc(sizeof(Chunk));
-					lastChunk = lastChunk->next;
-					lastChunk->occupied = 0;
-					lastChunk->next = NULL;
+			if (n > 0)
+			{
+				size_t numChunksRequired = 0;
+				while (numChunksRequired * MaxUnitsPerChunk < n)
+					numChunksRequired++;
 
-					numAllocs += MaxUnitsPerChunk;
-					numChunks++;
+				CriticalSection guard(lock);
+				if (numChunksRequired > numChunks)
+				{
+					chunkTable = (ChunkTable*)DKMemoryDefaultAllocator::Realloc(chunkTable, sizeof(ChunkTable) * numChunksRequired);
+					for (size_t i = numChunks; i < numChunksRequired; ++i)
+					{
+						Chunk* ch = ::new (BaseAllocator::Alloc(sizeof(Chunk))) Chunk();
+						ChunkTable& table = chunkTable[i];
+						table.address = ch->FirstUnitAddress();
+						table.chunk = ch;
+					}
+					cachedChunk = chunkTable[numChunks].chunk;
+					numChunks = numChunksRequired;
+					SortChunkTable();
+
+					if (maxChunks < numChunks)
+						maxChunks = numChunks;
 				}
-				if (maxChunks < numChunks)
-					maxChunks = numChunks;
 			}
 		}
 
 		void Purge(void)	// delete unoccupied chunks
 		{
 			CriticalSection guard(lock);
-			for (Chunk* ch = firstChunk; ch; ch = ch->next)
+			size_t availableChunks = 0;
+			for (size_t i = 0; i < numChunks; ++i)
 			{
-				if (ch->next && ch->next->occupied == 0)
+				Chunk* ch = chunkTable[i].chunk;
+				if (ch->numFreeUnits == MaxUnitsPerChunk)
 				{
-					Chunk* freeChunk = ch->next;
-					ch->next = freeChunk->next;
-					BaseAllocator::Free(freeChunk);
-					numChunks--;
+					ch->~Chunk();
+					BaseAllocator::Free(ch);
+					chunkTable[i].chunk = NULL;
+				}
+				else
+				{
+					availableChunks++;
 				}
 			}
-			if (firstChunk && firstChunk->occupied == 0)
+			if (availableChunks != numChunks)
 			{
-				Chunk* freeChunk = firstChunk;
-				firstChunk = freeChunk->next;
-				BaseAllocator::Free(freeChunk);
-				numChunks--;
+				if (availableChunks > 0)
+				{
+					ChunkTable* table = (ChunkTable*)BaseAllocator::Alloc(sizeof(ChunkTable) * availableChunks);
+					size_t index = 0;
+					for (size_t i = 0; i < numChunks; ++i)
+					{
+						if (chunkTable[i].chunk)
+							table[index++] = chunkTable[i];
+					}
+					BaseAllocator::Free(chunkTable);
+					chunkTable = table;
+				}
+				else
+				{
+					BaseAllocator::Free(chunkTable);
+					chunkTable = NULL;
+				}
+				numChunks = availableChunks;
+				cachedChunk = NULL;
 			}
 		}
 
+		DKFixedSizeAllocator(void)
+			: chunkTable(NULL)
+			, cachedChunk(NULL)
+			, numAllocated(0)
+			, maxAllocated(0)
+			, numChunks(0)
+			, maxChunks(0)
+		{
+		}
+		
 		virtual ~DKFixedSizeAllocator(void)
 		{
 			DKASSERT_STD_DEBUG(numAllocated == 0);
-			Chunk* nextChunk = firstChunk;
-			while (nextChunk)
+			if (numChunks > 0)
 			{
-				Chunk* ch = nextChunk;
-				nextChunk = ch->next;
-
-				BaseAllocator::Free(ch);
+				DKASSERT_STD_DEBUG(chunkTable != NULL);
+				for (size_t i = 0; i < numChunks; ++i)
+				{
+					Chunk* ch = chunkTable[i].chunk;
+					ch->~Chunk();
+					BaseAllocator::Free(ch);
+				}
+				BaseAllocator::Free(chunkTable);
 			}
-		}
-
-	protected:
-		DKFixedSizeAllocator(void)
-		: firstChunk(NULL)
-		, numAllocated(0)
-		, maxAllocated(0)
-		, numChunks(0)
-		, maxChunks(0)
-		{
 		}
 	};
 }

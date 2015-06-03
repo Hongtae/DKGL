@@ -95,9 +95,13 @@ namespace DKFoundation
 		// Choose allocator for DKFunction
 		template <typename T> constexpr DKAllocator& FunctionAllocator(void)
 		{
+#ifdef DKLIB_HAVE_FAST_MALLOC
+			return DKAllocator::DefaultAllocator();
+#else
 			return sizeof(T) > MaximumObjectSizeForFixedAllocator ?
 				DKAllocator::DefaultAllocator() :
-				DKFixedSizeAllocator<sizeof(T)>::AllocatorInstance();
+				DKFixedSizeAllocator<sizeof(T), sizeof(void*), 1024>::AllocatorInstance();
+#endif
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
