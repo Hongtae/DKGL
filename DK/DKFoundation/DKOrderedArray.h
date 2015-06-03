@@ -47,7 +47,8 @@ namespace DKFoundation
 		// EqualFunc, test items are equal. return true if both items are equal.
 		typedef bool (*EqualFunc)(const VALUE& lhs, const VALUE& rhs);
 
-		static const Index invalidIndex = (Index)-1;
+		enum : Index { IndexNotFound = (Index)-1 };
+
 		// lock is public. lock object from outside!
 		// You can call type-casting operator and CountNoLock() only while object is locked.
 		LOCK	lock;
@@ -286,7 +287,7 @@ namespace DKFoundation
 					return index;
 				++index;
 			}
-			return invalidIndex;
+			return IndexNotFound;
 		}
 		// Find approximal value. (returns Index of value found.)
 		// if greater is true, the result will be index of value or least greater value.
@@ -332,7 +333,7 @@ namespace DKFoundation
 						return begin+count;
 				}
 			}
-			return invalidIndex;
+			return IndexNotFound;
 		}
 	private:
 		// Insert one value 'VALUE', 'c' times. (value x c)

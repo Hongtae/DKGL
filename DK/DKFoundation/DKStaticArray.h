@@ -76,7 +76,7 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
-		static const Index invalidIndex = (size_t)-1;
+		enum : Index { IndexNotFound = (Index)-1 };
 
 		// Iterator class for range-based for loop
 		typedef DKArrayRBIterator<DKStaticArray, VALUE&>				RBIterator;

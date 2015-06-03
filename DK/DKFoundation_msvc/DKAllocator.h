@@ -29,6 +29,13 @@ namespace DKFoundation
 
 		static DKAllocator& DefaultAllocator(DKMemoryLocation loc = DKMemoryLocationHeap);
 
+		struct StaticInitializer
+		{
+			StaticInitializer(void) {}
+			~StaticInitializer(void) {}
+		};
+
+
 	protected:
 		DKAllocator(void);
 

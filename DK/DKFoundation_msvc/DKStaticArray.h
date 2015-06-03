@@ -74,7 +74,7 @@ namespace DKFoundation
 		typedef size_t					Index;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 
-		static const Index invalidIndex = (size_t)-1;
+		enum : Index { IndexNotFound = (Index)-1 };
 
 		// Iterator class for range-based for loop
 		typedef DKArrayRBIterator<DKStaticArray, VALUE&>				RBIterator;
