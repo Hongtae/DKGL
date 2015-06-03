@@ -89,7 +89,7 @@ namespace DKFoundation
 
 				Base64CharPair<BaseCharT> bp = {c, 0};
 				typename IndexMap::Index index = indexMap.Find(bp);
-				if (index != IndexMap::invalidIndex)
+				if (index != IndexMap::IndexNotFound)
 				{
 					return static_cast<int>(indexMap.Value(index).index);
 				}
