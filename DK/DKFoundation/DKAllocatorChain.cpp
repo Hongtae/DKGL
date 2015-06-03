@@ -160,3 +160,14 @@ DKAllocatorChain::StaticInitializer::~StaticInitializer(void)
 	if (ref == 0)
 		delete c;
 }
+
+void* DKAllocatorChain::operator new (size_t s)
+{
+	return ::malloc(s);
+}
+
+void DKAllocatorChain::operator delete (void* p) noexcept
+{
+	::free(p);
+}
+
