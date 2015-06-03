@@ -118,6 +118,11 @@ PyMODINIT_FUNC PyInit__dk_core(void)
 		DKLog("%s", str);
 		Py_RETURN_NONE;
 	};
+	auto cleanup = [](PyObject*, PyObject*)->PyObject*
+	{
+		DKAllocatorChain::Cleanup();
+		Py_RETURN_NONE;
+	};
 	auto objectCount = [](PyObject*, PyObject*)->PyObject*
 	{
 		return PyLong_FromSize_t(DCObjectCount());
@@ -203,6 +208,7 @@ PyMODINIT_FUNC PyInit__dk_core(void)
 		{ "processArguments", processArguments, METH_NOARGS },
 		{ "processEnvironments", processEnvironments, METH_NOARGS },
 		{ "uuidgen", uuidgen, METH_NOARGS },
+		{ "cleanup", cleanup, METH_NOARGS },
 		{ "objectCount", objectCount, METH_NOARGS },
 		{ "threadSleep", threadSleep, METH_VARARGS },
 		{ "threadYield", threadYield, METH_VARARGS },
