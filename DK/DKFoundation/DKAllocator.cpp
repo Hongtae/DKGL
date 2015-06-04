@@ -25,47 +25,48 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 {
 	static StaticInitializer init;
 
-	struct HMAllocator : public DKAllocator
+	struct HeapAllocator : public DKAllocator
 	{
 		void* Alloc(size_t s)					{return DKMemoryHeapAlloc(s);}
 		void Dealloc(void* p)					{DKMemoryHeapFree(p);}
 		DKMemoryLocation Location(void) const	{return DKMemoryLocationHeap;}
 	};
-	struct VMAllocator : public DKAllocator
+	struct VMemAllocator : public DKAllocator
 	{
 		void* Alloc(size_t s)					{return DKMemoryVirtualAlloc(s);}
 		void Dealloc(void* p)					{DKMemoryVirtualFree(p);}
 		DKMemoryLocation Location(void) const	{return DKMemoryLocationVirtual;}
 	};
-	struct FMAllocator : public DKAllocator
+	struct FMemAllocator : public DKAllocator
 	{
 		void* Alloc(size_t s)					{return DKMemoryFileAlloc(s);}
 		void Dealloc(void* p)					{DKMemoryFileFree(p);}
 		DKMemoryLocation Location(void) const	{return DKMemoryLocationFile;}
 	};
-	struct RVAllocator : public DKAllocator
+	struct PoolAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryReservedAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryReservedFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationReserved;}
+		void* Alloc(size_t s)					{return DKMemoryPoolAlloc(s);}
+		void Dealloc(void* p)					{DKMemoryPoolFree(p);}
+		DKMemoryLocation Location(void) const	{return DKMemoryLocationPool;}
 	};
 
 	static bool initialized = false;
 	static DKSpinLock lock;
-	static HMAllocator* hma = NULL;
-	static VMAllocator* vma = NULL;
-	static FMAllocator* fma = NULL;
-	static RVAllocator* rva = NULL;
+
+	static HeapAllocator* hma = NULL;
+	static VMemAllocator* vma = NULL;
+	static FMemAllocator* fma = NULL;
+	static PoolAllocator* pma = NULL;
 
 	if (!initialized)
 	{
 		lock.Lock();
 		if (!initialized)
 		{
-			hma = new HMAllocator();
-			vma = new VMAllocator();
-			fma = new FMAllocator();
-			rva = new RVAllocator();
+			hma = new HeapAllocator();
+			vma = new VMemAllocator();
+			fma = new FMemAllocator();
+			pma = new PoolAllocator();
 			initialized = true;
 		}
 		lock.Unlock();
@@ -82,8 +83,8 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 		case DKMemoryLocationFile:
 			return *fma;
 			break;
-		case DKMemoryLocationReserved:
-			return *rva;
+		case DKMemoryLocationPool:
+			return *pma;
 			break;
 		default:		// custom?
 			break;

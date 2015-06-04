@@ -55,21 +55,6 @@
 		#pragma message("Build DK for Win32 Static Library.")
 		#define DKLIB_API
 	#endif	// ifdef DKLIB_DYNAMIC
-	#ifdef PostMessage
-	#undef PostMessage
-	#endif
-	#ifdef GetMessage
-	#undef GetMessage
-	#endif
-	#ifdef Yield
-	#undef Yield
-	#endif
-	#ifdef FindResource
-	#undef FindResource
-	#endif
-	#ifdef RemoveDirectory
-	#undef RemoveDirectory
-	#endif
 #endif	// ifdef _WIN32
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -536,7 +536,6 @@
 		84211C391665E86300B9B9A2 /* DKLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B4141DD4B70091D2C0 /* DKLog.h */; };
 		84211C3A1665E86300B9B9A2 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
 		84211C3B1665E86300B9B9A2 /* DKMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B7141DD4B70091D2C0 /* DKMemory.h */; };
-		84211C3C1665E86300B9B9A2 /* DKMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B8141DD4B70091D2C0 /* DKMessageQueue.h */; };
 		84211C3D1665E86300B9B9A2 /* DKMutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BA141DD4B70091D2C0 /* DKMutex.h */; };
 		84211C3E1665E86300B9B9A2 /* DKObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BB141DD4B70091D2C0 /* DKObject.h */; };
 		84211C3F1665E86300B9B9A2 /* DKOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BC141DD4B70091D2C0 /* DKOperation.h */; };
@@ -599,7 +598,6 @@
 		84211C7F1665E86400B9B9A2 /* DKLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B4141DD4B70091D2C0 /* DKLog.h */; };
 		84211C801665E86400B9B9A2 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
 		84211C811665E86400B9B9A2 /* DKMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B7141DD4B70091D2C0 /* DKMemory.h */; };
-		84211C821665E86400B9B9A2 /* DKMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B8141DD4B70091D2C0 /* DKMessageQueue.h */; };
 		84211C831665E86400B9B9A2 /* DKMutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BA141DD4B70091D2C0 /* DKMutex.h */; };
 		84211C841665E86400B9B9A2 /* DKObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BB141DD4B70091D2C0 /* DKObject.h */; };
 		84211C851665E86400B9B9A2 /* DKOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BC141DD4B70091D2C0 /* DKOperation.h */; };
@@ -891,7 +889,6 @@
 		8436CDE61928A78900F18892 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
 		8436CDE71928A78900F18892 /* DKMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4B6141DD4B70091D2C0 /* DKMemory.cpp */; };
 		8436CDE81928A78900F18892 /* DKMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B7141DD4B70091D2C0 /* DKMemory.h */; };
-		8436CDE91928A78900F18892 /* DKMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B8141DD4B70091D2C0 /* DKMessageQueue.h */; };
 		8436CDEA1928A78900F18892 /* DKMutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4B9141DD4B70091D2C0 /* DKMutex.cpp */; };
 		8436CDEB1928A78900F18892 /* DKMutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BA141DD4B70091D2C0 /* DKMutex.h */; };
 		8436CDEC1928A78900F18892 /* DKObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BB141DD4B70091D2C0 /* DKObject.h */; };
@@ -1260,7 +1257,6 @@
 		84798CA719E51E96009378A6 /* DKLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B4141DD4B70091D2C0 /* DKLog.h */; };
 		84798CA819E51E96009378A6 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
 		84798CA919E51E96009378A6 /* DKMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B7141DD4B70091D2C0 /* DKMemory.h */; };
-		84798CAA19E51E96009378A6 /* DKMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B8141DD4B70091D2C0 /* DKMessageQueue.h */; };
 		84798CAB19E51E96009378A6 /* DKMutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BA141DD4B70091D2C0 /* DKMutex.h */; };
 		84798CAC19E51E96009378A6 /* DKObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BB141DD4B70091D2C0 /* DKObject.h */; };
 		84798CAD19E51E96009378A6 /* DKObjectRefCounter.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */; };
@@ -1555,7 +1551,6 @@
 		84A1E4B5141DD4B70091D2C0 /* DKMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKMap.h; sourceTree = "<group>"; };
 		84A1E4B6141DD4B70091D2C0 /* DKMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKMemory.cpp; sourceTree = "<group>"; };
 		84A1E4B7141DD4B70091D2C0 /* DKMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKMemory.h; sourceTree = "<group>"; };
-		84A1E4B8141DD4B70091D2C0 /* DKMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKMessageQueue.h; sourceTree = "<group>"; };
 		84A1E4B9141DD4B70091D2C0 /* DKMutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKMutex.cpp; sourceTree = "<group>"; };
 		84A1E4BA141DD4B70091D2C0 /* DKMutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKMutex.h; sourceTree = "<group>"; };
 		84A1E4BB141DD4B70091D2C0 /* DKObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKObject.h; sourceTree = "<group>"; };
@@ -2121,7 +2116,6 @@
 				84A1E4B5141DD4B70091D2C0 /* DKMap.h */,
 				84A1E4B6141DD4B70091D2C0 /* DKMemory.cpp */,
 				84A1E4B7141DD4B70091D2C0 /* DKMemory.h */,
-				84A1E4B8141DD4B70091D2C0 /* DKMessageQueue.h */,
 				84A1E4B9141DD4B70091D2C0 /* DKMutex.cpp */,
 				84A1E4BA141DD4B70091D2C0 /* DKMutex.h */,
 				84A1E4BB141DD4B70091D2C0 /* DKObject.h */,
@@ -2581,7 +2575,6 @@
 				840CA6451928953500689BB6 /* DKApplicationInterface.h in Headers */,
 				840CA6041928952800689BB6 /* DKScreen.h in Headers */,
 				840CA5B81928952800689BB6 /* DKFixedConstraint.h in Headers */,
-				8436CDE91928A78900F18892 /* DKMessageQueue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2775,7 +2768,6 @@
 				84798C3319E51E7F009378A6 /* DKCamera.h in Headers */,
 				84798C6819E51E7F009378A6 /* DKSceneState.h in Headers */,
 				84798C5E19E51E7F009378A6 /* DKQuaternion.h in Headers */,
-				84798CAA19E51E96009378A6 /* DKMessageQueue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2812,7 +2804,6 @@
 				84211C7F1665E86400B9B9A2 /* DKLog.h in Headers */,
 				84211C801665E86400B9B9A2 /* DKMap.h in Headers */,
 				84211C811665E86400B9B9A2 /* DKMemory.h in Headers */,
-				84211C821665E86400B9B9A2 /* DKMessageQueue.h in Headers */,
 				84211C831665E86400B9B9A2 /* DKMutex.h in Headers */,
 				84211C841665E86400B9B9A2 /* DKObject.h in Headers */,
 				84211C851665E86400B9B9A2 /* DKOperation.h in Headers */,
@@ -3006,7 +2997,6 @@
 				84211C391665E86300B9B9A2 /* DKLog.h in Headers */,
 				84211C3A1665E86300B9B9A2 /* DKMap.h in Headers */,
 				84211C3B1665E86300B9B9A2 /* DKMemory.h in Headers */,
-				84211C3C1665E86300B9B9A2 /* DKMessageQueue.h in Headers */,
 				84211C3D1665E86300B9B9A2 /* DKMutex.h in Headers */,
 				840CA6811928A2ED00689BB6 /* DKWindowImpl.h in Headers */,
 				84211C3E1665E86300B9B9A2 /* DKObject.h in Headers */,

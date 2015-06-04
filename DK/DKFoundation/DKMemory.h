@@ -2,7 +2,7 @@
 //  File: DKMemory.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -52,10 +52,10 @@ namespace DKFoundation
 	DKLIB_API void DKMemoryPageCommit(void*, size_t);
 	DKLIB_API void DKMemoryPageDecommit(void*, size_t);
 
-	// Don't use below DKMemoryReserved.. functions.
-	DKLIB_API void* DKMemoryReservedAlloc(size_t);
-	DKLIB_API void* DKMemoryReservedRealloc(void*, size_t);
-	DKLIB_API void  DKMemoryReservedFree(void*);
+	// Pre-allocated pool.
+	DKLIB_API void* DKMemoryPoolAlloc(size_t);
+	DKLIB_API void* DKMemoryPoolRealloc(void*, size_t);
+	DKLIB_API void  DKMemoryPoolFree(void*);
 
 	enum DKMemoryLocation
 	{
@@ -63,39 +63,39 @@ namespace DKFoundation
 		DKMemoryLocationHeap,
 		DKMemoryLocationVirtual,
 		DKMemoryLocationFile,
-		DKMemoryLocationReserved,
+		DKMemoryLocationPool,
 	};
 
 	// simple allocator types for template classes.
 	// you can provide your own allocator.
-	struct DKMemoryHMAllocator
+	struct DKMemoryHeapAllocator
 	{
 		enum {Location = DKMemoryLocationHeap};
 		static void* Alloc(size_t s)			{return DKMemoryHeapAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryHeapRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryHeapFree(p);}
 	};
-	class DKMemoryVMAllocator
+	class DKMemoryVirtualAllocator
 	{
 		enum {Location = DKMemoryLocationVirtual};
 		static void* Alloc(size_t s)			{return DKMemoryVirtualAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryVirtualRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryVirtualFree(p);}
 	};
-	class DKMemoryFMAllocator
+	class DKMemoryFileAllocator
 	{
 		enum {Location = DKMemoryLocationFile};
 		static void* Alloc(size_t s)			{return DKMemoryFileAlloc(s);}
 		static void* Realloc(void* p, size_t s)	{return DKMemoryFileRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryFileFree(p);}
 	};	
-	class DKMemoryRVAllocator
+	class DKMemoryPoolAllocator
 	{
-		enum {Location = DKMemoryLocationReserved};
-		static void* Alloc(size_t s)			{return DKMemoryReservedAlloc(s);}
-		static void* Realloc(void* p, size_t s)	{return DKMemoryReservedRealloc(p, s);}
-		static void Free(void* p)				{DKMemoryReservedFree(p);}
+		enum {Location = DKMemoryLocationPool};
+		static void* Alloc(size_t s)			{return DKMemoryPoolAlloc(s);}
+		static void* Realloc(void* p, size_t s)	{return DKMemoryPoolRealloc(p, s);}
+		static void Free(void* p)				{DKMemoryPoolFree(p);}
 	};
 
-	using DKMemoryDefaultAllocator = DKMemoryHMAllocator;
+	using DKMemoryDefaultAllocator = DKMemoryHeapAllocator;
 }

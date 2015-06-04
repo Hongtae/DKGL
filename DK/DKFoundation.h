@@ -83,7 +83,6 @@
 #include "DKFoundation/DKValue.h"
 
 // run-loop, operation queue, message-handler
-#include "DKFoundation/DKMessageQueue.h"
 #include "DKFoundation/DKOperationQueue.h"
 #include "DKFoundation/DKRunLoop.h"
 #include "DKFoundation/DKRunLoopTimer.h"

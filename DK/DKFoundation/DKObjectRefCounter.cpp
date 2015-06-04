@@ -12,11 +12,6 @@
 #include "DKMemory.h"
 #include "DKFixedSizeAllocator.h"
 
-// DKLIB_HAVE_FAST_MALLOC
-// define 1 if you have fast malloc such as Intel-TBB saleable_malloc.
-#ifndef DKLIB_HAVE_FAST_MALLOC
-#define DKLIB_HAVE_FAST_MALLOC 0
-#endif
 
 namespace DKFoundation
 {
@@ -36,9 +31,6 @@ namespace DKFoundation
 			typedef DKSpinLock							Lock;
 			typedef DKCriticalSection<Lock>				CriticalSection;
 
-#if DKLIB_HAVE_FAST_MALLOC
-			using Allocator = DKMemoryDefaultAllocator;
-#else
 			// use fixed-size allocator.
 			struct Allocator
 			{
@@ -56,7 +48,6 @@ namespace DKFoundation
 					FixedAllocator::AllocatorInstance().Dealloc(p);
 				}
 			};
-#endif
 
 			using Key = void*;
 			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparison<Key>, DKMapValueCopy<Key>, Allocator>;

@@ -2,7 +2,7 @@
 //  File: DKMemory.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../DKInclude.h"
@@ -41,219 +41,15 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		// aligned memory allocator. useful for SIMD.
-		template <int size, int num> struct AlignedChunk16 // size > sizeof(int)
-		{
-			typedef int IndexT;
-			static_assert(size >= sizeof(IndexT), "size must be greater than sizeof(int)");
 
-			enum
-			{
-				allocSize = size * num,
-				numBlocks = allocSize / size,
-				maxAllocSize = allocSize + 16,
-			};
-			unsigned char data[maxAllocSize];
-			AlignedChunk16* nextChunk;
-
-			unsigned char* offset;
-			IndexT firstIndex;
-			IndexT allocated;
-			AlignedChunk16(void) : firstIndex(0), allocated(0), nextChunk(NULL)
-			{
-				offset = reinterpret_cast<unsigned char*>(reinterpret_cast<size_t>(&data[15]) & ~15 );
-				for (int i = 0; i < numBlocks; ++i)
-					reinterpret_cast<IndexT*>(&offset[size * i])[0] = i+1;
-			}
-			bool IsFull(void) const
-			{
-				return allocated == numBlocks;
-			}
-			bool IsEmpty(void) const
-			{
-				return allocated == 0;
-			}
-			bool HasPointer(void* p) const
-			{
-				return ( p >= offset && p < offset + allocSize);
-			}
-			void* Alloc(void)
-			{
-				IndexT* p = reinterpret_cast<IndexT*>(&offset[size * firstIndex]);
-				firstIndex = p[0];
-				allocated++;
-				return p;
-			}
-			void Dealloc(void* p)
-			{
-				IndexT index = static_cast<IndexT>((reinterpret_cast<unsigned char*>(p) - offset) / size);
-				if (firstIndex > index)
-				{
-					reinterpret_cast<int*>(p)[0] = firstIndex;
-					firstIndex = index;
-				}
-				else
-				{
-					int nextIndex = firstIndex;
-					while ( nextIndex < index )
-					{
-						IndexT* n = reinterpret_cast<IndexT*>(&offset[size * nextIndex]);
-						if (n[0] > index)
-						{
-							reinterpret_cast<int*>(p)[0] = n[0];
-							n[0] = index;
-						}
-						nextIndex = n[0];
-					}
-				}
-				allocated--;
-			}
-		};
-
-		template <int size, int block> class AlignedAllocator
-		{
-		private:
-			typedef AlignedChunk16<size, block> Chunk;
-			Chunk* firstChunk;
-		public:
-			enum {allocSize = size};
-
-			AlignedAllocator(void) : firstChunk(NULL)
-			{
-			}
-			~AlignedAllocator(void)
-			{
-				Chunk* p = firstChunk;
-				while (p)
-				{
-					Chunk* next = p->nextChunk;
-					next->~Chunk();
-					::free(next);
-					p = next;
-				}
-			}
-			bool CanAlloc(size_t s) const
-			{
-				return s <= size;
-			}
-			bool HasPointer(void* p) const
-			{
-				if (p == NULL)
-					return false;
-
-				for (Chunk* p = firstChunk; p != NULL ; p = p->nextChunk)
-				{
-					if (p->HasPointer(p))
-						return true;
-				}
-				return false;
-			}
-			void* Alloc(void)
-			{
-				Chunk** ppChunk = &firstChunk;
-				while (*ppChunk)
-				{
-					if ((*ppChunk)->IsFull() == false)
-						return (*ppChunk)->Alloc();
-					ppChunk = &((*ppChunk)->nextChunk);
-				}
-				Chunk* chunk = (Chunk*)::malloc(sizeof(Chunk));
-				::new(chunk) Chunk();
-				*ppChunk = chunk;
-				return (*ppChunk)->Alloc();
-			}
-			void Dealloc(void* p)
-			{
-				Chunk** ppChunk = &firstChunk;
-				while (*ppChunk)
-				{
-					if ((*ppChunk)->HasPointer(p))
-					{
-						(*ppChunk)->Dealloc(p);
-						if ((*ppChunk)->IsEmpty())
-						{
-							Chunk* chunk = (*ppChunk);
-							*ppChunk = chunk->nextChunk;
-							chunk->~Chunk();
-							::free(chunk);
-						}
-						return;
-					}
-					ppChunk = &((*ppChunk)->nextChunk);
-				}
-
-				DKERROR_THROW_DEBUG("Internal error: Cannot dealloc memory!");
-			}
-		};
-
-		typedef AlignedAllocator<4, 1024> AlignedAllocator4;
-		typedef AlignedAllocator<8, 1024> AlignedAllocator8;
-		typedef AlignedAllocator<12, 1024> AlignedAllocator12;
-		typedef AlignedAllocator<16, 1024> AlignedAllocator16;
-
-		static AlignedAllocator4& GetAllocator4(void)
-		{
-			static AlignedAllocator4 allocator;
-			return allocator;
-		}
-		static AlignedAllocator8& GetAllocator8(void)
-		{
-			static AlignedAllocator8 allocator;
-			return allocator;
-		}
-		static AlignedAllocator12& GetAllocator12(void)
-		{
-			static AlignedAllocator12 allocator;
-			return allocator;
-		}
-		static AlignedAllocator16& GetAllocator16(void)
-		{
-			static AlignedAllocator16 allocator;
-			return allocator;
-		}
-
-		typedef DKSpinLock MemoryLock;
-		typedef DKCriticalSection<MemoryLock> CriticalSection;
-
-		static MemoryLock& GetMemoryLock(void)
-		{
-			static MemoryLock lock;
-			return lock;
-		}
 
 		static void* MemAlloc(size_t s) // works in spite of s = 0
 		{
-			CriticalSection guard(GetMemoryLock());
-
-			static AlignedAllocator4& allocator4 = GetAllocator4();
-			static AlignedAllocator8& allocator8 = GetAllocator8();
-			static AlignedAllocator12& allocator12 = GetAllocator12();
-			static AlignedAllocator16& allocator16 = GetAllocator16();
-
-			if (allocator4.CanAlloc(s)) {return allocator4.Alloc();}
-			if (allocator8.CanAlloc(s)) {return allocator8.Alloc();}
-			if (allocator12.CanAlloc(s)) {return allocator12.Alloc();}
-			if (allocator16.CanAlloc(s)) {return allocator16.Alloc();}
-
 			return ::malloc(s);
 		}
 
 		static void MemFree(void* p)
 		{
-			if (p == NULL)
-				return;
-
-			CriticalSection guard(GetMemoryLock());
-
-			static AlignedAllocator4& allocator4 = GetAllocator4();
-			static AlignedAllocator8& allocator8 = GetAllocator8();
-			static AlignedAllocator12& allocator12 = GetAllocator12();
-			static AlignedAllocator16& allocator16 = GetAllocator16();
-
-			if (allocator4.HasPointer(p)) {return allocator4.Dealloc(p);}
-			if (allocator8.HasPointer(p)) {return allocator8.Dealloc(p);}
-			if (allocator12.HasPointer(p)) {return allocator12.Dealloc(p);}
-			if (allocator16.HasPointer(p)) {return allocator16.Dealloc(p);}
 			return ::free(p);
 		}
 
@@ -269,49 +65,10 @@ namespace DKFoundation
 				return NULL;
 			}
 
-			void* newPtr = NULL;
-			size_t sizeOld = 0;
 
-			if ( true )
-			{
-				CriticalSection guard(GetMemoryLock());
-
-				static AlignedAllocator4& allocator4 = GetAllocator4();
-				static AlignedAllocator8& allocator8 = GetAllocator8();
-				static AlignedAllocator12& allocator12 = GetAllocator12();
-				static AlignedAllocator16& allocator16 = GetAllocator16();
-
-				if (allocator4.HasPointer(p)) sizeOld = allocator4.allocSize;
-				else if (allocator8.HasPointer(p)) sizeOld = allocator8.allocSize;
-				else if (allocator12.HasPointer(p)) sizeOld = allocator12.allocSize;
-				else if (allocator16.HasPointer(p)) sizeOld = allocator16.allocSize;
-
-				if (sizeOld > 0 && (s+1) / 4 == (sizeOld+1) / 4)
-					return p;
-
-				if (allocator4.CanAlloc(s)) {newPtr = allocator4.Alloc();}
-				else if (allocator8.CanAlloc(s)) {newPtr = allocator8.Alloc();}
-				else if (allocator12.CanAlloc(s)) {newPtr = allocator12.Alloc();}
-				else if (allocator16.CanAlloc(s)) {newPtr = allocator16.Alloc();}
-			}
-
-			if (newPtr)
-			{
-				size_t copyLength = Min(s, sizeOld);
-				::memcpy(newPtr, p, copyLength);
-				MemFree(p);
-				return newPtr;
-			}
 			return ::realloc(p, s);
 		}
 
-		static void* MemCAlloc(size_t num, size_t size)
-		{
-			size = size * num;
-			void* p = MemAlloc(size);
-			::memset(p, 0, size);
-			return p;
-		}
 
 #ifdef _WIN32
 		static inline DKString GetErrorString(DWORD dwError)
@@ -1299,17 +1056,17 @@ namespace DKFoundation
 		}
 	}
 	
-	DKLIB_API void* DKMemoryReservedAlloc(size_t s)
+	DKLIB_API void* DKMemoryPoolAlloc(size_t s)
 	{
 		return Private::MemAlloc(s);
 	}
 	
-	DKLIB_API void* DKMemoryReservedRealloc(void* p, size_t s)
+	DKLIB_API void* DKMemoryPoolRealloc(void* p, size_t s)
 	{
 		return Private::MemRealloc(p, s);
 	}
 	
-	DKLIB_API void DKMemoryReservedFree(void* p)
+	DKLIB_API void DKMemoryPoolFree(void* p)
 	{
 		return Private::MemFree(p);
 	}
