@@ -220,16 +220,7 @@ namespace DKFoundation
 				if (addr >= chunkTable[0].address &&
 					addr <= chunkTable[numChunks - 1].address + sizeof(Unit) * MaxUnitsPerChunk)
 				{
-					Chunk* ch = FindChunk(addr, 0, numChunks);
-					if (ch && ch->Dealloc(addr))
-					{
-						numAllocated--;
-
-						if (cachedChunk == NULL)
-							cachedChunk = ch;
-
-						return true;
-					}
+					return FindChunkAndDealloc(addr);
 				}
 			}
 			return false;
@@ -239,19 +230,28 @@ namespace DKFoundation
 		{
 			uintptr_t addr = reinterpret_cast<uintptr_t>(ptr);
 			CriticalSection guard(lock);
-
-			Chunk* ch = FindChunk(addr, 0, numChunks);
-			if (ch && ch->Dealloc(addr))
-			{
-				numAllocated--;
-
-				if (cachedChunk == NULL)
-					cachedChunk = ch;
-
+			if (FindChunkAndDealloc(addr))
 				return;
-			}
+
 			// error: ptr was not allocated from this allocator!
 			DKASSERT_STD_DESC_DEBUG(false, "Given address was not allocated from this allocator!");
+		}
+
+		bool HasAddress(void* ptr)
+		{
+			uintptr_t addr = reinterpret_cast<uintptr_t>(ptr);
+			CriticalSection guard(lock);
+			if (numChunks > 0)
+			{
+				if (addr >= chunkTable[0].address &&
+					addr <= chunkTable[numChunks - 1].address + sizeof(Unit) * MaxUnitsPerChunk)
+				{
+					Chunk* ch = FindChunk(addr, 0, numChunks);
+					if (ch && addr <= ch->LastUnitAddress())
+						return true;
+				}
+			}
+			return false;
 		}
 
 		void Reserve(size_t n)		// preallocate
@@ -272,6 +272,7 @@ namespace DKFoundation
 						ChunkTable& table = chunkTable[i];
 						table.address = ch->FirstUnitAddress();
 						table.chunk = ch;
+						emptyChunks++;
 					}
 					cachedChunk = chunkTable[numChunks].chunk;
 					numChunks = numChunksRequired;
@@ -283,45 +284,59 @@ namespace DKFoundation
 			}
 		}
 
+		bool ConditionalPurge(size_t threshold)
+		{
+			if (this->emptyChunks >= threshold || (this->numChunks > 0 && this->numAllocated == 0 ))
+			{
+				this->Purge();
+				return true;
+			}
+			return false;
+		}
+
 		void Purge(void)	// delete unoccupied chunks
 		{
 			CriticalSection guard(lock);
-			size_t availableChunks = 0;
-			for (size_t i = 0; i < numChunks; ++i)
+			if (emptyChunks > 0)
 			{
-				Chunk* ch = chunkTable[i].chunk;
-				if (ch->numFreeUnits == MaxUnitsPerChunk)
+				size_t availableChunks = 0;
+				for (size_t i = 0; i < numChunks; ++i)
 				{
-					ch->~Chunk();
-					BaseAllocator::Free(ch);
-					chunkTable[i].chunk = NULL;
-				}
-				else
-				{
-					availableChunks++;
-				}
-			}
-			if (availableChunks != numChunks)
-			{
-				if (availableChunks > 0)
-				{
-					ChunkTable* table = (ChunkTable*)BaseAllocator::Alloc(sizeof(ChunkTable) * availableChunks);
-					size_t index = 0;
-					for (size_t i = 0; i < numChunks; ++i)
+					Chunk* ch = chunkTable[i].chunk;
+					if (ch->numFreeUnits == MaxUnitsPerChunk)
 					{
-						if (chunkTable[i].chunk)
-							table[index++] = chunkTable[i];
+						ch->~Chunk();
+						BaseAllocator::Free(ch);
+						chunkTable[i].chunk = NULL;
 					}
-					BaseAllocator::Free(chunkTable);
-					chunkTable = table;
+					else
+					{
+						availableChunks++;
+					}
 				}
-				else
+				if (availableChunks != numChunks)
 				{
-					BaseAllocator::Free(chunkTable);
-					chunkTable = NULL;
+					if (availableChunks > 0)
+					{
+						ChunkTable* table = (ChunkTable*)BaseAllocator::Alloc(sizeof(ChunkTable) * availableChunks);
+						size_t index = 0;
+						for (size_t i = 0; i < numChunks; ++i)
+						{
+							if (chunkTable[i].chunk)
+								table[index++] = chunkTable[i];
+						}
+						BaseAllocator::Free(chunkTable);
+						chunkTable = table;
+					}
+					else
+					{
+						BaseAllocator::Free(chunkTable);
+						chunkTable = NULL;
+					}
+					numChunks = availableChunks;
+					cachedChunk = NULL;
 				}
-				numChunks = availableChunks;
-				cachedChunk = NULL;
+				emptyChunks = 0;
 			}
 		}
 
@@ -332,6 +347,7 @@ namespace DKFoundation
 			, maxAllocated(0)
 			, numChunks(0)
 			, maxChunks(0)
+			, emptyChunks(0)
 		{
 		}
 
@@ -356,7 +372,7 @@ namespace DKFoundation
 		{
 			if (numChunks > 1)
 			{
-				std::sort(&chunkTable[0], &chunkTable[numChunks - 1],
+				std::sort(&chunkTable[0], &chunkTable[numChunks],
 					[](const ChunkTable& lhs, const ChunkTable& rhs)
 				{
 					return lhs.address < rhs.address;
@@ -389,6 +405,24 @@ namespace DKFoundation
 			}
 			return NULL;
 		}
+		bool FindChunkAndDealloc(uintptr_t addr)
+		{
+			Chunk* ch = FindChunk(addr, 0, numChunks);
+			if (ch && ch->Dealloc(addr))
+			{
+				numAllocated--;
+
+				if (cachedChunk == NULL)
+					cachedChunk = ch;
+
+				if (ch->numFreeUnits == MaxUnitsPerChunk)
+					emptyChunks++;
+
+				return true;
+			}
+			return false;
+		}
+
 		// Create static instance. (shared)
 		// This function was declared as private, to prevent each other template
 		// argumented classes creates it's own instance. Use AllocatorInstance().
@@ -415,6 +449,7 @@ namespace DKFoundation
 		size_t numAllocated;
 		size_t maxChunks;
 		size_t numChunks;
+		size_t emptyChunks;
 		Lock lock;
 	};
 }
