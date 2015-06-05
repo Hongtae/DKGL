@@ -121,14 +121,16 @@ DKAllocatorChain::~DKAllocatorChain(void)
 	}
 }
 
-void DKAllocatorChain::Cleanup(void)
+size_t DKAllocatorChain::Cleanup(void)
 {
+	size_t purged = 0;
 	Chain* c = Chain::Instance();
 	ScopedSpinLock guard(c->lock);
 	for (DKAllocatorChain* chain = c->first; chain; chain = chain->next)
 	{
-		chain->Purge();
+		purged += chain->Purge();
 	}
+	return purged;
 }
 
 DKAllocatorChain* DKAllocatorChain::FirstAllocator(void)

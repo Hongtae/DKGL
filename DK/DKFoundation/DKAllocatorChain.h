@@ -40,10 +40,10 @@ namespace DKFoundation
 		virtual void* Alloc(size_t) = 0;
 		virtual void Dealloc(void*) = 0;
 
-		virtual void Purge(void) {}
+		virtual size_t Purge(void) { return 0; }
 		virtual void Description(void) {}
 
-		static void Cleanup(void);
+		static size_t Cleanup(void);
 		static DKAllocatorChain* FirstAllocator(void);
 		DKAllocatorChain* NextAllocator(void);
 

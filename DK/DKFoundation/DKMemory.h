@@ -56,6 +56,11 @@ namespace DKFoundation
 	DKLIB_API void* DKMemoryPoolAlloc(size_t);
 	DKLIB_API void* DKMemoryPoolRealloc(void*, size_t);
 	DKLIB_API void  DKMemoryPoolFree(void*);
+	// Optional pool management functions.
+	DKLIB_API size_t DKMemPurge(void);
+	DKLIB_API void DKMemSetAutomaticPurgeThreshold(float threshold);
+	DKLIB_API float DKMemAutomaticPurgeThreshold(void);
+
 
 	enum DKMemoryLocation
 	{

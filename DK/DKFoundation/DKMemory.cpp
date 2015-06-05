@@ -18,6 +18,7 @@
 #include "DKString.h"
 #include "DKUtils.h"
 #include "DKUUID.h"
+#include "DKFixedSizeAllocator.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -41,32 +42,245 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-
-
-		static void* MemAlloc(size_t s) // works in spite of s = 0
+		struct AllocatorInterface
 		{
-			return ::malloc(s);
-		}
-
-		static void MemFree(void* p)
+			virtual ~AllocatorInterface(void) {}
+			virtual void* Alloc(size_t) = 0;
+			virtual void Dealloc(void*) = 0;
+			virtual void Reserve(size_t) = 0;
+			virtual size_t Purge(void) = 0;
+			virtual bool ConditionalDealloc(void*) = 0;
+			virtual size_t ConditionalPurge(size_t) = 0;
+			virtual bool HasAddress(void*) const = 0;
+		};
+		struct AllocatorUnit
 		{
-			return ::free(p);
-		}
+			size_t unitSize;
+			AllocatorInterface* allocator;
+		};
 
-		static void* MemRealloc(void* p, size_t s)
+		enum { MaxAllocBytes = 1024 * 1024 /* = 1MB */ };
+		enum { MinUnitSize = 16, MaxUnitSize = 32768 };
+
+		template <size_t Index> struct StepUnitSize1_5
 		{
-			if (p == NULL)
+			// 16, 24, 32, 48, 64, 96, 128, 192, 256, ....
+			enum { HalfSize = MinUnitSize >> 1 };
+			enum { Result = ( HalfSize << ((Index+1)/2) ) + ( HalfSize << (Index/2) ) };
+		};
+		template <size_t Index> struct StepUnitSize2_0
+		{
+			// 16, 32, 64, 128, 256, ...
+			enum { Result = MinUnitSize << Index };
+		};
+		template <size_t UnitSize, size_t Alignment> struct CalculateMaxUnits
+		{
+			enum { ChunkPropertySize = sizeof(void*) + sizeof(int) * 3 };
+			enum { BufferOffset = ChunkPropertySize + Alignment - 1 };
+			enum { AlignedUnitSize = UnitSize + ((UnitSize % Alignment) ? (Alignment - (UnitSize % Alignment)) : 0) };
+			enum { Result = ( MaxAllocBytes - BufferOffset ) / AlignedUnitSize };
+			static_assert( Result > 0 , "Invalid unit size.");
+		};
+
+		template <size_t Alignment, size_t Index=0, bool Next=true>
+		struct InitializerT
+		{
+			template <size_t i> using StepUnitSize = StepUnitSize2_0<i>;
+
+			enum { UnitSize = StepUnitSize<Index>::Result };
+			enum { BaseAlignment = Alignment };
+
+			enum { NextUnitSize = StepUnitSize<Index+1>::Result };
+			using NextInitializer = InitializerT<Alignment, Index+1, (NextUnitSize <= MaxUnitSize) > ;
+
+			enum { MaxUnits = CalculateMaxUnits<UnitSize, Alignment>::Result };
+			enum { ItemsRequired = 1 + NextInitializer::ItemsRequired };
+
+			enum { MaxUnitSize = UnitSize > NextInitializer::MaxUnitSize ? UnitSize : NextInitializer::MaxUnitSize };
+
+			struct Wrapper : public AllocatorInterface
 			{
-				return MemAlloc(s);
+				void* Alloc(size_t s) override				{ return allocator.Alloc(s); }
+				void Dealloc(void* p) override				{ return allocator.Dealloc(p); }
+				void Reserve(size_t s) override				{ return allocator.Reserve(s); }
+				size_t Purge(void) override					{ return allocator.Purge(); }
+				bool ConditionalDealloc(void* p) override	{ return allocator.ConditionalDealloc(p); }
+				size_t ConditionalPurge(size_t c) override	{ return allocator.ConditionalPurge(c); }
+				bool HasAddress(void* p) const override		{ return allocator.HasAddress(p); }
+
+				using Allocator = DKFixedSizeAllocator<UnitSize, Alignment, MaxUnits, DKSpinLock, DKMemoryDefaultAllocator>;
+				static_assert(Allocator::ChunkSize <= MaxAllocBytes, "Chunk size exceeded MaxAllocBytes.");
+
+				Allocator allocator;
+			};
+
+			static void Init(AllocatorUnit* unit, int index = 0)
+			{
+				//printf("InitAllocator[%d]: (size:%d, alignment: %lu, units:%d, chunkSize: %d)\n",
+				//	   index, UnitSize, Alignment, MaxUnits, Wrapper::Allocator::ChunkSize);
+				unit[index].unitSize = UnitSize;
+				unit[index].allocator = ::new (::malloc(sizeof(Wrapper))) Wrapper();
+				NextInitializer::Init(unit, index + 1);
 			}
-			else if (s == 0)
+		};
+		template <size_t Alignment, size_t Index> struct InitializerT<Alignment, Index, false> //sentinel
+		{
+			enum { MaxUnitSize = 0 };
+			enum { ItemsRequired = 0 };
+			static void Init(AllocatorUnit*, int) {}
+		};
+
+		struct AllocatorPool : public DKAllocator
+		{
+			using Initializer = InitializerT<16>;
+			enum { MinUnitSize = Initializer::UnitSize };
+			enum { MaxUnitSize = Initializer::MaxUnitSize };
+			enum { ItemCount = Initializer::ItemsRequired };
+
+			AllocatorUnit allocators[ItemCount];
+
+			float purgeThreshold;
+
+			AllocatorPool(void) : purgeThreshold(0.5)
 			{
-				MemFree(p);
+				Initializer::Init(allocators);
+				//printf("AllocatorPool Initialized. (%d - %d, Units: %d)\n", MinUnitSize, MaxUnitSize, ItemCount);
+			}
+
+			~AllocatorPool(void)
+			{
+				for (int i = 0; i < ItemCount; ++i)
+				{
+					allocators[i].allocator->~AllocatorInterface();
+					::free(allocators[i].allocator);
+				}
+			}
+
+			/* upper-bounds search */
+			AllocatorUnit* FindAllocator(size_t size, size_t start, size_t count)
+			{
+				if (count > 2)
+				{
+					size_t med = count / 2;
+					size_t medIndex = start + med;
+					if (size > allocators[medIndex].unitSize)
+						return FindAllocator(size, medIndex+1, count - med - 1);
+					else if (size < allocators[medIndex-1].unitSize)
+						return FindAllocator(size, start, med);
+					return &allocators[medIndex];
+				}
+				if (count > 1)	/*count = 2*/
+				{
+					if (size > allocators[start].unitSize)
+						return &allocators[start+1];
+				}
+				if (count > 0)
+				{
+					if (size <= allocators[start].unitSize)
+						return &allocators[start];
+				}
 				return NULL;
 			}
 
+			void* Alloc(size_t s)
+			{
+				if (s > MaxUnitSize)
+					return ::malloc(s);
 
-			return ::realloc(p, s);
+				AllocatorUnit* unit = FindAllocator(s, 0, ItemCount);
+				DKASSERT_STD_DEBUG(unit != NULL);
+				DKASSERT_STD_DEBUG(unit->unitSize >= s);
+				return unit->allocator->Alloc(s);
+			}
+
+			void* Realloc(void* p, size_t s)
+			{
+				for (int i = 0; i < ItemCount; ++i)
+				{
+					if (allocators[i].allocator->HasAddress(p))
+					{
+						//allocators[i].unitSize;
+					}
+				}
+				return p;
+			}
+
+			void Dealloc(void* p)
+			{
+				for (int i = 0; i < ItemCount; ++i)
+				{
+					if (allocators[i].allocator->ConditionalDealloc(p))
+					{
+						if (purgeThreshold >= 0.0f)
+						{
+							size_t s = allocators[i].unitSize * purgeThreshold;
+							if (allocators[i].allocator->ConditionalPurge(s))
+							{
+								//printf("Allocator<%lu> has been purged.\n", allocators[i].unitSize);
+							}
+						}
+						return;
+					}
+				}
+				::free(p);
+			}
+
+			size_t Purge(void)
+			{
+				size_t purged = 0;
+				for (int i = 0; i < ItemCount; ++i)
+				{
+					purged += allocators[i].allocator->ConditionalPurge(0);
+				}
+				return purged;
+			}
+
+			DKMemoryLocation Location(void) const
+			{
+				return DKMemoryLocationPool;
+			}
+		};
+
+		NOINLINE AllocatorPool* GetAllocatorPool(void)
+		{
+			static DKAllocatorChain::StaticInitializer init;
+			static DKSpinLock lock;
+			static AllocatorPool* pool = NULL;
+			if (pool == NULL)
+			{
+				lock.Lock();
+				if (pool == NULL)
+				{
+					pool = new AllocatorPool();
+				}
+				lock.Unlock();
+			}
+			return pool;
+		}
+
+		static void* MemPoolAlloc(size_t s) // works in spite of s = 0
+		{
+			return GetAllocatorPool()->Alloc(s);
+		}
+		static void MemPoolFree(void* p)
+		{
+			GetAllocatorPool()->Dealloc(p);
+		}
+		static void* MemPoolRealloc(void* p, size_t s)
+		{
+			return GetAllocatorPool()->Realloc(p, s);
+		}
+		static size_t MemPoolPurge(void)
+		{
+			return GetAllocatorPool()->Purge();
+		}
+		static void MemPoolSetAutomaticPurgeThreshold(float threshold)
+		{
+			GetAllocatorPool()->purgeThreshold = threshold;
+		}
+		static float MemPoolAutomaticPurgeThreshold(void)
+		{
+			return GetAllocatorPool()->purgeThreshold;
 		}
 
 
@@ -1058,16 +1272,31 @@ namespace DKFoundation
 	
 	DKLIB_API void* DKMemoryPoolAlloc(size_t s)
 	{
-		return Private::MemAlloc(s);
+		return Private::MemPoolAlloc(s);
 	}
 	
 	DKLIB_API void* DKMemoryPoolRealloc(void* p, size_t s)
 	{
-		return Private::MemRealloc(p, s);
+		return Private::MemPoolRealloc(p, s);
 	}
 	
 	DKLIB_API void DKMemoryPoolFree(void* p)
 	{
-		return Private::MemFree(p);
+		return Private::MemPoolFree(p);
+	}
+
+	DKLIB_API size_t DKMemPurge(void)
+	{
+		return Private::MemPoolPurge();
+	}
+
+	DKLIB_API void DKMemSetAutomaticPurgeThreshold(float threshold)
+	{
+		Private::MemPoolSetAutomaticPurgeThreshold(threshold);
+	}
+
+	DKLIB_API float DKMemAutomaticPurgeThreshold(void)
+	{
+		return Private::MemPoolAutomaticPurgeThreshold();
 	}
 }
