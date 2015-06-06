@@ -23,11 +23,11 @@
 namespace DKFoundation
 {
 	template <
-		int UnitSize,			// allocation size (fixed size)
-		int Alignment = 1,		// byte alignment
-		int MaxUnits = 1024,	// max units per chunk
-		typename Lock = DKSpinLock,
-		typename BaseAllocator = DKMemoryDefaultAllocator // for alloc chunks.
+	int UnitSize,			// allocation size (fixed size)
+	int Alignment = 1,		// byte alignment
+	int MaxUnits = 1024,		// max units per chunk
+	typename Lock = DKSpinLock,
+	typename BaseAllocator = DKMemoryDefaultAllocator // for alloc chunks.
 	>
 	class DKFixedSizeAllocator
 	{
@@ -56,16 +56,14 @@ namespace DKFoundation
 			enum { BufferLength = MaxUnitsPerChunkSize + Alignment - 1 };
 			enum { EndOfUnits = -1 };
 
-			Unit* units;
 			int firstFreeUnitIndex;
 			int lastFreeUnitIndex;
-			int numOccupied;
-			unsigned char data[BufferLength];
+			Unit* units;		// aligned address
+			char data[BufferLength];
 
 			Chunk(void)
-				: firstFreeUnitIndex(0)
-				, lastFreeUnitIndex(MaxUnitsPerChunk - 1)
-				, numOccupied(0)
+			: firstFreeUnitIndex(0)
+			, lastFreeUnitIndex(MaxUnitsPerChunk - 1)
 			{
 				uintptr_t ptr = reinterpret_cast<uintptr_t>(&this->data[0]);
 				if (ptr % Alignment)
@@ -80,7 +78,6 @@ namespace DKFoundation
 			{
 				DKASSERT_STD_DEBUG(this->firstFreeUnitIndex != EndOfUnits);
 				DKASSERT_STD_DEBUG(this->lastFreeUnitIndex != EndOfUnits);
-				DKASSERT_STD_DEBUG(this->numOccupied == 0);
 			}
 			FORCEINLINE void* Alloc(void)
 			{
@@ -94,7 +91,6 @@ namespace DKFoundation
 					if (this->lastFreeUnitIndex == this->firstFreeUnitIndex)
 						this->lastFreeUnitIndex = unit.nextUnitIndex;
 					this->firstFreeUnitIndex = unit.nextUnitIndex;
-					this->numOccupied++;
 
 					DKASSERT_STD_DEBUG((reinterpret_cast<uintptr_t>(&(unit.data[0])) % Alignment) == 0);
 
@@ -107,15 +103,12 @@ namespace DKFoundation
 				uintptr_t rangeBegin = this->FirstUnitAddress();
 				if (p >= rangeBegin && p <= this->LastUnitAddress())
 				{
-					DKASSERT_STD_DEBUG(this->numOccupied > 0);
-
 					int index = (int)((p - rangeBegin) / sizeof(Unit));
 					Unit& unit = this->units[index];
 					unit.nextUnitIndex = EndOfUnits;
 
 					if (this->lastFreeUnitIndex == EndOfUnits)
 					{
-						DKASSERT_STD_DEBUG(this->numOccupied == MaxUnitsPerChunk);
 						DKASSERT_STD_DEBUG(this->firstFreeUnitIndex == EndOfUnits);
 						this->firstFreeUnitIndex = index;
 						this->lastFreeUnitIndex = index;
@@ -125,8 +118,6 @@ namespace DKFoundation
 						this->units[this->lastFreeUnitIndex].nextUnitIndex = index;
 						this->lastFreeUnitIndex = index;
 					}
-					this->numOccupied--;
-					DKASSERT_STD_DEBUG(this->numOccupied >= 0);
 					return true;
 				}
 				return false;
@@ -145,8 +136,8 @@ namespace DKFoundation
 		struct ChunkInfo
 		{
 			uintptr_t address;
-			unsigned int offset;
-			unsigned int occupied;
+			int offset;
+			int occupied;
 		};
 #pragma pack(pop)
 
@@ -196,12 +187,12 @@ namespace DKFoundation
 				ch = ChunkFromChunkInfo(cachedChunk);
 				ptr = ch->Alloc();
 				DKASSERT_STD_DEBUG(ptr);
-				cachedChunk->occupied = ch->numOccupied;
-				if (cachedChunk->occupied == 1)
+				if (cachedChunk->occupied == 0)
 				{
 					DKASSERT_STD_DEBUG(emptyChunks > 0);
 					emptyChunks--;
 				}
+				cachedChunk->occupied++;
 				return ptr;
 			}
 			// find unoccupied unit from each chunks.
@@ -213,12 +204,12 @@ namespace DKFoundation
 					ch = ChunkFromChunkInfo(cachedChunk);
 					ptr = ch->Alloc();
 					DKASSERT_STD_DEBUG(ptr);
-					cachedChunk->occupied = ch->numOccupied;
-					if (cachedChunk->occupied == 1)
+					if (cachedChunk->occupied == 0)
 					{
 						DKASSERT_STD_DEBUG(emptyChunks > 0);
 						emptyChunks--;
 					}
+					cachedChunk->occupied++;
 					return ptr;
 				}
 			}
@@ -231,7 +222,7 @@ namespace DKFoundation
 			ChunkInfo* info = &chunkTable[numChunks - 1];
 			info->address = ch->FirstUnitAddress();
 			info->offset = static_cast<unsigned int>(info->address - reinterpret_cast<uintptr_t>(ch));
-			info->occupied = ch->numOccupied;
+			info->occupied = 1;
 			SortChunkTable();
 			cachedChunk = FindChunkInfo(reinterpret_cast<uintptr_t>(ptr));
 			addressBegin = chunkTable[0].address;
@@ -290,7 +281,7 @@ namespace DKFoundation
 						ChunkInfo& info = chunkTable[i];
 						info.address = ch->FirstUnitAddress();
 						info.offset = static_cast<unsigned int>(info.address - reinterpret_cast<uintptr_t>(ch));
-						info.occupied = ch->numOccupied;
+						info.occupied = 0;
 						emptyChunks++;
 					}
 					uintptr_t addr = chunkTable[numChunks].address;
@@ -385,13 +376,13 @@ namespace DKFoundation
 		}
 
 		DKFixedSizeAllocator(void)
-			: chunkTable(NULL)
-			, cachedChunk(NULL)
-			, addressBegin(0)
-			, addressEnd(0)
-			, numAllocated(0)
-			, numChunks(0)
-			, emptyChunks(0)
+		: chunkTable(NULL)
+		, cachedChunk(NULL)
+		, addressBegin(0)
+		, addressEnd(0)
+		, numAllocated(0)
+		, numChunks(0)
+		, emptyChunks(0)
 		{
 		}
 
@@ -474,7 +465,8 @@ namespace DKFoundation
 				if (ch->Dealloc(addr))
 				{
 					numAllocated--;
-					info->occupied = ch->numOccupied;
+					DKASSERT_STD_DEBUG(info->occupied > 0);
+					info->occupied--;
 
 					if (cachedChunk == NULL || cachedChunk->occupied < info->occupied)
 						cachedChunk = info;
@@ -491,7 +483,7 @@ namespace DKFoundation
 		// Create static instance. (shared)
 		// This function was declared as private, to prevent each other template
 		// argumented classes creates it's own instance. Use AllocatorInstance().
-		NOINLINE static AllocatorInterface& StaticAllocatorInstance(void)
+		static AllocatorInterface& StaticAllocatorInstance(void)
 		{
 			struct AllocatorWrapper : public AllocatorInterface
 			{

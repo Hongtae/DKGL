@@ -335,6 +335,56 @@ namespace DKFoundation
 			}
 			return IndexNotFound;
 		}
+		template <typename T, typename Comparator>
+		Index LowerBound(T&& value, Comparator&& cmp)
+		{
+			CriticalSection guard(lock);
+			return LowerBoundNoLock(std::forward<T>(value), std::forward<Comparator>(cmp));
+		}
+		template <typename T, typename Comparator>
+		Index UpperBound(T&& value, Comparator&& cmp)
+		{
+			CriticalSection guard(lock);
+			return UpperBoundNoLock(std::forward<T>(value), std::forward<Comparator>(cmp));
+		}
+		template <typename T, typename Comparator>
+		FORCEINLINE Index LowerBoundNoLock(T&& value, Comparator&& cmp)
+		{
+			Index begin = 0;
+			size_t count = container.Count();
+			size_t mid;
+			while (count > 0)
+			{
+				mid = count / 2;
+				if (!cmp(value, container.Value(begin + mid)))
+				{
+					begin += mid+1;
+					count -= mid+1;
+				}
+				else
+					count = mid;
+			}
+			return begin;
+		}
+		template <typename T, typename Comparator>
+		FORCEINLINE Index UpperBoundNoLock(T&& value, Comparator&& cmp)
+		{
+			Index begin = 0;
+			size_t count = container.Count();
+			size_t mid;
+			while (count > 0)
+			{
+				mid = count / 2;
+				if (cmp(container.Value(begin + mid), value))
+				{
+					begin += mid+1;
+					count -= mid+1;
+				}
+				else
+					count = mid;
+			}
+			return begin;
+		}
 	private:
 		// Insert one value 'VALUE', 'c' times. (value x c)
 		size_t InsertContainer(const VALUE& value, size_t c)

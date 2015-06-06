@@ -2,7 +2,7 @@
 //  File: DKSerializer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKSerializer.h"
@@ -217,7 +217,7 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 	if (s == NULL)
 		return false;
 
-	SerializerEntity* se = ::new(DKMemoryHeapAlloc(sizeof(SerializerEntity))) SerializerEntity;
+	SerializerEntity* se = new (DKMemoryHeapAlloc(sizeof(SerializerEntity))) SerializerEntity;
 	se->serializer = s;
 	se->faultHandler = faultHandler;
 
@@ -227,7 +227,7 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 
 bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueChecker* checker, FaultHandler* faultHandler)
 {
-	VariantEntity *ve = ::new(DKMemoryHeapAlloc(sizeof(VariantEntity))) VariantEntity;
+	VariantEntity *ve = new (DKMemoryHeapAlloc(sizeof(VariantEntity))) VariantEntity;
 	ve->getter = getter;
 	ve->setter = setter;
 	ve->checker = checker;
@@ -239,7 +239,7 @@ bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* s
 
 bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntity* ee = ::new(DKMemoryHeapAlloc(sizeof(ExternalEntity))) ExternalEntity;
+	ExternalEntity* ee = new (DKMemoryHeapAlloc(sizeof(ExternalEntity))) ExternalEntity;
 	ee->getter = getter;
 	ee->setter = setter;
 	ee->checker = checker;
@@ -252,7 +252,7 @@ bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSet
 
 bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntityArray* ea = ::new(DKMemoryHeapAlloc(sizeof(ExternalEntityArray))) ExternalEntityArray;
+	ExternalEntityArray* ea = new (DKMemoryHeapAlloc(sizeof(ExternalEntityArray))) ExternalEntityArray;
 	ea->getter = getter;
 	ea->setter = setter;
 	ea->checker = checker;
@@ -265,7 +265,7 @@ bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, Extern
 
 bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntityMap* em = ::new(DKMemoryHeapAlloc(sizeof(ExternalEntityMap))) ExternalEntityMap;
+	ExternalEntityMap* em = new (DKMemoryHeapAlloc(sizeof(ExternalEntityMap))) ExternalEntityMap;
 	em->getter = getter;
 	em->setter = setter;
 	em->checker = checker;

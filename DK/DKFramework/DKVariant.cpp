@@ -2,7 +2,7 @@
 //  File: DKVariant.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKVariant.h"
@@ -22,7 +22,7 @@ namespace DKFramework
 			{
 				static T* Alloc(void* p)
 				{
-					return ::new (reinterpret_cast<T*>(p)) T();
+					return new (reinterpret_cast<T*>(p)) T();
 				}
 				static void Dealloc(void* p)
 				{
@@ -38,7 +38,7 @@ namespace DKFramework
 				static T* Alloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
-					pptr[0] = ::new (DKMemoryHeapAlloc(sizeof(T))) T();
+					pptr[0] = new (DKMemoryHeapAlloc(sizeof(T))) T();
 					return pptr[0];
 				}
 				static void Dealloc(void* p)

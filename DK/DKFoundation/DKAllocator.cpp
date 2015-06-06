@@ -37,12 +37,6 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 		void Dealloc(void* p)					{DKMemoryVirtualFree(p);}
 		DKMemoryLocation Location(void) const	{return DKMemoryLocationVirtual;}
 	};
-	struct FMemAllocator : public DKAllocator
-	{
-		void* Alloc(size_t s)					{return DKMemoryFileAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryFileFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationFile;}
-	};
 	struct PoolAllocator : public DKAllocator
 	{
 		void* Alloc(size_t s)					{return DKMemoryPoolAlloc(s);}
@@ -55,7 +49,6 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 
 	static HeapAllocator* hma = NULL;
 	static VMemAllocator* vma = NULL;
-	static FMemAllocator* fma = NULL;
 	static PoolAllocator* pma = NULL;
 
 	if (!initialized)
@@ -65,7 +58,6 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 		{
 			hma = new HeapAllocator();
 			vma = new VMemAllocator();
-			fma = new FMemAllocator();
 			pma = new PoolAllocator();
 			initialized = true;
 		}
@@ -79,9 +71,6 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 			break;
 		case DKMemoryLocationVirtual:
 			return *vma;
-			break;
-		case DKMemoryLocationFile:
-			return *fma;
 			break;
 		case DKMemoryLocationPool:
 			return *pma;

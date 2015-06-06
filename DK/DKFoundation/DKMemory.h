@@ -40,11 +40,6 @@ namespace DKFoundation
 	DKLIB_API void* DKMemoryVirtualRealloc(void*, size_t);
 	DKLIB_API void  DKMemoryVirtualFree(void*);
 
-	// using HDD file to manage memory.
-	DKLIB_API void* DKMemoryFileAlloc(size_t);
-	DKLIB_API void* DKMemoryFileRealloc(void*, size_t);
-	DKLIB_API void  DKMemoryFileFree(void*);
-
 	// system-paing functions.
 	DKLIB_API size_t DKMemoryPageSize(void); // default allocation size
 	DKLIB_API void* DKMemoryPageReserve(void*, size_t);
@@ -67,7 +62,6 @@ namespace DKFoundation
 		DKMemoryLocationCustom = 0,
 		DKMemoryLocationHeap,
 		DKMemoryLocationVirtual,
-		DKMemoryLocationFile,
 		DKMemoryLocationPool,
 	};
 
@@ -87,13 +81,6 @@ namespace DKFoundation
 		static void* Realloc(void* p, size_t s)	{return DKMemoryVirtualRealloc(p, s);}
 		static void Free(void* p)				{DKMemoryVirtualFree(p);}
 	};
-	class DKMemoryFileAllocator
-	{
-		enum {Location = DKMemoryLocationFile};
-		static void* Alloc(size_t s)			{return DKMemoryFileAlloc(s);}
-		static void* Realloc(void* p, size_t s)	{return DKMemoryFileRealloc(p, s);}
-		static void Free(void* p)				{DKMemoryFileFree(p);}
-	};	
 	class DKMemoryPoolAllocator
 	{
 		enum {Location = DKMemoryLocationPool};

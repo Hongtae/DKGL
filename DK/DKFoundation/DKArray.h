@@ -2,7 +2,7 @@
 //  File: DKArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -119,7 +119,7 @@ namespace DKFoundation
 				ReserveItemCapsNL(il.size());
 				for (const VALUE& v : il)
 				{
-					::new(&data[count]) VALUE(v);
+					new(&data[count]) VALUE(v);
 					count++;
 				}
 			}
@@ -148,7 +148,7 @@ namespace DKFoundation
 		{
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(1);
-			::new(&data[count]) VALUE(value);
+			new(&data[count]) VALUE(value);
 			return count++;
 		}
 		// append 's' length of value to tail.
@@ -157,7 +157,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(s);
 			for (Index i = 0; i < s; i++)
-				::new(&data[count+i]) VALUE(value[i]);
+				new(&data[count+i]) VALUE(value[i]);
 			count += s;
 			return count - s;
 		}
@@ -167,7 +167,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(s);
 			for (Index i = 0; i < s; i++)
-				::new(&data[count+i]) VALUE(value);
+				new(&data[count+i]) VALUE(value);
 			count += s;
 			return count - s;
 		}
@@ -179,7 +179,7 @@ namespace DKFoundation
 			ReserveItemCapsNL(s);
 			for (const VALUE& v : il)
 			{
-				::new(&data[count]) VALUE(v);
+				new(&data[count]) VALUE(v);
 				count++;
 			}
 			return count - s;
@@ -200,7 +200,7 @@ namespace DKFoundation
 				pos = count;
 			if (pos < count)
 				memmove((void*)&data[pos+1], (void*)&data[pos], sizeof(VALUE) * (count - pos));
-			::new(&data[pos]) VALUE(value);
+			new(&data[pos]) VALUE(value);
 			count++;
 			return pos;
 		}
@@ -214,7 +214,7 @@ namespace DKFoundation
 			if (pos < count)
 				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
 			for (Index i = 0; i < s; i++)
-				::new(&data[pos+i]) VALUE(value[i]);
+				new(&data[pos+i]) VALUE(value[i]);
 			count += s;
 			return pos;
 		}
@@ -228,7 +228,7 @@ namespace DKFoundation
 			if (pos < count)
 				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
 			for (Index i = 0; i < s; i++)
-				::new(&data[pos+i]) VALUE(value);
+				new(&data[pos+i]) VALUE(value);
 			count += s;
 			return pos;
 		}
@@ -244,7 +244,7 @@ namespace DKFoundation
 				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
 			for (const VALUE& v : il)
 			{
-				::new(&data[pos]) VALUE(v);
+				new(&data[pos]) VALUE(v);
 				pos++;
 			}
 			count += s;
@@ -308,7 +308,7 @@ namespace DKFoundation
 			{
 				ReserveNL(s);
 				for (Index i = count; i < s; i++)
-					::new(&data[i]) VALUE();
+					new(&data[i]) VALUE();
 			}
 			count = s;
 		}
@@ -324,7 +324,7 @@ namespace DKFoundation
 			{
 				ReserveNL(s);
 				for (Index i = count; i < s; i++)
-					::new(&data[i]) VALUE(val);
+					new(&data[i]) VALUE(val);
 			}
 			count = s;
 		}
@@ -374,9 +374,12 @@ namespace DKFoundation
 		{
 			if (this != &other)
 			{
-				Clear();
+				CriticalSection guard(lock);
+				for (Index i = 0; i < count; i++)
+					data[i].~VALUE();
 				if (data)
 					Allocator::Free(data);
+
 				data = other.data;
 				count = other.count;
 				capacity = other.capacity;
@@ -388,17 +391,33 @@ namespace DKFoundation
 		}
 		DKArray& operator = (const DKArray& value)
 		{
-			if (this == &value)
-				return *this;
+			if (this != &value)
+			{
+				CriticalSection guard1(value.lock);
+				CriticalSection guard2(lock);
+				for (Index i = 0; i < count; i++)
+					data[i].~VALUE();
 
-			Clear();
-			Add(value);
+				ReserveNL(value.count);
+				for (Index i = 0; i < value.count; i++)
+					new(&data[i]) VALUE(value.data[i]);
+				count = value.count;
+			}
 			return *this;
 		}
 		DKArray& operator = (std::initializer_list<VALUE> il)
 		{
-			Clear();
-			Add(il);
+			CriticalSection guard(lock);
+			for (Index i = 0; i < count; i++)
+				data[i].~VALUE();
+
+			size_t s = il.size();
+			ReserveNL(s);
+			for (const VALUE& v : il)
+			{
+				new(&data[count]) VALUE(v);
+			}
+			count = s;
 			return *this;
 		}
 		DKArray operator + (const VALUE& v) const

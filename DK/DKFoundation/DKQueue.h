@@ -2,7 +2,7 @@
 //  File: DKQueue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -118,7 +118,7 @@ namespace DKFoundation
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				::new(&data[--begin]) VALUE(values[n - i - 1]);
+				new(&data[--begin]) VALUE(values[n - i - 1]);
 				count++;
 			}
 			Balance();
@@ -132,7 +132,7 @@ namespace DKFoundation
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				::new(&data[--begin]) VALUE(value);
+				new(&data[--begin]) VALUE(value);
 				count++;
 			}
 			Balance();
@@ -151,7 +151,7 @@ namespace DKFoundation
 
 			for (const VALUE& v : il)
 			{
-				::new(&data[--begin]) VALUE(v);
+				new(&data[--begin]) VALUE(v);
 				count++;
 			}
 			Balance();
@@ -170,7 +170,7 @@ namespace DKFoundation
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				::new(&data[begin+count]) VALUE(values[i]);
+				new(&data[begin+count]) VALUE(values[i]);
 				count++;
 			}
 			Balance();
@@ -184,7 +184,7 @@ namespace DKFoundation
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				::new(&data[begin+count]) VALUE(value);
+				new(&data[begin+count]) VALUE(value);
 				count++;
 			}
 			Balance();
@@ -202,7 +202,7 @@ namespace DKFoundation
 			ReserveBack(il.size());
 			for (const VALUE& v : il)
 			{
-				::new(&data[begin+count]) VALUE(v);
+				new(&data[begin+count]) VALUE(v);
 				count++;
 			}
 			Balance();
@@ -366,9 +366,9 @@ namespace DKFoundation
 		{
 			if (this != &queue)
 			{
-				CriticalSection guard(lock);
-				CriticalSection guard2(queue.lock);
-				
+				CriticalSection guard1(queue.lock);
+				CriticalSection guard2(lock);
+
 				if (data && count)
 				{
 					for (size_t i = begin; i < begin+count; i++)
@@ -395,8 +395,26 @@ namespace DKFoundation
 		{
 			if (this != &queue)
 			{
-				Clear();
-				PushBack(queue);
+				CriticalSection guard1(queue.lock);
+				CriticalSection guard2(lock);
+
+				if (data && count)
+				{
+					for (size_t i = begin; i < begin+count; i++)
+					{
+						data[i].~VALUE();
+					}
+				}
+				begin = 0;
+				count = 0;
+
+				VALUE* p = &queue.data[queue.begin];
+				ReserveBack(queue.count);
+				for (size_t i = 0; i < queue.count; i++)
+				{
+					new(&data[i]) VALUE(p[i]);
+				}
+				count = queue.count;
 			}
 			return *this;
 		}
@@ -552,7 +570,7 @@ namespace DKFoundation
 			size_t backSpace = maxSize - (begin+count);
 			size_t begin2 = begin;
 
-			if ((frontSpace > (backSpace + count) * 2) || (backSpace > (frontSpace + count) * 2))		// 앞뒤 공간차이가 나머지의 두배보다 크게 난다.
+			if ((frontSpace > (backSpace + count) * 2) || (backSpace > (frontSpace + count) * 2))
 				begin2 = maxSize / 2;
 
 			if (begin2 != begin)
@@ -566,6 +584,6 @@ namespace DKFoundation
 		size_t	begin;
 		size_t	count;
 		size_t	maxSize;
-		VALUE* data;
+		VALUE*	data;
 	};
 }
