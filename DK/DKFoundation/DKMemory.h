@@ -17,15 +17,9 @@
 // DKMemoryVirtual-Alloc/Realloc/Free functions are using Virtual Memory.
 // they should be aligned with DKMemoryVMPageSize value.
 //
-// DKMemoryFile-Alloc/Realloc/Free functions using actual file as backing store.
-// if system disk runs out of space, this function will fail.
-//
-// Note:
-//  If you try allocate memory larger than system-available memory
-//  by using DKMemoryFileAlloc, system freezing can be occurred.
-//
-//  DKMemoryReserved-Alloc/Realloc/Free functions is only for debugging. don't use.
+// If you want allocate memory with backing-store with file, use DKFileMap.
 ////////////////////////////////////////////////////////////////////////////////
+
 
 namespace DKFoundation
 {
@@ -39,6 +33,7 @@ namespace DKFoundation
 	DKLIB_API void* DKMemoryVirtualAlloc(size_t);
 	DKLIB_API void* DKMemoryVirtualRealloc(void*, size_t);
 	DKLIB_API void  DKMemoryVirtualFree(void*);
+	DKLIB_API size_t  DKMemoryVirtualSize(void*);
 
 	// system-paing functions.
 	DKLIB_API size_t DKMemoryPageSize(void); // default allocation size
@@ -52,9 +47,8 @@ namespace DKFoundation
 	DKLIB_API void* DKMemoryPoolRealloc(void*, size_t);
 	DKLIB_API void  DKMemoryPoolFree(void*);
 	// Optional pool management functions.
-	DKLIB_API size_t DKMemPurge(void);
-	DKLIB_API void DKMemSetAutomaticPurgeThreshold(float threshold);
-	DKLIB_API float DKMemAutomaticPurgeThreshold(void);
+	DKLIB_API size_t DKMemoryPoolPurge(void);
+	DKLIB_API size_t DKMemoryPoolSize(void);
 
 
 	enum DKMemoryLocation
@@ -69,24 +63,24 @@ namespace DKFoundation
 	// you can provide your own allocator.
 	struct DKMemoryHeapAllocator
 	{
-		enum {Location = DKMemoryLocationHeap};
-		static void* Alloc(size_t s)			{return DKMemoryHeapAlloc(s);}
-		static void* Realloc(void* p, size_t s)	{return DKMemoryHeapRealloc(p, s);}
-		static void Free(void* p)				{DKMemoryHeapFree(p);}
+		enum { Location = DKMemoryLocationHeap };
+		static void* Alloc(size_t s)			{ return DKMemoryHeapAlloc(s); }
+		static void* Realloc(void* p, size_t s)	{ return DKMemoryHeapRealloc(p, s); }
+		static void Free(void* p)				{ DKMemoryHeapFree(p); }
 	};
-	class DKMemoryVirtualAllocator
+	struct DKMemoryVirtualAllocator
 	{
-		enum {Location = DKMemoryLocationVirtual};
-		static void* Alloc(size_t s)			{return DKMemoryVirtualAlloc(s);}
-		static void* Realloc(void* p, size_t s)	{return DKMemoryVirtualRealloc(p, s);}
-		static void Free(void* p)				{DKMemoryVirtualFree(p);}
+		enum { Location = DKMemoryLocationVirtual };
+		static void* Alloc(size_t s)			{ return DKMemoryVirtualAlloc(s); }
+		static void* Realloc(void* p, size_t s)	{ return DKMemoryVirtualRealloc(p, s); }
+		static void Free(void* p)				{ DKMemoryVirtualFree(p); }
 	};
-	class DKMemoryPoolAllocator
+	struct DKMemoryPoolAllocator
 	{
-		enum {Location = DKMemoryLocationPool};
-		static void* Alloc(size_t s)			{return DKMemoryPoolAlloc(s);}
-		static void* Realloc(void* p, size_t s)	{return DKMemoryPoolRealloc(p, s);}
-		static void Free(void* p)				{DKMemoryPoolFree(p);}
+		enum { Location = DKMemoryLocationPool };
+		static void* Alloc(size_t s)			{ return DKMemoryPoolAlloc(s); }
+		static void* Realloc(void* p, size_t s)	{ return DKMemoryPoolRealloc(p, s); }
+		static void Free(void* p)				{ DKMemoryPoolFree(p); }
 	};
 
 	using DKMemoryDefaultAllocator = DKMemoryHeapAllocator;

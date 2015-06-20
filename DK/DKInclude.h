@@ -237,6 +237,25 @@ namespace DKFoundation
 #		define DKASSERT_STD_DESC_DEBUG(expr, desc)	(void)0
 #		define DKASSERT_STD_DEBUG(expr)				(void)0
 #	endif
+
+#	ifndef DKLIB_MEMORY_DEBUG
+#		ifdef DKLIB_DEBUG_ENABLED
+#			define DKLIB_MEMORY_DEBUG 1
+#		else
+#			define DKLIB_MEMORY_DEBUG 0
+#		endif
+#	endif /* DKLIB_MEMORY_DEBUG */
+#	if DKLIB_MEMORY_DEBUG
+#		define DKASSERT_MEM_DESC(expr, desc)		{if (!(expr)) throw std::runtime_error(desc);}
+#		define DKASSERT_MEM(expr)					{if (!(expr)) throw std::runtime_error("");}
+#		define DKASSERT_MEM_DESC_DEBUG(expr, desc)	DKASSERT_STD_DESC(expr, desc)
+#		define DKASSERT_MEM_DEBUG(expr)				DKASSERT_STD(expr)
+#	else
+#		define DKASSERT_MEM_DESC(expr, desc)		(void)0
+#		define DKASSERT_MEM(expr)					(void)0
+#		define DKASSERT_MEM_DESC_DEBUG(expr, desc)	(void)0
+#		define DKASSERT_MEM_DEBUG(expr)				(void)0
+#	endif
 #endif	// #ifdef __cplusplus
 
 ////////////////////////////////////////////////////////////////////////////////
