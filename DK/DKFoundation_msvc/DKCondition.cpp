@@ -5,12 +5,18 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
+#ifdef _WIN32
+#include <windows.h>
+#else // pthread
+#include <pthread.h>
+#include <sys/time.h>
+#include <errno.h>
+#endif
+
 #include "DKCondition.h"
 #include "DKLog.h"
 
 #ifdef _WIN32
-#include <windows.h>
-
 namespace DKFoundation
 {
 	namespace Private
@@ -64,11 +70,7 @@ namespace DKFoundation
 		};
 	}
 }
-#else			// pthread
-#include <pthread.h>
-#include <sys/time.h>
-#include <errno.h>
-
+#else
 namespace DKFoundation
 {
 	namespace Private

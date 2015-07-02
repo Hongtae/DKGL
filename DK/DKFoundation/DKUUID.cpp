@@ -5,11 +5,6 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#include "DKUUID.h"
-#include "DKSpinLock.h"
-#include "DKCriticalSection.h"
-#include "DKEndianness.h"
-
 #ifdef _WIN32
 #include <Windows.h>
 #include <Rpc.h>
@@ -22,6 +17,11 @@
 #if defined(__linux__)
 #include <uuid/uuid.h>
 #endif
+
+#include "DKUUID.h"
+#include "DKSpinLock.h"
+#include "DKCriticalSection.h"
+#include "DKEndianness.h"
 
 using namespace DKFoundation;
 

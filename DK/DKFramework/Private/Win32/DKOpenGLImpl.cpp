@@ -7,8 +7,9 @@
 //
 
 #ifdef _WIN32
-#include "DKOpenGLImpl.h"
+#include "../../../../lib/OpenGL.h"
 #include "../../../../lib/OpenGL/wglext.h"
+#include "DKOpenGLImpl.h"
 
 using namespace DKFoundation;
 

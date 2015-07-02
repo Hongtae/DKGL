@@ -514,9 +514,6 @@
     <ClInclude Include="DKFoundation_msvc\DKMemory.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation_msvc\DKMessageQueue.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
     <ClInclude Include="DKFoundation_msvc\DKMutex.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>

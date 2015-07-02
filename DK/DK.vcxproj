@@ -258,7 +258,6 @@
     <ClInclude Include="DKFoundation_msvc\DKLog.h" />
     <ClInclude Include="DKFoundation_msvc\DKMap.h" />
     <ClInclude Include="DKFoundation_msvc\DKMemory.h" />
-    <ClInclude Include="DKFoundation_msvc\DKMessageQueue.h" />
     <ClInclude Include="DKFoundation_msvc\DKMutex.h" />
     <ClInclude Include="DKFoundation_msvc\DKObject.h" />
     <ClInclude Include="DKFoundation_msvc\DKObjectRefCounter.h" />

@@ -17,6 +17,8 @@
 // If you abandon ownership of thread, thread will be detached automatically.
 ////////////////////////////////////////////////////////////////////////////////
 
+#undef Yield
+
 namespace DKFoundation
 {
 	class DKLIB_API DKThread

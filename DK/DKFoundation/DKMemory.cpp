@@ -5,20 +5,9 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../DKInclude.h"
 #include <stdlib.h>
 #include <memory.h>
 #include <new>
-
-#include "DKMap.h"
-#include "DKMemory.h"
-#include "DKSpinLock.h"
-#include "DKCriticalSection.h"
-#include "DKLog.h"
-#include "DKString.h"
-#include "DKUtils.h"
-#include "DKUUID.h"
-#include "DKFixedSizeAllocator.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -36,6 +25,16 @@
 #include <errno.h>
 #include <fcntl.h>
 #endif
+
+#include "DKMap.h"
+#include "DKMemory.h"
+#include "DKSpinLock.h"
+#include "DKCriticalSection.h"
+#include "DKLog.h"
+#include "DKString.h"
+#include "DKUtils.h"
+#include "DKUUID.h"
+#include "DKFixedSizeAllocator.h"
 
 
 namespace DKFoundation

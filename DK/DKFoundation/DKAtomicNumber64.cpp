@@ -5,14 +5,14 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#include "DKAtomicNumber64.h"
-
 #ifdef _WIN32
 #include <windows.h>
 #endif
 #if defined(__APPLE__) && defined(__MACH__)
 #include <libkern/OSAtomic.h>
 #endif
+
+#include "DKAtomicNumber64.h"
 
 using namespace DKFoundation;
 

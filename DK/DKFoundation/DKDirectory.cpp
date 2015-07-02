@@ -5,12 +5,6 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#include "DKDirectory.h"
-#include "DKLog.h"
-#include "DKString.h"
-#include "DKFile.h"
-#include "DKFileMap.h"
-
 #ifdef _WIN32
 	#include <windows.h>
 	#include <wchar.h>
@@ -21,6 +15,12 @@
 	#include <unistd.h>
 	#define DIRECTORY_PATH_SEPARATOR		L'/'
 #endif
+
+#include "DKDirectory.h"
+#include "DKLog.h"
+#include "DKString.h"
+#include "DKFile.h"
+#include "DKFileMap.h"
 
 using namespace DKFoundation;
 

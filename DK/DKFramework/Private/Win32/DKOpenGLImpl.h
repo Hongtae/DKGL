@@ -9,10 +9,10 @@
 #pragma once
 
 #ifdef _WIN32
-#include "../../DKWindow.h"
-#include "../../../DKFoundation.h"
 #include "../../../../lib/OpenGL.h"
+#include "../../../DKFoundation.h"
 #include "../../Interface/DKOpenGLInterface.h"
+#include "../../DKWindow.h"
 
 namespace DKFramework
 {

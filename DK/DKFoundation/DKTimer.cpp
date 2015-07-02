@@ -5,8 +5,6 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#include "DKTimer.h"
-
 #include <time.h>
 #include <math.h>
 
@@ -21,6 +19,8 @@
 	#include <sys/time.h>
 	#warning High-Resolution Timer Unsupported. (Unknown OS)
 #endif
+
+#include "DKTimer.h"
 
 using namespace DKFoundation;
 

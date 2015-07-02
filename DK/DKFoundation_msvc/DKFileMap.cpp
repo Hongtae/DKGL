@@ -10,13 +10,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "DKFile.h"
-#include "DKLog.h"
-#include "DKString.h"
-#include "DKFileMap.h"
-#include "DKUtils.h"
-#include "DKUUID.h"
-
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -24,6 +17,13 @@
 #include <errno.h>
 #include <sys/mman.h>
 #endif
+
+#include "DKFile.h"
+#include "DKLog.h"
+#include "DKString.h"
+#include "DKFileMap.h"
+#include "DKUtils.h"
+#include "DKUUID.h"
 
 namespace DKFoundation
 {

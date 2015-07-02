@@ -77,8 +77,7 @@
 #include "DKFoundation_msvc/DKOperation.h"
 #include "DKFoundation_msvc/DKValue.h"
 
-// run-loop, operation queue, message-handler
-#include "DKFoundation_msvc/DKMessageQueue.h"
+// run-loop, operation queue
 #include "DKFoundation_msvc/DKOperationQueue.h"
 #include "DKFoundation_msvc/DKRunLoop.h"
 #include "DKFoundation_msvc/DKRunLoopTimer.h"
