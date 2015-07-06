@@ -39,7 +39,7 @@ DKCollisionShape::~DKCollisionShape(void)
 	delete impl;
 }
 
-DKAABox DKCollisionShape::AABB(const DKNSTransform& transform) const
+DKAabb DKCollisionShape::Aabb(const DKNSTransform& transform) const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -49,7 +49,20 @@ DKAABox DKCollisionShape::AABB(const DKNSTransform& transform) const
 
 	impl->getAabb(BulletTransform(transform), vmin, vmax);
 
-	return DKAABox(BulletVector3(vmin), BulletVector3(vmax));
+	return DKAabb(BulletVector3(vmin), BulletVector3(vmax));
+}
+
+void DKCollisionShape::Aabb(const DKNSTransform& transform, DKVector3& aabbMin, DKVector3& aabbMax) const
+{
+	DKASSERT_DEBUG(impl != NULL);
+	DKASSERT_DEBUG(impl->getUserPointer() == this);
+
+	btVector3 vmin(0,0,0);
+	btVector3 vmax(0,0,0);
+
+	impl->getAabb(BulletTransform(transform), vmin, vmax);
+	aabbMin = BulletVector3(vmin);
+	aabbMax = BulletVector3(vmax);
 }
 
 DKSphere DKCollisionShape::BoundingSphere(void) const
@@ -63,19 +76,6 @@ DKSphere DKCollisionShape::BoundingSphere(void) const
 	impl->getBoundingSphere(center, radius);
 
 	return DKSphere(BulletVector3(center), radius);
-}
-
-void DKCollisionShape::AABB(const DKNSTransform& transform, DKVector3& aabbMin, DKVector3& aabbMax) const
-{
-	DKASSERT_DEBUG(impl != NULL);
-	DKASSERT_DEBUG(impl->getUserPointer() == this);
-
-	btVector3 vmin(0,0,0);
-	btVector3 vmax(0,0,0);
-
-	impl->getAabb(BulletTransform(transform), vmin, vmax);
-	aabbMin = BulletVector3(vmin);
-	aabbMax = BulletVector3(vmax);
 }
 
 void DKCollisionShape::SetMargin(float m)
@@ -309,7 +309,7 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 					size_t indexSize = 0;
 					const void* vertices = meshShape->VertexBuffer(&numVertices);
 					const void* indices = meshShape->IndexBuffer(&numIndices, &indexSize);
-					DKAABox aabb = meshShape->MeshAABB();
+					DKAabb aabb = meshShape->Aabb();
 
 					DKVariant::VData& vertsData = pairs.Value(L"vertices").Data();
 					vertsData.SetContent(vertices, numVertices * sizeof(DKVector3));
@@ -538,7 +538,7 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 						indices->value.ValueType() == DKVariant::TypeData &&
 						indexSize->value.ValueType() == DKVariant::TypeInteger)
 					{
-						DKAABox aabb;
+						DKAabb aabb;
 						if (aabbMin && aabbMax &&
 							aabbMin->value.ValueType() == DKVariant::TypeVector3 &&
 							aabbMax->value.ValueType() == DKVariant::TypeVector3)

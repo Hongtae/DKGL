@@ -15,7 +15,7 @@
 #include "DKLine.h"
 #include "DKResource.h"
 #include "DKTransform.h"
-#include "DKAABox.h"
+#include "DKAabb.h"
 #include "DKSphere.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,10 +66,9 @@ namespace DKFramework
 
 		virtual ~DKCollisionShape(void);
 
-		DKAABox AABB(const DKNSTransform& transform) const;
+		DKAabb Aabb(const DKNSTransform& transform) const;
+		void Aabb(const DKNSTransform& transform, DKVector3& aabbMin, DKVector3& aabbMax) const;
 		DKSphere BoundingSphere(void) const;
-
-		void AABB(const DKNSTransform& transform, DKVector3& aabbMin, DKVector3& aabbMax) const;
 
 		void SetMargin(float m);  // collision margin.
 		float Margin(void) const;

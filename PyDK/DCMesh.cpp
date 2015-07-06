@@ -201,7 +201,7 @@ static PyObject* DCMeshSetScale(DCMesh* self, PyObject* args)
 static PyObject* DCMeshAABB(DCMesh* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->mesh, NULL);
-	DKAABox aabb = self->mesh->BoundingAABox();
+	DKAabb aabb = self->mesh->Aabb();
 	return Py_BuildValue("NN", DCVector3FromObject(&aabb.positionMin), DCVector3FromObject(&aabb.positionMax));
 }
 
@@ -215,7 +215,7 @@ static PyObject* DCMeshSetAABB(DCMesh* self, PyObject* args)
 		PyErr_SetString(PyExc_TypeError, "argument must be two Vector3 objects.");
 		return NULL;
 	}
-	self->mesh->SetBoundingAABox(DKAABox(vmin, vmax));
+	self->mesh->SetAabb(DKAabb(vmin, vmax));
 	Py_RETURN_NONE;
 }
 
@@ -240,7 +240,7 @@ static PyObject* DCMeshSetBoundingSphere(DCMesh* self, PyObject* args)
 static PyObject* DCMeshScaledAABB(DCMesh* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->mesh, NULL);
-	DKAABox aabb = self->mesh->ScaledBoundingAABox();
+	DKAabb aabb = self->mesh->ScaledAabb();
 	return Py_BuildValue("NN", DCVector3FromObject(&aabb.positionMin), DCVector3FromObject(&aabb.positionMax));
 }
 

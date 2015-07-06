@@ -85,8 +85,8 @@
 		840C3E3F178D396E00F57A8D /* DKXMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DF141DD4B70091D2C0 /* DKXMLParser.cpp */; };
 		840C3E40178D396E00F57A8D /* DKZipArchiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4E1141DD4B70091D2C0 /* DKZipArchiver.cpp */; };
 		840C3E41178D396E00F57A8D /* DKZipUnarchiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4E3141DD4B70091D2C0 /* DKZipUnarchiver.cpp */; };
-		840CA5811928952800689BB6 /* DKAABox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAABox.cpp */; };
-		840CA5821928952800689BB6 /* DKAABox.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAABox.h */; };
+		840CA5811928952800689BB6 /* DKAabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */; };
+		840CA5821928952800689BB6 /* DKAabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAabb.h */; };
 		840CA5831928952800689BB6 /* DKActionController.h in Headers */ = {isa = PBXBuildFile; fileRef = 84FA82F2166F64150014115F /* DKActionController.h */; };
 		840CA5841928952800689BB6 /* DKAffineTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F0141DD4B70091D2C0 /* DKAffineTransform2.cpp */; };
 		840CA5851928952800689BB6 /* DKAffineTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */; };
@@ -348,7 +348,7 @@
 		841FED7117CDBD4400610986 /* libExtDeps_OSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84427FFF17CDBA0D00095E62 /* libExtDeps_OSX.a */; };
 		841FED7617CDBD5000610986 /* libExtDeps_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8442800117CDBA0D00095E62 /* libExtDeps_iOS.a */; };
 		841FED7717CDBD5300610986 /* libBulletPhysics_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84427FD817CDB8EA00095E62 /* libBulletPhysics_iOS.a */; };
-		84211AA81665E7FC00B9B9A2 /* DKAABox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAABox.cpp */; };
+		84211AA81665E7FC00B9B9A2 /* DKAabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */; };
 		84211AAA1665E7FC00B9B9A2 /* DKAffineTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F0141DD4B70091D2C0 /* DKAffineTransform2.cpp */; };
 		84211AAC1665E7FC00B9B9A2 /* DKAffineTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F2141DD4B70091D2C0 /* DKAffineTransform3.cpp */; };
 		84211AAE1665E7FC00B9B9A2 /* DKAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F4141DD4B70091D2C0 /* DKAnimation.cpp */; };
@@ -428,7 +428,7 @@
 		84211B571665E7FD00B9B9A2 /* DKVector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E591141DD4B70091D2C0 /* DKVector4.cpp */; };
 		84211B591665E7FD00B9B9A2 /* DKVertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E593141DD4B70091D2C0 /* DKVertexBuffer.cpp */; };
 		84211B5F1665E7FD00B9B9A2 /* DKWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E599141DD4B70091D2C0 /* DKWindow.cpp */; };
-		84211B611665E7FD00B9B9A2 /* DKAABox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAABox.cpp */; };
+		84211B611665E7FD00B9B9A2 /* DKAabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */; };
 		84211B631665E7FD00B9B9A2 /* DKAffineTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F0141DD4B70091D2C0 /* DKAffineTransform2.cpp */; };
 		84211B651665E7FD00B9B9A2 /* DKAffineTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F2141DD4B70091D2C0 /* DKAffineTransform3.cpp */; };
 		84211B671665E7FD00B9B9A2 /* DKAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F4141DD4B70091D2C0 /* DKAnimation.cpp */; };
@@ -632,7 +632,7 @@
 		84211CA31665E86400B9B9A2 /* DKXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E0141DD4B70091D2C0 /* DKXMLParser.h */; };
 		84211CA41665E86400B9B9A2 /* DKZipArchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E2141DD4B70091D2C0 /* DKZipArchiver.h */; };
 		84211CA51665E86400B9B9A2 /* DKZipUnarchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E4141DD4B70091D2C0 /* DKZipUnarchiver.h */; };
-		84211CA61665E88E00B9B9A2 /* DKAABox.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAABox.h */; };
+		84211CA61665E88E00B9B9A2 /* DKAabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAabb.h */; };
 		84211CA71665E88E00B9B9A2 /* DKAffineTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */; };
 		84211CA81665E88E00B9B9A2 /* DKAffineTransform3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F3141DD4B70091D2C0 /* DKAffineTransform3.h */; };
 		84211CA91665E88E00B9B9A2 /* DKAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F5141DD4B70091D2C0 /* DKAnimation.h */; };
@@ -720,7 +720,7 @@
 		84211D031665E88E00B9B9A2 /* DKVertexStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E595141DD4B70091D2C0 /* DKVertexStream.h */; };
 		84211D041665E88E00B9B9A2 /* DKVKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E596141DD4B70091D2C0 /* DKVKey.h */; };
 		84211D061665E88E00B9B9A2 /* DKWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E59A141DD4B70091D2C0 /* DKWindow.h */; };
-		84211D071665E89700B9B9A2 /* DKAABox.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAABox.h */; };
+		84211D071665E89700B9B9A2 /* DKAabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAabb.h */; };
 		84211D081665E89700B9B9A2 /* DKAffineTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */; };
 		84211D091665E89700B9B9A2 /* DKAffineTransform3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F3141DD4B70091D2C0 /* DKAffineTransform3.h */; };
 		84211D0A1665E89700B9B9A2 /* DKAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F5141DD4B70091D2C0 /* DKAnimation.h */; };
@@ -1014,7 +1014,7 @@
 		84798BB319E51E33009378A6 /* DKFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 846B29691921FE6300918B1B /* DKFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84798BB419E51E33009378A6 /* DKInclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 846B296A1921FE6300918B1B /* DKInclude.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84798BB519E51E33009378A6 /* DK.h in Headers */ = {isa = PBXBuildFile; fileRef = 846B296B1921FE6300918B1B /* DK.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		84798BB619E51E48009378A6 /* DKAABox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAABox.cpp */; };
+		84798BB619E51E48009378A6 /* DKAabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */; };
 		84798BB719E51E48009378A6 /* DKAffineTransform2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F0141DD4B70091D2C0 /* DKAffineTransform2.cpp */; };
 		84798BB819E51E48009378A6 /* DKAffineTransform3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F2141DD4B70091D2C0 /* DKAffineTransform3.cpp */; };
 		84798BB919E51E48009378A6 /* DKAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4F4141DD4B70091D2C0 /* DKAnimation.cpp */; };
@@ -1125,7 +1125,7 @@
 		84798C2219E51E69009378A6 /* DKWindowImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84211E651665EB8F00B9B9A2 /* DKWindowImpl.mm */; };
 		84798C2319E51E69009378A6 /* DKWindowView.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E661665EB8F00B9B9A2 /* DKWindowView.h */; };
 		84798C2419E51E69009378A6 /* DKWindowView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84211E671665EB8F00B9B9A2 /* DKWindowView.mm */; };
-		84798C2519E51E7F009378A6 /* DKAABox.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAABox.h */; };
+		84798C2519E51E7F009378A6 /* DKAabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAabb.h */; };
 		84798C2619E51E7F009378A6 /* DKActionController.h in Headers */ = {isa = PBXBuildFile; fileRef = 84FA82F2166F64150014115F /* DKActionController.h */; };
 		84798C2719E51E7F009378A6 /* DKAffineTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */; };
 		84798C2819E51E7F009378A6 /* DKAffineTransform3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F3141DD4B70091D2C0 /* DKAffineTransform3.h */; };
@@ -1593,8 +1593,8 @@
 		84A1E4E2141DD4B70091D2C0 /* DKZipArchiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKZipArchiver.h; sourceTree = "<group>"; };
 		84A1E4E3141DD4B70091D2C0 /* DKZipUnarchiver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKZipUnarchiver.cpp; sourceTree = "<group>"; };
 		84A1E4E4141DD4B70091D2C0 /* DKZipUnarchiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKZipUnarchiver.h; sourceTree = "<group>"; };
-		84A1E4EE141DD4B70091D2C0 /* DKAABox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAABox.cpp; sourceTree = "<group>"; };
-		84A1E4EF141DD4B70091D2C0 /* DKAABox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAABox.h; sourceTree = "<group>"; };
+		84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAabb.cpp; sourceTree = "<group>"; };
+		84A1E4EF141DD4B70091D2C0 /* DKAabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAabb.h; sourceTree = "<group>"; };
 		84A1E4F0141DD4B70091D2C0 /* DKAffineTransform2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAffineTransform2.cpp; sourceTree = "<group>"; };
 		84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAffineTransform2.h; sourceTree = "<group>"; };
 		84A1E4F2141DD4B70091D2C0 /* DKAffineTransform3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAffineTransform3.cpp; sourceTree = "<group>"; };
@@ -1778,6 +1778,9 @@
 		84E42A5D13AF8B4200BF31EA /* libDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84F03CE2145D3AF300EDFD66 /* DKBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKBufferStream.cpp; sourceTree = "<group>"; };
 		84F03CE3145D3AF300EDFD66 /* DKBufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKBufferStream.h; sourceTree = "<group>"; };
+		84F96FF11B4ACA7200BA24E4 /* DKBvh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DKBvh.cpp; sourceTree = "<group>"; };
+		84F96FF21B4ACA7200BA24E4 /* DKBvh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKBvh.h; sourceTree = "<group>"; };
+		84F96FF31B4ACA7200BA24E4 /* DKTriangleMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKTriangleMesh.h; sourceTree = "<group>"; };
 		84FA82F2166F64150014115F /* DKActionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKActionController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2180,8 +2183,11 @@
 		84A1E4ED141DD4B70091D2C0 /* DKFramework */ = {
 			isa = PBXGroup;
 			children = (
-				84A1E4EE141DD4B70091D2C0 /* DKAABox.cpp */,
-				84A1E4EF141DD4B70091D2C0 /* DKAABox.h */,
+				84F96FF11B4ACA7200BA24E4 /* DKBvh.cpp */,
+				84F96FF21B4ACA7200BA24E4 /* DKBvh.h */,
+				84F96FF31B4ACA7200BA24E4 /* DKTriangleMesh.h */,
+				84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */,
+				84A1E4EF141DD4B70091D2C0 /* DKAabb.h */,
 				84FA82F2166F64150014115F /* DKActionController.h */,
 				84A1E4F0141DD4B70091D2C0 /* DKAffineTransform2.cpp */,
 				84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */,
@@ -2417,7 +2423,7 @@
 				840CA63D1928952800689BB6 /* DKVoxel32Storage.h in Headers */,
 				8436CDF51928A78900F18892 /* DKRational.h in Headers */,
 				840CA5A31928952800689BB6 /* DKCollisionShape.h in Headers */,
-				840CA5821928952800689BB6 /* DKAABox.h in Headers */,
+				840CA5821928952800689BB6 /* DKAabb.h in Headers */,
 				8436CE131928A78900F18892 /* DKTypes.h in Headers */,
 				8436CDD41928A78900F18892 /* DKEndianness.h in Headers */,
 				840CA63F1928952800689BB6 /* DKVoxelIsosurfacePolygonizer.h in Headers */,
@@ -2717,7 +2723,7 @@
 				84798C4919E51E7F009378A6 /* DKIndexBuffer.h in Headers */,
 				84798C9119E51E96009378A6 /* DKAVLTree.h in Headers */,
 				84798C8619E51E80009378A6 /* DKVoxel32FileStorage.h in Headers */,
-				84798C2519E51E7F009378A6 /* DKAABox.h in Headers */,
+				84798C2519E51E7F009378A6 /* DKAabb.h in Headers */,
 				84798C5019E51E7F009378A6 /* DKMatrix2.h in Headers */,
 				84798C5319E51E7F009378A6 /* DKMesh.h in Headers */,
 				84798CC719E51E96009378A6 /* DKTypeTraits.h in Headers */,
@@ -2843,7 +2849,7 @@
 				84211CA31665E86400B9B9A2 /* DKXMLParser.h in Headers */,
 				84211CA41665E86400B9B9A2 /* DKZipArchiver.h in Headers */,
 				84211CA51665E86400B9B9A2 /* DKZipUnarchiver.h in Headers */,
-				84211D071665E89700B9B9A2 /* DKAABox.h in Headers */,
+				84211D071665E89700B9B9A2 /* DKAabb.h in Headers */,
 				84211D081665E89700B9B9A2 /* DKAffineTransform2.h in Headers */,
 				84211D091665E89700B9B9A2 /* DKAffineTransform3.h in Headers */,
 				84211D0A1665E89700B9B9A2 /* DKAnimation.h in Headers */,
@@ -3037,7 +3043,7 @@
 				84211C5E1665E86300B9B9A2 /* DKZipArchiver.h in Headers */,
 				84211C5F1665E86300B9B9A2 /* DKZipUnarchiver.h in Headers */,
 				840CA67A1928A2D800689BB6 /* DKAudioStreamWave.h in Headers */,
-				84211CA61665E88E00B9B9A2 /* DKAABox.h in Headers */,
+				84211CA61665E88E00B9B9A2 /* DKAabb.h in Headers */,
 				84211CA71665E88E00B9B9A2 /* DKAffineTransform2.h in Headers */,
 				84211CA81665E88E00B9B9A2 /* DKAffineTransform3.h in Headers */,
 				84211CA91665E88E00B9B9A2 /* DKAnimation.h in Headers */,
@@ -3426,7 +3432,7 @@
 				840CA6491928954600689BB6 /* DKAudioStreamVorbis.cpp in Sources */,
 				840CA5CA1928952800689BB6 /* DKLine.cpp in Sources */,
 				840CA5DF1928952800689BB6 /* DKOpenALContext.cpp in Sources */,
-				840CA5811928952800689BB6 /* DKAABox.cpp in Sources */,
+				840CA5811928952800689BB6 /* DKAabb.cpp in Sources */,
 				840CA5EA1928952800689BB6 /* DKPrimitiveIndex.cpp in Sources */,
 				840CA5D91928952800689BB6 /* DKMesh.cpp in Sources */,
 				840CA59C1928952800689BB6 /* DKCamera.cpp in Sources */,
@@ -3517,7 +3523,7 @@
 				84798BEC19E51E48009378A6 /* DKRenderer.cpp in Sources */,
 				84798BDD19E51E48009378A6 /* DKMatrix2.cpp in Sources */,
 				84798B9219E51DFB009378A6 /* DKData.cpp in Sources */,
-				84798BB619E51E48009378A6 /* DKAABox.cpp in Sources */,
+				84798BB619E51E48009378A6 /* DKAabb.cpp in Sources */,
 				84798B9719E51DFB009378A6 /* DKFence.cpp in Sources */,
 				84798BF019E51E48009378A6 /* DKResourceLoader.cpp in Sources */,
 				84798B9D19E51DFB009378A6 /* DKMemory.cpp in Sources */,
@@ -3661,7 +3667,7 @@
 				84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				840C3E3B178D396E00F57A8D /* DKTimer.cpp in Sources */,
 				840C3E3C178D396E00F57A8D /* DKTypeInfo.cpp in Sources */,
-				84211B611665E7FD00B9B9A2 /* DKAABox.cpp in Sources */,
+				84211B611665E7FD00B9B9A2 /* DKAabb.cpp in Sources */,
 				84DB0A41199B9F31005FC4CA /* DKSceneState.cpp in Sources */,
 				840C3E28178D396E00F57A8D /* DKFence.cpp in Sources */,
 				84211B631665E7FD00B9B9A2 /* DKAffineTransform2.cpp in Sources */,
@@ -3808,7 +3814,7 @@
 				84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				840C3E17178D396D00F57A8D /* DKTimer.cpp in Sources */,
 				840C3E18178D396D00F57A8D /* DKTypeInfo.cpp in Sources */,
-				84211AA81665E7FC00B9B9A2 /* DKAABox.cpp in Sources */,
+				84211AA81665E7FC00B9B9A2 /* DKAabb.cpp in Sources */,
 				84DB0A40199B9F31005FC4CA /* DKSceneState.cpp in Sources */,
 				840C3E04178D396D00F57A8D /* DKFence.cpp in Sources */,
 				84211AAA1665E7FC00B9B9A2 /* DKAffineTransform2.cpp in Sources */,

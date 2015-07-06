@@ -11,7 +11,7 @@
 #include "DKVector3.h"
 #include "DKVector4.h"
 #include "DKMatrix4.h"
-#include "DKAABox.h"
+#include "DKAabb.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
@@ -144,7 +144,7 @@ bool DKBox::RayTest(const DKLine& ray, DKVector3* p) const
 		DKVector3 begin = ray.begin * invTM;
 		DKVector3 end = ray.begin * invTM;
 
-		if (DKAABox(DKVector3(-1,-1,-1), DKVector3(1,1,1)).RayTest(DKLine(begin, end), p))
+		if (DKAabb(DKVector3(-1,-1,-1), DKVector3(1,1,1)).RayTest(DKLine(begin, end), p))
 		{
 			if (p)
 				p->Transform(boxTM);

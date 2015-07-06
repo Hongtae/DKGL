@@ -1,47 +1,47 @@
 //
-//  File: DKAABox.cpp
+//  File: DKAabb.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
-#include "DKAABox.h"
+#include "DKAabb.h"
 #include "DKLine.h"
 #include "DKBox.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
 
-DKAABox::DKAABox(void)
+DKAabb::DKAabb(void)
 	: positionMin(DKVector3(FLT_MAX, FLT_MAX, FLT_MAX))
 	, positionMax(DKVector3(-FLT_MAX, -FLT_MAX, -FLT_MAX))
 {
 }
 
-DKAABox::DKAABox(const DKVector3& posMin, const DKVector3& posMax)
+DKAabb::DKAabb(const DKVector3& posMin, const DKVector3& posMax)
 	: positionMin(posMin)
 	, positionMax(posMax)
 {
 }
 
-DKAABox DKAABox::Intersection(const DKAABox& b1, const DKAABox& b2)
+DKAabb DKAabb::Intersection(const DKAabb& b1, const DKAabb& b2)
 {
 	if (b1.IsValid() && b2.IsValid())
 	{
-		return DKAABox(
+		return DKAabb(
 			DKVector3(Max(b1.positionMin.x, b2.positionMin.x), Max(b1.positionMin.y, b2.positionMin.y), Max(b1.positionMin.z, b2.positionMin.z)),
 			DKVector3(Min(b1.positionMax.x, b2.positionMax.x), Min(b1.positionMax.y, b2.positionMax.y), Min(b1.positionMax.z, b2.positionMax.z))
 			);
 	}
-	return DKAABox();
+	return DKAabb();
 }
 
-DKAABox DKAABox::Union(const DKAABox& b1, const DKAABox& b2)
+DKAabb DKAabb::Union(const DKAabb& b1, const DKAabb& b2)
 {
 	if (b1.IsValid() && b2.IsValid())
 	{
-		return DKAABox(
+		return DKAabb(
 			DKVector3(Min(b1.positionMin.x, b2.positionMin.x), Min(b1.positionMin.y, b2.positionMin.y), Min(b1.positionMin.z, b2.positionMin.z)),
 			DKVector3(Max(b1.positionMax.x, b2.positionMax.x), Max(b1.positionMax.y, b2.positionMax.y), Max(b1.positionMax.z, b2.positionMax.z))
 			);
@@ -51,15 +51,15 @@ DKAABox DKAABox::Union(const DKAABox& b1, const DKAABox& b2)
 	else if (b2.IsValid())
 		return b2;
 
-	return DKAABox();
+	return DKAabb();
 }
 
-bool DKAABox::IsValid(void) const
+bool DKAabb::IsValid(void) const
 {
 	return positionMax.x >= positionMin.x && positionMax.y >= positionMin.y && positionMax.z >= positionMin.z;
 }
 
-bool DKAABox::IsPointInside(const DKVector3& pos) const
+bool DKAabb::IsPointInside(const DKVector3& pos) const
 {
 	if (pos.x >= positionMin.x && pos.x <= positionMax.x &&
 		pos.y >= positionMin.y && pos.y <= positionMax.y &&
@@ -68,23 +68,23 @@ bool DKAABox::IsPointInside(const DKVector3& pos) const
 	return false;
 }
 
-DKVector3 DKAABox::Center(void) const
+DKVector3 DKAabb::Center(void) const
 {
 	return (positionMin + positionMax) * 0.5f;
 }
 
-float DKAABox::Volume(void) const
+float DKAabb::Volume(void) const
 {
 	DKVector3 v = positionMax - positionMin;
 	return v.x * v.y * v.z;
 }
 
-DKBox DKAABox::Box(void) const
+DKBox DKAabb::Box(void) const
 {
 	return DKBox(this->Center(), DKVector3(this->positionMax.x, 0, 0), DKVector3(0, this->positionMax.y, 0), DKVector3(0, 0, this->positionMax.z));
 }
 
-bool DKAABox::RayTest(const DKLine& ray, DKVector3* p) const
+bool DKAabb::RayTest(const DKLine& ray, DKVector3* p) const
 {
 	if (p)
 	{
@@ -157,7 +157,7 @@ bool DKAABox::RayTest(const DKLine& ray, DKVector3* p) const
 	return false;
 }
 
-bool DKAABox::Intersect(const DKAABox& box) const
+bool DKAabb::Intersect(const DKAabb& box) const
 {
 	if (this->positionMin.x > box.positionMax.x || this->positionMin.y > box.positionMax.y || this->positionMin.z > box.positionMax.z ||
 		this->positionMax.x < box.positionMin.x || this->positionMax.y < box.positionMin.y || this->positionMax.z < box.positionMin.z)

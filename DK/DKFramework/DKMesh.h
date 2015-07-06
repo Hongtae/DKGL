@@ -97,13 +97,13 @@ namespace DKFramework
 		void SetHidden(bool h)					{ hidden = h; }
 
 		// Bounding information for collision (optional)
-		void SetBoundingAABox(const DKAABox& box)		{boundingAABox = box;}
-		void SetBoundingSphere(const DKSphere& sphere)	{boundingSphere = sphere;}
-		const DKAABox& BoundingAABox(void) const		{return boundingAABox;}
-		const DKSphere& BoundingSphere(void) const		{return boundingSphere;}
+		void SetAabb(const DKAabb& aabb)				{ this->aabb = aabb; }
+		void SetBoundingSphere(const DKSphere& sphere)	{ this->boundingSphere = sphere; }
+		const DKAabb& Aabb(void) const					{ return this->aabb; }
+		const DKSphere& BoundingSphere(void) const		{ return this->boundingSphere; }
 
 		// Bounding information applied by local-scale
-		DKAABox ScaledBoundingAABox(void) const;
+		DKAabb ScaledAabb(void) const;
 		DKSphere ScaledBoundingSphere(void) const;
 		const DKMatrix4& ScaledWorldTransformMatrix(void) const;
 
@@ -136,7 +136,7 @@ namespace DKFramework
 
 		bool		hidden;
 		DKVector3	scale;
-		DKAABox		boundingAABox;
+		DKAabb		aabb;
 		DKSphere	boundingSphere;
 		DKMatrix4	scaledTransformMatrix;
 

@@ -29,7 +29,7 @@ namespace DKFramework
 		};
 		typedef DKFoundation::DKFunctionSignature<void (const Triangle&)> TriangleEnumerator;
 
-		void EnumerateTrianglesInsideAABB(TriangleEnumerator* e, const DKVector3 aabbMin, const DKVector3& aabbMax) const;
+		void EnumerateTrianglesInsideAabb(TriangleEnumerator* e, const DKVector3 aabbMin, const DKVector3& aabbMax) const;
 
 	protected:
 		DKConcaveShape(ShapeType t, class btConcaveShape* context);

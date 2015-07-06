@@ -70,7 +70,7 @@ static PyObject* DCConcaveShapeEnumerateTrianglesInsideAABB(DCConcaveShape* self
 			Py_XDECREF(tmp);
 		}
 	};
-	self->shape->EnumerateTrianglesInsideAABB(DKFunction(enumerator), aabbMin, aabbMax);
+	self->shape->EnumerateTrianglesInsideAabb(DKFunction(enumerator), aabbMin, aabbMax);
 	if (PyErr_Occurred())
 		return NULL;
 

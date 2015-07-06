@@ -41,7 +41,7 @@ static void DCCollisionShapeDealloc(DCCollisionShape* self)
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* DCCollisionShapeAABB(DCCollisionShape* self, PyObject* args)
+static PyObject* DCCollisionShapeAabb(DCCollisionShape* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->shape, NULL);
 
@@ -49,7 +49,7 @@ static PyObject* DCCollisionShapeAABB(DCCollisionShape* self, PyObject* args)
 	if (!PyArg_ParseTuple(args, "O&", &DCNSTransformConverter, &trans))
 		return NULL;
 
-	DKAABox aabb = self->shape->AABB(trans);
+	DKAabb aabb = self->shape->Aabb(trans);
 	return Py_BuildValue("NN",
 		DCVector3FromObject(&aabb.positionMin),
 		DCVector3FromObject(&aabb.positionMax));
@@ -75,7 +75,7 @@ static PyObject* DCCollisionShapeCalculateLocalInertia(DCCollisionShape* self, P
 }
 
 static PyMethodDef methods[] = {
-	{ "aabb", (PyCFunction)&DCCollisionShapeAABB, METH_VARARGS },
+	{ "aabb", (PyCFunction)&DCCollisionShapeAabb, METH_VARARGS },
 	{ "boundingSphere", (PyCFunction)&DCCollisionShapeBoundingSphere, METH_NOARGS },
 	{ "calculateLocalInertia", (PyCFunction)&DCCollisionShapeCalculateLocalInertia, METH_VARARGS },
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */

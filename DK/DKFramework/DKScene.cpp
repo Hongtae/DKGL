@@ -2,7 +2,7 @@
 //  File: DKScene.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletUtils.h"
@@ -934,7 +934,7 @@ void DKScene::Update(double tickDelta, DKTimeTick tick)
 		DKCriticalSection<DKSpinLock> guard(context->lock);
 
 		int updated = 0;
-		bool forceAABB = context->world->getForceUpdateAllAabbs();
+		bool forceAabb = context->world->getForceUpdateAllAabbs();
 
 		btCollisionObjectArray& colArray = context->world->getCollisionObjectArray();
 		for (int i = 0; i < colArray.size(); ++i)
@@ -950,8 +950,8 @@ void DKScene::Update(double tickDelta, DKTimeTick tick)
 					body->getMotionState()->getWorldTransform(t);
 					body->setWorldTransform(t);
 				}
-				// if forceAABB is true, update all AABBs in performDiscreteCollisionDetection()
-				if (!forceAABB)
+				// if forceAabb is true, update all AABBs in performDiscreteCollisionDetection()
+				if (!forceAabb)
 					context->world->updateSingleAabb(colObj);
 				colObj->setActivationState(ISLAND_SLEEPING);
 				updated++;
@@ -1020,7 +1020,7 @@ void DKScene::Render(const DKCamera& camera, int sceneIndex, unsigned int modes,
 	if (drawCollisionWorld)
 	{
 		drawer->debugMode = 0;
-		if (modes & DrawCollisionAABB)
+		if (modes & DrawCollisionAabb)
 			drawer->debugMode |= btIDebugDraw::DBG_DrawAabb;
 		if (modes & DrawConstraints)
 			drawer->debugMode |= btIDebugDraw::DBG_DrawConstraints;

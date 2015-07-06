@@ -2,7 +2,7 @@
 //  File: DKConcaveShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2012-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2012-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletUtils.h"
@@ -23,7 +23,7 @@ DKConcaveShape::~DKConcaveShape(void)
 	DKASSERT_DEBUG( this->impl->isConcave() );
 }
 
-void DKConcaveShape::EnumerateTrianglesInsideAABB(TriangleEnumerator* e, const DKVector3 aabbMin, const DKVector3& aabbMax) const
+void DKConcaveShape::EnumerateTrianglesInsideAabb(TriangleEnumerator* e, const DKVector3 aabbMin, const DKVector3& aabbMax) const
 {
 	struct Callback : public btTriangleCallback
 	{

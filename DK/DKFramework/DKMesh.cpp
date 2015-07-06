@@ -146,11 +146,11 @@ void DKMesh::RemoveAllMaterialProperties(void)
 	materialProperties.Clear();
 }
 
-DKAABox DKMesh::ScaledBoundingAABox(void) const
+DKAabb DKMesh::ScaledAabb(void) const
 {
-	const DKVector3& posMin = this->boundingAABox.positionMin;
-	const DKVector3& posMax = this->boundingAABox.positionMax;
-	return DKAABox(posMin * this->scale, posMax * this->scale);
+	const DKVector3& posMin = this->aabb.positionMin;
+	const DKVector3& posMax = this->aabb.positionMax;
+	return DKAabb(posMin * this->scale, posMax * this->scale);
 }
 
 DKSphere DKMesh::ScaledBoundingSphere(void) const
@@ -284,7 +284,7 @@ DKMesh* DKMesh::Copy(UUIDObjectMap& uuids, const DKMesh* mesh)
 	{
 		this->drawFace = mesh->drawFace;
 		this->primitiveType = mesh->primitiveType;
-		this->boundingAABox = mesh->boundingAABox;
+		this->aabb = mesh->aabb;
 		this->boundingSphere = mesh->boundingSphere;
 		this->materialProperties = mesh->materialProperties;
 		this->samplers = mesh->samplers;
@@ -431,10 +431,10 @@ DKObject<DKSerializer> DKMesh::Serializer(void)
 		void GetBoundingInfo(DKVariant& v) const
 		{
 			v.SetValueType(DKVariant::TypePairs);
-			if (target->boundingAABox.IsValid())
+			if (target->aabb.IsValid())
 			{
-				v.Pairs().Insert(L"aabb.max", (const DKVariant::VVector3&)target->boundingAABox.positionMax);
-				v.Pairs().Insert(L"aabb.min", (const DKVariant::VVector3&)target->boundingAABox.positionMin);
+				v.Pairs().Insert(L"aabb.max", (const DKVariant::VVector3&)target->aabb.positionMax);
+				v.Pairs().Insert(L"aabb.min", (const DKVariant::VVector3&)target->aabb.positionMin);
 			}
 			if (target->boundingSphere.IsValid())
 			{
@@ -444,7 +444,7 @@ DKObject<DKSerializer> DKMesh::Serializer(void)
 		}
 		void SetBoundingInfo(DKVariant& v)
 		{
-			target->boundingAABox = DKAABox();
+			target->aabb = DKAabb();
 			target->boundingSphere = DKSphere();
 
 			const DKVariant::VPairs::Pair* aabbMax = v.Pairs().Find(L"aabb.max");
@@ -452,8 +452,8 @@ DKObject<DKSerializer> DKMesh::Serializer(void)
 			if (aabbMax && aabbMax->value.ValueType() == DKVariant::TypeVector3 &&
 				aabbMin && aabbMin->value.ValueType() == DKVariant::TypeVector3)
 			{
-				target->boundingAABox.positionMax = aabbMax->value.Vector3();
-				target->boundingAABox.positionMin = aabbMin->value.Vector3();
+				target->aabb.positionMax = aabbMax->value.Vector3();
+				target->aabb.positionMin = aabbMin->value.Vector3();
 			}
 			const DKVariant::VPairs::Pair* bsphereCenter = v.Pairs().Find(L"bsphere.center");
 			const DKVariant::VPairs::Pair* bsphereRadius = v.Pairs().Find(L"bsphere.radius");

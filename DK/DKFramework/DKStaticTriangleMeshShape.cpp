@@ -2,7 +2,7 @@
 //  File: DKStaticTriangleMeshShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2012-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2012-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletUtils.h"
@@ -34,7 +34,7 @@ public:
 	template <typename IndexType>
 	IndexedTriangleData(const DKVector3* verts, size_t numVerts,
 		const IndexType* indices, size_t numIndices,
-		const DKAABox& aabb, bool rebuild, float weld)
+		const DKAabb& aabb, bool rebuild, float weld)
 		: vertices(NULL)
 		, numVertices(0)
 		, indices(NULL)
@@ -206,18 +206,18 @@ DKSpinLock DKStaticTriangleMeshShape::IndexedTriangleData::lock;
 DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(
 	const DKVector3* verts, size_t numVerts,
 	const unsigned int* indices, size_t numIndices,
-	const DKAABox& precalculatedAABB, bool rebuildIndex, float weldingThreshold)
+	const DKAabb& precalculatedAabb, bool rebuildIndex, float weldingThreshold)
 	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVerts, indices, numIndices,
-	precalculatedAABB, rebuildIndex, weldingThreshold))
+	precalculatedAabb, rebuildIndex, weldingThreshold))
 {
 }
 
 DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(
 	const DKVector3* verts, size_t numVerts,
 	const unsigned short* indices, size_t numIndices,
-	const DKAABox& precalculatedAABB, bool rebuildIndex, float weldingThreshold)
+	const DKAabb& precalculatedAabb, bool rebuildIndex, float weldingThreshold)
 	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVerts, indices, numIndices,
-	precalculatedAABB, rebuildIndex, weldingThreshold))
+	precalculatedAabb, rebuildIndex, weldingThreshold))
 {
 }
 
@@ -232,13 +232,13 @@ DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape(void)
 	delete meshData;
 }
 
-void DKStaticTriangleMeshShape::RefitBVH(const DKAABox& aabb)
+void DKStaticTriangleMeshShape::RefitBvh(const DKAabb& aabb)
 {
 	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
 	shape->refitTree(BulletVector3(aabb.positionMin), BulletVector3(aabb.positionMax));
 }
 
-void DKStaticTriangleMeshShape::PartialRefitBVH(const DKAABox& aabb)
+void DKStaticTriangleMeshShape::PartialRefitBvh(const DKAabb& aabb)
 {
 	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
 	shape->partialRefitTree(BulletVector3(aabb.positionMin), BulletVector3(aabb.positionMax));
@@ -272,9 +272,9 @@ const void* DKStaticTriangleMeshShape::IndexBuffer(size_t* numIndices, size_t* i
 	return this->meshData->indices;
 }
 
-DKAABox DKStaticTriangleMeshShape::MeshAABB(void) const
+DKAabb DKStaticTriangleMeshShape::Aabb(void) const
 {
-	return DKAABox(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
+	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
 }
 
 size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const

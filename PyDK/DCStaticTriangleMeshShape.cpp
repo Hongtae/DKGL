@@ -44,7 +44,7 @@ static int DCStaticTriangleMeshShapeInit(DCStaticTriangleMeshShape *self, PyObje
 			size_t numIndices = indexBuffer.len / sizeof(unsigned int);
 			if (numVerts > 0 && numIndices > 0)
 			{
-				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAABox(), rebuildIndex != 0, welding);
+				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAabb(), rebuildIndex != 0, welding);
 			}
 		}
 		else
@@ -53,7 +53,7 @@ static int DCStaticTriangleMeshShapeInit(DCStaticTriangleMeshShape *self, PyObje
 			size_t numIndices = indexBuffer.len / sizeof(unsigned int);
 			if (numVerts > 0 && numIndices > 0)
 			{
-				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAABox(), rebuildIndex != 0, welding);
+				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAabb(), rebuildIndex != 0, welding);
 			}
 		}
 		PyBuffer_Release(&vertexBuffer);
@@ -84,7 +84,7 @@ static PyObject* DCStaticTriangleMeshShapeRefitBVH(DCStaticTriangleMeshShape* se
 	if (!PyArg_ParseTuple(args, "O&O&", &DCVector3Converter, &aabbMin, &DCVector3Converter, &aabbMax))
 		return NULL;
 
-	self->shape->RefitBVH(DKAABox(aabbMin, aabbMax));
+	self->shape->RefitBvh(DKAabb(aabbMin, aabbMax));
 	Py_RETURN_NONE;
 }
 
@@ -95,14 +95,14 @@ static PyObject* DCStaticTriangleMeshShapePartialRefitBVH(DCStaticTriangleMeshSh
 	if (!PyArg_ParseTuple(args, "O&O&", &DCVector3Converter, &aabbMin, &DCVector3Converter, &aabbMax))
 		return NULL;
 
-	self->shape->PartialRefitBVH(DKAABox(aabbMin, aabbMax));
+	self->shape->PartialRefitBvh(DKAabb(aabbMin, aabbMax));
 	Py_RETURN_NONE;
 }
 
 static PyObject* DCStaticTriangleMeshShapeMeshAABB(DCStaticTriangleMeshShape* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->shape, NULL);
-	DKAABox aabb = self->shape->MeshAABB();
+	DKAabb aabb = self->shape->Aabb();
 	return Py_BuildValue("NN", DCVector3FromObject(&aabb.positionMin), DCVector3FromObject(&aabb.positionMax));
 }
 

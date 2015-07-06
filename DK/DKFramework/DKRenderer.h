@@ -2,7 +2,7 @@
 //  File: DKRenderer.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -159,8 +159,8 @@ namespace DKFramework
 		// 3d shapes misc..
 		void RenderSolidSphere(const DKVector3& center, float radius, int lats, int longs, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultOpaque) const;
 		void RenderWireSphere(const DKVector3& center, float radius, int lats, int longs, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultOpaque) const;
-		void RenderSolidAABB(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultOpaque) const;
-		void RenderWireAABB(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultOpaque) const;
+		void RenderSolidAabb(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultOpaque) const;
+		void RenderWireAabb(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultOpaque) const;
 
 		// DKMesh
 		size_t RenderMesh(const DKMesh*, DKSceneState&, const DKBlendState* blend = NULL) const;

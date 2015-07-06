@@ -2,7 +2,7 @@
 //  File: DKScene.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -49,7 +49,7 @@ namespace DKFramework
 		{
 			DrawMeshes				= 1,
 			DrawMeshBoundSpheres	= 1 << 1,
-			DrawCollisionAABB		= 1 << 2,
+			DrawCollisionAabb		= 1 << 2,
 			DrawCollisionShapes		= 1 << 3,
 			DrawConstraints			= 1 << 4,
 			DrawConstraintLimits	= 1 << 5,

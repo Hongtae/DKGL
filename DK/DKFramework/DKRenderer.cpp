@@ -2,7 +2,7 @@
 //  File: DKRenderer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -29,7 +29,7 @@
 #include "DKRect.h"
 #include "DKLine.h"
 #include "DKSphere.h"
-#include "DKAABox.h"
+#include "DKAabb.h"
 #include "DKStaticMesh.h"
 
 #include "DKTexture.h"
@@ -66,7 +66,7 @@ namespace DKFramework
 
 	static_assert(sizeof(DKLine) == sizeof(float) * 6, "size mismatch");
 	static_assert(sizeof(DKSphere) == sizeof(float) * 4, "size mismatch");
-	static_assert(sizeof(DKAABox) == sizeof(float) * 6, "size mismatch");
+	static_assert(sizeof(DKAabb) == sizeof(float) * 6, "size mismatch");
 
 	namespace Private
 	{
@@ -1825,7 +1825,7 @@ void DKRenderer::RenderWireSphere(const DKVector3& center, float radius, int lat
 	}
 }
 
-void DKRenderer::RenderSolidAABB(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend) const
+void DKRenderer::RenderSolidAabb(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend) const
 {
 	if (aabbMax.x < aabbMin.x || aabbMax.y < aabbMin.y || aabbMax.z < aabbMin.z)
 		return;
@@ -1882,7 +1882,7 @@ void DKRenderer::RenderSolidAABB(const DKVector3& aabbMin, const DKVector3& aabb
 	reusableVert3DBuffer.Clear();
 }
 
-void DKRenderer::RenderWireAABB(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend) const
+void DKRenderer::RenderWireAabb(const DKVector3& aabbMin, const DKVector3& aabbMax, const DKMatrix4& tm, const DKColor& color, const DKBlendState& blend) const
 {
 	if (aabbMax.x < aabbMin.x || aabbMax.y < aabbMin.y || aabbMax.z < aabbMin.z)
 		return;
