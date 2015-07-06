@@ -2,7 +2,7 @@
 //  File: DKTriangle.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -39,6 +39,6 @@ namespace DKFramework
 		DKVector3	position2;
 		DKVector3	position3;
 
-		bool Intersect(const DKLine& line, Front front = Front::Both, DKVector3* p = NULL) const;
+		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, Front faces = Front::Both, float epsilon = 0.000001f) const;
 	};
 }

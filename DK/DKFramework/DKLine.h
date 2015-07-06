@@ -2,7 +2,7 @@
 //  File: DKLine.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -31,11 +31,11 @@ namespace DKFramework
 		float Length(void) const;
 		bool IsPointInside(const DKVector3& pos) const;
 
-		bool Intersect(const DKLine& line, DKVector3* p = NULL) const;
+		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, float epsilon = 0.000001f) const;
 
 		// compute shortest line segment between two line segments.
 		// result line's begin-point located on line1, end-point located on line2.
-		static DKLine LineBetween(const DKLine& line1, const DKLine& line2);
+		static DKLine LineBetween(const DKLine& line1, const DKLine& line2, float epsilon = 0.000001f);
 
 		DKVector3	begin;
 		DKVector3	end;

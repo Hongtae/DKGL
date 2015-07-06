@@ -2,7 +2,7 @@
 //  File: DKAABox.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 
 
 #pragma once
@@ -34,8 +34,8 @@ namespace DKFramework
 		float Volume(void) const;
 		DKBox Box(void) const;
 
-		bool Intersect(const DKLine& line, DKVector3* p = NULL) const;
 		bool Intersect(const DKAABox& box) const;
+		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 
 		DKVector3	positionMax;
 		DKVector3	positionMin;

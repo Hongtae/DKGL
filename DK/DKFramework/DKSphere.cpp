@@ -2,7 +2,7 @@
 //  File: DKSphere.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -88,12 +88,12 @@ float DKSphere::Volume(void) const
 	return (4.0f / 3.0f) * radius * radius * radius * static_cast<float>(DKL_PI);	// (4/3 PI * R cubed )
 }
 
-bool DKSphere::Intersect(const DKLine& line, DKVector3* p) const
+bool DKSphere::RayTest(const DKLine& ray, DKVector3* p) const
 {
 	if (this->IsValid())
 	{
-		const DKVector3 l = this->center - line.begin; // from line's begin to sphere center
-		const DKVector3 d = line.Direction();
+		const DKVector3 l = this->center - ray.begin; // from line's begin to sphere center
+		const DKVector3 d = ray.Direction();
 
 		float s = DKVector3::Dot(l, d);
 		float s2 = s*s;
@@ -115,9 +115,9 @@ bool DKSphere::Intersect(const DKLine& line, DKVector3* p) const
 		else						// line begins inside of sphere, length of intersection (t = s+q)
 			t = s+q;
 
-		if ( t >= 0 && t <= line.Length())
+		if ( t >= 0 && t <= ray.Length())
 		{
-			if (p)		*p = line.begin + d*t;
+			if (p)		*p = ray.begin + d*t;
 			return true;
 		}
 	}

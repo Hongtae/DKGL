@@ -2,7 +2,7 @@
 //  File: DKLine.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -61,11 +61,11 @@ bool DKLine::IsPointInside(const DKVector3& pos) const
 	return DKVector3::Dot(dir1, dir2) == 1.0;
 }
 
-bool DKLine::Intersect(const DKLine& line, DKVector3* p) const
+bool DKLine::RayTest(const DKLine& ray, DKVector3* p, float epsilon) const
 {
-	const float epsilon = 0.000001f;
+//	const float epsilon = 0.000001f;
 
-	DKLine s = DKLine::LineBetween(*this, line); // shortest line between 'this' and 'line'
+	DKLine s = DKLine::LineBetween(*this, ray); // shortest line between 'this' and 'line'
 	if (s.Length() < epsilon)
 	{
 		if (p)	*p = s.begin;
@@ -74,12 +74,12 @@ bool DKLine::Intersect(const DKLine& line, DKVector3* p) const
 	return false;
 }
 
-DKLine DKLine::LineBetween(const DKLine& line1, const DKLine& line2)
+DKLine DKLine::LineBetween(const DKLine& line1, const DKLine& line2, float epsilon)
 {
 	// compute shortest line between two lines, algorithm based on
 	// http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm#dist3D_Segment_to_Segment
 
-	const float epsilon = 0.000001f;
+	//const float epsilon = 0.000001f;
 
 	const DKVector3 u = line1.end - line1.begin;
 	const DKVector3 v = line2.end - line2.begin;

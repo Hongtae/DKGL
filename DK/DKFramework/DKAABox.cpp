@@ -2,7 +2,7 @@
 //  File: DKAABox.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -84,13 +84,13 @@ DKBox DKAABox::Box(void) const
 	return DKBox(this->Center(), DKVector3(this->positionMax.x, 0, 0), DKVector3(0, this->positionMax.y, 0), DKVector3(0, 0, this->positionMax.z));
 }
 
-bool DKAABox::Intersect(const DKLine& line, DKVector3* p) const
+bool DKAABox::RayTest(const DKLine& ray, DKVector3* p) const
 {
 	if (p)
 	{
 		// implemented based on: http://www.codercorner.com/RayAABB.cpp
 
-		const DKVector3 dir = line.Direction();
+		const DKVector3 dir = ray.Direction();
 		bool inside = true;
 		DKVector3 maxT(-1,-1,-1);
 
@@ -98,23 +98,23 @@ bool DKAABox::Intersect(const DKLine& line, DKVector3* p) const
 
 		for (int i = 0; i < 3; ++i)
 		{
-			if (line.begin.val[i] < this->positionMin.val[i])
+			if (ray.begin.val[i] < this->positionMin.val[i])
 			{
 				coord.val[i] = this->positionMin.val[i];
 				inside = false;
-				if ((unsigned int&)dir.x)	maxT.val[i] = (this->positionMin.val[i] - line.begin.val[i]) / dir.val[i];
+				if ((unsigned int&)dir.x)	maxT.val[i] = (this->positionMin.val[i] - ray.begin.val[i]) / dir.val[i];
 			}
 			else
 			{
 				coord.val[i] = this->positionMax.val[i];
 				inside = false;
-				if ((unsigned int&)dir.y)	maxT.val[i] = (this->positionMax.val[i] - line.begin.val[i]) / dir.val[i];
+				if ((unsigned int&)dir.y)	maxT.val[i] = (this->positionMax.val[i] - ray.begin.val[i]) / dir.val[i];
 			}
 		}
 
 		if (inside)
 		{
-			*p = line.begin;
+			*p = ray.begin;
 			return true;
 		}
 		// calculate maxT to find intersection point.
@@ -131,7 +131,7 @@ bool DKAABox::Intersect(const DKLine& line, DKVector3* p) const
 		{
 			if (i != plane)
 			{
-				coord.val[i] = line.begin.val[i] + maxT.val[plane] * dir.val[i];
+				coord.val[i] = ray.begin.val[i] + maxT.val[plane] * dir.val[i];
 
 				//if(coord.val[i] < this->positionMin.val[i] - Private::epsilon || coord.val[i] > this->positionMax.val[i] + Private::epsilon)
 				//	return false;
@@ -146,8 +146,8 @@ bool DKAABox::Intersect(const DKLine& line, DKVector3* p) const
 	else
 	{
 		// check intersect by x,y,z planes with pos.x,y,z
-		DKVector3 lineMax = DKVector3(Max(line.begin.x, line.end.x), Max(line.begin.y, line.end.y), Max(line.begin.z, line.end.z));
-		DKVector3 lineMin = DKVector3(Min(line.begin.x, line.end.x), Min(line.begin.y, line.end.y), Min(line.begin.z, line.end.z));
+		DKVector3 lineMax = DKVector3(Max(ray.begin.x, ray.end.x), Max(ray.begin.y, ray.end.y), Max(ray.begin.z, ray.end.z));
+		DKVector3 lineMin = DKVector3(Min(ray.begin.x, ray.end.x), Min(ray.begin.y, ray.end.y), Min(ray.begin.z, ray.end.z));
 
 		if (this->positionMax.x >= lineMin.x && this->positionMin.x <= lineMax.x &&
 			this->positionMax.y >= lineMin.y && this->positionMin.y <= lineMax.y &&

@@ -2,7 +2,7 @@
 //  File: DKBox.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -44,7 +44,7 @@ namespace DKFramework
 		DKQuaternion Orientation(void) const;  // orientation of box
 		DKBox& RotateOrientation(const DKQuaternion& q);
 
-		bool Intersect(const DKLine& line, DKVector3* p = NULL) const;
+		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 
 		DKVector3 center;
 		DKVector3 u,v,w;	// unit vectors of each extent direction.

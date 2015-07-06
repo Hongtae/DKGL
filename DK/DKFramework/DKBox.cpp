@@ -2,7 +2,7 @@
 //  File: DKBox.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -133,7 +133,7 @@ DKBox& DKBox::RotateOrientation(const DKQuaternion& q)
 	return *this;
 }
 
-bool DKBox::Intersect(const DKLine& line, DKVector3* p) const
+bool DKBox::RayTest(const DKLine& ray, DKVector3* p) const
 {
 	if (this->IsValid())
 	{
@@ -141,10 +141,10 @@ bool DKBox::Intersect(const DKLine& line, DKVector3* p) const
 		DKMatrix4 boxTM = this->LocalTransform();
 		DKMatrix4 invTM = DKMatrix4(boxTM).Inverse();
 
-		DKVector3 begin = line.begin * invTM;
-		DKVector3 end = line.begin * invTM;
+		DKVector3 begin = ray.begin * invTM;
+		DKVector3 end = ray.begin * invTM;
 
-		if (DKAABox(DKVector3(-1,-1,-1), DKVector3(1,1,1)).Intersect(DKLine(begin, end), p))
+		if (DKAABox(DKVector3(-1,-1,-1), DKVector3(1,1,1)).RayTest(DKLine(begin, end), p))
 		{
 			if (p)
 				p->Transform(boxTM);
