@@ -24,7 +24,7 @@
 
 namespace DKFramework
 {
-	class DKBvh
+	class DKLIB_API DKBvh
 	{
 	public:
 		DKBvh(void);
@@ -32,11 +32,30 @@ namespace DKFramework
 
 		void Build(DKTriangleMesh* mesh);
 		void Rebuild(void);
-		
+
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 
 	private:
+		struct QuantizedAabbNode
+		{
+			unsigned short aabbMin[3];
+			unsigned short aabbMax[3];
+			union {
+				int triangleIndex;		// for leaf-node
+				int negativeTreeSize;	// for sub-node
+			};
+		};
+		struct LeafNode
+		{
+			DKAabb aabb;
+			int triangleIndex;
+		};
+		void BuildInternal(void);
+		void BuildTree(LeafNode* nodes, int count);
+
 		DKFoundation::DKObject<DKTriangleMesh> mesh;
-		DKAabb aabb;
+		DKFoundation::DKArray<QuantizedAabbNode> nodes;
+		DKVector3 aabbOffset;
+		DKVector3 aabbScale;
 	};
 }

@@ -275,7 +275,7 @@
     <ClInclude Include="DKFoundation_msvc\DKZipArchiver.h" />
     <ClInclude Include="DKFoundation_msvc\DKZipUnarchiver.h" />
     <ClInclude Include="DKFramework.h" />
-    <ClInclude Include="DKFramework\DKAABox.h" />
+    <ClInclude Include="DKFramework\DKAabb.h" />
     <ClInclude Include="DKFramework\DKActionController.h" />
     <ClInclude Include="DKFramework\DKAffineTransform2.h" />
     <ClInclude Include="DKFramework\DKAffineTransform3.h" />
@@ -289,6 +289,7 @@
     <ClInclude Include="DKFramework\DKBlendState.h" />
     <ClInclude Include="DKFramework\DKBox.h" />
     <ClInclude Include="DKFramework\DKBoxShape.h" />
+    <ClInclude Include="DKFramework\DKBvh.h" />
     <ClInclude Include="DKFramework\DKCamera.h" />
     <ClInclude Include="DKFramework\DKCapsuleShape.h" />
     <ClInclude Include="DKFramework\DKCollisionObject.h" />
@@ -364,6 +365,7 @@
     <ClInclude Include="DKFramework\DKTextureSampler.h" />
     <ClInclude Include="DKFramework\DKTransform.h" />
     <ClInclude Include="DKFramework\DKTriangle.h" />
+    <ClInclude Include="DKFramework\DKTriangleMesh.h" />
     <ClInclude Include="DKFramework\DKVariant.h" />
     <ClInclude Include="DKFramework\DKVector2.h" />
     <ClInclude Include="DKFramework\DKVector3.h" />
@@ -443,7 +445,7 @@
     <ClCompile Include="DKFoundation_msvc\DKXMLParser.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKZipArchiver.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKZipUnarchiver.cpp" />
-    <ClCompile Include="DKFramework\DKAABox.cpp" />
+    <ClCompile Include="DKFramework\DKAabb.cpp" />
     <ClCompile Include="DKFramework\DKAffineTransform2.cpp" />
     <ClCompile Include="DKFramework\DKAffineTransform3.cpp" />
     <ClCompile Include="DKFramework\DKAnimation.cpp" />
@@ -456,6 +458,7 @@
     <ClCompile Include="DKFramework\DKBlendState.cpp" />
     <ClCompile Include="DKFramework\DKBox.cpp" />
     <ClCompile Include="DKFramework\DKBoxShape.cpp" />
+    <ClCompile Include="DKFramework\DKBvh.cpp" />
     <ClCompile Include="DKFramework\DKCamera.cpp" />
     <ClCompile Include="DKFramework\DKCapsuleShape.cpp" />
     <ClCompile Include="DKFramework\DKCollisionObject.cpp" />

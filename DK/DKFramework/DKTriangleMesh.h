@@ -21,7 +21,10 @@ namespace DKFramework
 	{
 		virtual ~DKTriangleMesh(void) {}
 
-		virtual size_t NumberOfTriangles(void) const;
-		virtual DKTriangle TriangleAtIndex(unsigned long index) const;
+		virtual int NumberOfTriangles(void) const = 0;
+		virtual bool GetTriangleAtIndex(int index, DKTriangle&) const = 0;
+
+		virtual void Lock(void) {}
+		virtual void Unlock(void) {}
 	};
 }

@@ -103,9 +103,6 @@
     <ClInclude Include="DKFramework\Private\Win32\DKWindowImpl.h">
       <Filter>DKFramework\Private\Win32</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKAABox.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKActionController.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -622,6 +619,15 @@
     <ClInclude Include="DKFoundation_msvc\DKZipUnarchiver.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\DKAabb.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBvh.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTriangleMesh.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFramework\Private\DKAudioStreamFLAC.cpp">
@@ -647,9 +653,6 @@
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Win32\DKWindowImpl.cpp">
       <Filter>DKFramework\Private\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAABox.cpp">
-      <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKAffineTransform2.cpp">
       <Filter>DKFramework</Filter>
@@ -1039,6 +1042,12 @@
       <Filter>DKFoundation</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKSceneState.cpp">
+      <Filter>DKFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAabb.cpp">
+      <Filter>DKFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBvh.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
   </ItemGroup>

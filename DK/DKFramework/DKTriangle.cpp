@@ -28,6 +28,18 @@ DKTriangle::~DKTriangle(void)
 {
 }
 
+DKAabb DKTriangle::Aabb(void) const
+{
+	DKAabb aabb;
+	aabb.positionMin.x = Min(position1.x, position2.x, position3.x);
+	aabb.positionMin.y = Min(position1.y, position2.y, position3.y);
+	aabb.positionMin.z = Min(position1.z, position2.z, position3.z);
+	aabb.positionMax.x = Max(position1.x, position2.x, position3.x);
+	aabb.positionMax.y = Max(position1.y, position2.y, position3.y);
+	aabb.positionMax.z = Max(position1.z, position2.z, position3.z);
+	return aabb;
+}
+
 bool DKTriangle::RayTest(const DKLine& ray, DKVector3* p, Front face, float epsilon) const
 {
 	// calculate ray-tri intersection algorithm based on:

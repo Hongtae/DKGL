@@ -13,6 +13,7 @@
 #include "DKLine.h"
 #include "DKSphere.h"
 #include "DKCylinderShape.h"
+#include "DKAabb.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKTriangle
@@ -39,6 +40,7 @@ namespace DKFramework
 		DKVector3	position2;
 		DKVector3	position3;
 
+		DKAabb Aabb(void) const;
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, Front faces = Front::Both, float epsilon = 0.000001f) const;
 	};
 }
