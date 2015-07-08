@@ -51,7 +51,10 @@ public:
 			auto runScript = [this](DKString mainScript)
 			{
 				// run main script. (main.py)
-				this->python->RunFile(mainScript);
+				if (!this->python->RunFile(mainScript))
+				{
+					DKLog("## Error: Cannot execute main.py\n");
+				}
 				
 				// script finished. terminate app.
 				this->CancelScriptBinding(); // unbind PyDK.
