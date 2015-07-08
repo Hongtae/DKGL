@@ -25,6 +25,16 @@ DKAabb::DKAabb(const DKVector3& posMin, const DKVector3& posMax)
 {
 }
 
+void DKAabb::Expand(const DKVector3& pos)
+{
+	if (pos.x < positionMin.x) positionMin.x = pos.x;
+	if (pos.y < positionMin.y) positionMin.y = pos.y;
+	if (pos.z < positionMin.z) positionMin.z = pos.z;
+	if (pos.x > positionMax.x) positionMax.x = pos.x;
+	if (pos.y > positionMax.y) positionMax.y = pos.y;
+	if (pos.z > positionMax.z) positionMax.z = pos.z;
+}
+
 DKAabb DKAabb::Intersection(const DKAabb& b1, const DKAabb& b2)
 {
 	if (b1.IsValid() && b2.IsValid())
@@ -89,6 +99,7 @@ bool DKAabb::RayTest(const DKLine& ray, DKVector3* p) const
 	if (p)
 	{
 		// implemented based on: http://www.codercorner.com/RayAABB.cpp
+		// Original code by Andrew Woo, from "Graphics Gems", Academic Press, 1990
 
 		const DKVector3 dir = ray.Direction();
 		bool inside = true;
@@ -163,5 +174,4 @@ bool DKAabb::Intersect(const DKAabb& box) const
 		this->positionMax.x < box.positionMin.x || this->positionMax.y < box.positionMin.y || this->positionMax.z < box.positionMin.z)
 		return false;
 	return true;
-
 }

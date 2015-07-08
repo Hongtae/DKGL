@@ -10,6 +10,7 @@
 #include "DKFoundation_msvc/DKMemory.h"
 #include "DKFoundation_msvc/DKObject.h"
 #include "DKFoundation_msvc/DKAllocator.h"
+#include "DKFoundation_msvc/DKTypes.h"
 #include "DKFoundation_msvc/DKTypeInfo.h"
 #include "DKFoundation_msvc/DKTypeList.h"
 #include "DKFoundation_msvc/DKTypeTraits.h"

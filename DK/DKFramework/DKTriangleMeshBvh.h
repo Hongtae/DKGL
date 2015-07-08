@@ -1,0 +1,41 @@
+//
+//  File: DKTriangleMeshBvh.h
+//  Author: Hongtae Kim (tiff2766@gmail.com)
+//
+//  Copyright (c) 2015 Hongtae Kim. All rights reserved.
+
+
+#pragma once
+#include "../DKInclude.h"
+#include "../DKFoundation.h"
+#include "DKBvh.h"
+#include "DKLine.h"
+#include "DKAabb.h"
+#include "DKVector3.h"
+#include "DKTriangleMesh.h"
+#include "DKTriangle.h"
+
+////////////////////////////////////////////////////////////////////////////////
+// DKTriangleMeshBvh
+// a triangle mesh class, using BVH tree internally
+////////////////////////////////////////////////////////////////////////////////
+
+namespace DKFramework
+{
+	class DKLIB_API DKTriangleMeshBvh
+	{
+	public:
+		DKTriangleMeshBvh(void);
+		~DKTriangleMeshBvh(void);
+		
+		void Build(DKTriangleMesh* mesh);
+		void Rebuild(void);
+
+		DKAabb Aabb(void) const;
+		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
+
+	private:
+		DKFoundation::DKObject<DKTriangleMesh> mesh;
+		DKBvh bvh;
+	};
+}

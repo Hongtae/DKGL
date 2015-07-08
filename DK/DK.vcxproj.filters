@@ -601,9 +601,6 @@
     <ClInclude Include="DKFoundation_msvc\DKUtils.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation_msvc\DKUUID.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
     <ClInclude Include="DKFoundation_msvc\DKValue.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
@@ -627,6 +624,12 @@
     </ClInclude>
     <ClInclude Include="DKFramework\DKTriangleMesh.h">
       <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTriangleMeshBvh.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation_msvc\DKUuid.h">
+      <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1026,9 +1029,6 @@
     <ClCompile Include="DKFoundation_msvc\DKUtils.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
-    <ClCompile Include="DKFoundation_msvc\DKUUID.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
     <ClCompile Include="DKFoundation_msvc\DKXMLDocument.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
@@ -1049,6 +1049,12 @@
     </ClCompile>
     <ClCompile Include="DKFramework\DKBvh.cpp">
       <Filter>DKFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp">
+      <Filter>DKFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation_msvc\DKUuid.cpp">
+      <Filter>DKFoundation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

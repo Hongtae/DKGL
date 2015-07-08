@@ -288,7 +288,7 @@
     <ClInclude Include="DKFoundation_msvc\DKTypes.h" />
     <ClInclude Include="DKFoundation_msvc\DKTypeTraits.h" />
     <ClInclude Include="DKFoundation_msvc\DKUtils.h" />
-    <ClInclude Include="DKFoundation_msvc\DKUUID.h" />
+    <ClInclude Include="DKFoundation_msvc\DKUuid.h" />
     <ClInclude Include="DKFoundation_msvc\DKValue.h" />
     <ClInclude Include="DKFoundation_msvc\DKXMLDocument.h" />
     <ClInclude Include="DKFoundation_msvc\DKXMLParser.h" />
@@ -310,6 +310,7 @@
     <ClInclude Include="DKFramework\DKBox.h" />
     <ClInclude Include="DKFramework\DKBoxShape.h" />
     <ClInclude Include="DKFramework\DKBvh.h" />
+    <ClInclude Include="DKFramework\DKTriangleMeshBvh.h" />
     <ClInclude Include="DKFramework\DKCamera.h" />
     <ClInclude Include="DKFramework\DKCapsuleShape.h" />
     <ClInclude Include="DKFramework\DKCollisionObject.h" />
@@ -460,7 +461,7 @@
     <ClCompile Include="DKFoundation_msvc\DKTimer.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKTypeInfo.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKUtils.cpp" />
-    <ClCompile Include="DKFoundation_msvc\DKUUID.cpp" />
+    <ClCompile Include="DKFoundation_msvc\DKUuid.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKXMLDocument.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKXMLParser.cpp" />
     <ClCompile Include="DKFoundation_msvc\DKZipArchiver.cpp" />
@@ -479,6 +480,7 @@
     <ClCompile Include="DKFramework\DKBox.cpp" />
     <ClCompile Include="DKFramework\DKBoxShape.cpp" />
     <ClCompile Include="DKFramework\DKBvh.cpp" />
+    <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp" />
     <ClCompile Include="DKFramework\DKCamera.cpp" />
     <ClCompile Include="DKFramework\DKCapsuleShape.cpp" />
     <ClCompile Include="DKFramework\DKCollisionObject.cpp" />

@@ -24,6 +24,7 @@ namespace DKFramework
 	public:
 		DKAabb(void);
 		DKAabb(const DKVector3& posMin, const DKVector3& posMax);
+		void Expand(const DKVector3&);
 
 		static DKAabb Intersection(const DKAabb& b1, const DKAabb& b2);
 		static DKAabb Union(const DKAabb& b1, const DKAabb& b2);

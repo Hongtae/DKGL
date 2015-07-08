@@ -14,6 +14,7 @@
 #include "DKFoundation/DKAllocator.h"
 #include "DKFoundation/DKAllocatorChain.h"
 #include "DKFoundation/DKFixedSizeAllocator.h"
+#include "DKFoundation/DKTypes.h"
 #include "DKFoundation/DKTypeInfo.h"
 #include "DKFoundation/DKTypeList.h"
 #include "DKFoundation/DKTypeTraits.h"
