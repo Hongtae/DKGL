@@ -26,6 +26,7 @@ LOCAL_C_INCLUDES := \
 
 DKFOUNDATION_SRC := \
 	DKFoundation/DKAllocator.cpp \
+	DKFoundation/DKAllocatorChain.cpp \
 	DKFoundation/DKAtomicNumber32.cpp \
 	DKFoundation/DKAtomicNumber64.cpp \
 	DKFoundation/DKBuffer.cpp \
@@ -58,14 +59,14 @@ DKFOUNDATION_SRC := \
 	DKFoundation/DKTimer.cpp \
 	DKFoundation/DKTypeInfo.cpp \
 	DKFoundation/DKUtils.cpp \
-	DKFoundation/DKUUID.cpp \
+	DKFoundation/DKUuid.cpp \
 	DKFoundation/DKXMLDocument.cpp \
 	DKFoundation/DKXMLParser.cpp \
 	DKFoundation/DKZipArchiver.cpp \
 	DKFoundation/DKZipUnarchiver.cpp \
 
 DKFRAMEWORK_SRC := \
-	DKFramework/DKAABox.cpp \
+	DKFramework/DKAabb.cpp \
 	DKFramework/DKAffineTransform2.cpp \
 	DKFramework/DKAffineTransform3.cpp \
 	DKFramework/DKAnimation.cpp \
@@ -78,6 +79,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKBlendState.cpp \
 	DKFramework/DKBox.cpp \
 	DKFramework/DKBoxShape.cpp \
+	DKFramework/DKBvh.cpp \
 	DKFramework/DKCamera.cpp \
 	DKFramework/DKCapsuleShape.cpp \
 	DKFramework/DKCollisionObject.cpp \
@@ -147,6 +149,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKTextureSampler.cpp \
 	DKFramework/DKTransform.cpp \
 	DKFramework/DKTriangle.cpp \
+	DKFramework/DKTriangleMeshBvh.cpp \
 	DKFramework/DKVariant.cpp \
 	DKFramework/DKVector2.cpp \
 	DKFramework/DKVector3.cpp \

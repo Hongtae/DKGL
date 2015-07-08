@@ -5,6 +5,7 @@
 //  Copyright (c) 2015 Hongtae Kim. All rights reserved.
 //
 
+#include "DKMath.h"
 #include "DKTriangleMeshBvh.h"
 
 using namespace DKFoundation;
