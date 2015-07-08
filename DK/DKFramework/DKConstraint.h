@@ -143,8 +143,8 @@ namespace DKFramework
 
 		struct TargetRestoreInfo
 		{
-			DKFoundation::DKUUID bodyA;
-			DKFoundation::DKUUID bodyB;
+			DKFoundation::DKUuid bodyA;
+			DKFoundation::DKUuid bodyB;
 		};
 		DKFoundation::DKObject<TargetRestoreInfo> restoreInfo; // restore-info
 		void RestoreTargets(UUIDObjectMap&);

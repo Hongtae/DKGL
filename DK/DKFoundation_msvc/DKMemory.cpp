@@ -33,7 +33,7 @@
 #include "DKLog.h"
 #include "DKString.h"
 #include "DKUtils.h"
-#include "DKUUID.h"
+#include "DKUuid.h"
 
 namespace DKFoundation
 {
@@ -730,7 +730,7 @@ namespace DKFoundation
 		HANDLE hFile = INVALID_HANDLE_VALUE;
 		while (hFile == INVALID_HANDLE_VALUE)
 		{
-			DKString filePath(tmpPath.FilePathStringByAppendingPath(DKUUID::Create().String()));
+			DKString filePath(tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String()));
 			if (filePath.Length() == 0)
 			{
 				DKLog("cannot locate temp file!\n");
@@ -806,7 +806,7 @@ namespace DKFoundation
 		int fd = -1;
 		while (fd == -1)
 		{
-			DKStringU8 filePath(tmpPath.FilePathStringByAppendingPath(DKUUID::Create().String()));
+			DKStringU8 filePath(tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String()));
 			if (filePath.Length() == 0)
 			{
 				DKLog("cannot locate temp file!\n");

@@ -29,8 +29,8 @@ namespace DKFramework
 
 		virtual void SetName(const DKFoundation::DKString& name);
 		const DKFoundation::DKString& Name(void) const;
-		virtual void SetUUID(const DKFoundation::DKUUID& uuid);
-		const DKFoundation::DKUUID& UUID(void) const;
+		virtual void SetUUID(const DKFoundation::DKUuid& uuid);
+		const DKFoundation::DKUuid& UUID(void) const;
 
 		virtual DKFoundation::DKObject<DKSerializer> Serializer(void);
 		virtual DKFoundation::DKObject<DKFoundation::DKData> Serialize(DKSerializer::SerializeForm) const;
@@ -47,7 +47,7 @@ namespace DKFramework
 
 	private:
 		DKFoundation::DKString objectName;
-		DKFoundation::DKUUID objectUUID;
+		DKFoundation::DKUuid objectUUID;
 		DKFoundation::DKAllocator* allocator;
 
 		DKResource(const DKResource&);

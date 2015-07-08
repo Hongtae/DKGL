@@ -16,7 +16,7 @@ using namespace DKFramework;
 DKResource::DKResource(void)
 : allocator(NULL)
 , objectName("")
-, objectUUID(DKUUID::Create())
+, objectUUID(DKUuid::Create())
 {
 }
 
@@ -34,13 +34,13 @@ const DKString& DKResource::Name(void) const
 	return objectName;
 }
 
-void DKResource::SetUUID(const DKFoundation::DKUUID& uuid)
+void DKResource::SetUUID(const DKFoundation::DKUuid& uuid)
 {
 	DKASSERT_DEBUG(uuid.IsValid());
 	this->objectUUID = uuid;
 }
 
-const DKUUID& DKResource::UUID(void) const
+const DKUuid& DKResource::UUID(void) const
 {
 	return objectUUID;
 }
@@ -107,12 +107,12 @@ DKObject<DKSerializer> DKResource::Serializer(void)
 		bool CheckUUID(const DKVariant& v) const
 		{
 			if (v.ValueType() == DKVariant::TypeString)
-				return DKUUID(v.String()).IsValid();
+				return DKUuid(v.String()).IsValid();
 			return false;
 		}
 		void ResetUUID(void)
 		{
-			target->objectUUID = DKUUID::Create();
+			target->objectUUID = DKUuid::Create();
 		}
 		void GetMetadata(DKVariant& v) const
 		{

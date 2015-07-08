@@ -44,7 +44,7 @@
 		840C3E16178D396D00F57A8D /* DKThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D1141DD4B70091D2C0 /* DKThread.cpp */; };
 		840C3E17178D396D00F57A8D /* DKTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D3141DD4B70091D2C0 /* DKTimer.cpp */; };
 		840C3E18178D396D00F57A8D /* DKTypeInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D6141DD4B70091D2C0 /* DKTypeInfo.cpp */; };
-		840C3E19178D396D00F57A8D /* DKUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUUID.cpp */; };
+		840C3E19178D396D00F57A8D /* DKUuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUuid.cpp */; };
 		840C3E1A178D396D00F57A8D /* DKXMLDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DD141DD4B70091D2C0 /* DKXMLDocument.cpp */; };
 		840C3E1B178D396D00F57A8D /* DKXMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DF141DD4B70091D2C0 /* DKXMLParser.cpp */; };
 		840C3E1C178D396D00F57A8D /* DKZipArchiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4E1141DD4B70091D2C0 /* DKZipArchiver.cpp */; };
@@ -80,7 +80,7 @@
 		840C3E3A178D396E00F57A8D /* DKThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D1141DD4B70091D2C0 /* DKThread.cpp */; };
 		840C3E3B178D396E00F57A8D /* DKTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D3141DD4B70091D2C0 /* DKTimer.cpp */; };
 		840C3E3C178D396E00F57A8D /* DKTypeInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D6141DD4B70091D2C0 /* DKTypeInfo.cpp */; };
-		840C3E3D178D396E00F57A8D /* DKUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUUID.cpp */; };
+		840C3E3D178D396E00F57A8D /* DKUuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUuid.cpp */; };
 		840C3E3E178D396E00F57A8D /* DKXMLDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DD141DD4B70091D2C0 /* DKXMLDocument.cpp */; };
 		840C3E3F178D396E00F57A8D /* DKXMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DF141DD4B70091D2C0 /* DKXMLParser.cpp */; };
 		840C3E40178D396E00F57A8D /* DKZipArchiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4E1141DD4B70091D2C0 /* DKZipArchiver.cpp */; };
@@ -564,7 +564,7 @@
 		84211C571665E86300B9B9A2 /* DKTypeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4D8141DD4B70091D2C0 /* DKTypeList.h */; };
 		84211C581665E86300B9B9A2 /* DKTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4D9141DD4B70091D2C0 /* DKTypes.h */; };
 		84211C591665E86300B9B9A2 /* DKTypeTraits.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DA141DD4B70091D2C0 /* DKTypeTraits.h */; };
-		84211C5A1665E86300B9B9A2 /* DKUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUUID.h */; };
+		84211C5A1665E86300B9B9A2 /* DKUuid.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUuid.h */; };
 		84211C5B1665E86300B9B9A2 /* DKValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DC141DD4B70091D2C0 /* DKValue.h */; };
 		84211C5C1665E86300B9B9A2 /* DKXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DE141DD4B70091D2C0 /* DKXMLDocument.h */; };
 		84211C5D1665E86300B9B9A2 /* DKXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E0141DD4B70091D2C0 /* DKXMLParser.h */; };
@@ -626,7 +626,7 @@
 		84211C9D1665E86400B9B9A2 /* DKTypeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4D8141DD4B70091D2C0 /* DKTypeList.h */; };
 		84211C9E1665E86400B9B9A2 /* DKTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4D9141DD4B70091D2C0 /* DKTypes.h */; };
 		84211C9F1665E86400B9B9A2 /* DKTypeTraits.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DA141DD4B70091D2C0 /* DKTypeTraits.h */; };
-		84211CA01665E86400B9B9A2 /* DKUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUUID.h */; };
+		84211CA01665E86400B9B9A2 /* DKUuid.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUuid.h */; };
 		84211CA11665E86400B9B9A2 /* DKValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DC141DD4B70091D2C0 /* DKValue.h */; };
 		84211CA21665E86400B9B9A2 /* DKXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DE141DD4B70091D2C0 /* DKXMLDocument.h */; };
 		84211CA31665E86400B9B9A2 /* DKXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E0141DD4B70091D2C0 /* DKXMLParser.h */; };
@@ -935,8 +935,8 @@
 		8436CE151928A78900F18892 /* DKUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840EE96517C7800700AC2675 /* DKUtils.cpp */; };
 		8436CE161928A78900F18892 /* DKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 840DD9A818EF04A50040D1D5 /* DKUtils.h */; };
 		8436CE171928A78900F18892 /* DKUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840EE96717C7800700AC2675 /* DKUtils.mm */; };
-		8436CE181928A78900F18892 /* DKUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUUID.cpp */; };
-		8436CE191928A78900F18892 /* DKUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUUID.h */; };
+		8436CE181928A78900F18892 /* DKUuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUuid.cpp */; };
+		8436CE191928A78900F18892 /* DKUuid.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUuid.h */; };
 		8436CE1A1928A78900F18892 /* DKValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DC141DD4B70091D2C0 /* DKValue.h */; };
 		8436CE1B1928A78900F18892 /* DKXMLDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DD141DD4B70091D2C0 /* DKXMLDocument.cpp */; };
 		8436CE1C1928A78900F18892 /* DKXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DE141DD4B70091D2C0 /* DKXMLDocument.h */; };
@@ -1005,7 +1005,7 @@
 		84798BAA19E51DFB009378A6 /* DKTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D3141DD4B70091D2C0 /* DKTimer.cpp */; };
 		84798BAB19E51DFB009378A6 /* DKTypeInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4D6141DD4B70091D2C0 /* DKTypeInfo.cpp */; };
 		84798BAC19E51DFB009378A6 /* DKUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840EE96517C7800700AC2675 /* DKUtils.cpp */; };
-		84798BAD19E51DFB009378A6 /* DKUUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUUID.cpp */; };
+		84798BAD19E51DFB009378A6 /* DKUuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D9FEBC1521B6570073362E /* DKUuid.cpp */; };
 		84798BAE19E51DFB009378A6 /* DKXMLDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DD141DD4B70091D2C0 /* DKXMLDocument.cpp */; };
 		84798BAF19E51DFB009378A6 /* DKXMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4DF141DD4B70091D2C0 /* DKXMLParser.cpp */; };
 		84798BB019E51DFB009378A6 /* DKZipArchiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4E1141DD4B70091D2C0 /* DKZipArchiver.cpp */; };
@@ -1288,7 +1288,7 @@
 		84798CC719E51E96009378A6 /* DKTypeTraits.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DA141DD4B70091D2C0 /* DKTypeTraits.h */; };
 		84798CC819E51E96009378A6 /* DKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 840DD9A818EF04A50040D1D5 /* DKUtils.h */; };
 		84798CC919E51E96009378A6 /* DKUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840EE96717C7800700AC2675 /* DKUtils.mm */; };
-		84798CCA19E51E96009378A6 /* DKUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUUID.h */; };
+		84798CCA19E51E96009378A6 /* DKUuid.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D9FEBD1521B6570073362E /* DKUuid.h */; };
 		84798CCB19E51E96009378A6 /* DKValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DC141DD4B70091D2C0 /* DKValue.h */; };
 		84798CCC19E51E96009378A6 /* DKXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4DE141DD4B70091D2C0 /* DKXMLDocument.h */; };
 		84798CCD19E51E96009378A6 /* DKXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E0141DD4B70091D2C0 /* DKXMLParser.h */; };
@@ -1769,8 +1769,8 @@
 		84D3E6871637071F00337848 /* DKSoftBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSoftBody.h; sourceTree = "<group>"; };
 		84D81BE915569390009B408A /* DKStringUE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKStringUE.cpp; sourceTree = "<group>"; };
 		84D81BEA15569390009B408A /* DKStringUE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStringUE.h; sourceTree = "<group>"; };
-		84D9FEBC1521B6570073362E /* DKUUID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKUUID.cpp; sourceTree = "<group>"; };
-		84D9FEBD1521B6570073362E /* DKUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKUUID.h; sourceTree = "<group>"; };
+		84D9FEBC1521B6570073362E /* DKUuid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKUuid.cpp; sourceTree = "<group>"; };
+		84D9FEBD1521B6570073362E /* DKUuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKUuid.h; sourceTree = "<group>"; };
 		84DB0A3F199B9F31005FC4CA /* DKSceneState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSceneState.cpp; sourceTree = "<group>"; };
 		84E4147317C73701003C15B5 /* DKLoggerImpl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKLoggerImpl.cpp; sourceTree = "<group>"; };
 		84E4147417C73701003C15B5 /* DKLoggerImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKLoggerImpl.h; sourceTree = "<group>"; };
@@ -2165,8 +2165,8 @@
 				840EE96517C7800700AC2675 /* DKUtils.cpp */,
 				840DD9A818EF04A50040D1D5 /* DKUtils.h */,
 				840EE96717C7800700AC2675 /* DKUtils.mm */,
-				84D9FEBC1521B6570073362E /* DKUUID.cpp */,
-				84D9FEBD1521B6570073362E /* DKUUID.h */,
+				84D9FEBC1521B6570073362E /* DKUuid.cpp */,
+				84D9FEBD1521B6570073362E /* DKUuid.h */,
 				84A1E4DC141DD4B70091D2C0 /* DKValue.h */,
 				84A1E4DD141DD4B70091D2C0 /* DKXMLDocument.cpp */,
 				84A1E4DE141DD4B70091D2C0 /* DKXMLDocument.h */,
@@ -2431,7 +2431,7 @@
 				840CA6241928952800689BB6 /* DKTexture3D.h in Headers */,
 				840CA6121928952800689BB6 /* DKSoftBody.h in Headers */,
 				840CA67D1928A2EC00689BB6 /* DKWindowImpl.h in Headers */,
-				8436CE191928A78900F18892 /* DKUUID.h in Headers */,
+				8436CE191928A78900F18892 /* DKUuid.h in Headers */,
 				840CA5D41928952800689BB6 /* DKMatrix2.h in Headers */,
 				840CA5A61928952800689BB6 /* DKCompoundShape.h in Headers */,
 				840CA5C61928952800689BB6 /* DKHingeConstraint.h in Headers */,
@@ -2624,7 +2624,7 @@
 				84798C5119E51E7F009378A6 /* DKMatrix3.h in Headers */,
 				84798C7619E51E80009378A6 /* DKStaticPlaneShape.h in Headers */,
 				84798C6719E51E7F009378A6 /* DKScene.h in Headers */,
-				84798CCA19E51E96009378A6 /* DKUUID.h in Headers */,
+				84798CCA19E51E96009378A6 /* DKUuid.h in Headers */,
 				84798C6019E51E7F009378A6 /* DKRenderer.h in Headers */,
 				84798C6619E51E7F009378A6 /* DKRigidBody.h in Headers */,
 				84798C5F19E51E7F009378A6 /* DKRect.h in Headers */,
@@ -2843,7 +2843,7 @@
 				84211C9E1665E86400B9B9A2 /* DKTypes.h in Headers */,
 				840CA6571928957600689BB6 /* DKFoundation.h in Headers */,
 				84211C9F1665E86400B9B9A2 /* DKTypeTraits.h in Headers */,
-				84211CA01665E86400B9B9A2 /* DKUUID.h in Headers */,
+				84211CA01665E86400B9B9A2 /* DKUuid.h in Headers */,
 				84211CA11665E86400B9B9A2 /* DKValue.h in Headers */,
 				84211CA21665E86400B9B9A2 /* DKXMLDocument.h in Headers */,
 				84211CA31665E86400B9B9A2 /* DKXMLParser.h in Headers */,
@@ -3036,7 +3036,7 @@
 				84211C571665E86300B9B9A2 /* DKTypeList.h in Headers */,
 				84211C581665E86300B9B9A2 /* DKTypes.h in Headers */,
 				84211C591665E86300B9B9A2 /* DKTypeTraits.h in Headers */,
-				84211C5A1665E86300B9B9A2 /* DKUUID.h in Headers */,
+				84211C5A1665E86300B9B9A2 /* DKUuid.h in Headers */,
 				84211C5B1665E86300B9B9A2 /* DKValue.h in Headers */,
 				84211C5C1665E86300B9B9A2 /* DKXMLDocument.h in Headers */,
 				84211C5D1665E86300B9B9A2 /* DKXMLParser.h in Headers */,
@@ -3486,7 +3486,7 @@
 				840CA5B11928952800689BB6 /* DKConvexShape.cpp in Sources */,
 				8436CE0B1928A78900F18892 /* DKThread.cpp in Sources */,
 				840CA5DB1928952800689BB6 /* DKModel.cpp in Sources */,
-				8436CE181928A78900F18892 /* DKUUID.cpp in Sources */,
+				8436CE181928A78900F18892 /* DKUuid.cpp in Sources */,
 				840CA6191928952800689BB6 /* DKStaticMesh.cpp in Sources */,
 				8436CDC21928A78900F18892 /* DKBuffer.cpp in Sources */,
 				840CA6251928952800689BB6 /* DKTextureCube.cpp in Sources */,
@@ -3548,7 +3548,7 @@
 				84798BF419E51E48009378A6 /* DKSceneState.cpp in Sources */,
 				84798BD119E51E48009378A6 /* DKFont.cpp in Sources */,
 				84798BA119E51DFB009378A6 /* DKRational.cpp in Sources */,
-				84798BAD19E51DFB009378A6 /* DKUUID.cpp in Sources */,
+				84798BAD19E51DFB009378A6 /* DKUuid.cpp in Sources */,
 				84798BD519E51E48009378A6 /* DKGeneric6DofSpringConstraint.cpp in Sources */,
 				84798BFE19E51E48009378A6 /* DKSpline.cpp in Sources */,
 				84798C0919E51E48009378A6 /* DKVariant.cpp in Sources */,
@@ -3725,7 +3725,7 @@
 				84211BB61665E7FD00B9B9A2 /* DKModel.cpp in Sources */,
 				84211BB81665E7FD00B9B9A2 /* DKMultiSphereShape.cpp in Sources */,
 				84211BBA1665E7FD00B9B9A2 /* DKOpenALContext.cpp in Sources */,
-				840C3E3D178D396E00F57A8D /* DKUUID.cpp in Sources */,
+				840C3E3D178D396E00F57A8D /* DKUuid.cpp in Sources */,
 				84211BBC1665E7FD00B9B9A2 /* DKOpenGLContext.cpp in Sources */,
 				84211BBE1665E7FD00B9B9A2 /* DKPlane.cpp in Sources */,
 				84211BC11665E7FD00B9B9A2 /* DKPoint2PointConstraint.cpp in Sources */,
@@ -3873,7 +3873,7 @@
 				84211AFD1665E7FC00B9B9A2 /* DKModel.cpp in Sources */,
 				84211AFF1665E7FC00B9B9A2 /* DKMultiSphereShape.cpp in Sources */,
 				84211B011665E7FC00B9B9A2 /* DKOpenALContext.cpp in Sources */,
-				840C3E19178D396D00F57A8D /* DKUUID.cpp in Sources */,
+				840C3E19178D396D00F57A8D /* DKUuid.cpp in Sources */,
 				84211B031665E7FC00B9B9A2 /* DKOpenGLContext.cpp in Sources */,
 				84211B051665E7FC00B9B9A2 /* DKPlane.cpp in Sources */,
 				84211B081665E7FC00B9B9A2 /* DKPoint2PointConstraint.cpp in Sources */,

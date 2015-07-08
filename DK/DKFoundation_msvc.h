@@ -34,7 +34,7 @@
 
 // hash, UUID
 #include "DKFoundation_msvc/DKHash.h"
-#include "DKFoundation_msvc/DKUUID.h"
+#include "DKFoundation_msvc/DKUuid.h"
 
 // thread, mutex, synchronization objects.
 #include "DKFoundation_msvc/DKAtomicNumber32.h"

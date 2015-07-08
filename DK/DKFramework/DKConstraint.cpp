@@ -210,7 +210,7 @@ void DKConstraint::UpdateCopiedReferenceUUIDs(UUIDObjectMap& uuids)
 
 void DKConstraint::RestoreTargets(UUIDObjectMap& uuids)
 {
-	auto find = [&uuids](const DKUUID& uuid) -> DKRigidBody*
+	auto find = [&uuids](const DKUuid& uuid) -> DKRigidBody*
 	{
 		auto p = uuids.Find(uuid);
 		if (p)
@@ -399,8 +399,8 @@ DKObject<DKSerializer> DKConstraint::Serializer(void)
 			return this;
 		}
 		DKObject<DKConstraint> target;
-		DKUUID bodyA;
-		DKUUID bodyB;
+		DKUuid bodyA;
+		DKUuid bodyB;
 	};
 	return DKObject<LocalSerializer>::New()->Init(this);
 }

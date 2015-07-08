@@ -35,7 +35,7 @@ namespace DKFramework
 		DKVoxel32Storage(void) {}
 		virtual ~DKVoxel32Storage(void) {}
 
-		typedef DKFoundation::DKUUID StorageId;
+		typedef DKFoundation::DKUuid StorageId;
 	
 		virtual size_t MaxActiveUnits(void) const = 0;
 

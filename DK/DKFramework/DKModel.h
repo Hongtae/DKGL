@@ -43,7 +43,7 @@ namespace DKFramework
 			TypeAction,
 		};
 		using NamedObjectMap = DKFoundation::DKMap<DKFoundation::DKString, DKModel*>;
-		using UUIDObjectMap = DKFoundation::DKMap<DKFoundation::DKUUID, DKModel*>;
+		using UUIDObjectMap = DKFoundation::DKMap<DKFoundation::DKUuid, DKModel*>;
 
 		using Enumerator = DKFoundation::DKFunctionSignature<bool(DKModel*)>;
 		using EnumeratorLoop = DKFoundation::DKFunctionSignature<void(DKModel*)>;
