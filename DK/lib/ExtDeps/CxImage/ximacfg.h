@@ -42,7 +42,8 @@
 #define CXIMAGE_SUPPORT_PSD 0
 
 /////////////////////////////////////////////////////////////////////////////
-#define	CXIMAGE_MAX_MEMORY 268435456
+//#define	CXIMAGE_MAX_MEMORY 268435456
+#define	CXIMAGE_MAX_MEMORY (1<<31)
 
 #define CXIMAGE_DEFAULT_DPI 96
 

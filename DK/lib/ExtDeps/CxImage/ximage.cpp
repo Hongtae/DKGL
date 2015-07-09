@@ -186,7 +186,8 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
     else				wBpp = 24;
 
 	// limit memory requirements
-	if ((((float)dwWidth*(float)dwHeight*(float)wBpp)/8.0f) > (float)CXIMAGE_MAX_MEMORY)
+	//if ((((float)dwWidth*(float)dwHeight*(float)wBpp)/8.0f) > (float)CXIMAGE_MAX_MEMORY)
+	if ((size_t(dwWidth)*size_t(dwHeight)*size_t(wBpp)/8) > (size_t)CXIMAGE_MAX_MEMORY)
 	{
 		strcpy(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
 		return NULL;
