@@ -17,8 +17,6 @@ DKTriangleMeshBvh::DKTriangleMeshBvh(void) : mesh(NULL)
 
 DKTriangleMeshBvh::~DKTriangleMeshBvh(void)
 {
-	bvh.Build(NULL);
-	this->mesh = NULL;
 }
 
 DKAabb DKTriangleMeshBvh::Aabb(void) const
