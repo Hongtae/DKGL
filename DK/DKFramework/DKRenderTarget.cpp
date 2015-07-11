@@ -187,7 +187,7 @@ DKObject<DKRenderTarget> DKRenderTarget::Create(int width, int height, DepthForm
 	if (width < 0 || width > maxTexSize || height < 0 || height > maxTexSize)
 		return NULL;
 
-	DKObject<DKTexture2D> tex = DKTexture2D::Create(width, height, DKTexture::FormatRGBA8U, DKTexture::TypeUnsignedByte, 0);
+	DKObject<DKTexture2D> tex = DKTexture2D::Create(width, height, DKTexture::FormatRGBA8, DKTexture::TypeUnsignedByte, 0);
 	if (tex == NULL)
 		return NULL;
 
@@ -314,10 +314,10 @@ bool DKRenderTarget::SetDepthTexture(DKTexture2D* tex)
 		{
 			switch (tex->TextureFormat())
 			{
-			case DKTexture::FormatDepth16U:
+			case DKTexture::FormatDepth16:
 				this->depthFormat = DepthFormat16;
 				break;
-			case DKTexture::FormatDepth24U:
+			case DKTexture::FormatDepth24:
 				this->depthFormat = DepthFormat24;
 				break;
 			case DKTexture::FormatDepth32F:
@@ -407,10 +407,10 @@ bool DKRenderTarget::SetDepthBuffer(int width, int height, DepthFormat df)
 		switch (this->depthFormat)
 		{
 		case DepthFormat16:
-			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16U);
+			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16);
 			break;
 		case DepthFormat24:
-			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24U);
+			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24);
 			break;
 		case DepthFormat32:
 			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth32F);
@@ -495,10 +495,10 @@ bool DKRenderTarget::Validate(void)
 		switch (this->depthFormat)
 		{
 		case DepthFormat16:
-			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16U);
+			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16);
 			break;
 		case DepthFormat24:
-			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24U);
+			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24);
 			break;
 		case DepthFormat32:
 			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth32F);

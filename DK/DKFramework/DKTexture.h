@@ -36,48 +36,65 @@ namespace DKFramework
 			Target3D,
 			TargetCube,
 		};
+		// Texture Format
+		// 8: unsigned char (normalize to 0.0~1.0)
+		// 16: unsigned short (normalize to 0.0~1.0)
+		// 32: unsigned int (normalize to 0.0~1.0)
+		// 8I: char, 8UI: unsigned char (not normalized)
+		// 16I: short, 16UI: unsigned short (not normalized)
+		// 32I: int, 32UI: unsigned int (not normalized)
+		// 16F, 32F: float
 		enum Format
 		{
 			FormatUnknown = 0,
 
-			FormatR8,		// char
-			FormatR8U,		// unsigned char
-			FormatR16,		// short
-			FormatR16U,		// unsigned short
+			// R
+			FormatR8,
 			FormatR16F,		// float (16bit)
-			FormatR32,		// int
-			FormatR32U,		// unsigned int
 			FormatR32F,		// float (32bit)
-
+			// RG
 			FormatRG8,
-			FormatRG8U,
-			FormatRG16,
-			FormatRG16U,
 			FormatRG16F,
-			FormatRG32,
-			FormatRG32U,
 			FormatRG32F,
-
+			// RGB
 			FormatRGB8,
-			FormatRGB8U,
-			FormatRGB16,
-			FormatRGB16U,
 			FormatRGB16F,
-			FormatRGB32,
-			FormatRGB32U,
 			FormatRGB32F,
-
+			// RGBA
 			FormatRGBA8,
-			FormatRGBA8U,
-			FormatRGBA16,
-			FormatRGBA16U,
 			FormatRGBA16F,
-			FormatRGBA32,
-			FormatRGBA32U,
 			FormatRGBA32F,
-
-			FormatDepth16U,		// unsigned short, unsigned int
-			FormatDepth24U,		// unsigned int
+			// R (not normalized)
+			FormatR8I,
+			FormatR8UI,		
+			FormatR16I,		
+			FormatR16UI,	
+			FormatR32I,		
+			FormatR32UI,
+			// RG (not normalized)
+			FormatRG8I,
+			FormatRG8UI,
+			FormatRG16I,
+			FormatRG16UI,
+			FormatRG32I,
+			FormatRG32UI,
+			// RGB (not normalized)
+			FormatRGB8I,
+			FormatRGB8UI,
+			FormatRGB16I,
+			FormatRGB16UI,
+			FormatRGB32I,
+			FormatRGB32UI,
+			// RGBA (not normalized)
+			FormatRGBA8I,
+			FormatRGBA8UI,
+			FormatRGBA16I,
+			FormatRGBA16UI,
+			FormatRGBA32I,
+			FormatRGBA32UI,
+			// depth format
+			FormatDepth16,		// unsigned short, unsigned int
+			FormatDepth24,		// unsigned int
 			FormatDepth32F,		// float
 		};
 		enum Type

@@ -138,7 +138,7 @@ namespace DKFramework
 						if (image->Encode2RGBA(&cf, false))
 						{
 							DKASSERT_DEBUG(cf.GetBuffer() == pixelData);
-							format = DKTexture::FormatRGBA8U;
+							format = DKTexture::FormatRGBA8;
 						}
 					}
 					else
@@ -149,7 +149,7 @@ namespace DKFramework
 						if (image->Encode2RGB(&cf, false))
 						{
 							DKASSERT_DEBUG(cf.GetBuffer() == pixelData);
-							format = DKTexture::FormatRGB8U;
+							format = DKTexture::FormatRGB8;
 						}
 					}
 
