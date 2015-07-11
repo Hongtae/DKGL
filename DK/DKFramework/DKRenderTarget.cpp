@@ -18,7 +18,6 @@ namespace DKFramework
 	{
 		GLenum GetTextureFormatGLValue(DKFramework::DKTexture::Format f);
 		GLenum GetTextureInternalFormatGLValue(DKFramework::DKTexture::Format f);
-		DKFramework::DKTexture::Format GetTextureFormat(GLenum f);
 
 		GLint GetMaxTextureSize(void);		// defined in DKTexture.cpp
 
@@ -188,7 +187,7 @@ DKObject<DKRenderTarget> DKRenderTarget::Create(int width, int height, DepthForm
 	if (width < 0 || width > maxTexSize || height < 0 || height > maxTexSize)
 		return NULL;
 
-	DKObject<DKTexture2D> tex = DKTexture2D::Create(width, height, DKTexture::FormatRGBA, DKTexture::TypeUnsignedByte, 0);
+	DKObject<DKTexture2D> tex = DKTexture2D::Create(width, height, DKTexture::FormatRGBA8U, DKTexture::TypeUnsignedByte, 0);
 	if (tex == NULL)
 		return NULL;
 
@@ -253,14 +252,8 @@ bool DKRenderTarget::SetColorTextures(DKTexture2D** tex, size_t num)
 		if (tex[i] == NULL)
 			return false;
 
-		switch (tex[i]->TextureFormat())
+		if (!tex[i]->IsColorTexture())
 		{
-		case DKTexture::FormatAlpha:
-		case DKTexture::FormatRGB:
-		case DKTexture::FormatRGBA:
-			break;
-
-		default:
 			// invalid format!
 			return false;
 		}
@@ -321,13 +314,13 @@ bool DKRenderTarget::SetDepthTexture(DKTexture2D* tex)
 		{
 			switch (tex->TextureFormat())
 			{
-			case DKTexture::FormatDepth16:
+			case DKTexture::FormatDepth16U:
 				this->depthFormat = DepthFormat16;
 				break;
-			case DKTexture::FormatDepth24:
+			case DKTexture::FormatDepth24U:
 				this->depthFormat = DepthFormat24;
 				break;
-			case DKTexture::FormatDepth32:
+			case DKTexture::FormatDepth32F:
 				this->depthFormat = DepthFormat32;
 				break;
 			default:
@@ -414,13 +407,13 @@ bool DKRenderTarget::SetDepthBuffer(int width, int height, DepthFormat df)
 		switch (this->depthFormat)
 		{
 		case DepthFormat16:
-			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16);
+			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16U);
 			break;
 		case DepthFormat24:
-			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24);
+			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24U);
 			break;
 		case DepthFormat32:
-			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth32);
+			format = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth32F);
 			break;
 		}
 
@@ -502,13 +495,13 @@ bool DKRenderTarget::Validate(void)
 		switch (this->depthFormat)
 		{
 		case DepthFormat16:
-			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16);
+			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth16U);
 			break;
 		case DepthFormat24:
-			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24);
+			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth24U);
 			break;
 		case DepthFormat32:
-			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth32);
+			depthFmt = Private::GetTextureInternalFormatGLValue(DKTexture::FormatDepth32F);
 			break;
 		}
 		
@@ -526,11 +519,9 @@ bool DKRenderTarget::Validate(void)
 			}
 		}
 		
-#ifdef GL_MAX_DRAW_BUFFERS
 		DKArray<GLenum> drawTargets;
 		drawTargets.Reserve(this->colorTextures.Count());
-#endif
-		
+
 		for (size_t i = 0; i < this->colorTextures.Count(); ++i)
 		{
 			const DKTexture2D* tex = this->colorTextures.Value(i);
@@ -538,12 +529,9 @@ bool DKRenderTarget::Validate(void)
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, tex->resourceId, 0);
 			//glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, tex->resourceId, 0);
 			
-#ifdef GL_MAX_DRAW_BUFFERS
 			drawTargets.Add(GL_COLOR_ATTACHMENT0 + i);
-#endif
 		}
 
-#ifdef GL_MAX_DRAW_BUFFERS
 		if (drawTargets.IsEmpty())
 		{
 			GLenum bufs[] = { GL_NONE };
@@ -555,23 +543,7 @@ bool DKRenderTarget::Validate(void)
 			glDrawBuffers(drawTargets.Count(), (const GLenum*)drawTargets);
 			glReadBuffer(drawTargets.Value(0));
 		}
-#else
-#ifndef DKLIB_OPENGL_ES		// OpenGL ES does not have glDrawBuffer, glReadBuffer.
-		if (this->colorTextures.IsEmpty())
-		{
-			glDrawBuffer(GL_NONE);
-			glReadBuffer(GL_NONE);
-		}
-		else
-		{
-			if (this->colorTextures.Count() > 1)
-				DKLog("Warning: glDrawBuffers not supported! (MRTs not supported.)\n");
-			glDrawBuffer(drawTargets.Value(0));
-			glReadBuffer(drawTargets.Value(0));
-		}
-#endif
-#endif
-		
+
 		// check FBO status
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status == GL_FRAMEBUFFER_COMPLETE)

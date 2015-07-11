@@ -37,20 +37,97 @@ namespace DKFramework
 			DKFoundation::DKLog("Warning: DKTexture target (%x) invalid or not supported.\n", t);
 			return 0;
 		}
+		int GetTextureFormatComponents(DKTexture::Format f)
+		{
+			switch (f)
+			{
+				case DKTexture::FormatR8:
+				case DKTexture::FormatR8U:
+				case DKTexture::FormatR16:
+				case DKTexture::FormatR16U:
+				case DKTexture::FormatR16F:
+				case DKTexture::FormatR32:
+				case DKTexture::FormatR32U:
+				case DKTexture::FormatR32F:
+					return 1;
+				case DKTexture::FormatRG8:
+				case DKTexture::FormatRG8U:
+				case DKTexture::FormatRG16:
+				case DKTexture::FormatRG16U:
+				case DKTexture::FormatRG16F:
+				case DKTexture::FormatRG32:
+				case DKTexture::FormatRG32U:
+				case DKTexture::FormatRG32F:
+					return 2;
+				case DKTexture::FormatRGB8:
+				case DKTexture::FormatRGB8U:
+				case DKTexture::FormatRGB16:
+				case DKTexture::FormatRGB16U:
+				case DKTexture::FormatRGB16F:
+				case DKTexture::FormatRGB32:
+				case DKTexture::FormatRGB32U:
+				case DKTexture::FormatRGB32F:
+					return 3;
+				case DKTexture::FormatRGBA8:
+				case DKTexture::FormatRGBA8U:
+				case DKTexture::FormatRGBA16:
+				case DKTexture::FormatRGBA16U:
+				case DKTexture::FormatRGBA16F:
+				case DKTexture::FormatRGBA32:
+				case DKTexture::FormatRGBA32U:
+				case DKTexture::FormatRGBA32F:
+					return 4;
+				case DKTexture::FormatDepth16U:
+				case DKTexture::FormatDepth24U:
+				case DKTexture::FormatDepth32F:
+					return 1;
+			}
+			DKFoundation::DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
+			return 0;
+		}
 		GLenum GetTextureFormatGLValue(DKTexture::Format f)
 		{
 			switch (f)
 			{
-				case DKTexture::FormatAlpha:		return GL_ALPHA;
-				case DKTexture::FormatRGB:			return GL_RGB;
-				case DKTexture::FormatRGBA:			return GL_RGBA;
-				case DKTexture::FormatDepth16:
-#ifdef	GL_DEPTH_COMPONENT24
-				case DKTexture::FormatDepth24:
-#endif
-#ifdef	GL_DEPTH_COMPONENT32
-				case DKTexture::FormatDepth32:
-#endif
+				case DKTexture::FormatR8:
+				case DKTexture::FormatR8U:
+				case DKTexture::FormatR16:
+				case DKTexture::FormatR16U:
+				case DKTexture::FormatR16F:
+				case DKTexture::FormatR32:
+				case DKTexture::FormatR32U:
+				case DKTexture::FormatR32F:
+					return GL_RED;
+				case DKTexture::FormatRG8:
+				case DKTexture::FormatRG8U:
+				case DKTexture::FormatRG16:
+				case DKTexture::FormatRG16U:
+				case DKTexture::FormatRG16F:
+				case DKTexture::FormatRG32:
+				case DKTexture::FormatRG32U:
+				case DKTexture::FormatRG32F:
+					return GL_RG;
+				case DKTexture::FormatRGB8:
+				case DKTexture::FormatRGB8U:
+				case DKTexture::FormatRGB16:
+				case DKTexture::FormatRGB16U:
+				case DKTexture::FormatRGB16F:
+				case DKTexture::FormatRGB32:
+				case DKTexture::FormatRGB32U:
+				case DKTexture::FormatRGB32F:
+					return GL_RGB;
+				case DKTexture::FormatRGBA8:
+				case DKTexture::FormatRGBA8U:
+				case DKTexture::FormatRGBA16:
+				case DKTexture::FormatRGBA16U:
+				case DKTexture::FormatRGBA16F:
+				case DKTexture::FormatRGBA32:
+				case DKTexture::FormatRGBA32U:
+				case DKTexture::FormatRGBA32F:
+					return GL_RGBA;
+				case DKTexture::FormatDepth16U:
+				case DKTexture::FormatDepth24U:
+				case DKTexture::FormatDepth32F:
 					return GL_DEPTH_COMPONENT;
 			}
 			DKFoundation::DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
@@ -60,16 +137,41 @@ namespace DKFramework
 		{
 			switch (f)
 			{
-				case DKTexture::FormatAlpha:		return GL_ALPHA;
-				case DKTexture::FormatRGB:			return GL_RGB;
-				case DKTexture::FormatRGBA:			return GL_RGBA;
-				case DKTexture::FormatDepth16:		return GL_DEPTH_COMPONENT16;
-#ifdef	GL_DEPTH_COMPONENT24
-				case DKTexture::FormatDepth24:		return GL_DEPTH_COMPONENT24;
-#endif
-#ifdef	GL_DEPTH_COMPONENT32
-				case DKTexture::FormatDepth32:		return GL_DEPTH_COMPONENT32;
-#endif
+				case DKTexture::FormatR8:		return GL_R8I;
+				case DKTexture::FormatR8U:		return GL_R8UI;
+				case DKTexture::FormatR16:		return GL_R16I;
+				case DKTexture::FormatR16U:		return GL_R16UI;
+				case DKTexture::FormatR16F:		return GL_R16F;
+				case DKTexture::FormatR32:		return GL_R32I;
+				case DKTexture::FormatR32U:		return GL_R32UI;
+				case DKTexture::FormatR32F:		return GL_R32F;
+				case DKTexture::FormatRG8:		return GL_RG8I;
+				case DKTexture::FormatRG8U:		return GL_RG8I;
+				case DKTexture::FormatRG16:		return GL_RG16I;
+				case DKTexture::FormatRG16U:	return GL_RG16UI;
+				case DKTexture::FormatRG16F:	return GL_RG16F;
+				case DKTexture::FormatRG32:		return GL_RG32I;
+				case DKTexture::FormatRG32U:	return GL_RG32UI;
+				case DKTexture::FormatRG32F:	return GL_RG32F;
+				case DKTexture::FormatRGB8:		return GL_RGB8I;
+				case DKTexture::FormatRGB8U:	return GL_RGB8UI;
+				case DKTexture::FormatRGB16:	return GL_RGB16I;
+				case DKTexture::FormatRGB16U:	return GL_RGB16UI;
+				case DKTexture::FormatRGB16F:	return GL_RGB16F;
+				case DKTexture::FormatRGB32:	return GL_RGB32I;
+				case DKTexture::FormatRGB32U:	return GL_RGB32UI;
+				case DKTexture::FormatRGB32F:	return GL_RGB32F;
+				case DKTexture::FormatRGBA8:	return GL_RGBA8I;
+				case DKTexture::FormatRGBA8U:	return GL_RGBA8UI;
+				case DKTexture::FormatRGBA16:	return GL_RGBA16I;
+				case DKTexture::FormatRGBA16U:	return GL_RGBA16UI;
+				case DKTexture::FormatRGBA16F:	return GL_RGBA16F;
+				case DKTexture::FormatRGBA32:	return GL_RGBA32I;
+				case DKTexture::FormatRGBA32U:	return GL_RGBA32UI;
+				case DKTexture::FormatRGBA32F:	return GL_RGBA32F;
+				case DKTexture::FormatDepth16U:	return GL_DEPTH_COMPONENT16;
+				case DKTexture::FormatDepth24U:	return GL_DEPTH_COMPONENT24;
+				case DKTexture::FormatDepth32F:	return GL_DEPTH_COMPONENT32F;
 			}
 			DKFoundation::DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
 			return 0;
@@ -78,11 +180,11 @@ namespace DKFramework
 		{
 			switch (t)
 			{
-				case DKTexture::TypeSignedByte:		return GL_BYTE;
+				case DKTexture::TypeByte:			return GL_BYTE;
 				case DKTexture::TypeUnsignedByte:	return GL_UNSIGNED_BYTE;
-				case DKTexture::TypeSignedShort:	return GL_SHORT;
+				case DKTexture::TypeShort:			return GL_SHORT;
 				case DKTexture::TypeUnsignedShort:	return GL_UNSIGNED_SHORT;
-				case DKTexture::TypeSignedInt:		return GL_INT;
+				case DKTexture::TypeInt:			return GL_INT;
 				case DKTexture::TypeUnsignedInt:	return GL_UNSIGNED_INT;
 				case DKTexture::TypeFloat:			return GL_FLOAT;
 #ifdef GL_DOUBLE
@@ -91,24 +193,6 @@ namespace DKFramework
 			}
 			DKFoundation::DKLog("Warning: DKTexture type (%x) invalid or not supported.\n", t);
 			return 0;
-		}
-		DKTexture::Format GetTextureFormat(GLenum f)
-		{
-			switch (f)
-			{
-				case GL_ALPHA:						return DKTexture::FormatAlpha;
-				case GL_RGB:						return DKTexture::FormatRGB;
-				case GL_RGBA:						return DKTexture::FormatRGBA;
-				case GL_DEPTH_COMPONENT16:			return DKTexture::FormatDepth16;
-#ifdef GL_DEPTH_COMPONENT24
-				case GL_DEPTH_COMPONENT24:			return DKTexture::FormatDepth24;
-#endif
-#ifdef GL_DEPTH_COMPONENT32
-				case GL_DEPTH_COMPONENT32:			return DKTexture::FormatDepth32;
-#endif
-			}
-			DKFoundation::DKLog("Warning: Cannot convert texture format (%x) invalid or not supported.\n", f);
-			return DKTexture::FormatUnknown;
 		}
 	}
 }
@@ -172,19 +256,19 @@ size_t DKTexture::BytesPerPixel(void) const
 {
 	switch (type)
 	{
-	case TypeSignedByte:
+	case TypeByte:
 		return sizeof(signed char) * components;
 		break;
 	case TypeUnsignedByte:
 		return sizeof(unsigned char) * components;
 		break;
-	case TypeSignedShort:
+	case TypeShort:
 		return sizeof(signed short) * components;
 		break;
 	case TypeUnsignedShort:
 		return sizeof(unsigned short) * components;
 		break;
-	case TypeSignedInt:
+	case TypeInt:
 		return sizeof(signed int) * components;
 		break;
 	case TypeUnsignedInt:
@@ -202,18 +286,54 @@ size_t DKTexture::BytesPerPixel(void) const
 
 bool DKTexture::IsColorTexture(void) const
 {
-	if (format == FormatRGB ||
-		format == FormatRGBA)
-		return true;
+	switch (format)
+	{
+		case FormatR8:
+		case FormatR8U:
+		case FormatR16:
+		case FormatR16U:
+		case FormatR16F:
+		case FormatR32:
+		case FormatR32U:
+		case FormatR32F:
+		case FormatRG8:
+		case FormatRG8U:
+		case FormatRG16:
+		case FormatRG16U:
+		case FormatRG16F:
+		case FormatRG32:
+		case FormatRG32U:
+		case FormatRG32F:
+		case FormatRGB8:
+		case FormatRGB8U:
+		case FormatRGB16:
+		case FormatRGB16U:
+		case FormatRGB16F:
+		case FormatRGB32:
+		case FormatRGB32U:
+		case FormatRGB32F:
+		case FormatRGBA8:
+		case FormatRGBA8U:
+		case FormatRGBA16:
+		case FormatRGBA16U:
+		case FormatRGBA16F:
+		case FormatRGBA32:
+		case FormatRGBA32U:
+		case FormatRGBA32F:
+			return true;
+	}
 	return false;
 }
 
 bool DKTexture::IsDepthTexture(void) const
 {
-	if (format == FormatDepth16 ||
-		format == FormatDepth24 ||
-		format == FormatDepth32)
-		return true;
+	switch (format)
+	{
+		case FormatDepth16U:
+		case FormatDepth24U:
+		case FormatDepth32F:
+			return true;
+	}
 	return false;
 }
 

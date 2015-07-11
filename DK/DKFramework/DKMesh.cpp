@@ -682,7 +682,7 @@ DKObject<DKSerializer> DKMesh::Serializer(void)
 						{
 							DKLog("Error: Texture:%ls not found!\n", (const wchar_t*)texName);
 							const unsigned char whitePixel[] = { 0xff, 0xff, 0xff };
-							texArray.Add(DKTexture2D::Create(1, 1, DKTexture::FormatRGB, DKTexture::TypeUnsignedByte, whitePixel).SafeCast<DKTexture>());
+							texArray.Add(DKTexture2D::Create(1, 1, DKTexture::FormatRGB8U, DKTexture::TypeUnsignedByte, whitePixel).SafeCast<DKTexture>());
 						}
 					}
 

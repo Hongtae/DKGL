@@ -41,18 +41,26 @@ DKRenderState::DKRenderState(void)
 	, maxVertexAttribs(0)					
 	, maxTextureSize(0)						
 	, maxDrawBuffers(0)						
-	, maxColorAttachments(0)				
+	, maxColorAttachments(0)
+	, defaultVertexArray(0)
 {
 	memset(glStates, 0, sizeof(glStates));
 }
 
 DKRenderState::~DKRenderState(void)
 {
+	if (defaultVertexArray)
+		glDeleteVertexArrays(1, &defaultVertexArray);
+
 	Private::ClearFramebuffers();
 }
 
 void DKRenderState::Reset(void)
 {
+	if (defaultVertexArray)
+		glDeleteVertexArrays(1, &defaultVertexArray);
+	defaultVertexArray = 0;
+
 	Private::ClearFramebuffers();
 
 	maxCombinedTextureImageUnits = 0;
@@ -81,8 +89,11 @@ void DKRenderState::Reset(void)
 
 	memset(glStates, 0, sizeof(glStates));
 
+	glGenVertexArrays(1, &defaultVertexArray);
+	glBindVertexArray(0);
+
 	frameBuffer = 0;
-	vertexArray = 0;
+	vertexArray = defaultVertexArray;
 	program = 0;
 	blendFuncRGB = GL_FUNC_ADD;
 	blendFuncAlpha = GL_FUNC_ADD;
@@ -248,6 +259,9 @@ void DKRenderState::BindVertexArray(unsigned int id)
 {
 	if (id == vertexArray)
 		return;
+
+	if (id == 0)
+		id = defaultVertexArray;
 
 	DKMap<unsigned int, VertexArray>::Pair* p = vertexArrays.Find(id);
 	if (p)

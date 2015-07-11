@@ -22,7 +22,7 @@ namespace DKFramework
 		GLenum GetTextureFormatGLValue(DKTexture::Format f);
 		GLenum GetTextureInternalFormatGLValue(DKTexture::Format f);
 		GLenum GetTextureTypeGLValue(DKTexture::Type t);
-		DKTexture::Format GetTextureFormat(GLenum f);
+		int GetTextureFormatComponents(DKTexture::Format f);
 
 		GLint GetMaxTextureSize(void);		// DKTexture.cpp
 
@@ -56,16 +56,8 @@ namespace DKFramework
 				glGenTextures(1, &texId);
 				glBindTexture(GL_TEXTURE_2D, texId);
 
-				GLenum wrapMode = GL_CLAMP_TO_EDGE;
-				switch (imageFormat)
-				{
-				case DKTexture::FormatRGB:
-				case DKTexture::FormatRGBA:
-					wrapMode = (IsPowerOfTwo(width) && IsPowerOfTwo(height)) ? GL_REPEAT : GL_CLAMP_TO_EDGE;
-					break;
-				}
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);				
@@ -76,18 +68,7 @@ namespace DKFramework
 				//glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 				//glPixelStorei(GL_UNPACK_SWAP_BYTES, 0);
 
-#ifdef DKLIB_OPENGL_ES_2
-				// Note:
-				//   On OpenGL ES 2,
-				//   GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24 cannot be used
-				//   for internal format. Internal format should be
-				//   GL_DEPTH_COMPONENT, and we can specify type with
-				//   GL_UNSIGNED_SHORT for 16bit depth,
-				//   GL_UNSIGNED_INT for 32bit depth. (24bit on some platform)
-				GLenum textureInternalFormat = Private::GetTextureFormatGLValue(imageFormat);
-#else
 				GLenum textureInternalFormat = Private::GetTextureInternalFormatGLValue(imageFormat);
-#endif
 				GLenum textureFormat = Private::GetTextureFormatGLValue(imageFormat);
 				GLenum textureType = Private::GetTextureTypeGLValue(dataType);
 
@@ -115,18 +96,8 @@ namespace DKFramework
 				GLint textureWidth = width;
 				GLint textureHeight = height;
 				//GLint textureFormatInternal = 0;
-				GLint textureComponents = 0;
-				switch (imageFormat)
-				{
-				case DKTexture::FormatAlpha:
-					textureComponents = 1;	break;
-				case DKTexture::FormatRGB:
-					textureComponents = 3;	break;
-				case DKTexture::FormatRGBA:
-					textureComponents = 4;	break;
-				default:
-					textureComponents = 1;	break;
-				}
+				GLint textureComponents = GetTextureFormatComponents(imageFormat);
+
 				//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &textureWidth);
 				//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &textureHeight);
 				// internal-format may differ by platform.
@@ -167,7 +138,7 @@ namespace DKFramework
 						if (image->Encode2RGBA(&cf, false))
 						{
 							DKASSERT_DEBUG(cf.GetBuffer() == pixelData);
-							format = DKTexture::FormatRGBA;
+							format = DKTexture::FormatRGBA8U;
 						}
 					}
 					else
@@ -178,7 +149,7 @@ namespace DKFramework
 						if (image->Encode2RGB(&cf, false))
 						{
 							DKASSERT_DEBUG(cf.GetBuffer() == pixelData);
-							format = DKTexture::FormatRGB;
+							format = DKTexture::FormatRGB8U;
 						}
 					}
 
@@ -472,22 +443,16 @@ DKObject<DKData> DKTexture2D::CopyPixelData(const DKRect& rc, Format format, Typ
 		size_t bpc = 0;		// bytes per component
 		switch (type)
 		{
-		case TypeSignedByte:		bpc = sizeof(signed char);		break;
+		case TypeByte:				bpc = sizeof(signed char);		break;
 		case TypeUnsignedByte:		bpc = sizeof(unsigned char);	break;
-		case TypeSignedShort:		bpc = sizeof(signed short);		break;
+		case TypeShort:				bpc = sizeof(signed short);		break;
 		case TypeUnsignedShort:		bpc = sizeof(unsigned short);	break;
-		case TypeSignedInt:			bpc = sizeof(signed int);		break;
+		case TypeInt:				bpc = sizeof(signed int);		break;
 		case TypeUnsignedInt:		bpc = sizeof(unsigned int);		break;
 		case TypeFloat:				bpc = sizeof(float);			break;
 		case TypeDouble:			bpc = sizeof(double);			break;
 		}
-		size_t numComponents = 0;
-		switch (format)
-		{
-		case FormatAlpha:	numComponents = 1;	break;
-		case FormatRGB:		numComponents = 3;	break;
-		case FormatRGBA:	numComponents = 4;	break;
-		}
+		size_t numComponents = Private::GetTextureFormatComponents(format);
 
 		GLint x = floor(rc.origin.x + 0.5f);
 		GLint y = floor(rc.origin.y + 0.5f);
@@ -588,13 +553,8 @@ DKObject<DKData> DKTexture2D::CreateImageFileData(const DKString& format) const
 	if (this->IsValid() && this->ObjectTarget() == Target2D &&
 		this->width > 0 && this->height > 0 && this->depth > 0 && this->BytesPerPixel() > 0)
 	{
-		switch (this->format)
+		if (!IsColorTexture())
 		{
-		case FormatAlpha:
-		case FormatRGB:
-		case FormatRGBA:
-			break;
-		default:
 			DKLog("Invalid texture format!\n");
 			return NULL;
 		}

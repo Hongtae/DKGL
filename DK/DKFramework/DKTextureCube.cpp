@@ -18,7 +18,6 @@ namespace DKFramework
 		GLenum GetTextureFormatGLValue(DKTexture::Format f);
 		GLenum GetTextureInternalFormatGLValue(DKTexture::Format f);
 		GLenum GetTextureTypeGLValue(DKTexture::Type t);
-		DKTexture::Format GetTextureFormat(GLenum f);
 	}
 }
 

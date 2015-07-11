@@ -35,11 +35,12 @@ DKOpenGLImpl::DKOpenGLImpl(void)
 {
 	// create pixel format
 	NSOpenGLPixelFormatAttribute attrs[] = {
-		NSOpenGLPFAScreenMask,	CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
-		NSOpenGLPFAColorSize,	32,
-		NSOpenGLPFADepthSize,	24,
-		NSOpenGLPFADoubleBuffer,
-		NSOpenGLPFAAccelerated,
+		NSOpenGLPFAScreenMask,		CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
+		NSOpenGLPFAColorSize,		32,
+		NSOpenGLPFADepthSize,		24,
+		NSOpenGLPFAOpenGLProfile,	NSOpenGLProfileVersion3_2Core,
+		NSOpenGLPFADoubleBuffer,	1,
+		NSOpenGLPFAAccelerated,		1,
 		0
 	};
 	

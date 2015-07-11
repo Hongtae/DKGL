@@ -42,6 +42,7 @@ namespace DKFramework
 
 		DKFoundation::DKObject<DKTexture2D> Duplicate(void) const;
 
+		// CreateImageFileData: this function will write to file, which assumes format as RGB or RGBA.
 		DKFoundation::DKObject<DKFoundation::DKData> CreateImageFileData(const DKFoundation::DKString& format) const;
 
 		bool Deserialize(const DKFoundation::DKXMLElement* e, DKResourceLoader* loader);

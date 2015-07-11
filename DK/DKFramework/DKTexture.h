@@ -39,20 +39,54 @@ namespace DKFramework
 		enum Format
 		{
 			FormatUnknown = 0,
-			FormatAlpha,
-			FormatRGB,
-			FormatRGBA,
-			FormatDepth16,
-			FormatDepth24,
-			FormatDepth32,
+
+			FormatR8,		// char
+			FormatR8U,		// unsigned char
+			FormatR16,		// short
+			FormatR16U,		// unsigned short
+			FormatR16F,		// float (16bit)
+			FormatR32,		// int
+			FormatR32U,		// unsigned int
+			FormatR32F,		// float (32bit)
+
+			FormatRG8,
+			FormatRG8U,
+			FormatRG16,
+			FormatRG16U,
+			FormatRG16F,
+			FormatRG32,
+			FormatRG32U,
+			FormatRG32F,
+
+			FormatRGB8,
+			FormatRGB8U,
+			FormatRGB16,
+			FormatRGB16U,
+			FormatRGB16F,
+			FormatRGB32,
+			FormatRGB32U,
+			FormatRGB32F,
+
+			FormatRGBA8,
+			FormatRGBA8U,
+			FormatRGBA16,
+			FormatRGBA16U,
+			FormatRGBA16F,
+			FormatRGBA32,
+			FormatRGBA32U,
+			FormatRGBA32F,
+
+			FormatDepth16U,		// unsigned short, unsigned int
+			FormatDepth24U,		// unsigned int
+			FormatDepth32F,		// float
 		};
 		enum Type
 		{
-			TypeSignedByte = 0,
+			TypeByte = 0,
 			TypeUnsignedByte,
-			TypeSignedShort,
+			TypeShort,
 			TypeUnsignedShort,
-			TypeSignedInt,
+			TypeInt,
 			TypeUnsignedInt,
 			TypeFloat,
 			TypeDouble,

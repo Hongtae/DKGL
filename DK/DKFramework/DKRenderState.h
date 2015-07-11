@@ -104,6 +104,7 @@ namespace DKFramework
 			unsigned int	target;
 			unsigned int	id;
 		};
+		unsigned int	defaultVertexArray;
 		unsigned int	frameBuffer;
 		unsigned int	vertexArray;
 		unsigned int	program;

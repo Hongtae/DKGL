@@ -372,7 +372,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 		void* initialData = DKMemoryHeapAlloc(newTexWidth * newTexHeight);
 		memset(initialData, 0, newTexWidth * newTexHeight);
-		tex = DKTexture2D::Create(newTexWidth, newTexHeight, DKTexture::FormatAlpha, DKTexture::TypeUnsignedByte, initialData);
+		tex = DKTexture2D::Create(newTexWidth, newTexHeight, DKTexture::FormatR8U, DKTexture::TypeUnsignedByte, initialData);
 		DKMemoryHeapFree(initialData);
 
 		rect = DKRect(0,0,width,height);

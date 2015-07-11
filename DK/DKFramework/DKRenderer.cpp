@@ -404,7 +404,7 @@ public:
 		, mesh3D(NULL)
 	{
 		unsigned char d[] = { 1, 0, 1 };
-		DKObject<DKTexture> dummyTexture = DKTexture2D::Create(1, 1, DKTexture::FormatRGB, DKTexture::TypeUnsignedByte, d).SafeCast<DKTexture>();
+		DKObject<DKTexture> dummyTexture = DKTexture2D::Create(1, 1, DKTexture::FormatRGB8U, DKTexture::TypeUnsignedByte, d).SafeCast<DKTexture>();
 		if (dummyTexture == NULL || !dummyTexture->IsValid())
 		{
 			DKLog("Building dummy texture failed.\n");
