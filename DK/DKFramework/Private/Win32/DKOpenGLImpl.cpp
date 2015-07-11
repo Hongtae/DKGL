@@ -216,20 +216,15 @@ DKOpenGLImpl::DKOpenGLImpl(void)
 	if (!SetPixelFormat(windowDC , pixelFormat, &pxielFormatDesc))
 		DKERROR_THROW("SetPixelFormat failed.");
 
-	////////////////////////////////////////////////////////////////////////////
-	// 2011-09-11 : set WGL_CONTEXT_MINOR_VERSION_ARB = 1, (Intel supports 3.1)
-	// 2010-08-20 : WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB needed on ATI to use
-	//              one-shader code for OpenGL, OpenGL ES together.
-	// 2010-05-13 : OpenGL ES supports GL_ALPHA only for 1-channel texture,
-	//              but OpenGL 3 supports GL_RED only for 1-channel.
-	//              We have to use compatible mode for using both types.
 	int wglAttribs[] = {
-		WGL_CONTEXT_MAJOR_VERSION_ARB,		3,
-		WGL_CONTEXT_MINOR_VERSION_ARB,		2,
-		//WGL_CONTEXT_MINOR_VERSION_ARB,		1,
-		//WGL_CONTEXT_FLAGS_ARB,				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-		//WGL_CONTEXT_PROFILE_MASK_ARB,		WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-		WGL_CONTEXT_PROFILE_MASK_ARB,		WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+		WGL_CONTEXT_MAJOR_VERSION_ARB,		4,
+		WGL_CONTEXT_MINOR_VERSION_ARB,		3,
+		WGL_CONTEXT_PROFILE_MASK_ARB,		WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+#ifdef DKLIB_DEBUG_ENABLED
+		WGL_CONTEXT_FLAGS_ARB,				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
+#else
+		WGL_CONTEXT_FLAGS_ARB,				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+#endif
 		0	// end of the array
 	};
 
