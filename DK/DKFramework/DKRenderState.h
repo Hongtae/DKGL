@@ -2,7 +2,7 @@
 //  File: DKRenderState.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -85,7 +85,6 @@ namespace DKFramework
 		int maxCombinedTextureImageUnits;		// GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 		int maxVertexAttribs;					// GL_MAX_VERTEX_ATTRIBS
 		int maxTextureSize;						// GL_MAX_TEXTURE_SIZE
-		int maxDrawBuffers;						// GL_MAX_DRAW_BUFFERS
 		int maxColorAttachments;				// GL_MAX_COLOR_ATTACHMENTS
 
 	private:

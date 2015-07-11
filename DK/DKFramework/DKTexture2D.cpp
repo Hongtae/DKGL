@@ -2,7 +2,7 @@
 //  File: DKTexture2D.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKLIB_EXTDEPS_CXIMAGE
@@ -449,9 +449,11 @@ DKObject<DKData> DKTexture2D::CopyPixelData(const DKRect& rc, Format format, Typ
 		case TypeUnsignedShort:		bpc = sizeof(unsigned short);	break;
 		case TypeInt:				bpc = sizeof(signed int);		break;
 		case TypeUnsignedInt:		bpc = sizeof(unsigned int);		break;
-		case TypeFloat:				bpc = sizeof(float);			break;
+		case TypeFloat16:			bpc = sizeof(GLhalf);			break;
+		case TypeFloat32:			bpc = sizeof(float);			break;
 		case TypeDouble:			bpc = sizeof(double);			break;
 		}
+
 		size_t numComponents = Private::GetTextureFormatComponents(format);
 
 		GLint x = floor(rc.origin.x + 0.5f);

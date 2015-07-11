@@ -2,7 +2,7 @@
 //  File: DKTexture.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -159,10 +159,10 @@ namespace DKFramework
 				case DKTexture::FormatRG8:		return GL_RG8;
 				case DKTexture::FormatRG16F:	return GL_RG16F;
 				case DKTexture::FormatRG32F:	return GL_RG32F;
-				case DKTexture::FormatRGB8:		return GL_RGB8;
+				case DKTexture::FormatRGB8:		return GL_RGB;
 				case DKTexture::FormatRGB16F:	return GL_RGB16F;
 				case DKTexture::FormatRGB32F:	return GL_RGB32F;
-				case DKTexture::FormatRGBA8:	return GL_RGBA8;
+				case DKTexture::FormatRGBA8:	return GL_RGBA;
 				case DKTexture::FormatRGBA16F:	return GL_RGBA16F;
 				case DKTexture::FormatRGBA32F:	return GL_RGBA32F;
 
@@ -208,7 +208,8 @@ namespace DKFramework
 				case DKTexture::TypeUnsignedShort:	return GL_UNSIGNED_SHORT;
 				case DKTexture::TypeInt:			return GL_INT;
 				case DKTexture::TypeUnsignedInt:	return GL_UNSIGNED_INT;
-				case DKTexture::TypeFloat:			return GL_FLOAT;
+				case DKTexture::TypeFloat16:		return GL_HALF_FLOAT;
+				case DKTexture::TypeFloat32:		return GL_FLOAT;
 #ifdef GL_DOUBLE
 				case DKTexture::TypeDouble:			return GL_DOUBLE;
 #endif
@@ -296,7 +297,10 @@ size_t DKTexture::BytesPerPixel(void) const
 	case TypeUnsignedInt:
 		return sizeof(unsigned int) * components;
 		break;
-	case TypeFloat:
+	case TypeFloat16:
+		return sizeof(GLhalf) * components;
+		break;
+	case TypeFloat32:
 		return sizeof(float) * components;
 		break;
 	case TypeDouble:
@@ -310,44 +314,44 @@ bool DKTexture::IsColorTexture(void) const
 {
 	switch (format)
 	{
-			// R
+		// R
 		case FormatR8:
 		case FormatR16F:
 		case FormatR32F:
-			// RG
+		// RG
 		case FormatRG8:
 		case FormatRG16F:
 		case FormatRG32F:
-			// RGB
+		// RGB
 		case FormatRGB8:
 		case FormatRGB16F:
 		case FormatRGB32F:
-			// RGBA
+		// RGBA
 		case FormatRGBA8:
 		case FormatRGBA16F:
 		case FormatRGBA32F:
-			// R (not normalized)
+		// R (not normalized)
 		case FormatR8I:
 		case FormatR8UI:
 		case FormatR16I:
 		case FormatR16UI:
 		case FormatR32I:
 		case FormatR32UI:
-			// RG (not normalized)
+		// RG (not normalized)
 		case FormatRG8I:
 		case FormatRG8UI:
 		case FormatRG16I:
 		case FormatRG16UI:
 		case FormatRG32I:
 		case FormatRG32UI:
-			// RGB (not normalized)
+		// RGB (not normalized)
 		case FormatRGB8I:
 		case FormatRGB8UI:
 		case FormatRGB16I:
 		case FormatRGB16UI:
 		case FormatRGB32I:
 		case FormatRGB32UI:
-			// RGBA (not normalized)
+		// RGBA (not normalized)
 		case FormatRGBA8I:
 		case FormatRGBA8UI:
 		case FormatRGBA16I:

@@ -2,7 +2,7 @@
 //  File: DKOpenGLContext.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -42,8 +42,12 @@ void DKOpenGLContext::Bind(const DKWindow* window) const
 	RenderStateMap::Pair* p = stateMap.Find(currentThreadId);
 	if (p == NULL)
 	{
+		int fbo = 0;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+
 		DKObject<DKRenderState> renderState = DKOBJECT_NEW DKRenderState();
 		renderState->Reset();
+		renderState->BindFrameBuffer(fbo);
 		stateMap.Insert(currentThreadId, renderState);
 	}
 }

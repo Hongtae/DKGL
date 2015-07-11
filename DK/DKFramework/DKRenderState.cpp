@@ -2,7 +2,7 @@
 //  File: DKRenderState.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -40,7 +40,6 @@ DKRenderState::DKRenderState(void)
 	: maxCombinedTextureImageUnits(0)	
 	, maxVertexAttribs(0)					
 	, maxTextureSize(0)						
-	, maxDrawBuffers(0)						
 	, maxColorAttachments(0)
 	, defaultVertexArray(0)
 {
@@ -75,16 +74,8 @@ void DKRenderState::Reset(void)
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 	DKASSERT_DEBUG(maxTextureSize > 0);
 
-	maxDrawBuffers = 1;
-#ifdef GL_MAX_DRAW_BUFFERS	
-	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &maxDrawBuffers);
-#endif
-	DKASSERT_DEBUG(maxDrawBuffers > 0);
-
 	maxColorAttachments = 1;
-#ifdef GL_MAX_COLOR_ATTACHMENTS
 	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
-#endif
 	DKASSERT_DEBUG(maxColorAttachments > 0);
 
 	memset(glStates, 0, sizeof(glStates));

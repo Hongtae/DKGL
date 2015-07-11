@@ -2,7 +2,7 @@
 //  File: DKRenderTarget.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -21,29 +21,13 @@ namespace DKFramework
 
 		GLint GetMaxTextureSize(void);		// defined in DKTexture.cpp
 
-		GLint GetMaxDrawBuffers(void)
-		{
-#ifdef GL_MAX_DRAW_BUFFERS	
-			static GLint maxDrawBuffers = 0;
-			if (maxDrawBuffers == 0)	
-				glGetIntegerv(GL_MAX_DRAW_BUFFERS, &maxDrawBuffers);
-
-			DKASSERT_DEBUG(maxDrawBuffers > 0);
-			return maxDrawBuffers;
-#endif
-			return 1;
-		}
-
 		GLint GetMaxColorAttachments(void)
 		{
-#ifdef GL_MAX_COLOR_ATTACHMENTS
 			static GLint maxColorAttachments = 0;
 			if (maxColorAttachments == 0)
 				glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
 			DKASSERT_DEBUG(maxColorAttachments > 0);
 			return maxColorAttachments;
-#endif
-			return 1;
 		}
 
 		namespace
@@ -298,9 +282,7 @@ size_t DKRenderTarget::NumberOfColorTextures(void) const
 
 size_t DKRenderTarget::MaxColorTextures(void)
 {
-	size_t maxTextures = Private::GetMaxColorAttachments();
-	size_t maxDrawBuff = Private::GetMaxDrawBuffers();
-	return Min(maxTextures, maxDrawBuff);
+	return Private::GetMaxColorAttachments();
 }
 
 bool DKRenderTarget::SetDepthTexture(DKTexture2D* tex)
