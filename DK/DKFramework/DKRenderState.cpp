@@ -592,7 +592,7 @@ const char* DKRenderState::GetErrorString(unsigned int err)
 		return "GL_STACK_OVERFLOW";
 		break;
 #endif
-#ifdef GL_STACK_OVERFLOW
+#ifdef GL_STACK_UNDERFLOW
 	case GL_STACK_UNDERFLOW:
 		return "GL_STACK_UNDERFLOW";
 		break;

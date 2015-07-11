@@ -1069,26 +1069,6 @@ bool DKSerializer::Deserialize(const DKXMLElement* e, DKResourceLoader* loader) 
 #define DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN	"DKSerializeL"
 
 
-// for compatibility with old version of DK (which prefix was 'IG')
-#define IGLIB_COMPAT_MODE	1
-#ifdef IGLIB_COMPAT_MODE
-#define IGSERIALIZER_HEADER_STRING_BIG_ENDIAN		"IGSerializeB"
-#define IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN	"IGSerializeL"
-inline void IGLibToDKLib(char* str, size_t len)
-{
-	if (len > 2 && str[0] == 'I' && str[1] == 'G')
-	{
-#ifdef DKLIB_DEBUG_ENABLED
-		DKLog("Legacy IGObject (%ls) found. re-save resource!\n", (const wchar_t*)DKString(str, len));
-#endif
-		str[0] = 'D';
-		str[1] = 'K';
-	}
-}
-#endif
-// end of old-version compatable mode. (rewrite to update new version)
-
-
 #if __LITTLE_ENDIAN__
 #define DKSERIALIZER_HEADER_STRING		DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN
 #else
@@ -1518,22 +1498,12 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 	bool littleEndian = false;
 	if (s->Read(name, headerLen) == headerLen)
 	{
-#ifdef IGLIB_COMPAT_MODE
-		if (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-			strncmp(name, IGSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0)
-#else
 		if (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0)
-#endif
 		{
 			validHeader = true;
 			littleEndian = false;
 		}
-#ifdef IGLIB_COMPAT_MODE
-		else if (strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-				 strncmp(name, IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#else
 		else if (strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#endif
 		{
 			validHeader = true;
 			littleEndian = true;
@@ -1586,9 +1556,6 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			char* cid = (char*)malloc(classLen);
 			if (s->Read(cid, classLen) == classLen)
 			{
-#ifdef IGLIB_COMPAT_MODE
-				IGLibToDKLib(cid, classLen);
-#endif
 				classId.SetValue(cid, classLen);
 			}
 			free(cid);
@@ -1903,15 +1870,8 @@ bool DKSerializer::Deserialize(DKStream* s, DKResourceLoader* p) const
 		bool validHeader = false;
 		if (s->Read(name, headerLen) == headerLen)
 		{
-#ifdef IGLIB_COMPAT_MODE
-			if (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-				strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-				strncmp(name, IGSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-				strncmp(name, IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#else
 			if (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
 				strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#endif
 				validHeader = true;
 		}
 
@@ -1941,15 +1901,8 @@ bool DKSerializer::Deserialize(const DKData* d, DKResourceLoader* p) const
 		bool validHeader = false;
 		if (len >= headerLen)
 		{
-#ifdef IGLIB_COMPAT_MODE
-			if (strncmp(ptr, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-				strncmp(ptr, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-				strncmp(ptr, IGSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-				strncmp(ptr, IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#else
 			if (strncmp(ptr, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
 				strncmp(ptr, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#endif
 				validHeader = true;
 		}
 		d->UnlockShared();
@@ -1988,22 +1941,12 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 	bool littleEndian = false;
 	if (s->Read(name, headerLen) == headerLen)
 	{
-#ifdef IGLIB_COMPAT_MODE
-		if (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-			strncmp(name, IGSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0)
-#else
 		if (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0)
-#endif
 		{
 			validHeader = true;
 			littleEndian = false;
 		}
-#ifdef IGLIB_COMPAT_MODE
-		else if (strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-				 strncmp(name, IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#else
 		else if (strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#endif
 		{
 			validHeader = true;
 			littleEndian = true;
@@ -2045,9 +1988,6 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 						DKString classId = L"";
 						if (s->Read(clsId, clsLen) == clsLen)
 						{
-#ifdef IGLIB_COMPAT_MODE
-							IGLibToDKLib(clsId, clsLen);
-#endif
 							classId.SetValue(clsId, clsLen);
 						}
 						free(clsId);
@@ -2099,15 +2039,8 @@ bool DKSerializer::RestoreObject(DKStream* s, DKResourceLoader* p, Selector* sel
 		bool validHeader = false;
 		if (s->Read(name, headerLen) == headerLen)
 		{
-#ifdef IGLIB_COMPAT_MODE
-			validHeader = (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-						   strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-						   strncmp(name, IGSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-						   strncmp(name, IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0);
-#else
 			validHeader = (strncmp(name, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
 						   strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0);
-#endif
 		}
 
 		s->SetPos(pos);
@@ -2137,15 +2070,8 @@ bool DKSerializer::RestoreObject(const DKData* d, DKResourceLoader* p, Selector*
 		DKString classId = L"";
 		if (len >= headerLen)
 		{
-#ifdef IGLIB_COMPAT_MODE
-			validHeader = (strncmp(ptr, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-						   strncmp(ptr, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-						   strncmp(ptr, IGSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-						   strncmp(ptr, IGSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0);
-#else
 			validHeader = (strncmp(ptr, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
 						   strncmp(ptr, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0);
-#endif
 		}
 		d->UnlockShared();
 

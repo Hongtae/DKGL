@@ -73,9 +73,7 @@ void DKTextureSampler::Bind(DKTexture::Target t) const
 	GLenum wrapModes[] = {
 		GL_TEXTURE_WRAP_S,
 		GL_TEXTURE_WRAP_T,
-#ifdef GL_TEXTURE_WRAP_R
 		GL_TEXTURE_WRAP_R,
-#endif
 	};
 	int numModes = sizeof(wrapModes) / sizeof(wrapModes[0]);
 	for (int i = 0; i < numModes; i++)

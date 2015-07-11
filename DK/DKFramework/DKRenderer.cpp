@@ -2150,7 +2150,6 @@ size_t DKRenderer::RenderMesh(const DKMesh* mesh, DKSceneState& st, const DKBlen
 					return 0;
 				}
 
-#ifdef GL_VERSION_3_1
 				if (info.numIndices > 0)
 				{
 					auto drawCall = [](GLenum prim, GLsizei indices, GLenum type, GLsizei instances) -> GLsizei
@@ -2183,34 +2182,6 @@ size_t DKRenderer::RenderMesh(const DKMesh* mesh, DKSceneState& st, const DKBlen
 						glDrawArrays(primType, 0, info.numVerts);
 					numInstancesDrawn = info.numInstances;
 				}
-#else
-				if (info.numInstances > 1)
-					DKLog("Warning: instancing not supported!\n");
-
-				if (info.numIndices > 0)
-				{
-					switch (info.indexType)
-					{
-					case DKIndexBuffer::TypeUByte:
-						glDrawElements(primType, info.numIndices, GL_UNSIGNED_BYTE, 0);
-						numInstancesDrawn = 1;
-						break;
-					case DKIndexBuffer::TypeUShort:
-						glDrawElements(primType, info.numIndices, GL_UNSIGNED_SHORT, 0);
-						numInstancesDrawn = 1;
-						break;
-					case DKIndexBuffer::TypeUInt:
-						glDrawElements(primType, info.numIndices, GL_UNSIGNED_INT, 0);
-						numInstancesDrawn = 1;
-						break;
-					}
-				}
-				else
-				{
-					glDrawArrays(primType, 0, info.numVerts);
-					numInstancesDrawn = 1;
-				}
-#endif
 			}
 		}
 	}

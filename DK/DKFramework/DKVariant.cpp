@@ -723,13 +723,6 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 #define DKVARIANT_HEADER_STRING_BIG_ENDIAN		"DKVariantB"
 #define DKVARIANT_HEADER_STRING_LITTLE_ENDIAN	"DKVariantL"
 
-// for compatibility with old version of DK (which prefix was 'IG')
-#define IGLIB_COMPAT_MODE	1
-#ifdef IGLIB_COMPAT_MODE
-#define IGVARIANT_HEADER_STRING_BIG_ENDIAN		"IGVariantB"
-#define IGVARIANT_HEADER_STRING_LITTLE_ENDIAN	"IGVariantL"
-#endif
-// end of old-version compatable mode. (rewrite to update new version)
 
 #if __LITTLE_ENDIAN__
 #define DKVARIANT_HEADER_STRING		DKVARIANT_HEADER_STRING_LITTLE_ENDIAN
@@ -1051,22 +1044,12 @@ bool DKVariant::ImportStream(DKStream* stream)
 		goto FAILED;
 	}
 
-#ifdef IGLIB_COMPAT_MODE
-	if (strncmp(name, DKVARIANT_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
-		strncmp(name, IGVARIANT_HEADER_STRING_BIG_ENDIAN, headerLen) == 0)
-#else
 	if (strncmp(name, DKVARIANT_HEADER_STRING_BIG_ENDIAN, headerLen) == 0)
-#endif
 	{
 		validHeader = true;
 		littleEndian = false;
 	}
-#ifdef IGLIB_COMPAT_MODE
-	else if (strncmp(name, DKVARIANT_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0 ||
-			 strncmp(name, IGVARIANT_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#else
 	else if (strncmp(name, DKVARIANT_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
-#endif
 	{
 		validHeader = true;
 		littleEndian = true;

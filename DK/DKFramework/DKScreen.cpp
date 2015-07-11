@@ -2,7 +2,7 @@
 //  File: DKScreen.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -349,7 +349,7 @@ void DKScreen::RenderScreen(bool invalidate)
 				DKLog("[%ls] glGetError returns GL_STACK_OVERFLOW\n", (const wchar_t*)time);
 				break;
 #endif
-#ifdef GL_STACK_OVERFLOW
+#ifdef GL_STACK_UNDERFLOW
 			case GL_STACK_UNDERFLOW:
 				DKLog("[%ls] glGetError returns GL_STACK_UNDERFLOW\n", (const wchar_t*)time);
 				break;

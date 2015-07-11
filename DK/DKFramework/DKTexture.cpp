@@ -29,9 +29,7 @@ namespace DKFramework
 			switch (t)
 			{
 				case DKTexture::Target2D:			return GL_TEXTURE_2D;
-#ifdef GL_TEXTURE_3D
 				case DKTexture::Target3D:			return GL_TEXTURE_3D;
-#endif
 				case DKTexture::TargetCube:			return GL_TEXTURE_CUBE_MAP;
 			}
 			DKFoundation::DKLog("Warning: DKTexture target (%x) invalid or not supported.\n", t);
