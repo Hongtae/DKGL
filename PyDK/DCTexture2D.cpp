@@ -115,7 +115,7 @@ static int DCTexture2DInit(DCTexture2D *self, PyObject *args, PyObject *kwds)
 				PyErr_SetString(PyExc_ValueError, "argument 'width', 'height' must be greater than zero.");
 				return -1;
 			}
-			if (format < 0 || format >(int)DKTexture::FormatDepth32)
+			if (format < 0 || format >(int)DKTexture::FormatDepth32F)
 			{
 				PyErr_SetString(PyExc_ValueError, "argument 'format' is out of range.");
 				return -1;
