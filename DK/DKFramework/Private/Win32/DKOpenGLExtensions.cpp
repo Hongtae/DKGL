@@ -9,9 +9,8 @@
 #ifdef _WIN32
 
 #include <windows.h>
-//#include <gl/gl.h>
-//#include <GL/glu.h>
-//#include "../../../../lib/OpenGL/glext.h"
+#include <gl/gl.h>
+#include "../../../../lib/OpenGL/glext.h"
 #include "../../../../lib/OpenGL/glcorearb.h"
 #include "../../../../lib/OpenGL/wglext.h"
 #include "../../../DKInclude.h"
@@ -19,6 +18,8 @@
 
 namespace OpenGL
 {
+#if 0
+	// GL_VERSION_1_0
 	extern PFNGLCULLFACEPROC					glCullFace = 0;
 	extern PFNGLFRONTFACEPROC					glFrontFace = 0;
 	extern PFNGLHINTPROC						glHint = 0;
@@ -83,7 +84,7 @@ namespace OpenGL
 	extern PFNGLDELETETEXTURESPROC				glDeleteTextures = 0;
 	extern PFNGLGENTEXTURESPROC					glGenTextures = 0;
 	extern PFNGLISTEXTUREPROC					glIsTexture = 0;
-
+#endif
 	// GL_VERSION_1_2
 	extern PFNGLDRAWRANGEELEMENTSPROC			glDrawRangeElements = 0;
 	extern PFNGLTEXIMAGE3DPROC					glTexImage3D = 0;
@@ -797,6 +798,7 @@ namespace DKFramework
 			double version = atof(versionString);
 			DKLog("OpenGL Context Version %s (%f)\n", versionString, version);
 
+#if 0
 			if (version >= 1.0)		// GL_VERSION_1_0
 			{
 				GET_GL_PROC(glCullFace);
@@ -865,6 +867,7 @@ namespace DKFramework
 				GET_GL_PROC(glGenTextures);
 				GET_GL_PROC(glIsTexture);
 			}
+#endif
 			if (version >= 1.2)		// GL_VERSION_1_2
 			{
 				GET_GL_PROC(glDrawRangeElements);
@@ -1507,13 +1510,15 @@ namespace DKFramework
 
 			////////////////////////////////////////////////////////////////////////////////
 			// load extensions
-			char* ext = (char*)glGetString(GL_EXTENSIONS);
-			if (ext == NULL)
+			GLint numExts = 0;
+			glGetIntegerv(GL_NUM_EXTENSIONS, &numExts);
+			DKSet<const GLubyte*> extensions;
+			for (GLint i = 0; i < numExts; i++)
 			{
-				DKLog("Extension error: Failed to get OpenGL Extensions (Check context compatibility options.\n");
-				return true;
+				extensions.Insert(glGetStringi(GL_EXTENSIONS, i));
 			}
-			if (strstr(ext, "GL_ARB_bindless_texture"))
+
+			if (extensions.Contains((const GLubyte*)"GL_ARB_bindless_texture"))
 			{
 				GET_GL_PROC(glGetTextureHandleARB);
 				GET_GL_PROC(glGetTextureSamplerHandleARB);
@@ -1532,34 +1537,34 @@ namespace DKFramework
 				GET_GL_PROC(glVertexAttribL1ui64vARB);
 				GET_GL_PROC(glGetVertexAttribLui64vARB);
 			}
-			if (strstr(ext, "GL_ARB_cl_event"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_cl_event"))
 			{
 				GET_GL_PROC(glCreateSyncFromCLeventARB);
 			}
-			if (strstr(ext, "GL_ARB_compute_variable_group_size"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_compute_variable_group_size"))
 			{
 				GET_GL_PROC(glDispatchComputeGroupSizeARB);
 			}
-			if (strstr(ext, "GL_ARB_debug_output"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_debug_output"))
 			{
 				GET_GL_PROC(glDebugMessageControlARB);
 				GET_GL_PROC(glDebugMessageInsertARB);
 				GET_GL_PROC(glDebugMessageCallbackARB);
 				GET_GL_PROC(glGetDebugMessageLogARB);
 			}
-			if (strstr(ext, "GL_ARB_draw_buffers_blend"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_draw_buffers_blend"))
 			{
 				GET_GL_PROC(glBlendEquationiARB);
 				GET_GL_PROC(glBlendEquationSeparateiARB);
 				GET_GL_PROC(glBlendFunciARB);
 				GET_GL_PROC(glBlendFuncSeparateiARB);
 			}
-			if (strstr(ext, "GL_ARB_indirect_parameters"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_indirect_parameters"))
 			{
 				GET_GL_PROC(glMultiDrawArraysIndirectCountARB);
 				GET_GL_PROC(glMultiDrawElementsIndirectCountARB);
 			}
-			if (strstr(ext, "GL_ARB_robustness"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_robustness"))
 			{
 				GET_GL_PROC(glGetGraphicsResetStatusARB);
 				GET_GL_PROC(glGetnTexImageARB);
@@ -1570,11 +1575,11 @@ namespace DKFramework
 				GET_GL_PROC(glGetnUniformuivARB);
 				GET_GL_PROC(glGetnUniformdvARB);
 			}
-			if (strstr(ext, "GL_ARB_sample_shading"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_sample_shading"))
 			{
 				GET_GL_PROC(glMinSampleShadingARB);
 			}
-			if (strstr(ext, "GL_ARB_shading_language_include"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_shading_language_include"))
 			{
 				GET_GL_PROC(glNamedStringARB);
 				GET_GL_PROC(glDeleteNamedStringARB);
@@ -1583,13 +1588,13 @@ namespace DKFramework
 				GET_GL_PROC(glGetNamedStringARB);
 				GET_GL_PROC(glGetNamedStringivARB);
 			}
-			if (strstr(ext, "GL_ARB_sparse_buffer"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_sparse_buffer"))
 			{
 				GET_GL_PROC(glBufferPageCommitmentARB);
 				GET_GL_PROC(glNamedBufferPageCommitmentEXT);
 				GET_GL_PROC(glNamedBufferPageCommitmentARB);
 			}
-			if (strstr(ext, "GL_ARB_sparse_texture"))
+			if (extensions.Contains((const GLubyte*)"GL_ARB_sparse_texture"))
 			{
 				GET_GL_PROC(glTexPageCommitmentARB);
 			}

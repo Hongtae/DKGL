@@ -26,9 +26,7 @@
 #ifdef _WIN32
 	#define DKLIB_OPENGL_WIN32
 	#include <windows.h>
-	//#include <gl/gl.h>
-	//#include <gl/glu.h>
-	//#include "OpenGL/glext.h"
+	#include <gl/gl.h>
 	#include "OpenGL/glcorearb.h"
 
 #pragma comment(lib, "opengl32.lib")
@@ -37,7 +35,7 @@
 namespace OpenGL
 {
 	// OpenGL core api based on version 4.4 (Not compatible profile)
-
+#if 0
 	// GL_VERSION_1_0
 	extern PFNGLCULLFACEPROC					glCullFace;
 	extern PFNGLFRONTFACEPROC					glFrontFace;
@@ -103,7 +101,7 @@ namespace OpenGL
 	extern PFNGLDELETETEXTURESPROC				glDeleteTextures;
 	extern PFNGLGENTEXTURESPROC					glGenTextures;
 	extern PFNGLISTEXTUREPROC					glIsTexture;
-
+#endif
 	// GL_VERSION_1_2
 	extern PFNGLDRAWRANGEELEMENTSPROC			glDrawRangeElements;
 	extern PFNGLTEXIMAGE3DPROC					glTexImage3D;
