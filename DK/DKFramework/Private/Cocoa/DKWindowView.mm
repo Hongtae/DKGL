@@ -17,16 +17,9 @@
 #import "DKWindowView.h"
 
 using namespace DKFoundation;
-namespace DKFramework
-{
-	namespace Private
-	{
-		DKString NSStringToIGString(NSString*);
-		NSString* DKStringToNSString(const DKFoundation::DKString&);
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
+
 
 @interface DKWindowView ()
 - (void)mouseDownEvent:(NSEvent*)event;
@@ -219,7 +212,7 @@ using namespace DKFramework::Private;
 				{
 					if ([f isKindOfClass:[NSString class]])
 					{
-						fileNames.Add(NSStringToIGString(f));
+						fileNames.Add([f UTF8String]);
 					}
 				}
 				[pool release];
@@ -492,7 +485,7 @@ using namespace DKFramework::Private;
 	else if ([aString isKindOfClass:[NSAttributedString class]])
 		str = [aString string];
 
-	handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, NSStringToIGString(str), false);
+	handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, [str UTF8String], false);
 	if (self.markedText.length > 0)
 		handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInputCandidate, 0, DKVK_NONE, L"", false);
 
@@ -595,7 +588,7 @@ using namespace DKFramework::Private;
 		{
 			self.markedText = str;
 			NSLog(@"self.markedText: %@\n", self.markedText);
-			handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInputCandidate, 0, DKVK_NONE, NSStringToIGString(str), false);
+			handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInputCandidate, 0, DKVK_NONE, [str UTF8String], false);
 		}
 		else
 		{

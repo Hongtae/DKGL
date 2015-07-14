@@ -23,9 +23,6 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		DKString NSStringToIGString(NSString*);
-		NSString* DKStringToNSString(const DKString&);
-
 		namespace
 		{
 			struct TouchInfo
@@ -387,7 +384,7 @@ using namespace DKFramework::Private;
 	if (textInputEnabled)		// User closed keyboard (iPad)
 	{
 		if ([textField.text length] > 0)
-			handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, NSStringToIGString(textField.text), false);
+			handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, [textField.text UTF8String], false);
 		handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, L"\e", false);
 		handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInputCandidate, 0, DKVK_NONE, L"", false);
 
@@ -405,7 +402,7 @@ using namespace DKFramework::Private;
 {
 	if (textInputEnabled)
 	{
-		handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInputCandidate, 0, DKVK_NONE, NSStringToIGString(textInputField.text), false);
+		handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInputCandidate, 0, DKVK_NONE, [textInputField.text UTF8String], false);
 	}
 }
 
@@ -420,7 +417,7 @@ using namespace DKFramework::Private;
 	if (textInputEnabled)
 	{
 		if ([textInputField.text length] > 0)
-			handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, NSStringToIGString(textField.text), false);
+			handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, [textField.text UTF8String], false);
 		handler->PostKeyboardEvent(DKWindow::EventKeyboardTextInput, 0, DKVK_NONE, L"\n", false);
 	}
 	

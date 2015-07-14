@@ -34,7 +34,7 @@ DKOpenGLInterface* DKOpenGLInterface::CreateInterface(DKOpenGLContext*)
 DKOpenGLImpl::DKOpenGLImpl(void)
 : mainContext(NULL)
 {
-	mainContext = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2];
+	mainContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
 	DKASSERT_DESC(mainContext != nil, "Failed to create context.\n");
 	
 	EAGLContext* currentContext = [EAGLContext currentContext];
@@ -109,7 +109,7 @@ void DKOpenGLImpl::Bind(void* target) const
 	else
 	{
 		// create new context
-		EAGLContext *context = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2 sharegroup:[mainContext sharegroup] ];
+		EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:[mainContext sharegroup] ];
 		DKASSERT_DESC(context != nil, "NSOpenGLContext creation failed!");
 
 		[EAGLContext setCurrentContext:context];

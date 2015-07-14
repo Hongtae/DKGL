@@ -18,16 +18,9 @@
 #include "DKApplicationImpl.h"
 
 using namespace DKFoundation;
-namespace DKFramework
-{
-	namespace Private
-	{
-		DKString NSStringToIGString(NSString*);
-		NSString* DKStringToNSString(const DKFoundation::DKString&);
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKWindowImpl implementation

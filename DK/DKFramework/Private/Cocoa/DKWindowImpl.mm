@@ -16,16 +16,9 @@
 #import "DKWindowImpl.h"
 
 using namespace DKFoundation;
-namespace DKFramework
-{
-	namespace Private
-	{
-		DKString NSStringToIGString(NSString*);
-		NSString* DKStringToNSString(const DKFoundation::DKString&);
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
+
 
 #pragma mark - DKNSWindow
 @interface DKNSWindow : NSWindow
@@ -162,7 +155,7 @@ bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoi
 	// create view
 	this->view = [[DKWindowView alloc] initWithFrame:rect handler:ownerWindow];
 	[this->window setContentView:view];
-	[window setTitle:DKStringToNSString(title)];
+	[window setTitle:[NSString stringWithUTF8String:(const char*)DKStringU8(title)]];
 
 	if (origin.x + rect.size.width > 0 && origin.y + rect.size.height > 0)
 		[this->window setFrameOrigin:NSMakePoint(origin.x, origin.y)];
@@ -306,12 +299,12 @@ double DKWindowImpl::ContentScaleFactor(void) const
 
 void DKWindowImpl::SetTitle(const DKString& title)
 {
-	[window setTitle:DKStringToNSString(title)];
+	[window setTitle:[NSString stringWithUTF8String:(const char*)DKStringU8(title)]];
 }
 
 DKString DKWindowImpl::Title(void) const
 {
-	return NSStringToIGString([window title]);
+	return [[window title] UTF8String];
 }
 
 bool DKWindowImpl::IsVisible(void) const

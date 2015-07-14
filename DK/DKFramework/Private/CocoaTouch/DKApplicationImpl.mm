@@ -19,32 +19,6 @@
 #import "DKApplicationImpl.h"
 
 using namespace DKFoundation;
-namespace DKFramework
-{
-	namespace Private
-	{
-#if defined(__BIG_ENDIAN__)
-#define NSSTRING_ENCODING_WCHAR		NSUTF32BigEndianStringEncoding
-#elif defined(__LITTLE_ENDIAN__)
-#define NSSTRING_ENCODING_WCHAR		NSUTF32LittleEndianStringEncoding
-#else
-#error System endianness not defined.
-#endif
-		static_assert(sizeof(wchar_t) == 4, "wchar_t must be UTF-32 in iOS");
-
-		DKString NSStringToIGString(NSString *str)
-		{
-			return (const wchar_t*)[str cStringUsingEncoding:NSSTRING_ENCODING_WCHAR];
-		}
-		NSString* DKStringToNSString(const DKFoundation::DKString& str)
-		{
-			size_t len = str.Bytes();
-			if (len > 0)
-				return [[[NSString alloc] initWithBytes:(const wchar_t*)str length:len encoding:NSSTRING_ENCODING_WCHAR] autorelease];
-			return @"";
-		}
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -355,7 +329,7 @@ DKLogger& DKApplicationImpl::DefaultLogger(void)
 	{
 		void Log(const DKString& msg)
 		{
-			NSLog(@"%@", DKStringToNSString(msg));
+			NSLog(@"%@", [NSString stringWithUTF8String:(const char*)DKStringU8(msg)]);
 		}
 	};
 	static Logger logger;
@@ -368,7 +342,7 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 	{
 		NSFileManager* fileManager = [[[NSFileManager alloc] init] autorelease];
 		NSURL* url = [fileManager URLForDirectory:path inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
-		return NSStringToIGString(url.path);
+		return [url.path UTF8String];
 	};
 	auto PreferencesPath = []()-> DKString
 	{
@@ -391,7 +365,7 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 			DKERROR_THROW((const char*)[errDesc UTF8String]);
 			NSLog(@"%@\n", errDesc);
 		}
-		return NSStringToIGString(path);
+		return [path UTF8String];
 	};
 
 	DKString path;
@@ -401,19 +375,19 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 			path = L"/";
 			break;
 		case SystemPath::SystemPathAppRoot:
-			path = NSStringToIGString( [[NSBundle mainBundle] bundlePath] );
+			path = [[[NSBundle mainBundle] bundlePath] UTF8String];
 			break;
 		case SystemPath::SystemPathAppResource:
-			path = NSStringToIGString( [[NSBundle mainBundle] resourcePath] );
+			path = [[[NSBundle mainBundle] resourcePath] UTF8String];
 			break;
 		case SystemPath::SystemPathAppExecutable:
-			path = NSStringToIGString( [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] );
+			path = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] UTF8String];
 			break;
 		case SystemPath::SystemPathAppData:
 			path = SearchPath(NSApplicationSupportDirectory);
 			break;
 		case SystemPath::SystemPathUserHome:
-			path = NSStringToIGString(NSHomeDirectory());
+			path = [NSHomeDirectory() UTF8String];
 			break;
 		case SystemPath::SystemPathUserDocuments:
 			path = SearchPath(NSDocumentDirectory);
@@ -425,7 +399,7 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 			path = SearchPath(NSCachesDirectory);
 			break;
 		case SystemPath::SystemPathUserTemp:
-			path = NSStringToIGString(NSTemporaryDirectory());
+			path = [NSTemporaryDirectory() UTF8String];
 			break;
 	}
 	return path;
@@ -433,7 +407,7 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 
 DKString DKApplicationImpl::ModulePath(void)
 {
-	return NSStringToIGString( [[NSBundle mainBundle] executablePath] );
+	return [[[NSBundle mainBundle] executablePath] UTF8String];
 }
 
 DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocator& alloc)
@@ -495,20 +469,20 @@ DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
 
 DKString DKApplicationImpl::HostName(void) const
 {
-	return NSStringToIGString([[UIDevice currentDevice] name]);
+	return [[[UIDevice currentDevice] name] UTF8String];
 }
 
 DKString DKApplicationImpl::OSName(void) const
 {
-	DKString systemName = NSStringToIGString([[UIDevice currentDevice] systemName]);
-	DKString systemVersion = NSStringToIGString([[UIDevice currentDevice] systemVersion]);
+	NSString* systemName = [[UIDevice currentDevice] systemName];
+	NSString* systemVersion = [[UIDevice currentDevice] systemVersion];
 
-	return DKString::Format("%ls (Version:%ls)", (const wchar_t*)systemName, (const wchar_t*)systemVersion);
+	return [[NSString stringWithFormat:@"%@ (Version:%@)", systemName, systemVersion] UTF8String];
 }
 
 DKString DKApplicationImpl::UserName(void) const
 {
-	return NSStringToIGString(NSUserName());
+	return [NSUserName() UTF8String];
 }
 
 #endif // if !TARGET_OS_IPHONE
