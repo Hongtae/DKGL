@@ -17,6 +17,7 @@
 // size of rect is DKSize object and can not be negative.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKRect
@@ -49,3 +50,4 @@ namespace DKFramework
 		static const DKRect zero;
 	};
 }
+#pragma pack(pop)

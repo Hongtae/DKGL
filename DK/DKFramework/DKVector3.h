@@ -13,6 +13,7 @@
 // a Euclidean vector for three-dimensional space.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKMatrix3;
@@ -79,3 +80,4 @@ namespace DKFramework
 		static const DKVector3 zero;
 	};
 }
+#pragma pack(pop)

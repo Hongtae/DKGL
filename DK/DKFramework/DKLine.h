@@ -16,6 +16,7 @@
 // line segment object.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKLine
@@ -41,3 +42,4 @@ namespace DKFramework
 		DKVector3	end;
 	};
 }
+#pragma pack(pop)

@@ -13,6 +13,7 @@
 // a plane object. useful to calculate collision detection.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector3;
@@ -44,5 +45,4 @@ namespace DKFramework
 		};
 	};
 }
-
-
+#pragma pack(pop)

@@ -30,6 +30,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	struct DKLIB_API DKTransformUnit
@@ -130,3 +131,4 @@ namespace DKFramework
 		return v;
 	}
 }
+#pragma pack(pop)

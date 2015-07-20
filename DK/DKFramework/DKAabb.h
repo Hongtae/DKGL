@@ -15,6 +15,7 @@
 // a simple AABB (Axis Aligned Bounding Box) utility class.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLine;
@@ -42,3 +43,4 @@ namespace DKFramework
 		DKVector3	positionMin;
 	};
 }
+#pragma pack(pop)

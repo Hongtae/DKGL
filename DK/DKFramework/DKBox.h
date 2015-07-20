@@ -15,6 +15,7 @@
 // Oriented bounding box, a utility class.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLine;
@@ -51,3 +52,4 @@ namespace DKFramework
 		float hu, hv, hw;
 	};
 }
+#pragma pack(pop)

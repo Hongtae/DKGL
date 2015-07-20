@@ -20,6 +20,7 @@
 // a triangle class for calculate collision
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKTriangle
@@ -44,3 +45,4 @@ namespace DKFramework
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, Front faces = Front::Both, float epsilon = 0.000001f) const;
 	};
 }
+#pragma pack(pop)

@@ -17,6 +17,7 @@
 // 3x2 matrix for affine transform on 2 dimensional coordinates.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKAffineTransform2
@@ -64,3 +65,4 @@ namespace DKFramework
 		return v;
 	}
 }
+#pragma pack(pop)

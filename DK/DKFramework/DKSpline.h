@@ -39,6 +39,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKSpline
@@ -123,3 +124,4 @@ namespace DKFramework
 		DKVector3 point3;
 	};
 }
+#pragma pack(pop)

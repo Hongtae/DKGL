@@ -13,6 +13,7 @@
 // quaternion class.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKMatrix3;
@@ -86,3 +87,4 @@ namespace DKFramework
 		static const DKQuaternion identity;
 	};
 }
+#pragma pack(pop)

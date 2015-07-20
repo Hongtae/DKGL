@@ -14,6 +14,7 @@
 // a Euclidean vector for four-dimensional space.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKMatrix4;
@@ -68,3 +69,4 @@ namespace DKFramework
 		static const DKVector4 zero;
 	};
 }
+#pragma pack(pop)

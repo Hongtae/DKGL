@@ -14,6 +14,7 @@
 // a point unit. used by 2d graphics to represent a point.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKPoint
@@ -130,3 +131,4 @@ namespace DKFramework
 		static const DKPoint zero;
 	};
 }
+#pragma pack(pop)

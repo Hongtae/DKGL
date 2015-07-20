@@ -14,6 +14,7 @@
 // a sphere class, can calculate collision.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLine;
@@ -38,3 +39,4 @@ namespace DKFramework
 		float		radius;
 	};
 }
+#pragma pack(pop)

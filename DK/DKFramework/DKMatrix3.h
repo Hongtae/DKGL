@@ -17,6 +17,7 @@
 //   transform of Vector3 V is V' = V * Matrix
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector3;
@@ -80,3 +81,4 @@ namespace DKFramework
 		static const DKMatrix3 identity;
 	};
 }
+#pragma pack(pop)

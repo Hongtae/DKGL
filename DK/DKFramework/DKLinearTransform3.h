@@ -17,6 +17,7 @@
 // 3x3 matrix for linear transform on 3 dimensional coordinates.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKLinearTransform3
@@ -70,3 +71,4 @@ namespace DKFramework
 		return v;
 	}
 }
+#pragma pack(pop)

@@ -17,6 +17,7 @@
 //   transform of Vector4 V is V' = V * Matrix
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector4;
@@ -84,3 +85,4 @@ namespace DKFramework
 		static const DKMatrix4 identity;
 	};
 }
+#pragma pack(pop)

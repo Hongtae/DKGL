@@ -13,6 +13,7 @@
 // a Euclidean vector for two-dimensional space.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKMatrix2;
@@ -70,3 +71,4 @@ namespace DKFramework
 		static const DKVector2 zero;
 	};
 }
+#pragma pack(pop)

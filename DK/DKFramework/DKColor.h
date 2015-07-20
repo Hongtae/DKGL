@@ -16,6 +16,7 @@
 // object can create with 32bit integer also.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKColor
@@ -228,4 +229,4 @@ namespace DKFramework
 		};
 	};
 }
-
+#pragma pack(pop)

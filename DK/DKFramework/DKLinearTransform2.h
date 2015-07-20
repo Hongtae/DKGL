@@ -16,6 +16,7 @@
 // 2x2 matrix for linear transform on 2 dimensional coordinates.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKLinearTransform2
@@ -66,3 +67,4 @@ namespace DKFramework
 		return v;
 	}
 }
+#pragma pack(pop)

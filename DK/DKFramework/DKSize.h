@@ -15,6 +15,7 @@
 // of 2 dimensional logical coordinates.
 ///////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLIB_API DKSize
@@ -131,3 +132,4 @@ namespace DKFramework
 		static const DKSize zero;
 	};
 }
+#pragma pack(pop)
