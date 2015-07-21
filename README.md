@@ -89,15 +89,15 @@ You can build PyDK with or without python interpreter embedded.
 ###### You need python library to build PyDK with python interpreter embedded.
 1. Download prebuilt library for your platform.
     - Win32 i386
-        - [python3.4.3_Win32.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_Win32.zip)
+        - [python3.5.0_Win32.zip](https://github.com/tiff2766/Python/releases/download/v3.5.0/python3.5.0_Win32.zip)
     - Win32 x64
-        - [python3.4.3_Win32_x64.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_Win32_x64.zip)
+        - [python3.5.0_Win32_x64.zip](https://github.com/tiff2766/Python/releases/download/v3.5.0/python3.5.0_Win32_x64.zip)
     - Mac OS X (Universal)
-        - [python3.4.3_OSX.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_OSX.zip)
+        - [python3.5.0_OSX.zip](https://github.com/tiff2766/Python/releases/download/v3.5.0/python3.5.0_OSX.zip)
     - Apple iOS (Universal)
-        - [python3.4.3_iOS.zip](https://github.com/tiff2766/Python/releases/download/v3.4.3/python3.4.3_iOS.zip)
+        - [python3.5.0_iOS.zip](https://github.com/tiff2766/Python/releases/download/v3.5.0/python3.5.0_iOS.zip)
 2. Extract into PyDK/Python/  
-    `example for OSX: PyDK/Python/OSX/libpython3.4.a`
+    `example for OSX: PyDK/Python/OSX/libpython3.5.a`
 3. Build!
 
 - Or you can build from sources on GitHub
@@ -108,9 +108,9 @@ You can build PyDK with or without python interpreter embedded.
 With this python module, you can write your codes with your favorite editors and system installed python.
 
 Extract file into your Python site-packages dir.
-- [Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_osx.zip)
-- [Windows i386](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32.zip)
-- [Windows x64](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32_x64.zip)
+- [Mac OS X](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_osx.zip) **(outdated)**
+- [Windows i386](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32.zip) **(outdated)**
+- [Windows x64](https://bitbucket.org/tiff2766/dkdemo/downloads/dk_core_python34_module_win32_x64.zip) **(outdated)**
 - It is strongly recommend to use dk module together. You can download dk module in this project. `Scripts/dk`
 
 ## Required Libraries (Included in this project)
