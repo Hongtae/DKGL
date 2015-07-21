@@ -387,7 +387,9 @@ namespace DKFoundation
 				enum {IsFunctionConst = FunctionTraits::IsConst};
 
 				// determine 'U' can call 'Func'.
-				enum {ConversionTest = DKTypeConversionTest<ObjectType*, ClassType*>()};
+				//enum {ConversionTest = DKTypeConversionTest<ObjectType*, ClassType*>()};	//error on VS2015
+				enum {ConversionTest = Private::ConversionTest<ObjectType*, ClassType*>::Result };
+
 				enum {ConstTest = IsObjectConst ? IsFunctionConst : 1};
 
 				enum {Result = ConversionTest && ConstTest};

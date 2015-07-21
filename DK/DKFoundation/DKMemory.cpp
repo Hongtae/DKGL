@@ -285,7 +285,7 @@ namespace DKFoundation
 
 		struct AllocatorInterface
 		{
-			virtual ~AllocatorInterface(void) {}
+			virtual ~AllocatorInterface(void) noexcept(!DKLIB_MEMORY_DEBUG) {}
 			virtual void* Alloc(size_t) = 0;
 			virtual void Dealloc(void*) = 0;
 			virtual size_t Purge(void) = 0;

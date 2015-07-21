@@ -317,7 +317,7 @@ namespace DKFoundation
 		{
 		}
 
-		~DKFixedSizeAllocator(void)
+		~DKFixedSizeAllocator(void) noexcept(!DKLIB_MEMORY_DEBUG)
 		{
 			DKASSERT_MEM_DEBUG(numAllocated == 0);
 			if (numChunks > 0)

@@ -10,6 +10,10 @@
 #include "DKObject.h"
 #include "DKOperation.h"
 
+#ifdef _WIN32
+#undef Yield	// see WinBase.h
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // DKThread
 // Creating new thread with DKOperation. Because of threads run in parallel,

@@ -35,7 +35,7 @@ namespace DKFoundation
 	{
 	public:
 		DKAllocatorChain(void);
-		virtual ~DKAllocatorChain(void);
+		virtual ~DKAllocatorChain(void) noexcept(!DKLIB_MEMORY_DEBUG);
 
 		virtual void* Alloc(size_t) = 0;
 		virtual void Dealloc(void*) = 0;
@@ -50,10 +50,10 @@ namespace DKFoundation
 
 		// To extend static-object life cycle, a static-object which own
 		// DKAllocator, it should have StaticInitializer instance with static storage.
-		struct StaticInitializer
+		struct DKLIB_API StaticInitializer
 		{
 			StaticInitializer(void);
-			~StaticInitializer(void);
+			~StaticInitializer(void) noexcept(!DKLIB_MEMORY_DEBUG);
 		};
 
 		void* operator new (size_t);

@@ -1,11 +1,4 @@
 #pragma once
-
-#ifdef _MSC_VER
-// visual studio 2013 still not support some features of C++11.
-// DKFoundation_msvc.h is should be used for msvc (vs2013 for now)
-#include "DKFoundation_msvc.h"
-#else
-
 #include "DKInclude.h"
 
 // basic object templates and memory management.
@@ -93,5 +86,3 @@
 #include "DKFoundation/DKError.h"
 #include "DKFoundation/DKLog.h"
 #include "DKFoundation/DKUtils.h"
-
-#endif //ifdef _MSC_VER

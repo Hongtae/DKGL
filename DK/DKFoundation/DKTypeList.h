@@ -139,7 +139,8 @@ namespace DKFoundation
 				using Type1 = typename L1::template TypeAt<NextIndex>;
 				using Type2 = typename L2::template TypeAt<NextIndex>;
 
-				enum {Result = DKTypeConversionTest<Type1, Type2>() ? _CountCompatibles<NextIndex, L1, L2>::Result + 1 : 0};
+				//enum {Result = DKTypeConversionTest<Type1, Type2>() ? _CountCompatibles<NextIndex, L1, L2>::Result + 1 : 0};	//error on VS2015
+				enum { Result = Private::ConversionTest<Type1, Type2>::Result ? _CountCompatibles<NextIndex, L1, L2>::Result + 1 : 0 };
 			};
 			template <typename L1, typename L2> struct _CountCompatibles<0, L1, L2>
 			{
@@ -177,7 +178,9 @@ namespace DKFoundation
 				using Result = typename DKTypeList<T2>::template Append< _Rest >;
 			};
 
-			using Result = typename _EraseOne<T, Types...>::Result::template Remove<Ts...>;
+			//using Result = typename _EraseOne<T, Types...>::Result::template Remove<Ts...>;	// error on VS2015
+			using _R = typename _EraseOne<T, Types...>::Result;
+			using Result = typename _R::template Remove<Ts...>;
 		};
 		// re-construct list without specific type at given Index.
 		template <int Index> struct _RemoveIndex
@@ -255,7 +258,9 @@ namespace DKFoundation
 		};
 		template <typename T, typename... Ts> struct _Reverse<T, Ts...>
 		{
-			using Result = typename _Reverse<Ts...>::Result::template Append<T>;
+			//using Result = typename _Reverse<Ts...>::Result::template Append<T>;	// error on VS2015
+			using _R = typename _Reverse<Ts...>::Result;
+			using Result = typename _R::template Append<T>;
 		};
 
 	public:
