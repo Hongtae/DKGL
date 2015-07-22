@@ -116,6 +116,8 @@ bool DKFrame::BringSubframeToFront(DKFrame* frame)
 			{
 				if (index > 0)
 				{
+					// temporary hold an ownership to prevent object destruction.
+					DKObject<DKFrame> tmp(frame);
 					this->subframes.Remove(index);
 					this->subframes.Insert(frame, 0);
 					this->SetRedraw();
@@ -138,6 +140,8 @@ bool DKFrame::SendSubframeToBack(DKFrame* frame)
 			{
 				if (index + 1 < this->subframes.Count())
 				{
+					// temporary hold an ownership to prevent object destruction.
+					DKObject<DKFrame> tmp(frame);
 					this->subframes.Remove(index);
 					this->subframes.Add(frame);
 					this->SetRedraw();
