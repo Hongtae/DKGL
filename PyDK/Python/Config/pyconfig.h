@@ -12,6 +12,6 @@
 
 
 #ifndef SOABI
-/* CPython 3.4.x */
-#define SOABI "cpython-34m"
+/* CPython 3.5.x */
+#define SOABI "cpython-35m"
 #endif

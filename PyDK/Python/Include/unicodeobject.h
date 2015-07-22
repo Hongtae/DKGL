@@ -1052,7 +1052,7 @@ PyAPI_FUNC(Py_ssize_t) PyUnicode_AsWideChar(
    always ends with a nul character. If size is not NULL, write the number of
    wide characters (excluding the null character) into *size.
 
-   Returns a buffer allocated by PyMem_Alloc() (use PyMem_Free() to free it)
+   Returns a buffer allocated by PyMem_Malloc() (use PyMem_Free() to free it)
    on success. On error, returns NULL, *size is undefined and raises a
    MemoryError. */
 
@@ -2060,12 +2060,6 @@ PyAPI_FUNC(int) PyUnicode_Contains(
     PyObject *element           /* Element string */
     );
 
-/* Checks whether the string contains any NUL characters. */
-
-#ifndef Py_LIMITED_API
-PyAPI_FUNC(int) _PyUnicode_HasNULChars(PyObject *);
-#endif
-
 /* Checks whether argument is a valid identifier. */
 
 PyAPI_FUNC(int) PyUnicode_IsIdentifier(PyObject *s);
@@ -2244,6 +2238,8 @@ PyAPI_FUNC(Py_UNICODE*) Py_UNICODE_strrchr(
     const Py_UNICODE *s,
     Py_UNICODE c
     );
+
+PyAPI_FUNC(PyObject*) _PyUnicode_FormatLong(PyObject *, int, int, int);
 
 /* Create a copy of a unicode string ending with a nul character. Return NULL
    and raise a MemoryError exception on memory allocation failure, otherwise

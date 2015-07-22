@@ -1224,8 +1224,10 @@
 #define SIZEOF__BOOL		1
 #if defined (__i386__) || defined (__x86_64__)
 #define SIZEOF_LONG_DOUBLE	16
-#elif defined(__arm64__) || defined(__arm__)
-#define SIZEOF_LONG_DOUBLE	8  /* long double is identical to double in iOS. */
+#elif defined(__arm64__)
+#define SIZEOF_LONG_DOUBLE	16
+#elif defined(__arm__)
+#define SIZEOF_LONG_DOUBLE	8
 #else
 #error "Unknown platform"
 #endif

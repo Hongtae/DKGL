@@ -229,7 +229,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>Python/Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python34_static_d.lib</AdditionalDependencies>
+      <AdditionalDependencies>python35_static_d.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -254,7 +254,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>Python/Win32_x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python34_static_d.lib</AdditionalDependencies>
+      <AdditionalDependencies>python35_static_d.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -282,7 +282,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>Python/Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python34_static.lib</AdditionalDependencies>
+      <AdditionalDependencies>python35_static.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -310,7 +310,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>Python/Win32_x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python34_static.lib</AdditionalDependencies>
+      <AdditionalDependencies>python35_static.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
