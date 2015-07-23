@@ -1,4 +1,4 @@
-# Project DK, DKLib
+# Project DKGL
 Game Library for C\++ and Python  
 This project contains two modules, DK and PyDK.  
 DK is core library for C\++ and PyDK is Python bindings for DK.
@@ -137,4 +137,4 @@ Hongtae Kim, (tiff2766@gmail.com)
 
 
 ## Liense
-[MIT License](http://opensource.org/licenses/MIT)
+[BSD-3 License](http://opensource.org/licenses/BSD-3-Clause)
