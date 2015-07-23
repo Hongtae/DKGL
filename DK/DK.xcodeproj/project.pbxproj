@@ -4040,7 +4040,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_STATIC=1",
+					"DKGL_STATIC=1",
 					"$(inherited)",
 				);
 				SDKROOT = macosx;
@@ -4053,7 +4053,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_STATIC=1",
+					"DKGL_STATIC=1",
 					"$(inherited)",
 				);
 				SDKROOT = macosx;
@@ -4193,7 +4193,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_DYNAMIC=1",
+					"DKGL_DYNAMIC=1",
 					"$(inherited)",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -4223,7 +4223,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_DYNAMIC=1",
+					"DKGL_DYNAMIC=1",
 					"$(inherited)",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -4254,7 +4254,7 @@
 					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.0.sdk/System/Library/Frameworks",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_DYNAMIC=1",
+					"DKGL_DYNAMIC=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "DK_iOS-Info.plist";
@@ -4287,7 +4287,7 @@
 					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.0.sdk/System/Library/Frameworks",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_DYNAMIC=1",
+					"DKGL_DYNAMIC=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "DK_iOS-Info.plist";
@@ -4309,7 +4309,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_STATIC=1",
+					"DKGL_STATIC=1",
 					"$(inherited)",
 				);
 				SDKROOT = iphoneos;
@@ -4321,7 +4321,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DKLIB_STATIC=1",
+					"DKGL_STATIC=1",
 					"$(inherited)",
 				);
 				SDKROOT = iphoneos;
