@@ -16,7 +16,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKFixedConstraint : public DKConstraint
+	class DKGL_API DKFixedConstraint : public DKConstraint
 	{
 	public:
 		DKFixedConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);

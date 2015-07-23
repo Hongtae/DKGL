@@ -23,7 +23,7 @@ DKCompoundShape::~DKCompoundShape(void)
 	DKASSERT_DEBUG( this->impl->isCompound() );
 	DKASSERT_DEBUG( dynamic_cast<btCompoundShape*>(this->impl) != NULL );
 
-#ifdef DKLIB_DEBUG_ENABLED	
+#ifdef DKGL_DEBUG_ENABLED	
 	btCompoundShape* compund = static_cast<btCompoundShape*>(this->impl);
 	DKASSERT( this->shapes.Count() == compund->getNumChildShapes() );
 	for (size_t i = 0; i < this->shapes.Count(); ++i)

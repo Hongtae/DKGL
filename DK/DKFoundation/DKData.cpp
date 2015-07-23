@@ -62,7 +62,7 @@ DKData::~DKData(void)
 	DKASSERT_DEBUG(numShared == 0);
 	DKASSERT_DEBUG(sharedPtr == NULL);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	if (sharedLock.TryLock())
 	{
 		sharedLock.Unlock();

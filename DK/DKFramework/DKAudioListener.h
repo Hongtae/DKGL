@@ -24,7 +24,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKAudioListener : public DKFoundation::DKSharedInstance<DKAudioListener>
+	class DKGL_API DKAudioListener : public DKFoundation::DKSharedInstance<DKAudioListener>
 	{
 	public:
 		~DKAudioListener(void);

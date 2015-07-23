@@ -16,7 +16,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKConeTwistConstraint : public DKConstraint
+	class DKGL_API DKConeTwistConstraint : public DKConstraint
 	{
 	public:
 		DKConeTwistConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);

@@ -19,7 +19,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKDataStream : public DKStream
+	class DKGL_API DKDataStream : public DKStream
 	{
 	public:
 		DKDataStream(void);

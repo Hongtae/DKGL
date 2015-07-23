@@ -21,7 +21,7 @@
 namespace DKFramework
 {
 	class DKResourceLoader;
-	class DKLIB_API DKResource
+	class DKGL_API DKResource
 	{
 	public:
 		DKResource(void);

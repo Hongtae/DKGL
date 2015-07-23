@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKBvh
+	class DKGL_API DKBvh
 	{
 	public:
 		struct VolumeInterface

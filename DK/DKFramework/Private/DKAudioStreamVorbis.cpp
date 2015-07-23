@@ -5,8 +5,8 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#define DKLIB_EXTDEPS_LIBOGG
-#define DKLIB_EXTDEPS_LIBVORBIS
+#define DKGL_EXTDEPS_LIBOGG
+#define DKGL_EXTDEPS_LIBVORBIS
 #include <memory.h>
 #include "../../../lib/ExtDeps.h"
 

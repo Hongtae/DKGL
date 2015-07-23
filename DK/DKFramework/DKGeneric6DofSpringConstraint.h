@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKGeneric6DofSpringConstraint : public DKGeneric6DofConstraint
+	class DKGL_API DKGeneric6DofSpringConstraint : public DKGeneric6DofConstraint
 	{
 	public:
 		// DKNSTransform is rigid body's local transform.

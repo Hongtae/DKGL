@@ -20,7 +20,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKStaticTriangleMeshShape : public DKConcaveShape
+	class DKGL_API DKStaticTriangleMeshShape : public DKConcaveShape
 	{
 	public:
 		DKStaticTriangleMeshShape(

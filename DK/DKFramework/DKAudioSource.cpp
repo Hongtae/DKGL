@@ -36,7 +36,7 @@ DKAudioSource::~DKAudioSource(void)
 	alDeleteSources(1, &sourceId);
 	sourceId = 0;
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	// check error.
 	ALenum err = alGetError();
 	if (err != AL_NO_ERROR)
@@ -72,7 +72,7 @@ bool DKAudioSource::Stop(void)
 		alSourceUnqueueBuffers(sourceId, 1, &bufferId);
 	}
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	if (buffersProcessed != buffers.Count())
 	{
 		DKLog("DKAudioSource Warning: Buffer mismatch! (%d allocated, %d released)\n", (int)buffers.Count(), (int)buffersProcessed); 
@@ -90,7 +90,7 @@ bool DKAudioSource::Stop(void)
 	}
 	buffers.Clear();
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	// check error.
 	ALenum err = alGetError();
 	if (err != AL_NO_ERROR)
@@ -176,7 +176,7 @@ bool DKAudioSource::EnqueueBuffer(int frequency, int bits, int channels, const v
 
 				//DKLog("DKAudioSource buffer queued. total:%d\n", this->buffers.Count());
 			}
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 			// check error.
 			ALenum err = alGetError();
 			if (err != AL_NO_ERROR)
@@ -225,7 +225,7 @@ void DKAudioSource::UnqueueBuffers(void) const
 			DKLog("DKAudioSource Failed to unqueue buffer! (source:0x%x)\n", sourceId);
 		}
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		// check error.
 		ALenum err = alGetError();
 		if (err != AL_NO_ERROR)
@@ -247,7 +247,7 @@ size_t DKAudioSource::QueuedBuffers(void) const
 	DKASSERT_DEBUG(this->sourceId != 0);
 
 	DKCriticalSection<DKSpinLock> guard(this->bufferLock);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	// get number of total buffers.
 	ALint queuedBuffers = 0;
 	alGetSourcei(sourceId, AL_BUFFERS_QUEUED, &queuedBuffers);
@@ -305,7 +305,7 @@ void DKAudioSource::SetTimePosition(double t)
 			
 			alSourcef(sourceId, AL_BYTE_OFFSET, bytesOffset);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 			// check error.
 			ALenum err = alGetError();
 			if (err != AL_NO_ERROR)
@@ -357,7 +357,7 @@ void DKAudioSource::SetTimeOffset(double t)
 		ALint bytesOffset = Clamp<ALint>(t * buffInfo.bytesSecond, 0, (ALint)buffInfo.bytes);
 		alSourcef(sourceId, AL_BYTE_OFFSET, bytesOffset);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		// check error.
 		ALenum err = alGetError();
 		if (err != AL_NO_ERROR)

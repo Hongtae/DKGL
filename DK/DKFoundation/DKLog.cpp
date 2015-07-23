@@ -29,17 +29,17 @@ namespace DKFoundation
 		static DKObject<DKLogger> defaultLogger = NULL;
 	}
 
-	DKLIB_API void DKLoggerSet(DKLogger* logger)
+	DKGL_API void DKLoggerSet(DKLogger* logger)
 	{
 		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
 		Private::defaultLogger = logger;
 	}
-	DKLIB_API DKLogger* DKLoggerCurrent(void)
+	DKGL_API DKLogger* DKLoggerCurrent(void)
 	{
 		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
 		return Private::defaultLogger;
 	}
-	DKLIB_API bool DKLoggerCompareAndReplace(DKLogger* cmp, DKLogger* repl)
+	DKGL_API bool DKLoggerCompareAndReplace(DKLogger* cmp, DKLogger* repl)
 	{
 		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
 		if (Private::defaultLogger == cmp)
@@ -50,7 +50,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API void DKLogInit(DKLogCallbackProc proc)
+	DKGL_API void DKLogInit(DKLogCallbackProc proc)
 	{
 		struct Logger : public DKLogger
 		{
@@ -66,7 +66,7 @@ namespace DKFoundation
 		else
 			DKLoggerSet(NULL);
 	}
-	DKLIB_API void DKLog(const DKFoundation::DKString& str)
+	DKGL_API void DKLog(const DKFoundation::DKString& str)
 	{
 		Private::spinLock.Lock();
 		if (Private::defaultLogger)
@@ -78,7 +78,7 @@ namespace DKFoundation
 		Private::spinLock.Unlock();
 		fprintf(stderr, "%ls", (const wchar_t*)str);
 	}
-	DKLIB_API void DKLog(const char* fmt, ...)
+	DKGL_API void DKLog(const char* fmt, ...)
 	{
 		if (fmt == NULL || fmt[0] == '\0')
 			return;

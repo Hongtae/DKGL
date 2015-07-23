@@ -20,7 +20,7 @@ namespace DKFramework
 	class DKMatrix4;
 	class DKQuaternion;
 
-	class DKLIB_API DKVector3
+	class DKGL_API DKVector3
 	{
 	public:
 		DKVector3(void);

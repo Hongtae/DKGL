@@ -19,7 +19,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKLine
+	class DKGL_API DKLine
 	{
 	public:
 		DKLine(void);

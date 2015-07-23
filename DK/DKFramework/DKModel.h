@@ -31,7 +31,7 @@
 namespace DKFramework
 {
 	class DKScene;
-	class DKLIB_API DKModel : public DKResource
+	class DKGL_API DKModel : public DKResource
 	{
 	public:
 		enum Type

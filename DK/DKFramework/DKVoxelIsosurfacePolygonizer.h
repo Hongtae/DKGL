@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKVoxelIsosurfacePolygonizer : public DKVoxelPolygonizer
+	class DKGL_API DKVoxelIsosurfacePolygonizer : public DKVoxelPolygonizer
 	{
 	public:
 		struct Cube

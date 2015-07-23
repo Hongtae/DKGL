@@ -173,7 +173,7 @@ void DKOpenGLImpl::Unbind(void) const
 
 void DKOpenGLImpl::Flush(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(pthread_self());
 	if (p)
 		glFlush();
@@ -186,7 +186,7 @@ void DKOpenGLImpl::Flush(void) const
 
 void DKOpenGLImpl::Finish(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(pthread_self());
 	if (p)
 		glFinish();
@@ -273,7 +273,7 @@ void DKOpenGLImpl::Update(void) const
 
 			GLint depthBufferBits = 0;
 			glGetIntegerv(GL_DEPTH_BITS, &depthBufferBits);
-			DKLog("[%s] Rendering device updated. (%d x %d x %d)\n", DKLIB_FUNCTION_NAME, backingWidth, backingHeight, depthBufferBits);
+			DKLog("[%s] Rendering device updated. (%d x %d x %d)\n", DKGL_FUNCTION_NAME, backingWidth, backingHeight, depthBufferBits);
 		}
 		else
 		{

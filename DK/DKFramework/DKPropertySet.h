@@ -20,7 +20,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKPropertySet
+	class DKGL_API DKPropertySet
 	{
 	public:
 		static DKPropertySet& DefaultSet(void);

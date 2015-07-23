@@ -22,7 +22,7 @@
 namespace DKFramework
 {
 	class DKTriangle;
-	class DKLIB_API DKConvexHullShape : public DKPolyhedralConvexShape
+	class DKGL_API DKConvexHullShape : public DKPolyhedralConvexShape
 	{
 	public:
 		DKConvexHullShape(const DKVector3* vertices, size_t numVerts);

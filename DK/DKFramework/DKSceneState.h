@@ -27,7 +27,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKSceneState : public DKMaterial::PropertyCallback
+	class DKGL_API DKSceneState : public DKMaterial::PropertyCallback
 	{
 	public:
 		template <typename T> using StringKeyMap = DKFoundation::DKMap<DKFoundation::DKString, T>;

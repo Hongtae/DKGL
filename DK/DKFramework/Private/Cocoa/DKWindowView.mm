@@ -537,7 +537,7 @@ using namespace DKFramework::Private;
 	}
 	if (!processed)
 	{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		NSEvent *event = [[self window] currentEvent];
 		DKVirtualKey key = DKWindowImpl::ConvertVKey([event keyCode]);
 		NSLog(@"[NSTextInput] doCommandBySelector:(%@) for key:(%@) not processed.\n",

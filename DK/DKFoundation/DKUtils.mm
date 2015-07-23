@@ -39,12 +39,12 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API unsigned int DKRandom(void)
+	DKGL_API unsigned int DKRandom(void)
 	{
 		return arc4random();
 	}
 
-	DKLIB_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory(void)
 	{
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		NSString* tmp = NSTemporaryDirectory();
@@ -54,7 +54,7 @@ namespace DKFoundation
 		return ret;
 	}
 	
-	DKLIB_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments(void)
 	{
 		DKArray<DKString> result;
 		
@@ -70,7 +70,7 @@ namespace DKFoundation
 		return result;
 	}
 	
-	DKLIB_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
 	{
 		__block DKMap<DKString, DKString> result;
 

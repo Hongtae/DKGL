@@ -14,8 +14,8 @@
 
 namespace DKFoundation
 {
-	DKLIB_API unsigned int DKRandom(void);
-	DKLIB_API DKString DKTemporaryDirectory(void);
-	DKLIB_API DKArray<DKString> DKProcessArguments(void);
-	DKLIB_API DKMap<DKString, DKString> DKProcessEnvironments(void);
+	DKGL_API unsigned int DKRandom(void);
+	DKGL_API DKString DKTemporaryDirectory(void);
+	DKGL_API DKArray<DKString> DKProcessArguments(void);
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void);
 }

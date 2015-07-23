@@ -19,7 +19,7 @@ namespace DKFramework
 	class DKMatrix2;
 	class DKMatrix3;
 
-	class DKLIB_API DKVector2
+	class DKGL_API DKVector2
 	{
 	public:
 		DKVector2(void);

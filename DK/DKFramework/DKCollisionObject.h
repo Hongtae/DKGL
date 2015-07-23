@@ -20,7 +20,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKCollisionObject : public DKModel
+	class DKGL_API DKCollisionObject : public DKModel
 	{
 	public:
 		enum ObjectType

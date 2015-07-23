@@ -26,7 +26,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKShaderProgram
+	class DKGL_API DKShaderProgram
 	{
 	public:
 		typedef DKFoundation::DKArray<DKShaderConstant>		UniformArray;

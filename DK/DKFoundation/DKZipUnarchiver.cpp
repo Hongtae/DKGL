@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#define DKLIB_EXTDEPS_ZLIB
+#define DKGL_EXTDEPS_ZLIB
 #include "../lib/ExtDeps.h"
 #include "DKZipUnarchiver.h"
 #include "DKString.h"
@@ -60,7 +60,7 @@ namespace DKFoundation
 						}
 						else
 						{
-							DKLog("[%s] failed to open file: %ls.\n", DKLIB_FUNCTION_NAME, (const wchar_t*)file);
+							DKLog("[%s] failed to open file: %ls.\n", DKGL_FUNCTION_NAME, (const wchar_t*)file);
 						}
 					}
 				}
@@ -280,12 +280,12 @@ DKObject<DKZipUnarchiver> DKZipUnarchiver::Create(const DKString& file)
 		}
 		else
 		{
-			DKLog("[%s] error %d with file: %ls.\n", DKLIB_FUNCTION_NAME, err, (const wchar_t*)file);
+			DKLog("[%s] error %d with file: %ls.\n", DKGL_FUNCTION_NAME, err, (const wchar_t*)file);
 		}
 	}
 	else
 	{
-		DKLog("[%s] Cannot open file: %ls.\n", DKLIB_FUNCTION_NAME, (const wchar_t*)file);
+		DKLog("[%s] Cannot open file: %ls.\n", DKGL_FUNCTION_NAME, (const wchar_t*)file);
 	}
 
 	return NULL;

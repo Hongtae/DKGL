@@ -14,7 +14,6 @@
 #include "DKColor.h"
 #include "DKVector3.h"
 
-#define DKL_IS_POWER_OF_TWO(v)		((v & (v-1)) == 0)
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKTexture
@@ -23,9 +22,9 @@
 
 namespace DKFramework
 {
-	inline bool IsPowerOfTwo(int value)	{return DKL_IS_POWER_OF_TWO(value);}
+	inline bool IsPowerOfTwo(int v)	{return ((v & (v - 1)) == 0);}
 
-	class DKLIB_API DKTexture : public DKResource
+	class DKGL_API DKTexture : public DKResource
 	{
 		friend class DKRenderTarget;
 	public:

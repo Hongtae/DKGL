@@ -36,7 +36,7 @@ public:
 
 				if (rc != this->renderer->ob_refcnt)
 				{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 					DKLog("Warning: frame.onRenderer holds renderer's ref-count! (%ld -> %ld)\n",
 						  (long)rc,
 						  (long)this->renderer->ob_refcnt);

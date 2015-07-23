@@ -21,7 +21,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKXMLDocument
+	class DKGL_API DKXMLDocument
 	{
 	public:
 		enum Type

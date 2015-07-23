@@ -25,7 +25,7 @@
 namespace DKFramework
 {
 	class DKTexture2D;
-	class DKLIB_API DKFont
+	class DKGL_API DKFont
 	{
 	public:
 		struct GlyphData

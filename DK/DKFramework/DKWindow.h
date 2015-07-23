@@ -36,7 +36,7 @@
 namespace DKFramework
 {
 	class DKWindowInterface;
-	class DKLIB_API DKWindow
+	class DKGL_API DKWindow
 	{
 	public:
 		DKWindow(void);

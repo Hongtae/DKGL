@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKAudioSource
+	class DKGL_API DKAudioSource
 	{
 	public:
 		enum AudioState

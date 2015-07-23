@@ -325,7 +325,7 @@ void DKScreen::RenderScreen(bool invalidate)
 	{
 		glContext->Present();
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		GLenum err = glGetError();
 		if (err != GL_NO_ERROR)
 		{
@@ -433,7 +433,7 @@ void DKScreen::OnInitialize(void)
 
 void DKScreen::OnTerminate(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 
 	window->RemoveObserver(this);
 
@@ -534,7 +534,7 @@ void DKScreen::OnWindowEvent(DKWindow::EventWindow type, DKSize contentSize, DKP
 		break;
 	}
 	
-#ifdef DKLIB_DEBUG_ENABLED	
+#ifdef DKGL_DEBUG_ENABLED	
 	switch (type)
 	{
 		case DKWindow::EventWindowCreated:
@@ -650,7 +650,7 @@ void DKScreen::OnKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVir
 			SetKeyFrame(deviceId, NULL);
 		}
 	}
-	//DKLOG_DEBUG("%s\n", DKLIB_FUNCTION_NAME);
+	//DKLOG_DEBUG("%s\n", DKGL_FUNCTION_NAME);
 }
 
 DKPoint DKScreen::WindowToScreen(const DKPoint& pt) const

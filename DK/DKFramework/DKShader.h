@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKShader
+	class DKGL_API DKShader
 	{
 	public:
 		enum Type

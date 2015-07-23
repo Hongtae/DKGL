@@ -974,17 +974,17 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API DKStringEncoding DKStringWEncoding(void)
+	DKGL_API DKStringEncoding DKStringWEncoding(void)
 	{
 		return Private::StringWTraits::encoding;
 	}
 
-	DKLIB_API DKStringEncoding DKStringU8Encoding(void)
+	DKGL_API DKStringEncoding DKStringU8Encoding(void)
 	{
 		return DKStringEncoding::UTF8;
 	}
 
-	DKLIB_API const char* DKStringEncodingCanonicalName(DKStringEncoding e)
+	DKGL_API const char* DKStringEncodingCanonicalName(DKStringEncoding e)
 	{
 		switch (e)
 		{
@@ -999,7 +999,7 @@ namespace DKFoundation
 		return "";
 	}
 
-	DKLIB_API void DKStringEncode(DKBuffer* output, const DKStringU8& input, DKStringEncoding e)
+	DKGL_API void DKStringEncode(DKBuffer* output, const DKStringU8& input, DKStringEncoding e)
 	{
 		if (output && !Private::EncodeString((const DKUniChar8*)input, input.Bytes(), DKStringEncoding::UTF8, e, output))
 		{
@@ -1007,7 +1007,7 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API void DKStringEncode(DKBuffer* output, const DKStringW& input, DKStringEncoding e)
+	DKGL_API void DKStringEncode(DKBuffer* output, const DKStringW& input, DKStringEncoding e)
 	{
 		if (output && !Private::EncodeString((const DKUniCharW*)input, input.Bytes(), Private::StringWTraits::encoding, e, output))
 		{
@@ -1015,7 +1015,7 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringU8& strOut, const void* p, size_t bytes, DKStringEncoding e)
+	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const void* p, size_t bytes, DKStringEncoding e)
 	{
 		if (e == DKStringEncoding::UTF8)
 		{
@@ -1032,7 +1032,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringW& strOut, const void* p, size_t bytes, DKStringEncoding e)
+	DKGL_API bool DKStringSetValue(DKStringW& strOut, const void* p, size_t bytes, DKStringEncoding e)
 	{
 		if (e == Private::StringWTraits::encoding)
 		{
@@ -1052,7 +1052,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API void DKStringFormatV(DKStringU8& strOut, const DKUniChar8* fmt, va_list v)
+	DKGL_API void DKStringFormatV(DKStringU8& strOut, const DKUniChar8* fmt, va_list v)
 	{
 		strOut = (const DKUniChar8*)NULL;
 		if (fmt && fmt[0])
@@ -1067,7 +1067,7 @@ namespace DKFoundation
 			strOut.SetValue(DKStringU8::EmptyString());
 	}
 
-	DKLIB_API void DKStringFormatV(DKStringU8& strOut, const DKUniCharW* fmt, va_list v)
+	DKGL_API void DKStringFormatV(DKStringU8& strOut, const DKUniCharW* fmt, va_list v)
 	{
 		strOut = (const DKUniChar8*)NULL;
 		if (fmt && fmt[0])
@@ -1085,7 +1085,7 @@ namespace DKFoundation
 		strOut.SetValue(DKStringU8::EmptyString());
 	}
 
-	DKLIB_API void DKStringFormatV(DKStringW& strOut, const DKUniChar8* fmt, va_list v)
+	DKGL_API void DKStringFormatV(DKStringW& strOut, const DKUniChar8* fmt, va_list v)
 	{
 		strOut = (const DKUniCharW*)NULL;
 		if (fmt && fmt[0])
@@ -1100,7 +1100,7 @@ namespace DKFoundation
 			strOut.SetValue(DKStringW::EmptyString());
 	}
 
-	DKLIB_API void DKStringFormatV(DKStringW& strOut, const DKUniCharW* fmt, va_list v)
+	DKGL_API void DKStringFormatV(DKStringW& strOut, const DKUniCharW* fmt, va_list v)
 	{
 		strOut = (const DKUniCharW*)NULL;
 		if (fmt && fmt[0])
@@ -1118,7 +1118,7 @@ namespace DKFoundation
 		strOut.SetValue(DKStringW::EmptyString());
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringU8& strOut, const DKStringW& strIn)
+	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKStringW& strIn)
 	{
 		const DKUniCharW* s = strIn;
 		DKArray<DKUniChar8> utf8bytes;
@@ -1145,7 +1145,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringW& strOut, const DKStringU8& strIn)
+	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKStringU8& strIn)
 	{
 		const DKUniChar8* s = strIn;
 		if (sizeof(DKUniCharW) == 4)
@@ -1176,13 +1176,13 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringU8& strOut, const DKUniChar8* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKUniChar8* strIn, size_t len)
 	{
 		strOut.SetValue(strIn, len);
 		return true;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringU8& strOut, const DKUniChar16* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKUniChar16* strIn, size_t len)
 	{
 		if (strIn && len > 0)
 		{
@@ -1200,7 +1200,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringU8& strOut, const DKUniChar32* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKUniChar32* strIn, size_t len)
 	{
 		if (strIn && len > 0)
 		{
@@ -1218,12 +1218,12 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringU8& strOut, const DKUniCharW* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKUniCharW* strIn, size_t len)
 	{
 		return DKStringSetValue(strOut, reinterpret_cast<const Private::StringWTraits::BaseCharT*>(strIn), Min<size_t>(Private::UniCharLength(strIn), len));
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar8* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar8* strIn, size_t len)
 	{
 		if (strIn && len > 0)
 		{
@@ -1241,7 +1241,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar16* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar16* strIn, size_t len)
 	{
 		if (sizeof(DKUniCharW) == 4)
 		{
@@ -1267,7 +1267,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar32* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar32* strIn, size_t len)
 	{
 		if (sizeof(DKUniCharW) == 4)
 		{
@@ -1293,7 +1293,7 @@ namespace DKFoundation
 		return false;
 	}
 
-	DKLIB_API bool DKStringSetValue(DKStringW& strOut, const DKUniCharW* strIn, size_t len)
+	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKUniCharW* strIn, size_t len)
 	{
 		strOut.SetValue(strIn, Min<size_t>(Private::UniCharLength(strIn), len));
 		return true;

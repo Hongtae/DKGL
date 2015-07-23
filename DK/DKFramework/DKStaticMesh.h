@@ -27,7 +27,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKStaticMesh : public DKMesh
+	class DKGL_API DKStaticMesh : public DKMesh
 	{	
 	public:
 		struct StreamInfo

@@ -40,7 +40,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKMaterial : public DKResource
+	class DKGL_API DKMaterial : public DKResource
 	{
 	public:
 

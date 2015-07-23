@@ -27,7 +27,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKMesh : public DKModel
+	class DKGL_API DKMesh : public DKModel
 	{
 	public:
 		virtual ~DKMesh(void);

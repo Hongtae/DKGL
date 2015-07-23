@@ -418,9 +418,6 @@
     <ClInclude Include="DKInclude.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKAabb.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -633,6 +630,9 @@
     </ClInclude>
     <ClInclude Include="DKFoundation\DKZipUnarchiver.h">
       <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DK.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

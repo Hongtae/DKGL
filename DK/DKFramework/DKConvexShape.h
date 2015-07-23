@@ -17,7 +17,7 @@
 namespace DKFramework
 {
 	class DKLine;
-	class DKLIB_API DKConvexShape : public DKCollisionShape
+	class DKGL_API DKConvexShape : public DKCollisionShape
 	{
 	public:
 		~DKConvexShape(void);

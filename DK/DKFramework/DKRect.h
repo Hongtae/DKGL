@@ -20,7 +20,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKRect
+	class DKGL_API DKRect
 	{
 	public:
 		DKRect(void);

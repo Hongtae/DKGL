@@ -40,7 +40,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKCamera
+	class DKGL_API DKCamera
 	{
 	public:
 		DKCamera(void);

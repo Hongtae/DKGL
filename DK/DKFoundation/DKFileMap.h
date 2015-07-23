@@ -36,7 +36,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKFileMap : public DKData
+	class DKGL_API DKFileMap : public DKData
 	{
 	public:
 		DKFileMap(void);

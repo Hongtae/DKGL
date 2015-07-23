@@ -27,7 +27,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKAnimation : public DKResource
+	class DKGL_API DKAnimation : public DKResource
 	{
 	public:
 		typedef long NodeIndex;

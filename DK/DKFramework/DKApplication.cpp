@@ -141,32 +141,32 @@ DKString DKApplication::ModulePath(void)
 
 void DKApplication::OnHidden(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
 void DKApplication::OnRestore(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
 void DKApplication::OnActivated(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
 void DKApplication::OnDeactivated(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
 void DKApplication::OnInitialize(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
 void DKApplication::OnTerminate(void)
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
 DKObject<DKData> DKApplication::LoadResource(const DKString& res, DKAllocator& alloc)

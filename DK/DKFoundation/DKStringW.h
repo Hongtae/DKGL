@@ -23,7 +23,7 @@
 namespace DKFoundation
 {
 	class DKData;
-	class DKLIB_API DKStringW
+	class DKGL_API DKStringW
 	{
 	public:
 		typedef DKSet<DKUniCharW, DKDummyLock, DKSetComparison<DKUniCharW>> CharacterSet;

@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKCompoundShape : public DKCollisionShape
+	class DKGL_API DKCompoundShape : public DKCollisionShape
 	{
 	public:
 		DKCompoundShape(void);

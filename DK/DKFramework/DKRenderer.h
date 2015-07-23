@@ -44,7 +44,7 @@ namespace DKFramework
 	class DKRenderState;
 	class DKCollisionObject;
 
-	class DKLIB_API DKRenderer
+	class DKGL_API DKRenderer
 	{
 	public:
 		static const float minimumScaleFactor;

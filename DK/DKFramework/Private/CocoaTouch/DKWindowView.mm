@@ -220,17 +220,17 @@ using namespace DKFramework::Private;
 
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
-	DKLog("[%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("[%s]\n", DKGL_FUNCTION_NAME);
 }
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
-	DKLog("[%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("[%s]\n", DKGL_FUNCTION_NAME);
 }
 
 - (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
-	DKLog("[%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("[%s]\n", DKGL_FUNCTION_NAME);
 }
 
 - (void)trackTouchInfo:(NSArray*)touches
@@ -379,7 +379,7 @@ using namespace DKFramework::Private;
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	
 	if (textInputEnabled)		// User closed keyboard (iPad)
 	{

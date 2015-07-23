@@ -29,7 +29,7 @@ namespace DKFramework
 		unsigned int uintValue;
 	};
 
-	class DKLIB_API DKVoxel32Storage
+	class DKGL_API DKVoxel32Storage
 	{
 	public:
 		DKVoxel32Storage(void) {}

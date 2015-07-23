@@ -33,7 +33,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	struct DKLIB_API DKTransformUnit
+	struct DKGL_API DKTransformUnit
 	{
 		DKTransformUnit(void);
 		DKTransformUnit(const DKVector3& s, const DKQuaternion& r, const DKVector3& t);
@@ -63,7 +63,7 @@ namespace DKFramework
 	}
 
 	// Uniform-Scale Affine Transform
-	struct DKLIB_API DKUSTransform
+	struct DKGL_API DKUSTransform
 	{
 		DKUSTransform(void);
 		DKUSTransform(float s, const DKQuaternion& r, const DKVector3& t);
@@ -97,7 +97,7 @@ namespace DKFramework
 	}
 
 	// Non-Scale Affine Transform (4x3 matrix)
-	struct DKLIB_API DKNSTransform
+	struct DKGL_API DKNSTransform
 	{
 		DKNSTransform(const DKQuaternion& r, const DKVector3& t = DKVector3::zero);
 		DKNSTransform(const DKMatrix3& r, const DKVector3& t = DKVector3::zero);

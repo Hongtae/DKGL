@@ -18,7 +18,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKSize
+	class DKGL_API DKSize
 	{
 	public:
 		DKSize(void)

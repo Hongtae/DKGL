@@ -102,7 +102,7 @@ DKAllocatorChain::DKAllocatorChain(void)
 	}
 }
 
-DKAllocatorChain::~DKAllocatorChain(void) noexcept(!DKLIB_MEMORY_DEBUG)
+DKAllocatorChain::~DKAllocatorChain(void) noexcept(!DKGL_MEMORY_DEBUG)
 {
 	Chain* c = Chain::Instance();
 	ScopedSpinLock guard(c->lock);
@@ -153,7 +153,7 @@ DKAllocatorChain::StaticInitializer::StaticInitializer(void)
 	DKASSERT_STD_DEBUG( ref >= 0);
 }
 
-DKAllocatorChain::StaticInitializer::~StaticInitializer(void) noexcept(!DKLIB_MEMORY_DEBUG)
+DKAllocatorChain::StaticInitializer::~StaticInitializer(void) noexcept(!DKGL_MEMORY_DEBUG)
 {
 	Chain* c = Chain::Instance();
 	DKASSERT_STD_DEBUG( c != NULL );

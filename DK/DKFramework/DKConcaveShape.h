@@ -16,7 +16,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKConcaveShape : public DKCollisionShape
+	class DKGL_API DKConcaveShape : public DKCollisionShape
 	{
 	public:
 		~DKConcaveShape(void);

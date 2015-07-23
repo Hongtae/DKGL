@@ -39,7 +39,7 @@ void DCObjectSetAddress(const void* addr, PyObject* obj)
 #endif
 	if (obj)
 	{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		auto p = objectMap[n].Find(addr);
 		if (p)
 			DKLog("Warning: DCObjectSetAddress(%x) already exist!\n", addr);
@@ -100,7 +100,7 @@ bool DCObjectSetDefaultClass(PyTypeObject* baseType, PyTypeObject* defaultType)
 		cachedUserType->defaultType = defaultType;
 		Py_XINCREF(cachedUserType->defaultType);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		if (defaultType)
 			DKLog("DCObjectSetDefaultClass: %s -> %s\n", baseType->tp_name, defaultType->tp_name);
 		else
@@ -127,7 +127,7 @@ bool DCObjectSetDefaultClass(PyTypeObject* baseType, PyTypeObject* defaultType)
 					DKASSERT_DEBUG(PyType_IsSubtype(uto.defaultType, uto.baseType));
 				}
 			}
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 			if (defaultType)
 				DKLog("DCObjectSetDefaultClass: %s -> %s\n", baseType->tp_name, defaultType->tp_name);
 			else

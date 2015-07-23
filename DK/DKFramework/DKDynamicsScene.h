@@ -23,7 +23,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKDynamicsScene : public DKScene
+	class DKGL_API DKDynamicsScene : public DKScene
 	{
 	public:
 		DKDynamicsScene(void);

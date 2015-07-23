@@ -25,7 +25,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKGeneric6DofConstraint : public DKConstraint
+	class DKGL_API DKGeneric6DofConstraint : public DKConstraint
 	{
 	public:
 		enum AxisState

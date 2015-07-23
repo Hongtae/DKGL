@@ -47,20 +47,20 @@ namespace DKFoundation
 	typedef DKFunctionSignature<void (class DKError&)> DKCriticalErrorHandler;
 
 	// test debugger attached or not. (may not works on some platforms)
-	DKLIB_API bool IsDebuggerPresent(void);
+	DKGL_API bool IsDebuggerPresent(void);
 
 	// test build configuration
-	DKLIB_API bool IsDebugBuild(void);
+	DKGL_API bool IsDebugBuild(void);
 
 	// set critical error handler. (may not works on some platforms)
-	DKLIB_API void SetCriticalErrorHandler(DKCriticalErrorHandler*);
+	DKGL_API void SetCriticalErrorHandler(DKCriticalErrorHandler*);
 
 	// raise exception manually. use DKERROR_THROW() macro instead.
-	DKLIB_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
+	DKGL_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
 
 	namespace Private { struct UnexpectedError; }
 
-	class DKLIB_API DKError
+	class DKGL_API DKError
 	{
 	public:
 		constexpr static int DefaultCallstackTraceDepth(void) {return 1024;}

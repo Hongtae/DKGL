@@ -21,7 +21,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKOperationQueue
+	class DKGL_API DKOperationQueue
 	{
 	public:
 		struct OperationSync

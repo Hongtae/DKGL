@@ -25,7 +25,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKFence
+	class DKGL_API DKFence
 	{
 	public:
 		// anything can be a key, but should be unique.

@@ -85,7 +85,7 @@ bool DKSphere::IsPointInside(const DKVector3& pos) const
 
 float DKSphere::Volume(void) const
 {
-	return (4.0f / 3.0f) * radius * radius * radius * static_cast<float>(DKL_PI);	// (4/3 PI * R cubed )
+	return (4.0f / 3.0f) * radius * radius * radius * static_cast<float>(DKGL_PI);	// (4/3 PI * R cubed )
 }
 
 bool DKSphere::RayTest(const DKLine& ray, DKVector3* p) const

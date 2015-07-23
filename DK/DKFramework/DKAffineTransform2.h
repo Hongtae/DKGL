@@ -20,7 +20,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKAffineTransform2
+	class DKGL_API DKAffineTransform2
 	{
 	public:
 		DKAffineTransform2(const DKVector2& translate = DKVector2::zero);

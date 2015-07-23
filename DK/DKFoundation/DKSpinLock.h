@@ -19,7 +19,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKSpinLock
+	class DKGL_API DKSpinLock
 	{
 	public:
 		DKSpinLock(void);

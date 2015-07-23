@@ -71,12 +71,12 @@ namespace DKFramework
 	namespace Private
 	{
 
-#define DKLIB_GLSL_ES_VERSION "#version 100\n"		/* ARB_ES2_compatibility */
+#define DKGL_GLSL_ES_VERSION "#version 100\n"		/* ARB_ES2_compatibility */
 
 		static DKMaterial::ShaderSource vertexShader2T =
 		{
 			L"vertexShader2T",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"attribute mediump vec2 position;\n"
 			"attribute mediump vec2 texCoord;\n"
 			"varying   mediump vec2 textureCoord;\n"
@@ -92,7 +92,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource vertexShader3TC =
 		{
 			L"vertexShader3TC",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform   highp   mat4 transform;\n"
 			"attribute highp   vec3 position;\n"
 			"attribute mediump vec2 texCoord;\n"
@@ -110,7 +110,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource vertexShader3C =
 		{
 			L"vertexShader3C",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform   highp mat4 transform;\n"
 			"attribute highp vec3 position;\n"
 			"attribute lowp  vec4 vcolor;\n"
@@ -125,7 +125,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource uniformColorFragmentShader =
 		{
 			L"uniformColorFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform lowp vec4 color;\n"
 			"void main(void) {\n"
 			"    gl_FragColor = color;\n"
@@ -136,7 +136,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource varyingColorFragmentShader =
 		{
 			L"varyingColorFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"varying lowp vec4 color;\n"
 			"void main(void) {\n"
 			"    gl_FragColor = color;\n"
@@ -147,7 +147,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource uniformColorTextureFragmentShader =
 		{
 			L"uniformColorTextureFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform sampler2D    tex;\n"
 			"uniform lowp    vec4 color;\n"
 			"varying mediump vec2 textureCoord;\n"
@@ -160,7 +160,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource varyingColorTextureFragmentShader =
 		{
 			L"varyingColorTextureFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform sampler2D    tex;\n"
 			"varying mediump vec2 textureCoord;\n"
 			"varying lowp    vec4 color;\n"
@@ -173,7 +173,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource solidEllipseFragmentShader =
 		{
 			L"solidEllipseFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform mediump vec2 radiusSq;\n" // vec2(A^2,B^2) value from formula X^2 / A^2 + Y^2 / B^2 = 1
 			"uniform mediump vec2 center;\n"   // center of ellipse
 			"uniform lowp    vec4 color;\n"
@@ -190,7 +190,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource textureEllipseFragmentShader =
 		{
 			L"textureEllipseFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform sampler2D    tex;\n"
 			"uniform mediump vec2 radiusSq;\n" // vec2(A^2,B^2) value from formula X^2 / A^2 + Y^2 / B^2 = 1
 			"uniform mediump vec2 center;\n"   // center of ellipse
@@ -209,7 +209,7 @@ namespace DKFramework
 		static DKMaterial::ShaderSource alphaTextureFragmentShader =
 		{
 			L"alphaTextureFragmentShader",
-			DKLIB_GLSL_ES_VERSION
+			DKGL_GLSL_ES_VERSION
 			"uniform sampler2D    tex;\n"
 			"uniform lowp    vec4 color;\n"
 			"varying mediump vec2 textureCoord;\n"
@@ -1741,8 +1741,8 @@ void DKRenderer::RenderSolidSphere(const DKVector3& center, float radius, int la
 
 		for (int i = 0; i < lats; ++i)
 		{
-			float lat0 = DKL_PI * (static_cast<float>(i) / lats - 0.5f);
-			float lat1 = DKL_PI * (static_cast<float>(i + 1) / lats - 0.5f);
+			float lat0 = DKGL_PI * (static_cast<float>(i) / lats - 0.5f);
+			float lat1 = DKGL_PI * (static_cast<float>(i + 1) / lats - 0.5f);
 			float y0 = radius * sin(lat0);
 			float y1 = radius * sin(lat1);
 			float r0 = radius * cos(lat0);
@@ -1750,8 +1750,8 @@ void DKRenderer::RenderSolidSphere(const DKVector3& center, float radius, int la
 
 			for (int j = 0; j < longs; ++j)
 			{
-				float lng0 = 2 * DKL_PI * static_cast<float>(j) / longs;
-				float lng1 = 2 * DKL_PI * static_cast<float>(j + 1) / longs;
+				float lng0 = 2 * DKGL_PI * static_cast<float>(j) / longs;
+				float lng1 = 2 * DKGL_PI * static_cast<float>(j + 1) / longs;
 				float x0 = cos(lng0);
 				float x1 = cos(lng1);
 				float z0 = sin(lng0);
@@ -1791,8 +1791,8 @@ void DKRenderer::RenderWireSphere(const DKVector3& center, float radius, int lat
 
 		for (int i = 0; i < lats; ++i)
 		{
-			float lat0 = DKL_PI * (static_cast<float>(i) / lats - 0.5f);
-			float lat1 = DKL_PI * (static_cast<float>(i + 1) / lats - 0.5f);
+			float lat0 = DKGL_PI * (static_cast<float>(i) / lats - 0.5f);
+			float lat1 = DKGL_PI * (static_cast<float>(i + 1) / lats - 0.5f);
 			float y0 = radius * sin(lat0);
 			float y1 = radius * sin(lat1);
 			float r0 = radius * cos(lat0);
@@ -1800,8 +1800,8 @@ void DKRenderer::RenderWireSphere(const DKVector3& center, float radius, int lat
 
 			for (int j = 0; j < longs; ++j)
 			{
-				float lng0 = 2 * DKL_PI * static_cast<float>(j) / longs;
-				float lng1 = 2 * DKL_PI * static_cast<float>(j + 1) / longs;
+				float lng0 = 2 * DKGL_PI * static_cast<float>(j) / longs;
+				float lng1 = 2 * DKGL_PI * static_cast<float>(j + 1) / longs;
 				float x0 = cos(lng0);
 				float x1 = cos(lng1);
 				float z0 = sin(lng0);

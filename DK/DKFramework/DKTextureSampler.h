@@ -20,7 +20,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKTextureSampler : public DKResource
+	class DKGL_API DKTextureSampler : public DKResource
 	{
 	public:
 		enum MinificationFilter

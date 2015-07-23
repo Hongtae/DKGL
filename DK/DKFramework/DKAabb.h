@@ -20,7 +20,7 @@ namespace DKFramework
 {
 	class DKLine;
 	class DKBox;
-	class DKLIB_API DKAabb
+	class DKGL_API DKAabb
 	{
 	public:
 		DKAabb(void);

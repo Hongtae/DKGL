@@ -19,7 +19,7 @@ namespace DKFramework
 	class DKVector3;
 	class DKVector4;
 	class DKLine;
-	class DKLIB_API DKPlane
+	class DKGL_API DKPlane
 	{
 	public:
 		DKPlane(void);  // 0, 0, 0, 0

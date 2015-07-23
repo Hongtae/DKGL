@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DK", "DK\DK.vcxproj", "{0CE28749-43B7-473E-B463-49EC2EF8B43B}"
 EndProject
@@ -26,6 +26,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DKMaxExporter", "DKMaxExporter\DKMaxExporter.vcxproj", "{D0EE7428-FCA1-450A-9E7C-293A2BE9F5EB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PyDKLauncher", "PyDKLauncher\PyDKLauncher.vcxproj", "{0472B5B2-79E7-4FF2-9FF2-8383684A1001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EBD806FE-8FBA-4A3D-9BE5-71B7A4B8E5A4}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		LICENSE-Python = LICENSE-Python
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

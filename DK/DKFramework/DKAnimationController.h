@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKAnimatedTransform
+	class DKGL_API DKAnimatedTransform
 	{
 	public:
 		typedef DKFoundation::DKString NodeId;
@@ -28,7 +28,7 @@ namespace DKFramework
 		virtual bool GetTransform(const NodeId& key, DKTransformUnit& out) = 0;
 	};
 
-	class DKLIB_API DKAnimationController : public DKAnimatedTransform
+	class DKGL_API DKAnimationController : public DKAnimatedTransform
 	{
 	public:
 		DKAnimationController(void);

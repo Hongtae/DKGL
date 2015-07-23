@@ -139,7 +139,7 @@ DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream, con
 
 		if (decl == NULL)
 		{
-			DKLog("[%s] buffer doesn't have a stream (%d).\n", DKLIB_FUNCTION_NAME, stream);
+			DKLog("[%s] buffer doesn't have a stream (%d).\n", DKGL_FUNCTION_NAME, stream);
 			return NULL;
 		}
 
@@ -148,13 +148,13 @@ DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream, con
 		DKObject<DKBuffer> ret = DKBuffer::Create(NULL, typeSize * vertexCount);
 		if (ret == NULL)
 		{
-			DKLog("[%s] buffer allocation failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer allocation failed.\n", DKGL_FUNCTION_NAME);
 			return NULL;
 		}
 		unsigned char* pSrc = reinterpret_cast<unsigned char*>(const_cast<DKVertexBuffer&>(*this).Lock(AccessModeReadOnly));
 		if (pSrc == NULL)
 		{
-			DKLog("[%s] buffer lock failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer lock failed.\n", DKGL_FUNCTION_NAME);
 			return NULL;
 		}
 		unsigned char* pDst = (unsigned char*)ret->LockExclusive();

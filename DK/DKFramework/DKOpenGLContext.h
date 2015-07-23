@@ -40,7 +40,7 @@ namespace DKFramework
 		DKFoundation::DKObject<T> context;
 	};
 
-	class DKLIB_API DKOpenGLContext : public DKFoundation::DKSharedInstance<DKOpenGLContext>
+	class DKGL_API DKOpenGLContext : public DKFoundation::DKSharedInstance<DKOpenGLContext>
 	{
 	public:
 		~DKOpenGLContext(void);

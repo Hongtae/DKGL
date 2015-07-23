@@ -17,7 +17,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKPoint
+	class DKGL_API DKPoint
 	{
 	public:
 		DKPoint(void)

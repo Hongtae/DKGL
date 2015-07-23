@@ -20,7 +20,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKIndexBuffer : public DKGeometryBuffer
+	class DKGL_API DKIndexBuffer : public DKGeometryBuffer
 	{
 	public:
 		enum Type

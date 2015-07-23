@@ -46,7 +46,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKCondition
+	class DKGL_API DKCondition
 	{
 	public:
 		DKCondition(void);

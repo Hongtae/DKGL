@@ -16,7 +16,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKUuid
+	class DKGL_API DKUuid
 	{
 	public:
 		DKUuid(void);

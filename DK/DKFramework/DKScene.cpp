@@ -80,8 +80,8 @@ namespace DKFramework
 				{
 					for (int i = 0; i < lats; ++i)
 					{
-						float lat0 = DKL_PI * (static_cast<float>(i) / lats - 0.5f);
-						float lat1 = DKL_PI * (static_cast<float>(i + 1) / lats - 0.5f);
+						float lat0 = DKGL_PI * (static_cast<float>(i) / lats - 0.5f);
+						float lat1 = DKGL_PI * (static_cast<float>(i + 1) / lats - 0.5f);
 						float y0 = radius * sin(lat0);
 						float y1 = radius * sin(lat1);
 						float r0 = radius * cos(lat0);
@@ -89,8 +89,8 @@ namespace DKFramework
 
 						for (int j = 0; j < longs; ++j)
 						{
-							float lng0 = 2.0 * DKL_PI * static_cast<float>(j) / longs;
-							float lng1 = 2.0 * DKL_PI * static_cast<float>(j + 1) / longs;
+							float lng0 = 2.0 * DKGL_PI * static_cast<float>(j) / longs;
+							float lng1 = 2.0 * DKGL_PI * static_cast<float>(j + 1) / longs;
 							float x0 = cos(lng0);
 							float x1 = cos(lng1);
 							float z0 = sin(lng0);
@@ -131,8 +131,8 @@ namespace DKFramework
 				{
 					for (int i = 0; i < slices; ++i)
 					{
-						float ang0 = 2.0 * DKL_PI * (static_cast<float>(i) / slices);
-						float ang1 = 2.0 * DKL_PI * (static_cast<float>(i + 1) / slices);
+						float ang0 = 2.0 * DKGL_PI * (static_cast<float>(i) / slices);
+						float ang1 = 2.0 * DKGL_PI * (static_cast<float>(i + 1) / slices);
 						float x0 = sin(ang0) * radius;
 						float z0 = cos(ang0) * radius;
 						float x1 = sin(ang1) * radius;
@@ -193,8 +193,8 @@ namespace DKFramework
 					for (int i = 0; i < slices; ++i)
 					{
 						// capsule total height = height + radius*2
-						float ang0 = 2.0 * DKL_PI * (static_cast<float>(i) / slices);
-						float ang1 = 2.0 * DKL_PI * (static_cast<float>(i + 1) / slices);
+						float ang0 = 2.0 * DKGL_PI * (static_cast<float>(i) / slices);
+						float ang1 = 2.0 * DKGL_PI * (static_cast<float>(i + 1) / slices);
 						float x0 = sin(ang0) * radius;
 						float x1 = sin(ang1) * radius;
 						float z0 = cos(ang0) * radius;
@@ -219,8 +219,8 @@ namespace DKFramework
 						// capsule's upper, lower half-sphere
 						for (int j = 0; j < stacks; ++j)
 						{
-							float sp0 = DKL_PI * 0.5 * (static_cast<float>(j) / stacks);
-							float sp1 = DKL_PI * 0.5 * (static_cast<float>(j + 1) / stacks);
+							float sp0 = DKGL_PI * 0.5 * (static_cast<float>(j) / stacks);
+							float sp1 = DKGL_PI * 0.5 * (static_cast<float>(j + 1) / stacks);
 							float y0 = radius * sin(sp0) + halfHeight;
 							float y1 = radius * sin(sp1) + halfHeight;
 							float r0 = cos(sp0);
@@ -283,8 +283,8 @@ namespace DKFramework
 				{
 					for (int i = 0; i < slices; ++i)
 					{
-						float ang0 = 2.0 * DKL_PI * (static_cast<float>(i) / slices);
-						float ang1 = 2.0 * DKL_PI * (static_cast<float>(i + 1) / slices);
+						float ang0 = 2.0 * DKGL_PI * (static_cast<float>(i) / slices);
+						float ang1 = 2.0 * DKGL_PI * (static_cast<float>(i + 1) / slices);
 						float x0 = sin(ang0) * radius;
 						float z0 = cos(ang0) * radius;
 						float x1 = sin(ang1) * radius;

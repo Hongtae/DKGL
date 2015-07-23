@@ -597,7 +597,7 @@ namespace DKFoundation
 
 namespace DKFoundation
 {
-	DKHashResult32 DKLIB_API DKHashCRC32(const void* p, size_t len)
+	DKHashResult32 DKGL_API DKHashCRC32(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -608,7 +608,7 @@ namespace DKFoundation
 		res.digest[0] = ctx.hash32[0];
 		return res;
 	}
-	DKHashResult128 DKLIB_API DKHashMD5(const void* p, size_t len)
+	DKHashResult128 DKGL_API DKHashMD5(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -621,7 +621,7 @@ namespace DKFoundation
 			res.digest[i] = SWITCH_BYTE_ORDER_UINT32(ctx.hash32[i]);
 		return res;
 	}
-	DKHashResult160 DKLIB_API DKHashSHA1(const void* p, size_t len)
+	DKHashResult160 DKGL_API DKHashSHA1(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -634,7 +634,7 @@ namespace DKFoundation
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult224 DKLIB_API DKHashSHA224(const void* p, size_t len)
+	DKHashResult224 DKGL_API DKHashSHA224(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -647,7 +647,7 @@ namespace DKFoundation
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult256 DKLIB_API DKHashSHA256(const void* p, size_t len)
+	DKHashResult256 DKGL_API DKHashSHA256(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -660,7 +660,7 @@ namespace DKFoundation
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult384 DKLIB_API DKHashSHA384(const void* p, size_t len)
+	DKHashResult384 DKGL_API DKHashSHA384(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -673,7 +673,7 @@ namespace DKFoundation
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult512 DKLIB_API DKHashSHA512(const void* p, size_t len)
+	DKHashResult512 DKGL_API DKHashSHA512(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;

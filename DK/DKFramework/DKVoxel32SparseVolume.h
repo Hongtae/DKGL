@@ -24,7 +24,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKVoxel32SparseVolume : public DKVoxelVolume<DKVoxel32>
+	class DKGL_API DKVoxel32SparseVolume : public DKVoxelVolume<DKVoxel32>
 	{
 	public:
 		typedef DKVoxel32Storage Storage;

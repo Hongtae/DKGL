@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#define DKLIB_EXTDEPS_CXIMAGE
+#define DKGL_EXTDEPS_CXIMAGE
 #include "../lib/ExtDeps.h"
 #include "../lib/OpenGL.h"
 #include "DKTexture2D.h"

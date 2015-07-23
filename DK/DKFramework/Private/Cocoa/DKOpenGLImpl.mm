@@ -143,7 +143,7 @@ void DKOpenGLImpl::Unbind(void) const
 
 void DKOpenGLImpl::Flush(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(pthread_self());
 	if (p)
 		glFlush();
@@ -156,7 +156,7 @@ void DKOpenGLImpl::Flush(void) const
 
 void DKOpenGLImpl::Finish(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(pthread_self());
 	if (p)
 		glFinish();
@@ -169,7 +169,7 @@ void DKOpenGLImpl::Finish(void) const
 
 void DKOpenGLImpl::Present(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(pthread_self());
 	if (p)
 	{

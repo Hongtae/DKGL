@@ -53,7 +53,7 @@
 namespace DKFramework
 {
 	class DKApplicationInterface;
-	class DKLIB_API DKApplication
+	class DKGL_API DKApplication
 	{
 		friend class DKApplicationInterface;
 

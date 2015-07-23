@@ -20,7 +20,7 @@
 namespace DKFramework
 {
 	// NOT IMPLEMENTED.
-	class DKLIB_API DKSoftBody : public DKCollisionObject
+	class DKGL_API DKSoftBody : public DKCollisionObject
 	{
 	public:
 		DKSoftBody(void);

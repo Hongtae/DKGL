@@ -27,7 +27,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKRenderTarget
+	class DKGL_API DKRenderTarget
 	{
 	public:
 		enum DepthFormat

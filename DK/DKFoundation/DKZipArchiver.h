@@ -21,7 +21,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKZipArchiver
+	class DKGL_API DKZipArchiver
 	{
 	public:
 		DKZipArchiver(void);

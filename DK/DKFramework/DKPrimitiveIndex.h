@@ -130,7 +130,7 @@ namespace DKFramework
 		static Type StringToType(const DKFoundation::DKString& str);
 	};
 
-	class DKLIB_API DKPrimitiveIndex
+	class DKGL_API DKPrimitiveIndex
 	{
 	public:
 		DKPrimitiveIndex(void);

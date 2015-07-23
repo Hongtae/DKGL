@@ -192,12 +192,12 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 		DKVertexBuffer* buffer = vertexBuffers.Value(i);
 		if (!buffer->IsValid())
 		{
-			DKLog("[%s] buffer is not valid.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer is not valid.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 		if (buffer->IsLocked(0))		// buffer is locked.
 		{
-			DKLog("[%s] buffer locked.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer locked.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 
@@ -232,7 +232,7 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 		else
 		{
 			DKMemoryHeapFree(buffer);
-			DKLog("[%s] buffer lock failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer lock failed.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 		offset += pVB->VertexSize();
@@ -267,7 +267,7 @@ bool DKStaticMesh::MakeSeparated(DKVertexBuffer::MemoryLocation location, DKVert
 		// buffer is locked. (and buffer has more than one declarations.)
 		if (pVB->IsLocked(0) && pVB->NumberOfDeclarations() > 1)
 		{
-			DKLog("[%s] buffer locked.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer locked.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 		for (int k = 0; k < pVB->NumberOfDeclarations(); k++)
@@ -276,7 +276,7 @@ bool DKStaticMesh::MakeSeparated(DKVertexBuffer::MemoryLocation location, DKVert
 			DKObject<DKBuffer> buffer = pVB->CopyStream(decl.id, decl.name);
 			if (buffer == NULL || buffer->Length() == 0)
 			{
-				DKLog("[%s] failed to copy stream.\n", DKLIB_FUNCTION_NAME);
+				DKLog("[%s] failed to copy stream.\n", DKGL_FUNCTION_NAME);
 				return false;
 			}
 			DKVertexBuffer::Decl d = {decl.id, decl.name, decl.type, decl.normalize, 0};
@@ -285,7 +285,7 @@ bool DKStaticMesh::MakeSeparated(DKVertexBuffer::MemoryLocation location, DKVert
 
 			if (newBuffer == NULL)
 			{
-				DKLog("[%s] failed to create vertex buffer.\n", DKLIB_FUNCTION_NAME);
+				DKLog("[%s] failed to create vertex buffer.\n", DKGL_FUNCTION_NAME);
 				return false;
 			}
 			separated.Add(newBuffer);
@@ -314,12 +314,12 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 	{
 		if (si->buffer->IsLocked(0))
 		{
-			DKLog("[%s] vertex buffer locked.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] vertex buffer locked.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 		if (si->buffer->NumberOfVertices() != vertexCount)
 		{
-			DKLog("[%s] vertex count mismatch!\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] vertex count mismatch!\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 		const DKVertexBuffer::Decl* d = si->decl;
@@ -328,7 +328,7 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 			if (RemoveStream(stream, name))
 				return UpdateStream(stream, name, type, normalize, vertexSize, vertexCount, data, location, usage);
 
-			DKLog("[%s] vertex type mismatch! (Failed to remove old data)\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] vertex type mismatch! (Failed to remove old data)\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 
@@ -340,12 +340,12 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 				memcpy(&p[i * si->buffer->VertexSize() + d->offset], &((unsigned char*)data)[i * vertexSize], vertexSize);
 			}
 			si->buffer->Unlock();
-			DKLog("[%s] buffer updated.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] buffer updated.\n", DKGL_FUNCTION_NAME);
 			return true;
 		}
 		else
 		{
-			DKLog("[%s] lock failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] lock failed.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 	}
@@ -357,14 +357,14 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 		{
 			if (AddVertexBuffer(newBuffer))
 			{
-				DKLog("[%s] generated.\n", DKLIB_FUNCTION_NAME);
+				DKLog("[%s] generated.\n", DKGL_FUNCTION_NAME);
 				return true;
 			}
 			return false;
 		}
 		else
 		{
-			DKLog("[%s] vertex buffer creation failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] vertex buffer creation failed.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 	}
@@ -432,23 +432,23 @@ bool DKStaticMesh::RemoveStream(DKVertexStream::Stream stream, const DKFoundatio
 					return true;
 
 				// buffer insertion failed??, restore!
-				DKLog("[%s] AddVertexBuffer failed.\n", DKLIB_FUNCTION_NAME);
+				DKLog("[%s] AddVertexBuffer failed.\n", DKGL_FUNCTION_NAME);
 				if (AddVertexBuffer(tmp))
-					DKLog("[%s] buffer restored.\n", DKLIB_FUNCTION_NAME);
+					DKLog("[%s] buffer restored.\n", DKGL_FUNCTION_NAME);
 				else
-					DKLog("[%s] critical error: buffer lost.\n", DKLIB_FUNCTION_NAME);
+					DKLog("[%s] critical error: buffer lost.\n", DKGL_FUNCTION_NAME);
 				return false;
 
 			}
 			else
 			{
-				DKLog("[%s] vertex buffer creation failed.\n", DKLIB_FUNCTION_NAME);
+				DKLog("[%s] vertex buffer creation failed.\n", DKGL_FUNCTION_NAME);
 				return false;
 			}
 		}
 		else
 		{
-			DKLog("[%s] vertex buffer lock failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] vertex buffer lock failed.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 	}

@@ -21,7 +21,7 @@
 namespace DKFramework
 {
 	// NOT IMPLEMENTED. (Use DKVoxel32SparseVolume)
-	class DKLIB_API DKVoxel32FileStorage : public DKVoxel32Storage
+	class DKGL_API DKVoxel32FileStorage : public DKVoxel32Storage
 	{
 	public:
 		DKVoxel32FileStorage(void);

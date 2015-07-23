@@ -15,7 +15,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKLock
+	class DKGL_API DKLock
 	{
 	public:
 		DKLock(void);

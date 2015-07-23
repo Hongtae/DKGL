@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKAudioStream
+	class DKGL_API DKAudioStream
 	{
 	public:
 		typedef long long Position;

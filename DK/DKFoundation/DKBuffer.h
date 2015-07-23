@@ -27,7 +27,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKBuffer : public DKData
+	class DKGL_API DKBuffer : public DKData
 	{
 	public:
 		DKBuffer(DKAllocator& alloc = DKAllocator::DefaultAllocator());

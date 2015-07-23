@@ -25,7 +25,7 @@ namespace DKFoundation
 		class SharedLockImpl
 		{
 		private:
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 			DKSpinLock spinLock;
 			typedef DKMap<DWORD,size_t> ThreadCountMap;
 			mutable ThreadCountMap readerThreads;
@@ -73,7 +73,7 @@ namespace DKFoundation
 			SharedLockImpl(void)
 			{
 				::InitializeSRWLock(&lock);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				this->readerThreads.Clear();
 				this->writerThread = 0;
 #endif
@@ -84,7 +84,7 @@ namespace DKFoundation
 			void Lock(void) const
 			{
 				::AcquireSRWLockExclusive(&lock);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				DKCriticalSection<DKSpinLock> guard(this->spinLock);
 				DKASSERT(this->SharedCount() == 0);
 				DKASSERT(this->writerThread == NULL);
@@ -95,7 +95,7 @@ namespace DKFoundation
 			{
 				if (::TryAcquireSRWLockExclusive(&lock))
 				{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 					DKCriticalSection<DKSpinLock> guard(this->spinLock);
 					DKASSERT(this->SharedCount() == 0);
 					DKASSERT(this->writerThread == NULL);
@@ -107,7 +107,7 @@ namespace DKFoundation
 			}
 			void Unlock(void) const
 			{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				DKCriticalSection<DKSpinLock> guard(this->spinLock);
 				DKASSERT(this->writerThread == ::GetCurrentThreadId());
 				DKASSERT(this->SharedCount() == 0);
@@ -118,7 +118,7 @@ namespace DKFoundation
 			void LockShared(void) const
 			{
 				::AcquireSRWLockShared(&lock);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				DKCriticalSection<DKSpinLock> guard(this->spinLock);
 				DKASSERT(this->writerThread == NULL);
 				this->IncrementShareCount();
@@ -128,7 +128,7 @@ namespace DKFoundation
 			{
 				if (::TryAcquireSRWLockShared(&lock))
 				{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 					DKCriticalSection<DKSpinLock> guard(this->spinLock);
 					DKASSERT(this->writerThread == NULL);
 					this->IncrementShareCount();
@@ -139,7 +139,7 @@ namespace DKFoundation
 			}
 			void UnlockShared(void) const
 			{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				DKCriticalSection<DKSpinLock> guard(this->spinLock);
 				DKASSERT(this->DecrementShareCount());
 				DKASSERT(this->writerThread == NULL);

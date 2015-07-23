@@ -576,7 +576,7 @@ namespace DKFoundation
 		}
 	}	// namespace Private
 
-	bool DKLIB_API IsDebuggerPresent(void)
+	bool DKGL_API IsDebuggerPresent(void)
 	{
 #ifdef _WIN32
 		return ::IsDebuggerPresent() != FALSE;
@@ -599,16 +599,16 @@ namespace DKFoundation
 		return false;
 #endif
 	}
-	bool DKLIB_API IsDebugBuild(void)
+	bool DKGL_API IsDebugBuild(void)
 	{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		return true;
 #else
 		return false;
 #endif
 	}
 
-	void DKLIB_API SetCriticalErrorHandler(DKCriticalErrorHandler* h)
+	void DKGL_API SetCriticalErrorHandler(DKCriticalErrorHandler* h)
 	{
 #if DKERROR_HANDLE_CRITICAL_ERROR
 		DKCriticalSection<DKSpinLock> guard(Private::critFuncLock);
@@ -616,7 +616,7 @@ namespace DKFoundation
 #endif
 	}
 
-	void DKLIB_API DKErrorRaiseException(const char* fn, const char* file, unsigned int ln, const char* desc)
+	void DKGL_API DKErrorRaiseException(const char* fn, const char* file, unsigned int ln, const char* desc)
 	{
 		DKError::RaiseException(fn, file, ln, desc);
 	}
@@ -819,7 +819,7 @@ size_t DKError::CopyStackFrames(StackFrame* s, size_t maxCount) const
 		}
 		catch (...)
 		{
-			DKLog("%s CRITICAL ERROR!\n", DKLIB_FUNCTION_NAME);
+			DKLog("%s CRITICAL ERROR!\n", DKGL_FUNCTION_NAME);
 			return 0;
 		}
 		return c;
@@ -862,7 +862,7 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 			numFrames = 0;
 			if (stackFrames)
 				delete[] stackFrames;
-			DKLog("[%s] CRITICAL-ERROR: unknown error occurred while copying frame data.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] CRITICAL-ERROR: unknown error occurred while copying frame data.\n", DKGL_FUNCTION_NAME);
 		}
 	}
 	return numFrames;
@@ -870,7 +870,7 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 
 void DKError::RaiseException(const DKString& func, const DKString& file, unsigned int line, const DKString& desc)
 {
-	DKLog("[%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("[%s]\n", DKGL_FUNCTION_NAME);
 
 	DKError err(desc);
 	err.functionName = func;
@@ -878,7 +878,7 @@ void DKError::RaiseException(const DKString& func, const DKString& file, unsigne
 	err.lineNo = line;
 	err.RetraceStackFrames(1, 1024);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
 	if (IsDebuggerPresent())
@@ -890,12 +890,12 @@ void DKError::RaiseException(const DKString& func, const DKString& file, unsigne
 
 void DKError::RaiseException(int errorCode, const DKString& desc)
 {
-	DKLog("%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s]\n", DKGL_FUNCTION_NAME);
 
 	DKError err(errorCode, desc);
 	err.RetraceStackFrames(1, 1024);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
 	if (IsDebuggerPresent())
@@ -907,12 +907,12 @@ void DKError::RaiseException(int errorCode, const DKString& desc)
 
 void DKError::RaiseException(const DKString& desc)
 {
-	DKLog("[%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("[%s]\n", DKGL_FUNCTION_NAME);
 
 	DKError err(desc);
 	err.RetraceStackFrames(1, 1024);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
 	if (IsDebuggerPresent())
@@ -924,12 +924,12 @@ void DKError::RaiseException(const DKString& desc)
 
 void DKError::RaiseException(const DKError& e)
 {
-	DKLog("[%s]\n", DKLIB_FUNCTION_NAME);
+	DKLog("[%s]\n", DKGL_FUNCTION_NAME);
 
 	DKError err(e);
 	err.RetraceStackFrames(1, 1024);
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
 	if (IsDebuggerPresent())

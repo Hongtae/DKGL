@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKSphereShape : public DKConvexShape
+	class DKGL_API DKSphereShape : public DKConvexShape
 	{
 	public:
 		DKSphereShape(float radius);

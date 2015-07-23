@@ -434,7 +434,7 @@ bool DKMaterial::Validate(void)
 		return IsValid();
 
 	DKLog("[%s] Material build error: %ls, in shader: %ls, program: %ls\n",
-		DKLIB_FUNCTION_NAME,
+		DKGL_FUNCTION_NAME,
 		(const wchar_t*)log.errorLog,
 		(const wchar_t*)log.failedShader,
 		(const wchar_t*)log.failedProgram);

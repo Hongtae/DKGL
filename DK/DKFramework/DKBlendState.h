@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKBlendState
+	class DKGL_API DKBlendState
 	{
 	public:
 		enum BlendMode : unsigned char

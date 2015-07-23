@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#define DKLIB_EXTDEPS_ZLIB
+#define DKGL_EXTDEPS_ZLIB
 #include "../lib/ExtDeps.h"
 #include "DKZipArchiver.h"
 #include "DKCriticalSection.h"
@@ -117,7 +117,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 				int toWrite = stream->Read(buffer, bufferSize);
 				if (zipWriteInFileInZip(zipHandle, buffer, toWrite) < 0)
 				{
-					DKLog("[%s] zipWriteInFileInZip error!\n", DKLIB_FUNCTION_NAME); 
+					DKLog("[%s] zipWriteInFileInZip error!\n", DKGL_FUNCTION_NAME); 
 					return false;
 				}
 				streamLength -= toWrite;
@@ -125,7 +125,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 
 			if (zipCloseFileInZip(zipHandle) != ZIP_OK)
 			{
-				DKLog("[%s] zipCloseFileInZip error!\n", DKLIB_FUNCTION_NAME); 
+				DKLog("[%s] zipCloseFileInZip error!\n", DKGL_FUNCTION_NAME); 
 				return false;
 			}
 			return true;
@@ -168,7 +168,7 @@ bool DKZipArchiver::Write(const DKString& file, const void* data, size_t len, in
 				int toWrite = Min(len, 0x4000);
 				if (zipWriteInFileInZip(zipHandle, cdata + totalWritten, toWrite) < 0)
 				{
-					DKLog("[%s] zipWriteInFileInZip error!\n", DKLIB_FUNCTION_NAME); 
+					DKLog("[%s] zipWriteInFileInZip error!\n", DKGL_FUNCTION_NAME); 
 					return false;
 				}
 				totalWritten += toWrite;
@@ -177,7 +177,7 @@ bool DKZipArchiver::Write(const DKString& file, const void* data, size_t len, in
 
 			if (zipCloseFileInZip(zipHandle) != ZIP_OK)
 			{
-				DKLog("[%s] zipCloseFileInZip error!\n", DKLIB_FUNCTION_NAME); 
+				DKLog("[%s] zipCloseFileInZip error!\n", DKGL_FUNCTION_NAME); 
 				return false;
 			}
 			return true;

@@ -220,7 +220,7 @@ DKOpenGLImpl::DKOpenGLImpl(void)
 		WGL_CONTEXT_MAJOR_VERSION_ARB,		4,
 		WGL_CONTEXT_MINOR_VERSION_ARB,		3,
 		WGL_CONTEXT_PROFILE_MASK_ARB,		WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		WGL_CONTEXT_FLAGS_ARB,				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
 #else
 		WGL_CONTEXT_FLAGS_ARB,				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
@@ -375,7 +375,7 @@ void DKOpenGLImpl::Unbind(void) const
 
 void DKOpenGLImpl::Flush(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(GetCurrentThreadId());
 	if (p)
 		glFlush();
@@ -388,7 +388,7 @@ void DKOpenGLImpl::Flush(void) const
 
 void DKOpenGLImpl::Finish(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(GetCurrentThreadId());
 	if (p)
 		glFinish();
@@ -401,7 +401,7 @@ void DKOpenGLImpl::Finish(void) const
 
 void DKOpenGLImpl::Present(void) const
 {
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	SharedContextMap::Pair* p = sharedContexts.Find(GetCurrentThreadId());
 	if (p)
 	{

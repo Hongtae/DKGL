@@ -20,7 +20,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKXMLParser
+	class DKGL_API DKXMLParser
 	{
 	public:
 		DKXMLParser(void);

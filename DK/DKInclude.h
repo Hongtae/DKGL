@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Build Configuration
 #if defined(_DEBUG) || defined(DEBUG)
-#	ifndef DKLIB_DEBUG_ENABLED
-#		define DKLIB_DEBUG_ENABLED 1
+#	ifndef DKGL_DEBUG_ENABLED
+#		define DKGL_DEBUG_ENABLED 1
 #	endif
 #	ifdef _MSC_VER
 #		pragma message("Build DK with Debug Configuration.")
@@ -36,43 +36,43 @@
 ////////////////////////////////////////////////////////////////////////////////
 // WIN32
 #ifdef _WIN32
-#	define DKLIB_WIN32 1
+#	define DKGL_WIN32 1
 #	include <SDKDDKVer.h>
-#	if !defined(DKLIB_STATIC) && !defined(DKLIB_DYNAMIC)
-#		define DKLIB_DYNAMIC 1	// DLL is default on Win32
+#	if !defined(DKGL_STATIC) && !defined(DKGL_DYNAMIC)
+#		define DKGL_DYNAMIC 1	// DLL is default on Win32
 #	endif
-#	ifdef DKLIB_DYNAMIC			// DLL
+#	ifdef DKGL_DYNAMIC			// DLL
 #		pragma message("Build DK for Win32 DLL.")
-#		ifdef DKLIB_EXPORTS
-#			define DKLIB_API	__declspec(dllexport)
+#		ifdef DKGL_EXPORTS
+#			define DKGL_API	__declspec(dllexport)
 #		else
-#			define DKLIB_API	__declspec(dllimport)
+#			define DKGL_API	__declspec(dllimport)
 #		endif
 #	else						// static
 #		pragma message("Build DK for Win32 Static Library.")
-#		define DKLIB_API
-#	endif	// ifdef DKLIB_DYNAMIC
+#		define DKGL_API
+#	endif	// ifdef DKGL_DYNAMIC
 #endif	// ifdef _WIN32
 
 ////////////////////////////////////////////////////////////////////////////////
 // APPLE OSX, iOS
 #if defined(__APPLE__) && defined(__MACH__)
-#	define DKLIB_APPLE_MACH
+#	define DKGL_APPLE_MACH
 #	include <TargetConditionals.h>
-#	if !defined(DKLIB_STATIC) && !defined(DKLIB_DYNAMIC)
-#		define DKLIB_DYNAMIC 1	// dylib(Framework) is default.
+#	if !defined(DKGL_STATIC) && !defined(DKGL_DYNAMIC)
+#		define DKGL_DYNAMIC 1	// dylib(Framework) is default.
 #	endif
 #	if TARGET_OS_IPHONE
-#		define DKLIB_APPLE_IOS 1
-#		ifdef DKLIB_DYNAMIC		// dylib or Framework
-#			define DKLIB_API	__attribute__((visibility ("default")))
+#		define DKGL_APPLE_IOS 1
+#		ifdef DKGL_DYNAMIC		// dylib or Framework
+#			define DKGL_API	__attribute__((visibility ("default")))
 #			if TARGET_IPHONE_SIMULATOR
 #				warning Build DK iOS Dynamic Library for iOS Simulator.
 #			else	//if TARGET_IPHONE_SIMULATOR
 #				warning Build DK iOS Dynamic Library for iOS Device.
 #			endif	//if TARGET_IPHONE_SIMULATOR
 #		else
-#			define DKLIB_API
+#			define DKGL_API
 #			if TARGET_IPHONE_SIMULATOR
 #				warning Build DK iOS Static Library for iOS Simulator.
 #			else	//if TARGET_IPHONE_SIMULATOR
@@ -80,12 +80,12 @@
 #			endif	//if TARGET_IPHONE_SIMULATOR
 #		endif
 #	else	//if TARGET_OS_IPHONE
-#		define DKLIB_APPLE_OSX 1
-#		ifdef DKLIB_DYNAMIC		// dylib or Framework
-#			define DKLIB_API	__attribute__((visibility ("default")))
+#		define DKGL_APPLE_OSX 1
+#		ifdef DKGL_DYNAMIC		// dylib or Framework
+#			define DKGL_API	__attribute__((visibility ("default")))
 #			warning Build DK for Mac OS X Dynamic Library.
 #		else
-#			define DKLIB_API
+#			define DKGL_API
 #			warning Build DK for Mac OS X Static Library.
 #		endif
 #	endif
@@ -102,25 +102,25 @@
 #			define __BIG_ENDIAN__ 1
 #		endif
 #	endif
-#	define DKLIB_LINUX 1
+#	define DKGL_LINUX 1
 
 // no default library on Linux. You should define static or dynamic.
-#	if !defined(DKLIB_STATIC) && !defined(DKLIB_DYNAMIC)
-#		error "You should define DKLIB_STATIC or DKLIB_DYNAMIC"
+#	if !defined(DKGL_STATIC) && !defined(DKGL_DYNAMIC)
+#		error "You should define DKGL_STATIC or DKGL_DYNAMIC"
 #	endif
 
-#	ifdef DKLIB_DYNAMIC		// so
-#		define DKLIB_API	__attribute__((visibility ("default")))
+#	ifdef DKGL_DYNAMIC		// so
+#		define DKGL_API	__attribute__((visibility ("default")))
 #		warning Build DK for Linux Shared Library.
 #	else
-#		define DKLIB_API
+#		define DKGL_API
 #		warning Build DK for Linux Static Library.
 #	endif
 #endif
 
 // Unsupported OS?
-#if !defined(DKLIB_STATIC) && !defined(DKLIB_DYNAMIC)
-#	error "You should define DKLIB_STATIC or DKLIB_DYNAMIC"
+#if !defined(DKGL_STATIC) && !defined(DKGL_DYNAMIC)
+#	error "You should define DKGL_STATIC or DKGL_DYNAMIC"
 #endif
 
 // Macros for byte order conversion.
@@ -137,7 +137,7 @@
 
 // Inline macros
 #ifndef FORCEINLINE
-#	ifdef DKLIB_DEBUG_ENABLED
+#	ifdef DKGL_DEBUG_ENABLED
 #		define FORCEINLINE inline
 #	else
 #		ifdef _MSC_VER
@@ -204,27 +204,27 @@ namespace DKFoundation
 		return Min(Max(std::forward<T>(v), std::forward<MinT>(_min)), std::forward<MaxT>(_max));
 	}
 
-	DKLIB_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
+	DKGL_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Macros for error, exception (DKError), C++ only.
 
 #	if defined(_MSC_VER)
-#		define DKLIB_FUNCTION_NAME		__FUNCTION__
+#		define DKGL_FUNCTION_NAME		__FUNCTION__
 #	elif defined(__GNUC__)
-#		define DKLIB_FUNCTION_NAME		__PRETTY_FUNCTION__
+#		define DKGL_FUNCTION_NAME		__PRETTY_FUNCTION__
 #	else
-#		define DKLIB_FUNCTION_NAME		__func__
+#		define DKGL_FUNCTION_NAME		__func__
 #	endif
 
-#	define DKERROR_THROW(desc)				DKFoundation::DKErrorRaiseException(DKLIB_FUNCTION_NAME, __FILE__, __LINE__, desc)
+#	define DKERROR_THROW(desc)				DKFoundation::DKErrorRaiseException(DKGL_FUNCTION_NAME, __FILE__, __LINE__, desc)
 #	define DKASSERT_DESC(expr, desc)		{if (!(expr)) DKERROR_THROW(desc);}
 #	define DKASSERT(expr)					{if (!(expr)) DKERROR_THROW("");}
 #	define DKASSERT_STD_DESC(expr, desc)	{if (!(expr)) throw std::runtime_error(desc);}
 #	define DKASSERT_STD(expr)				{if (!(expr)) throw std::runtime_error("");}
 
-#	ifdef DKLIB_DEBUG_ENABLED
+#	ifdef DKGL_DEBUG_ENABLED
 #		define DKERROR_THROW_DEBUG(desc)			DKERROR_THROW(desc)
 #		define DKASSERT_DESC_DEBUG(expr, desc)		DKASSERT_DESC(expr, desc)
 #		define DKASSERT_DEBUG(expr)					DKASSERT(expr)
@@ -238,14 +238,14 @@ namespace DKFoundation
 #		define DKASSERT_STD_DEBUG(expr)				(void)0
 #	endif
 
-#	ifndef DKLIB_MEMORY_DEBUG
-#		ifdef DKLIB_DEBUG_ENABLED
-#			define DKLIB_MEMORY_DEBUG 1
+#	ifndef DKGL_MEMORY_DEBUG
+#		ifdef DKGL_DEBUG_ENABLED
+#			define DKGL_MEMORY_DEBUG 1
 #		else
-#			define DKLIB_MEMORY_DEBUG 0
+#			define DKGL_MEMORY_DEBUG 0
 #		endif
-#	endif /* DKLIB_MEMORY_DEBUG */
-#	if DKLIB_MEMORY_DEBUG
+#	endif /* DKGL_MEMORY_DEBUG */
+#	if DKGL_MEMORY_DEBUG
 #		define DKASSERT_MEM_DESC(expr, desc)		{if (!(expr)) throw std::runtime_error(desc);}
 #		define DKASSERT_MEM(expr)					{if (!(expr)) throw std::runtime_error("");}
 #		define DKASSERT_MEM_DESC_DEBUG(expr, desc)	DKASSERT_STD_DESC(expr, desc)
@@ -264,8 +264,8 @@ namespace DKFoundation
 extern "C"
 {
 #endif
-	DKLIB_API const char* DKVersion(void);
-	DKLIB_API const char* DKCopyright(void);
+	DKGL_API const char* DKVersion(void);
+	DKGL_API const char* DKCopyright(void);
 #ifdef __cplusplus
 }
 #endif

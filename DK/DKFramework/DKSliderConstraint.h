@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKSliderConstraint : public DKConstraint
+	class DKGL_API DKSliderConstraint : public DKConstraint
 	{
 	public:
 		DKSliderConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameInA, const DKNSTransform& frameInB);

@@ -17,10 +17,10 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKAllocator : public DKAllocatorChain
+	class DKGL_API DKAllocator : public DKAllocatorChain
 	{
 	public:
-		virtual ~DKAllocator(void) noexcept(!DKLIB_MEMORY_DEBUG);
+		virtual ~DKAllocator(void) noexcept(!DKGL_MEMORY_DEBUG);
 		virtual void* Alloc(size_t) = 0;
 		virtual void Dealloc(void*) = 0;
 		virtual DKMemoryLocation Location(void) const = 0;
@@ -43,5 +43,5 @@ namespace DKFoundation
 // You need DKAllocator or inherited object.
 ////////////////////////////////////////////////////////////////////////////////
 
-DKLIB_API void* operator new (size_t, DKFoundation::DKAllocator&);	// to generation internal ref-count.
-DKLIB_API void operator delete (void*, DKFoundation::DKAllocator&);	// invoked when allocation failed.
+DKGL_API void* operator new (size_t, DKFoundation::DKAllocator&);	// to generation internal ref-count.
+DKGL_API void operator delete (void*, DKFoundation::DKAllocator&);	// invoked when allocation failed.

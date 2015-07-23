@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKHingeConstraint : public DKConstraint
+	class DKGL_API DKHingeConstraint : public DKConstraint
 	{
 	public:
 		// Using DKNSTransform, z-axis is orientation of hinge axis.

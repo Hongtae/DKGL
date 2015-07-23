@@ -42,7 +42,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKSpline
+	class DKGL_API DKSpline
 	{
 	public:
 		enum Type

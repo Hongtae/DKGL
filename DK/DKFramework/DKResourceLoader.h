@@ -33,7 +33,7 @@
 namespace DKFramework
 {
 	class DKResource;
-	class DKLIB_API DKResourceLoader
+	class DKGL_API DKResourceLoader
 	{
 	public:
 		DKResourceLoader(void);

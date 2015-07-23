@@ -22,7 +22,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKVoxelPolygonizer
+	class DKGL_API DKVoxelPolygonizer
 	{
 	public:
 		enum CubeIndex

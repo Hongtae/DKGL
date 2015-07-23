@@ -19,9 +19,9 @@ using namespace DKFramework::Private;
 #define WM_SHOWCURSOR				(WM_USER + 0x1175)
 #define WM_UPDATEMOUSECAPTURE		(WM_USER + 0x1180)
 
-#define DKLIB_UPDATEKEYBOARDMOUSE	10
+#define DKGL_UPDATEKEYBOARDMOUSE	10
 
-#define DKLIB_WNDCLASS	L"DKLIB_Win32_WndClass"
+#define DKGL_WNDCLASS	L"DKGL_Win32_WndClass"
 
 namespace DKFramework
 {
@@ -60,7 +60,7 @@ DKWindowImpl::DKWindowImpl(DKWindow* window)
 	// register window-class once
 	static const WNDCLASSW	wc = { CS_OWNDC, (WNDPROC)ApplicationEventProc, 0, 0, ::GetModuleHandleW(NULL),
 		LoadIconA(NULL, IDI_APPLICATION), LoadCursorA(NULL, IDC_ARROW),
-		NULL, NULL, DKLIB_WNDCLASS };
+		NULL, NULL, DKGL_WNDCLASS };
 
 	static ATOM a = RegisterClassW(&wc);
 
@@ -161,7 +161,7 @@ bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoi
 		y = floor(origin.y + 0.5f);
 	}
 
-	windowHandle = CreateWindowExW(dwStyleEx, DKLIB_WNDCLASS, (const wchar_t*)title, dwStyle,
+	windowHandle = CreateWindowExW(dwStyleEx, DKGL_WNDCLASS, (const wchar_t*)title, dwStyle,
 		x, y, width, height,
 		NULL, NULL, GetModuleHandleW(NULL), 0);
 	if (windowHandle == NULL)
@@ -204,7 +204,7 @@ bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoi
 
 	ownerWindow->PostWindowEvent(DKWindow::EventWindowCreated, contentSize, windowOrigin, false);
 
-	::SetTimer(windowHandle, DKLIB_UPDATEKEYBOARDMOUSE, 10, 0);
+	::SetTimer(windowHandle, DKGL_UPDATEKEYBOARDMOUSE, 10, 0);
 
 	return true;
 }
@@ -222,7 +222,7 @@ void DKWindowImpl::Destroy(void)
 		}
 		else
 		{
-			::KillTimer(windowHandle, DKLIB_UPDATEKEYBOARDMOUSE);
+			::KillTimer(windowHandle, DKGL_UPDATEKEYBOARDMOUSE);
 
 			// set GWLP_USERDATA to 0, to forwarding messages to DefWindowProc.
 			::SetWindowLongPtrW(windowHandle, GWLP_USERDATA, 0);
@@ -708,7 +708,7 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_TIMER:
-		if (wParam == DKLIB_UPDATEKEYBOARDMOUSE)
+		if (wParam == DKGL_UPDATEKEYBOARDMOUSE)
 		{
 			UpdateKeyboard();
 			UpdateMouse();

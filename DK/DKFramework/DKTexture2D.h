@@ -23,7 +23,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKTexture2D : public DKTexture
+	class DKGL_API DKTexture2D : public DKTexture
 	{
 	public:
 		DKTexture2D(void);

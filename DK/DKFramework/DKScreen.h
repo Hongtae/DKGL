@@ -26,7 +26,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKScreen : public DKFoundation::DKRunLoop
+	class DKGL_API DKScreen : public DKFoundation::DKRunLoop
 	{
 		friend class DKFoundation::DKObject<DKScreen>;
 	public:

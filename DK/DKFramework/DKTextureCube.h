@@ -25,7 +25,7 @@
 namespace DKFramework
 {
 	class DKRenderTarget;
-	class DKLIB_API DKTextureCube : public DKTexture
+	class DKGL_API DKTextureCube : public DKTexture
 	{
 	public:
 		DKTextureCube(void);

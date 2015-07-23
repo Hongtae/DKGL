@@ -21,7 +21,7 @@
 
 namespace DKFoundation
 {
-	struct DKLIB_API DKObjectRefCounter
+	struct DKGL_API DKObjectRefCounter
 	{
 		typedef uintptr_t RefCountValue;
 		typedef uint64_t RefIdValue;

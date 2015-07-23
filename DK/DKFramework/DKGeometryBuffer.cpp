@@ -41,7 +41,7 @@ bool DKGeometryBuffer::IsValid(void) const
 	if (resourceId == 0)
 		return false;
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 		return glIsBuffer(resourceId) == GL_TRUE;
 #endif
 	return true;
@@ -70,7 +70,7 @@ DKObject<DKBuffer> DKGeometryBuffer::CopyContent(void) const
 	if (Bind())
 	{
 		GLenum target = resourceType == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
-#ifdef DKLIB_OPENGL_ES
+#ifdef DKGL_OPENGL_ES
 		void* p = glMapBufferRange(target, 0, resourceSize, GL_MAP_READ_BIT);
 		ret = DKBuffer::Create(p, resourceSize);
 		glUnmapBuffer(target);
@@ -99,7 +99,7 @@ bool DKGeometryBuffer::IsLocked(AccessMode* lock) const
 		if (mapped && lock)
 		{
 			GLint access = 0;
-#ifdef DKLIB_OPENGL_ES
+#ifdef DKGL_OPENGL_ES
 			glGetBufferParameteriv(target, GL_BUFFER_ACCESS_FLAGS, &access);
 
 			if (access & GL_MAP_READ_BIT && access & GL_MAP_WRITE_BIT)
@@ -109,7 +109,7 @@ bool DKGeometryBuffer::IsLocked(AccessMode* lock) const
 			else if (access & GL_MAP_WRITE_BIT)
 				*lock = AccessModeWriteOnly;
 			else
-				DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
+				DKLog("[%s] Unsupported buffer access.\n", DKGL_FUNCTION_NAME);
 #else
 			glGetBufferParameteriv(target, GL_BUFFER_ACCESS, &access);
 
@@ -119,7 +119,7 @@ bool DKGeometryBuffer::IsLocked(AccessMode* lock) const
 				case GL_WRITE_ONLY:	*lock = AccessModeWriteOnly;	break;
 				case GL_READ_WRITE:	*lock = AccessModeReadWrite;	break;
 				default:
-					DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
+					DKLog("[%s] Unsupported buffer access.\n", DKGL_FUNCTION_NAME);
 					break;
 			}
 #endif
@@ -151,14 +151,14 @@ void* DKGeometryBuffer::Lock(AccessMode lock)
 
 	if (IsLocked(0))
 	{
-		DKLog("[%s] Buffer locked already.", DKLIB_FUNCTION_NAME);
+		DKLog("[%s] Buffer locked already.", DKGL_FUNCTION_NAME);
 		return NULL;
 	}
 
 	GLenum access = 0;
 	switch (lock)
 	{
-#ifdef DKLIB_OPENGL_ES
+#ifdef DKGL_OPENGL_ES
 		case AccessModeReadOnly:	access = GL_MAP_READ_BIT;					break;
 		case AccessModeWriteOnly:	access = GL_MAP_WRITE_BIT;					break;
 		case AccessModeReadWrite:	access = GL_MAP_READ_BIT|GL_MAP_WRITE_BIT;	break;
@@ -168,7 +168,7 @@ void* DKGeometryBuffer::Lock(AccessMode lock)
 		case AccessModeReadWrite:	access = GL_READ_WRITE;	break;
 #endif
 	default:
-		DKLog("[%s] Unsupported buffer access.\n", DKLIB_FUNCTION_NAME);
+		DKLog("[%s] Unsupported buffer access.\n", DKGL_FUNCTION_NAME);
 		return NULL;
 	}
 
@@ -246,7 +246,7 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 		usage = m == MemoryLocationStatic ? GL_STATIC_COPY : (m == MemoryLocationDynamic ? GL_DYNAMIC_COPY : GL_STREAM_COPY);
 		break;
 	default:
-		DKLog("[%s] Unsupported buffer usage.\n", DKLIB_FUNCTION_NAME);
+		DKLog("[%s] Unsupported buffer usage.\n", DKGL_FUNCTION_NAME);
 		return false;
 	}
 		

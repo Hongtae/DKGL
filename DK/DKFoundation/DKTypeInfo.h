@@ -18,7 +18,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKTypeInfo
+	class DKGL_API DKTypeInfo
 	{
 	public:
 		DKTypeInfo(void);

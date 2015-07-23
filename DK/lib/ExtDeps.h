@@ -2,7 +2,7 @@
 // DK
 #pragma once
 
-#ifdef DKLIB_EXTDEPS_ZLIB
+#ifdef DKGL_EXTDEPS_ZLIB
 #include "ExtDeps/zlib/zlib.h"
 #include "ExtDeps/zlib/zip.h"
 #include "ExtDeps/zlib/unzip.h"
@@ -11,7 +11,7 @@
 	#endif
 #endif
 
-#ifdef DKLIB_EXTDEPS_LIBXML
+#ifdef DKGL_EXTDEPS_LIBXML
 #define LIBXML_STATIC
 #include "ExtDeps/libxml2/include/libxml/globals.h"
 #include "ExtDeps/libxml2/include/libxml/xmlerror.h"
@@ -25,20 +25,20 @@
 #include "ExtDeps/libxml2/include/libxml/nanoftp.h"
 #endif
 
-#ifdef DKLIB_EXTDEPS_LIBOGG
+#ifdef DKGL_EXTDEPS_LIBOGG
 #include <ogg/ogg.h>
 #endif
 
-#ifdef DKLIB_EXTDEPS_LIBFLAC
+#ifdef DKGL_EXTDEPS_LIBFLAC
 #include "ExtDeps/libFLAC/include/FLAC/stream_decoder.h"
 #endif
 
-#ifdef DKLIB_EXTDEPS_LIBVORBIS
+#ifdef DKGL_EXTDEPS_LIBVORBIS
 #include "ExtDeps/libvorbis/include/vorbis/codec.h"
 #include "ExtDeps/libvorbis/include/vorbis/vorbisfile.h"
 #endif
 
-#ifdef DKLIB_EXTDEPS_CXIMAGE
+#ifdef DKGL_EXTDEPS_CXIMAGE
 #include "ExtDeps/CxImage/ximage.h"
 #include "ExtDeps/CxImage/ximabmp.h"
 #include "ExtDeps/CxImage/ximagif.h"
@@ -58,7 +58,7 @@
 #include "ExtDeps/CxImage/ximawmf.h"
 #endif
 
-#ifdef DKLIB_EXTDEPS_FREETYPE
+#ifdef DKGL_EXTDEPS_FREETYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_BITMAP_H
@@ -67,6 +67,6 @@
 #include FT_BBOX_H
 #endif
 
-#ifdef DKLIB_EXTDEPS_SQLITE3
+#ifdef DKGL_EXTDEPS_SQLITE3
 #include "ExtDeps/sqlite/sqlite3.h
 #endif

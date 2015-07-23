@@ -285,7 +285,7 @@ namespace DKFoundation
 
 		struct AllocatorInterface
 		{
-			virtual ~AllocatorInterface(void) noexcept(!DKLIB_MEMORY_DEBUG) {}
+			virtual ~AllocatorInterface(void) noexcept(!DKGL_MEMORY_DEBUG) {}
 			virtual void* Alloc(size_t) = 0;
 			virtual void Dealloc(void*) = 0;
 			virtual size_t Purge(void) = 0;
@@ -654,7 +654,7 @@ namespace DKFoundation
 					index = (addr - reinterpret_cast<uintptr_t>(&table.data[0])) / sizeof(Info);
 				}
 				DKASSERT_MEM_DEBUG(index <= table.count);
-#if DKLIB_MEMORY_DEBUG
+#if DKGL_MEMORY_DEBUG
 				if (index < table.count)
 				{
 					if (table.data[index].addr <= reinterpret_cast<uintptr_t>(p))
@@ -791,7 +791,7 @@ namespace DKFoundation
 	using namespace Private;
 
 
-	DKLIB_API void* DKMemoryHeapAlloc(size_t s)
+	DKGL_API void* DKMemoryHeapAlloc(size_t s)
 	{
 #ifdef _WIN32
 		return ::HeapAlloc(GetProcessHeap(), 0, s);
@@ -800,7 +800,7 @@ namespace DKFoundation
 #endif
 	}
 
-	DKLIB_API void* DKMemoryHeapRealloc(void* p, size_t s)
+	DKGL_API void* DKMemoryHeapRealloc(void* p, size_t s)
 	{
 #ifdef _WIN32
 		if (p == NULL)
@@ -816,7 +816,7 @@ namespace DKFoundation
 #endif
 	}
 
-	DKLIB_API void  DKMemoryHeapFree(void* p)
+	DKGL_API void  DKMemoryHeapFree(void* p)
 	{
 #ifdef _WIN32
 		::HeapFree(GetProcessHeap(), 0, p);
@@ -827,7 +827,7 @@ namespace DKFoundation
 
 	// virtual-address, can commit, decommit.
 	// data will be erased when decommit.
-	DKLIB_API void* DKMemoryVirtualAlloc(size_t s)
+	DKGL_API void* DKMemoryVirtualAlloc(size_t s)
 	{
 		void* p = NULL;
 
@@ -873,7 +873,7 @@ namespace DKFoundation
 		return p;
 	}
 
-	DKLIB_API void* DKMemoryVirtualRealloc(void* p, size_t s)
+	DKGL_API void* DKMemoryVirtualRealloc(void* p, size_t s)
 	{
 		if (p && s)
 		{
@@ -998,7 +998,7 @@ namespace DKFoundation
 		return NULL;
 	}
 
-	DKLIB_API void  DKMemoryVirtualFree(void* p)
+	DKGL_API void  DKMemoryVirtualFree(void* p)
 	{
 		if (p)
 		{
@@ -1028,7 +1028,7 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API size_t  DKMemoryVirtualSize(void* p)
+	DKGL_API size_t  DKMemoryVirtualSize(void* p)
 	{
 		if (p)
 		{
@@ -1052,7 +1052,7 @@ namespace DKFoundation
 	}
 
 	// system-paing functions.
-	DKLIB_API size_t DKMemoryPageSize(void)
+	DKGL_API size_t DKMemoryPageSize(void)
 	{
 		static size_t pageSize = [](){
 #ifdef _WIN32
@@ -1066,7 +1066,7 @@ namespace DKFoundation
 		return pageSize;
 	}
 
-	DKLIB_API void* DKMemoryPageReserve(void* p, size_t s)
+	DKGL_API void* DKMemoryPageReserve(void* p, size_t s)
 	{
 		void* ptr = NULL;
 		size_t pageSize = DKMemoryPageSize();
@@ -1107,12 +1107,12 @@ namespace DKFoundation
 		return ptr;
 	}
 
-	DKLIB_API void DKMemoryPageRelease(void* p)
+	DKGL_API void DKMemoryPageRelease(void* p)
 	{
 		if (p)
 		{
 #ifdef _WIN32
-#if DKLIB_MEMORY_DEBUG
+#if DKGL_MEMORY_DEBUG
 			MEMORY_BASIC_INFORMATION mbi;
 			if (::VirtualQuery(p, &mbi, sizeof(mbi)))
 			{
@@ -1153,7 +1153,7 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API void DKMemoryPageCommit(void* p, size_t s)
+	DKGL_API void DKMemoryPageCommit(void* p, size_t s)
 	{
 		if (p && s > 0)
 		{
@@ -1168,7 +1168,7 @@ namespace DKFoundation
 			DKASSERT_MEM_DEBUG((s % pageSize) == 0);
 
 #ifdef _WIN32
-#if DKLIB_MEMORY_DEBUG
+#if DKGL_MEMORY_DEBUG
 			MEMORY_BASIC_INFORMATION mbi;
 			if (::VirtualQuery(p, &mbi, sizeof(mbi)))
 			{
@@ -1204,7 +1204,7 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API void DKMemoryPageDecommit(void* p, size_t s)
+	DKGL_API void DKMemoryPageDecommit(void* p, size_t s)
 	{
 		if (p && s > 0)
 		{
@@ -1241,27 +1241,27 @@ namespace DKFoundation
 		}
 	}
 
-	DKLIB_API void* DKMemoryPoolAlloc(size_t s)
+	DKGL_API void* DKMemoryPoolAlloc(size_t s)
 	{
 		return GetAllocatorPool()->Alloc(s);
 	}
 
-	DKLIB_API void* DKMemoryPoolRealloc(void* p, size_t s)
+	DKGL_API void* DKMemoryPoolRealloc(void* p, size_t s)
 	{
 		return GetAllocatorPool()->Realloc(p, s);
 	}
 	
-	DKLIB_API void DKMemoryPoolFree(void* p)
+	DKGL_API void DKMemoryPoolFree(void* p)
 	{
 		GetAllocatorPool()->Dealloc(p);
 	}
 	
-	DKLIB_API size_t DKMemoryPoolPurge(void)
+	DKGL_API size_t DKMemoryPoolPurge(void)
 	{
 		return GetAllocatorPool()->Purge();
 	}
 	
-	DKLIB_API size_t DKMemoryPoolSize(void)
+	DKGL_API size_t DKMemoryPoolSize(void)
 	{
 		return GetAllocatorPool()->Size();
 	}

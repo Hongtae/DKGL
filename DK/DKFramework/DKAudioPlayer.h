@@ -21,7 +21,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKAudioPlayer
+	class DKGL_API DKAudioPlayer
 	{
 	public:
 		// PCM audio buffer filter.

@@ -5,8 +5,8 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#define DKLIB_EXTDEPS_ZLIB
-#define DKLIB_EXTDEPS_LIBXML
+#define DKGL_EXTDEPS_ZLIB
+#define DKGL_EXTDEPS_LIBXML
 #include <ctype.h>
 #include <wctype.h>
 #include "../lib/ExtDeps.h"

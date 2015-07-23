@@ -44,7 +44,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKRunLoop
+	class DKGL_API DKRunLoop
 	{
 	public:
 		struct OperationResult

@@ -49,7 +49,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKDirectory
+	class DKGL_API DKDirectory
 	{
 	public:
 		DKDirectory(void);

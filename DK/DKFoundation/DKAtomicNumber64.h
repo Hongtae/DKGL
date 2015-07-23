@@ -17,7 +17,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKAtomicNumber64
+	class DKGL_API DKAtomicNumber64
 	{
 	public:
 		typedef long long Value;

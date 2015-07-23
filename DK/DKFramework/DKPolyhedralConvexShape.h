@@ -18,7 +18,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKPolyhedralConvexShape : public DKConvexShape
+	class DKGL_API DKPolyhedralConvexShape : public DKConvexShape
 	{
 	public:
 		~DKPolyhedralConvexShape(void);

@@ -50,7 +50,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKConstraint : public DKModel
+	class DKGL_API DKConstraint : public DKModel
 	{
 	public:
 		enum class ParamType

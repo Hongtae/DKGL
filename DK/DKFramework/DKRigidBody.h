@@ -20,11 +20,11 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKRigidBody : public DKCollisionObject
+	class DKGL_API DKRigidBody : public DKCollisionObject
 	{
 		friend class DKConstraint;
 	public:
-		struct DKLIB_API ObjectData
+		struct DKGL_API ObjectData
 		{
 			ObjectData(float mass = 0.0f, const DKVector3& localInertia = DKVector3::zero);
 			float mass;

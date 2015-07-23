@@ -19,7 +19,7 @@
 namespace DKFoundation
 {
 	class DKData;
-	class DKLIB_API DKStringU8
+	class DKGL_API DKStringU8
 	{
 	public:
 		static const DKStringU8& EmptyString();

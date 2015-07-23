@@ -22,7 +22,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKTriangleMeshBvh
+	class DKGL_API DKTriangleMeshBvh
 	{
 	public:
 		DKTriangleMeshBvh(void);

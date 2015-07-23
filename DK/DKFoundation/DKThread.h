@@ -23,7 +23,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKThread
+	class DKGL_API DKThread
 	{
 	public:
 		typedef unsigned long ThreadId;

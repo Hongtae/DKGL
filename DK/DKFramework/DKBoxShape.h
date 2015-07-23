@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKBoxShape : public DKPolyhedralConvexShape
+	class DKGL_API DKBoxShape : public DKPolyhedralConvexShape
 	{
 	public:
 		DKBoxShape(float u, float v, float w);

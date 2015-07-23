@@ -22,7 +22,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKFile : public DKStream
+	class DKGL_API DKFile : public DKStream
 	{
 	public:
 		struct FileInfo

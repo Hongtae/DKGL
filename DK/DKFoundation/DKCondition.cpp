@@ -81,7 +81,7 @@ namespace DKFoundation
 			ConditionImpl(void)
 			{
 				pthread_mutexattr_init(&attr);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
 #else
 				pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);

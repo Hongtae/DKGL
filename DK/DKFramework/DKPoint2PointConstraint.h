@@ -16,7 +16,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKPoint2PointConstraint : public DKConstraint
+	class DKGL_API DKPoint2PointConstraint : public DKConstraint
 	{
 	public:
 		DKPoint2PointConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKVector3& pivotInA, const DKVector3& pivotInB);

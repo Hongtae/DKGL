@@ -85,7 +85,7 @@ bool DKIndexBuffer::CopyIndices(DKArray<unsigned int>& indices) const
 		DKObject<DKBuffer> data = CopyContent();
 		if (data == NULL || data->Length() == 0)
 		{
-			DKLog("[%s] index buffer copy failed.\n", DKLIB_FUNCTION_NAME);
+			DKLog("[%s] index buffer copy failed.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
 

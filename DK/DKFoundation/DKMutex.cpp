@@ -25,7 +25,7 @@ namespace DKFoundation
 		public:
 			MutexImpl(void)
 				: mutex(::CreateMutex(NULL, FALSE, NULL))
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				, ownerId(0)
 #endif
 			{
@@ -38,7 +38,7 @@ namespace DKFoundation
 			void Lock(void) const
 			{
 				::WaitForSingleObject(mutex, INFINITE);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				DKASSERT_DEBUG(ownerId == 0);
 				ownerId = ::GetCurrentThreadId();
 #endif
@@ -47,7 +47,7 @@ namespace DKFoundation
 			{
 				if (::WaitForSingleObject(mutex, 0) == WAIT_OBJECT_0)
 				{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 					DKASSERT_DEBUG(ownerId == 0);
 					ownerId = ::GetCurrentThreadId();
 #endif
@@ -57,7 +57,7 @@ namespace DKFoundation
 			}
 			void Unlock(void) const
 			{
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				DKASSERT_DESC_DEBUG(ownerId == ::GetCurrentThreadId(), "The current thread does not own the mutex!");
 				ownerId = 0;
 #endif
@@ -65,7 +65,7 @@ namespace DKFoundation
 				DKASSERT_DESC_DEBUG(b, "ReleaseMutex FAILED");
 			}
 			HANDLE mutex;
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 			mutable DWORD ownerId;
 #endif
 		};
@@ -82,7 +82,7 @@ namespace DKFoundation
 			MutexImpl(void)
 			{
 				pthread_mutexattr_init(&attr);
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 				pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
 #else
 				pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);

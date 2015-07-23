@@ -25,19 +25,19 @@ namespace DKFoundation
 		virtual void Log(const DKString&) = 0;
 	};
 
-	DKLIB_API void DKLoggerSet(DKLogger*);
-	DKLIB_API DKLogger* DKLoggerCurrent(void);
+	DKGL_API void DKLoggerSet(DKLogger*);
+	DKGL_API DKLogger* DKLoggerCurrent(void);
 
 	// if current logger is 'cmp', then set 'repl' to current logger.
-	DKLIB_API bool DKLoggerCompareAndReplace(DKLogger* cmp, DKLogger* repl);
+	DKGL_API bool DKLoggerCompareAndReplace(DKLogger* cmp, DKLogger* repl);
 
-	DKLIB_API void DKLogInit(DKLogCallbackProc proc);	// deprecated
+	DKGL_API void DKLogInit(DKLogCallbackProc proc);	// deprecated
 
-	DKLIB_API void DKLog(const DKFoundation::DKString& str);
-	DKLIB_API void DKLog(const char* fmt, ...);
+	DKGL_API void DKLog(const DKFoundation::DKString& str);
+	DKGL_API void DKLog(const char* fmt, ...);
 }
 
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 #define DKLOG_DEBUG(...)	DKFoundation::DKLog(__VA_ARGS__)
 #else
 #define DKLOG_DEBUG(...)	(void)0

@@ -54,7 +54,7 @@
 namespace DKFramework
 {
 	class DKScreen;
-	class DKLIB_API DKFrame
+	class DKGL_API DKFrame
 	{
 		friend class DKScreen;
 	public:

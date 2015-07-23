@@ -26,7 +26,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKOpenALContext : public DKFoundation::DKSharedInstance<DKOpenALContext>
+	class DKGL_API DKOpenALContext : public DKFoundation::DKSharedInstance<DKOpenALContext>
 	{
 	public:
 		~DKOpenALContext(void);

@@ -24,31 +24,31 @@
 namespace DKFoundation
 {
 	// heap memory
-	DKLIB_API void* DKMemoryHeapAlloc(size_t);
-	DKLIB_API void* DKMemoryHeapRealloc(void*, size_t);
-	DKLIB_API void  DKMemoryHeapFree(void*);
+	DKGL_API void* DKMemoryHeapAlloc(size_t);
+	DKGL_API void* DKMemoryHeapRealloc(void*, size_t);
+	DKGL_API void  DKMemoryHeapFree(void*);
 
 	// virtual-address, can commit, decommit.
 	// data will be erased when decommit.
-	DKLIB_API void* DKMemoryVirtualAlloc(size_t);
-	DKLIB_API void* DKMemoryVirtualRealloc(void*, size_t);
-	DKLIB_API void  DKMemoryVirtualFree(void*);
-	DKLIB_API size_t  DKMemoryVirtualSize(void*);
+	DKGL_API void* DKMemoryVirtualAlloc(size_t);
+	DKGL_API void* DKMemoryVirtualRealloc(void*, size_t);
+	DKGL_API void  DKMemoryVirtualFree(void*);
+	DKGL_API size_t  DKMemoryVirtualSize(void*);
 
 	// system-paing functions.
-	DKLIB_API size_t DKMemoryPageSize(void); // default allocation size
-	DKLIB_API void* DKMemoryPageReserve(void*, size_t);
-	DKLIB_API void DKMemoryPageRelease(void*);
-	DKLIB_API void DKMemoryPageCommit(void*, size_t);
-	DKLIB_API void DKMemoryPageDecommit(void*, size_t);
+	DKGL_API size_t DKMemoryPageSize(void); // default allocation size
+	DKGL_API void* DKMemoryPageReserve(void*, size_t);
+	DKGL_API void DKMemoryPageRelease(void*);
+	DKGL_API void DKMemoryPageCommit(void*, size_t);
+	DKGL_API void DKMemoryPageDecommit(void*, size_t);
 
 	// Pre-allocated pool.
-	DKLIB_API void* DKMemoryPoolAlloc(size_t);
-	DKLIB_API void* DKMemoryPoolRealloc(void*, size_t);
-	DKLIB_API void  DKMemoryPoolFree(void*);
+	DKGL_API void* DKMemoryPoolAlloc(size_t);
+	DKGL_API void* DKMemoryPoolRealloc(void*, size_t);
+	DKGL_API void  DKMemoryPoolFree(void*);
 	// Optional pool management functions.
-	DKLIB_API size_t DKMemoryPoolPurge(void);
-	DKLIB_API size_t DKMemoryPoolSize(void);
+	DKGL_API size_t DKMemoryPoolPurge(void);
+	DKGL_API size_t DKMemoryPoolSize(void);
 
 
 	enum DKMemoryLocation

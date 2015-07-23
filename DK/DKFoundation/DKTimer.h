@@ -31,7 +31,7 @@ namespace DKFoundation
 	typedef unsigned int		DKTimeTick32;	// 32bit counter type.
 	typedef unsigned long long	DKTimeTick64;	// 64bit counter type.
 
-	class DKLIB_API DKTimer
+	class DKGL_API DKTimer
 	{
 	public:
 		typedef DKTimeTick64 Tick; // using 64 bit counter.

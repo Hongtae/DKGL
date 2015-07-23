@@ -111,69 +111,69 @@ using namespace DKFramework::Private;
 /*
 - (void)applicationWillUpdate:(NSNotification *)aNotification
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 - (void)applicationDidUpdate:(NSNotification *)aNotification
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 */
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (NSMenu *)applicationDockMenu:(NSApplication *)sender
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return nil;
 }
 - (NSError *)application:(NSApplication *)application willPresentError:(NSError *)error
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return error;
 }
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (BOOL)application:(id)sender openFileWithoutUI:(NSString *)filename
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (BOOL)application:(NSApplication *)theApplication openTempFile:(NSString *)filename
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 - (BOOL)applicationOpenUntitledFile:(NSApplication *)theApplication
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (BOOL)application:(NSApplication *)theApplication printFile:(NSString *)filename
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NO;
 }
 - (NSApplicationPrintReply)application:(NSApplication *)application printFiles:(NSArray *)fileNames withSettings:(NSDictionary *)printSettings showPrintPanels:(BOOL)showPrintPanels
 {
-	DKLog("%s\n", DKLIB_FUNCTION_NAME);
+	DKLog("%s\n", DKGL_FUNCTION_NAME);
 	return NSPrintingFailure;
 }
 @end

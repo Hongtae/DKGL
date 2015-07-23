@@ -21,7 +21,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKVertexBuffer : public DKGeometryBuffer
+	class DKGL_API DKVertexBuffer : public DKGeometryBuffer
 	{
 	public:
 		struct Decl  // Vertex stream declaration.

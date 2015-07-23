@@ -16,7 +16,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKMutex
+	class DKGL_API DKMutex
 	{
 	public:
 		DKMutex(void);

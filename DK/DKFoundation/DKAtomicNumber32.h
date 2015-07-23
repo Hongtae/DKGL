@@ -17,7 +17,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKAtomicNumber32
+	class DKGL_API DKAtomicNumber32
 	{
 	public:
 		typedef int Value;

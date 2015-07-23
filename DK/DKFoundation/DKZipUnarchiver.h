@@ -21,7 +21,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKZipUnarchiver
+	class DKGL_API DKZipUnarchiver
 	{
 	public:
 		enum Method

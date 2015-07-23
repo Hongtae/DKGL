@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKStaticPlaneShape : public DKConcaveShape
+	class DKGL_API DKStaticPlaneShape : public DKConcaveShape
 	{
 	public:
 		DKStaticPlaneShape(const DKVector3& planeNormal, float planeConstant);

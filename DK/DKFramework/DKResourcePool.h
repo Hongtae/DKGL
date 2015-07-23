@@ -46,7 +46,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKResourcePool : public DKResourceLoader
+	class DKGL_API DKResourcePool : public DKResourceLoader
 	{
 	public:
 		// Locator

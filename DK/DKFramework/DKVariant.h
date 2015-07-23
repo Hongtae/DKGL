@@ -43,7 +43,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKVariant
+	class DKGL_API DKVariant
 	{
 	public:
 		enum Type : int

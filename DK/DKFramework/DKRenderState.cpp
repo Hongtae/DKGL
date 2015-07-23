@@ -128,7 +128,7 @@ void DKRenderState::Reset(void)
 	glDepthMask(depthMask);
 	glDepthFunc(depthFunc);
 	
-#ifdef DKLIB_OPENGL_ES
+#ifdef DKGL_OPENGL_ES
 	glClearDepthf(clearDepth);
 	glDepthRangef(depthRangeNear, depthRangeFar);
 #else
@@ -381,7 +381,7 @@ void DKRenderState::ClearDepth(float d)
 	if (clearDepth == d)
 		return;
 
-#ifdef DKLIB_OPENGL_ES
+#ifdef DKGL_OPENGL_ES
 	glClearDepthf(d);
 #else
 	glClearDepth(d);
@@ -527,7 +527,7 @@ void DKRenderState::DepthRange(float n, float f)
 	if (depthRangeNear == n && depthRangeFar == f)
 		return;
 
-#ifdef DKLIB_OPENGL_ES
+#ifdef DKGL_OPENGL_ES
 	glDepthRangef(n, f);
 #else
 	glDepthRange(n, f);

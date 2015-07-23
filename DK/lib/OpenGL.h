@@ -3,28 +3,28 @@
 #if defined(__APPLE__) && defined(__MACH__)
 	#include <TargetConditionals.h>
 	#if TARGET_OS_IPHONE
-		#define DKLIB_OPENGL_ES
-		#define DKLIB_OPENGL_ES_3
-		#define DKLIB_OPENGL_IOS
+		#define DKGL_OPENGL_ES
+		#define DKGL_OPENGL_ES_3
+		#define DKGL_OPENGL_IOS
 		#include <OpenGLES/ES3/gl.h>
 		#include <OpenGLES/ES3/glext.h>
 	#else
-		#define DKLIB_OPENGL_OSX
+		#define DKGL_OPENGL_OSX
 		#include <OpenGL/gl3.h>
 		#include <OpenGL/gl3ext.h>
 	#endif	//if TARGET_OS_IPHONE
 #endif	//if defined(__APPLE__) && defined(__MACH__)
 
 #ifdef __ANDROID__
-	#define DKLIB_OPENGL_ES
-	#define DKLIB_OPENGL_ANDROID
-	#define DKLIB_OPENGLES_3
+	#define DKGL_OPENGL_ES
+	#define DKGL_OPENGL_ANDROID
+	#define DKGL_OPENGLES_3
 	#include <GLES3/gl3.h>
 	#include <GLES3/gl3ext.h>
 #endif	// ifdef __ANDROID__
 
 #ifdef _WIN32
-	#define DKLIB_OPENGL_WIN32
+	#define DKGL_OPENGL_WIN32
 	#include <windows.h>
 	#include <gl/gl.h>
 	#include "OpenGL/glcorearb.h"

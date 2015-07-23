@@ -124,7 +124,7 @@ DKObject<PyDKPython> PyDKPython::Create(const DKString::StringArray& paths)
 	Py_NoUserSiteDirectory = 1;
 	Py_IgnoreEnvironmentFlag = 1;
 	Py_InspectFlag = 1;
-#ifdef DKLIB_DEBUG_ENABLED
+#ifdef DKGL_DEBUG_ENABLED
 	//Py_VerboseFlag = 1;
 #endif
 #endif

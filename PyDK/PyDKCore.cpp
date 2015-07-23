@@ -54,13 +54,13 @@ PyMODINIT_FUNC PyInit__dk_core(void)
 	};
 	auto platform = [](PyObject*, PyObject*)->PyObject*
 	{
-#if   defined(DKLIB_WIN32)
+#if   defined(DKGL_WIN32)
 		return PyUnicode_FromString("windows");
-#elif defined(DKLIB_APPLE_OSX)
+#elif defined(DKGL_APPLE_OSX)
 		return PyUnicode_FromString("osx");
-#elif defined(DKLIB_APPLE_IOS)
+#elif defined(DKGL_APPLE_IOS)
 		return PyUnicode_FromString("ios");
-#elif defined(DKLIB_LINUX)
+#elif defined(DKGL_LINUX)
 	#ifdef __ANDROID__
 		return PyUnicode_FromString("android");
 	#else

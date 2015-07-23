@@ -26,7 +26,7 @@ namespace DKFoundation
 {
 	class DKOperation;
 	class DKStream;
-	class DKLIB_API DKData
+	class DKGL_API DKData
 	{
 	public:
 		DKData(void);

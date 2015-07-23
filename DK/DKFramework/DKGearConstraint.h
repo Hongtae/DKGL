@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKGearConstraint : public DKConstraint
+	class DKGL_API DKGearConstraint : public DKConstraint
 	{
 	public:
 		DKGearConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB,

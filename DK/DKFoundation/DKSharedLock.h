@@ -22,7 +22,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKSharedLock
+	class DKGL_API DKSharedLock
 	{
 	public:
 		DKSharedLock(void);

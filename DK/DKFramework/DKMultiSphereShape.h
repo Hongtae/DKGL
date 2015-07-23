@@ -18,7 +18,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKMultiSphereShape : public DKConvexShape
+	class DKGL_API DKMultiSphereShape : public DKConvexShape
 	{
 	public:
 		DKMultiSphereShape(const DKSphere* spheres, size_t numSpheres);

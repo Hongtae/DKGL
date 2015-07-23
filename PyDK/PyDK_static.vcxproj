@@ -213,7 +213,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKLIB_STATIC;Py_NO_ENABLE_SHARED;Py_DEBUG;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKGL_STATIC;Py_NO_ENABLE_SHARED;Py_DEBUG;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -237,7 +237,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKLIB_STATIC;Py_NO_ENABLE_SHARED;Py_DEBUG;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKGL_STATIC;Py_NO_ENABLE_SHARED;Py_DEBUG;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -265,7 +265,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKLIB_STATIC;Py_NO_ENABLE_SHARED;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKGL_STATIC;Py_NO_ENABLE_SHARED;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -293,7 +293,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKLIB_STATIC;Py_NO_ENABLE_SHARED;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;PYDK_STATIC;DKGL_STATIC;Py_NO_ENABLE_SHARED;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <AdditionalIncludeDirectories>./Python/include;./Python/Config;..</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

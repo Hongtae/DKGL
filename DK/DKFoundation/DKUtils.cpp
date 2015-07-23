@@ -17,11 +17,11 @@
 
 #include "DKUtils.h"
 
-extern "C" DKLIB_API const char* DKVersion(void)
+extern "C" DKGL_API const char* DKVersion(void)
 {
 	return "DK 1.0.0";
 }
-extern "C" DKLIB_API const char* DKCopyright(void)
+extern "C" DKGL_API const char* DKCopyright(void)
 {
 	return "Copyright (c) 2004-2015 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
 }
@@ -29,7 +29,7 @@ extern "C" DKLIB_API const char* DKCopyright(void)
 namespace DKFoundation
 {
 #ifdef _WIN32
-	DKLIB_API unsigned int DKRandom(void)
+	DKGL_API unsigned int DKRandom(void)
 	{
 		unsigned int value;
 		if (rand_s(&value) == 0)
@@ -51,7 +51,7 @@ namespace DKFoundation
 		return ((h << 16) & 0xffff0000) | ( l & 0x0000ffff);
 	}
 #elif defined(__linux__)
-	DKLIB_API unsigned int DKRandom(void)
+	DKGL_API unsigned int DKRandom(void)
 	{
 		static struct InitSeed
 		{
@@ -64,7 +64,7 @@ namespace DKFoundation
 
 #ifdef _WIN32
 	// temporary folder for current user.
-	DKLIB_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory(void)
 	{
 		wchar_t path[MAX_PATH];
 		DWORD ret = ::GetTempPathW(MAX_PATH, path);
@@ -83,7 +83,7 @@ namespace DKFoundation
 		return DKString(path);
 	}
 	
-	DKLIB_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments(void)
 	{
 		DKArray<DKString> args;
 		int numArgs = 0;
@@ -99,7 +99,7 @@ namespace DKFoundation
 		return args;
 	}
 	
-	DKLIB_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
 	{
 		DKMap<DKString, DKString> env;
 		LPWSTR str = (LPWSTR)GetEnvironmentStringsW();
@@ -126,7 +126,7 @@ namespace DKFoundation
 		return env;
 	}
 #elif defined(__linux__)
-	DKLIB_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory(void)
 	{
 		std::initializer_list<const char*> tmpKeys = {"TMPDIR", "TMP", "TEMP", "TEMPDIR"};
 		const char* tmpDir = NULL;
@@ -142,12 +142,12 @@ namespace DKFoundation
 		return DKString(tmpDir);
 	}
 	
-	DKLIB_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments(void)
 	{
 		return DKArray<DKString>();
 	}
 	
-	DKLIB_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
 	{
 		return DKMap<DKString, DKString>();
 	}

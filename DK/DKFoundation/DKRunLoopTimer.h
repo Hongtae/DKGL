@@ -21,7 +21,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKRunLoopTimer
+	class DKGL_API DKRunLoopTimer
 	{
 	public:
 		~DKRunLoopTimer(void);

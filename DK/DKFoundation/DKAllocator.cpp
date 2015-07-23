@@ -81,7 +81,7 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 	return *hma;
 }
 
-DKLIB_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
+DKGL_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
 {
 	void* p = a.Alloc(s);
 	bool b = DKObjectRefCounter::SetRefCounter(p, &a, 0, NULL);
@@ -89,7 +89,7 @@ DKLIB_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
 	return p;
 }
 
-DKLIB_API void operator delete (void* p, DKFoundation::DKAllocator& a)
+DKGL_API void operator delete (void* p, DKFoundation::DKAllocator& a)
 {
 	DKAllocator* alloc = NULL;
 	DKObjectRefCounter::UnsetRefCounter(p, 0, &alloc);

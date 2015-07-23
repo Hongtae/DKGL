@@ -23,7 +23,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKTriangle
+	class DKGL_API DKTriangle
 	{
 	public:
 		enum class Front

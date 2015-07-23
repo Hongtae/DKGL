@@ -17,7 +17,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKCapsuleShape : public DKConvexShape
+	class DKGL_API DKCapsuleShape : public DKConvexShape
 	{
 	public:
 		DKCapsuleShape(float radius, float height, UpAxis up = UpAxis::Top);

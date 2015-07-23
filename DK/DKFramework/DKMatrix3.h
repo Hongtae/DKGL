@@ -22,7 +22,7 @@ namespace DKFramework
 {
 	class DKVector3;
 
-	class DKLIB_API DKMatrix3
+	class DKGL_API DKMatrix3
 	{
 	public:
 		DKMatrix3(void);

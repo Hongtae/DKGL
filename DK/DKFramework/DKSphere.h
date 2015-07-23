@@ -18,7 +18,7 @@
 namespace DKFramework
 {
 	class DKLine;
-	class DKLIB_API DKSphere
+	class DKGL_API DKSphere
 	{
 	public:
 		DKSphere(void);

@@ -31,7 +31,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKCollisionShape
+	class DKGL_API DKCollisionShape
 	{
 	public:
 		struct SerializeHelper : public DKResource

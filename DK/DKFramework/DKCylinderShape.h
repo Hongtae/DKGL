@@ -19,7 +19,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKCylinderShape : public DKConvexShape
+	class DKGL_API DKCylinderShape : public DKConvexShape
 	{
 	public:
 		DKCylinderShape(float u, float v, float w, UpAxis up = UpAxis::Top);

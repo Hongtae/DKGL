@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
 //
 
-#define DKLIB_EXTDEPS_FREETYPE
+#define DKGL_EXTDEPS_FREETYPE
 #include "../lib/ExtDeps.h"
 #include "../lib/OpenGL.h"
 #include "DKMath.h"

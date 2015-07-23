@@ -19,7 +19,7 @@
 #pragma pack(push, 4)
 namespace DKFramework
 {
-	class DKLIB_API DKLinearTransform2
+	class DKGL_API DKLinearTransform2
 	{
 	public:
 		DKLinearTransform2(void);

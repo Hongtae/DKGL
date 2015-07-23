@@ -18,7 +18,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKRational
+	class DKGL_API DKRational
 	{
 	public:
 		typedef int64_t Integer;

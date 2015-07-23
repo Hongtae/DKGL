@@ -45,7 +45,7 @@
 
 namespace DKFoundation
 {
-	class DKLIB_API DKDateTime
+	class DKGL_API DKDateTime
 	{
 	public:
 		enum DateFormat

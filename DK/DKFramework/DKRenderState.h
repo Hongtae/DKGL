@@ -18,7 +18,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKRenderState
+	class DKGL_API DKRenderState
 	{
 	public:
 		enum GLState

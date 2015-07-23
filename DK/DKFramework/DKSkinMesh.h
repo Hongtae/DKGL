@@ -22,7 +22,7 @@
 
 namespace DKFramework
 {
-	class DKLIB_API DKSkinMesh : public DKStaticMesh
+	class DKGL_API DKSkinMesh : public DKStaticMesh
 	{
 	public:
 		typedef DKFoundation::DKString NodeId;
