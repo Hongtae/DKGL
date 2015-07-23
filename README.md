@@ -1,6 +1,6 @@
 # Project DKGL
-Game Library for C\++ and Python  
-This project contains two modules, DK and PyDK.  
+Cross-platform 3D Game Library for C\++ and Python.  
+This project contains two frameworks, DK and PyDK.  
 DK is core library for C\++ and PyDK is Python bindings for DK.
 
 # DK (Core Library)
@@ -12,7 +12,7 @@ DK library has following contents with two frameworks layer.
 ##### DKFoundation - `Foundation Classes, Managing System Tasks.`
 * C\++ Metaprograms (Type Libraries, etc.)
 * Data Collections (Array, Map, Tuples, etc.)
-* Object Management (SmartPointers, WeakRef, Allocators, etc.)
+* Memory Management (SmartPointers, WeakRef, Pool Allocators, etc.)
 * Thread and Synchronize objects (Mutex, Condition, Atomics, etc.)
 * Thread Pool for Asynchronous Operations
 * High Resolution Timer
