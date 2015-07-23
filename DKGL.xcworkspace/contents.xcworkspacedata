@@ -2,11 +2,24 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:LICENSE">
-   </FileRef>
-   <FileRef
       location = "group:README.md">
    </FileRef>
+   <Group
+      location = "container:"
+      name = "License">
+      <FileRef
+         location = "group:LICENSE">
+      </FileRef>
+      <FileRef
+         location = "group:LICENSE-DK">
+      </FileRef>
+      <FileRef
+         location = "group:LICENSE-PyDK">
+      </FileRef>
+      <FileRef
+         location = "group:LICENSE-Python">
+      </FileRef>
+   </Group>
    <FileRef
       location = "container:DK/DK.xcodeproj">
    </FileRef>

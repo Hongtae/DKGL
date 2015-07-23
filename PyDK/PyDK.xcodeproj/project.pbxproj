@@ -578,13 +578,13 @@
 		8455C9D21AEE6C530003A417 /* PyDKInterpreter.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420B41A600F9C00C92847 /* PyDKInterpreter.h */; };
 		8455C9D31AEE6C530003A417 /* PyDKPython.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420B61A600F9C00C92847 /* PyDKPython.h */; };
 		84B8E75E18FFC856006BFD40 /* libDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E75518FFC813006BFD40 /* libDK.a */; };
-		84CADADD1A695B550087774D /* libpython3.4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E7FF18FFD1D4006BFD40 /* libpython3.4.a */; };
-		84CADADE1A695B570087774D /* libpython3.4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E7FF18FFD1D4006BFD40 /* libpython3.4.a */; };
-		84CADADF1A695B5C0087774D /* libpython3.4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E80118FFD1D4006BFD40 /* libpython3.4.a */; };
-		84CADAE01A695B5D0087774D /* libpython3.4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E80118FFD1D4006BFD40 /* libpython3.4.a */; };
+		84CADADD1A695B550087774D /* libpython3.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E7FF18FFD1D4006BFD40 /* libpython3.5.a */; };
+		84CADADE1A695B570087774D /* libpython3.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E7FF18FFD1D4006BFD40 /* libpython3.5.a */; };
+		84CADADF1A695B5C0087774D /* libpython3.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E80118FFD1D4006BFD40 /* libpython3.5.a */; };
+		84CADAE01A695B5D0087774D /* libpython3.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B8E80118FFD1D4006BFD40 /* libpython3.5.a */; };
 		84CADAE41A6968CF0087774D /* DK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A66BF519299F3E0086056F /* DK.framework */; };
-		84CADB351A696FF20087774D /* python34.zip in Resources */ = {isa = PBXBuildFile; fileRef = 84798D4F19E524A8009378A6 /* python34.zip */; };
-		84CADB361A696FF30087774D /* python34.zip in Resources */ = {isa = PBXBuildFile; fileRef = 84798D4F19E524A8009378A6 /* python34.zip */; };
+		84CADB351A696FF20087774D /* python35.zip in Resources */ = {isa = PBXBuildFile; fileRef = 84798D4F19E524A8009378A6 /* python35.zip */; };
+		84CADB361A696FF30087774D /* python35.zip in Resources */ = {isa = PBXBuildFile; fileRef = 84798D4F19E524A8009378A6 /* python35.zip */; };
 		84CADC7E1A6AC27D0087774D /* DK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84A66BF519299F3E0086056F /* DK.framework */; };
 /* End PBXBuildFile section */
 
@@ -773,7 +773,7 @@
 		8446F20218FD7C1C0014D21A /* libPyDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPyDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84798B5319E51AF7009378A6 /* PyDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PyDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84798B6919E51B4C009378A6 /* PyDK_OSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PyDK_OSX-Info.plist"; sourceTree = "<group>"; };
-		84798D4F19E524A8009378A6 /* python34.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = python34.zip; sourceTree = "<group>"; };
+		84798D4F19E524A8009378A6 /* python35.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = python35.zip; sourceTree = "<group>"; };
 		84864BF216E9C0E700CB09ED /* _dk_core.so */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = _dk_core.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		84864C1C16E9C1F900CB09ED /* libPyDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPyDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84A66DAF1929ACBC0086056F /* PyDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PyDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -882,8 +882,8 @@
 		84B8E7FB18FFD1D4006BFD40 /* unicodeobject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = unicodeobject.h; sourceTree = "<group>"; };
 		84B8E7FC18FFD1D4006BFD40 /* warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = warnings.h; sourceTree = "<group>"; };
 		84B8E7FD18FFD1D4006BFD40 /* weakrefobject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = weakrefobject.h; sourceTree = "<group>"; };
-		84B8E7FF18FFD1D4006BFD40 /* libpython3.4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpython3.4.a; sourceTree = "<group>"; };
-		84B8E80118FFD1D4006BFD40 /* libpython3.4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpython3.4.a; sourceTree = "<group>"; };
+		84B8E7FF18FFD1D4006BFD40 /* libpython3.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpython3.5.a; sourceTree = "<group>"; };
+		84B8E80118FFD1D4006BFD40 /* libpython3.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpython3.5.a; sourceTree = "<group>"; };
 		84CADAD61A695AA80087774D /* android.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = android.h; sourceTree = "<group>"; };
 		84CADAD71A695AA80087774D /* android_syscall.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = android_syscall.h; sourceTree = "<group>"; };
 		84CADAD81A695AA80087774D /* config.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = config.c; sourceTree = "<group>"; };
@@ -898,7 +898,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CADAE01A695B5D0087774D /* libpython3.4.a in Frameworks */,
+				84CADAE01A695B5D0087774D /* libpython3.5.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -906,7 +906,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CADADE1A695B570087774D /* libpython3.4.a in Frameworks */,
+				84CADADE1A695B570087774D /* libpython3.5.a in Frameworks */,
 				84CADC7E1A6AC27D0087774D /* DK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -928,7 +928,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CADADD1A695B550087774D /* libpython3.4.a in Frameworks */,
+				84CADADD1A695B550087774D /* libpython3.5.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -936,7 +936,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CADADF1A695B5C0087774D /* libpython3.4.a in Frameworks */,
+				84CADADF1A695B5C0087774D /* libpython3.5.a in Frameworks */,
 				84CADAE41A6968CF0087774D /* DK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1117,7 +1117,7 @@
 		84B8E79818FFD1D3006BFD40 /* Python */ = {
 			isa = PBXGroup;
 			children = (
-				84798D4F19E524A8009378A6 /* python34.zip */,
+				84798D4F19E524A8009378A6 /* python35.zip */,
 				84CADAD51A695AA80087774D /* Config */,
 				84B8E79918FFD1D3006BFD40 /* Include */,
 				84B8E7FE18FFD1D4006BFD40 /* iOS */,
@@ -1243,7 +1243,7 @@
 		84B8E7FE18FFD1D4006BFD40 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				84B8E7FF18FFD1D4006BFD40 /* libpython3.4.a */,
+				84B8E7FF18FFD1D4006BFD40 /* libpython3.5.a */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1251,7 +1251,7 @@
 		84B8E80018FFD1D4006BFD40 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				84B8E80118FFD1D4006BFD40 /* libpython3.4.a */,
+				84B8E80118FFD1D4006BFD40 /* libpython3.5.a */,
 			);
 			path = OSX;
 			sourceTree = "<group>";
@@ -1586,7 +1586,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CADB361A696FF30087774D /* python34.zip in Resources */,
+				84CADB361A696FF30087774D /* python35.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1594,7 +1594,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CADB351A696FF20087774D /* python34.zip in Resources */,
+				84CADB351A696FF20087774D /* python35.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
