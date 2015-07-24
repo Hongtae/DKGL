@@ -231,6 +231,12 @@
       <AdditionalLibraryDirectories>Python/Win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>python35_static_d.lib</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>echo "Copying Header Files..."
+xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\PyDK\"
+xcopy /Y /D /R /Q "$(ProjectDir)PyDK*.h" "$(OutDir)include\PyDK\"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -256,6 +262,12 @@
       <AdditionalLibraryDirectories>Python/Win32_x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>python35_static_d.lib</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>echo "Copying Header Files..."
+xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\PyDK\"
+xcopy /Y /D /R /Q "$(ProjectDir)PyDK*.h" "$(OutDir)include\PyDK\"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -284,6 +296,12 @@
       <AdditionalLibraryDirectories>Python/Win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>python35_static.lib</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>echo "Copying Header Files..."
+xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\PyDK\"
+xcopy /Y /D /R /Q "$(ProjectDir)PyDK*.h" "$(OutDir)include\PyDK\"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -312,6 +330,12 @@
       <AdditionalLibraryDirectories>Python/Win32_x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>python35_static.lib</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>echo "Copying Header Files..."
+xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\PyDK\"
+xcopy /Y /D /R /Q "$(ProjectDir)PyDK*.h" "$(OutDir)include\PyDK\"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
