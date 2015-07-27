@@ -477,6 +477,18 @@ namespace DKFoundation
 				}
 			}
 		}
+		template <typename T, typename Comparator>
+		Index LowerBound(T&& value, Comparator&& cmp) const
+		{
+			CriticalSection guard(lock);
+			return DKStaticArray<VALUE>(data, count).LowerBound(std::forward<T>(value), std::forward<Comparator>(cmp));
+		}
+		template <typename T, typename Comparator>
+		Index UpperBound(T&& value, Comparator&& cmp) const
+		{
+			CriticalSection guard(lock);
+			return DKStaticArray<VALUE>(data, count).UpperBound(std::forward<T>(value), std::forward<Comparator>(cmp));
+		}
 		bool Swap(Index v1, Index v2)
 		{
 			CriticalSection guard(lock);

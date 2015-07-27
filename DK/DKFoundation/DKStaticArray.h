@@ -209,6 +209,44 @@ namespace DKFoundation
 				return LeftRotate(count - (n % count));
 			}	
 		}
+		template <typename T, typename Comparator>
+		Index LowerBound(T&& value, Comparator&& cmp) const
+		{
+			Index begin = 0;
+			size_t count = this->count;
+			size_t mid;
+			while (count > 0)
+			{
+				mid = count / 2;
+				if (!cmp(value, data[begin + mid]))
+				{
+					begin += mid + 1;
+					count -= mid + 1;
+				}
+				else
+					count = mid;
+			}
+			return begin;
+		}
+		template <typename T, typename Comparator>
+		Index UpperBound(T&& value, Comparator&& cmp) const
+		{
+			Index begin = 0;
+			size_t count = this->count;
+			size_t mid;
+			while (count > 0)
+			{
+				mid = count / 2;
+				if (cmp(data[begin + mid], value))
+				{
+					begin += mid + 1;
+					count -= mid + 1;
+				}
+				else
+					count = mid;
+			}
+			return begin;
+		}
 		void Swap(Index v1, Index v2)
 		{
 			DKASSERT_DEBUG(v1 < count);
