@@ -50,5 +50,13 @@ xcuserdata
 # Python
 __pycache__/
 
+# PyCharm files
+.idea/workspace.xml
+.idea/dictionaries/
+
+# Sphinx documentation
+docs/_build/
+
 # project settings
 Build/**
+
