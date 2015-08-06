@@ -80,7 +80,7 @@ bool DKSphere::IsValid(void) const
 
 bool DKSphere::IsPointInside(const DKVector3& pos) const
 {
-	return (pos - center).Length() <= radius;
+	return (pos - center).LengthSq() <= (radius * radius);
 }
 
 float DKSphere::Volume(void) const

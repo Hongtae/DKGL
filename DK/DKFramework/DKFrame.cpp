@@ -787,7 +787,7 @@ bool DKFrame::RenderInternal(void)
 		int height = floor(this->contentResolution.height + 0.5f);
 		DKObject<DKRenderTarget> renderTarget = DKRenderTarget::Create(width, height, this->depthFormat); 
 		this->renderer = DKObject<DKRenderer>::New(renderTarget);
-		DKLog("Create renderer (%dx%d) for DKFrame:0x%x\n", width, height, this);
+		//DKLog("Create renderer (%dx%d) for DKFrame:0x%x\n", width, height, this);
 		this->drawSurface = true;
 	}
 	renderer->SetViewport(DKRect(0,0,contentResolution.width,contentResolution.height));
