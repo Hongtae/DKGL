@@ -380,6 +380,16 @@ namespace DKFoundation
 				++len;
 			return len;
 		}
+		template <typename T> size_t UniCharLength(const T* str, size_t maxLen)
+		{
+			for (size_t i = 0; i < maxLen; ++i)
+			{
+				if (str[i] == 0)
+					return i;
+			}
+			return maxLen;
+		}
+
 		template <typename IN, typename OUT> struct UniCharArraySetter
 		{
 			UniCharArraySetter(DKArray<OUT>& arr) : output(arr) {}
@@ -1187,7 +1197,7 @@ namespace DKFoundation
 		if (strIn && len > 0)
 		{
 			DKArray<DKUniChar8> buff;
-			len = Min<size_t>(Private::UniCharLength(strIn), len);
+			len = Private::UniCharLength(strIn, len);
 			buff.Reserve(len * 4 + 2);
 
 			if (Private::ConvertUniChars(strIn, len, buff))
@@ -1205,7 +1215,7 @@ namespace DKFoundation
 		if (strIn && len > 0)
 		{
 			DKArray<DKUniChar8> buff;
-			len = Min<size_t>(Private::UniCharLength(strIn), len);
+			len = Private::UniCharLength(strIn, len);
 			buff.Reserve(len * 4 + 2);
 
 			if (Private::ConvertUniChars(strIn, len, buff))
@@ -1220,7 +1230,7 @@ namespace DKFoundation
 
 	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKUniCharW* strIn, size_t len)
 	{
-		return DKStringSetValue(strOut, reinterpret_cast<const Private::StringWTraits::BaseCharT*>(strIn), Min<size_t>(Private::UniCharLength(strIn), len));
+		return DKStringSetValue(strOut, reinterpret_cast<const Private::StringWTraits::BaseCharT*>(strIn), Private::UniCharLength(strIn, len));
 	}
 
 	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKUniChar8* strIn, size_t len)
@@ -1228,7 +1238,7 @@ namespace DKFoundation
 		if (strIn && len > 0)
 		{
 			DKArray<Private::StringWTraits::BaseCharT> buff;
-			len = Min<size_t>(Private::UniCharLength(strIn), len);
+			len = Private::UniCharLength(strIn, len);
 			buff.Reserve(len + 2);
 
 			if (Private::ConvertUniChars(strIn, len, buff))
@@ -1248,7 +1258,7 @@ namespace DKFoundation
 			if (strIn && len > 0)
 			{
 				DKArray<DKUniChar32> buff;
-				len = Min<size_t>(Private::UniCharLength(strIn), len);
+				len = Private::UniCharLength(strIn, len);
 				buff.Reserve(len + 2);
 
 				if (Private::ConvertUniChars(strIn, len, buff))
@@ -1279,7 +1289,15 @@ namespace DKFoundation
 			if (strIn && len > 0)
 			{
 				DKArray<DKUniChar16> buff;
-				len = Min<size_t>(Private::UniCharLength(strIn), len);
+				for (size_t i = 0; i < len; ++i)
+				{
+					if (strIn[i] == 0)
+					{
+						len = i;
+						break;
+					}
+				}
+				len = Private::UniCharLength(strIn, len);
 				buff.Reserve(len + 2);
 
 				if (Private::ConvertUniChars(strIn, len, buff))
@@ -1295,7 +1313,7 @@ namespace DKFoundation
 
 	DKGL_API bool DKStringSetValue(DKStringW& strOut, const DKUniCharW* strIn, size_t len)
 	{
-		strOut.SetValue(strIn, Min<size_t>(Private::UniCharLength(strIn), len));
+		strOut.SetValue(strIn, Private::UniCharLength(strIn, len));
 		return true;
 	}
 }
