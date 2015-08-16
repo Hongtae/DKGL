@@ -2,7 +2,7 @@
 //  File: DKBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_ZLIB
@@ -214,13 +214,13 @@ namespace DKFoundation
 				int len = xmlNanoHTTPContentLength(ctxt);
 				if (len > 0)
 				{
-					void* buffer = DKMemoryHeapAlloc(len);
+					void* buffer = DKMemoryDefaultAllocator::Alloc(len);
 					int recv = xmlNanoHTTPRead(ctxt, buffer, len); // download
 					if (recv == len)
 					{
 						data = DKBuffer::Create(buffer, len);
 					}
-					DKMemoryHeapFree(buffer);
+					DKMemoryDefaultAllocator::Free(buffer);
 				}
 				xmlNanoHTTPClose(ctxt);
 				xmlNanoHTTPCleanup();
@@ -246,7 +246,7 @@ namespace DKFoundation
 
 				size_t	bufferSize = 4096;
 				size_t	received = 0;
-				char*	buffer = (char*)DKMemoryHeapAlloc(bufferSize);
+				char*	buffer = (char*)DKMemoryDefaultAllocator::Alloc(bufferSize);
 
 				while (true)
 				{
@@ -265,12 +265,12 @@ namespace DKFoundation
 					if (received + 100 > bufferSize)
 					{
 						bufferSize += 4096;
-						buffer = (char*)DKMemoryHeapRealloc(buffer, bufferSize);
+						buffer = (char*)DKMemoryDefaultAllocator::Realloc(buffer, bufferSize);
 						if (buffer == NULL)
-							DKERROR_THROW("DKMemoryHeapRealloc() failed!");
+							DKERROR_THROW("DKMemoryDefaultAllocator::Realloc() failed!");
 					}
 				}
-				DKMemoryHeapFree(buffer);
+				DKMemoryDefaultAllocator::Free(buffer);
 
 				xmlNanoFTPClose(ctxt);
 				xmlNanoFTPCleanup();
@@ -407,12 +407,12 @@ DKObject<DKBuffer> DKBuffer::Compress(const void* p, size_t len, DKAllocator& al
 		// Z_DEFAULT_COMPRESSION -> 6
 		int compressLevel = 9;
 		uLongf compressedSize = len + (len / 10) + 100;
-		void* compressed = DKMemoryHeapAlloc(compressedSize);		
+		void* compressed = DKMemoryDefaultAllocator::Alloc(compressedSize);
 		if (compress2((Bytef*)compressed, &compressedSize, (const Bytef*)p, len, compressLevel) == Z_OK)
 		{
 			result = DKBuffer::Create(compressed, compressedSize, alloc);
 		}		
-		DKMemoryHeapFree(compressed);
+		DKMemoryDefaultAllocator::Free(compressed);
 	}
 	return result;
 }
@@ -439,7 +439,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 		uLongf outputLength = COMPRESS_DEFAULT_BLOCK;
 
 		Bytef* inputSource = (Bytef*)p;
-		Bytef* output = (Bytef*)DKMemoryHeapAlloc(outputLength);
+		Bytef* output = (Bytef*)DKMemoryDefaultAllocator::Alloc(outputLength);
 
 		z_stream stream;
 		stream.next_in = inputSource;
@@ -464,11 +464,11 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 				}
 				else if (err == Z_OK)
 				{
-					output = (Bytef*)DKMemoryHeapRealloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
+					output = (Bytef*)DKMemoryDefaultAllocator::Realloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
 					if (output == NULL)
 					{
-						DKERROR_THROW_DEBUG("DKMemoryHeapRealloc() failed!");
-						DKLog("ERROR: DKMemoryHeapRealloc() failed.");
+						DKERROR_THROW_DEBUG("DKMemoryDefaultAllocator::Realloc() failed!");
+						DKLog("ERROR: DKMemoryDefaultAllocator::Realloc() failed.");
 						break;
 					}
 
@@ -478,7 +478,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 			}
 			inflateEnd(&stream);
 		}
-		DKMemoryHeapFree(output);		
+		DKMemoryDefaultAllocator::Free(output);		
 	}
 	return result;
 }

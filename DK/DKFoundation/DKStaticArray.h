@@ -2,7 +2,7 @@
 //  File: DKStaticArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -184,19 +184,19 @@ namespace DKFoundation
 					size_t right = count - left;
 					if (right < left)
 					{
-						void* tmp = DKMemoryHeapAlloc(sizeof(VALUE) * right);
+						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * right);
 						memcpy(tmp, &data[left], sizeof(VALUE) * right);
 						memmove(&data[right], data, sizeof(VALUE) * left);
 						memcpy(data, tmp, sizeof(VALUE) * right);
-						DKMemoryHeapFree(tmp);
+						DKMemoryDefaultAllocator::Free(tmp);
 					}
 					else
 					{
-						void* tmp = DKMemoryHeapAlloc(sizeof(VALUE) * left);
+						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * left);
 						memcpy(tmp, data, sizeof(VALUE) * left);
 						memmove(data, &data[left], sizeof(VALUE) * right);
 						memcpy(&data[right], tmp, sizeof(VALUE) * left);
-						DKMemoryHeapFree(tmp);
+						DKMemoryDefaultAllocator::Free(tmp);
 					}
 #endif
 				}

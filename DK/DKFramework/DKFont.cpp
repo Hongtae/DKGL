@@ -2,7 +2,7 @@
 //  File: DKFont.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_FREETYPE
@@ -234,7 +234,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			ftBitmap.num_grays	= 256; 
 			ftBitmap.pixel_mode	= FT_PIXEL_MODE_GRAY; 
 			size_t bufferSize = ftBitmap.pitch * ftBitmap.rows;
-			ftBitmap.buffer		= (unsigned char*)DKMemoryHeapAlloc(bufferSize);
+			ftBitmap.buffer		= (unsigned char*)DKMemoryDefaultAllocator::Alloc(bufferSize);
 			memset(ftBitmap.buffer, 0, bufferSize);
 
 			FT_Outline_Translate(&ftOutline, -x_shift, -y_shift);
@@ -247,7 +247,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.rect);
 			}
 
-			DKMemoryHeapFree(ftBitmap.buffer);
+			DKMemoryDefaultAllocator::Free(ftBitmap.buffer);
 			ftBitmap.buffer = NULL;
 			FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &ftBitmap);
 			FT_Outline_Done(Private::FTLibrary::GetLibrary(), &ftOutline);
@@ -333,7 +333,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 	DKObject<DKTexture2D> tex = NULL;
 
-	char* buff = (char*)DKMemoryHeapAlloc(width * height);
+	char* buff = (char*)DKMemoryDefaultAllocator::Alloc(width * height);
 	for (int i = 0; i < height; i++)
 	{
 		memcpy(&buff[i * width] , &((char*)data)[(height - i -1) * width], width);
@@ -370,10 +370,10 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 		int newTexHeight = Height() + padding;
 
-		void* initialData = DKMemoryHeapAlloc(newTexWidth * newTexHeight);
+		void* initialData = DKMemoryDefaultAllocator::Alloc(newTexWidth * newTexHeight);
 		memset(initialData, 0, newTexWidth * newTexHeight);
 		tex = DKTexture2D::Create(newTexWidth, newTexHeight, DKTexture::FormatR8, DKTexture::TypeUnsignedByte, initialData);
-		DKMemoryHeapFree(initialData);
+		DKMemoryDefaultAllocator::Free(initialData);
 
 		rect = DKRect(0,0,width,height);
 		tex->SetPixelData(rect, buff);
@@ -381,7 +381,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 		SharedTextures st = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
 		textures.Add(st);
 	}
-	DKMemoryHeapFree(buff);
+	DKMemoryDefaultAllocator::Free(buff);
 	numGlyphsLoaded++;
 
 	return tex;

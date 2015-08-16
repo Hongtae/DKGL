@@ -2,7 +2,7 @@
 //  File: DKShaderProgram.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2006-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2006-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -99,11 +99,11 @@ namespace DKFramework
 				glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logLen);
 				if (logLen > 1)
 				{
-					char *log = (char*)DKMemoryHeapAlloc(logLen+4);
+					char *log = (char*)DKMemoryDefaultAllocator::Alloc(logLen+4);
 					int charsWritten = 0;
 					glGetProgramInfoLog(id, logLen, &charsWritten, log);
 					err = log;
-					DKMemoryHeapFree(log);
+					DKMemoryDefaultAllocator::Free(log);
 				}
 
 				// get link result
@@ -121,11 +121,11 @@ namespace DKFramework
 						glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logLen);
 						if (logLen > 1)
 						{
-							char *log = (char*)DKMemoryHeapAlloc(logLen+4);
+							char *log = (char*)DKMemoryDefaultAllocator::Alloc(logLen+4);
 							int charsWritten = 0;
 							glGetProgramInfoLog(id, logLen, &charsWritten, log);
 							DKLog("Validation log: %ls\n", (const wchar_t*)DKString(log));
-							DKMemoryHeapFree(log);
+							DKMemoryDefaultAllocator::Free(log);
 						}
 					}
 
@@ -145,7 +145,7 @@ namespace DKFramework
 					uniforms.Reserve(numUniforms);
 
 					size_t buffSize = Max(maxAttribNameLength, maxUniformNameLength) + 2;
-					char* name = (char*)DKMemoryHeapAlloc(buffSize+1);
+					char* name = (char*)DKMemoryDefaultAllocator::Alloc(buffSize+1);
 					for (int i = 0; i < numAttribs; i++)
 					{
 						GLsizei	len = 0;
@@ -195,7 +195,7 @@ namespace DKFramework
 							DKLog("Error: Shader Program: 0x%x Uniform[%d] = %ls (%d)\n", id, i, (const wchar_t*)DKString(name), size);
 						}
 					}
-					DKMemoryHeapFree(name);
+					DKMemoryDefaultAllocator::Free(name);
 
 					pi.programId = id;
 					pi.shaders = attachedShaders;

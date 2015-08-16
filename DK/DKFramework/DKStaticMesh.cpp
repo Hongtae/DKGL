@@ -2,7 +2,7 @@
 //  File: DKStaticMesh.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -214,7 +214,7 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 		return false;
 
 	// create temporary buffer
-	void* buffer = DKMemoryHeapAlloc(vertexSize * vertexCount);
+	void* buffer = DKMemoryDefaultAllocator::Alloc(vertexSize * vertexCount);
 	size_t offset = 0;
 	for (int i = 0; i < vertexBuffers.Count(); i++)
 	{
@@ -231,7 +231,7 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 		}
 		else
 		{
-			DKMemoryHeapFree(buffer);
+			DKMemoryDefaultAllocator::Free(buffer);
 			DKLog("[%s] buffer lock failed.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
@@ -240,7 +240,7 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 	// create vertex buffer (interleaved)
 	DKObject<DKVertexBuffer> interleaved = DKVertexBuffer::Create(decls, decls.Count(), buffer, vertexSize, vertexCount, location, usage);
 
-	DKMemoryHeapFree(buffer);
+	DKMemoryDefaultAllocator::Free(buffer);
 
 	if (interleaved)
 	{

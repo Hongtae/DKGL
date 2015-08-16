@@ -2,7 +2,7 @@
 //  File: DKShader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2006-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2006-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -70,11 +70,11 @@ namespace DKFramework
 			glGetShaderiv(hShader, GL_INFO_LOG_LENGTH, &nLogLen);
 			if (nLogLen > 1)
 			{
-				char *pLog = (char*)DKMemoryHeapAlloc(nLogLen);
+				char *pLog = (char*)DKMemoryDefaultAllocator::Alloc(nLogLen);
 				int nCharsWritten = 0;
 				glGetShaderInfoLog(hShader, nLogLen, &nCharsWritten, pLog);
 				err = pLog;
-				DKMemoryHeapFree(pLog);
+				DKMemoryDefaultAllocator::Free(pLog);
 			}
 
 			////////////////////////////////////////////////////////////////////////////////
@@ -170,14 +170,14 @@ DKString DKShader::GetSource(void) const
 		glGetShaderiv(objectId, GL_SHADER_SOURCE_LENGTH, &srcLen);
 		if (srcLen > 0)
 		{
-			char* buff = (char*)DKMemoryHeapAlloc(srcLen+4);
+			char* buff = (char*)DKMemoryDefaultAllocator::Alloc(srcLen+4);
 			GLsizei output = 0;
 			glGetShaderSource(objectId, srcLen+4, &output, buff);
 			if (output > 0)
 			{
 				src = DKString((const DKUniChar8*)buff, output);
 			}
-			DKMemoryHeapFree(buff);
+			DKMemoryDefaultAllocator::Free(buff);
 		}
 	}
 	return src;

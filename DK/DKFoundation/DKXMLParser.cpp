@@ -2,7 +2,7 @@
 //  File: DKXMLParser.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_LIBXML
@@ -557,13 +557,13 @@ bool DKXMLParser::BeginHTML(const DKData* data)
 
 			if (((const char*)buffer)[bufferSize -1])		// non-null terminated
 			{
-				char* text = (char*)DKMemoryHeapAlloc(bufferSize + 4);
+				char* text = (char*)DKMemoryDefaultAllocator::Alloc(bufferSize + 4);
 				memset(text, 0, bufferSize+4);
 				memcpy(text, buffer, bufferSize);
 
 				htmlDocPtr doc = htmlSAXParseDoc((xmlChar*)text, 0, &Private::defaultSAX2Handler, this);
 
-				DKMemoryHeapFree(text);
+				DKMemoryDefaultAllocator::Free(text);
 
 				if (doc == NULL)
 				{

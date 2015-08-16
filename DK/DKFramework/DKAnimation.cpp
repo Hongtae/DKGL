@@ -273,7 +273,7 @@ bool DKAnimation::AddSamplingNode(const DKString& name, const DKTransformUnit* f
 		return false;
 	if (frames && numFrames > 0)
 	{
-		SamplingNode* node = new (DKMemoryHeapAlloc(sizeof(SamplingNode))) SamplingNode();
+		SamplingNode* node = new (DKMemoryDefaultAllocator::Alloc(sizeof(SamplingNode))) SamplingNode();
 		node->name = name;
 		node->frames.Add(frames, numFrames);
 		nodeIndexMap.Update(node->name, nodes.Add(node)); // add new node, and update indexes.
@@ -291,7 +291,7 @@ bool DKAnimation::AddKeyframeNode(const DKString& name,
 		return false;
 	if ((scaleKeys && numSk > 0) || (rotationKeys && numRk > 0) || (translationKeys && numTk > 0))
 	{
-		KeyframeNode* node = new (DKMemoryHeapAlloc(sizeof(KeyframeNode))) KeyframeNode();
+		KeyframeNode* node = new (DKMemoryDefaultAllocator::Alloc(sizeof(KeyframeNode))) KeyframeNode();
 		node->name = name;
 		 // filter by time in scale of 0.0 ~ 1.0, and sort, copy frames.
 		node->scaleKeys = ClipKeyframeTimeScale(scaleKeys, numSk);
@@ -305,7 +305,7 @@ bool DKAnimation::AddKeyframeNode(const DKString& name,
 			return true;
 		}
 		node->~KeyframeNode();
-		DKMemoryHeapFree(node);
+		DKMemoryDefaultAllocator::Free(node);
 	}
 	return false;
 }
@@ -319,7 +319,7 @@ void DKAnimation::RemoveNode(const DKFoundation::DKString& name)
 		Node* n = nodes.Value(index);
 		nodes.Remove(index);
 		n->~Node();
-		DKMemoryHeapFree(n);
+		DKMemoryDefaultAllocator::Free(n);
 	}
 	nodeIndexMap.Remove(name);
 }
@@ -330,7 +330,7 @@ void DKAnimation::RemoveAllNodes(void)
 	{
 		Node* n = nodes.Value(i);
 		n->~Node();
-		DKMemoryHeapFree(n);
+		DKMemoryDefaultAllocator::Free(n);
 	}
 	nodes.Clear();
 	nodeIndexMap.Clear();

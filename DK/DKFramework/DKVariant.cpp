@@ -38,14 +38,14 @@ namespace DKFramework
 				static T* Alloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
-					pptr[0] = new (DKMemoryHeapAlloc(sizeof(T))) T();
+					pptr[0] = new (DKMemoryDefaultAllocator::Alloc(sizeof(T))) T();
 					return pptr[0];
 				}
 				static void Dealloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
 					pptr[0]->~T();
-					DKMemoryHeapFree(pptr[0]);
+					DKMemoryDefaultAllocator::Free(pptr[0]);
 				}
 				static T& Value(void* p)
 				{
@@ -1291,15 +1291,15 @@ bool DKVariant::ImportStream(DKStream* stream)
 					DKString str = L"";
 					if (len > 0)
 					{
-						void* p = DKMemoryHeapAlloc(len);
+						void* p = DKMemoryDefaultAllocator::Alloc(len);
 						if (stream->Read(p, len) != len)
 						{
-							DKMemoryHeapFree(p);
+							DKMemoryDefaultAllocator::Free(p);
 							errorDesc = L"Failed to read from stream.";
 							goto FAILED;
 						}
 						str.SetValue((const DKUniChar8*)p, len);
-						DKMemoryHeapFree(p);
+						DKMemoryDefaultAllocator::Free(p);
 					}
 					this->SetValueType(TypeString).String() = str;
 				}
@@ -1394,15 +1394,15 @@ bool DKVariant::ImportStream(DKStream* stream)
 						DKString key = L"";
 						if (keyLen > 0)
 						{
-							void* p = DKMemoryHeapAlloc(keyLen);
+							void* p = DKMemoryDefaultAllocator::Alloc(keyLen);
 							if (stream->Read(p, keyLen) != keyLen)
 							{
-								DKMemoryHeapFree(p);
+								DKMemoryDefaultAllocator::Free(p);
 								errorDesc = L"Failed to read from stream.";
 								goto FAILED;
 							}
 							key.SetValue((const DKUniChar8*)p, keyLen);
-							DKMemoryHeapFree(p);
+							DKMemoryDefaultAllocator::Free(p);
 						}
 						DKVariant variant;
 						if (variant.ImportStream(stream) == false)

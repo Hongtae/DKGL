@@ -5,6 +5,7 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <new>
@@ -36,6 +37,8 @@
 #include "DKUuid.h"
 #include "DKFixedSizeAllocator.h"
 
+
+#define DKLog(...)	fprintf(stderr, __VA_ARGS__)
 
 namespace DKFoundation
 {

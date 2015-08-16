@@ -2,7 +2,7 @@
 //  File: DKStringU8.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <stdlib.h>
@@ -136,7 +136,7 @@ DKStringU8::DKStringU8(DKUniChar8 c)
 DKStringU8::~DKStringU8(void)
 {
 	if (stringData)
-		DKMemoryHeapFree(stringData);
+		DKMemoryDefaultAllocator::Free(stringData);
 }
 
 DKStringU8 DKStringU8::Format(const DKUniChar8* fmt, ...)
@@ -215,7 +215,7 @@ DKStringU8& DKStringU8::Append(const DKUniChar8* str, size_t len)
 		size_t totalLen = len1 + len2;
 		if (totalLen > 0)
 		{
-			DKUniChar8* buff = (DKUniChar8*)DKMemoryHeapAlloc(totalLen + 1);
+			DKUniChar8* buff = (DKUniChar8*)DKMemoryDefaultAllocator::Alloc(totalLen + 1);
 			DKUniChar8* p = buff;
 			if (len1 > 0)
 			{
@@ -230,7 +230,7 @@ DKStringU8& DKStringU8::Append(const DKUniChar8* str, size_t len)
 			*p = 0;
 
 			if (stringData)
-				DKMemoryHeapFree(stringData);
+				DKMemoryDefaultAllocator::Free(stringData);
 			stringData = buff;
 		}
 	}
@@ -257,14 +257,14 @@ DKStringU8& DKStringU8::SetValue(const DKStringU8& str)
 		return *this;
 	
 	if (this->stringData)
-		DKMemoryHeapFree(this->stringData);
+		DKMemoryDefaultAllocator::Free(this->stringData);
 	this->stringData = NULL;
 	
 	size_t len = str.Length();
 	if (len > 0)
 	{
 		DKASSERT_DEBUG(str.stringData != NULL);
-		this->stringData = (DKUniChar8*)DKMemoryHeapAlloc(len+1);
+		this->stringData = (DKUniChar8*)DKMemoryDefaultAllocator::Alloc(len+1);
 		memcpy(this->stringData, str.stringData, len);
 		this->stringData[len] = 0;
 	}
@@ -292,13 +292,13 @@ DKStringU8& DKStringU8::SetValue(const DKUniChar8* str, size_t len)
 		
 		if (len > 0)
 		{
-			buff = (DKUniChar8*)DKMemoryHeapAlloc(len+1);
+			buff = (DKUniChar8*)DKMemoryDefaultAllocator::Alloc(len+1);
 			memcpy(buff, str, len);
 			buff[len] = NULL;
 		}
 	}
 	if (stringData)
-		DKMemoryHeapFree(stringData);
+		DKMemoryDefaultAllocator::Free(stringData);
 	stringData = buff;
 	
 	return *this;
@@ -313,7 +313,7 @@ DKStringU8& DKStringU8::SetValue(const DKUniCharW* str, size_t len)
 	else
 	{
 		if (stringData)
-			DKMemoryHeapFree(stringData);
+			DKMemoryDefaultAllocator::Free(stringData);
 		stringData = NULL;
 	}
 	return *this;
@@ -374,7 +374,7 @@ DKStringU8& DKStringU8::operator = (DKStringU8&& str)
 	if (this != &str)
 	{
 		if (stringData)
-			DKMemoryHeapFree(stringData);
+			DKMemoryDefaultAllocator::Free(stringData);
 
 		stringData = str.stringData;
 		str.stringData = NULL;

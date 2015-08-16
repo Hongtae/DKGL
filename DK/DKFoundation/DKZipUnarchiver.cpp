@@ -2,7 +2,7 @@
 //  File: DKZipUnarchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_ZLIB
@@ -109,9 +109,9 @@ namespace DKFoundation
 
 					if (readBytes > 0)
 					{
-						void* tmp = DKMemoryHeapAlloc(readBytes);
+						void* tmp = DKMemoryDefaultAllocator::Alloc(readBytes);
 						unzReadCurrentFile(handle, tmp, readBytes);
-						DKMemoryHeapFree(tmp);
+						DKMemoryDefaultAllocator::Free(tmp);
 					}
 					return GetPos();
 				}

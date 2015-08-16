@@ -3,7 +3,7 @@
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../../DKWindow.h"
@@ -408,11 +408,11 @@ DKString DKWindowImpl::Title(void) const
 	int len = ::GetWindowTextLengthW(windowHandle);
 	if (len > 0)
 	{
-		wchar_t* title = (wchar_t*)DKMemoryHeapAlloc(sizeof(wchar_t)* (len + 2));
+		wchar_t* title = (wchar_t*)DKMemoryDefaultAllocator::Alloc(sizeof(wchar_t)* (len + 2));
 		len = ::GetWindowTextW(windowHandle, title, len + 1);
 		title[len] = 0;
 		ret = title;
-		DKMemoryHeapFree(title);
+		DKMemoryDefaultAllocator::Free(title);
 	}
 	return ret;
 }

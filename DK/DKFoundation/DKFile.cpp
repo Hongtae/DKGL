@@ -2,7 +2,7 @@
 //  File: DKFile.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <fcntl.h>
@@ -562,10 +562,10 @@ size_t DKFile::Write(DKStream* s)
 		size_t len = s->RemainLength();
 		if (len > 0)
 		{
-			void* p = DKMemoryHeapAlloc(len);
+			void* p = DKMemoryDefaultAllocator::Alloc(len);
 			size_t numRead = s->Read(p, len);
 			size_t numWritten = this->Write(p, numRead);
-			DKMemoryHeapFree(p);
+			DKMemoryDefaultAllocator::Free(p);
 
 			return numWritten;
 		}
