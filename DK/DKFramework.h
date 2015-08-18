@@ -92,6 +92,7 @@
 #include "DKFramework/DKTransform.h"
 #include "DKFramework/DKTriangle.h"
 #include "DKFramework/DKTriangleMesh.h"
+#include "DKFramework/DKTriangleMeshBvh.h"
 #include "DKFramework/DKVariant.h"
 #include "DKFramework/DKVector2.h"
 #include "DKFramework/DKVector3.h"
