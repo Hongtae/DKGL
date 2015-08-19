@@ -100,6 +100,7 @@ void DKBvh::BuildInternal(void)
 				node.aabbMax[1] = aabbMax.val[1];
 				node.aabbMax[2] = aabbMax.val[2];
 				node.triangleIndex = n.triangleIndex;
+				quantizedLeafNodes.Add(node);
 			}
 		}
 
@@ -119,7 +120,7 @@ DKAabb DKBvh::Aabb(void) const
 {
 	if (volume)
 	{
-		DKAabb(aabbOffset, aabbOffset + aabbScale);
+		return DKAabb(aabbOffset, aabbOffset + aabbScale);
 	}
 	return DKAabb();
 }
@@ -156,7 +157,7 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 		int c = count << 1;
 		means[0] = tmp[0] / c;
 		means[1] = tmp[1] / c;
-		means[2] = tmp[1] / c;
+		means[2] = tmp[2] / c;
 	}
 
 	// calculate axis (0: x-axis, 1: y-axis, 2: z-axis, DKVector3::val order)
@@ -178,7 +179,7 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 	}
 
 	// partitioning
-	int splitValue = means[splitAxis] << 1;
+	int splitValue = means[splitAxis];
 	int splitIndex = 0;
 
 #if BVH_PARTITION_FULL_SORT
@@ -230,7 +231,7 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 		node.aabbMin[i] = Min(left.aabbMin[i], right.aabbMin[i]);
 		node.aabbMax[i] = Max(left.aabbMax[i], right.aabbMax[i]);
 	}
-	node.negativeTreeSize = -(nodes.Count() - currentNodeIndex);
+	node.negativeTreeSize = currentNodeIndex - static_cast<int>(nodes.Count());
 }
 
 bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
@@ -258,8 +259,9 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 
 			auto isQuantizedAabbOverlapped = [](const unsigned short* min1, const unsigned short* max1, const unsigned short* min2, const unsigned short* max2)
 			{
-				if (min1[0] > max2[0] || min1[1] > max2[1] || min1[2] > max2[2] ||
-					max1[0] < min2[0] || max1[1] < min2[1] || max1[2] < min2[2])
+				if (min1[0] > max2[0] || max1[0] < min2[0] ||
+					min1[1] > max2[1] || max1[1] < min2[1] ||
+					min1[2] > max2[2] || max1[2] < min2[2])
 					return false;
 				return true;
 			};
@@ -290,7 +292,7 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 
 						if (aabb.RayTest(ray))
 						{
-							if (cb == NULL || !cb->Invoke(currentNodeIndex, ray))
+							if (cb == NULL || !cb->Invoke(node.triangleIndex, ray))
 								return true;
 						}
 					}

@@ -41,6 +41,11 @@ namespace DKFramework
 
 		DKAabb Aabb(void) const;
 
+		// RayCastResultCallback : filter-callback function,
+		//   returns false if ray-test no longer necessary.
+		//   returns true if callback needs next ray-hit points continuously.
+		// All filter callback returns false, this function returns false even if one or more
+		// ray hits detected. In this case, you need to get ray-test result from the callback.
 		using RayCastResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKLine&)>;
 		bool RayTest(const DKLine& ray, RayCastResultCallback*) const;
 

@@ -44,6 +44,11 @@ float DKLine::Length(void) const
 	return (end - begin).Length();
 }
 
+float DKLine::LengthSq(void) const
+{
+	return (end - begin).LengthSq();
+}
+
 bool DKLine::IsPointInside(const DKVector3& pos) const
 {
 	if (pos == begin)

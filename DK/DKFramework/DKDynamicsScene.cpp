@@ -153,7 +153,7 @@ void DKDynamicsScene::Update(double tickDelta, DKTimeTick tick)
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
 
-	if (tick == context->tick)
+	if (tick && tick == context->tick)
 		return;
 
 	DKCriticalSection<DKSpinLock> guard(context->lock);

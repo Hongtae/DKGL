@@ -921,7 +921,7 @@ void DKScene::Update(double tickDelta, DKTimeTick tick)
 	if (true)
 	{
 		DKCriticalSection<DKSpinLock> guard(context->lock);
-		if (tick == context->tick)
+		if (tick && tick == context->tick)
 			return;
 
 		context->tick = tick;

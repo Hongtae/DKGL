@@ -93,10 +93,10 @@ bool DKTriangleMeshBvh::RayTest(const DKLine& ray, DKVector3* hitPoint) const
 		this->bvh.RayTest(ray, DKFunction(triangleRayTest));
 		const_cast<DKTriangleMeshBvh*>(this)->mesh->Unlock();
 
-		if (hit)
+		if (hit)	// set by triangleRayTest()
 		{
 			if (hitPoint)
-				*hitPoint = ray.begin + ray.Direction() * closestHitFraction;
+				*hitPoint = ray.begin + ray.Direction() * sqrt(closestHitFraction);
 			return true;
 		}
 	}

@@ -30,6 +30,7 @@ namespace DKFramework
 
 		DKVector3 Direction(void) const;
 		float Length(void) const;
+		float LengthSq(void) const;
 		bool IsPointInside(const DKVector3& pos) const;
 
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, float epsilon = 0.000001f) const;

@@ -113,13 +113,15 @@ bool DKAabb::RayTest(const DKLine& ray, DKVector3* p) const
 			{
 				coord.val[i] = this->positionMin.val[i];
 				inside = false;
-				if ((unsigned int&)dir.x)	maxT.val[i] = (this->positionMin.val[i] - ray.begin.val[i]) / dir.val[i];
+				if ((unsigned int&)dir.val[i])
+					maxT.val[i] = (this->positionMin.val[i] - ray.begin.val[i]) / dir.val[i];
 			}
-			else
+			else if (ray.begin.val[i] > this->positionMax.val[i])
 			{
 				coord.val[i] = this->positionMax.val[i];
 				inside = false;
-				if ((unsigned int&)dir.y)	maxT.val[i] = (this->positionMax.val[i] - ray.begin.val[i]) / dir.val[i];
+				if ((unsigned int&)dir.val[i])
+					maxT.val[i] = (this->positionMax.val[i] - ray.begin.val[i]) / dir.val[i];
 			}
 		}
 
@@ -151,8 +153,12 @@ bool DKAabb::RayTest(const DKLine& ray, DKVector3* p) const
 			}
 		}
 
-		*p = coord;
-		return true;
+		// check length.
+		if (ray.LengthSq() >= (coord - ray.begin).LengthSq())
+		{
+			*p = coord;
+			return true;
+		}
 	}
 	else
 	{
