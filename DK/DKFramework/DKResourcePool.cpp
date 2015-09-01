@@ -2,7 +2,7 @@
 //  File: DKResourcePool.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKResourcePool.h"
@@ -313,32 +313,30 @@ DKObject<DKResource> DKResourcePool::LoadResource(const DKString& name)
 	if (ret)
 		return ret;
 
-	DKString path = L"";
-	DKObject<DKStream> stream = NULL;
-
-	if (name.Left(7).CompareNoCase(L"http://") == 0 || name.Left(6).CompareNoCase(L"ftp://") == 0 || name.Left(7).CompareNoCase(L"file://") == 0)
+	if (name.Length() > 0)
 	{
-		path = name;
-	}
-	else
-	{
-		path = ResourceFilePath(name);
-		if (path.Length() == 0) // file not exists.
+		if (name.Left(7).CompareNoCase(L"http://") && name.Left(6).CompareNoCase(L"ftp://") && name.Left(7).CompareNoCase(L"file://"))
 		{
-			path = name;
-			stream = OpenResourceStream(path); // open as stream (include zip-contents)
+			// open stream (includes zip-file contents)
+			DKObject<DKStream> stream = OpenResourceStream(name);
+			if (stream)
+				ret = DKResourceLoader::ResourceFromStream(stream, name);
+		}
+		else
+		{
+			ret = DKResourceLoader::ResourceFromFile(name, name);
+		}
+
+		if (ret == NULL)
+		{
+			DKString path = ResourceFilePath(name);
+			if (path.Length() == 0)
+				path = name;
+
+			ret = DKResourceLoader::ResourceFromFile(path, name);
 		}
 	}
 
-	// open stream or file
-	if (ret == NULL)
-	{
-		if (stream)
-			ret = DKResourceLoader::ResourceFromStream(stream, name);
-		else if (path.Length() > 0)
-			ret = DKResourceLoader::ResourceFromFile(path, name);
-	}
-	
 	if (ret)
 	{
 		if (ret->Validate() == false)
@@ -359,23 +357,33 @@ DKObject<DKData> DKResourcePool::LoadResourceData(const DKString& name, bool map
 	if (ret)
 		return ret;
 
-	if (name.Left(7).CompareNoCase(L"http://") == 0 || name.Left(6).CompareNoCase(L"ftp://") == 0 || name.Left(7).CompareNoCase(L"file://") == 0)
+	if (name.Length() > 0)
 	{
-		ret = DKBuffer::Create(name).SafeCast<DKData>();
-	}
-	else
-	{
-		DKString path = ResourceFilePath(name);
-		if (path.Length() > 0)
+		if (name.Left(7).CompareNoCase(L"http://") && name.Left(6).CompareNoCase(L"ftp://") && name.Left(7).CompareNoCase(L"file://"))
 		{
-			if (mapFileIfPossible)
-				ret = DKFileMap::Open(path, 0, false);
-			if (ret == NULL)
-				ret = DKBuffer::Create(path);
+			DKString path = ResourceFilePath(name);
+			if (path.Length() > 0)
+			{
+				if (mapFileIfPossible)
+					ret = DKFileMap::Open(path, 0, false);
+				if (ret == NULL)
+					ret = DKBuffer::Create(path);
+			}
+			else	// file could not be located. (or could be zip-file contents)
+			{
+				// open stream first (includes zip-file contents)
+				DKObject<DKStream> stream = OpenResourceStream(name);
+				if (stream)
+					ret = DKBuffer::Create(stream);
+				if (ret == NULL && mapFileIfPossible)
+					ret = DKFileMap::Open(name, 0, false);
+				if (ret == NULL)
+					ret = DKBuffer::Create(name);
+			}
 		}
-		else	// file not exists.
+		else
 		{
-			ret = DKBuffer::Create(OpenResourceStream(name)); // open as stream. (include zip-contents)
+			ret = DKBuffer::Create(name).SafeCast<DKData>();
 		}
 	}
 

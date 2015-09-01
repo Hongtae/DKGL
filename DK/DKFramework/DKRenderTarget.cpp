@@ -198,6 +198,9 @@ DKObject<DKRenderTarget> DKRenderTarget::Create(ProxyQuery* proxy)
 
 DKRenderTarget::~DKRenderTarget(void)
 {
+	DKRenderState& state = DKOpenGLContext::RenderState();
+	state.BindFrameBuffer(0);
+
 	Private::UnsetFramebuffer(this);
 	Private::ClearUnusedFramebuffers();
 

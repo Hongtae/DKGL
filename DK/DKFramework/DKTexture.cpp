@@ -157,10 +157,10 @@ namespace DKFramework
 				case DKTexture::FormatRG8:		return GL_RG8;
 				case DKTexture::FormatRG16F:	return GL_RG16F;
 				case DKTexture::FormatRG32F:	return GL_RG32F;
-				case DKTexture::FormatRGB8:		return GL_RGB;
+				case DKTexture::FormatRGB8:		return GL_RGB8;
 				case DKTexture::FormatRGB16F:	return GL_RGB16F;
 				case DKTexture::FormatRGB32F:	return GL_RGB32F;
-				case DKTexture::FormatRGBA8:	return GL_RGBA;
+				case DKTexture::FormatRGBA8:	return GL_RGBA8;
 				case DKTexture::FormatRGBA16F:	return GL_RGBA16F;
 				case DKTexture::FormatRGBA32F:	return GL_RGBA32F;
 
@@ -242,7 +242,10 @@ DKTexture::DKTexture(Target t)
 DKTexture::~DKTexture(void)
 {
 	if (resourceId)
+	{
+		DKOpenGLContext::RenderState().BindTexture(Private::GetTextureTargetGLValue(target), 0);
 		glDeleteTextures(1, &resourceId);
+	}
 }
 
 void DKTexture::Bind(void) const

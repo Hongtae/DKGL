@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -331,7 +331,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0630;
-				ORGANIZATIONNAME = tiff;
+				ORGANIZATIONNAME = ICONDB.COM;
 				TargetAttributes = {
 					8455C6A81AED2E000003A417 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -339,7 +339,7 @@
 				};
 			};
 			buildConfigurationList = 8455C6A41AED2E000003A417 /* Build configuration list for PBXProject "PyDKLauncher" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (

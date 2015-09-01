@@ -52,6 +52,8 @@ namespace DKFramework
 				if (width > GetMaxTextureSize() || height > GetMaxTextureSize())
 					return NULL;
 
+				glGetError(); // clear error
+
 				GLuint texId = 0;
 				glGenTextures(1, &texId);
 				glBindTexture(GL_TEXTURE_2D, texId);

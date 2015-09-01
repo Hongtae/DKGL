@@ -2,7 +2,7 @@
 //  File: DKGeometryBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -230,9 +230,6 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	default:	return false;		// Wrong usage.
 	}
 
-	if (resourceId == 0)
-		glGenBuffers(1, &resourceId);
-
 	GLenum usage = 0;
 	switch (u)
 	{
@@ -249,13 +246,12 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 		DKLog("[%s] Unsupported buffer usage.\n", DKGL_FUNCTION_NAME);
 		return false;
 	}
-		
-	if (t == BufferTypeVertexArray)
-		DKOpenGLContext::RenderState().BindVertexBuffer(resourceId);
-	else
-		DKOpenGLContext::RenderState().BindIndexBuffer(resourceId);
-	
+
+	if (resourceId == 0)
+		glGenBuffers(1, &resourceId);
+
 	GLenum target = t == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
+	glBindBuffer(target, resourceId);
 	glBufferData(target, size, NULL, usage);		// invalidate current data
 	if (data && size > 0)
 		glBufferData(target, size, data, usage);	// upload new data
@@ -264,7 +260,13 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	resourceLocation = m;
 	resourceUsage = u;
 	resourceSize = size;
-	
+
+	glBindBuffer(target, 0);
+	if (t == BufferTypeVertexArray)
+		DKOpenGLContext::RenderState().BindVertexBuffer(0);
+	else
+		DKOpenGLContext::RenderState().BindIndexBuffer(0);
+
 	return true;
 }
 

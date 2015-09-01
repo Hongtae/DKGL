@@ -563,7 +563,7 @@ DKRenderState* DKRenderer::Bind(void) const
 {
 	if (viewport.size.width > 0 && viewport.size.height > 0)
 	{
-		if (renderTarget->Bind())
+		if (renderTarget && renderTarget->Bind())
 		{
 			DKRenderState& state = DKOpenGLContext::RenderState();
 			int x, y, w, h;
