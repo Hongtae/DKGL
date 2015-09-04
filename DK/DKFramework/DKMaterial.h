@@ -2,7 +2,7 @@
 //  File: DKMaterial.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -164,6 +164,9 @@ namespace DKFramework
 		static bool CompileShaderSource(ShaderSource* src, DKFoundation::DKString& errorLog);
 		bool BuildProgram(int index, BuildLog* log);
 		bool Build(BuildLog* log);
+
+		// cleanup shader compiler resources.
+		static void ReleaseShaderCompiler(void);
 
 		DKFoundation::DKObject<DKSerializer> Serializer(void);
 
