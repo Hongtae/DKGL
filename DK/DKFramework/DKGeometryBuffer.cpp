@@ -250,6 +250,11 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	if (resourceId == 0)
 		glGenBuffers(1, &resourceId);
 
+	if (t == BufferTypeVertexArray)
+		DKOpenGLContext::RenderState().BindVertexBuffer(resourceId);
+	else
+		DKOpenGLContext::RenderState().BindIndexBuffer(resourceId);
+
 	GLenum target = t == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
 	glBindBuffer(target, resourceId);
 	glBufferData(target, size, NULL, usage);		// invalidate current data
@@ -260,12 +265,6 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	resourceLocation = m;
 	resourceUsage = u;
 	resourceSize = size;
-
-	glBindBuffer(target, 0);
-	if (t == BufferTypeVertexArray)
-		DKOpenGLContext::RenderState().BindVertexBuffer(0);
-	else
-		DKOpenGLContext::RenderState().BindIndexBuffer(0);
 
 	return true;
 }
