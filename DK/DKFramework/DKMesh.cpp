@@ -220,8 +220,6 @@ bool DKMesh::Bind(DKSceneState& ss, RenderInfo* info, const DKBlendState* blendi
 				break;
 			}
 
-			DKArray<DKVertexStream> streams = material->StreamArray(ss.sceneIndex);
-
 			ss.ClearModel();
 			if (BindTransform(ss))
 			{
