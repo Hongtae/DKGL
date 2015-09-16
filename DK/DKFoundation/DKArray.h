@@ -137,10 +137,10 @@ namespace DKFoundation
 			return count == 0;
 		}
 		// append other array's elements to tail.
-		template <typename T, typename U>
-		Index Add(const DKArray<VALUE, T, U>& value)
+		template <typename ...Args>
+		Index Add(const DKArray<VALUE, Args...>& value)
 		{
-			typename DKArray<VALUE, T>::CriticalSection guard(value.lock);
+			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
 			return Add((const VALUE*)value, value.Count());
 		}
 		// append one item to tail.
@@ -185,10 +185,10 @@ namespace DKFoundation
 			return count - s;
 		}
 		// insert array's elements into position 'pos'.
-		template <typename T, typename U>
-		Index Insert(const DKArray<VALUE, T, U>& value, Index pos)
+		template <typename ...Args>
+		Index Insert(const DKArray<VALUE, Args...>& value, Index pos)
 		{
-			typename DKArray<VALUE, T, U>::CriticalSection guard(value.lock);
+			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
 			return Insert((const VALUE*)value, pos);
 		}
 		// insert one value into position 'pos'.

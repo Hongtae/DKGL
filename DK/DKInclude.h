@@ -167,39 +167,39 @@ namespace DKFoundation
 	template <typename T> using _UnRefCV = _UnCV<_UnRef<T>>;
 
 	// Min
-	template <typename T> auto Min(T&& lhs, T&& rhs)->T&&
+	template <typename T> FORCEINLINE auto Min(T&& lhs, T&& rhs)->T&&
 	{
 		return std::forward<T>((lhs < rhs) ? lhs : rhs);
 	}
-	template <typename T, typename U> auto Min(T&& lhs, U&& rhs)->_UnRefCV<T>
+	template <typename T, typename U> FORCEINLINE auto Min(T&& lhs, U&& rhs)->_UnRefCV<T>
 	{
 		return static_cast<_UnRef<T>>((lhs < rhs) ? lhs : rhs);
 	}
-	template <typename T, typename U, typename... V> auto Min(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
+	template <typename T, typename U, typename... V> FORCEINLINE auto Min(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
 	{
 		return Min(std::forward<T>(v1), Min(std::forward<U>(v2), std::forward<V>(rest)...));
 	}
 
 	// Max
-	template <typename T> auto Max(T&& lhs, T&& rhs)->T&&
+	template <typename T> FORCEINLINE auto Max(T&& lhs, T&& rhs)->T&&
 	{
 		return std::forward<T>((lhs > rhs) ? lhs : rhs);
 	}
-	template <typename T, typename U> auto Max(T&& lhs, U&& rhs)->_UnRefCV<T>
+	template <typename T, typename U> FORCEINLINE auto Max(T&& lhs, U&& rhs)->_UnRefCV<T>
 	{
 		return static_cast<_UnRef<T>>(((lhs > rhs) ? lhs : rhs));
 	}
-	template <typename T, typename U, typename... V> auto Max(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
+	template <typename T, typename U, typename... V> FORCEINLINE auto Max(T&& v1, U&& v2, V&&... rest)->_UnRefCV<T>
 	{
 		return Max(std::forward<T>(v1), Max(std::forward<U>(v2), std::forward<V>(rest)...));
 	}
 
 	// Clamp
-	template <typename T> auto Clamp(T&& v, T&& _min, T&& _max)->T&&
+	template <typename T> FORCEINLINE auto Clamp(T&& v, T&& _min, T&& _max)->T&&
 	{
 		return Min(Max(std::forward<T>(v), std::forward<T>(_min)), std::forward<T>(_max));
 	}
-	template <typename T, typename MinT, typename MaxT> auto Clamp(T&& v, MinT&& _min, MaxT&& _max)->_UnRefCV<T>
+	template <typename T, typename MinT, typename MaxT> FORCEINLINE auto Clamp(T&& v, MinT&& _min, MaxT&& _max)->_UnRefCV<T>
 	{
 		return Min(Max(std::forward<T>(v), std::forward<MinT>(_min)), std::forward<MaxT>(_max));
 	}

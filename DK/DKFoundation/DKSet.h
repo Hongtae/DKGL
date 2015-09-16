@@ -2,7 +2,7 @@
 //  File: DKSet.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -42,7 +42,12 @@ namespace DKFoundation
 		}
 	};
 
-	template <typename VALUE, typename LOCK = DKDummyLock, typename COMPARE = DKSetComparison<VALUE>, typename ALLOC = DKMemoryDefaultAllocator>
+	template <
+		typename VALUE,
+		typename LOCK = DKDummyLock,
+		typename COMPARE = DKSetComparison<VALUE>,
+		typename ALLOC = DKMemoryDefaultAllocator
+	>
 	class DKSet
 	{
 	public:
@@ -52,7 +57,7 @@ namespace DKFoundation
 		typedef ALLOC													Allocator;
 		typedef DKCriticalSection<Lock>									CriticalSection;
 		typedef DKTypeTraits<Value>										ValueTraits;
-		typedef DKAVLTree<Value, Value, Compare, Compare, DKTreeValueCopy<VALUE>, Allocator>	Container;
+		typedef DKAVLTree<Value, Value, Compare, Compare, DKTreeCopyValue<VALUE>, Allocator>	Container;
 
 		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
 
@@ -104,13 +109,13 @@ namespace DKFoundation
 			for (const Value& v : il)
 				container.Insert(v);
 		}
-		template <typename L, typename C, typename A> DKSet& Union(const DKSet<VALUE,L,C,A>& s)
+		template <typename ...Args> DKSet& Union(const DKSet<VALUE, Args...>& s)
 		{
 			CriticalSection guard(lock);
 			s.EnumerateForward([this](const VALUE& val) { container.Insert(val); });
 			return *this;
 		}
-		template <typename L, typename C, typename A> DKSet& Intersect(const DKSet<VALUE,L,C,A>& s)
+		template <typename ...Args> DKSet& Intersect(const DKSet<VALUE, Args...>& s)
 		{
 			CriticalSection guard(lock);
 			s.EnumerateForward([this](const VALUE& val) {this->container.Remove(val);});

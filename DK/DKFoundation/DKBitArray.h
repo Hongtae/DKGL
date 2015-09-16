@@ -145,10 +145,10 @@ namespace DKFoundation
 			return offset;
 		}
 		// insert array's elements into position 'pos'.
-		template <typename T, typename U>
-		Index Insert(const DKBitArray<T, U>& value, Index pos)
+		template <typename ...Args>
+		Index Insert(const DKBitArray<Args...>& value, Index pos)
 		{
-			typename DKBitArray<T, U>::CriticalSection guard(value.lock);
+			typename DKBitArray<Args...>::CriticalSection guard(value.lock);
 			CriticalSection guard2(lock);
 			size_t s = value.count;
 			if (s > 0)

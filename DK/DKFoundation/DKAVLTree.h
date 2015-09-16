@@ -2,7 +2,7 @@
 //  File: DKAVLTree.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -44,7 +44,7 @@ namespace DKFoundation
 			return 0;
 		}
 	};
-	template <typename VALUE> struct DKTreeValueCopy
+	template <typename VALUE> struct DKTreeCopyValue
 	{
 		void operator () (VALUE& dst, const VALUE& src) const
 		{
@@ -53,29 +53,34 @@ namespace DKFoundation
 	};
 
 	template <
-		typename VALUE,									// value-type
-		typename KEY,									// key-type
-		typename CMPV = DKTreeComparison<VALUE, VALUE>,	// value comparison
-		typename CMPK = DKTreeComparison<VALUE, KEY>,	// key-value comparison
-		typename COPY = DKTreeValueCopy<VALUE>,			// value copy
-		typename ALLOC = DKMemoryDefaultAllocator		// memory allocator
+		typename Value,										// value-type
+		typename Key,										// key-type (Lookup key)
+		typename ValueComparator = DKTreeComparison<Value, Value>,	// value comparison
+		typename KeyComparator = DKTreeComparison<Value, Key>,	// value, key comparison (lookup only)
+		typename CopyValue = DKTreeCopyValue<Value>,		// value copy
+		typename Allocator = DKMemoryDefaultAllocator		// memory allocator
 	>
 	class DKAVLTree
 	{
 		class Node
 		{
 		public:
-			Node(const VALUE& v, Node* parentNode)
-			: value(v), left(NULL), right(NULL), parent(parentNode), nodeHeight(1), leftHeight(0), rightHeight(0)
+			Node(const Value& v, Node* parentNode)
+			: value(v), left(NULL), right(NULL), parent(parentNode), leftHeight(0), rightHeight(0)
 			{
 			}
-			VALUE		value;
+			Value		value;
 			Node*		left;
 			Node*		right;
-			Node*		parent;
+			Node*		parent;			// for quick-balancing (bottom to up)
 			int			leftHeight;		// left-tree weights
 			int			rightHeight;	// right-tree weights
-			int			nodeHeight;		// self weights ( = max(left,right)+1)
+
+			FORCEINLINE int Height(void) const	// self weights ( = max(left,right)+1)
+			{
+				return leftHeight > rightHeight ? (leftHeight + 1) : (rightHeight + 1);
+			}
+
 			Node* Duplicate(void) const
 			{
 				Node* node = new(Allocator::Alloc(sizeof(Node))) Node(value, NULL);
@@ -91,7 +96,6 @@ namespace DKFoundation
 				}
 				node->leftHeight = leftHeight;
 				node->rightHeight = rightHeight;
-				node->nodeHeight = nodeHeight;
 				return node;
 			}
 			template <typename R> bool EnumerateForward(R&& enumerator)
@@ -125,16 +129,6 @@ namespace DKFoundation
 		};
 
 	public:
-		typedef VALUE				Value;
-		typedef KEY					Key;
-		typedef CMPV				ValueCompare;
-		typedef CMPK				KeyCompare;
-		typedef COPY				ValueCopy;
-		typedef ALLOC				Allocator;
-
-		typedef DKTypeTraits<Value>	ValueTraits;
-		typedef DKTypeTraits<Key>	SearchTratis;
-
 		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
 
 		DKAVLTree(void)
@@ -168,7 +162,7 @@ namespace DKFoundation
 			bool created = false;
 			Node* node = SetNode(v, &created);
 			if (!created)
-				valueCopyFunc(node->value, v);
+				copyValue(node->value, v);
 			return &node->value;
 		}
 		// Insert: insert if not exist or fail if exists.
@@ -183,7 +177,7 @@ namespace DKFoundation
 		}
 		void Remove(const Key& k)
 		{
-			Node* node = GetNode(k);
+			Node* node = LookupNodeForKey(k);
 			if (node == NULL)
 				return;
 
@@ -309,14 +303,14 @@ namespace DKFoundation
 			rootNode = NULL;
 			count = 0;
 		}
-		const VALUE* Find(const Key& k) const
+		FORCEINLINE const Value* Find(const Key& k) const
 		{
-			const Node* node = GetNode(k);
+			const Node* node = LookupNodeForKey(k);
 			if (node)
 				return &node->value;
 			return NULL;
 		}
-		size_t Count(void) const
+		FORCEINLINE size_t Count(void) const
 		{
 			return count;
 		}
@@ -347,50 +341,50 @@ namespace DKFoundation
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<VALUE&, bool*>(),
+			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (VALUE&, bool*)");
 
 			if (count > 0)
 			{
 				bool stop = false;
-				auto func = [=, &enumerator](VALUE& v) mutable -> bool {enumerator(v, &stop); return stop;};
+				auto func = [=, &enumerator](Value& v) mutable -> bool {enumerator(v, &stop); return stop;};
 				rootNode->EnumerateForward(func);
 			}
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<VALUE&, bool*>(),
+			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (VALUE&, bool*)");
 
 			if (count > 0)
 			{
 				bool stop = false;
-				auto func = [=, &enumerator](VALUE& v) mutable -> bool {enumerator(v, &stop); return stop;};
+				auto func = [=, &enumerator](Value& v) mutable -> bool {enumerator(v, &stop); return stop;};
 				rootNode->EnumerateBackward(func);
 			}
 		}
 		// lambda enumerator bool (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const VALUE&, bool*>(),
+			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (const VALUE&, bool*)");
 
 			if (count > 0)
 			{
 				bool stop = false;
-				auto func = [=, &enumerator](const VALUE& v) mutable -> bool {enumerator(v, &stop); return stop;};
+				auto func = [=, &enumerator](const Value& v) mutable -> bool {enumerator(v, &stop); return stop;};
 				rootNode->EnumerateForward(func);
 			}
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const VALUE&, bool*>(),
+			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (const VALUE&, bool*)");
 
 			if (count > 0)
 			{
 				bool stop = false;
-				auto func = [=, &enumerator](const VALUE& v) mutable -> bool {enumerator(v, &stop); return stop;};
+				auto func = [=, &enumerator](const Value& v) mutable -> bool {enumerator(v, &stop); return stop;};
 				rootNode->EnumerateBackward(func);
 			}
 		}
@@ -407,7 +401,7 @@ namespace DKFoundation
 			(*node).~Node();
 			Allocator::Free(node);
 		}
-		void LeftRotation(Node* pivot)
+		void LeftRotate(Node* pivot)
 		{
 			Node* parent = pivot->parent;
 
@@ -425,7 +419,7 @@ namespace DKFoundation
 				parent->right->parent = parent;
 			pivot->left = parent;
 		}
-		void RightRotation(Node* pivot)
+		void RightRotate(Node* pivot)
 		{
 			Node* parent = pivot->parent;
 
@@ -443,39 +437,38 @@ namespace DKFoundation
 				parent->left->parent = parent;
 			pivot->right = parent;
 		}
-		void UpdateHeight(Node* node)
+		FORCEINLINE void UpdateHeight(Node* node)
 		{
-			node->leftHeight = node->left ? node->left->nodeHeight : 0;
-			node->rightHeight = node->right ? node->right->nodeHeight : 0;
-			node->nodeHeight = node->leftHeight > node->rightHeight ? node->leftHeight + 1 : node->rightHeight + 1;
+			node->leftHeight = node->left ? node->left->Height() : 0;
+			node->rightHeight = node->right ? node->right->Height() : 0;
 		}
 		// do balancing tree weights.
 		void Balancing(Node* node)
 		{
-			int left = node->left ? node->left->nodeHeight : 0;
-			int right = node->right ? node->right->nodeHeight : 0;
+			int left = node->left ? node->left->Height() : 0;
+			int right = node->right ? node->right->Height() : 0;
 
 			if (left - right > 1)
 			{
 				if (node->left->rightHeight > 0 && node->left->rightHeight > node->left->leftHeight)
 				{
 					// do left-rotate with 'node->left' and right-rotate recursively.
-					LeftRotation(node->left->right);
+					LeftRotate(node->left->right);
 					UpdateHeight(node->left->left);
 				}
-				// right-rotate with 'node->left'
-				RightRotation(node->left);
+				// right-rotate with 'node'
+				RightRotate(node->left);
 			}
 			else if (right - left > 1)
 			{
 				if (node->right->leftHeight > 0 && node->right->leftHeight > node->right->rightHeight)
 				{
 					// right-rotate with 'node->right' and left-rotate recursively.
-					RightRotation(node->right->left);
+					RightRotate(node->right->left);
 					UpdateHeight(node->right->right);
 				}
-				// left-rotate with 'node->right'
-				LeftRotation(node->right);
+				// left-rotate with 'node'
+				LeftRotate(node->right);
 			}
 
 			UpdateHeight(node);
@@ -499,7 +492,7 @@ namespace DKFoundation
 			Node* node = rootNode;
 			while (node)
 			{
-				int cmp = valueCompareFunc(node->value, v);
+				int cmp = valueComparator(node->value, v);
 				if (cmp > 0)
 				{
 					if (node->left)
@@ -537,16 +530,16 @@ namespace DKFoundation
 			return NULL;
 		}
 		// find node 'k' and return. (return NULL if not exists)
-		Node* GetNode(const Key& k)
+		FORCEINLINE Node* LookupNodeForKey(const Key& k)
 		{
-			return const_cast<Node*>(static_cast<const DKAVLTree&>(*this).GetNode(k));
+			return const_cast<Node*>(static_cast<const DKAVLTree&>(*this).LookupNodeForKey(k));
 		}
-		const Node* GetNode(const Key& k) const
+		FORCEINLINE const Node* LookupNodeForKey(const Key& k) const
 		{
 			Node* node = rootNode;
 			while (node)
 			{
-				int cmp = keyCompareFunc(node->value, k);
+				int cmp = keyComparator(node->value, k);
 				if (cmp > 0)
 					node = node->left;
 				else if (cmp < 0)
@@ -557,11 +550,11 @@ namespace DKFoundation
 			return NULL;
 		}
 
-		Node*			rootNode;
-		size_t			count;
-		ValueCompare	valueCompareFunc;
-		KeyCompare		keyCompareFunc;
-		ValueCopy		valueCopyFunc;
+		Node*				rootNode;
+		size_t				count;
+		ValueComparator		valueComparator;
+		KeyComparator		keyComparator;
+		CopyValue			copyValue;
 	};
 }
 

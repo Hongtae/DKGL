@@ -2,7 +2,7 @@
 //  File: DKMap.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -161,14 +161,13 @@ namespace DKFoundation
 			for (size_t i = 0; i < size; i++)
 				Update(p[i]);
 		}
-		template <typename LK, typename T1, typename T2, typename T3>
-		void Update(const DKMap<KEY, VALUE, LK, T1, T2, T3>& m)
+		template <typename ...Args> void Update(const DKMap<KEY, VALUE, Args...>& m)
 		{
 			CriticalSection guard(lock);
-			m.EnumerateForward([this](const typename DKMap<KEY, VALUE, LK, T1, T2, T3>::Pair& pair)
+			m.EnumerateForward([this](const typename DKMap<KEY, VALUE, Args...>::Pair& pair)
 			{
 				container.Update(pair);
-			});			
+			});
 		}
 		void Update(std::initializer_list<Pair> il)
 		{
@@ -194,12 +193,11 @@ namespace DKFoundation
 					ret++;
 			return ret;
 		}
-		template <typename LK, typename T1, typename T2, typename T3>
-		size_t Insert(const DKMap<KEY, VALUE, LK, T1, T2, T3>& m)
+		template <typename ...Args> size_t Insert(const DKMap<KEY, VALUE, Args...>& m)
 		{
 			size_t n = 0;
 			CriticalSection guard(lock);
-			m.EnumerateForward([this, &n](const typename DKMap<KEY, VALUE, LK, T1, T2, T3>::Pair& pair)
+			m.EnumerateForward([this, &n](const typename DKMap<KEY, VALUE, Args...>::Pair& pair)
 			{
 				if (container.Insert(pair) != NULL)
 					n++;
