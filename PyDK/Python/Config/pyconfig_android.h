@@ -1203,6 +1203,7 @@
 #define SIZEOF_TIME_T		8
 #define SIZEOF_UINTPTR_T	8
 #define SIZEOF_VOID_P		8
+#define SIZEOF_LONG_DOUBLE	8	/* not verified */
 #else
 #define SIZEOF_LONG			4
 #define SIZEOF_PTHREAD_T	4
@@ -1210,12 +1211,12 @@
 #define SIZEOF_TIME_T		4
 #define SIZEOF_UINTPTR_T	4
 #define SIZEOF_VOID_P		4
+#define SIZEOF_LONG_DOUBLE	8
 #endif
 #define SIZEOF_DOUBLE		8
 #define SIZEOF_FLOAT		4
 #define SIZEOF_FPOS_T		4
 #define SIZEOF_INT			4
-#define SIZEOF_LONG_DOUBLE	8
 #define SIZEOF_LONG_LONG	8
 #define SIZEOF_OFF_T		4
 #define SIZEOF_PID_T		4
