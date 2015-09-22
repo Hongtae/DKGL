@@ -265,11 +265,15 @@ namespace DKFoundation
 							}
 							numChunks++;
 						}
-						uintptr_t addr = chunkTable[numChunks].address;
-						SortChunkTable();
-						if (cachedChunk == NULL || cachedChunk->occupied == MaxUnitsPerChunk)
-							cachedChunk = FindChunkInfo(addr);
-						DKASSERT_MEM_DEBUG(cachedChunk != NULL);
+						if (numChunks > 0)
+						{
+							// save last chunk's address.
+							uintptr_t addr = chunkTable[numChunks-1].address;
+							SortChunkTable();
+							if (cachedChunk == NULL || cachedChunk->occupied == MaxUnitsPerChunk)
+								cachedChunk = FindChunkInfo(addr);
+							DKASSERT_MEM_DEBUG(cachedChunk != NULL);
+						}
 					}
 				}
 			}
