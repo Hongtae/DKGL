@@ -2,7 +2,7 @@
 //  File: DKAllocator.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKObjectRefCounter.h"
@@ -31,10 +31,12 @@ namespace DKFoundation
 			typedef DKSpinLock							Lock;
 			typedef DKCriticalSection<Lock>				CriticalSection;
 
+			using Key = void*;
+
 			// use fixed-size allocator.
 			struct Allocator
 			{
-				enum { NodeSize = DKMap<void*, NodeInfo>::NodeSize() };
+				enum { NodeSize = DKMap<Key, NodeInfo>::NodeSize() };
 				enum { Alignment = sizeof(void*) };
 				using FixedAllocator = DKFixedSizeAllocator<NodeSize, Alignment, 1024, Lock>;
 
@@ -49,8 +51,7 @@ namespace DKFoundation
 				}
 			};
 
-			using Key = void*;
-			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparison<Key>, DKMapValueCopy<Key>, Allocator>;
+			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparator<Key>, DKMapValueReplacer<NodeInfo>, Allocator>;
 
 			Lock		lock;
 			Container	container;

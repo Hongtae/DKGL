@@ -26,7 +26,7 @@ namespace DKFoundation
 	class DKGL_API DKStringW
 	{
 	public:
-		typedef DKSet<DKUniCharW, DKDummyLock, DKSetComparison<DKUniCharW>> CharacterSet;
+		typedef DKSet<DKUniCharW, DKDummyLock, DKSetComparator<DKUniCharW>> CharacterSet;
 		typedef DKArray<long long, DKDummyLock> IntegerArray;
 		typedef DKArray<unsigned long long, DKDummyLock> UnsignedIntegerArray;
 		typedef DKArray<double, DKDummyLock> RealNumberArray;

@@ -44,20 +44,22 @@
 
 namespace DKFoundation
 {
-	template <typename KEY, typename VALUE> class DKMapPair
+	template <typename Key, typename Value> class DKMapPair
 	{
 	public:
-		DKMapPair(const KEY& k, const VALUE& v)
+		DKMapPair(const Key& k, const Value& v)
 			: key(k), value(v) {}
 		DKMapPair(const DKMapPair& p)
 			: key(p.key), value(p.value) {}
+		DKMapPair(DKMapPair&& p)
+			: key(static_cast<Key&&>(p.key)), value(static_cast<Value&&>(p.value)) {}
 
-		KEY key;
-		VALUE value;
+		Key key;
+		Value value;
 	};
-	template <typename KEY> struct DKMapKeyComparison
+	template <typename Key> struct DKMapKeyComparator
 	{
-		int operator () (const KEY& lhs, const KEY& rhs) const
+		int operator () (const Key& lhs, const Key& rhs) const
 		{
 			if (lhs > rhs)
 				return 1;
@@ -66,60 +68,50 @@ namespace DKFoundation
 			return 0;
 		}
 	};
-	template <typename VALUE> struct DKMapValueCopy
+	template <typename Value> struct DKMapValueReplacer
 	{
-		void operator () (VALUE& dst, const VALUE& src) const
+		void operator () (Value& dst, const Value& src) const
 		{
 			dst = src;
 		}
 	};
 
 	template <
-		typename KEY,								// key type
-		typename VALUE,								// value type
-		typename LOCK = DKDummyLock,				// lock
-		typename COMPARE = DKMapKeyComparison<KEY>,	// key comparison
-		typename COPY = DKMapValueCopy<VALUE>,		// copy value
-		typename ALLOC = DKMemoryDefaultAllocator	// memory allocator
+		typename Key,											// key type
+		typename ValueT,										// value type
+		typename Lock = DKDummyLock,							// lock
+		typename KeyComparator = DKMapKeyComparator<Key>,		// key comparison
+		typename ValueReplacer = DKMapValueReplacer<ValueT>,	// copy value
+		typename Allocator = DKMemoryDefaultAllocator			// memory allocator
 	>
 	class DKMap
 	{
 	public:
-		typedef LOCK						Lock;
-		typedef COMPARE						Compare;
-		typedef COPY						Copy;
-		typedef DKMapPair<const KEY, VALUE>	Pair;
-		typedef DKCriticalSection<Lock>		CriticalSection;
-		typedef ALLOC						Allocator;
-		typedef DKTypeTraits<KEY>			KeyTraits;
-		typedef DKTypeTraits<VALUE>			ValueTraits;
+		typedef DKMapPair<const Key, ValueT>	Pair;
+		typedef DKCriticalSection<Lock>			CriticalSection;
+		typedef DKTypeTraits<Key>				KeyTraits;
+		typedef DKTypeTraits<ValueT>			ValueTraits;
 
-		struct PairComparison
+		struct PairComparator
 		{
 			int operator () (const Pair& lhs, const Pair& rhs) const
 			{
-				return cmp(lhs.key, rhs.key);
+				return comparator(lhs.key, rhs.key);
 			}
-			Compare cmp;
+			KeyComparator comparator;
 		};
-		struct KeyComparison
-		{
-			int operator () (const Pair& lhs, const KEY& key) const
-			{
-				return cmp(lhs.key, key);
-			}
-			Compare cmp;
-		};
-		struct PairCopy
+		struct PairValueReplacer
 		{
 			void operator () (Pair& dst, const Pair& src) const
 			{
-				copy(dst.value, src.value);
+				replacer(dst.value, src.value);
 			}
-			Copy copy;
+			ValueReplacer replacer;
 		};
-		typedef DKAVLTree<Pair, KEY, PairComparison, KeyComparison, PairCopy, Allocator> Container;
+		typedef DKAVLTree<Pair, PairComparator, PairValueReplacer, Allocator> Container;
 		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
+
+		KeyComparator comparator;
 
 		// lock is public. to provde lock object from outside!
 		// FindNoLock, CountNoLock is usable regardless of locking.
@@ -130,12 +122,14 @@ namespace DKFoundation
 		}
 		DKMap(DKMap&& m)
 			: container(static_cast<Container&&>(m.container))
+			, comparator(static_cast<KeyComparator&&>(m.comparator))
 		{
 		}
 		DKMap(const DKMap& m)
 		{
 			CriticalSection guard(m.lock);
-			container = m.container;			
+			container = m.container;
+			comparator = m.comparator;
 		}
 		DKMap(std::initializer_list<Pair> il)
 		{
@@ -152,7 +146,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.Update(p);			
 		}
-		void Update(const KEY& k, const VALUE& v)
+		void Update(const Key& k, const ValueT& v)
 		{
 			Update(Pair(k,v));
 		}
@@ -161,10 +155,10 @@ namespace DKFoundation
 			for (size_t i = 0; i < size; i++)
 				Update(p[i]);
 		}
-		template <typename ...Args> void Update(const DKMap<KEY, VALUE, Args...>& m)
+		template <typename ...Args> void Update(const DKMap<Key, ValueT, Args...>& m)
 		{
 			CriticalSection guard(lock);
-			m.EnumerateForward([this](const typename DKMap<KEY, VALUE, Args...>::Pair& pair)
+			m.EnumerateForward([this](const typename DKMap<Key, ValueT, Args...>::Pair& pair)
 			{
 				container.Update(pair);
 			});
@@ -181,7 +175,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Insert(p) != NULL;
 		}
-		bool Insert(const KEY& k, const VALUE& v)
+		bool Insert(const Key& k, const ValueT& v)
 		{
 			return Insert(Pair(k, v));
 		}
@@ -193,11 +187,11 @@ namespace DKFoundation
 					ret++;
 			return ret;
 		}
-		template <typename ...Args> size_t Insert(const DKMap<KEY, VALUE, Args...>& m)
+		template <typename ...Args> size_t Insert(const DKMap<Key, ValueT, Args...>& m)
 		{
 			size_t n = 0;
 			CriticalSection guard(lock);
-			m.EnumerateForward([this, &n](const typename DKMap<KEY, VALUE, Args...>::Pair& pair)
+			m.EnumerateForward([this, &n](const typename DKMap<Key, ValueT, Args...>::Pair& pair)
 			{
 				if (container.Insert(pair) != NULL)
 					n++;
@@ -215,15 +209,18 @@ namespace DKFoundation
 			}
 			return n;
 		}
-		void Remove(const KEY& k)
+		void Remove(const Key& k)
 		{
 			CriticalSection guard(lock);
-			container.Remove(k);
+			container.Remove(k, [this](const Pair& lhs, const Key& key)
+			{
+				return comparator(lhs.key, key);
+			});
 		}
-		void Remove(std::initializer_list<KEY> il)
+		void Remove(std::initializer_list<Key> il)
 		{
 			CriticalSection guard(lock);
-			for (const KEY& k : il)
+			for (const Key& k : il)
 				container.Remove(k);
 		}
 		void Clear(void)
@@ -231,32 +228,35 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.Clear();
 		}
-		Pair* Find(const KEY& k)
+		Pair* Find(const Key& k)
 		{
 			return const_cast<Pair*>(static_cast<const DKMap&>(*this).Find(k));
 		}
-		const Pair* Find(const KEY& k) const
+		const Pair* Find(const Key& k) const
 		{
 			CriticalSection guard(lock);
 			return FindNoLock(k);
 		}
 		// Perform search operation without locking.
 		// useful if you have locked already in your context.
-		Pair* FindNoLock(const KEY& k)
+		Pair* FindNoLock(const Key& k)
 		{
 			return const_cast<Pair*>(static_cast<const DKMap&>(*this).FindNoLock(k));
 		}
-		const Pair* FindNoLock(const KEY& k) const
+		const Pair* FindNoLock(const Key& k) const
 		{
-			return container.Find(k);
+			return container.Find(k, [this](const Pair& lhs, const Key& key)
+			{
+				return comparator(lhs.key, key);
+			});
 		}
 		// if key 'k' is not exist, an new value inserted and returns.
-		VALUE& Value(const KEY& k)
+		ValueT& Value(const Key& k)
 		{
 			CriticalSection guard(lock);
 			Pair* p = FindNoLock(k);
 			if (p == NULL)
-				p = const_cast<Pair*>(container.Insert(Pair(k, VALUE())));
+				p = const_cast<Pair*>(container.Insert(Pair(k, ValueT())));
 			return p->value;
 		}
 		bool IsEmpty(void) const
@@ -279,6 +279,7 @@ namespace DKFoundation
 			{
 				CriticalSection guard(lock);
 				container = static_cast<Container&&>(m.container);
+				comparator = static_cast<KeyComparator&&>(m.comparator);
 			}
 			return *this;
 		}
@@ -290,6 +291,7 @@ namespace DKFoundation
 				CriticalSection guardSelf(lock);
 
 				container = m.container;
+				comparator = m.comparator;
 			}
 			return *this;
 		}
