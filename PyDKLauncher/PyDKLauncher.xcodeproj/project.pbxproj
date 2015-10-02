@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		841FDFA71BBEF0AA002DA601 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 841FDFA61BBEF0AA002DA601 /* Scripts */; settings = {ASSET_TAGS = (); }; };
+		841FDFA81BBEF0AA002DA601 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 841FDFA61BBEF0AA002DA601 /* Scripts */; settings = {ASSET_TAGS = (); }; };
 		8455C6DE1AED301E0003A417 /* getpath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DA1AED301E0003A417 /* getpath.mm */; };
 		8455C6DF1AED301E0003A417 /* getpath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DA1AED301E0003A417 /* getpath.mm */; };
 		8455C6E01AED301E0003A417 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8455C6DB1AED301E0003A417 /* main.cpp */; };
@@ -175,6 +177,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		841FDFA61BBEF0AA002DA601 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scripts; path = ../Scripts; sourceTree = "<group>"; };
 		8455C6A91AED2E000003A417 /* Launcher_OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launcher_OSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8455C6AD1AED2E000003A417 /* PyDKLauncher_OSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PyDKLauncher_OSX-Info.plist"; sourceTree = "<group>"; };
 		8455C6B31AED2E010003A417 /* Images_OSX.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images_OSX.xcassets; sourceTree = "<group>"; };
@@ -211,12 +214,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		841FDED91BBEEFDC002DA601 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				841FDFA61BBEF0AA002DA601 /* Scripts */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		8455C6A01AED2E000003A417 = {
 			isa = PBXGroup;
 			children = (
 				8455C6F01AED318E0003A417 /* DK.xcodeproj */,
 				8455C6FF1AED31A00003A417 /* PyDK.xcodeproj */,
 				8455C6AA1AED2E000003A417 /* Products */,
+				841FDED91BBEEFDC002DA601 /* Resources */,
 				8455C6AB1AED2E000003A417 /* Source Files */,
 				8455C6AC1AED2E000003A417 /* Supporting Files */,
 			);
@@ -439,6 +451,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8455C9E21AEE796A0003A417 /* Images_OSX.xcassets in Resources */,
+				841FDFA71BBEF0AA002DA601 /* Scripts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +460,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8455C9DF1AEE78F90003A417 /* Images_iOS.xcassets in Resources */,
+				841FDFA81BBEF0AA002DA601 /* Scripts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

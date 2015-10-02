@@ -20,7 +20,7 @@ DKString AbsolutePathStringOfPyStd(void)
 		if (path[len - 1] == L'\\')
 		{
 			path[len] = L'\0';
-			return DKString(path).Append("python34.zip");
+			return DKString(path).Append("python35.zip");
 		}
 	}
 	return L"";

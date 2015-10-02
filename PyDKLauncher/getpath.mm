@@ -19,7 +19,7 @@ DKString AbsolutePathStringOfPyStd(void)
 	DKString str;
 	@autoreleasepool {
 		NSBundle* bundle = [NSBundle bundleWithIdentifier:@"com.icondb.PyDK"];
-		NSString* s = [bundle pathForResource:@"python34" ofType:@"zip"];
+		NSString* s = [bundle pathForResource:@"python35" ofType:@"zip"];
 		NSLog(@"python std lib: %@", s);
 		str.SetValue(s.UTF8String);
 	}
