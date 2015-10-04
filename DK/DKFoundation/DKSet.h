@@ -57,30 +57,37 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
 
+		Comparator& comparator;
+
 		// lock is public. allow object being locked manually.
 		// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
 
 		DKSet(void)
+			: comparator(container.comparator)
 		{
 		}
 		DKSet(DKSet&& s)
 			: container(static_cast<Container&&>(s.container))
+			, comparator(container.comparator)
 		{
 		}
 		// copy constructor. same type of DKSet object are allowed only.
 		// template constructor not works on MSVC
 		DKSet(const DKSet& s)
+			: comparator(container.comparator)
 		{
 			CriticalSection guard(s.lock);
 			container = s.container;
 		}
 		DKSet(const Value* v, size_t n)
+			: comparator(container.comparator)
 		{
 			for (size_t i = 0; i < n; ++i)
 				container.Insert(v[i]);
 		}
 		DKSet(std::initializer_list<Value> il)
+			: comparator(container.comparator)
 		{
 			for (const Value& v : il)
 				container.Insert(v);
