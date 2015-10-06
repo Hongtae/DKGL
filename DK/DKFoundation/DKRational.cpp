@@ -157,7 +157,7 @@ DKRational& DKRational::operator += (const DKRational& r)
 		this->numerator = r.numerator;
 		this->denominator = 0;
 	}
-	else if (r.denominator == 0)	// 둘다 분모가 0 임
+	else if (r.denominator == 0)		// both denominators are zero.
 	{
 		if (this->numerator > 0 && r.numerator > 0)
 			this->numerator = 1;		// +infinity

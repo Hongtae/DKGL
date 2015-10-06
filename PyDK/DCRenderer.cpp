@@ -833,7 +833,7 @@ static PyObject* DCRendererRenderScene(DCRenderer* self, PyObject* args, PyObjec
 				PyObject* obj = DCObjectFromAddress(m);
 				if (obj)
 				{
-					Py_INCREF(obj);		// 레퍼런스는 나중에 PyList_SET_ITEM 함수가 가져간다.
+					Py_INCREF(obj);		// PyList_SET_ITEM will takes ownership.
 					DKASSERT_DEBUG(DCMeshToObject(obj) == m);
 					meshObjArray.Add(obj);
 				}
@@ -979,7 +979,7 @@ static PyMethodDef methods[] = {
 	{ "clearColorBuffer", (PyCFunction)&DCRendererClearColorBuffer, METH_VARARGS },
 	{ "clearDepthBuffer", (PyCFunction)&DCRendererClearDepthBuffer, METH_NOARGS },
 
-	// 2D 단색 렌더링
+	// 2D solid-color
 	{ "renderSolidRects", (PyCFunction)&DCRendererRenderSolidRects, METH_VARARGS | METH_KEYWORDS },
 	{ "renderSolidQuads", (PyCFunction)&DCRendererRenderSolid<&DKRenderer::RenderSolidQuads>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderSolidTriangles", (PyCFunction)&DCRendererRenderSolid<&DKRenderer::RenderSolidTriangles>, METH_VARARGS | METH_KEYWORDS },
@@ -990,7 +990,7 @@ static PyMethodDef methods[] = {
 	{ "renderSolidPoints", (PyCFunction)&DCRendererRenderSolid<&DKRenderer::RenderSolidPoints>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderSolidEllipses", (PyCFunction)&DCRendererRenderSolidEllipses, METH_VARARGS | METH_KEYWORDS },
 
-	// 2D 텍스쳐 렌더링
+	// 2D textured
 	{ "renderTexturedRects", (PyCFunction)&DCRendererRenderTexturedRects, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTexturedQuads", (PyCFunction)&DCRendererRenderTextured<&DKRenderer::RenderTexturedQuads>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTexturedTriangles", (PyCFunction)&DCRendererRenderTextured<&DKRenderer::RenderTexturedTriangles>, METH_VARARGS | METH_KEYWORDS },
@@ -1001,11 +1001,11 @@ static PyMethodDef methods[] = {
 	{ "renderTexturedPoints", (PyCFunction)&DCRendererRenderTextured<&DKRenderer::RenderTexturedPoints>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTexturedEllipses", (PyCFunction)&DCRendererRenderTexturedEllipses, METH_VARARGS | METH_KEYWORDS },
 
-	// 2D 텍스트 렌더링
+	// 2D text
 	{ "renderTextBaseline", (PyCFunction)&DCRendererRenderTextBaseline, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTextRect", (PyCFunction)&DCRendererRenderTextRect, METH_VARARGS | METH_KEYWORDS },
 
-	// 3D 단색 도형 렌더링
+	// 3D solid color primitives
 	{ "renderSolid3DTriangles", (PyCFunction)&DCRendererRenderSolid3D<&DKRenderer::RenderSolidTriangles>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderSolid3DTriangleStrip", (PyCFunction)&DCRendererRenderSolid3D<&DKRenderer::RenderSolidTriangleStrip>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderSolid3DTriangleFan", (PyCFunction)&DCRendererRenderSolid3D<&DKRenderer::RenderSolidTriangleFan>, METH_VARARGS | METH_KEYWORDS },
@@ -1013,7 +1013,7 @@ static PyMethodDef methods[] = {
 	{ "renderSolid3DLineStrip", (PyCFunction)&DCRendererRenderSolid3D<&DKRenderer::RenderSolidLineStrip>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderSolid3DPoints", (PyCFunction)&DCRendererRenderSolid3D<&DKRenderer::RenderSolidPoints>, METH_VARARGS | METH_KEYWORDS },
 
-	// 3D 컬러 도형 렌더링
+	// 3D vertex color primitives
 	{ "renderColored3DTriangles", (PyCFunction)&DCRendererRenderColored3D<&DKRenderer::RenderColoredTriangles>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderColored3DTriangleStrip", (PyCFunction)&DCRendererRenderColored3D<&DKRenderer::RenderColoredTriangleStrip>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderColored3DTriangleFan", (PyCFunction)&DCRendererRenderColored3D<&DKRenderer::RenderColoredTriangleFan>, METH_VARARGS | METH_KEYWORDS },
@@ -1021,7 +1021,7 @@ static PyMethodDef methods[] = {
 	{ "renderColored3DLineStrip", (PyCFunction)&DCRendererRenderColored3D<&DKRenderer::RenderColoredLineStrip>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderColored3DPoints", (PyCFunction)&DCRendererRenderColored3D<&DKRenderer::RenderColoredPoints>, METH_VARARGS | METH_KEYWORDS },
 
-	// 3D 텍스쳐 도형 렌더링
+	// 3D textured color primitives
 	{ "renderTextured3DTriangles", (PyCFunction)&DCRendererRenderTextured3D<&DKRenderer::RenderTexturedTriangles>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTextured3DTriangleStrip", (PyCFunction)&DCRendererRenderTextured3D<&DKRenderer::RenderTexturedTriangleStrip>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTextured3DTriangleFan", (PyCFunction)&DCRendererRenderTextured3D<&DKRenderer::RenderTexturedTriangleFan>, METH_VARARGS | METH_KEYWORDS },
@@ -1029,7 +1029,7 @@ static PyMethodDef methods[] = {
 	{ "renderTextured3DLineStrip", (PyCFunction)&DCRendererRenderTextured3D<&DKRenderer::RenderTexturedLineStrip>, METH_VARARGS | METH_KEYWORDS },
 	{ "renderTextured3DPoints", (PyCFunction)&DCRendererRenderTextured3D<&DKRenderer::RenderTexturedPoints>, METH_VARARGS | METH_KEYWORDS },
 
-	// 3D scene 렌더링
+	// 3D scene
 	{ "renderScene", (PyCFunction)&DCRendererRenderScene, METH_VARARGS | METH_KEYWORDS },
 
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */

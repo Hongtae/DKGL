@@ -39,7 +39,7 @@ static int DCFontInit(DCFont *self, PyObject *args, PyObject *kwds)
 		&obj, &point, &embolden, &outline, &DCPointConverter, &dpi, &enableKerning, &forceBitmap))
 		return -1;
 
-	// data 또는 file 로 폰트 로딩함.
+	// load font from 'data' or 'file'
 	if (PyUnicode_Check(obj))
 	{
 		const char* s = PyUnicode_AsUTF8(obj);
@@ -48,7 +48,7 @@ static int DCFontInit(DCFont *self, PyObject *args, PyObject *kwds)
 			Py_BEGIN_ALLOW_THREADS
 
 			DKString url(s);
-			if (url.Find(L"://") < 0)		// 실제 파일
+			if (url.Find(L"://") < 0)		// file url.
 			{
 				self->font = DKFont::Create(url);
 			}

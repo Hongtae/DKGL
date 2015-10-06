@@ -409,7 +409,9 @@ static int DCFrameClear(DCFrame* self)
 {
 	if (self->frame)
 	{
-		// 가비지 콜렉터에 의해서 제거될때는 부모 프레임에 붙어있을 수 있다. 명시적으로 제거함.
+		// When a frame was collected by garbage collector,
+		// it could be attached to parent frame.
+		// a frame should be removed from parent explicitly.
 		self->frame->RemoveFromSuperframe();
 		DCLocalFrame* localFrame = self->frame.SafeCast<DCLocalFrame>();
 		if (localFrame)
@@ -629,7 +631,7 @@ static PyObject* DCFrameUpdate(DCFrame* self, PyObject* args)
 							  PyDateTime_DATE_GET_MINUTE(dateObj),
 							  PyDateTime_DATE_GET_SECOND(dateObj),
 							  PyDateTime_DATE_GET_MICROSECOND(dateObj),
-							  0		// offset from UTC (초단위)
+							  0		// offset from UTC (with seconds unit)
 							  );
 	}
 

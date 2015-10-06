@@ -6,7 +6,7 @@
 using namespace DKFoundation;
 using namespace DKFramework;
 
-// 사이즈 체크.
+// type size check.
 static_assert(SIZEOF_LONG == sizeof(long), "size mismatch");
 static_assert(SIZEOF_SIZE_T == sizeof(size_t), "size mismatch");
 static_assert(SIZEOF_TIME_T == sizeof(time_t), "size mismatch");

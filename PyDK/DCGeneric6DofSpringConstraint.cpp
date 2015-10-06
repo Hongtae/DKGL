@@ -74,7 +74,7 @@ static PyObject* DCGeneric6DofSpringConstraintEnableSpring(DCGeneric6DofSpringCo
 	int enable;
 	if (!PyArg_ParseTuple(args, "ip", &axis, &enable))
 		return NULL;
-	if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+	if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 	{
 		PyErr_Clear();
 		PyErr_SetString(PyExc_TypeError, "first argument is out of range.");
@@ -90,7 +90,7 @@ static PyObject* DCGeneric6DofSpringConstraintIsSpringEnabled(DCGeneric6DofSprin
 	int axis;
 	if (!PyArg_ParseTuple(args, "i", &axis))
 		return NULL;
-	if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+	if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 	{
 		PyErr_Clear();
 		PyErr_SetString(PyExc_TypeError, "first argument is out of range.");
@@ -106,7 +106,7 @@ static PyObject* GetAxisFloat(DCGeneric6DofSpringConstraint* self, PyObject* arg
 	int axis;
 	if (!PyArg_ParseTuple(args, "i", &axis))
 		return NULL;
-	if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+	if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 	{
 		PyErr_Clear();
 		PyErr_SetString(PyExc_TypeError, "first argument is out of range.");
@@ -123,7 +123,7 @@ static PyObject* SetAxisFloat(DCGeneric6DofSpringConstraint* self, PyObject* arg
 	float value;
 	if (!PyArg_ParseTuple(args, "if", &axis, &value))
 		return NULL;
-	if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+	if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 	{
 		PyErr_Clear();
 		PyErr_SetString(PyExc_TypeError, "first argument is out of range.");
@@ -148,7 +148,7 @@ static PyObject* DCGeneric6DofSpringConstraintSetEquilibriumPoint(DCGeneric6DofS
 			PyErr_Clear();
 			PyErr_SetString(PyExc_TypeError, "optional first argument must be integer.");
 		}
-		if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+		if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 		{
 			PyErr_Clear();
 			PyErr_SetString(PyExc_TypeError, "first argument is out of range.");

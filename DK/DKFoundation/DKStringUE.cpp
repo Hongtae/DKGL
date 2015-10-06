@@ -300,7 +300,7 @@ namespace DKFoundation
 				}
 				else if (strict)
 				{
-					if (ch >= UNICODE_LOW_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF32 에서는 (UTF-16) surrogate 값을 가질 수 없음.
+					if (ch >= UNICODE_LOW_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF-32 cannot have surrogate pair
 						return false;
 				}					
 				setter((UIntUTF32)ch);
@@ -314,7 +314,7 @@ namespace DKFoundation
 				UIntUTF32 ch = *input++;
 				if (strict)
 				{
-					if (ch >= UNICODE_HIGH_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF16의 surrogate 값은 UTF32 에서 유효하지 않음.
+					if (ch >= UNICODE_HIGH_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF-16 surrogate pair is not valid on UTF-32
 						return false;
 				}
 

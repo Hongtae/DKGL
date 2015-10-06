@@ -10,8 +10,8 @@ using namespace DKFramework;
 
 static DKCondition mainAppCond;
 static PyObject* mainApp = NULL;
-static bool appInstanceCreated = false;		// PyDKApplication 객체가 파이썬에서 생성되었는지 여부
-static bool mainAppTerminated = false;		// PyDKApplication 이 종료될지 여부
+static bool appInstanceCreated = false;		// whether 'PyDKApplication' instance did created from Python or not.
+static bool mainAppTerminated = false;		// whether 'PyDKApplication' instance should be terminated or not.
 
 static bool CallPyAppMethod(DKApplication* app, PyObject* obj, const char* method)
 {
@@ -73,7 +73,7 @@ void PyDKApplication::OnInitialize(void)
 	{
 		if (mainApp)
 		{
-			// mainApp.onInit 호출함.
+			// call mainApp.onInit
 			CallPyAppMethod(this, mainApp, "onInit");
 			return;
 		}
@@ -90,18 +90,18 @@ void PyDKApplication::OnInitialize(void)
 void PyDKApplication::OnTerminate(void)
 {
 	DKCriticalSection<DKCondition> guard(mainAppCond);
-	// 스크립트 루프 종료시킴.
+	// terminate script main-loop
 	if (mainApp)
 	{
-		// mainApp.onExit 호출함.
+		// call mainApp.onExit
 		CallPyAppMethod(this, mainApp, "onExit");
 
 		mainAppTerminated = true;
 		mainAppCond.Broadcast();
 
-		if (!appInstanceCreated)	// 스크립트에서 생성한 인스턴스가 아님. (스크립트만 종료)
+		if (!appInstanceCreated)	// app-instance did not created from script, terminate script only.
 		{
-			// 스크립트 종료될때까지 기다림.
+			// wait until script being terminated.
 			while (mainApp)
 			{
 				DKLog("Waiting for script unbinding...\n");

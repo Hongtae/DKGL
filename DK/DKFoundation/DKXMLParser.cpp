@@ -317,7 +317,7 @@ namespace DKFoundation
 			}
 			void reference(void *ctx, const xmlChar *name)
 			{
-				// 엔티티가 characters 로 출력되고 나서 호출된다.
+				// called after entity had printed as characters.
 				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
 				DKLog("SAX.reference(%ls)\n", (const wchar_t*)xmlCharToIGString(name));
 			}

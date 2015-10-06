@@ -12,8 +12,11 @@
 
 
 #ifdef __clang__
-/* PyArg_ParseTupleAndKeywords() 의 네번째 파라메터 (kwlist)가 char** 이기 때문에 많은 파일에서 경고가 뜬다. */
-/* API 가 const char** 로 바뀌기 전까지는 경고 무시함 */
+/* 
+Compiler warning generated from lots of files, since the fourth parameter type
+of PyArg_ParseTupleAndKeywords() is 'char**' ('kwlist').
+We will ignore warning until the parameter type changes to 'const char**'.
+*/
 #pragma clang diagnostic ignored "-Wdeprecated-writable-strings"
 #endif
 
@@ -41,8 +44,8 @@ PyObject* DCObjectMethodZero(PyObject*, PyObject*);
 #define PYDK_MODULE_DESC		"DK core"
 
 /*
-C++ 클래스명 DKClassName
-Python 클래스 명 DCClassName
+C++ class name = DKClassName
+Python class name = DCClassName
 */
 #define PYDK_CORE_TYPE(x)				DC ## x ## TypeObject
 #define PYDK_CORE_TRANS_F(x)			DC ## x ## FromObject
@@ -51,28 +54,30 @@ Python 클래스 명 DCClassName
 #define PYDK_NATIVE_CLASS(x)				DK ## x
 /*
 EXTERN_DC_OBJECT_TYPE(ClassName)
-PyTypeObject* DCClassName(void) 타입 함수 선언
+PyTypeObject* DCClassName(void)
+define function that creates type object.
 */
 #define EXTERN_DC_OBJECT_TYPE(x)		PyTypeObject* PYDK_CORE_TYPE(x)(void)
 /*
 EXTERN_DC_OBJECT_FROM(ClassName)
-PyObject* DCClassNameFromObject(DKClassName) 함수 선언
-DKClassName(C++) 을 PyObject* 로 변환해주는 함수 선언함
+PyObject* DCClassNameFromObject(DKClassName)
+define function that converts DKClassName(C++) to PyObject*
 */
 #define EXTERN_DC_OBJECT_FROM(x)		PyObject* PYDK_CORE_TRANS_F(x)( PYDK_NATIVE_CLASS(x) *)
 /*
 EXTERN_DC_OBJECT_TO(ClassName)
-DKClassName* DCClassNameToObject(PyObject*) 함수 선언
-PyObject* 를 DKClassName(C++) 로 변환하는 함수 선언함
+DKClassName* DCClassNameToObject(PyObject*)
+define function that converts PyObject* to DKClassName(C++)
 */
 #define EXTERN_DC_OBJECT_TO(x)			PYDK_NATIVE_CLASS(x)* PYDK_CORE_TRANS_T(x)(PyObject*)
 /*
 EXTERN_DC_OBJECT_CONVERT(ClassName)
-int DCClassNameConverter(PyObject* DKClassName*) 함수 선언
-PyObject* 로부터 DKClassName(C++) 로 변환하는 함수 선언함.
-Python 객체(PyObject*) 가 C++ 객체 (DKClassName)의 형식이 아니라도 변환 할 수 있다.
-기본 데이터 타입에만 사용가능!
-PyArg_ParseTuple, PyArg_ParseTupleAndKeywoard 함수 등에서 사용
+int DCClassNameConverter(PyObject* DKClassName*)
+define function that converts PyObject* to DKClassName.
+this function will works even DKClassName is informal type of Core-Type.
+(ie, convert tuple to DKVector3)
+only few core-types support this.
+it is useful to 'PyArg_ParseTuple', 'PyArg_ParseTupleAndKeywoard'
 */
 #define EXTERN_DC_OBJECT_CONVERTER(x)	int PYDK_CORE_CONVERTER(x)(PyObject*, PYDK_NATIVE_CLASS(x)*)
 
@@ -80,8 +85,8 @@ PyArg_ParseTuple, PyArg_ParseTupleAndKeywoard 함수 등에서 사용
 
 /*
 EXTERN_DC_RUNTIME_TYPE
-내부적으로 DKObject<Type> 형식의 포인터 객체를 사용하는 클래스
-EXTERN_DC_OBJECT_CONVERTER 매크로를 사용할 수 없다.
+a class contains DKObject<Type> internally.
+EXTERN_DC_OBJECT_CONVERT macro cannot be used.
 */
 #define EXTERN_DC_RUNTIME_TYPE(X) \
 	EXTERN_DC_OBJECT_TYPE(X); \
@@ -90,8 +95,8 @@ EXTERN_DC_OBJECT_CONVERTER 매크로를 사용할 수 없다.
 
 /*
 EXTERN_DC_FUNDAMENTAL_TYPE
-내부적으로 값을 직접 가지고 있는 객체
-EXTERN_DC_OBJECT_CONVERTER 사용 가능
+a class contains value internally. (not DKObject)
+EXTERN_DC_OBJECT_CONVERTER macro can be used.
 */
 
 #define EXTERN_DC_FUNDAMENTAL_TYPE(X) \
@@ -100,14 +105,14 @@ EXTERN_DC_OBJECT_CONVERTER 사용 가능
 
 
 /*
-App (DCApp) 은 고유 클래스임. DKApplication 과 변환되지 않는다.
-타입 객체로만 선언함.
+App (DCApp) is unique class name. Not interchangeable with DKApplication.
+define Type-Object.
 */
 EXTERN_DC_OBJECT_TYPE(App);
 
 /*
-기본 데이터 타입,
-EXTERN_DC_OBJECT_CONVERTER 사용 가능함
+Basic data types.
+EXTERN_DC_OBJECT_CONVERTER macro can be used.
 */
 EXTERN_DC_FUNDAMENTAL_TYPE(Point);
 EXTERN_DC_FUNDAMENTAL_TYPE(Size);
@@ -130,7 +135,7 @@ EXTERN_DC_FUNDAMENTAL_TYPE(NSTransform);
 EXTERN_DC_FUNDAMENTAL_TYPE(Color);
 
 /*
-내부적으로 변환할 수 없는 포인터를 가지고 있는 클래스들
+classes contain not interchangeable pointers internally.
 */
 EXTERN_DC_RUNTIME_TYPE(Data);
 EXTERN_DC_RUNTIME_TYPE(Timer);
@@ -214,8 +219,8 @@ EXTERN_DC_RUNTIME_TYPE(AudioSource);
 
 /*
 DCOBJECT_DYANMIC_CAST_CONVERT
-C++ 객체를 PyObject* 로 변환할 때
-부모 클래스에서 상속받은 타입을 확인하기 위해서 사용함.
+macro to be used to converts C++ object to PyObject*
+It can also be used to verify inheritance type with it's parent class.
 */
 
 #define DCOBJECT_DYANMIC_CAST_CONVERT(TYPE, VALUE) \
@@ -224,7 +229,7 @@ C++ 객체를 PyObject* 로 변환할 때
 
 /*
 DCOBJECT_VALIDATE
-Python 메서드 내에서 객체 유효성을 확인하는 매크로
+macro for validate object within Python methods. It does null-check simply.
 */
 #define DCOBJECT_VALIDATE(OBJ, RET)	\
 	if (OBJ == NULL) { \
@@ -233,7 +238,7 @@ Python 메서드 내에서 객체 유효성을 확인하는 매크로
 
 /*
 DCOBJECT_ATTRIBUTE_NOT_DELETABLE
-Python tp_getset 에 정의된 setter 함수에서 값을 지울수 없도록 하는 매크로
+macro for PyTypeObject's tp_getset property to be non-deletable.
 */
 #define DCOBJECT_ATTRIBUTE_NOT_DELETABLE(VALUE)	\
 	if (VALUE == NULL) { \
@@ -242,7 +247,8 @@ Python tp_getset 에 정의된 setter 함수에서 값을 지울수 없도록 �
 
 /*
 DCObjectCallPyCallable
-C++ 에서 Python 메서드 호출하는 함수 (주의: GIL 여부 확인하지 않음)
+function that makes call given Python method ('callable') from C++.
+Warning: GIL status will not be tested.
 */
 template <typename T> bool DCObjectCallPyCallable(T&& callable)
 {
@@ -302,7 +308,8 @@ template <typename T> bool DCObjectCallPyCallable(T&& callable)
 
 /*
 DCObjectCallPyCallableGIL
-C++ 에서 Python 메서드 호출해주는 함수. GIL 락을 잡는다.
+function that makes call given Python method ('callable') from C++.
+this function will recover GIL.
 */
 template <typename T> bool DCObjectCallPyCallableGIL(T&& callable)
 {
@@ -316,7 +323,8 @@ template <typename T> bool DCObjectCallPyCallableGIL(T&& callable)
 }
 
 /*
-DCBufferRelease 버퍼 자동으로 릴리즈 해주는 객체
+DCBufferRelease
+an object that releases it's buffer object when it being destroyed.
 */
 struct DCBufferRelease
 {
@@ -331,7 +339,8 @@ struct DCBufferRelease
 	}
 };
 /*
-DCObjectRelease PyObject* 자동으로 릴리즈 해주는 객체
+DCObjectRelease
+an object that releases PyObject when it being destroyed.
 */
 struct DCObjectRelease
 {

@@ -31,7 +31,7 @@ static int DCRectInit(DCRect *self, PyObject *args, PyObject *kwds)
 	{
 		return 0;
 	}
-	else if (numArgs == 0)		// (0, 0, -1, -1), -1 또는 -FLT_MAX 일수 있음. (어쨌든 size 가 0 보다 작으면 invalid)
+	else if (numArgs == 0)		// (0, 0, -1, -1), size elements could be -1 or -FLT_MAX. (anyway if size less than 0 is invalid)
 	{
 		self->rect = DKRect(0, 0, -1, -1);
 		return 0;
@@ -124,8 +124,8 @@ static PyObject* DCRectIntersect(DCRect* self, PyObject* args)
 	if (!PyArg_ParseTuple(args, "O", &obj))
 		return NULL;
 
-	// obj 는 DCRect, DCLine, DCTriangle 중 하나.
-	// DCRect 만 우선 구현함. (2014-01-20)
+	// Obj could be one of DCRect, DCLine, DCTriangle.
+	// DCRect is implemented only for now. (2014-01-20)
 	DKRect* rc = DCRectToObject(obj);
 	if (rc)
 	{
