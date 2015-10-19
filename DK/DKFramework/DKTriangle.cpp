@@ -28,6 +28,13 @@ DKTriangle::~DKTriangle(void)
 {
 }
 
+float DKTriangle::Area(void) const
+{
+	DKVector3 ab = position2 - position1;
+	DKVector3 ac = position3 - position1;
+	return DKVector3::Cross(ab, ac).Length() * 0.5f;
+}
+
 DKAabb DKTriangle::Aabb(void) const
 {
 	DKAabb aabb;
