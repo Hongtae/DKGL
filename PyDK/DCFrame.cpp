@@ -596,6 +596,47 @@ static PyObject* DCFrameIsDescendantOf(DCFrame* self, PyObject* args)
 	Py_RETURN_FALSE;
 }
 
+static PyObject* DCFrameFrameAtPosition(DCFrame* self, PyObject* args)
+{
+	DCOBJECT_VALIDATE(self->frame, NULL);
+
+	DKPoint pos;
+	PyObject* filterObj = NULL;
+	if (!PyArg_ParseTuple(args, "O&O", &DCPointConverter, &pos, &filterObj))
+		return NULL;
+
+	DKObject<DKFrame::FrameFilter> filter = NULL;
+
+	if (filterObj && filterObj != Py_None)
+	{
+		if (!PyCallable_Check(filterObj)) {
+			PyErr_SetString(PyExc_TypeError, "second argument must be callable or None.");
+			return NULL;
+		}
+		auto callback = [filterObj](const DKFrame* frame)->bool
+		{
+			if (!PyErr_Occurred())
+			{
+				PyObject* tuple = PyTuple_New(1);
+				PyTuple_SET_ITEM(tuple, 0, DCFrameFromObject(const_cast<DKFrame*>(frame)));
+				
+				PyObject* ret = PyObject_Call(filterObj, tuple, NULL);
+				Py_DECREF(tuple);
+
+				int result = -1;
+				if (ret)
+					result = PyObject_IsTrue(ret);
+				Py_XDECREF(ret);
+
+				return result > 0;
+			}
+			return false;
+		};
+		filter = DKFunction(callback);
+	}
+	return DCFrameFromObject(self->frame->FrameAtPosition(pos, filter));
+}
+
 static PyObject* DCFrameIsVisibleOnScreen(DCFrame* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->frame, NULL);
@@ -1109,6 +1150,7 @@ static PyMethodDef methods[] = {
 	{ "numberOfChildren", (PyCFunction)&DCFrameNumberOfChildren, METH_NOARGS },
 	{ "numberOfDescendants", (PyCFunction)&DCFrameNumberOfDescendants, METH_NOARGS },
 	{ "isDescendantOf", (PyCFunction)&DCFrameIsDescendantOf, METH_VARARGS },
+	{ "frameAtPosition", (PyCFunction)&DCFrameFrameAtPosition, METH_VARARGS },
 
 	{ "isVisibleOnScreen", (PyCFunction)&DCFrameIsVisibleOnScreen, METH_NOARGS },
 	{ "update", (PyCFunction)&DCFrameUpdate, METH_VARARGS },

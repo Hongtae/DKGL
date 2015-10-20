@@ -58,7 +58,8 @@ namespace DKFramework
 	{
 		friend class DKScreen;
 	public:
-		typedef DKFoundation::DKArray<DKFoundation::DKObject<DKFrame>> FrameArray;
+		using FrameArray = DKFoundation::DKArray<DKFoundation::DKObject<DKFrame>>;
+		using FrameFilter = DKFoundation::DKFunctionSignature<bool(const DKFrame*)>;
 
 		DKFrame(void);
 		virtual ~DKFrame(void);
@@ -83,6 +84,11 @@ namespace DKFramework
 		bool			IsDescendantOf(const DKFrame* frame) const;
 		size_t			NumberOfSubframes(void) const;
 		size_t			NumberOfDescendants(void) const;
+
+		// Frame visibility test with given position.
+		// If filter is not null and return false for it's argument, that argumented frame will be passed.
+		DKFrame* FrameAtPosition(const DKPoint& pos, FrameFilter* filter = NULL);
+		const DKFrame* FrameAtPosition(const DKPoint& pos, FrameFilter* filter = NULL) const;
 
 		// Frame normalized transform (on parent space, not for content)
 		void				SetTransform(const DKMatrix3& transform);  // set frame's transform (on parent space)
