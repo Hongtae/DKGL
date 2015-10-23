@@ -1300,6 +1300,8 @@
 		8489263B18D155BD00CFF0E3 /* DKTextureSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8489263818D155BD00CFF0E3 /* DKTextureSampler.h */; };
 		8489263C18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
 		8489263D18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
+		84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */; };
 		84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
@@ -1537,6 +1539,8 @@
 		848E9D921558CACD00833B52 /* DKFileMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFileMap.h; sourceTree = "<group>"; };
 		848F7E8F153DAE2C00E26A76 /* DKStringW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStringW.h; sourceTree = "<group>"; };
 		849206F01432CBCE00F0AFB3 /* DKStaticArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStaticArray.h; sourceTree = "<group>"; };
+		84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshProxyShape.cpp; sourceTree = "<group>"; };
+		84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTriangleMeshProxyShape.h; sourceTree = "<group>"; };
 		849E2A9115634718000CBE79 /* DKFence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFence.cpp; sourceTree = "<group>"; };
 		849E2A9215634718000CBE79 /* DKFence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFence.h; sourceTree = "<group>"; };
 		849E2A9315634719000CBE79 /* DKSharedLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSharedLock.cpp; sourceTree = "<group>"; };
@@ -2205,6 +2209,8 @@
 		84A1E4ED141DD4B70091D2C0 /* DKFramework */ = {
 			isa = PBXGroup;
 			children = (
+				84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */,
+				84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */,
 				84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */,
 				84A1E4EF141DD4B70091D2C0 /* DKAabb.h */,
 				84FA82F2166F64150014115F /* DKActionController.h */,
@@ -3178,6 +3184,7 @@
 				84211CFF1665E88E00B9B9A2 /* DKVector2.h in Headers */,
 				84211D001665E88E00B9B9A2 /* DKVector3.h in Headers */,
 				84211D011665E88E00B9B9A2 /* DKVector4.h in Headers */,
+				84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */,
 				84211D021665E88E00B9B9A2 /* DKVertexBuffer.h in Headers */,
 				84211D031665E88E00B9B9A2 /* DKVertexStream.h in Headers */,
 				84211D041665E88E00B9B9A2 /* DKVKey.h in Headers */,
@@ -3866,6 +3873,7 @@
 				840C3DFE178D396D00F57A8D /* DKCondition.cpp in Sources */,
 				84211AB21665E7FC00B9B9A2 /* DKApplication.cpp in Sources */,
 				840C3DFF178D396D00F57A8D /* DKData.cpp in Sources */,
+				84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84211AB41665E7FC00B9B9A2 /* DKAudioListener.cpp in Sources */,
 				840C3DFA178D396D00F57A8D /* DKAllocator.cpp in Sources */,
 				84211AB61665E7FC00B9B9A2 /* DKAudioPlayer.cpp in Sources */,

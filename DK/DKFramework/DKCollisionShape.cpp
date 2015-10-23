@@ -304,11 +304,11 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 			case ShapeType::StaticTriangleMesh:
 				{
 					DKStaticTriangleMeshShape* meshShape = static_cast<DKStaticTriangleMeshShape*>(shape);
-					size_t numVertices = 0;
-					size_t numIndices = 0;
-					size_t indexSize = 0;
-					const void* vertices = meshShape->VertexBuffer(&numVertices);
-					const void* indices = meshShape->IndexBuffer(&numIndices, &indexSize);
+					size_t numVertices = meshShape->NumberOfVertices();
+					size_t numIndices = meshShape->NumberOfIndices();
+					size_t indexSize = meshShape->IndexSize();
+					const void* vertices = meshShape->VertexData();
+					const void* indices = meshShape->IndexData();
 					DKAabb aabb = meshShape->Aabb();
 
 					DKVariant::VData& vertsData = pairs.Value(L"vertices").Data();
@@ -557,11 +557,11 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 								if (idxSize == 4)
 								*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
 									(const DKVector3*)vertices->value.Data().LockShared(), numVerts,
-									(const unsigned int*)indices->value.Data().LockShared(), numIndices, aabb, false, 0.0f);
+									(const unsigned int*)indices->value.Data().LockShared(), numIndices, aabb);
 								else
 									*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
 									(const DKVector3*)vertices->value.Data().LockShared(), numVerts,
-									(const unsigned short*)indices->value.Data().LockShared(), numIndices, aabb, false, 0.0f);
+									(const unsigned short*)indices->value.Data().LockShared(), numIndices, aabb);
 								vertices->value.Data().UnlockShared();
 								indices->value.Data().UnlockShared();
 							}
