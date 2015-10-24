@@ -16,7 +16,7 @@
 // This class is proxy shape of dynamic triangle mesh.
 // This class is not serializable. An instance can be created on Rumtime only.
 //
-// NOT IMPLEMENTED YET.
+// Vertex position data should be float[3] (DKVector3)
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -26,11 +26,33 @@ namespace DKFramework
 	{
 	public:
 		DKTriangleMeshProxyShape(void);
-		~DKTriangleMeshProxyShape(void);
+		virtual ~DKTriangleMeshProxyShape(void);
 
+		void Build(void);
+		void Refit(const DKAabb&);
+		void PartialRefit(const DKAabb&);
+		DKAabb Aabb(void) const;
 
-		virtual size_t NumberOfVertices(void) const = 0;
-		virtual size_t NumberOfIndices(void) const = 0;
-		virtual size_t NumberOfTriangles(void) const = 0;
+		struct MeshInfo
+		{
+			size_t numVertices;
+			size_t numTriangles;
+			size_t vertexStride;	// sizeof vertex (stride of position vector)
+			size_t indexStride;		// stride of triangle indices
+			size_t indexSize;		// 2 for USHORT, 4 for UINT
+			const void* vertexBuffer;	// address of first position vector
+			const void* indexBuffer;	// address of first triangle index
+		};
+
+		virtual int NumberOfMeshParts(void) const = 0;
+
+	protected:
+		virtual void LockMeshPart(int, MeshInfo&) const = 0;
+		virtual void UnlockMeshPart(int) const = 0;
+
+	private:
+		class MeshInterface;
+		MeshInterface* meshInterface;
+		DKTriangleMeshProxyShape(MeshInterface*);
 	};
 }

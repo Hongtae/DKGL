@@ -82,7 +82,14 @@ struct DKStaticTriangleMeshShape::IndexedTriangleData : public btStridingMeshInt
 	// override from btStridingMeshInterface
 	void getLockedVertexIndexBase(unsigned char **vertexbase, int& numverts, PHY_ScalarType& type, int& stride, unsigned char **indexbase, int & indexstride, int& numfaces, PHY_ScalarType& indicestype, int subpart) override
 	{
-		return getLockedReadOnlyVertexIndexBase((const unsigned char**)vertexbase, numverts, type, stride, (const unsigned char**)indexbase, indexstride, numfaces, indicestype, subpart);
+		*vertexbase = 0;
+		numverts = 0;
+		type = PHY_FLOAT;
+		stride = 0;
+		*indexbase = 0;
+		indexstride = 0;
+		numfaces = 0;
+		indicestype = this->indexType;
 	}
 	void getLockedReadOnlyVertexIndexBase(const unsigned char **vertexbase, int& numverts, PHY_ScalarType& type, int& stride, const unsigned char **indexbase, int & indexstride, int& numfaces, PHY_ScalarType& indicestype, int subpart) const override
 	{
