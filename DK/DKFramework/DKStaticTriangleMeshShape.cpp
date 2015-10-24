@@ -148,27 +148,6 @@ DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape(void)
 	delete meshData;
 }
 
-void DKStaticTriangleMeshShape::Rebuild(const DKAabb& aabb)
-{
-	btVector3 aabbMin = BulletVector3(aabb.positionMin);
-	btVector3 aabbMax = BulletVector3(aabb.positionMax);
-	if (!aabb.IsValid())
-	{
-		this->meshData->calculateAabbBruteForce(aabbMin, aabbMax);
-	}
-
-	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
-	shape->refitTree(aabbMin, aabbMax);
-}
-
-void DKStaticTriangleMeshShape::PartialRebuildInAABB(const DKAabb& aabb)
-{
-	DKASSERT_DEBUG(aabb.IsValid());
-
-	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
-	shape->partialRefitTree(BulletVector3(aabb.positionMin), BulletVector3(aabb.positionMax));
-}
-
 size_t DKStaticTriangleMeshShape::NumberOfVertices(void) const
 {
 	return this->meshData->numVertices;
@@ -184,9 +163,42 @@ size_t DKStaticTriangleMeshShape::IndexSize(void) const
 	return (this->meshData->indexType == PHY_INTEGER) ? 4 : 2;
 }
 
-DKVector3* DKStaticTriangleMeshShape::VertexData(void)
+size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const
 {
-	return (DKVector3*)this->meshData->vertices;
+	return this->meshData->numTriangles;
+}
+
+const DKVector3& DKStaticTriangleMeshShape::VertexAtIndex(int index) const
+{
+	return reinterpret_cast<DKVector3*>(this->meshData->vertices)[index];
+}
+
+DKTriangle DKStaticTriangleMeshShape::TriangleAtIndex(int index) const
+{
+	size_t numTriangles = this->meshData->numTriangles;
+	DKASSERT_DEBUG(index >= 0 && index < numTriangles);
+
+	DKTriangle triangle;
+	if (this->meshData->indexType == PHY_INTEGER)
+	{
+		unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[index * 3];
+		triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+	}
+	else
+	{
+		unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[index * 3];
+		triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+	}
+	return triangle;
+}
+
+DKAabb DKStaticTriangleMeshShape::Aabb(void) const
+{
+	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
 }
 
 const DKVector3* DKStaticTriangleMeshShape::VertexData(void) const
@@ -197,87 +209,4 @@ const DKVector3* DKStaticTriangleMeshShape::VertexData(void) const
 const void* DKStaticTriangleMeshShape::IndexData(void) const
 {
 	return this->meshData->indices;
-}
-
-DKAabb DKStaticTriangleMeshShape::Aabb(void) const
-{
-	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
-}
-
-size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const
-{
-	return this->meshData->numTriangles;
-}
-
-bool DKStaticTriangleMeshShape::GetTriangleVertexIndices(int triangle, unsigned int* index) const
-{
-	size_t numTriangles = this->meshData->numTriangles;
-	if (triangle >= 0 && triangle < numTriangles)
-	{
-		if (this->meshData->indexType == PHY_INTEGER)
-		{
-			unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[triangle * 3];
-			index[0] = idx[0];
-			index[1] = idx[1];
-			index[2] = idx[2];
-		}
-		else
-		{
-			unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[triangle * 3];
-			index[0] = idx[0];
-			index[1] = idx[1];
-			index[2] = idx[2];
-		}
-		return true;
-	}
-	return false;
-}
-
-bool DKStaticTriangleMeshShape::GetTriangleFace(int index, DKTriangle& triangle) const
-{
-	size_t numTriangles = this->meshData->numTriangles;
-	if (index >= 0 && index < numTriangles)
-	{
-		if (this->meshData->indexType == PHY_INTEGER)
-		{
-			unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[index * 3];
-			triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-		}
-		else
-		{
-			unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[index * 3];
-			triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-		}
-		return true;
-	}
-	return false;
-}
-
-bool DKStaticTriangleMeshShape::SetTriangleFace(int index, const DKTriangle& triangle)
-{
-	size_t numTriangles = this->meshData->numTriangles;
-	if (index >= 0 && index < numTriangles)
-	{
-		if (this->meshData->indexType == PHY_INTEGER)
-		{
-			unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[index * 3];
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position1;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position2;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position3;
-		}
-		else
-		{
-			unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[index * 3];
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position1;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position2;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position3;
-		}
-		return true;
-	}
-	return false;
-
 }

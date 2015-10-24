@@ -38,26 +38,19 @@ namespace DKFramework
 
 		~DKStaticTriangleMeshShape(void);
 
-		// Call after vertex data did modified from outside.
-		void Rebuild(const DKAabb& aabb = DKAabb());
-		void PartialRebuildInAABB(const DKAabb& aabb);
 
 		size_t NumberOfVertices(void) const;
 		size_t NumberOfIndices(void) const;
 		size_t IndexSize(void) const;	// In Byte
+		size_t NumberOfTriangles(void) const;
 
-		DKVector3* VertexData(void);
-		const DKVector3* VertexData(void) const;
-		const void* IndexData(void) const;
+		const DKVector3& VertexAtIndex(int index) const;
+		DKTriangle TriangleAtIndex(int index) const;
+
 		DKAabb Aabb(void) const;
 
-		DKVector3& VertexAtIndex(unsigned int index)				{return VertexData()[index];}
-		const DKVector3& VertexAtIndex(unsigned int index) const	{return VertexData()[index];}
-
-		size_t NumberOfTriangles(void) const;
-		bool GetTriangleVertexIndices(int triangle, unsigned int* index) const;
-		bool GetTriangleFace(int index, DKTriangle& triangle) const;
-		bool SetTriangleFace(int index, const DKTriangle& triangle);
+		const DKVector3* VertexData(void) const;
+		const void* IndexData(void) const;
 
 	private:
 		class IndexedTriangleData;

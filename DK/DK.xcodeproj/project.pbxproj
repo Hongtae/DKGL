@@ -2209,8 +2209,6 @@
 		84A1E4ED141DD4B70091D2C0 /* DKFramework */ = {
 			isa = PBXGroup;
 			children = (
-				84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */,
-				84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */,
 				84A1E4EE141DD4B70091D2C0 /* DKAabb.cpp */,
 				84A1E4EF141DD4B70091D2C0 /* DKAabb.h */,
 				84FA82F2166F64150014115F /* DKActionController.h */,
@@ -2388,6 +2386,8 @@
 				84F96FF31B4ACA7200BA24E4 /* DKTriangleMesh.h */,
 				84F9700F1B4D711200BA24E4 /* DKTriangleMeshBvh.cpp */,
 				84F970101B4D711200BA24E4 /* DKTriangleMeshBvh.h */,
+				84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */,
+				84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */,
 				84A1E58B141DD4B70091D2C0 /* DKVariant.cpp */,
 				84A1E58C141DD4B70091D2C0 /* DKVariant.h */,
 				84A1E58D141DD4B70091D2C0 /* DKVector2.cpp */,

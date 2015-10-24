@@ -29,6 +29,8 @@ namespace DKFramework
 		~DKTriangleMeshProxyShape(void);
 
 
-		virtual DKTriangleMesh* TriangleMesh(void) = 0;
+		virtual size_t NumberOfVertices(void) const = 0;
+		virtual size_t NumberOfIndices(void) const = 0;
+		virtual size_t NumberOfTriangles(void) const = 0;
 	};
 }
