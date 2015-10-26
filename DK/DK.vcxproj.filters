@@ -637,6 +637,9 @@
     <ClInclude Include="DK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\DKTriangleMeshProxyShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFramework\Private\DKAudioStreamFLAC.cpp">
@@ -1064,6 +1067,9 @@
     </ClCompile>
     <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp">
       <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp">
+      <Filter>DKFramework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

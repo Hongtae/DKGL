@@ -47,7 +47,7 @@ struct DKTriangleMeshProxyShape::MeshInterface : public btStridingMeshInterface
 			numverts = info.numVertices;
 			type = PHY_FLOAT;
 			stride = info.vertexStride;
-			*indexbase = info.indexBuffer;
+			*indexbase = (const unsigned char*)info.indexBuffer;
 			indexstride = info.indexStride;
 			numfaces = info.numTriangles;
 			indicestype = (info.indexSize == 4) ? PHY_INTEGER : PHY_SHORT;
@@ -122,8 +122,8 @@ void DKTriangleMeshProxyShape::Build(void)
 
 	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
 
-	const_cast<btVector3*>(&shape->getLocalAabbMin()) = aabbMin;
-	const_cast<btVector3*>(&shape->getLocalAabbMax()) = aabbMax;
+	const_cast<btVector3&>(shape->getLocalAabbMin()) = aabbMin;
+	const_cast<btVector3&>(shape->getLocalAabbMax()) = aabbMax;
 
 	shape->buildOptimizedBvh();
 }

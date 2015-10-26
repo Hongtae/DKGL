@@ -150,6 +150,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKTransform.cpp \
 	DKFramework/DKTriangle.cpp \
 	DKFramework/DKTriangleMeshBvh.cpp \
+	DKFramework/DKTriangleMeshProxyShape.cpp \
 	DKFramework/DKVariant.cpp \
 	DKFramework/DKVector2.cpp \
 	DKFramework/DKVector3.cpp \
