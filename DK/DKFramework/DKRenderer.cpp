@@ -113,10 +113,10 @@ namespace DKFramework
 			DKGL_GLSL_ES_VERSION
 			"uniform   highp mat4 transform;\n"
 			"attribute highp vec3 position;\n"
-			"attribute lowp  vec4 vcolor;\n"
+			"attribute lowp  vec4 vertColor;\n"
 			"varying   lowp  vec4 color;\n"
 			"void main(void) {\n"
-			"    color = vcolor;\n"
+			"    color = vertColor;\n"
 			"    gl_Position = transform * vec4(position, 1);\n"
 			"}\n",
 			DKShader::TypeVertexShader,
@@ -339,7 +339,7 @@ namespace DKFramework
 			DKMaterial::SamplerProperty	tex = { DKShaderConstant::UniformUserDefine, DKShaderConstant::TypeSampler2D,
 				fallbackTexture ? DKMaterial::TextureArray(fallbackTexture, 1) : DKMaterial::TextureArray(), NULL };
 
-			material->renderingProperties.Add(GetRenderProperty3D(L"vertexColor", { &vertexShader3TC, 0, &varyingColorFragmentShader }));
+			material->renderingProperties.Add(GetRenderProperty3D(L"vertexColor", { &vertexShader3C, 0, &varyingColorFragmentShader }));
 			material->renderingProperties.Add(GetRenderProperty3D(L"textureColor", { &vertexShader3TC, 0, &varyingColorTextureFragmentShader }));
 
 			material->streamProperties.Insert(L"position", position);
