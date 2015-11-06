@@ -11,67 +11,109 @@
 
 using namespace DKFoundation;
 
-DKObject<DKData> DKData::StaticData(const void* p, size_t len, bool readonly, DKOperation* cleanup)
+
+DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperation* cleanup)
 {
-	struct SData : public DKData
+	struct ReadOnlyData : public DKData
 	{
-		SData(void) : p(NULL), len(0), readonly(false), cleanup(NULL) {}
-		~SData(void)
+		const void* p;
+		size_t len;
+		DKObject<DKOperation> cleanup;
+
+		~ReadOnlyData(void)
 		{
 			if (cleanup)
 				cleanup->Perform();
 		}
-		void* LockContent(void)					{return p;}
-		void UnlockContent(void)				{}
-		size_t Length(void) const				{return len;}
-		virtual bool IsReadable(void) const		{return true;}
-		virtual bool IsWritable(void) const		{return !readonly;}
-		virtual bool IsExcutable(void) const	{return false;}
+		size_t Length(void) const					{return len;}
+		bool IsReadable(void) const					{return true;}
+		bool IsWritable(void) const					{return false;}
+		bool IsExcutable(void) const				{return false;}
 
+		const void* LockShared(void) const			{ return p; }
+		bool TryLockShared(const void** ptr) const	{ *ptr = p; return true; }
+		void UnlockShared(void) const				{}
+	};
+	struct WritableData : public DKData
+	{
 		void* p;
 		size_t len;
-		bool readonly;
 		DKObject<DKOperation> cleanup;
+		DKSharedLock lock;
+
+		~WritableData(void)
+		{
+			if (cleanup)
+				cleanup->Perform();
+		}
+
+		size_t Length(void) const				{return len;}
+		bool IsReadable(void) const				{return true;}
+		bool IsWritable(void) const				{return true;}
+		bool IsExcutable(void) const			{return false;}
+
+		const void* LockShared(void) const		{ lock.LockShared(); return p; }
+		bool TryLockShared(const void** ptr) const
+		{
+			if (lock.TryLockShared())
+			{
+				if (ptr)
+					*ptr = p;
+				return true;
+			}
+			return false;
+		}
+		void UnlockShared(void) const			{ lock.UnlockShared(); }
+
+		virtual void* LockExclusive(void)		{ lock.Lock(); return p; }
+		virtual bool TryLockExclusive(void** ptr)
+		{
+			if (lock.TryLock())
+			{
+				if (ptr)
+					*ptr = p;
+				return true;
+			}
+			return false;
+		}
+		virtual void UnlockExclusive(void)		{ lock.Unlock(); }
 	};
 
-	DKObject<SData> sd = DKObject<SData>::New();
 	if (p && len > 0)
 	{
-		sd->p = const_cast<void*>(p);
-		sd->len = len;
+		DKObject<DKData> output = NULL;
+		if (readonly)
+		{
+			DKObject<ReadOnlyData> data = DKObject<ReadOnlyData>::New();
+			data->p = p;
+			data->len = len;
+			data->cleanup = cleanup;
+			output = data.SafeCast<DKData>();
+		}
+		else
+		{
+			DKObject<WritableData> data = DKObject<WritableData>::New();
+			data->p = p;
+			data->len = len;
+			data->cleanup = cleanup;
+			output = data.SafeCast<DKData>();
+		}
+		return output;
 	}
-	else
-	{
-		sd->p = NULL;
-		sd->len = 0;
-	}
-	sd->readonly = readonly;
-	sd->cleanup = cleanup;
+	return NULL;
+}
 
-	return sd.SafeCast<DKData>();
+DKObject<DKData> DKData::StaticData(const void* p, size_t len, DKOperation* cleanup)
+{
+	return StaticData(const_cast<void*>(p), len, true, cleanup);
 }
 
 DKData::DKData(void)
-	: numShared(0)
-	, sharedPtr(NULL)
 {
 }
 
 DKData::~DKData(void)
 {
-	DKASSERT_DEBUG(numShared == 0);
-	DKASSERT_DEBUG(sharedPtr == NULL);
-
-#ifdef DKGL_DEBUG_ENABLED
-	if (sharedLock.TryLock())
-	{
-		sharedLock.Unlock();
-	}
-	else
-	{
-		DKERROR_THROW("Data Locked!");
-	}
-#endif
 }
 
 bool DKData::WriteToFile(const DKString& file, bool overwrite) const
@@ -110,81 +152,4 @@ bool DKData::WriteToStream(DKStream* stream) const
 		return true;
 	}
 	return false;
-}
-
-const void* DKData::LockShared(void) const
-{
-	sharedLock.LockShared();
-
-	DKCriticalSection<DKSpinLock> guard(this->spinLock);
-	if (numShared == 0)
-		sharedPtr = const_cast<DKData*>(this)->LockContent();
-	numShared++;
-	return sharedPtr;
-}
-
-bool DKData::TryLockShared(const void** p) const
-{
-	if (sharedLock.TryLockShared())
-	{
-		DKCriticalSection<DKSpinLock> guard(this->spinLock);
-		if (numShared == 0)
-			sharedPtr = const_cast<DKData*>(this)->LockContent();
-		numShared++;
-		if (p)
-			*p = sharedPtr;
-	}
-	return false;
-}
-
-void DKData::UnlockShared(void) const
-{
-	DKCriticalSection<DKSpinLock> guard(this->spinLock);
-	DKASSERT_DEBUG(numShared > 0);
-
-	sharedLock.UnlockShared();
-	if (numShared == 1)
-	{
-		const_cast<DKData*>(this)->UnlockContent();
-		sharedPtr = NULL;
-	}
-	numShared--;
-}
-
-void* DKData::LockExclusive(void)
-{
-	sharedLock.Lock();
-
-	DKCriticalSection<DKSpinLock> guard(this->spinLock);
-	DKASSERT_DEBUG(numShared == 0);
-	DKASSERT_DEBUG(sharedPtr == NULL);
-
-	return this->LockContent();
-}
-
-bool DKData::TryLockExclusive(void** p)
-{
-	if (sharedLock.TryLock())
-	{
-		DKCriticalSection<DKSpinLock> guard(this->spinLock);
-		DKASSERT_DEBUG(numShared == 0);
-		DKASSERT_DEBUG(sharedPtr == NULL);
-
-		void* ptr = this->LockContent();
-		if (p)
-			*p = ptr;
-
-		return true;
-	}
-	return false;
-}
-
-void DKData::UnlockExclusive(void)
-{
-	DKCriticalSection<DKSpinLock> guard(this->spinLock);
-	DKASSERT_DEBUG(numShared == 0);
-	DKASSERT_DEBUG(sharedPtr == NULL);
-
-	sharedLock.Unlock();
-	this->UnlockContent();
 }

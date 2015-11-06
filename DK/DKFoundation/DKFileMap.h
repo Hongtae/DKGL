@@ -56,12 +56,22 @@ namespace DKFoundation
 		bool IsExcutable(void) const;
 		size_t Length(void) const;
 
-	protected:
-		void* LockContent(void);
-		void UnlockContent(void);
+		const void* LockShared(void) const;
+		bool TryLockShared(const void** ptr) const;
+		void UnlockShared(void) const;
+
+		void* LockExclusive(void);
+		bool TryLockExclusive(void** ptr);
+		void UnlockExclusive(void);
 
 	private:
+		void* MapContent(void) const;
+		void UnmapContent(void) const;
+		mutable void* mappedPtr;
+
 		void* mapContext;
+		DKSharedLock lock;
+		DKSpinLock spinLock;
 
 		DKFileMap(const DKFileMap&);
 		DKFileMap& operator = (const DKFileMap&);

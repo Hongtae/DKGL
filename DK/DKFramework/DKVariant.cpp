@@ -450,7 +450,9 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		}
 		else if (valueType == TypeData)
 		{
-			this->Data().CompressEncode(data);
+			DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
+			if (compressed)
+				compressed->Encode(data);
 		}
 		if (data.Length() > 0)
 		{
@@ -601,11 +603,15 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			}
 			else if (this->ValueType() == TypeData)
 			{
-				DKObject<DKBuffer> d = DKBuffer::DecodeDecompress(value);
-				if (d)
-					this->Data().SetContent(d);
-				else
-					this->Data().SetContent(0);
+				DKObject<DKBuffer> compressed = DKBuffer::Decode(value);
+				if (compressed)
+				{
+					DKObject<DKBuffer> d = compressed->Decompress();
+					if (d)
+						this->Data().SetContent(d);
+					else
+						this->Data().SetContent(0);
+				}
 			}
 			else if (this->ValueType() == TypeInteger)
 			{

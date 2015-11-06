@@ -41,22 +41,15 @@ namespace DKFoundation
 		size_t Length(void) const;
 		size_t CopyContent(void* p, size_t offset, size_t length) const;
 
-		DKObject<DKBuffer> Compress(DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
+		DKObject<DKBuffer> Compress(DKCompressor, DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
 		DKObject<DKBuffer> Decompress(DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
-		static DKObject<DKBuffer> Compress(const void* p, size_t len, DKAllocator& alloc = DKAllocator::DefaultAllocator());
+		static DKObject<DKBuffer> Compress(const void* p, size_t len, DKCompressor, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		static DKObject<DKBuffer> Decompress(const void* p, size_t len, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 
 		bool Encode(DKStringU8& strOut) const;
 		bool Encode(DKStringW& strOut) const;
 		static DKObject<DKBuffer> Decode(const DKStringU8& str, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		static DKObject<DKBuffer> Decode(const DKStringW& str, DKAllocator& alloc = DKAllocator::DefaultAllocator());
-
-		// compress and encode-base64
-		bool CompressEncode(DKStringU8& strOut) const;
-		bool CompressEncode(DKStringW& strOut) const;
-		// base64-decode and decompress
-		static DKObject<DKBuffer> DecodeDecompress(const DKStringU8& s, DKAllocator& alloc = DKAllocator::DefaultAllocator());
-		static DKObject<DKBuffer> DecodeDecompress(const DKStringW& s, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 
 		// create object from file or URL.
 		static DKObject<DKBuffer> Create(const DKString& url, DKAllocator& alloc = DKAllocator::DefaultAllocator());
@@ -77,6 +70,14 @@ namespace DKFoundation
 		void SwitchAllocator(DKAllocator& alloc);
 		DKAllocator& Allocator(void) const;
 
+		const void* LockShared(void) const;
+		bool TryLockShared(const void**) const;
+		void UnlockShared(void) const;
+
+		void* LockExclusive(void);
+		bool TryLockExclusive(void**);
+		void UnlockExclusive(void);
+
 	protected:
 		void* LockContent(void);
 		void UnlockContent(void);
@@ -84,6 +85,7 @@ namespace DKFoundation
 	private:
 		void*	contentPtr;
 		size_t	contentLength;
+		DKSharedLock sharedLock;
 		DKAllocator* allocator;
 	};
 }
