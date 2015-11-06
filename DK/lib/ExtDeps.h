@@ -4,10 +4,10 @@
 
 #ifdef DKGL_EXTDEPS_ZLIB
 #include "ExtDeps/zlib/zlib.h"
-#include "ExtDeps/zlib/zip.h"
-#include "ExtDeps/zlib/unzip.h"
+#include "ExtDeps/zlib/contrib/minizip/zip.h"
+#include "ExtDeps/zlib/contrib/minizip/unzip.h"
 	#ifdef _WIN32
-	#include "ExtDeps/zlib/iowin32.h"
+	#include "ExtDeps/zlib/contrib/minizip/iowin32.h"
 	#endif
 #endif
 

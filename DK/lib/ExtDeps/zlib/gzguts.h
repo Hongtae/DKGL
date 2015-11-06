@@ -1,5 +1,5 @@
 /* gzguts.h -- zlib internal header definitions for gz* operations
- * Copyright (C) 2004, 2005, 2010, 2011, 2012 Mark Adler
+ * Copyright (C) 2004, 2005, 2010, 2011, 2012, 2013 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -24,18 +24,24 @@
 #  include <string.h>
 #  include <stdlib.h>
 #  include <limits.h>
-#  ifndef _MSC_VER
-#    include <unistd.h>         // 2012.6.14 by tiff. (Fixed file I/O error in iOS simulator)
-#  endif
 #endif
 #include <fcntl.h>
 
 #ifdef _WIN32
 #  include <stddef.h>
+#else
+#  include <unistd.h>         // 2015.11.06 by tiff. (Fixed file I/O error in iOS)
 #endif
 
 #if defined(__TURBOC__) || defined(_MSC_VER) || defined(_WIN32)
 #  include <io.h>
+#endif
+
+#ifdef WINAPI_FAMILY
+#  define open _open
+#  define read _read
+#  define write _write
+#  define close _close
 #endif
 
 #ifdef NO_DEFLATE       /* for compatibility with old definition */
@@ -63,7 +69,7 @@
 #ifndef HAVE_VSNPRINTF
 #  ifdef MSDOS
 /* vsnprintf may exist on some MS-DOS compilers (DJGPP?),
- but for now we just assume it doesn't. */
+   but for now we just assume it doesn't. */
 #    define NO_vsnprintf
 #  endif
 #  ifdef __TURBOC__
@@ -89,6 +95,14 @@
 #  ifdef __MVS__
 #    define NO_vsnprintf
 #  endif
+#endif
+
+/* unlike snprintf (which is required in C99, yet still not supported by
+   Microsoft more than a decade later!), _snprintf does not guarantee null
+   termination of the result -- however this is only used in gzlib.c where
+   the result is assured to fit in the space provided */
+#ifdef _MSC_VER
+#  define snprintf _snprintf
 #endif
 
 #ifndef local
@@ -130,7 +144,8 @@
 #  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
 #endif
 
-/* default i/o buffer size -- double this for output when reading */
+/* default i/o buffer size -- double this for output when reading (this and
+   twice this must be able to fit in an unsigned type) */
 #define GZBUFSIZE 8192
 
 /* gzip modes, also provide a little integrity check on the passed structure */
