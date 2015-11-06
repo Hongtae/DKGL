@@ -11,6 +11,13 @@
 	#endif
 #endif
 
+#ifdef DKGL_EXTDEPS_LZ4
+#include "ExtDeps/lz4/lib/lz4.h"
+#include "ExtDeps/lz4/lib/lz4hc.h"
+#include "ExtDeps/lz4/lib/lz4frame.h"
+#include "ExtDeps/lz4/lib/xxhash.h"
+#endif
+
 #ifdef DKGL_EXTDEPS_LIBXML
 #define LIBXML_STATIC
 #include "ExtDeps/libxml2/include/libxml/globals.h"
