@@ -1302,6 +1302,9 @@
 		8489263D18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
 		84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */; };
+		84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		84990C1C1BF0DC0E00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		84990C1D1BF0DC0F00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
@@ -3426,6 +3429,7 @@
 				840CA5881928952800689BB6 /* DKAnimation.cpp in Sources */,
 				840CA5B71928952800689BB6 /* DKFixedConstraint.cpp in Sources */,
 				840CA6111928952800689BB6 /* DKSoftBody.cpp in Sources */,
+				84990C1C1BF0DC0E00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				840CA59A1928952800689BB6 /* DKBoxShape.cpp in Sources */,
 				840CA58E1928952800689BB6 /* DKAudioListener.cpp in Sources */,
 				840CA5A71928952800689BB6 /* DKConcaveShape.cpp in Sources */,
@@ -3575,6 +3579,7 @@
 				84798BD319E51E48009378A6 /* DKGearConstraint.cpp in Sources */,
 				84798BD619E51E48009378A6 /* DKGeometryBuffer.cpp in Sources */,
 				84798BA819E51DFB009378A6 /* DKStringW.cpp in Sources */,
+				84990C1D1BF0DC0F00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84798BD819E51E48009378A6 /* DKIndexBuffer.cpp in Sources */,
 				84798BFB19E51E48009378A6 /* DKSoftBody.cpp in Sources */,
 				84798BF119E51E48009378A6 /* DKResourcePool.cpp in Sources */,
@@ -3724,6 +3729,7 @@
 				840C3E22178D396E00F57A8D /* DKCondition.cpp in Sources */,
 				84211B6B1665E7FD00B9B9A2 /* DKApplication.cpp in Sources */,
 				840C3E23178D396E00F57A8D /* DKData.cpp in Sources */,
+				84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84211B6D1665E7FD00B9B9A2 /* DKAudioListener.cpp in Sources */,
 				840C3E1E178D396E00F57A8D /* DKAllocator.cpp in Sources */,
 				84211B6F1665E7FD00B9B9A2 /* DKAudioPlayer.cpp in Sources */,

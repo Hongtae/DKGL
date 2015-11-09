@@ -41,10 +41,11 @@ namespace DKFramework
 		void SetFixedFrameRate(double fps);
 		double FixedFrameRate(void) const;
 
+		void RemoveAllObjects(void) override;
+
 	protected:
 		bool AddSingleObject(DKModel* obj) override;
 		void RemoveSingleObject(DKModel* obj) override;
-		void RemoveAllObjects(void) override;
 
 		typedef DKFoundation::DKSet<DKRigidBody*> RigidBodySet;
 		typedef DKFoundation::DKSet<DKSoftBody*> SoftBodySet;

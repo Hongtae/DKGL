@@ -9,6 +9,27 @@
 #include "DKTriangleMeshProxyShape.h"
 
 using namespace DKFoundation;
+namespace DKFramework
+{
+	namespace Private
+	{
+		class BvhTriangleMeshShape : public btBvhTriangleMeshShape
+		{
+		public:
+			BvhTriangleMeshShape(btStridingMeshInterface* meshInterface, bool useQuantizedAabbCompression, bool buildBvh = true)
+				: btBvhTriangleMeshShape(meshInterface, useQuantizedAabbCompression, buildBvh)
+			{
+			}
+
+			void processAllTriangles(btTriangleCallback* callback,const btVector3& aabbMin,const btVector3& aabbMax) const
+			{
+				if (getOwnsBvh())
+					return btBvhTriangleMeshShape::processAllTriangles(callback, aabbMin, aabbMax);
+				return btTriangleMeshShape::processAllTriangles(callback,aabbMin,aabbMax);
+			}
+		};
+	}
+}
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -102,7 +123,7 @@ DKTriangleMeshProxyShape::DKTriangleMeshProxyShape(void)
 }
 
 DKTriangleMeshProxyShape::DKTriangleMeshProxyShape(MeshInterface* mi)
-: DKConcaveShape(ShapeType::Custom, new btBvhTriangleMeshShape(mi, true, false))
+: DKConcaveShape(ShapeType::Custom, new BvhTriangleMeshShape(mi, true, false))
 , meshInterface(mi)
 {
 	DKASSERT_DEBUG(meshInterface);
