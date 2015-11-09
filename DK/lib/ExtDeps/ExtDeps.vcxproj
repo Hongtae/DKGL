@@ -89,7 +89,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -110,7 +110,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -127,7 +127,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -149,7 +149,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -314,23 +314,28 @@
     <ClInclude Include="libxml2\src\save.h" />
     <ClInclude Include="libxml2\src\timsort.h" />
     <ClInclude Include="libxml2\src\xzlib.h" />
+    <ClInclude Include="lz4\lib\lz4.h" />
+    <ClInclude Include="lz4\lib\lz4frame.h" />
+    <ClInclude Include="lz4\lib\lz4frame_static.h" />
+    <ClInclude Include="lz4\lib\lz4hc.h" />
+    <ClInclude Include="lz4\lib\xxhash.h" />
     <ClInclude Include="sqlite\sqlite3.h" />
     <ClInclude Include="sqlite\sqlite3ext.h" />
     <ClInclude Include="zlib\crc32.h" />
-    <ClInclude Include="zlib\crypt.h" />
+    <ClInclude Include="zlib\contrib\minizip\crypt.h" />
     <ClInclude Include="zlib\deflate.h" />
     <ClInclude Include="zlib\gzguts.h" />
     <ClInclude Include="zlib\inffast.h" />
     <ClInclude Include="zlib\inffixed.h" />
     <ClInclude Include="zlib\inflate.h" />
     <ClInclude Include="zlib\inftrees.h" />
-    <ClInclude Include="zlib\ioapi.h" />
-    <ClInclude Include="zlib\iowin32.h" />
-    <ClInclude Include="zlib\mztools.h" />
+    <ClInclude Include="zlib\contrib\minizip\ioapi.h" />
+    <ClInclude Include="zlib\contrib\minizip\iowin32.h" />
+    <ClInclude Include="zlib\contrib\minizip\mztools.h" />
     <ClInclude Include="zlib\trees.h" />
-    <ClInclude Include="zlib\unzip.h" />
+    <ClInclude Include="zlib\contrib\minizip\unzip.h" />
     <ClInclude Include="zlib\zconf.h" />
-    <ClInclude Include="zlib\zip.h" />
+    <ClInclude Include="zlib\contrib\minizip\zip.h" />
     <ClInclude Include="zlib\zlib.h" />
     <ClInclude Include="zlib\zutil.h" />
   </ItemGroup>
@@ -605,6 +610,10 @@
     <ClCompile Include="libxml2\src\xpath.c" />
     <ClCompile Include="libxml2\src\xpointer.c" />
     <ClCompile Include="libxml2\src\xzlib.c" />
+    <ClCompile Include="lz4\lib\lz4.c" />
+    <ClCompile Include="lz4\lib\lz4frame.c" />
+    <ClCompile Include="lz4\lib\lz4hc.c" />
+    <ClCompile Include="lz4\lib\xxhash.c" />
     <ClCompile Include="sqlite\sqlite3.c" />
     <ClCompile Include="zlib\adler32.c" />
     <ClCompile Include="zlib\compress.c" />
@@ -618,17 +627,21 @@
     <ClCompile Include="zlib\inffast.c" />
     <ClCompile Include="zlib\inflate.c" />
     <ClCompile Include="zlib\inftrees.c" />
-    <ClCompile Include="zlib\ioapi.c" />
-    <ClCompile Include="zlib\iowin32.c" />
-    <ClCompile Include="zlib\mztools.c" />
+    <ClCompile Include="zlib\contrib\minizip\ioapi.c" />
+    <ClCompile Include="zlib\contrib\minizip\iowin32.c" />
+    <ClCompile Include="zlib\contrib\minizip\mztools.c" />
     <ClCompile Include="zlib\trees.c" />
     <ClCompile Include="zlib\uncompr.c" />
-    <ClCompile Include="zlib\unzip.c" />
-    <ClCompile Include="zlib\zip.c" />
+    <ClCompile Include="zlib\contrib\minizip\unzip.c" />
+    <ClCompile Include="zlib\contrib\minizip\zip.c" />
     <ClCompile Include="zlib\zutil.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="VERSION.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lz4\lib\LICENSE" />
+    <None Include="lz4\lib\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

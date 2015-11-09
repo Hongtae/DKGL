@@ -69,14 +69,6 @@
       <UniqueIdentifier>{3a52c2ad-3074-4047-b477-4983b91468a3}</UniqueIdentifier>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="zlib\Header Files">
-      <UniqueIdentifier>{d1c1997b-85fe-40c6-b6f9-ad1ccf205635}</UniqueIdentifier>
-      <Extensions>h;hpp</Extensions>
-    </Filter>
-    <Filter Include="zlib\Source Files">
-      <UniqueIdentifier>{68503642-28e9-4b27-8498-83f189942544}</UniqueIdentifier>
-      <Extensions>c;cpp;cxx</Extensions>
-    </Filter>
     <Filter Include="libxml2\include">
       <UniqueIdentifier>{b2f952ea-9516-4251-bec5-30fccf6336c2}</UniqueIdentifier>
     </Filter>
@@ -95,6 +87,12 @@
     <Filter Include="jpeg">
       <UniqueIdentifier>{5deec488-9198-4ce7-a6f9-f92b6a1287af}</UniqueIdentifier>
       <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="lz4">
+      <UniqueIdentifier>{97db3197-7d97-48f1-86e6-5100f93a47c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib\minizip">
+      <UniqueIdentifier>{81e58483-b7d1-45f5-97d4-f25987454859}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -214,57 +212,6 @@
     </ClInclude>
     <ClInclude Include="libpng\pnglibconf.h">
       <Filter>libpng\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\crc32.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\crypt.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\deflate.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\gzguts.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inffast.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inffixed.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inflate.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\inftrees.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\ioapi.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\iowin32.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\mztools.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\trees.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\unzip.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zconf.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zip.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zlib.h">
-      <Filter>zlib\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zlib\zutil.h">
-      <Filter>zlib\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libxml2\src\buf.h">
       <Filter>libxml2\src</Filter>
@@ -599,6 +546,72 @@
     <ClInclude Include="FreeType\include\config\ftstdlib.h">
       <Filter>FreeType\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lz4\lib\lz4frame.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="lz4\lib\lz4frame_static.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="lz4\lib\lz4hc.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="lz4\lib\xxhash.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="lz4\lib\lz4.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\crc32.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\deflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\gzguts.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffast.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffixed.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inftrees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\trees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zlib.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zutil.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\contrib\minizip\crypt.h">
+      <Filter>zlib\minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\contrib\minizip\ioapi.h">
+      <Filter>zlib\minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\contrib\minizip\iowin32.h">
+      <Filter>zlib\minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\contrib\minizip\mztools.h">
+      <Filter>zlib\minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\contrib\minizip\unzip.h">
+      <Filter>zlib\minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\contrib\minizip\zip.h">
+      <Filter>zlib\minizip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libogg\src\bitwise.c">
@@ -894,66 +907,6 @@
     </ClCompile>
     <ClCompile Include="libpng\pngwutil.c">
       <Filter>libpng\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\adler32.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\zutil.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\compress.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\crc32.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\deflate.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\gzclose.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\gzlib.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\gzread.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\gzwrite.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\infback.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\inffast.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\inflate.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\inftrees.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\ioapi.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\iowin32.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\mztools.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\trees.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\uncompr.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\unzip.c">
-      <Filter>zlib\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zlib\zip.c">
-      <Filter>zlib\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libxml2\src\buf.c">
       <Filter>libxml2\src</Filter>
@@ -1474,8 +1427,88 @@
     <ClCompile Include="bzip2\randtable.c">
       <Filter>bzip2</Filter>
     </ClCompile>
+    <ClCompile Include="lz4\lib\lz4hc.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="lz4\lib\xxhash.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="lz4\lib\lz4.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="lz4\lib\lz4frame.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\adler32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\compress.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\crc32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\deflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzclose.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzlib.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzread.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzwrite.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\infback.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inffast.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inftrees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\trees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\uncompr.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\zutil.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\contrib\minizip\ioapi.c">
+      <Filter>zlib\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\contrib\minizip\iowin32.c">
+      <Filter>zlib\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\contrib\minizip\mztools.c">
+      <Filter>zlib\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\contrib\minizip\unzip.c">
+      <Filter>zlib\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\contrib\minizip\zip.c">
+      <Filter>zlib\minizip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="VERSION.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lz4\lib\LICENSE">
+      <Filter>lz4</Filter>
+    </None>
+    <None Include="lz4\lib\README.md">
+      <Filter>lz4</Filter>
+    </None>
   </ItemGroup>
 </Project>

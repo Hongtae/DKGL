@@ -91,7 +91,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -136,7 +136,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -179,7 +179,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -225,7 +225,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
