@@ -27,6 +27,13 @@
 
 namespace DKFoundation
 {
+	enum class DKCompressor
+	{
+		Deflate,
+		LZ4,
+		LZ4HC,
+	};
+
 	class DKGL_API DKBuffer : public DKData
 	{
 	public:
@@ -41,15 +48,17 @@ namespace DKFoundation
 		size_t Length(void) const;
 		size_t CopyContent(void* p, size_t offset, size_t length) const;
 
+		// compress / decompress data
 		DKObject<DKBuffer> Compress(DKCompressor, DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
 		DKObject<DKBuffer> Decompress(DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
 		static DKObject<DKBuffer> Compress(const void* p, size_t len, DKCompressor, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		static DKObject<DKBuffer> Decompress(const void* p, size_t len, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 
-		bool Encode(DKStringU8& strOut) const;
-		bool Encode(DKStringW& strOut) const;
-		static DKObject<DKBuffer> Decode(const DKStringU8& str, DKAllocator& alloc = DKAllocator::DefaultAllocator());
-		static DKObject<DKBuffer> Decode(const DKStringW& str, DKAllocator& alloc = DKAllocator::DefaultAllocator());
+		// base64 encode / decode
+		bool Base64Encode(DKStringU8& strOut) const;
+		bool Base64Encode(DKStringW& strOut) const;
+		static DKObject<DKBuffer> Base64Decode(const DKStringU8& str, DKAllocator& alloc = DKAllocator::DefaultAllocator());
+		static DKObject<DKBuffer> Base64Decode(const DKStringW& str, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 
 		// create object from file or URL.
 		static DKObject<DKBuffer> Create(const DKString& url, DKAllocator& alloc = DKAllocator::DefaultAllocator());

@@ -86,7 +86,7 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 						}
 						else if (pnode->nodes.Value(k)->Type() == DKXMLNode::NodeTypeCData)		// DKVariant-binary
 						{
-							DKObject<DKBuffer> compressed = DKBuffer::Decode(pnode->nodes.Value(k).SafeCast<DKXMLCData>()->value);
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(pnode->nodes.Value(k).SafeCast<DKXMLCData>()->value);
 							if (compressed)
 							{
 								DKObject<DKBuffer> data = compressed->Decompress();
@@ -211,7 +211,7 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 					if (compressed)
 					{
 						DKObject<DKXMLCData> value = DKObject<DKXMLCData>::New();
-						if (compressed->Encode(value->value))
+						if (compressed->Base64Encode(value->value))
 						{
 							pnode = DKObject<DKXMLElement>::New();
 							pnode->name = L"Property";

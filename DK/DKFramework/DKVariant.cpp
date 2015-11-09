@@ -452,7 +452,7 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		{
 			DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
 			if (compressed)
-				compressed->Encode(data);
+				compressed->Base64Encode(data);
 		}
 		if (data.Length() > 0)
 		{
@@ -603,7 +603,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			}
 			else if (this->ValueType() == TypeData)
 			{
-				DKObject<DKBuffer> compressed = DKBuffer::Decode(value);
+				DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
 				if (compressed)
 				{
 					DKObject<DKBuffer> d = compressed->Decompress();

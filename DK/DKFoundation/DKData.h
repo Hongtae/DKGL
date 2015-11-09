@@ -24,13 +24,6 @@
 
 namespace DKFoundation
 {
-	enum class DKCompressor
-	{
-		Deflate,
-		LZ4,
-		LZ4HC,
-	};
-
 	class DKOperation;
 	class DKStream;
 	class DKGL_API DKData

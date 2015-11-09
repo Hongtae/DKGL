@@ -728,7 +728,7 @@ bool DKTexture2D::Deserialize(const DKXMLElement* e, DKResourceLoader* loader)
 
 	if (content.Length() > 0)
 	{
-		DKObject<DKBuffer> compressed = DKBuffer::Decode(content);
+		DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(content);
 		if (compressed)
 		{
 			DKObject<DKBuffer> data = compressed->Decompress();
@@ -810,7 +810,7 @@ DKObject<DKXMLElement> DKTexture2D::SerializeXML(DKSerializer::SerializeForm sf)
 					if (compressed)
 					{
 						DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-						compressed->Encode(cdata->value);
+						compressed->Base64Encode(cdata->value);
 						e->nodes.Add(cdata.SafeCast<DKXMLNode>());
 					}
 				}

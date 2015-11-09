@@ -361,7 +361,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 						if (compressed)
 						{
 							DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-							if (compressed->Encode(cdata->value))
+							if (compressed->Base64Encode(cdata->value))
 							{
 								DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
 								extNode->name = L"External";
@@ -566,7 +566,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 							if (compressed)
 							{
 								DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-								if (compressed->Encode(cdata->value))
+								if (compressed->Base64Encode(cdata->value))
 								{
 									variantNode = DKObject<DKXMLElement>::New();
 									variantNode->name = L"Local";
@@ -785,7 +785,7 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 							const DKXMLCData* cdata = e->nodes.Value(i).SafeCast<DKXMLCData>();
 							DKASSERT_DEBUG(cdata != NULL);
 
-							DKObject<DKBuffer> compressed = DKBuffer::Decode(cdata->value);
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(cdata->value);
 							if (compressed)
 							{
 								DKObject<DKBuffer> data = compressed->Decompress();
@@ -862,7 +862,7 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 					{
 						if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeCData)
 						{
-							DKObject<DKBuffer> compressed = DKBuffer::Decode(node1->nodes.Value(j).SafeCast<DKXMLCData>()->value);
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(node1->nodes.Value(j).SafeCast<DKXMLCData>()->value);
 							if (compressed)
 							{
 								DKObject<DKBuffer> d = compressed->Decompress();
