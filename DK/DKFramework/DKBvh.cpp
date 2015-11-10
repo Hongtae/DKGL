@@ -107,7 +107,7 @@ void DKBvh::BuildInternal(void)
 		if (quantizedLeafNodes.Count() > 0 && quantizedLeafNodes.Count() < MAX_NODE_COUNT)
 		{
 			nodes.Reserve(quantizedLeafNodes.Count() * 2);
-			BuildTree(quantizedLeafNodes, quantizedLeafNodes.Count());
+			BuildTree(quantizedLeafNodes, (int)quantizedLeafNodes.Count());
 		}
 
 		this->volume->Unlock();
@@ -155,9 +155,9 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 			tmp[2] += node.aabbMin[2] + node.aabbMax[2];
 		}
 		int c = count << 1;
-		means[0] = tmp[0] / c;
-		means[1] = tmp[1] / c;
-		means[2] = tmp[2] / c;
+		means[0] = (int32_t)(tmp[0] / c);
+		means[1] = (int32_t)(tmp[1] / c);
+		means[2] = (int32_t)(tmp[2] / c);
 	}
 
 	// calculate axis (0: x-axis, 1: y-axis, 2: z-axis, DKVector3::val order)
@@ -254,6 +254,7 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 		{
 			DKVector3 offset = this->aabbOffset;
 			DKVector3 scale = this->aabbScale;
+			DKASSERT_DEBUG(scale.x > 0.0f && scale.y > 0.0f && scale.z > 0.0f);
 
 			unsigned short rayAabbMin[3];
 			unsigned short rayAabbMax[3];
@@ -273,6 +274,8 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 			bool isOverlapped = false;
 			DKAabb nodeAabb;
 
+			const DKVector3 scaleFactor = scale / float(0xffff);
+
 			while (currentNodeIndex < nodeCount)
 			{
 				const QuantizedAabbNode& node = nodes.Value(currentNodeIndex);
@@ -284,12 +287,12 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 					if (isOverlapped)
 					{
 						// un-quantize
-						nodeAabb.positionMin.val[0] = (float(node.aabbMin[0]) / float(0xffff) * scale.val[0]) + offset.val[0];
-						nodeAabb.positionMin.val[1] = (float(node.aabbMin[1]) / float(0xffff) * scale.val[1]) + offset.val[1];
-						nodeAabb.positionMin.val[2] = (float(node.aabbMin[2]) / float(0xffff) * scale.val[2]) + offset.val[2];
-						nodeAabb.positionMax.val[0] = (float(node.aabbMax[0]) / float(0xffff) * scale.val[0]) + offset.val[0];
-						nodeAabb.positionMax.val[1] = (float(node.aabbMax[1]) / float(0xffff) * scale.val[1]) + offset.val[1];
-						nodeAabb.positionMax.val[2] = (float(node.aabbMax[2]) / float(0xffff) * scale.val[2]) + offset.val[2];
+						nodeAabb.positionMin.val[0] = (float(node.aabbMin[0]) * scaleFactor.val[0]) + offset.val[0];
+						nodeAabb.positionMin.val[1] = (float(node.aabbMin[1]) * scaleFactor.val[1]) + offset.val[1];
+						nodeAabb.positionMin.val[2] = (float(node.aabbMin[2]) * scaleFactor.val[2]) + offset.val[2];
+						nodeAabb.positionMax.val[0] = (float(node.aabbMax[0]) * scaleFactor.val[0]) + offset.val[0];
+						nodeAabb.positionMax.val[1] = (float(node.aabbMax[1]) * scaleFactor.val[1]) + offset.val[1];
+						nodeAabb.positionMax.val[2] = (float(node.aabbMax[2]) * scaleFactor.val[2]) + offset.val[2];
 
 						if (nodeAabb.RayTest(ray))
 						{
@@ -316,19 +319,21 @@ bool DKBvh::AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback* cb) c
 {
 	if (this->volume && aabb.IsValid())
 	{
-		DKAabb bvhAabb = this->Aabb();
-		if (bvhAabb.Intersect(aabb))
+		// rescale given aabb to be quantized.
+		DKAabb inAabb = DKAabb::Intersection(this->Aabb(), aabb);
+		if (inAabb.IsValid())	// aabb overlapped.
 		{
 			DKVector3 offset = this->aabbOffset;
 			DKVector3 scale = this->aabbScale;
+			DKASSERT_DEBUG(scale.x > 0.0f && scale.y > 0.0f && scale.z > 0.0f);
 
 			unsigned short aabbMin[3];
 			unsigned short aabbMax[3];
 
 			for (int i = 0; i < 3; ++i)
 			{
-				aabbMin[i] = (aabb.positionMin.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
-				aabbMax[i] = (aabb.positionMax.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
+				aabbMin[i] = (inAabb.positionMin.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
+				aabbMax[i] = (inAabb.positionMax.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
 			}
 
 			int currentNodeIndex = 0;

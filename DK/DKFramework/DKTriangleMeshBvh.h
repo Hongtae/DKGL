@@ -34,6 +34,8 @@ namespace DKFramework
 		DKAabb Aabb(void) const;
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 
+		const DKBvh& Bvh(void) const { return bvh; }
+
 	private:
 		DKFoundation::DKObject<DKTriangleMesh> mesh;
 		DKBvh bvh;

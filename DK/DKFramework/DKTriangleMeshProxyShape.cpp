@@ -21,6 +21,7 @@ namespace DKFramework
 			TriangleMeshProxyShape(DKTriangleMeshProxyShape* s)
 			: shape(s), localScale(1, 1, 1)
 			{
+				m_shapeType = CUSTOM_CONCAVE_SHAPE_TYPE;
 			}
 
 			// overrides

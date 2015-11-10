@@ -51,14 +51,14 @@ namespace DKFramework
 		{
 			using BT::impl;
 		};
-		template <typename T> auto GetBulletObject(const T* p) -> decltype(BulletObject<T>::impl)
+		template <typename T> FORCEINLINE auto GetBulletObject(const T* p) -> decltype(BulletObject<T>::impl)
 		{
 			return static_cast<const BulletObject<T>*>(p)->impl;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
 		// CollisionWorldContext
-		inline CollisionWorldContext* BulletCollisionWorldContext(const DKScene* obj)
+		FORCEINLINE CollisionWorldContext* BulletCollisionWorldContext(const DKScene* obj)
 		{
 			struct SceneExt : public DKScene
 			{
@@ -68,33 +68,33 @@ namespace DKFramework
 		}
 		////////////////////////////////////////////////////////////////////////////////
 		// btCollisionObject
-		inline btCollisionObject* BulletCollisionObject(const DKCollisionObject* obj)
+		FORCEINLINE btCollisionObject* BulletCollisionObject(const DKCollisionObject* obj)
 		{
 			return static_cast<const BulletObject<DKCollisionObject>*>(obj)->impl;
 		}
 		////////////////////////////////////////////////////////////////////////////////
 		// btCollisionShape
-		inline btCollisionShape* BulletCollisionShape(const DKCollisionShape* obj)
+		FORCEINLINE btCollisionShape* BulletCollisionShape(const DKCollisionShape* obj)
 		{
 			return static_cast<const BulletObject<DKCollisionShape>*>(obj)->impl;
 		}
 		////////////////////////////////////////////////////////////////////////////////
 		// btTypedConstraint
-		inline btTypedConstraint* BulletTypedConstraint(const DKConstraint* obj)
+		FORCEINLINE btTypedConstraint* BulletTypedConstraint(const DKConstraint* obj)
 		{
 			//return GetBulletObject(obj);
 			return static_cast<const BulletObject<DKConstraint>*>(obj)->impl;
 		}
 		// linear math type conversion
-		inline btVector3 BulletVector3(const DKVector3& v)
+		FORCEINLINE btVector3 BulletVector3(const DKVector3& v)
 		{
 			return btVector3(v.x, v.y, v.z);
 		}
-		inline DKVector3 BulletVector3(const btVector3& v)
+		FORCEINLINE DKVector3 BulletVector3(const btVector3& v)
 		{
 			return DKVector3(v.x(), v.y(), v.z());
 		}
-		inline btMatrix3x3 BulletMatrix3(const DKMatrix3& m)
+		FORCEINLINE btMatrix3x3 BulletMatrix3(const DKMatrix3& m)
 		{
 			// transpose
 			return btMatrix3x3(
@@ -102,7 +102,7 @@ namespace DKFramework
 				m.m[0][1], m.m[1][1], m.m[2][1],
 				m.m[0][2], m.m[1][2], m.m[2][2]);
 		}
-		inline DKMatrix3 BulletMatrix3(const btMatrix3x3& m)
+		FORCEINLINE DKMatrix3 BulletMatrix3(const btMatrix3x3& m)
 		{
 			// transpose
 			return DKMatrix3(
@@ -110,27 +110,27 @@ namespace DKFramework
 				m[0][1], m[1][1], m[2][1],
 				m[0][2], m[1][2], m[2][2]);
 		}
-		inline btQuaternion BulletQuaternion(const DKQuaternion& q)
+		FORCEINLINE btQuaternion BulletQuaternion(const DKQuaternion& q)
 		{
 			return btQuaternion(q.x, q.y, q.z, q.w);
 		}
-		inline DKQuaternion BulletQuaternion(const btQuaternion& q)
+		FORCEINLINE DKQuaternion BulletQuaternion(const btQuaternion& q)
 		{
 			return DKQuaternion(q.x(), q.y(), q.z(), q.w());
 		}
-		inline btTransform BulletTransform(const DKMatrix3& m, const DKVector3& p)
+		FORCEINLINE btTransform BulletTransform(const DKMatrix3& m, const DKVector3& p)
 		{
 			return btTransform(BulletMatrix3(m), BulletVector3(p));
 		}
-		inline btTransform BulletTransform(const DKQuaternion& q, const DKVector3& p)
+		FORCEINLINE btTransform BulletTransform(const DKQuaternion& q, const DKVector3& p)
 		{
 			return btTransform(BulletQuaternion(q), BulletVector3(p));
 		}
-		inline btTransform BulletTransform(const DKNSTransform& t)
+		FORCEINLINE btTransform BulletTransform(const DKNSTransform& t)
 		{
 			return btTransform(BulletQuaternion(t.orientation), BulletVector3(t.position));
 		}
-		inline DKNSTransform BulletTransform(const btTransform& t)
+		FORCEINLINE DKNSTransform BulletTransform(const btTransform& t)
 		{
 			return DKNSTransform(BulletQuaternion(t.getRotation()), BulletVector3(t.getOrigin()));
 		}
