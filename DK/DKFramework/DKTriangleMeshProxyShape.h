@@ -16,8 +16,6 @@
 // This class is proxy shape of dynamic triangle mesh.
 // This class is not serializable. An instance can be created on Rumtime only.
 //
-// Vertex position data should be float[3] (DKVector3)
-//
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
@@ -28,31 +26,13 @@ namespace DKFramework
 		DKTriangleMeshProxyShape(void);
 		virtual ~DKTriangleMeshProxyShape(void);
 
-		void Build(void);
-		void Refit(const DKAabb&);
-		void PartialRefit(const DKAabb&);
-		DKAabb Aabb(void) const;
+		// TriangleCallback : reports AABB-overlapped triangle.
+		// parameter: (triangle, mesh-parts, triangle-index)
+		using TriangleCallback = DKFoundation::DKFunctionSignature<void (DKTriangle&, int, int)>;
 
-		struct MeshInfo
-		{
-			size_t numVertices;
-			size_t numTriangles;
-			size_t vertexStride;	// sizeof vertex (stride of position vector)
-			size_t indexStride;		// stride of triangle indices
-			size_t indexSize;		// 2 for USHORT, 4 for UINT
-			const void* vertexBuffer;	// address of first position vector
-			const void* indexBuffer;	// address of first triangle index
-		};
+		// subclass should AABB-casting to all triangles and report overlaps.
+		virtual void QueryTrianglesInAabb(const DKAabb&, TriangleCallback*) = 0;
 
-		virtual int NumberOfMeshParts(void) const = 0;
-
-	protected:
-		virtual void LockMeshPart(int, MeshInfo&) const = 0;
-		virtual void UnlockMeshPart(int) const = 0;
-
-	private:
-		class MeshInterface;
-		MeshInterface* meshInterface;
-		DKTriangleMeshProxyShape(MeshInterface*);
+		virtual DKAabb Aabb(void) const = 0;
 	};
 }
