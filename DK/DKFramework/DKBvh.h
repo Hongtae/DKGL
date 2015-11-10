@@ -39,15 +39,28 @@ namespace DKFramework
 		void Build(VolumeInterface*);
 		void Rebuild(void);
 
+		VolumeInterface* Volume(void) { return volume;}
+		const VolumeInterface* Volume(void) const { return volume;}
+
 		DKAabb Aabb(void) const;
 
 		// RayCastResultCallback : filter-callback function,
-		//   returns false if ray-test no longer necessary.
-		//   returns true if callback needs next ray-hit points continuously.
+		//   return false if ray-test no longer necessary.
+		//   return true if callback needs next ray hit object continuously.
 		// All filter callback returns false, this function returns false even if one or more
 		// ray hits detected. In this case, you need to get ray-test result from the callback.
+		// parameter: (object-index, line)
 		using RayCastResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKLine&)>;
 		bool RayTest(const DKLine& ray, RayCastResultCallback*) const;
+
+		// AabbCastResultCallback : filter-callback function.
+		//   return false if aabb-overlap test no longer necessary.
+		//   return true if callback needs next overlapped object continously.
+		// All filter callback returns false, this function returns false even if one or more
+		// overlap detected. In this case, you need to get ray-test result from the callback.
+		// parameter: (object-index, aabb)
+		using AabbOverlapResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKAabb&)>;
+		bool AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback*) const;
 
 	private:
 		struct QuantizedAabbNode // 16 bytes node
@@ -55,7 +68,7 @@ namespace DKFramework
 			unsigned short aabbMin[3];
 			unsigned short aabbMax[3];
 			union {
-				int triangleIndex;		// for leaf-node
+				int objectIndex;		// for leaf-node
 				int negativeTreeSize;	// for sub-node
 			};
 		};

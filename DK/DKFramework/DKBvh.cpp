@@ -50,7 +50,7 @@ void DKBvh::BuildInternal(void)
 			struct LeafNode
 			{
 				DKAabb aabb;
-				int triangleIndex;
+				int objectIndex;
 			};
 
 
@@ -99,7 +99,7 @@ void DKBvh::BuildInternal(void)
 				node.aabbMax[0] = aabbMax.val[0];
 				node.aabbMax[1] = aabbMax.val[1];
 				node.aabbMax[2] = aabbMax.val[2];
-				node.triangleIndex = n.triangleIndex;
+				node.objectIndex = n.objectIndex;
 				quantizedLeafNodes.Add(node);
 			}
 		}
@@ -213,14 +213,14 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 	DKASSERT_DEBUG(splitIndex < count);
 #endif
 	// recursion
-	int currentNodeIndex = nodes.Add(QuantizedAabbNode());
+	int currentNodeIndex = (int)nodes.Add(QuantizedAabbNode());
 
 	// build left sub tree
-	int leftChildNodeIndex = nodes.Count();
+	int leftChildNodeIndex = (int)nodes.Count();
 	BuildTree(leafNodes, splitIndex);
 
 	// build right sub tree
-	int rightChildNodeIndex = nodes.Count();
+	int rightChildNodeIndex = (int)nodes.Count();
 	BuildTree(&leafNodes[splitIndex], count - splitIndex);
 
 	QuantizedAabbNode& node = nodes.Value(currentNodeIndex);
@@ -232,6 +232,16 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 		node.aabbMax[i] = Max(left.aabbMax[i], right.aabbMax[i]);
 	}
 	node.negativeTreeSize = currentNodeIndex - static_cast<int>(nodes.Count());
+}
+
+template <typename T>
+FORCEINLINE static bool IsAabbOverlapped(const T(& min1)[3], const T(&min2)[3], const T(&max1)[3], const T(&max2)[3])
+{
+	if (min1[0] > max2[0] || max1[0] < min2[0] ||
+		min1[1] > max2[1] || max1[1] < min2[1] ||
+		min1[2] > max2[2] || max1[2] < min2[2])
+		return false;
+	return true;
 }
 
 bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
@@ -257,42 +267,33 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 				rayAabbMax[i] = (rayOverlapAabb.positionMax.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
 			}
 
-			auto isQuantizedAabbOverlapped = [](const unsigned short* min1, const unsigned short* max1, const unsigned short* min2, const unsigned short* max2)
-			{
-				if (min1[0] > max2[0] || max1[0] < min2[0] ||
-					min1[1] > max2[1] || max1[1] < min2[1] ||
-					min1[2] > max2[2] || max1[2] < min2[2])
-					return false;
-				return true;
-			};
-
 			int currentNodeIndex = 0;
-			int nodeCount = this->nodes.Count();
+			int nodeCount = (int)this->nodes.Count();
 			bool isLeafNode = false;
 			bool isOverlapped = false;
-			DKAabb aabb;
+			DKAabb nodeAabb;
 
 			while (currentNodeIndex < nodeCount)
 			{
 				const QuantizedAabbNode& node = nodes.Value(currentNodeIndex);
-				isOverlapped = isQuantizedAabbOverlapped(rayAabbMin, rayAabbMax, node.aabbMin, node.aabbMax);
-				isLeafNode = node.triangleIndex >= 0;
+				isOverlapped = IsAabbOverlapped(rayAabbMin, rayAabbMax, node.aabbMin, node.aabbMax);
+				isLeafNode = node.objectIndex >= 0;
 
 				if (isLeafNode)
 				{
 					if (isOverlapped)
 					{
 						// un-quantize
-						aabb.positionMin.val[0] = (float(node.aabbMin[0]) / float(0xffff) * scale.val[0]) + offset.val[0];
-						aabb.positionMin.val[1] = (float(node.aabbMin[1]) / float(0xffff) * scale.val[1]) + offset.val[1];
-						aabb.positionMin.val[2] = (float(node.aabbMin[2]) / float(0xffff) * scale.val[2]) + offset.val[2];
-						aabb.positionMax.val[0] = (float(node.aabbMax[0]) / float(0xffff) * scale.val[0]) + offset.val[0];
-						aabb.positionMax.val[1] = (float(node.aabbMax[1]) / float(0xffff) * scale.val[1]) + offset.val[1];
-						aabb.positionMax.val[2] = (float(node.aabbMax[2]) / float(0xffff) * scale.val[2]) + offset.val[2];
+						nodeAabb.positionMin.val[0] = (float(node.aabbMin[0]) / float(0xffff) * scale.val[0]) + offset.val[0];
+						nodeAabb.positionMin.val[1] = (float(node.aabbMin[1]) / float(0xffff) * scale.val[1]) + offset.val[1];
+						nodeAabb.positionMin.val[2] = (float(node.aabbMin[2]) / float(0xffff) * scale.val[2]) + offset.val[2];
+						nodeAabb.positionMax.val[0] = (float(node.aabbMax[0]) / float(0xffff) * scale.val[0]) + offset.val[0];
+						nodeAabb.positionMax.val[1] = (float(node.aabbMax[1]) / float(0xffff) * scale.val[1]) + offset.val[1];
+						nodeAabb.positionMax.val[2] = (float(node.aabbMax[2]) / float(0xffff) * scale.val[2]) + offset.val[2];
 
-						if (aabb.RayTest(ray))
+						if (nodeAabb.RayTest(ray))
 						{
-							if (cb == NULL || !cb->Invoke(node.triangleIndex, ray))
+							if (cb == NULL || !cb->Invoke(node.objectIndex, ray))
 								return true;
 						}
 					}
@@ -310,3 +311,56 @@ bool DKBvh::RayTest(const DKLine& ray, RayCastResultCallback* cb) const
 	}
 	return false;
 }
+
+bool DKBvh::AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback* cb) const
+{
+	if (this->volume && aabb.IsValid())
+	{
+		DKAabb bvhAabb = this->Aabb();
+		if (bvhAabb.Intersect(aabb))
+		{
+			DKVector3 offset = this->aabbOffset;
+			DKVector3 scale = this->aabbScale;
+
+			unsigned short aabbMin[3];
+			unsigned short aabbMax[3];
+
+			for (int i = 0; i < 3; ++i)
+			{
+				aabbMin[i] = (aabb.positionMin.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
+				aabbMax[i] = (aabb.positionMax.val[i] - offset.val[i]) / scale.val[i] * float(0xffff);
+			}
+
+			int currentNodeIndex = 0;
+			int nodeCount = (int)this->nodes.Count();
+			bool isLeafNode = false;
+			bool isOverlapped = false;
+
+			while (currentNodeIndex < nodeCount)
+			{
+				const QuantizedAabbNode& node = nodes.Value(currentNodeIndex);
+				isOverlapped = IsAabbOverlapped(aabbMin, aabbMax, node.aabbMin, node.aabbMax);
+				isLeafNode = node.objectIndex >= 0;
+
+				if (isLeafNode)
+				{
+					if (isOverlapped)
+					{
+						if (cb == NULL || !cb->Invoke(node.objectIndex, aabb))
+							return true;
+					}
+					currentNodeIndex++;
+				}
+				else
+				{
+					if (isOverlapped)
+						currentNodeIndex++;
+					else
+						currentNodeIndex -= node.negativeTreeSize;
+				}
+			}
+		}
+	}
+	return false;
+}
+
