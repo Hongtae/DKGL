@@ -1063,17 +1063,17 @@ bool DKVariant::ImportStream(DKStream* stream)
 	{
 		struct
 		{
-			unsigned short operator () (unsigned short v) const
+			uint16_t operator () (uint16_t v) const
 			{
-				return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT16(v) : BIG_ENDIAN_TO_SYSTEM_UINT16(v);
+				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
-			unsigned int operator () (unsigned int v) const
+			uint32_t operator () (uint32_t v) const
 			{
-				return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT32(v) : BIG_ENDIAN_TO_SYSTEM_UINT32(v);
+				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
-			unsigned long long operator () (unsigned long long v) const
+			uint64_t operator () (uint64_t v) const
 			{
-				return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT64(v) : BIG_ENDIAN_TO_SYSTEM_UINT64(v);
+				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
 			bool littleEndian;
 		} byteorder = {littleEndian};

@@ -2,7 +2,7 @@
 //  File: DKStringUE.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <stdio.h>
@@ -61,9 +61,9 @@ namespace DKFoundation
 		////////////////////////////////////////////////////////////////////////////////
 
 		// using 'unsigned' for internal processes.
-		typedef unsigned char	UIntUTF8;
-		typedef unsigned short	UIntUTF16;
-		typedef unsigned int	UIntUTF32;
+		typedef uint8_t UIntUTF8;
+		typedef uint16_t UIntUTF16;
+		typedef uint32_t UIntUTF32;
 
 		static const char trailingBytesForUTF8[256] = {
 			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -540,7 +540,7 @@ namespace DKFoundation
 				{
 					static_assert( sizeof(UIntUTF16) == 2, "wrong size");
 					auto tmp1 = [&](UIntUTF16 ch) {outputSetter(&ch, 2);};
-					auto tmp2 = [&](UIntUTF16 ch) { ch = SWITCH_BYTE_ORDER_UINT16(ch); outputSetter(&ch, sizeof(ch));};
+					auto tmp2 = [&](UIntUTF16 ch) { ch = DKSwitchIntegralByteOrder(ch); outputSetter(&ch, sizeof(ch));};
 					switch (inputUnitSize)
 					{
 					case 1:			// from UTF8
@@ -569,7 +569,7 @@ namespace DKFoundation
 				{
 					static_assert( sizeof(UIntUTF32) == 4, "wrong size");
 					auto tmp1 = [&](UIntUTF32 ch) {outputSetter(&ch, sizeof(ch));};
-					auto tmp2 = [&](UIntUTF32 ch) {ch = SWITCH_BYTE_ORDER_UINT32(ch); outputSetter(&ch, sizeof(ch));};
+					auto tmp2 = [&](UIntUTF32 ch) {ch = DKSwitchIntegralByteOrder(ch); outputSetter(&ch, sizeof(ch));};
 					switch (inputUnitSize)
 					{
 					case 1:			// from UTF8
@@ -608,7 +608,7 @@ namespace DKFoundation
 					const UIntUTF16* pc = reinterpret_cast<const UIntUTF16*>(p);
 					size_t s = len / inputUnitSize;
 					for (size_t i = 0; i < s; ++i )
-						p2[i] = SWITCH_BYTE_ORDER_UINT16(pc[i]);
+						p2[i] = DKSwitchIntegralByteOrder(pc[i]);
 
 					bool result = EncodeString(p2, len, DKStringEncoding::UTF16, outputEnc, output);
 					free(p2);
@@ -620,7 +620,7 @@ namespace DKFoundation
 					const UIntUTF32* pc = reinterpret_cast<const UIntUTF32*>(p);
 					size_t s = len / inputUnitSize;
 					for (size_t i = 0; i < s; ++i )
-						p2[i] = SWITCH_BYTE_ORDER_UINT32(pc[i]);
+						p2[i] = DKSwitchIntegralByteOrder(pc[i]);
 
 					bool result = EncodeString(p2, len, DKStringEncoding::UTF32, outputEnc, output);
 					free(p2);

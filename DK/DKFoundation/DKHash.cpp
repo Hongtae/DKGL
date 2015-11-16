@@ -2,7 +2,7 @@
 //  File: DKHash.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -38,20 +38,20 @@
 struct DKFoundation::DKHash::Context
 {
 	union {
-		unsigned long long	hash64[8];
-		unsigned int		hash32[16];
+		uint64_t	hash64[8];
+		uint32_t	hash32[16];
 	};
 	// saves message length (length x 8)
-	unsigned long long low; // md5, sha1, sha224/256 could save 64bits.(56bits actually)
-	unsigned long long high; // sha384/512 could save 128bits.(120bits actually)
+	uint64_t low; // md5, sha1, sha224/256 could save 64bits.(56bits actually)
+	uint64_t high; // sha384/512 could save 128bits.(120bits actually)
 
 	union {
-		unsigned long long	data64[16]; // use 16 for sha384/512, otherwise 8.
-		unsigned int		data32[32];
-		unsigned char		data8[128];
+		uint64_t	data64[16]; // use 16 for sha384/512, otherwise 8.
+		uint32_t	data32[32];
+		uint8_t		data8[128];
 	};
-	unsigned int num; // remains length (not processed)
-	unsigned int len; // message hash length (bytes)
+	uint32_t num; // remains length (not processed)
+	uint32_t len; // message hash length (bytes)
 };
 
 namespace DKFoundation
@@ -223,7 +223,7 @@ namespace DKFoundation
 
 				for (int x = 0; x < 16; x++)
 				{
-					W[x] = SYSTEM_TO_LITTLE_ENDIAN_UINT32(((unsigned int*)p)[ i * 16 + x ]);
+					W[x] = DKSystemToLittleEndian( reinterpret_cast<const uint32_t*>(p)[ i * 16 + x ]);
 				}
 
 				int n = 0;
@@ -279,7 +279,7 @@ namespace DKFoundation
 
 				for (int x = 0; x < 16; x++)
 				{
-					W[x] = SYSTEM_TO_BIG_ENDIAN_UINT32(((unsigned int*)p)[ i * 16 + x ]);
+					W[x] = DKSystemToBigEndian(reinterpret_cast<const uint32_t*>(p)[ i * 16 + x ]);
 				}
 				for (int x = 16; x < 80; x++)
 				{
@@ -342,7 +342,7 @@ namespace DKFoundation
 
 				for (int x = 0; x < 16; x++)
 				{
-					W[x] = SYSTEM_TO_BIG_ENDIAN_UINT32(((unsigned int*)p)[ i * 16 + x ]);
+					W[x] = DKSystemToBigEndian(reinterpret_cast<const uint32_t*>(p)[ i * 16 + x ]);
 				}
 				for (int x = 16; x < 64; x++)
 				{
@@ -424,7 +424,7 @@ namespace DKFoundation
 
 				for (int x = 0; x < 16; x++)
 				{
-					W[x] = SYSTEM_TO_BIG_ENDIAN_UINT64(((unsigned long long*)p)[ i * 16 + x ]);
+					W[x] = DKSystemToBigEndian(reinterpret_cast<const uint64_t*>(p)[ i * 16 + x ]);
 				}
 				for (int x = 16; x < 80; x++)
 				{
@@ -554,24 +554,24 @@ namespace DKFoundation
 			{
 				if (bLittleEndian)
 				{
-					ctx->data64[14] = SYSTEM_TO_LITTLE_ENDIAN_UINT64(ctx->low);
-					ctx->data64[15] = SYSTEM_TO_LITTLE_ENDIAN_UINT64(ctx->high);
+					ctx->data64[14] = DKSystemToLittleEndian(ctx->low);
+					ctx->data64[15] = DKSystemToLittleEndian(ctx->high);
 				}
 				else
 				{
-					ctx->data64[14] = SYSTEM_TO_BIG_ENDIAN_UINT64(ctx->high);
-					ctx->data64[15] = SYSTEM_TO_BIG_ENDIAN_UINT64(ctx->low);
+					ctx->data64[14] = DKSystemToBigEndian(ctx->high);
+					ctx->data64[15] = DKSystemToBigEndian(ctx->low);
 				}
 			}
 			else
 			{
 				if (bLittleEndian)
 				{
-					ctx->data64[7] = SYSTEM_TO_LITTLE_ENDIAN_UINT64(ctx->low);
+					ctx->data64[7] = DKSystemToLittleEndian(ctx->low);
 				}
 				else
 				{
-					ctx->data64[7] = SYSTEM_TO_BIG_ENDIAN_UINT64(ctx->low);
+					ctx->data64[7] = DKSystemToBigEndian(ctx->low);
 				}
 			}
 
@@ -597,6 +597,8 @@ namespace DKFoundation
 
 namespace DKFoundation
 {
+#define DEBUG_CHECK_RUNTIME_ENDIANNESS	DKASSERT_DESC_DEBUG(DKByteOrderCheck(), "System Byte-Order Mismatch!")
+
 	DKHashResult32 DKGL_API DKHashCRC32(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
@@ -618,7 +620,7 @@ namespace DKFoundation
 
 		DKHashResult128	res;
 		for (int i = 0; i < 4; i++)
-			res.digest[i] = SWITCH_BYTE_ORDER_UINT32(ctx.hash32[i]);
+			res.digest[i] = DKSwitchIntegralByteOrder(ctx.hash32[i]);
 		return res;
 	}
 	DKHashResult160 DKGL_API DKHashSHA1(const void* p, size_t len)
@@ -824,7 +826,7 @@ DKHashResult128 DKHash128::Result(void) const
 
 	DKHashResult128	res;
 	for (int i = 0; i < 4; i++)
-		res.digest[i] = SWITCH_BYTE_ORDER_UINT32(ctxt->hash32[i]);
+		res.digest[i] = DKSwitchIntegralByteOrder(ctxt->hash32[i]);
 	return res;
 }
 
