@@ -44,7 +44,7 @@
 // no error has occurred. (missing files, file has wrong types will stop
 // deserialize process.)
 //
-// You can also privdes 'checker' operation, which will be called on
+// You can also privdes 'validator' operation, which will be called on
 // deserialization process. If operation provided and called, return true for
 // valid state, return false to invalid state and stop deserialize.
 //
@@ -56,9 +56,9 @@
 //    if setter is not NULL and faultHandler is NULL, regarded as deserialized
 //    without any error.
 //    if faultHandler is not NULL, will be called when data is missing.
-//    if checker is NULL, will not validate entry.
-//    if checker is not NULL, will be called and returns true for validate,
-//    or generates an error if checker returns false. (error can be recovered
+//    if validator is NULL, will not validate entry.
+//    if validator is not NULL, will be called and returns true for validate,
+//    or generates an error if validator returns false. (error can be recovered
 //    by faultHandler, if available.)
 //
 //
@@ -121,26 +121,26 @@ namespace DKFramework
 		typedef DKFoundation::DKArray<ExternalType> ExternalArrayType;
 		typedef DKFoundation::DKMap<DKFoundation::DKString, ExternalType> ExternalMapType;
 
-		// component value getter, setter, checker
-		// when data needs to be validated, calling checker to validate if checker is not NULL.
+		// component value getter, setter, validator
+		// when data needs to be validated, calling validator to validate if validator is not NULL.
 		typedef DKFoundation::DKFunctionSignature<void (ValueType&)> ValueGetter;
 		typedef DKFoundation::DKFunctionSignature<void (ValueType&)> ValueSetter;
-		typedef DKFoundation::DKFunctionSignature<bool (const ValueType&)> ValueChecker;
+		typedef DKFoundation::DKFunctionSignature<bool (const ValueType&)> ValueValidator;
 
-		// external resource getter, setter, checker
+		// external resource getter, setter, validator
 		typedef DKFoundation::DKFunctionSignature<void (ExternalType&)> ExternalGetter;
 		typedef DKFoundation::DKFunctionSignature<void (ExternalType&)> ExternalSetter;
-		typedef DKFoundation::DKFunctionSignature<bool (const ExternalType&)> ExternalChecker;
+		typedef DKFoundation::DKFunctionSignature<bool (const ExternalType&)> ExternalValidator;
 
 		// external resource array
 		typedef DKFoundation::DKFunctionSignature<void (ExternalArrayType&)> ExternalArrayGetter;
 		typedef DKFoundation::DKFunctionSignature<void (ExternalArrayType&)> ExternalArraySetter;
-		typedef DKFoundation::DKFunctionSignature<bool (const ExternalArrayType&)> ExternalArrayChecker;
+		typedef DKFoundation::DKFunctionSignature<bool (const ExternalArrayType&)> ExternalArrayValidator;
 
 		// external resource map (key-value pairs of String, Resource)
 		typedef DKFoundation::DKFunctionSignature<void (ExternalMapType&)> ExternalMapGetter;
 		typedef DKFoundation::DKFunctionSignature<void (ExternalMapType&)> ExternalMapSetter;
-		typedef DKFoundation::DKFunctionSignature<bool (const ExternalMapType&)> ExternalMapChecker;
+		typedef DKFoundation::DKFunctionSignature<bool (const ExternalMapType&)> ExternalMapValidator;
 
 		// fault handler.
 		// if you provide fault-handler, called on error situation to recover.
@@ -155,10 +155,10 @@ namespace DKFramework
 		DKFoundation::DKString ResourceClass(void) const;
 
 		bool Bind(const DKFoundation::DKString& key, DKSerializer* s, FaultHandler* faultHandler);
-		bool Bind(const DKFoundation::DKString& key, ValueGetter* getter, ValueSetter* setter, ValueChecker* checker, FaultHandler* faultHandler);
-		bool Bind(const DKFoundation::DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalChecker* checker, ExternalResource ext, FaultHandler* faultHandler);
-		bool Bind(const DKFoundation::DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayChecker* checker, ExternalResource ext, FaultHandler* faultHandler);
-		bool Bind(const DKFoundation::DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapChecker* checker, ExternalResource ext, FaultHandler* faultHandler);
+		bool Bind(const DKFoundation::DKString& key, ValueGetter* getter, ValueSetter* setter, ValueValidator* validator, FaultHandler* faultHandler);
+		bool Bind(const DKFoundation::DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalValidator* validator, ExternalResource ext, FaultHandler* faultHandler);
+		bool Bind(const DKFoundation::DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayValidator* validator, ExternalResource ext, FaultHandler* faultHandler);
+		bool Bind(const DKFoundation::DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapValidator* validator, ExternalResource ext, FaultHandler* faultHandler);
 		void Unbind(const DKFoundation::DKString& key);
 
 		DKFoundation::DKObject<DKFoundation::DKData> Serialize(SerializeForm sf) const;
@@ -195,7 +195,7 @@ namespace DKFramework
 		{
 			DKFoundation::DKObject<ValueGetter>		getter; // component getter
 			DKFoundation::DKObject<ValueSetter>		setter; // component setter
-			DKFoundation::DKObject<ValueChecker>	checker; // component checker, called on deserialize if not NULL.
+			DKFoundation::DKObject<ValueValidator>	validator; // component validator, called on deserialize if not NULL.
 			const VariantEntity*	Variant(void) const				{return this;}
 		};
 		struct SerializerEntity : public Entity
@@ -205,9 +205,9 @@ namespace DKFramework
 		};
 		struct ExternalEntity : public Entity
 		{
-			DKFoundation::DKObject<ExternalGetter>	getter; // external resource getter
-			DKFoundation::DKObject<ExternalSetter>	setter; // external resource setter
-			DKFoundation::DKObject<ExternalChecker>	checker; // checker, called on deserialize if not NULL.
+			DKFoundation::DKObject<ExternalGetter>		getter; // external resource getter
+			DKFoundation::DKObject<ExternalSetter>		setter; // external resource setter
+			DKFoundation::DKObject<ExternalValidator>	validator; // validator, called on deserialize if not NULL.
 			ExternalResource			external;
 			const ExternalEntity*		External(void) const		{return this;}
 		};
@@ -215,15 +215,15 @@ namespace DKFramework
 		{
 			DKFoundation::DKObject<ExternalArrayGetter>		getter; // getter for external resource array
 			DKFoundation::DKObject<ExternalArraySetter>		setter; // setter for external resource array
-			DKFoundation::DKObject<ExternalArrayChecker>	checker; // checker, called on deserialize if not NULL.
+			DKFoundation::DKObject<ExternalArrayValidator>	validator; // validator, called on deserialize if not NULL.
 			ExternalResource			external;
 			const ExternalEntityArray*	ExternalArray(void) const		{return this;}
 		};
 		struct ExternalEntityMap : public Entity
 		{
-			DKFoundation::DKObject<ExternalMapGetter>	getter; // getter for external resource map
-			DKFoundation::DKObject<ExternalMapSetter>	setter; // setter for external resource map
-			DKFoundation::DKObject<ExternalMapChecker>	checker; // checker, called on deserialize if not NULL.
+			DKFoundation::DKObject<ExternalMapGetter>		getter; // getter for external resource map
+			DKFoundation::DKObject<ExternalMapSetter>		setter; // setter for external resource map
+			DKFoundation::DKObject<ExternalMapValidator>	validator; // validator, called on deserialize if not NULL.
 			ExternalResource			external;
 			const ExternalEntityMap*	ExternalMap(void) const			{return this;}
 		};

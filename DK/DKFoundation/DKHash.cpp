@@ -597,7 +597,7 @@ namespace DKFoundation
 
 namespace DKFoundation
 {
-#define DEBUG_CHECK_RUNTIME_ENDIANNESS	DKASSERT_DESC_DEBUG(DKByteOrderCheck(), "System Byte-Order Mismatch!")
+#define DEBUG_CHECK_RUNTIME_ENDIANNESS	DKASSERT_DESC_DEBUG(DKVerifyEndianness(), "System Byte-Order Mismatch!")
 
 	DKHashResult32 DKGL_API DKHashCRC32(const void* p, size_t len)
 	{

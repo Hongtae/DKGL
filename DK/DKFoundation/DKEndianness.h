@@ -93,7 +93,22 @@ namespace DKFoundation
 
 
 	////////////////////////////////////////////////////////////////////////////////
-	// byte order test.
+	// runtime byte order test.
 	// using preprocessor macros at compile-time and validate in run-time.
-	bool DKByteOrderCheck(void);		// THIS FUNCTION SHOULD RETURN TRUE.
+	enum class DKEndianness  // middle-endian is not supported.
+	{
+		Unknown,
+		BigEndian,
+		LittleEndian,
+	};
+	DKEndianness DKRuntimeByteOrder(void);
+
+	inline bool DKVerifyEndianness(void)
+	{
+#if     defined(__BIG_ENDIAN__)
+		return DKRuntimeByteOrder() == DKEndianness::BigEndian;
+#elif  defined(__LITTLE_ENDIAN__)
+		return DKRuntimeByteOrder() == DKEndianness::LittleEndian;
+#endif
+	}
 }

@@ -81,8 +81,8 @@ private:
 			const VariantEntity* ve = ep->value->Variant();
 			if (ve && ve->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (ve->checker == NULL || ve->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (ve->validator == NULL || ve->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(ve->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -107,8 +107,8 @@ private:
 			const ExternalEntity* ee = ep->value->External();
 			if (ee && ee->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (ee->checker == NULL || ee->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (ee->validator == NULL || ee->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(ee->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -124,8 +124,8 @@ private:
 			const ExternalEntityArray* ea = ep->value->ExternalArray();
 			if (ea && ea->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (ea->checker == NULL || ea->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (ea->validator == NULL || ea->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(ea->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -141,8 +141,8 @@ private:
 			const ExternalEntityMap* em = ep->value->ExternalMap();
 			if (em && em->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (em->checker == NULL || em->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (em->validator == NULL || em->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(em->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -225,24 +225,24 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 	return entityMap.Insert(key, se);
 }
 
-bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueChecker* checker, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueValidator* validator, FaultHandler* faultHandler)
 {
 	VariantEntity *ve = new (DKMemoryDefaultAllocator::Alloc(sizeof(VariantEntity))) VariantEntity;
 	ve->getter = getter;
 	ve->setter = setter;
-	ve->checker = checker;
+	ve->validator = validator;
 	ve->faultHandler = faultHandler;
 
 	DKCriticalSection<DKSpinLock> guard(lock);
 	return entityMap.Insert(key, ve);
 }
 
-bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
 	ExternalEntity* ee = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntity))) ExternalEntity;
 	ee->getter = getter;
 	ee->setter = setter;
-	ee->checker = checker;
+	ee->validator = validator;
 	ee->faultHandler = faultHandler;
 	ee->external = ext;
 
@@ -250,12 +250,12 @@ bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSet
 	return entityMap.Insert(key, ee);
 }
 
-bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
 	ExternalEntityArray* ea = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntityArray))) ExternalEntityArray;
 	ea->getter = getter;
 	ea->setter = setter;
-	ea->checker = checker;
+	ea->validator = validator;
 	ea->faultHandler = faultHandler;
 	ea->external = ext;
 
@@ -263,12 +263,12 @@ bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, Extern
 	return entityMap.Insert(key, ea);
 }
 
-bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
 	ExternalEntityMap* em = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntityMap))) ExternalEntityMap;
 	em->getter = getter;
 	em->setter = setter;
-	em->checker = checker;
+	em->validator = validator;
 	em->faultHandler = faultHandler;
 	em->external = ext;
 
