@@ -33,6 +33,7 @@
 //   - String (DKString)
 //   - DateTime (DKDateTime)
 //   - Data (DKBuffer)
+//   - StructuredData (Data with structure layout)
 //   - Array (DKArray<DKVariant>)
 //   - Pairs (DKMap<DKString, DKVariant>)
 //   - Undefined (no value, initial type)
@@ -62,9 +63,11 @@ namespace DKFramework
 			TypeString		= 'strn',
 			TypeDateTime	= 'time',
 			TypeData		= 'data',
+			TypeStructData	= 'stdt',
 			TypeArray		= 'arry',
 			TypePairs		= 'pair',
 		};
+
 		typedef long long VInteger;
 		typedef double VFloat;
 		typedef DKVector2 VVector2;
@@ -80,6 +83,30 @@ namespace DKFramework
 		typedef DKFoundation::DKBuffer VData;
 		typedef DKFoundation::DKArray<DKVariant> VArray;
 		typedef DKFoundation::DKMap<VString, DKVariant> VPairs;
+
+		// structured data layout.
+		enum class StructElem : int8_t
+		{
+			// Arithmetic types are byte-ordered automatically.
+			Arithmetic1,	// int8_t, uint8_t
+			Arithmetic2,	// int16_t, uint16_t
+			Arithmetic4,	// int32_t, uint32_t, float
+			Arithmetic8,	// int64_t, uint64_t, double
+
+			// Raw types are not byte-ordered. (treat as 'char*' buffer)
+			Raw1,		// 1 byte item
+			Raw2,		// 2 bytes item
+			Raw4,		// 4 bytes item
+			Raw8,		// 8 bytes item
+		};
+		// VStructuredData: automatic-byte-order matching data.
+		// layout should be set properly. (describe item layout without padding)
+		struct VStructuredData
+		{
+			VData data;				// buffer object
+			size_t elementSize;		// element size (include alignment padding)
+			DKFoundation::DKArray<StructElem> layout; // structured-element layout
+		};
 
 		DKVariant(Type t = TypeUndefined);
 
@@ -98,6 +125,7 @@ namespace DKFramework
 		DKVariant(const VString& v);
 		DKVariant(const VDateTime& v);
 		DKVariant(const VData& v);
+		DKVariant(const VStructuredData& v);
 		DKVariant(const VArray& v);
 		DKVariant(const VPairs& v);
 		DKVariant(const DKVariant& v);
@@ -131,6 +159,8 @@ namespace DKFramework
 		DKVariant& SetDateTime(const VDateTime& v);
 		DKVariant& SetData(const VData& v);
 		DKVariant& SetData(const void* p, size_t s);
+		DKVariant& SetStructuredData(const VStructuredData& v);
+		DKVariant& SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem>);
 		DKVariant& SetArray(const VArray& v);
 		DKVariant& SetPairs(const VPairs& v);
 		DKVariant& SetValue(const DKVariant& v);
@@ -165,6 +195,8 @@ namespace DKFramework
 		const VDateTime& DateTime(void) const;
 		VData& Data(void);
 		const VData& Data(void) const;
+		VStructuredData& StructuredData(void);
+		const VStructuredData& StructuredData(void) const;
 		VArray& Array(void);
 		const VArray& Array(void) const;
 		VPairs& Pairs(void);
