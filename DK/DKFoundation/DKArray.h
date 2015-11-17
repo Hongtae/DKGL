@@ -626,12 +626,18 @@ namespace DKFoundation
 			if (c <= capacity)
 				return;
 
+			VALUE* old = data;
 			if (data)
 				data = (VALUE*)Allocator::Realloc(data, sizeof(VALUE) * c);
 			else
 				data = (VALUE*)Allocator::Alloc(sizeof(VALUE) * c);
 
-			capacity = c;
+			DKASSERT_DESC_DEBUG(data, "Out of memory!");
+
+			if (data)
+				capacity = c;
+			else	// out of memory!
+				data = old;
 		}
 		void ReserveItemCapsNL(size_t c)
 		{
