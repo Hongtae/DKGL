@@ -495,12 +495,18 @@ namespace DKFoundation
 			size_t reqBytes = sizeof(Unit) * UnitLengthForBits(c);
 			DKASSERT_DEBUG(reqBytes);
 
+			Unit* old = data;
 			if (data)
 				data = (Unit*)Allocator::Realloc(data, reqBytes);
 			else
 				data = (Unit*)Allocator::Alloc(reqBytes);
-			
-			capacity = reqBytes * 8;
+
+			DKASSERT_DESC_DEBUG(data, "Out of memory!");
+
+			if (data)
+				capacity = reqBytes * 8;
+			else	// out of memory!
+				data = old;
 		}
 		void ReserveItemCapsNL(size_t c)
 		{

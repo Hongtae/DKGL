@@ -230,9 +230,13 @@ namespace DKFoundation
 				if (received + 100 > bufferSize)
 				{
 					bufferSize += 4096;
-					buffer = (char*)DKMemoryDefaultAllocator::Realloc(buffer, bufferSize);
-					if (buffer == NULL)
-						DKERROR_THROW("DKMemoryDefaultAllocator::Realloc() failed!");
+					char* tmp = (char*)DKMemoryDefaultAllocator::Realloc(buffer, bufferSize);
+					if (tmp == NULL)
+					{
+						DKLog("Warning: Out of memory!\n");
+						break;
+					}
+					buffer = tmp;
 				}
 			}
 			DKMemoryDefaultAllocator::Free(buffer);
