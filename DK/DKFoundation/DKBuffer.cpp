@@ -13,6 +13,7 @@
 #define DKGL_EXTDEPS_LIBXML
 #include "../lib/ExtDeps.h"
 
+#include "DKEndianness.h"
 #include "DKString.h"
 #include "DKFile.h"
 #include "DKBuffer.h"
@@ -410,44 +411,97 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 
 	if (p && len > 4)
 	{
-		// LZ7 header: 0x184D2204 (little endian)
-		if (reinterpret_cast<const char*>(p)[0] == 0x04 &&
-			reinterpret_cast<const char*>(p)[1] == 0x22 &&
-			reinterpret_cast<const char*>(p)[2] == 0x4d &&
-			reinterpret_cast<const char*>(p)[2] == 0x18)
+		const uint32_t lz4_Header = DKSystemToLittleEndian(0x184D2204U);
+		const uint32_t lz4_SkipHeader = DKSystemToLittleEndian(0x184D2A50U);
+
+		// LZ7 header: 0x184D2204 (little endian) or 0x184D2250~F for skippable frame
+		if (reinterpret_cast<const uint32_t*>(p)[0] == lz4_Header ||
+			(reinterpret_cast<const uint32_t*>(p)[0] & 0xfffffff0) == lz4_SkipHeader)
 		{
 			// LZ7 / LZ7HC
-			LZ4F_errorCode_t errorCode;
-
 			LZ4F_decompressionContext_t ctxt;
-			errorCode = LZ4F_createDecompressionContext(&ctxt, LZ4F_VERSION);
+			LZ4F_errorCode_t errorCode = LZ4F_createDecompressionContext(&ctxt, LZ4F_VERSION);
 
 			if (LZ4F_isError(errorCode))
 			{
-				DKLog("Decompress error : can't create LZ4F context : %s", LZ4F_getErrorName(errorCode));
+				DKLog("Decompress Error: can't create Lz4 context : %s", LZ4F_getErrorName(errorCode));
 			}
 			else
 			{
-#if 0
+				uint8_t* outData = (uint8_t*)DKMemoryDefaultAllocator::Alloc(COMPRESS_DEFAULT_BLOCK);
+
+				uint32_t header;
 				size_t decoded = 0;
-
+				size_t processed = 0;
+				size_t inSize = len;
+				const uint8_t* inData = reinterpret_cast<const uint8_t*>(p);
+				size_t outSize = COMPRESS_DEFAULT_BLOCK;
+				bool decodeError = false;
 				LZ4F_errorCode_t nextToLoad;
-				do {
-					size_t bufferSize = COMPRESS_DEFAULT_BLOCK;
-					size_t outSize = 0;
-					void* buffer = p;
 
-					LZ4F_decompress(ctxt, buffer, &outSize, )
+				while (processed + sizeof(uint32_t) < len && !decodeError)
+				{
+					header = reinterpret_cast<const uint32_t*>(&inData[processed])[0];
 
+					if (header == lz4_Header)
+					{
+						do {
+							inSize = (len - processed);
+							outSize = COMPRESS_DEFAULT_BLOCK;
+							nextToLoad = LZ4F_decompress(ctxt, &outData[decoded], &outSize, &inData[processed], &inSize, NULL);
+							if (LZ4F_isError(nextToLoad))
+							{
+								DKLog("Decompress Error: Lz4 Header Error: %s\n", LZ4F_getErrorName(nextToLoad));
+								decodeError = true;
+								break;
+							}
+							processed += inSize;
+							if (outSize > 0)
+							{
+								decoded += outSize;
+								uint8_t* tmp = (uint8_t*)DKMemoryDefaultAllocator::Realloc(outData, decoded + COMPRESS_DEFAULT_BLOCK);
+								if (tmp == NULL)
+								{
+									DKLog("Decompress Error: Out of memory!");
+									decodeError = true;
+									break;
+								}
+								outData = tmp;
+							}
+						} while (nextToLoad);
+					}
+					else if ((header & 0xfffffff0) == lz4_SkipHeader)
+					{
+						uint32_t bytesToSkip = reinterpret_cast<const uint32_t*>(&inData[processed])[0];
+						bytesToSkip = DKLittleEndianToSystem(bytesToSkip);
+						size_t remains = len - processed;
+						if (bytesToSkip > remains)	// overflow!
+						{
+							DKLog("Decompress Error: Lz4 skip frame overflow!\n");
+							decodeError = true;
+							break;
+						}
+						processed += bytesToSkip;
+					}
+					else
+					{
+						DKLog("Decompress Error: Lz4 stream followed by unrecognized data\n");
+						decodeError = true;
+						break;
+					}
+				}
 
+				if (!decodeError && decoded > 0)
+				{
+					result = DKBuffer::Create(outData, decoded, alloc);
+				}
 
-				} while (nextToLoad);
+				DKMemoryDefaultAllocator::Free(outData);
 
-#endif
 				errorCode = LZ4F_freeDecompressionContext(ctxt);
 				if (LZ4F_isError(errorCode))
 				{
-					DKLog("Decompress Error : can't free LZ4F context resource : %s", LZ4F_getErrorName(errorCode));
+					DKLog("Decompress Error: can't free LZ4F context resource : %s", LZ4F_getErrorName(errorCode));
 				}
 			}
 		}
@@ -483,13 +537,13 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 					}
 					else if (err == Z_OK)
 					{
-						output = (Bytef*)DKMemoryDefaultAllocator::Realloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
-						if (output == NULL)
+						Bytef* tmp = (Bytef*)DKMemoryDefaultAllocator::Realloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
+						if (tmp == NULL)
 						{
-							DKERROR_THROW_DEBUG("DKMemoryDefaultAllocator::Realloc() failed!");
-							DKLog("ERROR: DKMemoryDefaultAllocator::Realloc() failed.");
+							DKLog("Decompress Error: OUT OF MEMORY!");
 							break;
 						}
+						output = tmp;
 
 						stream.avail_out += COMPRESS_DEFAULT_BLOCK;
 						stream.next_out = output + stream.total_out;
