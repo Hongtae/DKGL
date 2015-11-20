@@ -383,15 +383,40 @@ DKObject<DKBuffer> DKBuffer::Compress(const void* p, size_t len, DKCompressor co
 	DKObject<DKBuffer> result = NULL;
 	if (p && len > 0)
 	{
-		// Z_DEFAULT_COMPRESSION -> 6
-		int compressLevel = 9;
-		uLongf compressedSize = len + (len / 10) + 100;
-		void* compressed = DKMemoryDefaultAllocator::Alloc(compressedSize);
-		if (compress2((Bytef*)compressed, &compressedSize, (const Bytef*)p, len, compressLevel) == Z_OK)
+		if (compressor == DKCompressor::LZ4 || compressor == DKCompressor::LZ4HC)
 		{
-			result = DKBuffer::Create(compressed, compressedSize, alloc);
-		}		
-		DKMemoryDefaultAllocator::Free(compressed);
+			LZ4F_preferences_t prefs;
+			memset(&prefs, 0, sizeof(prefs));
+			prefs.autoFlush = 1;
+			prefs.compressionLevel = compressor == DKCompressor::LZ4 ? 0 : 9;	// 0 for LZ4 fast, 9 for LZ4HC
+			prefs.frameInfo.blockMode = LZ4F_blockLinked;	// for better compression ratio.
+			prefs.frameInfo.contentChecksumFlag = LZ4F_contentChecksumEnabled; // to detect data corruption.
+			prefs.frameInfo.contentSize = len;
+
+			size_t bufferSize = LZ4F_compressFrameBound(len, &prefs);
+			void* compressed = DKMemoryDefaultAllocator::Alloc(bufferSize);
+			size_t compressedSize = LZ4F_compressFrame(compressed, bufferSize, p, len, &prefs);
+			if (LZ4F_isError(compressedSize))
+			{
+				DKLog("Compression failed : %s", LZ4F_getErrorName(compressedSize));
+			}
+			else
+			{
+				result = DKBuffer::Create(compressed, compressedSize, alloc);
+			}
+			DKMemoryDefaultAllocator::Free(compressed);
+		}
+		else if (compressor == DKCompressor::Deflate)
+		{
+			int compressLevel = 9;	// Z_DEFAULT_COMPRESSION is 6
+			uLongf compressedSize = len + (len / 10) + 100;
+			void* compressed = DKMemoryDefaultAllocator::Alloc(compressedSize);
+			if (compress2((Bytef*)compressed, &compressedSize, (const Bytef*)p, len, compressLevel) == Z_OK)
+			{
+				result = DKBuffer::Create(compressed, compressedSize, alloc);
+			}
+			DKMemoryDefaultAllocator::Free(compressed);
+		}
 	}
 	return result;
 }

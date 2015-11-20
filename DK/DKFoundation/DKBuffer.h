@@ -29,9 +29,9 @@ namespace DKFoundation
 {
 	enum class DKCompressor
 	{
-		Deflate,
-		LZ4,
-		LZ4HC,
+		Deflate,	// good compression ratio.
+		LZ4,		// fastest but poor compression ratio.
+		LZ4HC,		// fast decompression, better compression ratio than LZ4.
 	};
 
 	class DKGL_API DKBuffer : public DKData
