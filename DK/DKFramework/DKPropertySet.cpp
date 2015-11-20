@@ -86,11 +86,15 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 						}
 						else if (pnode->nodes.Value(k)->Type() == DKXMLNode::NodeTypeCData)		// DKVariant-binary
 						{
-							DKObject<DKBuffer> data = DKBuffer::DecodeDecompress(pnode->nodes.Value(k).SafeCast<DKXMLCData>()->value);
-							if (data)
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(pnode->nodes.Value(k).SafeCast<DKXMLCData>()->value);
+							if (compressed)
 							{
-								DKDataStream stream(data);
-								value.ImportStream(&stream);
+								DKObject<DKBuffer> data = compressed->Decompress();
+								if (data)
+								{
+									DKDataStream stream(data);
+									value.ImportStream(&stream);
+								}
 							}
 						}
 					}
@@ -203,20 +207,24 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 				const DKBuffer* buffer = stream.BufferObject();
 				if (buffer && buffer->Length() > 0)
 				{
-					DKObject<DKXMLCData> value = DKObject<DKXMLCData>::New();
-					if (buffer->CompressEncode(value->value))
+					DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
+					if (compressed)
 					{
-						pnode = DKObject<DKXMLElement>::New();
-						pnode->name = L"Property";
+						DKObject<DKXMLCData> value = DKObject<DKXMLCData>::New();
+						if (compressed->Base64Encode(value->value))
+						{
+							pnode = DKObject<DKXMLElement>::New();
+							pnode->name = L"Property";
 
-						DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
-						key->name = L"Key";
-						DKObject<DKXMLPCData> keyPCData = DKObject<DKXMLPCData>::New();
-						keyPCData->value = pair.key;
-						key->nodes.Add(keyPCData.SafeCast<DKXMLNode>());						
+							DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
+							key->name = L"Key";
+							DKObject<DKXMLPCData> keyPCData = DKObject<DKXMLPCData>::New();
+							keyPCData->value = pair.key;
+							key->nodes.Add(keyPCData.SafeCast<DKXMLNode>());
 
-						pnode->nodes.Add(key.SafeCast<DKXMLNode>());
-						pnode->nodes.Add(value.SafeCast<DKXMLNode>());						
+							pnode->nodes.Add(key.SafeCast<DKXMLNode>());
+							pnode->nodes.Add(value.SafeCast<DKXMLNode>());
+						}
 					}
 				}
 			}

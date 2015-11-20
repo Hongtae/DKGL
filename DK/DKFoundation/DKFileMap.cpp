@@ -67,11 +67,14 @@ using namespace DKFoundation;
 
 DKFileMap::DKFileMap(void)
 	: mapContext(NULL)
+	, mappedPtr(NULL)
 {
 }
 
 DKFileMap::~DKFileMap(void)
 {
+	DKASSERT_DEBUG(mappedPtr == NULL);
+
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
 	if (ctxt)
 	{
@@ -115,7 +118,77 @@ DKFileMap::~DKFileMap(void)
 	}
 }
 
-void* DKFileMap::LockContent(void)
+const void* DKFileMap::LockShared(void) const
+{
+	lock.LockShared();
+	DKCriticalSection<DKSpinLock> guard(spinLock);
+	if (mappedPtr == NULL)
+		mappedPtr = MapContent();
+	return mappedPtr;
+}
+
+bool DKFileMap::TryLockShared(const void** ptr) const
+{
+	if (lock.TryLockShared())
+	{
+		DKCriticalSection<DKSpinLock> guard(spinLock);
+		if (mappedPtr == NULL)
+			mappedPtr = MapContent();
+
+		if (ptr)
+			*ptr = mappedPtr;
+		return true;
+	}
+	return false;
+}
+
+void DKFileMap::UnlockShared(void) const
+{
+	lock.UnlockShared();
+
+	if (lock.TryLock())
+	{
+		DKCriticalSection<DKSpinLock> guard(spinLock);
+		if (mappedPtr)
+			UnmapContent();
+		mappedPtr = NULL;
+		lock.Unlock();
+	}
+}
+
+void* DKFileMap::LockExclusive(void)
+{
+	lock.Lock();
+	DKCriticalSection<DKSpinLock> guard(spinLock);
+	if (mappedPtr == NULL)
+		mappedPtr = MapContent();
+	return mappedPtr;
+}
+
+bool DKFileMap::TryLockExclusive(void** ptr)
+{
+	if (lock.TryLock())
+	{
+		DKCriticalSection<DKSpinLock> guard(spinLock);
+		if (mappedPtr == NULL)
+			mappedPtr = MapContent();
+		if (ptr)
+			*ptr = mappedPtr;
+		return true;
+	}
+	return false;
+}
+
+void DKFileMap::UnlockExclusive(void)
+{
+	DKCriticalSection<DKSpinLock> guard(spinLock);
+	if (mappedPtr)
+		UnmapContent();
+	mappedPtr = NULL;
+	lock.Unlock();
+}
+
+void* DKFileMap::MapContent(void) const
 {
 	// map, commit
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
@@ -144,7 +217,7 @@ void* DKFileMap::LockContent(void)
 	return NULL;
 }
 
-void DKFileMap::UnlockContent(void)
+void DKFileMap::UnmapContent(void) const
 {
 	// unmap, decommit
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);

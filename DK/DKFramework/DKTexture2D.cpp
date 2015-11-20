@@ -728,37 +728,45 @@ bool DKTexture2D::Deserialize(const DKXMLElement* e, DKResourceLoader* loader)
 
 	if (content.Length() > 0)
 	{
-		DKObject<DKBuffer> data = DKBuffer::DecodeDecompress(content);
-		if (data)
+		DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(content);
+		if (compressed)
 		{
-			DKObject<DKTexture2D> tex = NULL;
-			Private::TextureInfo ti;
-			bool ret = Private::CreateTexture(data->LockShared(), data->Length(), ti);
-			data->UnlockShared();
-			if (ret)
+			DKObject<DKBuffer> data = compressed->Decompress();
+			if (data)
 			{
-				// reset object
-				if (this->resourceId)
-					glDeleteTextures(1, &this->resourceId);
+				DKObject<DKTexture2D> tex = NULL;
+				Private::TextureInfo ti;
+				bool ret = Private::CreateTexture(data->LockShared(), data->Length(), ti);
+				data->UnlockShared();
+				if (ret)
+				{
+					// reset object
+					if (this->resourceId)
+						glDeleteTextures(1, &this->resourceId);
 
-				this->SetName(objectName);
-				this->resourceId = ti.resourceId;
-				this->format = ti.format;
-				this->type = ti.type;
-				this->width = ti.width;
-				this->height = ti.height;
-				this->depth = 1;
-				this->components = ti.components;
-				return true;
+					this->SetName(objectName);
+					this->resourceId = ti.resourceId;
+					this->format = ti.format;
+					this->type = ti.type;
+					this->width = ti.width;
+					this->height = ti.height;
+					this->depth = 1;
+					this->components = ti.components;
+					return true;
+				}
+				else
+				{
+					DKLog("DKTexture2D::Deserialize error: Resource:%ls loaded, but cannot create image.\n", (const wchar_t*)objectName);
+				}
 			}
 			else
 			{
-				DKLog("DKTexture2D::Deserialize error: Resource:%ls loaded, but cannot create image.\n", (const wchar_t*)objectName);
+				DKLog("DKTexture2D::Deserialize error: Resource:%ls Cannot open data.", (const wchar_t*)objectName);
 			}
 		}
 		else
 		{
-			DKLog("DKTexture2D::Deserialize error: Resource:%ls Cannot open data.", (const wchar_t*)objectName);
+			DKLog("DKTexture2D::Deserialize error: Resource:%ls is invalid format.", (const wchar_t*)objectName);
 		}
 	}
 	return false;
@@ -798,9 +806,13 @@ DKObject<DKXMLElement> DKTexture2D::SerializeXML(DKSerializer::SerializeForm sf)
 				GLenum err = glGetError();
 				if (err != GL_NO_ERROR)
 				{
-					DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-					data.CompressEncode(cdata->value);
-					e->nodes.Add(cdata.SafeCast<DKXMLNode>());
+					DKObject<DKBuffer> compressed = data.Compress(DKCompressor::Deflate);
+					if (compressed)
+					{
+						DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+						compressed->Base64Encode(cdata->value);
+						e->nodes.Add(cdata.SafeCast<DKXMLNode>());
+					}
 				}
 				else
 				{

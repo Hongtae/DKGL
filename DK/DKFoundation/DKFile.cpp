@@ -791,12 +791,37 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 					DKLog("CloseHandle failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
 				}
 			}
-			void* LockContent(void)							{return &ptr[offset];}
-			void UnlockContent(void)						{}
+
 			size_t Length(void) const						{return length;}
 			virtual bool IsReadable(void) const				{return readable;}
 			virtual bool IsWritable(void) const				{return writable;}
 			virtual bool IsExcutable(void) const			{return false;}
+
+			const void* LockShared(void) const				{ lock.LockShared(); return &ptr[offset]; }
+			bool TryLockShared(const void** ptr) const
+			{
+				if (lock.TryLockShared())
+				{
+					if (ptr)
+						*ptr = &ptr[offset];
+					return true;
+				}
+				return false;
+			}
+			void UnlockShared(void) const					{ lock.UnlockShared(); }
+
+			void* LockExclusive(void)						{ lock.Lock(); return &ptr[offset]; }
+			bool TryLockExclusive(void** ptr)
+			{
+				if (lock.TryLock())
+				{
+					if (ptr)
+						*ptr = &ptr[offset];
+					return true;
+				}
+				return false;
+			}
+			void UnlockExclusive(void)						{ lock.Unlock(); }
 
 			size_t length;
 			size_t offset;
@@ -804,6 +829,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			bool writable;
 			HANDLE hMap;
 			unsigned char* ptr;
+			DKSharedLock lock;
 		};
 
 		bool readable = false;
@@ -867,17 +893,43 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 					DKLog("munmap failed:%s\n", strerror(errno));
 				}
 			}
-			void* LockContent(void)							{return &ptr[offset];}
-			void UnlockContent(void)						{}
+
 			size_t Length(void) const						{return length;}
-			virtual bool IsReadable(void) const				{return (prot & PROT_READ) != 0;}
-			virtual bool IsWritable(void) const				{return (prot & PROT_WRITE) != 0;}
-			virtual bool IsExcutable(void) const			{return false;}
+			bool IsReadable(void) const						{return (prot & PROT_READ) != 0;}
+			bool IsWritable(void) const						{return (prot & PROT_WRITE) != 0;}
+			bool IsExcutable(void) const					{return false;}
+
+			const void* LockShared(void) const				{ lock.LockShared(); return &ptr[offset]; }
+			bool TryLockShared(const void** ptr) const
+			{
+				if (lock.TryLockShared())
+				{
+					if (ptr)
+						*ptr = &ptr[offset];
+					return true;
+				}
+				return false;
+			}
+			void UnlockShared(void) const					{ lock.UnlockShared(); }
+
+			void* LockExclusive(void)						{ lock.Lock(); return &ptr[offset]; }
+			bool TryLockExclusive(void** ptr)
+			{
+				if (lock.TryLock())
+				{
+					if (ptr)
+						*ptr = &ptr[offset];
+					return true;
+				}
+				return false;
+			}
+			void UnlockExclusive(void)		{ lock.Unlock(); }
 
 			int prot;
 			size_t length;
 			size_t offset;
 			unsigned char* ptr;
+			DKSharedLock lock;
 		};
 
 		int prot = PROT_NONE;
