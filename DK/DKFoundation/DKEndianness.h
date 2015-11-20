@@ -95,20 +95,34 @@ namespace DKFoundation
 	////////////////////////////////////////////////////////////////////////////////
 	// runtime byte order test.
 	// using preprocessor macros at compile-time and validate in run-time.
-	enum class DKEndianness  // middle-endian is not supported.
+	enum class DKByteOrder  // middle-endian is not supported.
 	{
 		Unknown,
 		BigEndian,
 		LittleEndian,
 	};
-	DKEndianness DKRuntimeByteOrder(void);
+	inline DKByteOrder DKRuntimeByteOrder(void)
+	{
+		union
+		{
+			uint8_t c[4];
+			uint32_t i;
+		} val = { 0x01, 0x02, 0x03, 0x04 };
 
-	inline bool DKVerifyEndianness(void)
+		switch (val.i)
+		{
+			case 0x01020304U:	return DKByteOrder::BigEndian;		break;
+			case 0x04030201U:	return DKByteOrder::LittleEndian;	break;
+		}
+		return DKByteOrder::Unknown;
+	}
+
+	inline bool DKVerifyByteOrder(void)
 	{
 #if     defined(__BIG_ENDIAN__)
-		return DKRuntimeByteOrder() == DKEndianness::BigEndian;
+		return DKRuntimeByteOrder() == DKByteOrder::BigEndian;
 #elif  defined(__LITTLE_ENDIAN__)
-		return DKRuntimeByteOrder() == DKEndianness::LittleEndian;
+		return DKRuntimeByteOrder() == DKByteOrder::LittleEndian;
 #endif
 	}
 }

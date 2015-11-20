@@ -36,7 +36,6 @@ DKFOUNDATION_SRC := \
 	DKFoundation/DKDataStream.cpp \
 	DKFoundation/DKDateTime.cpp \
 	DKFoundation/DKDirectory.cpp \
-	DKFoundation/DKEndianness.cpp \
 	DKFoundation/DKError.cpp \
 	DKFoundation/DKFence.cpp \
 	DKFoundation/DKFile.cpp \

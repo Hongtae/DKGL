@@ -960,10 +960,6 @@
 		844C9C94171EB64000605E69 /* DKVoxel32Storage.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C9C8D171EB64000605E69 /* DKVoxel32Storage.h */; };
 		844C9C95171EB64000605E69 /* DKVoxelVolume.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C9C8E171EB64000605E69 /* DKVoxelVolume.h */; };
 		844C9C96171EB64000605E69 /* DKVoxelVolume.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C9C8E171EB64000605E69 /* DKVoxelVolume.h */; };
-		8459D4551BFA116900199EE5 /* DKEndianness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8459D4541BFA116900199EE5 /* DKEndianness.cpp */; };
-		8459D4561BFA208C00199EE5 /* DKEndianness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8459D4541BFA116900199EE5 /* DKEndianness.cpp */; };
-		8459D4571BFA208E00199EE5 /* DKEndianness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8459D4541BFA116900199EE5 /* DKEndianness.cpp */; };
-		8459D4581BFA208F00199EE5 /* DKEndianness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8459D4541BFA116900199EE5 /* DKEndianness.cpp */; };
 		8464DA74171C1C2A00E1E9CD /* DKVoxel32FileStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8464DA6D171C1C2A00E1E9CD /* DKVoxel32FileStorage.cpp */; };
 		8464DA75171C1C2A00E1E9CD /* DKVoxel32FileStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8464DA6D171C1C2A00E1E9CD /* DKVoxel32FileStorage.cpp */; };
 		8464DA76171C1C2A00E1E9CD /* DKVoxel32FileStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 8464DA6E171C1C2A00E1E9CD /* DKVoxel32FileStorage.h */; };
@@ -1525,7 +1521,6 @@
 		844FA8ED155DBF0700344694 /* DKList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKList.h; sourceTree = "<group>"; };
 		845422C8159314B000A0431D /* DKCircularQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKCircularQueue.h; sourceTree = "<group>"; };
 		84583C0D17D36FF4000F2186 /* Android.mk */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; lineEnding = 0; path = Android.mk; sourceTree = "<group>"; };
-		8459D4541BFA116900199EE5 /* DKEndianness.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKEndianness.cpp; sourceTree = "<group>"; };
 		8463F696148266B300CEA51E /* DKAudioListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAudioListener.cpp; sourceTree = "<group>"; };
 		8463F697148266B300CEA51E /* DKAudioListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAudioListener.h; sourceTree = "<group>"; };
 		8464DA6D171C1C2A00E1E9CD /* DKVoxel32FileStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKVoxel32FileStorage.cpp; sourceTree = "<group>"; };
@@ -2131,7 +2126,6 @@
 				84A1E4A0141DD4B70091D2C0 /* DKDirectory.cpp */,
 				84A1E4A1141DD4B70091D2C0 /* DKDirectory.h */,
 				84A1E4A2141DD4B70091D2C0 /* DKDummyLock.h */,
-				8459D4541BFA116900199EE5 /* DKEndianness.cpp */,
 				84B354FD15CF83EF00078470 /* DKEndianness.h */,
 				84A1E4A3141DD4B70091D2C0 /* DKError.cpp */,
 				84A1E4A4141DD4B70091D2C0 /* DKError.h */,
@@ -3462,7 +3456,6 @@
 				840CA6151928952800689BB6 /* DKSphereShape.cpp in Sources */,
 				840CA60A1928952800689BB6 /* DKShaderProgram.cpp in Sources */,
 				840CA61D1928952800689BB6 /* DKStaticTriangleMeshShape.cpp in Sources */,
-				8459D4571BFA208E00199EE5 /* DKEndianness.cpp in Sources */,
 				840CA5F01928952800689BB6 /* DKRect.cpp in Sources */,
 				840CA58A1928952800689BB6 /* DKAnimationController.cpp in Sources */,
 				840CA5FA1928952800689BB6 /* DKResourceLoader.cpp in Sources */,
@@ -3613,7 +3606,6 @@
 				84798BBB19E51E48009378A6 /* DKApplication.cpp in Sources */,
 				84798BF919E51E48009378A6 /* DKSkinMesh.cpp in Sources */,
 				84798BDA19E51E48009378A6 /* DKLinearTransform2.cpp in Sources */,
-				8459D4581BFA208F00199EE5 /* DKEndianness.cpp in Sources */,
 				84798C0419E51E48009378A6 /* DKTexture3D.cpp in Sources */,
 				84798BFD19E51E48009378A6 /* DKSphereShape.cpp in Sources */,
 				84798BD919E51E48009378A6 /* DKLine.cpp in Sources */,
@@ -3764,7 +3756,6 @@
 				8489263D18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */,
 				84211B921665E7FD00B9B9A2 /* DKDynamicsScene.cpp in Sources */,
 				840C3E35178D396E00F57A8D /* DKSharedLock.cpp in Sources */,
-				8459D4561BFA208C00199EE5 /* DKEndianness.cpp in Sources */,
 				84211B941665E7FD00B9B9A2 /* DKFixedConstraint.cpp in Sources */,
 				840C3E31178D396E00F57A8D /* DKOperationQueue.cpp in Sources */,
 				84211B961665E7FD00B9B9A2 /* DKFont.cpp in Sources */,
@@ -3915,7 +3906,6 @@
 				8489263C18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */,
 				84211AD91665E7FC00B9B9A2 /* DKDynamicsScene.cpp in Sources */,
 				840C3E11178D396D00F57A8D /* DKSharedLock.cpp in Sources */,
-				8459D4551BFA116900199EE5 /* DKEndianness.cpp in Sources */,
 				84211ADB1665E7FC00B9B9A2 /* DKFixedConstraint.cpp in Sources */,
 				840C3E0D178D396D00F57A8D /* DKOperationQueue.cpp in Sources */,
 				84211ADD1665E7FC00B9B9A2 /* DKFont.cpp in Sources */,
