@@ -1251,7 +1251,19 @@ namespace DKFoundation
 
 	DKGL_API void* DKMemoryPoolRealloc(void* p, size_t s)
 	{
-		return GetAllocatorPool()->Realloc(p, s);
+		if (p && s)
+		{
+			return GetAllocatorPool()->Realloc(p, s);
+		}
+		else if (p == NULL)
+		{
+			return GetAllocatorPool()->Alloc(s);
+		}
+		else if (s == 0)
+		{
+			GetAllocatorPool()->Dealloc(p);
+		}
+		return NULL;
 	}
 	
 	DKGL_API void DKMemoryPoolFree(void* p)
