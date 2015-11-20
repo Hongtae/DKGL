@@ -445,7 +445,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 
 		// LZ7 header: 0x184D2204 (little endian) or 0x184D2250~F for skippable frame
 		if (reinterpret_cast<const uint32_t*>(p)[0] == lz4_Header ||
-			(reinterpret_cast<const uint32_t*>(p)[0] & 0xfffffff0) == lz4_SkipHeader)
+			(reinterpret_cast<const uint32_t*>(p)[0] & 0xfffffff0U) == lz4_SkipHeader)
 		{
 			// LZ7 / LZ7HC
 			LZ4F_decompressionContext_t ctxt;
@@ -499,7 +499,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 							}
 						} while (nextToLoad);
 					}
-					else if ((header & 0xfffffff0) == lz4_SkipHeader)
+					else if ((header & 0xfffffff0U) == lz4_SkipHeader)
 					{
 						uint32_t bytesToSkip = reinterpret_cast<const uint32_t*>(&inData[processed])[0];
 						bytesToSkip = DKLittleEndianToSystem(bytesToSkip);

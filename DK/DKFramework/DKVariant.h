@@ -2,7 +2,7 @@
 //  File: DKVariant.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -68,7 +68,7 @@ namespace DKFramework
 			TypePairs		= 'pair',
 		};
 
-		typedef long long VInteger;
+		typedef int64_t VInteger;
 		typedef double VFloat;
 		typedef DKVector2 VVector2;
 		typedef DKVector3 VVector3;
@@ -85,19 +85,19 @@ namespace DKFramework
 		typedef DKFoundation::DKMap<VString, DKVariant> VPairs;
 
 		// structured data layout.
-		enum class StructElem : int8_t
+		enum class StructElem : uint8_t
 		{
 			// Arithmetic types are byte-ordered automatically.
-			Arithmetic1,	// int8_t, uint8_t
-			Arithmetic2,	// int16_t, uint16_t
-			Arithmetic4,	// int32_t, uint32_t, float
-			Arithmetic8,	// int64_t, uint64_t, double
+			Arithmetic1 = 0x01,	// int8_t, uint8_t
+			Arithmetic2 = 0x02,	// int16_t, uint16_t
+			Arithmetic4 = 0x04,	// int32_t, uint32_t, float
+			Arithmetic8 = 0x08,	// int64_t, uint64_t, double
 
-			// Raw types are not byte-ordered. (treat as 'char*' buffer)
-			Raw1,		// 1 byte item
-			Raw2,		// 2 bytes item
-			Raw4,		// 4 bytes item
-			Raw8,		// 8 bytes item
+			// Bypass (Raw) types are not byte-ordered. (treat as 'char*' buffer)
+			Bypass1 = 0xff,		// 1 byte item, (same as Arithmetic1)
+			Bypass2 = 0xfe,		// 2 bytes item
+			Bypass4 = 0xfc,		// 4 bytes item
+			Bypass8 = 0xf8,		// 8 bytes item
 		};
 		// VStructuredData: automatic-byte-order matching data.
 		// layout should be set properly. (describe item layout without padding)
@@ -160,7 +160,7 @@ namespace DKFramework
 		DKVariant& SetData(const VData& v);
 		DKVariant& SetData(const void* p, size_t s);
 		DKVariant& SetStructuredData(const VStructuredData& v);
-		DKVariant& SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem>);
+		DKVariant& SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem> layout);
 		DKVariant& SetArray(const VArray& v);
 		DKVariant& SetPairs(const VPairs& v);
 		DKVariant& SetValue(const DKVariant& v);
