@@ -63,15 +63,7 @@ namespace DKFramework
 		bool AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback*) const;
 
 	private:
-		struct QuantizedAabbNode // 16 bytes node
-		{
-			unsigned short aabbMin[3];
-			unsigned short aabbMax[3];
-			union {
-				int objectIndex;		// for leaf-node
-				int negativeTreeSize;	// for sub-node
-			};
-		};
+		struct QuantizedAabbNode; // 16 bytes node
 		void BuildInternal(void);
 		void BuildTree(QuantizedAabbNode* nodes, int count);
 

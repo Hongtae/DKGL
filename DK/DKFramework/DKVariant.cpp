@@ -114,6 +114,52 @@ namespace DKFramework
 			}
 			return false;
 		}
+		static bool ConvertStructuredDataByteOrder(VStructuredData& sd, DKByteOrder bo)
+		{
+			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.layout.Count() > 0)
+			{
+				size_t len = sd.data.Length();
+				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data.LockExclusive());
+				size_t pos = 0;
+				while (pos < len)
+				{
+					size_t n = 0;
+					uint8_t* p2 = &(p[pos]);
+					for (StructElem e : sd.layout)
+					{
+						uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
+						n += fieldSize;
+						if (n >= sd.elementSize)
+							break;
+
+						if ((static_cast<uint8_t>(e) & 0xf0) == 0)
+						{
+							switch (fieldSize)
+							{
+								case 1:
+									reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
+									break;
+								case 2:
+									reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
+									break;
+								case 4:
+									reinterpret_cast<uint32_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t*>(p2)[0]);
+									break;
+								case 8:
+									reinterpret_cast<uint64_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t*>(p2)[0]);
+									break;
+							}
+						}
+
+						p2 += fieldSize;
+					}
+					pos += sd.elementSize;
+				}
+				sd.data.UnlockExclusive();
+				return false;
+			}
+			return true;
+		}
 	}
 }
 
@@ -710,33 +756,11 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 				if (d)
 					this->Data() = static_cast<DKBuffer&&>(*d);
 			}
-
-#define VDATA_LEGACY_SUPPORT 1
-#if VDATA_LEGACY_SUPPORT
-			// check PCData again
-			if (this->Data().Length() == 0)
-			{
-				DKString value;
-				for (int i = 0; i < e->nodes.Count(); ++i)
-				{
-					if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypePCData)
-					{
-						value += e->nodes.Value(i).SafeCast<DKXMLPCData>()->value;
-					}
-				}
-				DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
-				if (compressed)
-				{
-					DKObject<DKBuffer> d = compressed->Decompress();
-					if (d)
-						this->Data() = static_cast<DKBuffer&&>(*d);
-				}
-			}
-#endif
 		}
 		else if (this->ValueType() == TypeStructData)
 		{
 			DKByteOrder dataByteOrder = DKRuntimeByteOrder();
+			VStructuredData& stData = this->StructuredData();
 
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
@@ -749,7 +773,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 						{
 							if (attr.name.CompareNoCase("elementSize") == 0)
 							{
-								this->StructuredData().elementSize = attr.value.ToUnsignedInteger();
+								stData.elementSize = attr.value.ToUnsignedInteger();
 							}
 							else if (attr.name.CompareNoCase("byteorder") == 0)
 							{
@@ -778,10 +802,10 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 							DKString s = elemStr.TrimWhitespaces();
 							StructElem el;
 							if (ConvertStringToStructElement(s, el))
-								this->StructuredData().layout.Add(el);
+								stData.layout.Add(el);
 							else
 							{
-								this->StructuredData().layout.Clear();
+								stData.layout.Clear();
 								DKLog("Warning: DKVariant::VStructuredData.layout is invalid!\n");
 								break;
 							}
@@ -803,12 +827,10 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 							DKObject<DKBuffer> data = compressed->Decompress();
 							if (data)
 							{
-								if (dataByteOrder == DKRuntimeByteOrder())	// no need to convert byte-order
+								stData.data = static_cast<DKBuffer&&>(*data); // move!
+								if (!ConvertStructuredDataByteOrder(stData, dataByteOrder))
 								{
-									this->StructuredData().data = static_cast<DKBuffer&&>(*data); // move!
-								}
-								else
-								{
+									DKLog("Error: DKVariant::VStructuredData data byte order error!\n");
 								}
 								break;
 							}
@@ -943,11 +965,17 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 //  -TypeMatrix3 = 36 (float x 9)
 //  -TypeMatrix4 = 64 (float x 16)
 //  -TypeQuaternion = 16 (float x 4)
+//
 // Variable length
 //  -TypeString
-//      Data: length(uint64), string(utf8)
+//      Data: length(uint64), utf8-string(uint8[length])
 //  -TypeData
-//      Data: size(uint64), bytes
+//      Data: length(uint64), bytes(uint8[length])
+//  -TypeStructData
+//      Header: elementSize(uint64), num-Layout(uint64), data-length(uint64)
+//      Layout-Data: layout-bytes(uint8[num-Layout])
+//      Content-Data: data-bytes(uint8[data-length])
+//
 // Containers
 //  -TypeArray
 //      Data: number of items(uint64), item1, item2, ...
@@ -968,6 +996,13 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 #else
 #define DKVARIANT_HEADER_STRING		DKVARIANT_HEADER_STRING_BIG_ENDIAN
 #endif
+
+#pragma pack(push, 4)
+
+static_assert(sizeof(uint32_t) == sizeof(float), "Size mismatch!");
+static_assert(sizeof(uint64_t) == sizeof(DKVariant::VFloat), "Size mismatch!");
+static_assert(sizeof(uint64_t) == sizeof(DKVariant::VInteger), "Size mismatch!");
+
 
 bool DKVariant::ExportStream(DKStream* stream) const
 {
@@ -1193,7 +1228,30 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypeStructData)
 		{
-			// TODO: implement here!
+			const VStructuredData& stData = this->StructuredData();
+			struct
+			{
+				uint64_t elementSize;
+				uint64_t numLayouts;
+				uint64_t dataLength;
+			} stInfo = { stData.elementSize, stData.layout.Count(), stData.data.Length() };
+			if (stream->Write(&stInfo, sizeof(stInfo)) != sizeof(stInfo))
+			{
+				errorDesc = L"Failed to write to stream.";
+				goto FAILED;
+			}
+			if (stream->Write(stData.layout, stInfo.numLayouts) != stInfo.numLayouts)
+			{
+				errorDesc = L"Failed to write to stream.";
+				goto FAILED;
+			}
+			if (stream->Write(stData.data.LockShared(), stInfo.dataLength) != stInfo.dataLength)
+			{
+				stData.data.UnlockShared();
+				errorDesc = L"Failed to write to stream.";
+				goto FAILED;
+			}
+			stData.data.UnlockShared();
 		}
 		else if (valueType == TypeArray)
 		{
@@ -1396,7 +1454,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeVector2)
 				{
-					unsigned int v[2];
+					uint32_t v[2];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1412,7 +1470,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeVector3)
 				{
-					unsigned int v[3];
+					uint32_t v[3];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1428,7 +1486,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeVector4)
 				{
-					unsigned int v[4];
+					uint32_t v[4];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1444,7 +1502,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeMatrix2)
 				{
-					unsigned int v[4];
+					uint32_t v[4];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1460,7 +1518,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeMatrix3)
 				{
-					unsigned int v[9];
+					uint32_t v[9];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1476,7 +1534,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeMatrix4)
 				{
-					unsigned int v[16];
+					uint32_t v[16];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1492,7 +1550,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeQuaternion)
 				{
-					unsigned int v[4];
+					uint32_t v[4];
 					if (stream->Read(v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1552,8 +1610,8 @@ bool DKVariant::ImportStream(DKStream* stream)
 				{
 					struct
 					{
-						int64_t s;
-						int32_t ms;
+						uint64_t s;
+						uint32_t ms;
 					} dt = {0LL, 0};
 
 					if (stream->Read(&dt, sizeof(dt)) != sizeof(dt))
@@ -1562,8 +1620,8 @@ bool DKVariant::ImportStream(DKStream* stream)
 						goto FAILED;
 					}
 
-					dt.s = byteorder(static_cast<uint64_t>(dt.s));
-					dt.ms = byteorder(static_cast<unsigned int>(dt.ms));
+					dt.s = byteorder(dt.s);
+					dt.ms = byteorder(dt.ms);
 
 					this->SetValueType(TypeDateTime).DateTime() = DKDateTime(dt.s, dt.ms);
 				}
@@ -1578,23 +1636,100 @@ bool DKVariant::ImportStream(DKStream* stream)
 					uint64_t len = byteorder(v);
 					if (len > 0)
 					{
-						DKBuffer& val = this->SetValueType(TypeData).Data();
-						val.SetContent(0, len);
-						void* p = val.LockExclusive();
-						if (stream->Read(p, len) != len)
+						if (stream->RemainLength() >= len)
 						{
+							VData val;
+							val.SetContent(0, len);
+							void* p = val.LockExclusive();
+							if (stream->Read(p, len) != len)
+							{
+								val.UnlockExclusive();
+								errorDesc = L"Failed to read from stream.";
+								goto FAILED;
+							}
 							val.UnlockExclusive();
-							errorDesc = L"Failed to read from stream.";
+							this->SetValueType(TypeData).Data() = static_cast<VData&&>(val);
+						}
+						else
+						{
+							errorDesc = L"Invalid stream length.";
 							goto FAILED;
 						}
-						val.UnlockExclusive();
 					}
 					else
 						this->SetValueType(TypeData).Data().SetContent(0);
 				}
 				else if (type == TypeStructData)
 				{
-					// TODO: implement here!
+					struct
+					{
+						uint64_t elementSize;
+						uint64_t numLayouts;
+						uint64_t dataLength;
+					} stInfo = { 0, 0, 0 };
+
+					if (stream->Read(&stInfo, sizeof(stInfo)) != sizeof(stInfo))
+					{
+						errorDesc = L"Failed to read from stream.";
+						goto FAILED;
+					}
+					stInfo.elementSize = byteorder(stInfo.elementSize);
+					stInfo.numLayouts = byteorder(stInfo.numLayouts);
+					stInfo.dataLength = byteorder(stInfo.dataLength);
+
+					VStructuredData stData;
+					stData.elementSize = stInfo.elementSize;
+					if (stInfo.numLayouts > 0)
+					{
+						if (stream->RemainLength() >= stInfo.numLayouts)
+						{
+							stData.layout.Resize(stInfo.numLayouts);
+							if (stream->Read(stData.layout, stInfo.numLayouts) != stInfo.numLayouts)
+							{
+								errorDesc = L"Failed to read from stream.";
+								goto FAILED;
+							}
+							if (!ValidateStructElementLayout(stData))
+							{
+								errorDesc = L"Failed to read from stream.";
+								goto FAILED;
+							}
+						}
+						else
+						{
+							errorDesc = L"Invalid stream length.";
+							goto FAILED;
+						}
+					}
+					if (stInfo.dataLength > 0)
+					{
+						if (stream->RemainLength() >= stInfo.dataLength)
+						{
+							stData.data.SetContent(0, stInfo.dataLength);
+							void* p = stData.data.LockExclusive();
+							if (stream->Read(p, stInfo.dataLength) != stInfo.dataLength)
+							{
+								stData.data.UnlockExclusive();
+								errorDesc = L"Failed to read from stream.";
+								goto FAILED;
+							}
+							stData.data.UnlockExclusive();
+						}
+						else
+						{
+							errorDesc = L"Invalid stream length.";
+							goto FAILED;
+						}
+					}
+					if (ConvertStructuredDataByteOrder(stData, littleEndian ? DKByteOrder::LittleEndian : DKByteOrder::BigEndian))
+					{
+						this->SetValueType(TypeStructData).StructuredData() = static_cast<VStructuredData&&>(stData);
+					}
+					else
+					{
+						errorDesc = L"Converting byte order failed.";
+						goto FAILED;
+					}
 				}
 				else if (type == TypeArray)
 				{
@@ -1692,6 +1827,7 @@ FAILED:
 	DKLog("DKVariant Error: %ls\n", (const wchar_t*)errorDesc);
 	return false;
 }
+#pragma pack(pop)
 
 DKVariant& DKVariant::operator = (const DKVariant& v)
 {

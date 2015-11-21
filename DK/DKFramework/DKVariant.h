@@ -41,7 +41,7 @@
 // DKVariant object can be serialized with XML or binary.
 ////////////////////////////////////////////////////////////////////////////////
 
-
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKGL_API DKVariant
@@ -214,3 +214,4 @@ namespace DKFramework
 		Type valueType;
 	};
 }
+#pragma pack(pop)

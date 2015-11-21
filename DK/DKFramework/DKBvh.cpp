@@ -10,10 +10,22 @@
 #include "DKMath.h"
 #include "DKBvh.h"
 
+#define MAX_NODE_COUNT (0x7fffffff >> 1)
+
 using namespace DKFoundation;
 using namespace DKFramework;
 
-#define MAX_NODE_COUNT (0x7fffffff >> 1)
+
+struct DKBvh::QuantizedAabbNode
+{
+	unsigned short aabbMin[3];
+	unsigned short aabbMax[3];
+	union {
+		int32_t objectIndex;		// for leaf-node
+		int32_t negativeTreeSize;	// for sub-node
+	};
+};
+
 
 DKBvh::DKBvh(void) : volume(NULL)
 {

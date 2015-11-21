@@ -20,7 +20,8 @@ namespace DKFoundation
 	class DKStream
 	{
 	public:
-		typedef int64_t Position;
+		using Position = uint64_t;
+		enum : Position { PositionError = (Position)-1 };
 
 		DKStream(void) {}
 		virtual ~DKStream(void) {}

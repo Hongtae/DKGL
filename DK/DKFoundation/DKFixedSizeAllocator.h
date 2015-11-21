@@ -25,7 +25,7 @@ namespace DKFoundation
 	template <
 		unsigned int UnitSize,				// allocation size (fixed size)
 		unsigned int Alignment = 1,			// byte alignment
-		unsigned int MaxUnits = 1024,			// max units per chunk
+		unsigned int MaxUnits = 1024,		// max units per chunk
 		typename Lock = DKSpinLock,
 		typename BaseAllocator = DKMemoryDefaultAllocator, // info table allocator. (small)
 		typename UnitAllocator = DKMemoryDefaultAllocator  // unit chunk allocator. (large)
@@ -40,12 +40,12 @@ namespace DKFoundation
 		static_assert((Alignment & (Alignment - 1)) == 0, "Alignment must be power of two.");
 
 		// maximum number of units per chunk.
-		enum : unsigned int { MaxUnitsPerChunk = MaxUnits };
-		enum : unsigned int { AlignedUnitSize = (UnitSize + (Alignment - 1)) & ~(Alignment - 1) };
+		enum : uint32_t { MaxUnitsPerChunk = MaxUnits };
+		enum : uint32_t { AlignedUnitSize = (UnitSize + (Alignment - 1)) & ~(Alignment - 1) };
 		union Unit
 		{
-			unsigned char data[AlignedUnitSize];
-			unsigned int nextUnitIndex;
+			uint8_t data[AlignedUnitSize];
+			uint32_t nextUnitIndex;
 		};
 		static_assert((sizeof(Unit) % Alignment) == 0, "Invalid unit alignment");
 
@@ -56,8 +56,8 @@ namespace DKFoundation
 		{
 			uintptr_t address;
 			Index freeUnitIndex;
-			unsigned short offset;
-			unsigned short occupied;
+			uint16_t offset;
+			uint16_t occupied;
 		};
 
 		// size of all units per chunk.

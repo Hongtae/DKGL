@@ -96,7 +96,8 @@ namespace DKFoundation
 				return source->Length();
 			return 0;
 		}
-		operator const void* (void)	{return data;}
+		const void* Bytes(void) const		{return data;}
+		operator const void* (void) const	{return data;}
 	private:
 		DKObject<DKData> source;
 		const void* data;
@@ -121,6 +122,7 @@ namespace DKFoundation
 				return source->Length();
 			return 0;
 		}
+		void* Bytes(void) const		{return data;}
 		operator void* (void)		{return data;}
 	private:
 		DKObject<DKData> source;

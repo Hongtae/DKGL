@@ -60,10 +60,10 @@ namespace DKFoundation
 			Value		value;
 			Node*		left;
 			Node*		right;
-			int			leftHeight;		// left-tree weights
-			int			rightHeight;	// right-tree weights
+			uint16_t	leftHeight;		// left-tree weights
+			uint16_t	rightHeight;	// right-tree weights
 
-			FORCEINLINE int Height(void) const
+			FORCEINLINE uint16_t Height(void) const
 			{
 				return leftHeight > rightHeight ? (leftHeight + 1) : (rightHeight + 1);
 			}
