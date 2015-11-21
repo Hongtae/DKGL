@@ -103,8 +103,8 @@ namespace DKFramework
 		// layout should be set properly. (describe item layout without padding)
 		struct VStructuredData
 		{
-			VData data;				// buffer object
-			size_t elementSize;		// element size (include alignment padding)
+			DKFoundation::DKBuffer data;	// buffer object
+			size_t elementSize;				// element size (include alignment padding)
 			DKFoundation::DKArray<StructElem> layout; // structured-element layout
 		};
 

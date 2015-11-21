@@ -2,7 +2,7 @@
 //  File: DKError.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 
@@ -492,7 +492,7 @@ namespace DKFoundation
 					dladdr(addr, &info);
 
 					DKError::StackFrame frame;
-					frame.module = (info.dli_fname) ? DKString(info.dli_fname) : DKString::EmptyString();
+					frame.module = (info.dli_fname) ? DKString(info.dli_fname) : DKString::empty;
 					frame.baseAddress = info.dli_fbase;
 
 					if (info.dli_sname)

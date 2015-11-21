@@ -2,7 +2,7 @@
 //  File: DKTimer.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -27,9 +27,9 @@
 
 namespace DKFoundation
 {
-	typedef unsigned long		DKTimeTick;		// counter type default.
-	typedef unsigned int		DKTimeTick32;	// 32bit counter type.
-	typedef unsigned long long	DKTimeTick64;	// 64bit counter type.
+	typedef int			DKTimeTick;		// counter type default.
+	typedef uint32_t	DKTimeTick32;	// 32bit counter type.
+	typedef uint64_t	DKTimeTick64;	// 64bit counter type.
 
 	class DKGL_API DKTimer
 	{

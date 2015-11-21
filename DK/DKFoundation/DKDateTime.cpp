@@ -2,7 +2,7 @@
 //  File: DKDateTime.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
@@ -41,7 +41,7 @@ namespace DKFoundation
 			{
 				union
 				{
-					long long ns100; // time since 1 Jan 1601 in 100ns units
+					int64_t ns100; // time since 1 Jan 1601 in 100ns units
 					FILETIME ft;
 				} timeUTC;
 
@@ -71,11 +71,11 @@ DKDateTime::DKDateTime(double d)
 {
 }
 
-DKDateTime::DKDateTime(long long s, int us)
+DKDateTime::DKDateTime(int64_t s, int32_t us)
 	: seconds(0), microseconds(0)
 {
-	seconds = Max(s, 0);
-	microseconds = Clamp(us, 0, 999999);
+	seconds = Max(s, int64_t(0));
+	microseconds = Clamp(us, int32_t(0), int32_t(999999));
 }
 
 DKDateTime::DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, bool utc)
@@ -223,22 +223,22 @@ int DKDateTime::Microsecond(void) const
 	return microseconds;
 }
 
-long long DKDateTime::DaysSinceEpoch(void) const
+int64_t DKDateTime::DaysSinceEpoch(void) const
 {
 	return seconds / (60*60*24);
 }
 
-long long DKDateTime::HoursSinceEpoch(void) const
+int64_t DKDateTime::HoursSinceEpoch(void) const
 {
 	return seconds / (60*60);
 }
 
-long long DKDateTime::MinutesSinceEpoch(void) const
+int64_t DKDateTime::MinutesSinceEpoch(void) const
 {
 	return seconds / 60;
 }
 
-long long DKDateTime::SecondsSinceEpoch(void) const
+int64_t DKDateTime::SecondsSinceEpoch(void) const
 {
 	return seconds;
 }
@@ -248,7 +248,7 @@ long DKDateTime::TimezoneOffset(void)
 	time_t utc = time(0);
 	struct tm date = *gmtime(&utc);
 	const time_t local = mktime(&date);
-	return static_cast<long>(static_cast<long long>(utc) - static_cast<long long>(local));
+	return static_cast<long>(static_cast<int64_t>(utc) - static_cast<int64_t>(local));
 }
 
 DKDateTime DKDateTime::operator + (double d) const
@@ -816,8 +816,8 @@ bool DKDateTime::GetDateTime(DKDateTime& dtOut, const DKString& str)
 
 	if (validDate)
 	{
-		int microseconds = 0;
-		long long secondsSinceEpoch = 0;
+		int32_t microseconds = 0;
+		int64_t secondsSinceEpoch = 0;
 
 		if (dateByCalendar)
 		{

@@ -53,10 +53,72 @@ namespace DKFramework
 				}
 			};
 		}
+
+		// utility functions for StructuredData
+		using StructElem = DKVariant::StructElem;
+		using VStructuredData = DKVariant::VStructuredData;
+		static bool IsValidStructElement(StructElem e)
+		{
+			switch (e)
+			{
+				case StructElem::Arithmetic1:
+				case StructElem::Arithmetic2:
+				case StructElem::Arithmetic4:
+				case StructElem::Arithmetic8:
+				case StructElem::Bypass1:
+				case StructElem::Bypass2:
+				case StructElem::Bypass4:
+				case StructElem::Bypass8:
+					return true;
+			}
+			return false;
+		}
+		static bool ValidateStructElementLayout(const VStructuredData& sd)
+		{
+			for (StructElem e : sd.layout)
+			{
+				if (!IsValidStructElement(e))
+					return false;
+			}
+			return true;
+		}
+		static DKString StructElementToString(StructElem e)
+		{
+			switch (e)
+			{
+				case StructElem::Arithmetic1:	return "a1"; break;
+				case StructElem::Arithmetic2:	return "a2"; break;
+				case StructElem::Arithmetic4:	return "a4"; break;
+				case StructElem::Arithmetic8:	return "a8"; break;
+				case StructElem::Bypass1:		return "b1"; break;
+				case StructElem::Bypass2:		return "b2"; break;
+				case StructElem::Bypass4:		return "b4"; break;
+				case StructElem::Bypass8:		return "b8"; break;
+			}
+			return DKString::empty;
+		}
+		static bool ConvertStringToStructElement(const DKString& s, StructElem& out)
+		{
+			if (s.Length() >= 2)
+			{
+				DKString::CharT v1 = s[0];
+				DKString::CharT v2 = s[1];
+				if (v1 == DKString::CharT('a') || v1 == DKString::CharT('b'))
+				{
+					if (v2 == DKString::CharT('1') ||
+						v2 == DKString::CharT('2') ||
+						v2 == DKString::CharT('4') ||
+						v2 == DKString::CharT('8'))
+						return true;
+				}
+			}
+			return false;
+		}
 	}
 }
 
 using namespace DKFramework;
+using namespace DKFramework::Private;
 
 
 DKVariant::DKVariant(Type t)
@@ -171,6 +233,13 @@ DKVariant::DKVariant(const VData& v)
 	this->SetData(v);
 }
 
+DKVariant::DKVariant(const VStructuredData& v)
+: valueType(TypeUndefined)
+{
+	memset(vblock, 0, sizeof(vblock));
+	this->SetStructuredData(v);
+}
+
 DKVariant::DKVariant(const VArray& v)
 	: valueType(TypeUndefined)
 {
@@ -221,49 +290,52 @@ DKVariant& DKVariant::SetValueType(Type t)
 	switch (valueType)
 	{
 	case TypeInteger:
-		Private::VariantBlock<VInteger, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VInteger, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeFloat:
-		Private::VariantBlock<VFloat, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VFloat, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeVector2:
-		Private::VariantBlock<VVector2, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VVector2, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeVector3:
-		Private::VariantBlock<VVector3, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VVector3, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeVector4:
-		Private::VariantBlock<VVector4, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VVector4, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeMatrix2:
-		Private::VariantBlock<VMatrix2, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VMatrix2, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeMatrix3:
-		Private::VariantBlock<VMatrix3, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VMatrix3, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeMatrix4:
-		Private::VariantBlock<VMatrix4, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VMatrix4, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeQuaternion:
-		Private::VariantBlock<VQuaternion, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VQuaternion, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeRational:
-		Private::VariantBlock<VRational, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VRational, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeString:
-		Private::VariantBlock<VString, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VString, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeData:
-		Private::VariantBlock<VData, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VData, sizeof(vblock)>::Dealloc(vblock);
+		break;
+	case TypeStructData:
+		VariantBlock<VStructuredData, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeDateTime:
-		Private::VariantBlock<VDateTime, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VDateTime, sizeof(vblock)>::Dealloc(vblock);
 		break;	
 	case TypeArray:
-		Private::VariantBlock<VArray, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VArray, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypePairs:
-		Private::VariantBlock<VPairs, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<VPairs, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	}
 	memset(vblock, 0, sizeof(vblock));
@@ -272,49 +344,52 @@ DKVariant& DKVariant::SetValueType(Type t)
 	switch (valueType)
 	{
 	case TypeInteger:
-		Private::VariantBlock<VInteger, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VInteger, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeFloat:
-		Private::VariantBlock<VFloat, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VFloat, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeVector2:
-		Private::VariantBlock<VVector2, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VVector2, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeVector3:
-		Private::VariantBlock<VVector3, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VVector3, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeVector4:
-		Private::VariantBlock<VVector4, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VVector4, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeMatrix2:
-		Private::VariantBlock<VMatrix2, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VMatrix2, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeMatrix3:
-		Private::VariantBlock<VMatrix3, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VMatrix3, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeMatrix4:
-		Private::VariantBlock<VMatrix4, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VMatrix4, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeQuaternion:
-		Private::VariantBlock<VQuaternion, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VQuaternion, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeRational:
-		Private::VariantBlock<VRational, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VRational, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeString:
-		Private::VariantBlock<VString, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VString, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeData:
-		Private::VariantBlock<VData, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VData, sizeof(vblock)>::Alloc(vblock);
+		break;
+	case TypeStructData:
+		VariantBlock<VStructuredData, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeDateTime:
-		Private::VariantBlock<VDateTime, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VDateTime, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeArray:
-		Private::VariantBlock<VArray, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VArray, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypePairs:
-		Private::VariantBlock<VPairs, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<VPairs, sizeof(vblock)>::Alloc(vblock);
 		break;
 	}
 	return *this;
@@ -349,6 +424,7 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 	case TypeString:			attrType.value = L"string";			break;
 	case TypeDateTime:			attrType.value = L"datetime";		break;
 	case TypeData:				attrType.value = L"data";			break;
+	case TypeStructData:		attrType.value = L"structdata";		break;
 	case TypeArray:				attrType.value = L"array";			break;
 	case TypePairs:				attrType.value = L"pairs";			break;
 	default:					attrType.value = L"undefined";		break;
@@ -387,6 +463,58 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 				e->nodes.Add(node.SafeCast<DKXMLNode>());
 			}
 		});
+	}
+	else if (valueType == TypeData)
+	{
+		DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+		DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
+		if (compressed)
+			compressed->Base64Encode(cdata->value);
+		e->nodes.Add(cdata.SafeCast<DKXMLCData>());
+	}
+	else if (valueType == TypeStructData)
+	{
+		const VStructuredData& stData = this->StructuredData();
+		DKXMLAttribute byteorder, elementSize;
+		byteorder.name = "byteorder";
+		byteorder.value = (DKRuntimeByteOrder() == DKByteOrder::BigEndian) ? "BE" : "LE";
+		elementSize.name = "elementSize";
+		elementSize.value = DKString::Format("%llu", stData.elementSize);
+
+		DKObject<DKXMLElement> layout = DKObject<DKXMLElement>::New();
+		layout->name = "layout";
+		layout->attributes.Add(elementSize);
+		layout->attributes.Add(byteorder);
+
+		if (stData.layout.Count())
+		{
+			if (ValidateStructElementLayout(stData))
+			{
+				DKObject<DKXMLPCData> layoutData = DKObject<DKXMLPCData>::New();
+				layoutData->value = StructElementToString(stData.layout.Value(0));
+
+				size_t numElements = stData.layout.Count();
+				for (size_t i = 1; i < numElements; ++i)
+				{
+					layoutData->value.Append(DKString::Format(", %ls",
+						(const wchar_t*)StructElementToString(stData.layout.Value(i))));
+				}
+				layout->nodes.Add(layoutData.SafeCast<DKXMLNode>());
+			}
+			else
+			{
+				DKLog("Warning: DKVariant::VStructuredData.layout is invalid!\n");
+			}
+		}
+		e->nodes.Add(layout.SafeCast<DKXMLNode>());
+
+		DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+		DKObject<DKBuffer> compressed = stData.data.Compress(DKCompressor::Deflate);
+		if (compressed)
+		{
+			compressed->Base64Encode(cdata->value);
+		}
+		e->nodes.Add(cdata.SafeCast<DKXMLNode>());
 	}
 	else
 	{
@@ -448,12 +576,6 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		{
 			data = this->DateTime().FormatISO8601();
 		}
-		else if (valueType == TypeData)
-		{
-			DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
-			if (compressed)
-				compressed->Base64Encode(data);
-		}
 		if (data.Length() > 0)
 		{
 			DKObject<DKXMLPCData> pcdata = DKObject<DKXMLPCData>::New();
@@ -502,6 +624,8 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 					this->SetValueType(TypeDateTime);
 				else if (attr.value.CompareNoCase(L"data") == 0)
 					this->SetValueType(TypeData);
+				else if (attr.value.CompareNoCase(L"structdata") == 0)
+					this->SetValueType(TypeStructData);
 				else if (attr.value.CompareNoCase(L"array") == 0)
 					this->SetValueType(TypeArray);
 				else if (attr.value.CompareNoCase(L"pairs") == 0)
@@ -524,7 +648,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 					}
 				}
 			}
-			this->Array() = va;
+			this->Array() = static_cast<VArray&&>(va);
 		}
 		else if (this->ValueType() == TypePairs)
 		{
@@ -566,25 +690,146 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 					}
 				}
 			}
-			this->Pairs() = vm;
+			this->Pairs() = static_cast<VPairs&&>(vm);
+		}
+		else if (this->ValueType() == TypeData)
+		{
+			DKStringU8 value;
+			for (int i = 0; i < e->nodes.Count(); ++i)
+			{
+				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				{
+					value = e->nodes.Value(i).SafeCast<DKXMLCData>()->value;
+					break;
+				}
+			}
+			DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
+			if (compressed)
+			{
+				DKObject<DKBuffer> d = compressed->Decompress();
+				if (d)
+					this->Data() = static_cast<DKBuffer&&>(*d);
+			}
+
+#define VDATA_LEGACY_SUPPORT 1
+#if VDATA_LEGACY_SUPPORT
+			// check PCData again
+			if (this->Data().Length() == 0)
+			{
+				DKString value;
+				for (int i = 0; i < e->nodes.Count(); ++i)
+				{
+					if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypePCData)
+					{
+						value += e->nodes.Value(i).SafeCast<DKXMLPCData>()->value;
+					}
+				}
+				DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
+				if (compressed)
+				{
+					DKObject<DKBuffer> d = compressed->Decompress();
+					if (d)
+						this->Data() = static_cast<DKBuffer&&>(*d);
+				}
+			}
+#endif
+		}
+		else if (this->ValueType() == TypeStructData)
+		{
+			DKByteOrder dataByteOrder = DKRuntimeByteOrder();
+
+			for (int i = 0; i < e->nodes.Count(); ++i)
+			{
+				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				{
+					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					if (node->name.CompareNoCase(L"layout") == 0)
+					{
+						for (const DKXMLAttribute& attr : node->attributes)
+						{
+							if (attr.name.CompareNoCase("elementSize") == 0)
+							{
+								this->StructuredData().elementSize = attr.value.ToUnsignedInteger();
+							}
+							else if (attr.name.CompareNoCase("byteorder") == 0)
+							{
+								if (attr.value.CompareNoCase("BE") == 0)
+									dataByteOrder = DKByteOrder::BigEndian;
+								else if (attr.value.CompareNoCase("LE") == 0)
+									dataByteOrder = DKByteOrder::LittleEndian;
+							}
+						}
+
+						DKString layoutData;
+						for (int j = 0; j < node->nodes.Count(); ++j)
+						{
+							if (node->nodes.Value(j)->Type() == DKXMLNode::NodeTypePCData)
+							{
+								const DKXMLPCData* pcData = node->nodes.Value(j).SafeCast<DKXMLPCData>();
+								if (pcData)
+								{
+									layoutData.Append(pcData->value);
+								}
+							}
+						}
+						DKString::StringArray layoutStrArray = layoutData.Split(L",");
+						for (DKString& elemStr : layoutStrArray)
+						{
+							DKString s = elemStr.TrimWhitespaces();
+							StructElem el;
+							if (ConvertStringToStructElement(s, el))
+								this->StructuredData().layout.Add(el);
+							else
+							{
+								this->StructuredData().layout.Clear();
+								DKLog("Warning: DKVariant::VStructuredData.layout is invalid!\n");
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+			for (int i = 0; i < e->nodes.Count(); ++i)
+			{
+				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				{
+					const DKXMLCData* cData = e->nodes.Value(i).SafeCast<DKXMLCData>();
+					if (cData)
+					{
+						DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(cData->value);
+						if (compressed)
+						{
+							DKObject<DKBuffer> data = compressed->Decompress();
+							if (data)
+							{
+								if (dataByteOrder == DKRuntimeByteOrder())	// no need to convert byte-order
+								{
+									this->StructuredData().data = static_cast<DKBuffer&&>(*data); // move!
+								}
+								else
+								{
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 		else if (this->ValueType() != TypeUndefined)
 		{
 			DKString value = L"";
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypePCData)
 				{
-					value += e->nodes.Value(i).SafeCast<DKXMLCData>()->value;
-				}
-				else if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypePCData)
-				{
-					value += e->nodes.Value(i).SafeCast<DKXMLPCData>()->value;
+					value.Append(e->nodes.Value(i).SafeCast<DKXMLPCData>()->value);
 				}
 			}
 			if (this->ValueType() == TypeString)
 			{
-				this->String() = value;
+				this->String() = static_cast<DKString&&>(value);
 			}
 			else if (this->ValueType() == TypeRational)
 			{
@@ -599,18 +844,6 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 				if (!DKDateTime::GetDateTime(this->DateTime(), value))
 				{
 					this->DateTime() = DKDateTime(0,0);
-				}
-			}
-			else if (this->ValueType() == TypeData)
-			{
-				DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
-				if (compressed)
-				{
-					DKObject<DKBuffer> d = compressed->Decompress();
-					if (d)
-						this->Data().SetContent(d);
-					else
-						this->Data().SetContent(0);
 				}
 			}
 			else if (this->ValueType() == TypeInteger)
@@ -700,7 +933,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 // Data Size by Type
 // Fixed length (bytes),
 //  -TypeUndefined = 0
-//  -TypeInteger = 8 (long long)
+//  -TypeInteger = 8 (int64)
 //  -TypeDateTime = 12 (int64+int32)
 //  -TypeFloat = 8 (double, 8bytes)
 //  -TypeVector2 = 8 (float x 2)
@@ -763,6 +996,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 	case TypeString:
 	case TypeDateTime:
 	case TypeData:
+	case TypeStructData:
 	case TypeArray:
 	case TypePairs:
 		validType = true;
@@ -793,7 +1027,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypeInteger)
 		{
-			unsigned long long v = static_cast<unsigned long long>(this->Integer());
+			uint64_t v = static_cast<uint64_t>(this->Integer());
 			if (stream->Write(&v, sizeof(v)) != sizeof(v))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -803,7 +1037,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeFloat)
 		{
 			VFloat value = this->Float();
-			unsigned long long v = (*reinterpret_cast<unsigned long long*>(&value));
+			uint64_t v = (*reinterpret_cast<uint64_t*>(&value));
 			if (stream->Write(&v, sizeof(v)) != sizeof(v))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -898,7 +1132,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			struct
 			{
-				long long n, d;
+				int64_t n, d;
 			} r = {this->Rational().Numerator(), this->Rational().Denominator()};
 			
 			if (stream->Write(&r, sizeof(r)) != sizeof(r))
@@ -910,7 +1144,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeString)
 		{
 			DKStringU8 str(this->String());
-			unsigned long long len = str.Bytes();
+			uint64_t len = str.Bytes();
 			if (stream->Write(&len, sizeof(len)) != sizeof(len))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -926,8 +1160,8 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			struct
 			{
-				long long s;
-				int ms;
+				int64_t s;
+				int32_t ms;
 			} dt = {
 				this->DateTime().SecondsSinceEpoch(),
 				this->DateTime().Microsecond()
@@ -942,7 +1176,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeData)
 		{
 			const void* ptr = this->Data().LockShared();
-			unsigned long long len = this->Data().Length();
+			uint64_t len = this->Data().Length();
 			if (stream->Write(&len, sizeof(len)) != sizeof(len))
 			{
 				this->Data().UnlockShared();
@@ -957,10 +1191,14 @@ bool DKVariant::ExportStream(DKStream* stream) const
 			}
 			this->Data().UnlockShared();
 		}
+		else if (valueType == TypeStructData)
+		{
+			// TODO: implement here!
+		}
 		else if (valueType == TypeArray)
 		{
 			const VArray& a = this->Array();
-			unsigned long long len = a.Count();
+			uint64_t len = a.Count();
 			if (stream->Write(&len, sizeof(len)) != sizeof(len))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -981,7 +1219,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 			a.Reserve(this->Pairs().Count());
 			this->Pairs().EnumerateForward([&a](const VPairs::Pair& pair) {a.Add(&pair);});
 
-			unsigned long long len = a.Count();
+			uint64_t len = a.Count();
 			if (stream->Write(&len, sizeof(len)) != sizeof(len))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -992,7 +1230,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 				const VPairs::Pair* pair = a.Value(i);
 				DKStringU8 key(pair->key);
 
-				unsigned long long keyLen = key.Bytes();
+				uint64_t keyLen = key.Bytes();
 				if (stream->Write(&keyLen, sizeof(keyLen)) != sizeof(keyLen))		// key length
 				{
 					errorDesc = L"Failed to write to stream.";
@@ -1123,6 +1361,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 			case TypeString:
 			case TypeDateTime:
 			case TypeData:
+			case TypeStructData:
 			case TypeArray:
 			case TypePairs:
 				validType = true;
@@ -1136,7 +1375,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeInteger)
 				{
-					unsigned long long v;
+					uint64_t v;
 					if (stream->Read(&v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1146,7 +1385,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypeFloat)
 				{
-					unsigned long long v;
+					uint64_t v;
 					if (stream->Read(&v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
@@ -1271,7 +1510,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				{
 					struct
 					{
-						long long n,d;
+						int64_t n,d;
 					} r = {0LL, 0LL};
 
 					if (stream->Read(&r, sizeof(r)) != sizeof(r))
@@ -1280,20 +1519,20 @@ bool DKVariant::ImportStream(DKStream* stream)
 						goto FAILED;
 					}
 
-					r.n = byteorder(static_cast<unsigned long long>(r.n));
-					r.d = byteorder(static_cast<unsigned long long>(r.d));
+					r.n = byteorder(static_cast<uint64_t>(r.n));
+					r.d = byteorder(static_cast<uint64_t>(r.d));
 
 					this->SetValueType(TypeRational).Rational() = VRational(r.n, r.d);
 				}
 				else if (type == TypeString)
 				{
-					unsigned long long v;
+					uint64_t v;
 					if (stream->Read(&v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
 						goto FAILED;
 					}
-					unsigned long long len = byteorder(v);
+					uint64_t len = byteorder(v);
 					DKString str = L"";
 					if (len > 0)
 					{
@@ -1307,14 +1546,14 @@ bool DKVariant::ImportStream(DKStream* stream)
 						str.SetValue((const DKUniChar8*)p, len);
 						DKMemoryDefaultAllocator::Free(p);
 					}
-					this->SetValueType(TypeString).String() = str;
+					this->SetValueType(TypeString).String() = static_cast<DKString&&>(str);
 				}
 				else if (type == TypeDateTime)
 				{
 					struct
 					{
-						long long s;
-						int ms;
+						int64_t s;
+						int32_t ms;
 					} dt = {0LL, 0};
 
 					if (stream->Read(&dt, sizeof(dt)) != sizeof(dt))
@@ -1323,20 +1562,20 @@ bool DKVariant::ImportStream(DKStream* stream)
 						goto FAILED;
 					}
 
-					dt.s = byteorder(static_cast<unsigned long long>(dt.s));
+					dt.s = byteorder(static_cast<uint64_t>(dt.s));
 					dt.ms = byteorder(static_cast<unsigned int>(dt.ms));
 
 					this->SetValueType(TypeDateTime).DateTime() = DKDateTime(dt.s, dt.ms);
 				}
 				else if (type == TypeData)
 				{
-					unsigned long long v;
+					uint64_t v;
 					if (stream->Read(&v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
 						goto FAILED;
 					}
-					unsigned long long len = byteorder(v);
+					uint64_t len = byteorder(v);
 					if (len > 0)
 					{
 						DKBuffer& val = this->SetValueType(TypeData).Data();
@@ -1353,20 +1592,24 @@ bool DKVariant::ImportStream(DKStream* stream)
 					else
 						this->SetValueType(TypeData).Data().SetContent(0);
 				}
+				else if (type == TypeStructData)
+				{
+					// TODO: implement here!
+				}
 				else if (type == TypeArray)
 				{
-					unsigned long long v;
+					uint64_t v;
 					if (stream->Read(&v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
 						goto FAILED;
 					}
-					unsigned long long len = byteorder(v);
+					uint64_t len = byteorder(v);
 					VArray val;
 					if (len > 0)
 					{
 						val.Reserve(len);
-						for (unsigned long long i = 0; i < len; ++i)
+						for (uint64_t i = 0; i < len; ++i)
 						{
 							DKVariant v;
 							if (v.ImportStream(stream) == false)
@@ -1381,17 +1624,17 @@ bool DKVariant::ImportStream(DKStream* stream)
 				}
 				else if (type == TypePairs)
 				{
-					unsigned long long v;
+					uint64_t v;
 					if (stream->Read(&v, sizeof(v)) != sizeof(v))
 					{
 						errorDesc = L"Failed to read from stream.";
 						goto FAILED;
 					}
-					unsigned long long len = byteorder(v);
+					uint64_t len = byteorder(v);
 					VPairs val;
-					for (unsigned long long i = 0; i < len; ++i)
+					for (uint64_t i = 0; i < len; ++i)
 					{
-						unsigned long long keyLen;
+						uint64_t keyLen;
 						if (stream->Read(&keyLen, sizeof(keyLen)) != sizeof(keyLen))
 						{
 							errorDesc = L"Failed to read from stream.";
@@ -1473,7 +1716,7 @@ DKVariant::VInteger& DKVariant::Integer(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeInteger);
 	DKASSERT_DEBUG(ValueType() == TypeInteger);
-	return Private::VariantBlock<VInteger, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VInteger, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VInteger& DKVariant::Integer(void) const
@@ -1485,7 +1728,7 @@ DKVariant::VFloat& DKVariant::Float(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeFloat);
 	DKASSERT_DEBUG(ValueType() == TypeFloat);
-	return Private::VariantBlock<VFloat, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VFloat, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VFloat& DKVariant::Float(void) const
@@ -1497,7 +1740,7 @@ DKVariant::VVector2& DKVariant::Vector2(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector2);
 	DKASSERT_DEBUG(ValueType() == TypeVector2);
-	return Private::VariantBlock<VVector2, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VVector2, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VVector2& DKVariant::Vector2(void) const
@@ -1509,7 +1752,7 @@ DKVariant::VVector3& DKVariant::Vector3(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector3);
 	DKASSERT_DEBUG(ValueType() == TypeVector3);
-	return Private::VariantBlock<VVector3, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VVector3, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VVector3& DKVariant::Vector3(void) const
@@ -1521,7 +1764,7 @@ DKVariant::VVector4& DKVariant::Vector4(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector4);
 	DKASSERT_DEBUG(ValueType() == TypeVector4);
-	return Private::VariantBlock<VVector4, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VVector4, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VVector4& DKVariant::Vector4(void) const
@@ -1533,7 +1776,7 @@ DKVariant::VMatrix2& DKVariant::Matrix2(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix2);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix2);
-	return Private::VariantBlock<VMatrix2, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VMatrix2, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VMatrix2& DKVariant::Matrix2(void) const
@@ -1545,7 +1788,7 @@ DKVariant::VMatrix3& DKVariant::Matrix3(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix3);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix3);
-	return Private::VariantBlock<VMatrix3, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VMatrix3, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VMatrix3& DKVariant::Matrix3(void) const
@@ -1557,7 +1800,7 @@ DKVariant::VMatrix4& DKVariant::Matrix4(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix4);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix4);
-	return Private::VariantBlock<VMatrix4, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VMatrix4, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VMatrix4& DKVariant::Matrix4(void) const
@@ -1569,7 +1812,7 @@ DKVariant::VQuaternion& DKVariant::Quaternion(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeQuaternion);
 	DKASSERT_DEBUG(ValueType() == TypeQuaternion);
-	return Private::VariantBlock<VQuaternion, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VQuaternion, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VQuaternion& DKVariant::Quaternion(void) const
@@ -1581,7 +1824,7 @@ DKVariant::VRational& DKVariant::Rational(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeRational);
 	DKASSERT_DEBUG(ValueType() == TypeRational);
-	return Private::VariantBlock<VRational, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VRational, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VRational& DKVariant::Rational(void) const
@@ -1593,7 +1836,7 @@ DKVariant::VString& DKVariant::String(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeString);
 	DKASSERT_DEBUG(ValueType() == TypeString);
-	return Private::VariantBlock<VString, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VString, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VString& DKVariant::String(void) const
@@ -1605,7 +1848,7 @@ DKVariant::VDateTime& DKVariant::DateTime(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeDateTime);
 	DKASSERT_DEBUG(ValueType() == TypeDateTime);
-	return Private::VariantBlock<VDateTime, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VDateTime, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VDateTime& DKVariant::DateTime(void) const
@@ -1617,7 +1860,7 @@ DKVariant::VData& DKVariant::Data(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeData);
 	DKASSERT_DEBUG(ValueType() == TypeData);
-	return Private::VariantBlock<VData, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VData, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VData& DKVariant::Data(void) const
@@ -1629,7 +1872,7 @@ DKVariant::VArray& DKVariant::Array(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeArray);
 	DKASSERT_DEBUG(ValueType() == TypeArray);
-	return Private::VariantBlock<VArray, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VArray, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VArray& DKVariant::Array(void) const
@@ -1641,7 +1884,7 @@ DKVariant::VPairs& DKVariant::Pairs(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypePairs);
 	DKASSERT_DEBUG(ValueType() == TypePairs);
-	return Private::VariantBlock<VPairs, sizeof(vblock)>::Value(vblock);
+	return VariantBlock<VPairs, sizeof(vblock)>::Value(vblock);
 }
 
 const DKVariant::VPairs& DKVariant::Pairs(void) const

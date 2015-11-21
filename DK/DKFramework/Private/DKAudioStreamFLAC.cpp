@@ -23,8 +23,8 @@ namespace DKFramework
 			FLAC__StreamDecoder* decoder;
 			DKObject<DKStream> stream;
 
-			unsigned long long totalSamples;
-			unsigned long long sampleNumber;
+			FLAC__uint64 totalSamples;
+			FLAC__uint64 sampleNumber;
 			unsigned int sampleRate;
 			unsigned int channels;
 			unsigned int bps;

@@ -387,8 +387,8 @@ namespace DKFoundation
 
 		static void HashDigest512(HashContext* ctx, const void* p, size_t count)
 		{
-			unsigned long long A,B,C,D,E,F,G,H;
-			static const unsigned long long K[] = {
+			uint64_t A,B,C,D,E,F,G,H;
+			static const uint64_t K[] = {
 				0x428a2f98d728ae22ULL, 0x7137449123ef65cdULL, 0xb5c0fbcfec4d3b2fULL, 0xe9b5dba58189dbbcULL, 
 				0x3956c25bf348b538ULL, 0x59f111f1b605d019ULL, 0x923f82a4af194f9bULL, 0xab1c5ed5da6d8118ULL, 
 				0xd807aa98a3030242ULL, 0x12835b0145706fbeULL, 0x243185be4ee4b28cULL, 0x550c7dc3d5ffb4e2ULL, 
@@ -410,7 +410,7 @@ namespace DKFoundation
 				0x28db77f523047d84ULL, 0x32caab7b40c72493ULL, 0x3c9ebe0a15c9bebcULL, 0x431d67c49c100d4cULL, 
 				0x4cc5d4becb3e42b6ULL, 0x597f299cfc657e2aULL, 0x5fcb6fab3ad6faecULL, 0x6c44198c4a475817ULL
 			};
-			unsigned long long W[80];
+			uint64_t W[80];
 			for (unsigned int i = 0; i < count; i++)
 			{
 				A = ctx->hash64[0];
@@ -428,15 +428,15 @@ namespace DKFoundation
 				}
 				for (int x = 16; x < 80; x++)
 				{
-					unsigned long long s0 = HASH_RIGHT_ROTATE64(W[x-15],1) ^ HASH_RIGHT_ROTATE64(W[x-15],8) ^ (W[x-15] >> 7);
-					unsigned long long s1 = HASH_RIGHT_ROTATE64(W[x-2],19) ^ HASH_RIGHT_ROTATE64(W[x-2],61) ^ (W[x-2] >> 6);
+					uint64_t s0 = HASH_RIGHT_ROTATE64(W[x-15],1) ^ HASH_RIGHT_ROTATE64(W[x-15],8) ^ (W[x-15] >> 7);
+					uint64_t s1 = HASH_RIGHT_ROTATE64(W[x-2],19) ^ HASH_RIGHT_ROTATE64(W[x-2],61) ^ (W[x-2] >> 6);
 					W[x] = W[x-16] + s0 + W[x-7] + s1;
 				}
 
-				unsigned long long s0, s1;
-				unsigned long long maj;
-				unsigned long long t1, t2;
-				unsigned long long ch;
+				uint64_t s0, s1;
+				uint64_t maj;
+				uint64_t t1, t2;
+				uint64_t ch;
 				for (int n = 0; n < 80; n++)
 				{
 					s0 = HASH_RIGHT_ROTATE64(A,28) ^ HASH_RIGHT_ROTATE64(A,34) ^ HASH_RIGHT_ROTATE64(A,39);
@@ -481,15 +481,15 @@ namespace DKFoundation
 
 			if (baseTypeSize > 4)
 			{
-				unsigned long long len2 = ctx->low + (((unsigned long long)len) << 3);
+				uint64_t len2 = ctx->low + (((uint64_t)len) << 3);
 				if (len2 < ctx->low) // overflow!
 					ctx->high++;
-				ctx->high += ((unsigned long long)len) >> 61;
+				ctx->high += ((uint64_t)len) >> 61;
 				ctx->low = len2;
 			}
 			else
 			{
-				ctx->low += ((unsigned long long)len) << 3;
+				ctx->low += ((uint64_t)len) << 3;
 			}
 
 			size_t n = ctx->num;
@@ -508,7 +508,7 @@ namespace DKFoundation
 				else
 				{
 					memcpy(ctx->data8 + n, data, len);
-					ctx->num += (unsigned int)len;
+					ctx->num += (uint32_t)len;
 					return;
 				}
 			}
@@ -522,7 +522,7 @@ namespace DKFoundation
 			}
 			if (len != 0)
 			{
-				ctx->num = (unsigned int)len;
+				ctx->num = (uint32_t)len;
 				memcpy(ctx->data8, data, len);
 			}
 		}

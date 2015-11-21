@@ -1112,7 +1112,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 		unsigned int		type;
 		unsigned int		cType;				// CRC or container type
 		DKObject<DKData>	data;
-		unsigned long long 	unpackedSize;		// original length
+		uint64_t 	unpackedSize;		// original length
 		bool Create(const DKString& key, const DKString& ckey, unsigned int type, unsigned int ctype, DKData* rawData, bool compress)
 		{
 			if (rawData)
@@ -1335,7 +1335,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 			if (proceed)
 			{
 				DKStringU8 classId(this->resourceClass);
-				unsigned long long classIdLen = classId.Bytes();
+				uint64_t classIdLen = classId.Bytes();
 				size_t wrote = output->Write(&classIdLen, sizeof(classIdLen));
 				numBytesWritten += wrote;
 				if (wrote == sizeof(classIdLen))
@@ -1351,7 +1351,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 			// num-chunks
 			if (proceed)
 			{
-				unsigned long long numChunks = queryEntities.chunks.Count();
+				uint64_t numChunks = queryEntities.chunks.Count();
 				size_t wrote = output->Write(&numChunks, sizeof(numChunks));
 				if (wrote != sizeof(numChunks))
 					proceed = false;
@@ -1396,7 +1396,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 						break;
 					}
 					// objectKey
-					unsigned long long objKeyLen = chunk.key.Bytes();
+					uint64_t objKeyLen = chunk.key.Bytes();
 					wrote = output->Write(&objKeyLen, sizeof(objKeyLen));
 					numBytesWritten += wrote;
 					if (wrote == sizeof(objKeyLen))
@@ -1415,7 +1415,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 						break;
 					}
 					// containerKey
-					unsigned long long ctKeyLen = chunk.containerKey.Bytes();
+					uint64_t ctKeyLen = chunk.containerKey.Bytes();
 					wrote = output->Write(&ctKeyLen, sizeof(ctKeyLen));
 					numBytesWritten += wrote;
 					if (wrote == sizeof(ctKeyLen))
@@ -1443,7 +1443,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					}
 					// data (size, bytes)
 					const void* ptr = chunk.data->LockShared();
-					unsigned long long dataLen = chunk.data->Length();
+					uint64_t dataLen = chunk.data->Length();
 					wrote = output->Write(&dataLen, sizeof(dataLen));
 					numBytesWritten += wrote;
 					if (wrote == sizeof(dataLen))
@@ -1469,13 +1469,13 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					//size_t cmp = unpackedSize - packedSize;
 					//DKLog("DKSerializer class:%ls data size:%llu/%llu (compress ratio:%.1f%%)\n",
 					//	(const wchar_t*)this->resourceClass,
-					//	(unsigned long long)packedSize,
-					//	(unsigned long long)unpackedSize,
+					//	(uint64_t)packedSize,
+					//	(uint64_t)unpackedSize,
 					//	(static_cast<double>(cmp) / static_cast<double>(unpackedSize)) * 100.0);
 				}
 				else
 				{
-					//DKLog("DKSerializer class:%ls data size:%llu\n", (const wchar_t*)this->resourceClass, (unsigned long long)packedSize);
+					//DKLog("DKSerializer class:%ls data size:%llu\n", (const wchar_t*)this->resourceClass, (uint64_t)packedSize);
 				}
 			}
 			else
@@ -1564,7 +1564,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			DKLog("DKSerializer::Deserialize warning: file is older version:0x%x current-version:0x%0x.\n", static_cast<unsigned int>(version), static_cast<unsigned int>(DKSERIALIZER_VERSION));
 		}
 		// verify class-id
-		unsigned long long classLen;
+		uint64_t classLen;
 		if (s->Read(&classLen, sizeof(classLen)) != sizeof(classLen))
 			return false;
 		classLen = byteorder(classLen);
@@ -1589,7 +1589,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			const DKString& key,
 			const DKString& cKey,
 			unsigned int type, unsigned int ctype, 
-			unsigned long long unpackedSize,
+			uint64_t unpackedSize,
 			DKData* d,
 			DKResourceLoader* loader,
 			EntityRestore::Entity& entity,
@@ -1695,7 +1695,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 		DKLog("DKSerializer::Deserialize failed: ClassId mismatch. (%ls != %ls)\n", (const wchar_t*)this->resourceClass, (const wchar_t*)classId);
 		return false;
 	}
-	unsigned long long numChunks;
+	uint64_t numChunks;
 	if (s->Read(&numChunks, sizeof(numChunks)) != sizeof(numChunks))
 	{
 		DKLog("DKSerializer::Deserialize failed: Stream error.");
@@ -1721,10 +1721,10 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 		unsigned int type;
 		unsigned int ctype;
-		unsigned long long keyLen;
-		unsigned long long cKeyLen;
-		unsigned long long unpackedSize;
-		unsigned long long dataLength;
+		uint64_t keyLen;
+		uint64_t cKeyLen;
+		uint64_t unpackedSize;
+		uint64_t dataLength;
 		DKString objectKey = L"";
 		DKString containerKey = L"";
 
@@ -1994,7 +1994,7 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 			ver = byteorder(ver);
 			if (ver <= DKSERIALIZER_VERSION)
 			{
-				unsigned long long clsLen;
+				uint64_t clsLen;
 				if (s->Read(&clsLen, sizeof(clsLen)) == sizeof(clsLen))
 				{
 					clsLen = byteorder(clsLen);

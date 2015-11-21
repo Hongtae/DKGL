@@ -1074,7 +1074,7 @@ namespace DKFoundation
 			Private::PrintV(printer, fmt, v);
 		}
 		else
-			strOut.SetValue(DKStringU8::EmptyString());
+			strOut.SetValue(DKStringU8::empty);
 	}
 
 	DKGL_API void DKStringFormatV(DKStringU8& strOut, const DKUniCharW* fmt, va_list v)
@@ -1092,7 +1092,7 @@ namespace DKFoundation
 				return DKStringFormatV(strOut, (const DKUniChar8*)buff, v);
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 	}
 
 	DKGL_API void DKStringFormatV(DKStringW& strOut, const DKUniChar8* fmt, va_list v)
@@ -1107,7 +1107,7 @@ namespace DKFoundation
 			Private::PrintV(printer, fmt, v);
 		}
 		else
-			strOut.SetValue(DKStringW::EmptyString());
+			strOut.SetValue(DKStringW::empty);
 	}
 
 	DKGL_API void DKStringFormatV(DKStringW& strOut, const DKUniCharW* fmt, va_list v)
@@ -1125,7 +1125,7 @@ namespace DKFoundation
 				return DKStringFormatV(strOut, (const DKUniChar8*)buff, v);
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 	}
 
 	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKStringW& strIn)
@@ -1151,7 +1151,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 		return false;
 	}
 
@@ -1182,7 +1182,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 
@@ -1206,7 +1206,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 		return false;
 	}
 
@@ -1224,7 +1224,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 		return false;
 	}
 
@@ -1247,7 +1247,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 
@@ -1273,7 +1273,7 @@ namespace DKFoundation
 			strOut.SetValue(reinterpret_cast<const DKUniCharW*>(strIn), len);
 			return true;
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 
@@ -1307,7 +1307,7 @@ namespace DKFoundation
 				}
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 

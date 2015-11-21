@@ -630,7 +630,7 @@ bool DKFile::GetInfo(DKFile::FileInfo& info) const
 	{
 		union TimeUTC
 		{
-			long long ns100; // time since 1 Jan 1601 in 100ns units
+			int64_t ns100; // time since 1 Jan 1601 in 100ns units
 			FILETIME ft;
 		};
 

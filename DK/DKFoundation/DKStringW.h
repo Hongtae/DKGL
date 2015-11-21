@@ -2,7 +2,7 @@
 //  File: DKStringW.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -26,13 +26,15 @@ namespace DKFoundation
 	class DKGL_API DKStringW
 	{
 	public:
+		using CharT = DKUniCharW;
+
 		typedef DKSet<DKUniCharW, DKDummyLock, DKSetComparator<DKUniCharW>> CharacterSet;
-		typedef DKArray<long long, DKDummyLock> IntegerArray;
-		typedef DKArray<unsigned long long, DKDummyLock> UnsignedIntegerArray;
+		typedef DKArray<int64_t, DKDummyLock> IntegerArray;
+		typedef DKArray<uint64_t, DKDummyLock> UnsignedIntegerArray;
 		typedef DKArray<double, DKDummyLock> RealNumberArray;
 		typedef DKArray<DKStringW, DKDummyLock> StringArray;
 
-		static const DKStringW& EmptyString();
+		static const DKStringW empty;
 		// DKUniCharW encoding with endianness.
 		static DKStringEncoding SystemEncoding(void);
 
@@ -152,8 +154,8 @@ namespace DKFoundation
 		bool operator != (const DKUniCharW* str) const			{return Compare(str) != 0;}
 
 		// convert numeric values.
-		long long ToInteger(void) const;
-		unsigned long long ToUnsignedInteger(void) const;
+		int64_t ToInteger(void) const;
+		uint64_t ToUnsignedInteger(void) const;
 		double ToRealNumber(void) const;
 
 		IntegerArray ToIntegerArray(const DKStringW& delimiter, bool ignoreEmptyString = false) const;
@@ -166,6 +168,6 @@ namespace DKFoundation
 		StringArray SplitByWhitespace(void) const;
 
 	private:
-		DKUniCharW* stringData;
+		CharT* stringData;
 	};
 }

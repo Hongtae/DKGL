@@ -2,7 +2,7 @@
 //  File: DKDateTime.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -86,7 +86,7 @@ namespace DKFoundation
 
 		static DKDateTime Now(void);
 		explicit DKDateTime(double d);
-		explicit DKDateTime(long long seconds, int microseconds);	// UTC (not local-time)
+		explicit DKDateTime(int64_t seconds, int32_t microseconds);	// UTC (not local-time)
 		explicit DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, bool utc = false);
 		explicit DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, int timezone); // timezone is second unit.
 		explicit DKDateTime(const DKString& iso8601);
@@ -107,10 +107,10 @@ namespace DKFoundation
 		int Second(void) const;
 		int Microsecond(void) const;
 
-		long long DaysSinceEpoch(void) const;
-		long long HoursSinceEpoch(void) const;
-		long long MinutesSinceEpoch(void) const;
-		long long SecondsSinceEpoch(void) const;
+		int64_t DaysSinceEpoch(void) const;
+		int64_t HoursSinceEpoch(void) const;
+		int64_t MinutesSinceEpoch(void) const;
+		int64_t SecondsSinceEpoch(void) const;
 		static long TimezoneOffset(void);			// returns second offsets with GMT
 
 		DKDateTime operator + (double d) const;
@@ -147,7 +147,7 @@ namespace DKFoundation
 		bool operator != (const DKDateTime& t) const;
 
 	private:
-		long long seconds; // second unit. (have 68years cycles in 32bit)
-		int microseconds;  // micro-second unit. (1 ~ 1,000,000)
+		int64_t seconds;		// second unit. (have 68years cycles in 32bit)
+		int32_t microseconds;	// micro-second unit. (1 ~ 1,000,000)
 	};
 }
