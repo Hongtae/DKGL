@@ -62,7 +62,7 @@ DKDateTime DKDateTime::Now(void)
 {
 	timeval tm;
 	gettimeofday(&tm, NULL);
-	return DKDateTime(tm.tv_sec, tm.tv_usec);
+	return DKDateTime(static_cast<uint64_t>(tm.tv_sec), static_cast<uint32_t>(tm.tv_usec));
 }
 
 DKDateTime::DKDateTime(double d)
@@ -71,11 +71,11 @@ DKDateTime::DKDateTime(double d)
 {
 }
 
-DKDateTime::DKDateTime(int64_t s, int32_t us)
+DKDateTime::DKDateTime(uint64_t s, uint32_t us)
 	: seconds(0), microseconds(0)
 {
-	seconds = Max(s, int64_t(0));
-	microseconds = Clamp(us, int32_t(0), int32_t(999999));
+	seconds = Max(s, uint64_t(0));
+	microseconds = Min(us, uint32_t(999999));
 }
 
 DKDateTime::DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, bool utc)

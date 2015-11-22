@@ -86,7 +86,7 @@ namespace DKFoundation
 
 		static DKDateTime Now(void);
 		explicit DKDateTime(double d);
-		explicit DKDateTime(int64_t seconds, int32_t microseconds);	// UTC (not local-time)
+		explicit DKDateTime(uint64_t seconds, uint32_t microseconds);	// UTC (not local-time)
 		explicit DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, bool utc = false);
 		explicit DKDateTime(int year, int month, int day, int hour, int min, int sec, int msec, int timezone); // timezone is second unit.
 		explicit DKDateTime(const DKString& iso8601);
@@ -147,7 +147,7 @@ namespace DKFoundation
 		bool operator != (const DKDateTime& t) const;
 
 	private:
-		int64_t seconds;		// second unit. (have 68years cycles in 32bit)
-		int32_t microseconds;	// micro-second unit. (1 ~ 1,000,000)
+		uint64_t seconds;		// second unit. (have 68years cycles in 32bit)
+		uint32_t microseconds;	// micro-second unit. (1 ~ 1,000,000)
 	};
 }
