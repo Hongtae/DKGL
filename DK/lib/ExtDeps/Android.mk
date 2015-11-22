@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := ExtDeps 
-LOCAL_CFLAGS := -DFT2_BUILD_LIBRARY -fvisibility=hidden -DNDEBUG=1 -D_NDEBUG=1
+LOCAL_CFLAGS := -DFT2_BUILD_LIBRARY -DHAVE_BZIP2 -fvisibility=hidden -DNDEBUG=1 -D_NDEBUG=1
 LOCAL_CPPFLAGS := -std=c++11 -fvisibility=hidden -mfpu=neon -DNDEBUG=1 -D_NDEBUG=1
 LOCAL_CPP_FEATURES := rtti exceptions
 LOCAL_CPP_EXTENSION := .cxx .cpp
@@ -306,10 +306,20 @@ LIBXML2_SRC := \
 	libxml2/src/xpointer.c \
 	libxml2/src/xzlib.c
 
+LZ4_SRC := \
+	lib/lz4.c \
+	lib/lz4frame.c \
+	lib/lz4hc.c \
+	lib/xxhash.c
+
 SQLITE_SRC := \
 	sqlite/sqlite3.c
 
 ZLIB_SRC := \
+	zlib/contrib/minizip/ioapi.c \
+	zlib/contrib/minizip/mztools.c \
+	zlib/contrib/minizip/unzip.c \
+	zlib/contrib/minizip/zip.c \
 	zlib/adler32.c \
 	zlib/compress.c \
 	zlib/crc32.c \
@@ -322,12 +332,8 @@ ZLIB_SRC := \
 	zlib/inffast.c \
 	zlib/inflate.c \
 	zlib/inftrees.c \
-	zlib/ioapi.c \
-	zlib/mztools.c \
 	zlib/trees.c \
 	zlib/uncompr.c \
-	zlib/unzip.c \
-	zlib/zip.c \
 	zlib/zutil.c
 
 
@@ -341,6 +347,7 @@ LOCAL_SRC_FILES += $(LIBPNG_SRC)
 LOCAL_SRC_FILES += $(LIBTIFF_SRC)
 LOCAL_SRC_FILES += $(LIBVORBIS_SRC)
 LOCAL_SRC_FILES += $(LIBXML2_SRC)
+LOCAL_SRC_FILES += $(LZ4_SRC)
 LOCAL_SRC_FILES += $(SQLITE_SRC)
 LOCAL_SRC_FILES += $(ZLIB_SRC)
 
