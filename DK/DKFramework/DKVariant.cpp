@@ -120,42 +120,46 @@ namespace DKFramework
 			{
 				size_t len = sd.data.Length();
 				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data.LockExclusive());
-				size_t pos = 0;
-				while (pos < len)
+				if (p)
 				{
-					size_t n = 0;
-					uint8_t* p2 = &(p[pos]);
-					for (StructElem e : sd.layout)
+					size_t pos = 0;
+					while (pos < len)
 					{
-						uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
-						n += fieldSize;
-						if (n >= sd.elementSize)
-							break;
-
-						if ((static_cast<uint8_t>(e) & 0xf0) == 0)
+						size_t n = 0;
+						uint8_t* p2 = &(p[pos]);
+						for (StructElem e : sd.layout)
 						{
-							switch (fieldSize)
-							{
-								case 1:
-									reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
-									break;
-								case 2:
-									reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
-									break;
-								case 4:
-									reinterpret_cast<uint32_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t*>(p2)[0]);
-									break;
-								case 8:
-									reinterpret_cast<uint64_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t*>(p2)[0]);
-									break;
-							}
-						}
+							uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
+							n += fieldSize;
+							if (n >= sd.elementSize)
+								break;
 
-						p2 += fieldSize;
+							if ((static_cast<uint8_t>(e) & 0xf0) == 0)
+							{
+								switch (fieldSize)
+								{
+									case 1:
+										reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
+										break;
+									case 2:
+										reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
+										break;
+									case 4:
+										reinterpret_cast<uint32_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t*>(p2)[0]);
+										break;
+									case 8:
+										reinterpret_cast<uint64_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t*>(p2)[0]);
+										break;
+								}
+							}
+
+							p2 += fieldSize;
+						}
+						pos += sd.elementSize;
 					}
-					pos += sd.elementSize;
+					sd.data.UnlockExclusive();
+					return true;
 				}
-				sd.data.UnlockExclusive();
 				return false;
 			}
 			return true;

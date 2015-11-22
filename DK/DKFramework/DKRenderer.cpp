@@ -293,8 +293,8 @@ namespace DKFramework
 
 			// build mesh
 			const DKVertexBuffer::Decl decl[] = {
-					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat2, false, 0 },
-					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false, DKVertexStream::TypeSize(DKVertexStream::TypeFloat2) }
+					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat2, false },
+					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false }
 			};
 
 			DKObject<DKVertexBuffer> vb = DKVertexBuffer::Create(decl, 2, NULL, sizeof(float) * 4, 0, loc, usage);
@@ -366,9 +366,9 @@ namespace DKFramework
 
 			// build model
 			const DKVertexBuffer::Decl decl[] = {
-					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat3, false, 0 },
-					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false, sizeof(float) * 3 },
-					{ DKVertexStream::StreamColor, L"", DKVertexStream::TypeFloat4, false, sizeof(float) * 5 }
+					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat3, false },
+					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false },
+					{ DKVertexStream::StreamColor, L"", DKVertexStream::TypeFloat4, false }
 			};
 
 			DKObject<DKVertexBuffer> vb = DKVertexBuffer::Create(decl, 3, NULL, sizeof(float) * 9, 0, loc, usage);
@@ -2163,13 +2163,13 @@ size_t DKRenderer::RenderMesh(const DKMesh* mesh, DKSceneState& st, const DKBlen
 
 					switch (info.indexType)
 					{
-					case DKIndexBuffer::TypeUByte:
+					case DKIndexBuffer::Type::UInt8:
 						numInstancesDrawn = drawCall(primType, info.numIndices, GL_UNSIGNED_BYTE, info.numInstances);
 						break;
-					case DKIndexBuffer::TypeUShort:
+					case DKIndexBuffer::Type::UInt16:
 						numInstancesDrawn = drawCall(primType, info.numIndices, GL_UNSIGNED_SHORT, info.numInstances);
 						break;
-					case DKIndexBuffer::TypeUInt:
+					case DKIndexBuffer::Type::UInt32:
 						numInstancesDrawn = drawCall(primType, info.numIndices, GL_UNSIGNED_INT, info.numInstances);
 						break;
 					}

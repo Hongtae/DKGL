@@ -77,11 +77,14 @@ namespace DKFramework
 
 		// DKResource::Validate() override
 		bool Validate(void)					{return IsValid();}
+
 	protected:
 		DKGeometryBuffer(void);
 
 		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const DKFoundation::DKData* data);
 		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const void* data, size_t size);
+
+		virtual void StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const = 0;
 
 	private:
 		BufferType			resourceType;

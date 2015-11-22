@@ -33,7 +33,8 @@ namespace DKFramework
 		struct StreamInfo
 		{
 			const DKVertexBuffer::Decl* decl;
-			DKVertexBuffer* buffer;
+			const DKVertexBuffer* buffer;
+			size_t offset;				// stream offset of vertex buffer.
 		};
 
 		DKStaticMesh(void);
@@ -43,7 +44,7 @@ namespace DKFramework
 		size_t NumberOfVertexBuffers(void) const;
 		DKVertexBuffer* VertexBufferAtIndex(unsigned int index);
 		const DKVertexBuffer* VertexBufferAtIndex(unsigned int index) const;
-		void RemoveVertexBuffer(DKVertexBuffer* buffer);
+		void RemoveVertexBuffer(const DKVertexBuffer* buffer);
 		void RemoveAllVertexBuffers(void);
 
 		void SetIndexBuffer(DKIndexBuffer* buffer);
@@ -51,9 +52,9 @@ namespace DKFramework
 		const DKIndexBuffer* IndexBuffer(void) const;
 
 		// stream
-		virtual const StreamInfo* FindVertexStream(DKVertexStream::Stream stream) const;
-		virtual const StreamInfo* FindVertexStream(const DKFoundation::DKString& name) const;
-		virtual const StreamInfo* FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const;
+		virtual StreamInfo FindVertexStream(DKVertexStream::Stream stream) const;
+		virtual StreamInfo FindVertexStream(const DKFoundation::DKString& name) const;
+		virtual StreamInfo FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const;
 
 		bool MakeInterleaved(DKVertexBuffer::MemoryLocation location = DKVertexBuffer::MemoryLocationStatic, DKVertexBuffer::BufferUsage usage = DKVertexBuffer::BufferUsageDraw);
 		bool MakeSeparated(DKVertexBuffer::MemoryLocation location = DKVertexBuffer::MemoryLocationStatic, DKVertexBuffer::BufferUsage usage = DKVertexBuffer::BufferUsageDraw);

@@ -34,10 +34,19 @@ DKObject<DKVertexBuffer> DKVertexBuffer::Create(const Decl* decls, size_t declCo
 	DKSet<DKString> userDefineNames;
 	DKSet<DKVertexStream::Stream> streamSet;
 
+	size_t offset = 0;
+
 	for (size_t i = 0; i < declCount; i++)
 	{
-		if (decls[i].offset >= size)
+		size_t typeSize = DKVertexStream::TypeSize(decls[i].type);
+		offset += typeSize;
+
+		if (offset > size)
+		{
+			DKLog("Invalid vertex size.\n");
 			return NULL;
+		}
+
 		if (decls[i].id < DKVertexStream::StreamUserDefine)
 		{
 			if (streamSet.Contains(decls[i].id))
@@ -65,7 +74,6 @@ DKObject<DKVertexBuffer> DKVertexBuffer::Create(const Decl* decls, size_t declCo
 	buffer->declarations = DKArray<Decl>(decls, declCount);
 	buffer->vertexSize = size;
 	buffer->vertexCount = 0;
-	buffer->UpdateDeclMap();
 	if (buffer->UpdateContent(vertices, count, m, u))
 		return buffer;
 	return NULL;
@@ -80,26 +88,42 @@ const DKVertexBuffer::Decl* DKVertexBuffer::DeclarationAtIndex(long index) const
 
 const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(DKVertexStream::Stream stream) const
 {
-	const DeclMapById::Pair* p = declMapByStreamId.Find(stream);
-	if (p)
-		return p->value;
+	for (const Decl& decl : declarations)
+	{
+		if (decl.id == stream)
+			return &decl;
+	}
 	return NULL;
 }
 
 const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(const DKFoundation::DKString& name) const
 {
-	const DeclMapByName::Pair* p = declMapByStreamName.Find(name);
-	if (p)
-		return p->value;
+	for (const Decl& decl : declarations)
+	{
+		if (decl.name == name)
+			return &decl;
+	}
 	return NULL;
 }
 
 const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
 {
 	if (stream < DKVertexStream::StreamUserDefine)
-		return Declaration(stream);
-	else if (name.Length() > 0)
-		return Declaration(name);
+	{
+		for (const Decl& decl : declarations)
+		{
+			if (decl.id == stream)
+				return &decl;
+		}
+	}
+	else
+	{
+		for (const Decl& decl : declarations)
+		{
+			if (decl.id == DKVertexStream::StreamUserDefine && decl.name == name)
+				return &decl;
+		}
+	}
 	return NULL;
 }
 
@@ -131,19 +155,22 @@ DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream, con
 {
 	if (IsValid())
 	{
-		const Decl* decl = NULL;
-		if (stream < DKVertexStream::StreamUserDefine)
-			decl = Declaration(stream);
-		else
-			decl = Declaration(name);
-
-		if (decl == NULL)
+		size_t typeSize = 0;
+		size_t offset = 0;
+		for (const Decl& decl : declarations)
+		{
+			typeSize = DKVertexStream::TypeSize(decl.type);
+			if (decl.id == stream && decl.name == name)
+			{
+				break;
+			}
+			offset += typeSize;
+		}
+		if (offset + typeSize > this->vertexSize)
 		{
 			DKLog("[%s] buffer doesn't have a stream (%d).\n", DKGL_FUNCTION_NAME, stream);
 			return NULL;
 		}
-
-		size_t typeSize = DKVertexStream::TypeSize(decl->type);
 
 		DKObject<DKBuffer> ret = DKBuffer::Create(NULL, typeSize * vertexCount);
 		if (ret == NULL)
@@ -161,7 +188,7 @@ DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream, con
 
 		for (int i = 0; i < vertexCount; i++)
 		{
-			memcpy(&pDst[i * typeSize], &pSrc[i * vertexSize + decl->offset], typeSize);
+			memcpy(&pDst[i * typeSize], &pSrc[i * vertexSize + offset], typeSize);
 		}
 		const_cast<DKVertexBuffer&>(*this).Unlock();
 		ret->UnlockExclusive();
@@ -214,7 +241,19 @@ bool DKVertexBuffer::BindStream(const DKVertexStream& stream) const
 	if (this->NumberOfVertices() == 0)
 		return false;
 
-	const Decl* d = Declaration(stream.id, stream.name);
+	const Decl* d = NULL;
+	size_t offset = 0;
+	for (const Decl& decl : declarations)
+	{
+		size_t typeSize = DKVertexStream::TypeSize(decl.type);
+		if (decl.id == stream.id && decl.name == stream.name)
+		{
+			d = &decl;
+			break;
+		}
+		offset += typeSize;
+	}
+
 	if (d && this->Bind())
 	{
 		DKRenderState& state = DKOpenGLContext::RenderState();
@@ -255,25 +294,34 @@ bool DKVertexBuffer::BindStream(const DKVertexStream& stream) const
 		}
 
 		state.EnableVertexAttribArray(stream.location);
-		glVertexAttribPointer(stream.location, components, type, (GLboolean)d->normalize, this->VertexSize(), (void*)d->offset);
+		glVertexAttribPointer(stream.location, components, type, (GLboolean)d->normalize, this->VertexSize(), (void*)offset);
 
 		return true;
 	}
 	return false;
 }
 
-void DKVertexBuffer::UpdateDeclMap(void)
+void DKVertexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
 {
-	declMapByStreamId.Clear();
-	declMapByStreamName.Clear();
+	elementSize = this->vertexSize;
+	layout.Reserve(declarations.Count());
 
-	for (size_t i = 0; i < declarations.Count(); ++i)
+	for (const Decl& decl : declarations)
 	{
-		const Decl& d = declarations.Value(i);
-		if (d.id < DKVertexStream::StreamUserDefine)
-			declMapByStreamId.Insert(d.id, &d);
-		else
-			declMapByStreamName.Insert(d.name, &d);
+		size_t typeSize = DKVertexStream::TypeSize(decl.type);
+		switch (typeSize)
+		{
+			case 1:
+			case 2:
+			case 4:
+			case 8:
+				layout.Add( static_cast<DKVariant::StructElem>( typeSize ) );
+				break;
+			default:
+				for (int i = 0; i < typeSize; ++i)
+					layout.Add( DKVariant::StructElem::Bypass1 );
+				break;
+		};
 	}
 }
 
@@ -296,7 +344,7 @@ DKObject<DKSerializer> DKVertexBuffer::Serializer(void)
 			this->Bind(L"declarations",
 				DKFunction(this, &LocalSerializer::GetDecl),
 				DKFunction(this, &LocalSerializer::SetDecl),
-				DKFunction(this,&LocalSerializer::CheckDecl),
+				DKFunction(this, &LocalSerializer::CheckDecl),
 				NULL);
 
 			this->Bind(L"vertexSize",
@@ -324,7 +372,6 @@ DKObject<DKSerializer> DKVertexBuffer::Serializer(void)
 				declMap.Pairs().Insert(L"name", (DKVariant::VString)decl.name);
 				declMap.Pairs().Insert(L"type", (DKVariant::VString)DKVertexStream::TypeToString(decl.type));
 				declMap.Pairs().Insert(L"normalize", (DKVariant::VInteger)decl.normalize);
-				declMap.Pairs().Insert(L"offset", (DKVariant::VInteger)decl.offset);
 				v.Array().Add(declMap);
 			}
 		}
@@ -353,15 +400,10 @@ DKObject<DKSerializer> DKVertexBuffer::Serializer(void)
 					if (pnorm == NULL || pnorm->value.ValueType() != DKVariant::TypeInteger)
 						continue;
 					decl.normalize = pnorm->value.Integer() != 0;
-					const DKVariant::VPairs::Pair* poffs = declMap.Pairs().Find(L"offset");
-					if (poffs == NULL || poffs->value.ValueType() != DKVariant::TypeInteger)
-						continue;
-					decl.offset = poffs->value.Integer();
 
 					target->declarations.Add(decl);
 				}
 			}
-			target->UpdateDeclMap();
 		}
 		bool CheckDecl(const DKVariant& v) const
 		{

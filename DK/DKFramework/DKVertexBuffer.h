@@ -30,7 +30,6 @@ namespace DKFramework
 			DKFoundation::DKString	name;  // used if id is DKVertexStream::StreamUserDefine.
 			DKVertexStream::Type	type;
 			bool					normalize;  // normalize integer to float. (0.0~1.0 for unsigned, -1.0~1.0 for signed)
-			size_t					offset;
 		};
 
 		DKVertexBuffer(void);
@@ -62,16 +61,13 @@ namespace DKFramework
 		DKFoundation::DKObject<DKSerializer> Serializer(void);
 
 		bool BindStream(const DKVertexStream& stream) const;
+
+	protected:
+		void StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const override;
+
 	private:
-		void UpdateDeclMap(void);
-		typedef DKFoundation::DKMap<DKVertexStream::Stream, const Decl*> DeclMapById;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, const Decl*> DeclMapByName;
-
-		DeclMapById declMapByStreamId;
-		DeclMapByName declMapByStreamName;
-
-		DKFoundation::DKArray<Decl>			declarations;
-		size_t								vertexCount;   // number of vertices
-		size_t								vertexSize;    // size of one vertex
+		DKFoundation::DKArray<Decl>		declarations;
+		size_t							vertexCount;   // number of vertices
+		size_t							vertexSize;    // size of one vertex
 	};
 }
