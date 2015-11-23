@@ -2,7 +2,7 @@
 //  File: DKAudioStreamFLAC.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2010-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2010-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_LIBFLAC
