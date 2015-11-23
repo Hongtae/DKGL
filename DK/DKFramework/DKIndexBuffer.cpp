@@ -2,7 +2,7 @@
 //  File: DKIndexBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -13,8 +13,8 @@ using namespace DKFramework;
 
 
 DKIndexBuffer::DKIndexBuffer(void)
-: primitiveType(DKPrimitive::TypePoints)
-, indexCount(0)
+	: primitiveType(DKPrimitive::TypePoints)
+	, indexCount(0)
 {
 }
 
@@ -95,22 +95,16 @@ bool DKIndexBuffer::CopyIndices(DKArray<unsigned int>& indices) const
 		switch (indexType)
 		{
 		case Type::UInt8:
-			{
-				for (int i = 0; i < NumberOfIndices(); i++)
-					indices.Add(reinterpret_cast<const uint8_t*>(p)[i]);
-			}
+			for (int i = 0; i < NumberOfIndices(); i++)
+				indices.Add(reinterpret_cast<const uint8_t*>(p)[i]);
 			break;
 		case Type::UInt16:
-			{
-				for (int i = 0; i < NumberOfIndices(); i++)
-					indices.Add(reinterpret_cast<const uint16_t*>(p)[i]);
-			}
+			for (int i = 0; i < NumberOfIndices(); i++)
+				indices.Add(reinterpret_cast<const uint16_t*>(p)[i]);
 			break;
 		case Type::UInt32:
-			{
-				for (int i = 0; i < NumberOfIndices(); i++)
-					indices.Add(reinterpret_cast<const uint32_t*>(p)[i]);
-			}
+			for (int i = 0; i < NumberOfIndices(); i++)
+				indices.Add(reinterpret_cast<const uint32_t*>(p)[i]);
 			break;
 		}
 		data->UnlockShared();
@@ -150,7 +144,7 @@ void DKIndexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem
 		break;
 	}
 	layout.Clear();
-	layout.Add( static_cast<DKVariant::StructElem>(elementSize) );
+	layout.Add(static_cast<DKVariant::StructElem>(elementSize));
 }
 
 DKObject<DKSerializer> DKIndexBuffer::Serializer(void)
@@ -175,7 +169,7 @@ DKObject<DKSerializer> DKIndexBuffer::Serializer(void)
 				DKFunction(this, &LocalSerializer::CheckPrimitiveType),
 				NULL);
 
-			this->Bind(L"indexType", 
+			this->Bind(L"indexType",
 				DKFunction(this, &LocalSerializer::GetIndexType),
 				DKFunction(this, &LocalSerializer::SetIndexType),
 				DKFunction(this, &LocalSerializer::CheckIndexType),

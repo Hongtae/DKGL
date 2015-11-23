@@ -76,7 +76,7 @@ namespace DKFoundation
 		Chain* Chain::instance;
 
 		// default Chain-Holder
-		static DKAllocatorChain::StaticInitializer init;
+		static DKAllocatorChain::Maintainer init;
 	}
 }
 
@@ -145,7 +145,7 @@ DKAllocatorChain* DKAllocatorChain::NextAllocator(void)
 	return next;
 }
 
-DKAllocatorChain::StaticInitializer::StaticInitializer(void)
+DKAllocatorChain::Maintainer::Maintainer(void)
 {
 	Chain* c = Chain::Instance();
 	DKASSERT_STD_DEBUG( c != NULL );
@@ -153,7 +153,7 @@ DKAllocatorChain::StaticInitializer::StaticInitializer(void)
 	DKASSERT_STD_DEBUG( ref >= 0);
 }
 
-DKAllocatorChain::StaticInitializer::~StaticInitializer(void) noexcept(!DKGL_MEMORY_DEBUG)
+DKAllocatorChain::Maintainer::~Maintainer(void) noexcept(!DKGL_MEMORY_DEBUG)
 {
 	Chain* c = Chain::Instance();
 	DKASSERT_STD_DEBUG( c != NULL );

@@ -58,7 +58,7 @@ namespace DKFramework
 		}
 		AllocatorURIMap& GetAllocatorURIMap(void)
 		{
-			static DKAllocator::StaticInitializer init;
+			static DKAllocator::Maintainer init;
 
 			static AllocatorURIMap map;
 			return map;
@@ -70,7 +70,7 @@ namespace DKFramework
 		}
 		LoaderMap& GetLoaderMap(void)
 		{
-			static DKAllocator::StaticInitializer init;
+			static DKAllocator::Maintainer init;
 
 			static LoaderMap map;
 			return map;
@@ -121,7 +121,7 @@ namespace DKFramework
 #define REGISTER_RESOURCE_CLASS(CLASS)		DKResourceLoader::SetResourceAllocator(L"", #CLASS, DKFunction(DKResourceAlloc<CLASS>))
 
 			// make sure to allocator exists before register class-types.
-			static DKAllocator::StaticInitializer init;
+			static DKAllocator::Maintainer init;
 
 
 			REGISTER_RESOURCE_CLASS(DKAnimation);

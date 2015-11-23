@@ -606,7 +606,7 @@ namespace DKFoundation
 
 		AllocatorPool* GetAllocatorPool(void)
 		{
-			static DKAllocatorChain::StaticInitializer init;
+			static DKAllocatorChain::Maintainer init;
 
 			static DKSpinLock lock;
 			static AllocatorPool* pool = NULL;

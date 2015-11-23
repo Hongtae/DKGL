@@ -15,18 +15,6 @@
 using namespace DKFoundation;
 using namespace DKFramework;
 
-
-struct DKBvh::QuantizedAabbNode
-{
-	unsigned short aabbMin[3];
-	unsigned short aabbMax[3];
-	union {
-		int32_t objectIndex;		// for leaf-node
-		int32_t negativeTreeSize;	// for sub-node
-	};
-};
-
-
 DKBvh::DKBvh(void) : volume(NULL)
 {
 }

@@ -929,7 +929,7 @@ namespace DKFoundation
 						}
 					case 'C':		// wchar_t -> utf-8
 						{
-							wchar_t str[2] = { va_arg(ap, int), 0 };
+							wchar_t str[2] = { va_arg(ap, wchar_t), 0 };
 							ConvertUniChars((const StringWTraits::BaseCharT*)str, 1, utf8buff);
 						}
 						break;

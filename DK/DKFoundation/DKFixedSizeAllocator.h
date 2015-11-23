@@ -553,7 +553,7 @@ namespace DKFoundation
 				DKMemoryLocation Location(void) const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
 				DKFixedSizeAllocator allocator;
 			};
-			static DKAllocatorChain::StaticInitializer init; // extend allocator life cycle.
+			static DKAllocatorChain::Maintainer init; // extend allocator life cycle.
 			static AllocatorWrapper* instance = new AllocatorWrapper();
 			return *instance;
 		}

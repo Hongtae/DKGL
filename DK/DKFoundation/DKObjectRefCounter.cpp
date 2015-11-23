@@ -17,7 +17,7 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKAllocator::StaticInitializer init;
+		static DKAllocator::Maintainer init;
 
 		enum {AllocatorTableLength = 977}; // should be prime-number.
 		struct AllocationNode
@@ -83,8 +83,8 @@ namespace DKFoundation
 
 			AllocationNode& GetAllocationNode(void* ptr)
 			{
-				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
-				static DKAllocator::StaticInitializer init;
+				// Maintainer will initialize AllocationTable (see DKAllocatorChain.cpp)
+				static DKAllocator::Maintainer init;
 
 				AllocationTable* table = AllocationTable::Instance();
 				DKCriticalSection<DKSpinLock> guard(table->lock);
@@ -92,8 +92,8 @@ namespace DKFoundation
 			}
 			DKObjectRefCounter::RefIdValue GenerateRefId(void)
 			{
-				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
-				static DKAllocator::StaticInitializer init;
+				// Maintainer will initialize AllocationTable (see DKAllocatorChain.cpp)
+				static DKAllocator::Maintainer init;
 
 				AllocationTable* table = AllocationTable::Instance();
 				DKCriticalSection<DKSpinLock> guard(table->lock);
@@ -104,7 +104,7 @@ namespace DKFoundation
 			}
 		}
 
-		void CreateAllocationTable(void) // called by StaticInitializer
+		void CreateAllocationTable(void) // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			if (table == NULL)
@@ -113,7 +113,7 @@ namespace DKFoundation
 				AllocationTable::Instance() = table;
 			}
 		}
-		void DestroyAllocationTable(void) // called by StaticInitializer
+		void DestroyAllocationTable(void) // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			AllocationTable::Instance() = NULL;

@@ -16,14 +16,14 @@
 //
 // Warning:
 //  If you need to use DKAllocator with static (global) object initialization,
-//  You have to hold StaticInitializer instance as static storage.
+//  You have to hold Maintainer instance as static storage.
 //
-//  The StaticInitializer will postpone destruction of internal allocators and
-//  allocation pools until all StaticInitializer instances are destroyed.
+//  The Maintainer will postpone destruction of internal allocators and
+//  allocation pools until all Maintainer instances are destroyed.
 //  It is necessary to internal allocator become persistent even when main()
 //  function has been finished. (even after atexit() called)
 //
-//  StaticInitializer Usage:
+//  Maintainer Usage:
 //    Just declare static instance before using any allocators in global scope.
 //    not necessary for function scope inside of main() routine.
 //
@@ -49,11 +49,11 @@ namespace DKFoundation
 
 
 		// To extend static-object life cycle, a static-object which own
-		// DKAllocator, it should have StaticInitializer instance with static storage.
-		struct DKGL_API StaticInitializer
+		// DKAllocator, it should have Maintainer instance with static storage.
+		struct DKGL_API Maintainer
 		{
-			StaticInitializer(void);
-			~StaticInitializer(void) noexcept(!DKGL_MEMORY_DEBUG);
+			Maintainer(void);
+			~Maintainer(void) noexcept(!DKGL_MEMORY_DEBUG);
 		};
 
 		void* operator new (size_t);

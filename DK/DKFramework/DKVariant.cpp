@@ -61,15 +61,15 @@ namespace DKFramework
 		{
 			switch (e)
 			{
-				case StructElem::Arithmetic1:
-				case StructElem::Arithmetic2:
-				case StructElem::Arithmetic4:
-				case StructElem::Arithmetic8:
-				case StructElem::Bypass1:
-				case StructElem::Bypass2:
-				case StructElem::Bypass4:
-				case StructElem::Bypass8:
-					return true;
+			case StructElem::Arithmetic1:
+			case StructElem::Arithmetic2:
+			case StructElem::Arithmetic4:
+			case StructElem::Arithmetic8:
+			case StructElem::Bypass1:
+			case StructElem::Bypass2:
+			case StructElem::Bypass4:
+			case StructElem::Bypass8:
+				return true;
 			}
 			return false;
 		}
@@ -86,14 +86,14 @@ namespace DKFramework
 		{
 			switch (e)
 			{
-				case StructElem::Arithmetic1:	return "a1"; break;
-				case StructElem::Arithmetic2:	return "a2"; break;
-				case StructElem::Arithmetic4:	return "a4"; break;
-				case StructElem::Arithmetic8:	return "a8"; break;
-				case StructElem::Bypass1:		return "b1"; break;
-				case StructElem::Bypass2:		return "b2"; break;
-				case StructElem::Bypass4:		return "b4"; break;
-				case StructElem::Bypass8:		return "b8"; break;
+			case StructElem::Arithmetic1:	return "a1"; break;
+			case StructElem::Arithmetic2:	return "a2"; break;
+			case StructElem::Arithmetic4:	return "a4"; break;
+			case StructElem::Arithmetic8:	return "a8"; break;
+			case StructElem::Bypass1:		return "b1"; break;
+			case StructElem::Bypass2:		return "b2"; break;
+			case StructElem::Bypass4:		return "b4"; break;
+			case StructElem::Bypass8:		return "b8"; break;
 			}
 			return DKString::empty;
 		}
@@ -138,18 +138,18 @@ namespace DKFramework
 							{
 								switch (fieldSize)
 								{
-									case 1:
-										reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
-										break;
-									case 2:
-										reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
-										break;
-									case 4:
-										reinterpret_cast<uint32_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t*>(p2)[0]);
-										break;
-									case 8:
-										reinterpret_cast<uint64_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t*>(p2)[0]);
-										break;
+								case 1:
+									reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
+									break;
+								case 2:
+									reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
+									break;
+								case 4:
+									reinterpret_cast<uint32_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t*>(p2)[0]);
+									break;
+								case 8:
+									reinterpret_cast<uint64_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t*>(p2)[0]);
+									break;
 								}
 							}
 
@@ -2008,6 +2008,18 @@ const DKVariant::VData& DKVariant::Data(void) const
 	return const_cast<DKVariant*>(this)->Data();
 }
 
+DKVariant::VStructuredData& DKVariant::StructuredData(void)
+{
+	if (ValueType() == TypeUndefined)	SetValueType(TypeStructData);
+	DKASSERT_DEBUG(ValueType() == TypeStructData);
+	return VariantBlock<VStructuredData, sizeof(vblock)>::Value(vblock);
+}
+
+const DKVariant::VStructuredData& DKVariant::StructuredData(void) const
+{
+	return const_cast<DKVariant*>(this)->StructuredData();
+}
+
 DKVariant::VArray& DKVariant::Array(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeArray);
@@ -2113,6 +2125,21 @@ DKVariant& DKVariant::SetData(const VData& v)
 DKVariant& DKVariant::SetData(const void* p, size_t s)
 {
 	SetValueType(TypeData).Data().SetContent(p, s);
+	return *this;
+}
+
+DKVariant& DKVariant::SetStructuredData(const VStructuredData& v)
+{
+	SetValueType(TypeStructData).StructuredData() = v;
+	return *this;
+}
+
+DKVariant& DKVariant::SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem> layout)
+{
+	VStructuredData& data = SetValueType(TypeStructData).StructuredData();
+	data.data.SetContent(p, elementSize * count);
+	data.elementSize = elementSize;
+	data.layout = layout;
 	return *this;
 }
 

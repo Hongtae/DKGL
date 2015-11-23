@@ -277,7 +277,7 @@ namespace DKFramework
 				return num;
 			}
 			// make sure to allocator exists before register ext-types.
-			static DKAllocator::StaticInitializer init;
+			static DKAllocator::Maintainer init;
 			int numRegisteredImageExts = RegisterImageFileExts();
 		}
 	}

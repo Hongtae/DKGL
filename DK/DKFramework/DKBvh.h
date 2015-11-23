@@ -17,6 +17,7 @@
 // implementation of BVH (Bounding volume hierarchy) to perform ray-test fast.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKGL_API DKBvh
@@ -63,7 +64,16 @@ namespace DKFramework
 		bool AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback*) const;
 
 	private:
-		struct QuantizedAabbNode; // 16 bytes node
+		struct QuantizedAabbNode	// 16 bytes node
+		{
+			unsigned short aabbMin[3];
+			unsigned short aabbMax[3];
+			union {
+				int32_t objectIndex;		// for leaf-node
+				int32_t negativeTreeSize;	// for sub-node
+			};
+		};
+
 		void BuildInternal(void);
 		void BuildTree(QuantizedAabbNode* nodes, int count);
 
@@ -73,3 +83,4 @@ namespace DKFramework
 		DKVector3 aabbScale;
 	};
 }
+#pragma pack(pop)
