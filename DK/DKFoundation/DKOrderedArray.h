@@ -196,6 +196,16 @@ namespace DKFoundation
 		{
 			return container.Count();
 		}
+		size_t Capacity(void) const
+		{
+			CriticalSection guard(lock);
+			return container.Capacity();
+		}
+		void ShrinkToFit(void)
+		{
+			CriticalSection guard(lock);
+			container.ShrinkToFit();
+		}
 		void Reserve(size_t c)
 		{
 			CriticalSection guard(lock);

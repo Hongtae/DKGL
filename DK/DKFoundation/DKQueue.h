@@ -362,6 +362,40 @@ namespace DKFoundation
 		{
 			return count;
 		}
+		void ShrinkToFit(void)
+		{
+			CriticalSection guard(lock);
+			if (begin > 0 || (begin + count) < maxSize)
+			{
+				VALUE* tmp = NULL;
+				if (count > 0)
+				{
+					if (begin > 0)
+					{
+						tmp = Allocator::Alloc(sizeof(VALUE) * count);
+						DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
+						if (tmp == NULL)
+							return;
+						memcpy(tmp, &data[begin], sizeof(VALUE) * count);
+						Allocator::Free(data);
+					}
+					else
+					{
+						tmp = Allocator::Realloc(data, sizeof(VALUE) * count);
+						DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
+						if (tmp == NULL)
+							return;
+					}
+				}
+				else
+				{
+					Allocator::Free(data);
+				}
+				data = tmp;
+				begin = 0;
+				maxSize = count;
+			}
+		}
 		DKQueue& operator = (DKQueue&& queue)
 		{
 			if (this != &queue)

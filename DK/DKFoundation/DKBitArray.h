@@ -17,8 +17,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKBitArray
-// A special array that contains bit.
-//
+// A special array that contains bit data.
+// This class does not support enumeration or pointer-casting operator,
+// because of only two values (true, false) are acceptable.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFoundation
@@ -257,6 +258,34 @@ namespace DKFoundation
 		{
 			CriticalSection guard(lock);
 			return capacity;
+		}
+		void ShrinkToFit(void)
+		{
+			CriticalSection guard(lock);
+			size_t countBytes = UnitLengthForBits(count);
+			size_t capacityBytes = UnitLengthForBits(capacity);
+			if (countBytes != capacityBytes)
+			{
+				DKASSERT_DEBUG(capacityBytes > countBytes);
+				DKASSERT_DEBUG(data);
+				if (countBytes > 0)
+				{
+					Unit* tmp = (Unit*)Allocator::Realloc(data, countBytes);
+					DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
+					if (tmp)
+					{
+						data = tmp;
+						capacity = countBytes * 8;
+					}
+				}
+				else
+				{
+					DKASSERT_DEBUG(count == 0);
+					Allocator::Free(data);
+					data = 0;
+					capacity = 0;
+				}
+			}
 		}
 		void Resize(size_t s)
 		{
@@ -525,7 +554,7 @@ namespace DKFoundation
 		
 		
 		Unit*		data;
-		size_t		count;
-		size_t		capacity;
+		size_t		count;		// num items
+		size_t		capacity;	// bits (not bytes)
 	};
 }
