@@ -312,9 +312,6 @@ LZ4_SRC := \
 	lib/lz4hc.c \
 	lib/xxhash.c
 
-SQLITE_SRC := \
-	sqlite/sqlite3.c
-
 ZLIB_SRC := \
 	zlib/contrib/minizip/ioapi.c \
 	zlib/contrib/minizip/mztools.c \
@@ -348,7 +345,6 @@ LOCAL_SRC_FILES += $(LIBTIFF_SRC)
 LOCAL_SRC_FILES += $(LIBVORBIS_SRC)
 LOCAL_SRC_FILES += $(LIBXML2_SRC)
 LOCAL_SRC_FILES += $(LZ4_SRC)
-LOCAL_SRC_FILES += $(SQLITE_SRC)
 LOCAL_SRC_FILES += $(ZLIB_SRC)
 
 include $(BUILD_STATIC_LIBRARY)

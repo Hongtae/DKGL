@@ -73,7 +73,3 @@
 #include FT_STROKER_H
 #include FT_BBOX_H
 #endif
-
-#ifdef DKGL_EXTDEPS_SQLITE3
-#include "ExtDeps/sqlite/sqlite3.h
-#endif

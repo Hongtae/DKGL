@@ -78,9 +78,6 @@
     <Filter Include="libxml2\include\libxml">
       <UniqueIdentifier>{e4df1c5b-a5f7-4fd5-a014-9e3dfe7be352}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sqlite">
-      <UniqueIdentifier>{c2a3087f-c8b9-41f7-bc43-539702db411b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CxImage">
       <UniqueIdentifier>{710e2579-3f0d-4953-ac2f-ba862f41d85c}</UniqueIdentifier>
     </Filter>
@@ -383,12 +380,6 @@
     </ClInclude>
     <ClInclude Include="libxml2\include\libxml\xpointer.h">
       <Filter>libxml2\include\libxml</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite\sqlite3.h">
-      <Filter>sqlite</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite\sqlite3ext.h">
-      <Filter>sqlite</Filter>
     </ClInclude>
     <ClInclude Include="CxImage\xfile.h">
       <Filter>CxImage</Filter>
@@ -1045,9 +1036,6 @@
     </ClCompile>
     <ClCompile Include="FreeType\src\base\ftxf86.c">
       <Filter>FreeType\Source Files\FT_MODULES</Filter>
-    </ClCompile>
-    <ClCompile Include="sqlite\sqlite3.c">
-      <Filter>sqlite</Filter>
     </ClCompile>
     <ClCompile Include="CxImage\tif_xfile.cpp">
       <Filter>CxImage</Filter>

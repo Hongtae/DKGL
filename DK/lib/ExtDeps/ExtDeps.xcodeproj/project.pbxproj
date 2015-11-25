@@ -576,10 +576,6 @@
 		84B8FB7313AF4DA100A3DECA /* bzlib_private.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B8FB7013AF4DA100A3DECA /* bzlib_private.h */; };
 		84B8FB7413AF4DA100A3DECA /* bzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B8FB7113AF4DA100A3DECA /* bzlib.h */; };
 		84B8FB7513AF4DA100A3DECA /* bzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B8FB7113AF4DA100A3DECA /* bzlib.h */; };
-		84B9BD5516F2DC1700DC8F5A /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B9BD5016F2DC1700DC8F5A /* sqlite3.c */; };
-		84B9BD5616F2DC1700DC8F5A /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B9BD5016F2DC1700DC8F5A /* sqlite3.c */; };
-		84B9BD5716F2DC1700DC8F5A /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B9BD5116F2DC1700DC8F5A /* sqlite3.h */; };
-		84B9BD5816F2DC1700DC8F5A /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B9BD5116F2DC1700DC8F5A /* sqlite3.h */; };
 		84C5F7D713013E11005F4449 /* ftconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A8AEA412252A05008B2F52 /* ftconfig.h */; };
 		84C5F7D813013E11005F4449 /* ftheader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A8AEA512252A05008B2F52 /* ftheader.h */; };
 		84C5F7D913013E11005F4449 /* ftmodule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A8AEA612252A05008B2F52 /* ftmodule.h */; };
@@ -1358,8 +1354,6 @@
 		84B8FB5513AF4D9000A3DECA /* randtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = randtable.c; sourceTree = "<group>"; };
 		84B8FB7013AF4DA100A3DECA /* bzlib_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bzlib_private.h; sourceTree = "<group>"; };
 		84B8FB7113AF4DA100A3DECA /* bzlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bzlib.h; sourceTree = "<group>"; };
-		84B9BD5016F2DC1700DC8F5A /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
-		84B9BD5116F2DC1700DC8F5A /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		84C45F2615A9199E000A0982 /* libExtDeps_OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libExtDeps_OSX.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C45F2715A9199E000A0982 /* libExtDeps_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libExtDeps_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84E365FA14547BC50092F7A5 /* bitmath.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitmath.c; sourceTree = "<group>"; };
@@ -1510,7 +1504,6 @@
 				84A8AFA112252A05008B2F52 /* libvorbis */,
 				84A8AFE212252A05008B2F52 /* libxml2 */,
 				84990B901BEC572A00D660EE /* lz4 */,
-				84B9BD4E16F2DC1700DC8F5A /* sqlite */,
 				84A8B01212252A05008B2F52 /* zlib */,
 			);
 			name = DKExternal;
@@ -2014,15 +2007,6 @@
 			path = bzip2;
 			sourceTree = "<group>";
 		};
-		84B9BD4E16F2DC1700DC8F5A /* sqlite */ = {
-			isa = PBXGroup;
-			children = (
-				84B9BD5016F2DC1700DC8F5A /* sqlite3.c */,
-				84B9BD5116F2DC1700DC8F5A /* sqlite3.h */,
-			);
-			path = sqlite;
-			sourceTree = "<group>";
-		};
 		84C45F2815A919A7000A0982 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2431,7 +2415,6 @@
 				84F550D41637F878004DDCFA /* save.h in Headers */,
 				84F550DE1637F878004DDCFA /* timsort.h in Headers */,
 				84F551161637F878004DDCFA /* xzlib.h in Headers */,
-				84B9BD5816F2DC1700DC8F5A /* sqlite3.h in Headers */,
 				841B59D0174A4C0F00DBA899 /* xfile.h in Headers */,
 				841B59D4174A4C0F00DBA899 /* ximabmp.h in Headers */,
 				841B59D6174A4C0F00DBA899 /* ximacfg.h in Headers */,
@@ -2633,7 +2616,6 @@
 				84F550D31637F878004DDCFA /* save.h in Headers */,
 				84F550DD1637F878004DDCFA /* timsort.h in Headers */,
 				84F551151637F878004DDCFA /* xzlib.h in Headers */,
-				84B9BD5716F2DC1700DC8F5A /* sqlite3.h in Headers */,
 				841B59CF174A4C0F00DBA899 /* xfile.h in Headers */,
 				841B59D3174A4C0F00DBA899 /* ximabmp.h in Headers */,
 				841B59D5174A4C0F00DBA899 /* ximacfg.h in Headers */,
@@ -2948,7 +2930,6 @@
 				84F551121637F878004DDCFA /* xpointer.c in Sources */,
 				84F551141637F878004DDCFA /* xzlib.c in Sources */,
 				84AEE9011639225200E9C01E /* ftxf86.c in Sources */,
-				84B9BD5616F2DC1700DC8F5A /* sqlite3.c in Sources */,
 				841B59CE174A4C0F00DBA899 /* tif_xfile.cpp in Sources */,
 				841B59D2174A4C0F00DBA899 /* ximabmp.cpp in Sources */,
 				841B59DA174A4C0F00DBA899 /* ximadsp.cpp in Sources */,
@@ -3247,7 +3228,6 @@
 				84F551111637F878004DDCFA /* xpointer.c in Sources */,
 				84F551131637F878004DDCFA /* xzlib.c in Sources */,
 				84AEE9001639225200E9C01E /* ftxf86.c in Sources */,
-				84B9BD5516F2DC1700DC8F5A /* sqlite3.c in Sources */,
 				841B59CD174A4C0F00DBA899 /* tif_xfile.cpp in Sources */,
 				841B59D1174A4C0F00DBA899 /* ximabmp.cpp in Sources */,
 				841B59D9174A4C0F00DBA899 /* ximadsp.cpp in Sources */,

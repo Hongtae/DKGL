@@ -319,8 +319,6 @@
     <ClInclude Include="lz4\lib\lz4frame_static.h" />
     <ClInclude Include="lz4\lib\lz4hc.h" />
     <ClInclude Include="lz4\lib\xxhash.h" />
-    <ClInclude Include="sqlite\sqlite3.h" />
-    <ClInclude Include="sqlite\sqlite3ext.h" />
     <ClInclude Include="zlib\crc32.h" />
     <ClInclude Include="zlib\contrib\minizip\crypt.h" />
     <ClInclude Include="zlib\deflate.h" />
@@ -614,7 +612,6 @@
     <ClCompile Include="lz4\lib\lz4frame.c" />
     <ClCompile Include="lz4\lib\lz4hc.c" />
     <ClCompile Include="lz4\lib\xxhash.c" />
-    <ClCompile Include="sqlite\sqlite3.c" />
     <ClCompile Include="zlib\adler32.c" />
     <ClCompile Include="zlib\compress.c" />
     <ClCompile Include="zlib\crc32.c" />
