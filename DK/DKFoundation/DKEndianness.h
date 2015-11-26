@@ -56,26 +56,26 @@ namespace DKFoundation
 	template <typename T> FORCEINLINE T DKSwitchIntegralByteOrder(T n, DKNumber<1>)
 	{
 		static_assert(sizeof(T) == 1, "Invalid type size");
-		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(&n)[0]);
-		return *reinterpret_cast<T*>(&r);
+		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t&>(n));
+		return reinterpret_cast<T&>(r);
 	}
 	template <typename T> FORCEINLINE T DKSwitchIntegralByteOrder(T n, DKNumber<2>)
 	{
 		static_assert(sizeof(T) == 2, "Invalid type size");
-		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(&n)[0]);
-		return *reinterpret_cast<T*>(&r);
+		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t&>(n));
+		return reinterpret_cast<T&>(r);
 	}
 	template <typename T> FORCEINLINE T DKSwitchIntegralByteOrder(T n, DKNumber<4>)
 	{
 		static_assert(sizeof(T) == 4, "Invalid type size");
-		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t*>(&n)[0]);
-		return *reinterpret_cast<T*>(&r);
+		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint32_t&>(n));
+		return reinterpret_cast<T&>(r);
 	}
 	template <typename T> FORCEINLINE T DKSwitchIntegralByteOrder(T n, DKNumber<8>)
 	{
 		static_assert(sizeof(T) == 8, "Invalid type size");
-		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t*>(&n)[0]);
-		return *reinterpret_cast<T*>(&r);
+		auto r = DKSwitchIntegralByteOrder(reinterpret_cast<uint64_t&>(n));
+		return reinterpret_cast<T&>(r);
 	}
 
 	// System -> Big-Endian
