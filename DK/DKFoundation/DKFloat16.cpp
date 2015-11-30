@@ -8,23 +8,27 @@
 #include "DKFloat16.h"
 using namespace DKFoundation;
 
+static inline DKFloat16 UInt16ToFloat16(uint16_t val)
+{
+	return reinterpret_cast<DKFloat16&>(val);
+}
 
-const DKFloat16 DKFloat16::zero = static_cast<DKFloat16>(0x0U);
-const DKFloat16 DKFloat16::max = static_cast<DKFloat16>(0x7bffU);
-const DKFloat16 DKFloat16::min = static_cast<DKFloat16>(0x400U);
-const DKFloat16 DKFloat16::maxSubnormal = static_cast<DKFloat16>(0x3ffU);
-const DKFloat16 DKFloat16::minSubnormal = static_cast<DKFloat16>(0x1U);
-const DKFloat16 DKFloat16::posInfinity = static_cast<DKFloat16>(0x7c00U);
-const DKFloat16 DKFloat16::negInfinity = static_cast<DKFloat16>(0xfc00U);
+const DKFloat16 DKFloat16::zero = UInt16ToFloat16(0x0U);
+const DKFloat16 DKFloat16::max = UInt16ToFloat16(0x7bffU);
+const DKFloat16 DKFloat16::min = UInt16ToFloat16(0x400U);
+const DKFloat16 DKFloat16::maxSubnormal = UInt16ToFloat16(0x3ffU);
+const DKFloat16 DKFloat16::minSubnormal = UInt16ToFloat16(0x1U);
+const DKFloat16 DKFloat16::posInfinity = UInt16ToFloat16(0x7c00U);
+const DKFloat16 DKFloat16::negInfinity = UInt16ToFloat16(0xfc00U);
 
 
 DKFloat16::DKFloat16(void)
-: binary16(0U)
+	: binary16(0U)
 {
 }
 
 DKFloat16::DKFloat16(const DKFloat16& f)
-: binary16(f.binary16)
+	: binary16(f.binary16)
 {
 }
 
@@ -40,7 +44,10 @@ DKFloat16::DKFloat16(float val)
 	{
 		if (exponent == 0x7f800000U && mantissa) // NaN
 		{
-			binary16 = sign | uint16_t(0x7c00U) | uint16_t(0x3ffU);
+			mantissa >>= 13;
+			if (mantissa == 0) mantissa = 1;
+
+			binary16 = sign | uint16_t(0x7c00U) | uint16_t(mantissa);
 		}
 		else // Inf / Overflow
 		{
@@ -78,23 +85,24 @@ DKFloat16::operator float(void) const
 
 	if (exponent == 0)
 	{
-		if (mantissa)
+		if (mantissa)	// subnormal
 		{
+			exponent = 0x70U;
+			mantissa <<= 1;
 			while ((mantissa & 0x400U) == 0)
 			{
 				mantissa <<= 1;
-				exponent += 1;
+				exponent -= 1;
 			}
 			mantissa &= 0x3ff;	// Clamp to 10 bits.
 			mantissa = mantissa << 13;
-			exponent = 0x70U - exponent;
 		}
 	}
 	else if (exponent == 0x1fU)	// NaN or Inf
 	{
 		exponent = 0xffU;
 		if (mantissa)	// NaN
-			mantissa = 0x7fffffU;
+			mantissa = mantissa << 13 | 0x1fffU;
 	}
 	else // Normalized
 	{
@@ -115,7 +123,7 @@ DKFloat16& DKFloat16::operator = (const DKFloat16& v)
 
 DKFloat16 DKFloat16::Abs(void) const
 {
-	return static_cast<DKFloat16>(binary16 & 0x7fffU);
+	return static_cast<DKFloat16>(uint16_t(binary16 & 0x7fffU));
 }
 
 bool DKFloat16::IsInfinity(void) const
@@ -151,7 +159,39 @@ bool DKFloat16::IsNumeric(void) const
 	return true;
 }
 
+bool DKFloat16::IsSubnormalNumber(void) const
+{
+	uint32_t exponent = (binary16 >> 10) & 0x1fU;
+	if (exponent == 0U)
+	{
+		uint32_t mantissa = binary16 & 0x3ffU;
+		if (mantissa)
+			return true;
+	}
+	return false;
+}
+
 bool DKFloat16::IsPositive(void) const
 {
 	return ((binary16 >> 15) & 0x1U) == 0;
+}
+
+bool DKFloat16::IsZero(void) const
+{
+	return (binary16 & 0x7fffU) == 0;
+}
+
+int DKFloat16::Compare(const DKFloat16& rhs) const
+{
+	int sign1 = this->binary16 & 0x8000U;
+	int sign2 = rhs.binary16 & 0x8000U;
+	int v1 = this->binary16 & 0x7fffU;
+	int v2 = rhs.binary16 & 0x7fffU;
+
+	if (sign1)
+		v1 = -v1;
+	if (sign2)
+		v2 = -v2;
+
+	return v1 - v2;
 }

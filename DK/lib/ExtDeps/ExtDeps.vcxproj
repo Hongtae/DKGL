@@ -89,7 +89,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -110,7 +110,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;DEBUG=1;_DEBUG=1;_LIB;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2;FT_DEBUG_LEVEL_ERROR;FT_DEBUG_LEVEL_TRACE;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -127,7 +127,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -149,7 +149,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>./FreeType/include;./libxml2/include;./libogg/include;./libvorbis/include;./libFLAC/include;./zlib;./bzip2</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG=1;_NDEBUG=1;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;FT2_BUILD_LIBRARY;HAVE_BZIP2;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

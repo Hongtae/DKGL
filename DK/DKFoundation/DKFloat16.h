@@ -39,19 +39,24 @@ namespace DKFoundation
 		bool IsInfinity(void) const;
 		bool IsPositiveInfinity(void) const;
 		bool IsNegativeInfinity(void) const;
-		bool IsNumeric(void) const;  // false if NaN
+		bool IsNumeric(void) const;	// false if NaN
+		bool IsSubnormalNumber(void) const;
 		bool IsPositive(void) const;
+		bool IsZero(void) const;
+
+		// Warning: Compare function does not check Inf,NaN
+		int Compare(const DKFloat16&) const;
 
 		static const DKFloat16 zero;			// 0.0 (0 for positive, 0x8000 for negative)
 		static const DKFloat16 max;				// maximum positive value (65504.0)
-		static const DKFloat16 min;				// minimum positive normal (2^−14)
-		static const DKFloat16 maxSubnormal;	// minimum positive subnormal (2^−14 - 2^−24)
-		static const DKFloat16 minSubnormal;	// minimum positive subnormal (2^−24)
+		static const DKFloat16 min;				// minimum positive normal (2^-14)
+		static const DKFloat16 maxSubnormal;	// minimum positive subnormal (2^-14 - 2^-24)
+		static const DKFloat16 minSubnormal;	// minimum positive subnormal (2^-24)
 		static const DKFloat16 posInfinity;		// +Inf (0x7c00)
 		static const DKFloat16 negInfinity;		// -Inf (0xfc00)
 
 	private:
-		uint16_t binary16; // packed 16bit float
+		uint16_t binary16;	// packed 16bit float
 	};
 
 	static_assert(sizeof(DKFloat16) == 2, "float16 should be 2 bytes!");
