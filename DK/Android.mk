@@ -40,6 +40,7 @@ DKFOUNDATION_SRC := \
 	DKFoundation/DKFence.cpp \
 	DKFoundation/DKFile.cpp \
 	DKFoundation/DKFileMap.cpp \
+	DKFoundation/DKFloat16.cpp \
 	DKFoundation/DKHash.cpp \
 	DKFoundation/DKLock.cpp \
 	DKFoundation/DKLog.cpp \

@@ -148,7 +148,7 @@ namespace DKFoundation
 		// update context digest
 		static void HashUpdate32(HashContext* ctx, const void* p, size_t len)
 		{
-			static const unsigned int K[] = 
+			static const uint32_t K[] =
 			{
 				0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
 				0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
@@ -184,26 +184,26 @@ namespace DKFoundation
 				0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94, 0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D,
 			};
 
-			unsigned int crc = ~(ctx->hash32[0]);
+			uint32_t crc = ~(ctx->hash32[0]);
 
-			for (unsigned int i = 0; i < len; i++)
-				crc = K[ (crc ^ ((const char*)p)[i]) & 0xff] ^ (crc >> 8);
+			for (size_t i = 0; i < len; i++)
+				crc = K[ (crc ^ ((const uint8_t*)p)[i]) & 0xff] ^ (crc >> 8);
 
 			ctx->hash32[0] = ~crc;
 		}
 
 		static void HashDigest128(HashContext* ctx, const void* p, size_t count)
 		{
-			unsigned int A,B,C,D,F;
-			unsigned int W[16];
+			uint32_t A,B,C,D,F;
+			uint32_t W[16];
 
-			static const unsigned int R[] ={
+			static const uint32_t R[] ={
 				7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,	// round 0
 				5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,	// round 1
 				4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,	// round 2
 				6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21	// round 3
 			};
-			static const unsigned int K[] = {
+			static const uint32_t K[] = {
 				0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 				0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
 				0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
@@ -214,7 +214,7 @@ namespace DKFoundation
 				0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1, 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 			};
 
-			for (unsigned int i = 0; i < count; i++)
+			for (size_t i = 0; i < count; i++)
 			{
 				A = ctx->hash32[0];
 				B = ctx->hash32[1];
@@ -266,10 +266,10 @@ namespace DKFoundation
 
 		static void HashDigest160(HashContext* ctx, const void* p, size_t count)
 		{
-			unsigned int A,B,C,D,E,T;
-			unsigned int W[80];
+			uint32_t A,B,C,D,E,T;
+			uint32_t W[80];
 
-			for (unsigned int i = 0; i < count; i++)
+			for (size_t i = 0; i < count; i++)
 			{
 				A = ctx->hash32[0];
 				B = ctx->hash32[1];
@@ -317,8 +317,8 @@ namespace DKFoundation
 
 		static void HashDigest256(HashContext* ctx, const void* p, size_t count)
 		{
-			unsigned int A,B,C,D,E,F,G,H;
-			static const unsigned int K[] = {
+			uint32_t A,B,C,D,E,F,G,H;
+			static const uint32_t K[] = {
 				0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
 				0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
 				0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
@@ -328,8 +328,8 @@ namespace DKFoundation
 				0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
 				0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 			};
-			unsigned int W[64];
-			for (unsigned int i = 0; i < count; i++)
+			uint32_t W[64];
+			for (size_t i = 0; i < count; i++)
 			{
 				A = ctx->hash32[0];
 				B = ctx->hash32[1];
@@ -351,10 +351,10 @@ namespace DKFoundation
 					W[x] = W[x-16] + s0 + W[x-7] + s1;
 				}
 
-				unsigned int s0, s1;
-				unsigned int maj;
-				unsigned int t1, t2;
-				unsigned int ch;
+				uint32_t s0, s1;
+				uint32_t maj;
+				uint32_t t1, t2;
+				uint32_t ch;
 				for (int n = 0; n < 64; n++)
 				{
 					s0 = HASH_RIGHT_ROTATE32(A,2) ^ HASH_RIGHT_ROTATE32(A,13) ^ HASH_RIGHT_ROTATE32(A,22);
@@ -411,7 +411,7 @@ namespace DKFoundation
 				0x4cc5d4becb3e42b6ULL, 0x597f299cfc657e2aULL, 0x5fcb6fab3ad6faecULL, 0x6c44198c4a475817ULL
 			};
 			uint64_t W[80];
-			for (unsigned int i = 0; i < count; i++)
+			for (size_t i = 0; i < count; i++)
 			{
 				A = ctx->hash64[0];
 				B = ctx->hash64[1];
@@ -470,7 +470,7 @@ namespace DKFoundation
 		// HashUpdate : updates hash digest, using all algorithms except for CRC32
 		template <typename HashDigest> static void HashUpdate(HashContext* ctx, size_t block_size, const void* p, size_t len, HashDigest hash_func)
 		{
-			const unsigned char *data = (const unsigned char*)p;
+			const uint8_t *data = (const uint8_t*)p;
 
 			if (len == 0)
 				return;
@@ -584,7 +584,7 @@ namespace DKFoundation
 			{
 				for (int i = 0; i < 8; i++)
 				{
-					unsigned int tmp = ctx->hash32[i*2];
+					uint32_t tmp = ctx->hash32[i*2];
 					ctx->hash32[i*2] = ctx->hash32[i*2+1];
 					ctx->hash32[i*2+1] = tmp;
 				}

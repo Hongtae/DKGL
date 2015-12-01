@@ -292,6 +292,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKFile.h" />
     <ClInclude Include="DKFoundation\DKFileMap.h" />
     <ClInclude Include="DKFoundation\DKFixedSizeAllocator.h" />
+    <ClInclude Include="DKFoundation\DKFloat16.h" />
     <ClInclude Include="DKFoundation\DKFunction.h" />
     <ClInclude Include="DKFoundation\DKHash.h" />
     <ClInclude Include="DKFoundation\DKInvocation.h" />
@@ -485,6 +486,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClCompile Include="DKFoundation\DKFence.cpp" />
     <ClCompile Include="DKFoundation\DKFile.cpp" />
     <ClCompile Include="DKFoundation\DKFileMap.cpp" />
+    <ClCompile Include="DKFoundation\DKFloat16.cpp" />
     <ClCompile Include="DKFoundation\DKHash.cpp" />
     <ClCompile Include="DKFoundation\DKLock.cpp" />
     <ClCompile Include="DKFoundation\DKLog.cpp" />

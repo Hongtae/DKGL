@@ -67,6 +67,9 @@
 // date time, timer
 #include "DKFoundation/DKTimer.h"
 #include "DKFoundation/DKDateTime.h"
+
+// math types
+#include "DKFoundation/DKFloat16.h"
 #include "DKFoundation/DKRational.h"
 
 // operation, invocation (function utilities)

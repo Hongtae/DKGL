@@ -640,6 +640,9 @@
     <ClInclude Include="DKFramework\DKTriangleMeshProxyShape.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
+    <ClInclude Include="DKFoundation\DKFloat16.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFramework\Private\DKAudioStreamFLAC.cpp">
@@ -1070,6 +1073,9 @@
     </ClCompile>
     <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp">
       <Filter>DKFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKFloat16.cpp">
+      <Filter>DKFoundation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
