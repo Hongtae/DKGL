@@ -243,15 +243,31 @@ bool DKVertexBuffer::BindStream(const DKVertexStream& stream) const
 
 	const Decl* d = NULL;
 	size_t offset = 0;
-	for (const Decl& decl : declarations)
+	if (stream.id < DKVertexStream::StreamUserDefine)
 	{
-		size_t typeSize = DKVertexStream::TypeSize(decl.type);
-		if (decl.id == stream.id && decl.name == stream.name)
+		for (const Decl& decl : declarations)
 		{
-			d = &decl;
-			break;
+			size_t typeSize = DKVertexStream::TypeSize(decl.type);
+			if (decl.id == stream.id)
+			{
+				d = &decl;
+				break;
+			}
+			offset += typeSize;
 		}
-		offset += typeSize;
+	}
+	else
+	{
+		for (const Decl& decl : declarations)
+		{
+			size_t typeSize = DKVertexStream::TypeSize(decl.type);
+			if (decl.id == stream.id && decl.name == stream.name)
+			{
+				d = &decl;
+				break;
+			}
+			offset += typeSize;
+		}
 	}
 
 	if (d && this->Bind())

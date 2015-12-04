@@ -355,6 +355,15 @@
 		849787DB14548FDB001D9CFD /* vorbisenc.h in Headers */ = {isa = PBXBuildFile; fileRef = 849787D614548FDB001D9CFD /* vorbisenc.h */; };
 		849787DC14548FDB001D9CFD /* vorbisfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 849787D714548FDB001D9CFD /* vorbisfile.h */; };
 		849787DD14548FDB001D9CFD /* vorbisfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 849787D714548FDB001D9CFD /* vorbisfile.h */; };
+		8498B3011C11E7B40085554D /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 84990BA11BEC572A00D660EE /* lz4.c */; };
+		8498B3021C11E7B40085554D /* lz4.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990BA21BEC572A00D660EE /* lz4.h */; };
+		8498B3031C11E7B40085554D /* lz4frame_static.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990BA51BEC572A00D660EE /* lz4frame_static.h */; };
+		8498B3041C11E7B40085554D /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 84990BA31BEC572A00D660EE /* lz4frame.c */; };
+		8498B3051C11E7B40085554D /* lz4frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990BA41BEC572A00D660EE /* lz4frame.h */; };
+		8498B3061C11E7B40085554D /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84990BA61BEC572A00D660EE /* lz4hc.c */; };
+		8498B3071C11E7B40085554D /* lz4hc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990BA71BEC572A00D660EE /* lz4hc.h */; };
+		8498B3081C11E7B40085554D /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 84990BAA1BEC572A00D660EE /* xxhash.c */; };
+		8498B3091C11E7B40085554D /* xxhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990BAB1BEC572A00D660EE /* xxhash.h */; };
 		84990B741BEC479400D660EE /* crypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990B5F1BEC479400D660EE /* crypt.h */; };
 		84990B751BEC479400D660EE /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 84990B601BEC479400D660EE /* ioapi.c */; };
 		84990B761BEC479400D660EE /* ioapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990B611BEC479400D660EE /* ioapi.h */; };
@@ -2284,9 +2293,11 @@
 				84C5F82C13013E11005F4449 /* codec_internal.h in Headers */,
 				84C5F82D13013E11005F4449 /* envelope.h in Headers */,
 				84C5F82E13013E11005F4449 /* highlevel.h in Headers */,
+				8498B3051C11E7B40085554D /* lz4frame.h in Headers */,
 				84C5F82F13013E11005F4449 /* lookup.h in Headers */,
 				84C5F83013013E11005F4449 /* lookup_data.h in Headers */,
 				84C5F83113013E11005F4449 /* lpc.h in Headers */,
+				8498B3071C11E7B40085554D /* lz4hc.h in Headers */,
 				84990B841BEC4CDB00D660EE /* ioapi.h in Headers */,
 				84C5F83213013E11005F4449 /* lsp.h in Headers */,
 				84C5F83313013E11005F4449 /* masking.h in Headers */,
@@ -2309,6 +2320,7 @@
 				84C5F84913013E11005F4449 /* zconf.h in Headers */,
 				84C5F84B13013E11005F4449 /* zlib.h in Headers */,
 				84C5F84C13013E11005F4449 /* zutil.h in Headers */,
+				8498B3031C11E7B40085554D /* lz4frame_static.h in Headers */,
 				84B8FB7313AF4DA100A3DECA /* bzlib_private.h in Headers */,
 				84B8FB7513AF4DA100A3DECA /* bzlib.h in Headers */,
 				84E3663614547BC50092F7A5 /* config.h in Headers */,
@@ -2376,6 +2388,7 @@
 				848E340B1543EF5C00704D32 /* threads.h in Headers */,
 				848E340D1543EF5C00704D32 /* tree.h in Headers */,
 				848E340F1543EF5C00704D32 /* uri.h in Headers */,
+				8498B3021C11E7B40085554D /* lz4.h in Headers */,
 				848E34111543EF5C00704D32 /* valid.h in Headers */,
 				848E34131543EF5C00704D32 /* xinclude.h in Headers */,
 				848E34151543EF5C00704D32 /* xlink.h in Headers */,
@@ -2436,6 +2449,7 @@
 				841B5A26174A4C0F00DBA899 /* ximath.h in Headers */,
 				841B5A2A174A4C0F00DBA899 /* ximatif.h in Headers */,
 				841B5A30174A4C0F00DBA899 /* ximawbmp.h in Headers */,
+				8498B3091C11E7B40085554D /* xxhash.h in Headers */,
 				841B5A34174A4C0F00DBA899 /* ximawmf.h in Headers */,
 				841B5A38174A4C0F00DBA899 /* xiofile.h in Headers */,
 				841B5A3C174A4C0F00DBA899 /* xmemfile.h in Headers */,
@@ -2758,6 +2772,7 @@
 				84C5F8BE13013E11005F4449 /* bdf.c in Sources */,
 				84C5F8BF13013E11005F4449 /* ftccache.c in Sources */,
 				84C5F8C013013E11005F4449 /* cff.c in Sources */,
+				8498B3041C11E7B40085554D /* lz4frame.c in Sources */,
 				84C5F8C113013E11005F4449 /* ftlzw.c in Sources */,
 				84C5F8C213013E11005F4449 /* smooth.c in Sources */,
 				84C5F91E13013E11005F4449 /* png.c in Sources */,
@@ -2790,6 +2805,7 @@
 				84C5F93A13013E11005F4449 /* tif_extension.c in Sources */,
 				84C5F93B13013E11005F4449 /* tif_fax3.c in Sources */,
 				84C5F93C13013E11005F4449 /* tif_fax3sm.c in Sources */,
+				8498B3081C11E7B40085554D /* xxhash.c in Sources */,
 				84C5F93D13013E11005F4449 /* tif_flush.c in Sources */,
 				84C5F93E13013E11005F4449 /* tif_getimage.c in Sources */,
 				84C5F93F13013E11005F4449 /* tif_jpeg.c in Sources */,
@@ -2979,6 +2995,7 @@
 				841B5ACB174A699300DBA899 /* jcprepct.c in Sources */,
 				841B5ACD174A699300DBA899 /* jcsample.c in Sources */,
 				841FEE0917CDF3CC00610986 /* tif_lzma.c in Sources */,
+				8498B3061C11E7B40085554D /* lz4hc.c in Sources */,
 				841B5ACF174A699300DBA899 /* jctrans.c in Sources */,
 				841B5AD1174A699300DBA899 /* jdapimin.c in Sources */,
 				841B5AD3174A699300DBA899 /* jdapistd.c in Sources */,
@@ -2988,6 +3005,7 @@
 				841B5ADB174A699300DBA899 /* jdcoefct.c in Sources */,
 				841B5ADD174A699300DBA899 /* jdcolor.c in Sources */,
 				841B5ADF174A699300DBA899 /* jddctmgr.c in Sources */,
+				8498B3011C11E7B40085554D /* lz4.c in Sources */,
 				841B5AE1174A699300DBA899 /* jdhuff.c in Sources */,
 				841B5AE3174A699300DBA899 /* jdinput.c in Sources */,
 				841B5AE5174A699300DBA899 /* jdmainct.c in Sources */,
