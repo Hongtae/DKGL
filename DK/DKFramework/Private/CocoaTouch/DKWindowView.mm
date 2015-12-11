@@ -54,6 +54,9 @@ using namespace DKFramework::Private;
 - (void)trackTouchInfo:(NSArray*)touches;
 @end
 
+constexpr int defaultTextFieldHeight = 30;
+constexpr int defaultTextFieldMargin = 2;
+
 @implementation DKWindowView
 @synthesize handler;
 @synthesize origin;
@@ -78,31 +81,29 @@ using namespace DKFramework::Private;
 
 		self.contentScaleFactor = [[UIScreen mainScreen] scale];
 
-		int textFieldHeight = 30;
-		int textFieldWidth = frame.size.width - 30;
-		
-		CGRect textInputFieldRect = CGRectMake((frame.size.width - textFieldWidth)/2, -textFieldHeight, textFieldWidth, textFieldHeight);
-		
-		textInputField = [[UITextField alloc] initWithFrame:textInputFieldRect];
+		textInputField = [[UITextField alloc] initWithFrame:CGRectMake(defaultTextFieldMargin, frame.size.height - defaultTextFieldHeight - defaultTextFieldMargin, frame.size.width - defaultTextFieldMargin * 2, defaultTextFieldHeight)];
 		textInputField.delegate = self;
 		textInputField.textAlignment = NSTextAlignmentCenter;
 		textInputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		textInputField.backgroundColor = [UIColor whiteColor];
+		textInputField.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.4];
 		textInputField.textColor = [UIColor blackColor];
-		textInputField.borderStyle = UITextBorderStyleLine;
+		textInputField.borderStyle = UITextBorderStyleRoundedRect;
 		textInputField.clearButtonMode = UITextFieldViewModeAlways;
 		textInputField.hidden = YES;
-		textInputField.opaque = NO;
-		textInputField.alpha = 0.75;
 		textInputField.clearsOnBeginEditing = YES;
+		textInputField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[textInputField adjustsFontSizeToFitWidth];
 		[textInputField addTarget:self action:@selector(onUpdateTextField:) forControlEvents:UIControlEventEditingChanged];
 		
 		[self addSubview:textInputField];
 
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHideNotification:) name:UIKeyboardWillHideNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrameNotification:) name:UIKeyboardWillChangeFrameNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidChangeFrameNotification:) name:UIKeyboardDidChangeFrameNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActiveNotification:) name:UIApplicationWillResignActiveNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 		
 		appActivated = YES;
 		if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)])
@@ -159,6 +160,7 @@ using namespace DKFramework::Private;
 
 - (void)layoutSubviews
 {
+	[super layoutSubviews];
 	handler->PostWindowEvent(DKWindow::EventWindowResized, self.contentSize, self.origin, false);
 }
 
@@ -333,30 +335,24 @@ using namespace DKFramework::Private;
 
 - (void)enableTextInput:(BOOL)enable
 {
-	// 2015-01-22 by Hongtae Kim
-	// when text-input enabled, screen freeze can be occurred.
-	// disable text-input temporary.
-
-	DKLog("EnableTextInput is temporary disabled on iOS.\n");
-	textInputEnabled = NO;
-	textInputField.hidden = YES;
-	return;
-
-/*
 	if (enable)
 	{
 		textInputEnabled = YES;
-		DKLog("TextInput enabled.\n");
-		[textInputField performSelectorOnMainThread:@selector(becomeFirstResponder) withObject:nil waitUntilDone:YES];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			DKLog("TextInput enabled.\n");
+			textInputField.hidden = NO;
+			[textInputField becomeFirstResponder];
+		});
 	}
 	else
 	{
 		textInputEnabled = NO;
-		DKLog("TextInput disabled.\n");
-		[textInputField performSelectorOnMainThread:@selector(resignFirstResponder) withObject:nil waitUntilDone:YES];
-		textInputField.hidden = YES;
+		dispatch_async(dispatch_get_main_queue(), ^{
+			DKLog("TextInput disabled.\n");
+			[textInputField resignFirstResponder];
+			//textInputField.hidden = YES;
+		});
 	}
-*/
 }
 
 // UITextFieldDelegate protocol
@@ -428,29 +424,32 @@ using namespace DKFramework::Private;
 ////////////////////////////////////////////////////////////////////////////////
 // Notificaitons
 #pragma mark Notifications
-- (void)onKeyboardWillShow:(NSNotification*)notification
+- (void)keyboardWillShowNotification:(NSNotification*)notification
 {
-	NSDictionary* info = [notification userInfo];	
-	
-	// Get the size of the keyboard.
-    NSValue* aValue = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-    CGRect keyboardRect = [self convertRect:[aValue CGRectValue] fromView:nil];
-	CGRect viewRect = self.bounds;
-	
-	CGRect textFieldRect = textInputField.frame;
-	
-	// set position to below of input-frame and above of on-screen keyboard.
-	int textFieldH = textFieldRect.size.height;
-	int textFieldW = textFieldRect.size.width;
-	int textFieldX = textFieldRect.origin.x;
-	int textFieldY = Min<int>(viewRect.origin.y + viewRect.size.height - textFieldH - 15, keyboardRect.origin.y - textFieldH - 15);
-	
-	textFieldRect = CGRectMake(textFieldX, textFieldY, textFieldW, textFieldH);
-	
-	textInputField.frame = textFieldRect;
 }
 
-- (void)onAppWillResignActive:(NSNotification*)notification
+- (void)keyboardWillHideNotification:(NSNotification*)notification
+{
+}
+
+- (void)keyboardWillChangeFrameNotification:(NSNotification*)notification
+{
+}
+
+- (void)keyboardDidChangeFrameNotification:(NSNotification*)notification
+{
+	NSDictionary* info = [notification userInfo];
+
+	CGRect keyboardFrame = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+	keyboardFrame = [self convertRect:keyboardFrame fromView:nil];
+
+	CGRect textFieldFrame = textInputField.frame;
+	textFieldFrame.origin.y = keyboardFrame.origin.y - textFieldFrame.size.height - defaultTextFieldMargin;
+
+	textInputField.frame = textFieldFrame;
+}
+
+- (void)applicationWillResignActiveNotification:(NSNotification*)notification
 {
 	if (self.hidden == NO)
 	{
@@ -464,7 +463,7 @@ using namespace DKFramework::Private;
 	appActivated = NO;
 }
 
-- (void)onAppDidBecomeActive:(NSNotification*)notification
+- (void)applicationDidBecomeActiveNotification:(NSNotification*)notification
 {
 	if (self.hidden == NO)
 	{
