@@ -644,8 +644,11 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 			v.SetValueType(DKVariant::TypePairs);
 			v.Pairs().Insert(L"name", (const DKVariant::VString&)sn.name);
 
-			DKVariant frames(DKVariant::TypeData);
-			frames.Data().SetContent((const DKTransformUnit*)sn.frames, sn.frames.Count() * sizeof(DKTransformUnit));
+			DKVariant frames(DKVariant::TypeStructData);
+			DKVariant::VStructuredData& data = frames.StructuredData();
+			data.data.SetContent((const DKTransformUnit*)sn.frames, sn.frames.Count() * sizeof(DKTransformUnit));
+			data.elementSize = sizeof(DKTransformUnit);
+			data.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(DKTransformUnit) / 4);
 			v.Pairs().Insert(L"frames", frames);
 		}
 		bool SetSamplingNodeVariant(const DKVariant& v, SamplingNode& sn) const
@@ -655,15 +658,26 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 				const DKVariant::VPairs::Pair* pName = v.Pairs().Find(L"name");
 				const DKVariant::VPairs::Pair* pFrames = v.Pairs().Find(L"frames");
 
-				if (pName && pName->value.ValueType() == DKVariant::TypeString &&
-					pFrames && pFrames->value.ValueType() == DKVariant::TypeData)
+				if (pName && pName->value.ValueType() == DKVariant::TypeString && pFrames)
 				{
-					const DKData& frameData = pFrames->value.Data();
-					const DKTransformUnit* transforms = reinterpret_cast<const DKTransformUnit*>(frameData.LockShared());
-					sn.frames.Add(transforms, frameData.Length() / sizeof(DKTransformUnit));
-					frameData.UnlockShared();
-					sn.name = pName->value.String();
-					return true;
+					const DKData* frameData = NULL;
+					if (pFrames->value.ValueType() == DKVariant::TypeData)
+					{
+						frameData = &(pFrames->value.Data());
+					}
+					else if (pFrames->value.ValueType() == DKVariant::TypeStructData)
+					{
+						frameData = &(pFrames->value.StructuredData().data);
+					}
+					if (frameData)
+					{
+						auto numFrames = frameData->Length() / sizeof(DKTransformUnit);
+						const DKTransformUnit* transforms = reinterpret_cast<const DKTransformUnit*>(frameData->LockShared());
+						sn.frames.Add(transforms, numFrames);
+						frameData->UnlockShared();
+						sn.name = pName->value.String();
+						return true;
+					}
 				}
 			}
 			return false;
@@ -673,13 +687,25 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 			v.SetValueType(DKVariant::TypePairs);
 			v.Pairs().Insert(L"name", (const DKVariant::VString&)kn.name);
 
-			DKVariant scaleKeys(DKVariant::TypeData);
-			DKVariant rotationKeys(DKVariant::TypeData);
-			DKVariant translationKeys(DKVariant::TypeData);
+			DKVariant scaleKeys(DKVariant::TypeStructData);
+			DKVariant rotationKeys(DKVariant::TypeStructData);
+			DKVariant translationKeys(DKVariant::TypeStructData);
 
-			scaleKeys.Data().SetContent((const KeyframeNode::ScaleKey*)kn.scaleKeys, kn.scaleKeys.Count() * sizeof(KeyframeNode::ScaleKey));
-			rotationKeys.Data().SetContent((const KeyframeNode::RotationKey*)kn.rotationKeys, kn.rotationKeys.Count() * sizeof(KeyframeNode::RotationKey));
-			translationKeys.Data().SetContent((const KeyframeNode::TranslationKey*)kn.translationKeys, kn.translationKeys.Count() * sizeof(KeyframeNode::TranslationKey));
+			DKVariant::VStructuredData& scaleData = scaleKeys.StructuredData();
+			DKVariant::VStructuredData& rotationData = rotationKeys.StructuredData();
+			DKVariant::VStructuredData& translationData = translationKeys.StructuredData();
+
+			scaleData.data.SetContent((const KeyframeNode::ScaleKey*)kn.scaleKeys, kn.scaleKeys.Count() * sizeof(KeyframeNode::ScaleKey));
+			scaleData.elementSize = sizeof(KeyframeNode::ScaleKey);
+			scaleData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::ScaleKey) / 4);
+
+			rotationData.data.SetContent((const KeyframeNode::RotationKey*)kn.rotationKeys, kn.rotationKeys.Count() * sizeof(KeyframeNode::RotationKey));
+			rotationData.elementSize = sizeof(KeyframeNode::RotationKey);
+			rotationData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::RotationKey) / 4);
+
+			translationData.data.SetContent((const KeyframeNode::TranslationKey*)kn.translationKeys, kn.translationKeys.Count() * sizeof(KeyframeNode::TranslationKey));
+			translationData.elementSize = sizeof(KeyframeNode::TranslationKey);
+			translationData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::TranslationKey) / 4);
 
 			v.Pairs().Insert(L"scaleKeys", scaleKeys);
 			v.Pairs().Insert(L"rotationKeys", rotationKeys);
@@ -693,27 +719,42 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 				const DKVariant::VPairs::Pair* pScaleKeys = v.Pairs().Find(L"scaleKeys");
 				const DKVariant::VPairs::Pair* pRotationKeys = v.Pairs().Find(L"rotationKeys");
 				const DKVariant::VPairs::Pair* pTranslationKeys = v.Pairs().Find(L"translationKeys");
-				const DKVariant::VPairs::Pair* pTrans = v.Pairs().Find(L"transform");	// optional
 
 				if (pName && pName->value.ValueType() == DKVariant::TypeString &&
-					pScaleKeys && pScaleKeys->value.ValueType() == DKVariant::TypeData &&
-					pRotationKeys && pRotationKeys->value.ValueType() == DKVariant::TypeData &&
-					pTranslationKeys && pTranslationKeys->value.ValueType() == DKVariant::TypeData)
+					pScaleKeys && pRotationKeys && pTranslationKeys)
 				{
-					const DKData& scaleKeyData = pScaleKeys->value.Data();
-					const DKData& rotationKeyData = pRotationKeys->value.Data();
-					const DKData& translationKeyData = pTranslationKeys->value.Data();
+					const DKData* scaleData = NULL;
+					const DKData* rotationData = NULL;
+					const DKData* translationData = NULL;
 
-					kn.scaleKeys.Add((const KeyframeNode::ScaleKey*)scaleKeyData.LockShared(), scaleKeyData.Length() / sizeof(KeyframeNode::ScaleKey));
-					kn.rotationKeys.Add((const KeyframeNode::RotationKey*)rotationKeyData.LockShared(), rotationKeyData.Length() / sizeof(KeyframeNode::RotationKey));
-					kn.translationKeys.Add((const KeyframeNode::TranslationKey*)translationKeyData.LockShared(), translationKeyData.Length() / sizeof(KeyframeNode::TranslationKey));
+					if (pScaleKeys->value.ValueType() == DKVariant::TypeData)
+						scaleData = &(pScaleKeys->value.Data());
+					else if (pScaleKeys->value.ValueType() == DKVariant::TypeStructData)
+						scaleData = &(pScaleKeys->value.StructuredData().data);
 
-					scaleKeyData.UnlockShared();
-					rotationKeyData.UnlockShared();
-					translationKeyData.UnlockShared();
+					if (pRotationKeys->value.ValueType() == DKVariant::TypeData)
+						rotationData = &(pRotationKeys->value.Data());
+					else if (pRotationKeys->value.ValueType() == DKVariant::TypeStructData)
+						rotationData = &(pRotationKeys->value.StructuredData().data);
 
-					kn.name = pName->value.String();
-					return true;
+					if (pTranslationKeys->value.ValueType() == DKVariant::TypeData)
+						translationData = &(pTranslationKeys->value.Data());
+					else if (pTranslationKeys->value.ValueType() == DKVariant::TypeStructData)
+						translationData = &(pTranslationKeys->value.StructuredData().data);
+
+					if (scaleData && rotationData && translationData)
+					{
+						kn.scaleKeys.Add((const KeyframeNode::ScaleKey*)scaleData->LockShared(), scaleData->Length() / sizeof(KeyframeNode::ScaleKey));
+						kn.rotationKeys.Add((const KeyframeNode::RotationKey*)rotationData->LockShared(), rotationData->Length() / sizeof(KeyframeNode::RotationKey));
+						kn.translationKeys.Add((const KeyframeNode::TranslationKey*)translationData->LockShared(), translationData->Length() / sizeof(KeyframeNode::TranslationKey));
+
+						scaleData->UnlockShared();
+						rotationData->UnlockShared();
+						translationData->UnlockShared();
+
+						kn.name = pName->value.String();
+						return true;
+					}
 				}
 			}
 			return false;

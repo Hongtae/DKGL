@@ -116,9 +116,9 @@ namespace DKFramework
 		}
 		static bool ConvertStructuredDataByteOrder(VStructuredData& sd, DKByteOrder bo)
 		{
-			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.layout.Count() > 0)
+			size_t len = sd.data.Length();
+			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.elementSize <= len && sd.layout.Count() > 0)
 			{
-				size_t len = sd.data.Length();
 				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data.LockExclusive());
 				if (p)
 				{
@@ -753,12 +753,12 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 					break;
 				}
 			}
-			DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
+			DKObject<VData> compressed = VData::Base64Decode(value);
 			if (compressed)
 			{
-				DKObject<DKBuffer> d = compressed->Decompress();
+				DKObject<VData> d = compressed->Decompress();
 				if (d)
-					this->Data() = static_cast<DKBuffer&&>(*d);
+					this->Data() = static_cast<VData&&>(*d);
 			}
 		}
 		else if (this->ValueType() == TypeStructData)
@@ -1759,7 +1759,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 							val.Add(v);
 						}
 					}
-					this->SetValueType(TypeArray).Array() = val;
+					this->SetValueType(TypeArray).Array() = static_cast<VArray&&>(val);
 				}
 				else if (type == TypePairs)
 				{
@@ -1800,7 +1800,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 						}
 						val.Update(key, variant);
 					}
-					this->SetValueType(TypePairs).Pairs() = val;
+					this->SetValueType(TypePairs).Pairs() = static_cast<VPairs&&>(val);
 				}
 				else
 				{

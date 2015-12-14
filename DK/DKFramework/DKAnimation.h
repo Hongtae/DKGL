@@ -33,6 +33,7 @@ namespace DKFramework
 		typedef long NodeIndex;
 		static const NodeIndex invalidNodeIndex = -1;
 
+#pragma pack(push, 4)
 		struct Node
 		{
 			enum NodeType
@@ -76,6 +77,7 @@ namespace DKFramework
 			DKFoundation::DKString	name;
 			DKTransformUnit			transform;
 		};
+#pragma pack(pop)
 
 		DKAnimation(void);
 		~DKAnimation(void);
