@@ -48,7 +48,7 @@ bool DKStaticMesh::CanAdoptMaterial(const DKMaterial* m) const
 		const DKArray<DKVertexStream>& streams = m->StreamArray(i);
 		for (size_t j = 0; j < streams.Count(); ++j)
 		{
-			if (this->FindVertexStream(streams.Value(j).id, streams.Value(j).name) == NULL)
+			if (this->FindVertexStream(streams.Value(j).id, streams.Value(j).name).decl == NULL)
 				return false;
 		}
 	}
@@ -61,7 +61,7 @@ bool DKStaticMesh::AddVertexBuffer(DKVertexBuffer* buffer)
 	{
 		for (size_t i = 0; i < buffer->NumberOfDeclarations(); ++i)
 		{
-			if (FindVertexStream(buffer->DeclarationAtIndex(i)->id, buffer->DeclarationAtIndex(i)->name))
+			if (FindVertexStream(buffer->DeclarationAtIndex(i)->id, buffer->DeclarationAtIndex(i)->name).decl)
 				return false;
 		}
 
@@ -103,7 +103,7 @@ const DKVertexBuffer* DKStaticMesh::VertexBufferAtIndex(unsigned int index) cons
 	return this->vertexBuffers.Value(index);
 }
 
-void DKStaticMesh::RemoveVertexBuffer(DKVertexBuffer* buffer)
+void DKStaticMesh::RemoveVertexBuffer(const DKVertexBuffer* buffer)
 {
 	for (size_t i = 0; i < vertexBuffers.Count(); ++i)
 	{
@@ -154,27 +154,80 @@ DKPrimitive::Type DKStaticMesh::PrimitiveType(void) const
 	return DKMesh::PrimitiveType();
 }
 
-const DKStaticMesh::StreamInfo* DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream) const
+DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream) const
 {
-	const StreamIdMap::Pair* p = streamIdMap.Find(stream);
-	if (p)
-		return &p->value;
-	return NULL;
+	size_t offset;
+	for (const DKVertexBuffer* buffer : vertexBuffers)
+	{
+		offset = 0;
+		for (int i = 0; i < buffer->NumberOfDeclarations(); ++i)
+		{
+			const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
+			if (decl->id == stream)
+			{
+				return { decl, buffer, offset };
+			}
+			offset += DKVertexStream::TypeSize(decl->type);
+		}
+	}
+	return { NULL, NULL, 0 };
 }
 
-const DKStaticMesh::StreamInfo* DKStaticMesh::FindVertexStream(const DKFoundation::DKString& name) const
+DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(const DKFoundation::DKString& name) const
 {
-	const StreamNameMap::Pair* p = streamNameMap.Find(name);
-	if (p)
-		return &p->value;
-	return NULL;
+	size_t offset;
+	for (const DKVertexBuffer* buffer : vertexBuffers)
+	{
+		offset = 0;
+		for (int i = 0; i < buffer->NumberOfDeclarations(); ++i)
+		{
+			const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
+			if (decl->name == name)
+			{
+				return { decl, buffer, offset };
+			}
+			offset += DKVertexStream::TypeSize(decl->type);
+		}
+	}
+	return { NULL, NULL, 0 };
 }
 
-const DKStaticMesh::StreamInfo* DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
+DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
 {
+	size_t offset;
 	if (stream < DKVertexStream::StreamUserDefine)
-		return FindVertexStream(stream);
-	return FindVertexStream(name);
+	{
+		for (const DKVertexBuffer* buffer : vertexBuffers)
+		{
+			offset = 0;
+			for (int i = 0; i < buffer->NumberOfDeclarations(); ++i)
+			{
+				const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
+				if (decl->id == stream)
+				{
+					return { decl, buffer, offset };
+				}
+				offset += DKVertexStream::TypeSize(decl->type);
+			}
+		}
+	}
+	else
+	{
+		for (const DKVertexBuffer* buffer : vertexBuffers)
+		{
+			offset = 0;
+			for (int i = 0; i < buffer->NumberOfDeclarations(); ++i)
+			{
+				const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
+				if (decl->id == DKVertexStream::StreamUserDefine && decl->name == name)
+				{
+					return { decl, buffer, offset };
+				}
+				offset += DKVertexStream::TypeSize(decl->type);
+			}
+		}
+	}
+	return { NULL, NULL, 0 };
 }
 
 bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVertexBuffer::BufferUsage usage)
@@ -204,7 +257,6 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 		for (int k = 0; k < buffer->NumberOfDeclarations(); k++)
 		{
 			DKVertexBuffer::Decl decl = *buffer->DeclarationAtIndex(k);
-			decl.offset += vertexSize;
 			decls.Add(decl);
 		}
 		vertexSize += buffer->VertexSize();
@@ -279,7 +331,7 @@ bool DKStaticMesh::MakeSeparated(DKVertexBuffer::MemoryLocation location, DKVert
 				DKLog("[%s] failed to copy stream.\n", DKGL_FUNCTION_NAME);
 				return false;
 			}
-			DKVertexBuffer::Decl d = {decl.id, decl.name, decl.type, decl.normalize, 0};
+			DKVertexBuffer::Decl d = {decl.id, decl.name, decl.type, decl.normalize };
 			DKObject<DKVertexBuffer> newBuffer = DKVertexBuffer::Create(&d, 1, buffer->LockShared(), DKVertexStream::TypeSize(d.type), pVB->NumberOfVertices(), location, usage);
 			buffer->UnlockShared();
 
@@ -309,21 +361,20 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 	if (data == NULL || vertexCount == 0 || vertexSize == 0)
 		return RemoveStream(stream, name);
 
-	const StreamInfo* si = FindVertexStream(stream, name);
-	if (si)	 // buffer exists, update buffer
+	StreamInfo si = FindVertexStream(stream, name);
+	if (si.decl && si.buffer)	 // buffer exists, update buffer
 	{
-		if (si->buffer->IsLocked(0))
+		if (si.buffer->IsLocked(0))
 		{
 			DKLog("[%s] vertex buffer locked.\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
-		if (si->buffer->NumberOfVertices() != vertexCount)
+		if (si.buffer->NumberOfVertices() != vertexCount)
 		{
 			DKLog("[%s] vertex count mismatch!\n", DKGL_FUNCTION_NAME);
 			return false;
 		}
-		const DKVertexBuffer::Decl* d = si->decl;
-		if (d->type != type || si->buffer->Location() != location || si->buffer->Usage() != usage)
+		if (si.decl->type != type || si.buffer->Location() != location || si.buffer->Usage() != usage)
 		{
 			if (RemoveStream(stream, name))
 				return UpdateStream(stream, name, type, normalize, vertexSize, vertexCount, data, location, usage);
@@ -332,14 +383,15 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 			return false;
 		}
 
-		unsigned char* p = (unsigned char*)si->buffer->Lock(DKIndexBuffer::AccessModeWriteOnly);
+		DKVertexBuffer* vb = const_cast<DKVertexBuffer*>(si.buffer);
+		uint8_t* p = (uint8_t*)vb->Lock(DKIndexBuffer::AccessModeWriteOnly);
 		if (p)
 		{
 			for (int i = 0; i < vertexCount; i++)
 			{
-				memcpy(&p[i * si->buffer->VertexSize() + d->offset], &((unsigned char*)data)[i * vertexSize], vertexSize);
+				memcpy(&p[i * si.buffer->VertexSize() + si.offset], &((unsigned char*)data)[i * vertexSize], vertexSize);
 			}
-			si->buffer->Unlock();
+			vb->Unlock();
 			DKLog("[%s] buffer updated.\n", DKGL_FUNCTION_NAME);
 			return true;
 		}
@@ -351,7 +403,7 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 	}
 	else	// buffer not exists, create new one
 	{
-		DKVertexBuffer::Decl d = {stream, name, type, normalize, 0};
+		DKVertexBuffer::Decl d = {stream, name, type, normalize };
 		DKObject<DKVertexBuffer> newBuffer = DKVertexBuffer::Create(&d, 1, data, vertexSize, vertexCount, location, usage);
 		if (newBuffer)
 		{
@@ -374,12 +426,12 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 
 bool DKStaticMesh::RemoveStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name)
 {
-	const StreamInfo* si = FindVertexStream(stream, name);
-	if (si)
+	StreamInfo si = FindVertexStream(stream, name);
+	if (si.buffer)
 	{
-		if (si->buffer->NumberOfDeclarations() == 1)
+		if (si.buffer->NumberOfDeclarations() == 1)
 		{
-			RemoveVertexBuffer(si->buffer);
+			RemoveVertexBuffer(si.buffer);
 			return true;
 		}
 
@@ -387,46 +439,49 @@ bool DKStaticMesh::RemoveStream(DKVertexStream::Stream stream, const DKFoundatio
 		// decl2 : declarations without specified stream.
 		DKArray<DKVertexBuffer::Decl> decls;
 		size_t vertexSize = 0;
-		for (int i = 0; i < si->buffer->NumberOfDeclarations(); i++)
+		for (int i = 0; i < si.buffer->NumberOfDeclarations(); i++)
 		{
-			DKVertexBuffer::Decl d = *si->buffer->DeclarationAtIndex(i);
+			DKVertexBuffer::Decl d = *si.buffer->DeclarationAtIndex(i);
 			if (d.id != stream)
 			{
-				d.offset = vertexSize;
 				decls.Add(d);
 				vertexSize += DKVertexStream::TypeSize(d.type);
 			}
 		}
-		size_t vertexCount = si->buffer->NumberOfVertices();
+		size_t vertexCount = si.buffer->NumberOfVertices();
 
 		DKArray<unsigned char> vertexData;	 // temporary buffer
 		vertexData.Resize(vertexSize * vertexCount);
 
-		unsigned char* pSrc = (unsigned char*)si->buffer->Lock(DKVertexBuffer::AccessModeReadOnly);
+		DKVertexBuffer* vb = const_cast<DKVertexBuffer*>(si.buffer);
+
+		unsigned char* pSrc = (unsigned char*)vb->Lock(DKVertexBuffer::AccessModeReadOnly);
 		unsigned char* pDst = (unsigned char*)vertexData;
 		if (pSrc)
 		{
 			for (int i = 0; i < vertexCount; i++)
 			{
 				size_t offset = 0;
-				for (int k = 0; k < si->buffer->NumberOfDeclarations(); k++)
+				size_t declOffset = 0;
+				for (int k = 0; k < vb->NumberOfDeclarations(); k++)
 				{
-					DKVertexBuffer::Decl d = *si->buffer->DeclarationAtIndex(k);
+					DKVertexBuffer::Decl d = *vb->DeclarationAtIndex(k);
+					size_t s = DKVertexStream::TypeSize(d.type);
 					if (d.id != stream)
 					{
-						size_t s = DKVertexStream::TypeSize(d.type);
-						memcpy(&pDst[i * vertexSize + offset], &pSrc[i * si->buffer->VertexSize() + d.offset], s);
+						memcpy(&pDst[i * vertexSize + offset], &pSrc[i * vb->VertexSize() + declOffset], s);
 						offset += s;
 					}
+					declOffset += s;
 				}
 			}
-			si->buffer->Unlock();
+			vb->Unlock();
 
-			DKObject<DKVertexBuffer> newBuffer = DKVertexBuffer::Create(decls, decls.Count(), (const unsigned char*)vertexData, vertexSize, vertexCount, si->buffer->Location(), si->buffer->Usage());
+			DKObject<DKVertexBuffer> newBuffer = DKVertexBuffer::Create(decls, decls.Count(), (const unsigned char*)vertexData, vertexSize, vertexCount, vb->Location(), vb->Usage());
 			if (newBuffer)
 			{
-				DKObject<DKVertexBuffer> tmp = si->buffer;	// to prevent automatic delete
-				RemoveVertexBuffer(si->buffer);				// si is no longer accessible
+				DKObject<DKVertexBuffer> tmp = vb;	// to prevent automatic delete
+				RemoveVertexBuffer(vb);				// si is no longer accessible
 
 				if (AddVertexBuffer(newBuffer))
 					return true;
@@ -457,10 +512,10 @@ bool DKStaticMesh::RemoveStream(DKVertexStream::Stream stream, const DKFoundatio
 
 int DKStaticMesh::BindStream(const DKVertexStream& vs) const
 {
-	const StreamInfo* si = FindVertexStream(vs.id, vs.name);
-	if (si && si->buffer->BindStream(vs))
+	StreamInfo si = FindVertexStream(vs.id, vs.name);
+	if (si.buffer && si.buffer->BindStream(vs))
 	{
-		return si->buffer->NumberOfVertices();
+		return si.buffer->NumberOfVertices();
 	}
 	//state.DisableVertexAttribArray(vs.location); // disable to restore initial value=vec4(0,0,0,1)
 	return 0;

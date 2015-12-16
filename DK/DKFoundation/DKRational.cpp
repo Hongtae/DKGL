@@ -2,7 +2,7 @@
 //  File: DKRational.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <math.h>
@@ -157,7 +157,7 @@ DKRational& DKRational::operator += (const DKRational& r)
 		this->numerator = r.numerator;
 		this->denominator = 0;
 	}
-	else if (r.denominator == 0)	// 둘다 분모가 0 임
+	else if (r.denominator == 0)		// both denominators are zero.
 	{
 		if (this->numerator > 0 && r.numerator > 0)
 			this->numerator = 1;		// +infinity

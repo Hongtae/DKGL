@@ -2,7 +2,7 @@
 //  File: DKStringU8.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -22,7 +22,9 @@ namespace DKFoundation
 	class DKGL_API DKStringU8
 	{
 	public:
-		static const DKStringU8& EmptyString();
+		using CharT = DKUniChar8;
+
+		static const DKStringU8 empty;
 		// SystemEncoding returns 'DKStringEncoding::UTF8' always!
 		static DKStringEncoding SystemEncoding(void);
 
@@ -99,11 +101,11 @@ namespace DKFoundation
 		bool operator != (const DKUniChar8* str) const			{return Compare(str) != 0;}
 
 		// convert numeric values (like atoi, atof)
-		long long ToInteger(void) const;
-		unsigned long long ToUnsignedInteger(void) const;
+		int64_t ToInteger(void) const;
+		uint64_t ToUnsignedInteger(void) const;
 		double ToRealNumber(void) const;
 
 	private:
-		DKUniChar8* stringData;
+		CharT* stringData;
 	};
 }

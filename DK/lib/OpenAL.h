@@ -1,9 +1,11 @@
 #pragma once
 
 ////////////////////////////////////////////////////////////////////////////////
-// OpenAL 관련
-// 맥을 제외한 나머지는 OpenAL-soft 를 사용한다.
-// OpenAL-soft 는 LGPL 라이센스 이기 때문에 dynamic-lib 를 사용해야 한다.
+// OpenAL library
+// Project DK requires OpenAL-soft except for darwin (OS X / iOS).
+// You may want to use dynamic-library(dll) version of OpenAL,
+// because it was released under 'LGPL' licensed.
+// see OpenAL/COPYING
 ////////////////////////////////////////////////////////////////////////////////
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -20,7 +22,7 @@
 #endif
 
 #else // if defined(__APPLE__) && defined(__MACH__)
-//#define AL_LIBTYPE_STATIC			// static-lib 을 사용하려면 주석 해제함.
+//#define AL_LIBTYPE_STATIC			// uncomment if you need to use static-lib of OpenAL-soft.
 #include "OpenAL/include/AL/al.h"
 #include "OpenAL/include/AL/alc.h"
 #include "OpenAL/include/AL/alext.h"

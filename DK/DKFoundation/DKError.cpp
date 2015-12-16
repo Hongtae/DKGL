@@ -2,7 +2,7 @@
 //  File: DKError.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 
@@ -492,7 +492,7 @@ namespace DKFoundation
 					dladdr(addr, &info);
 
 					DKError::StackFrame frame;
-					frame.module = (info.dli_fname) ? DKString(info.dli_fname) : DKString::EmptyString();
+					frame.module = (info.dli_fname) ? DKString(info.dli_fname) : DKString::empty;
 					frame.baseAddress = info.dli_fbase;
 
 					if (info.dli_sname)
@@ -625,50 +625,50 @@ namespace DKFoundation
 using namespace DKFoundation;
 
 DKError::DKError(void)
-: errorCode(0)
-, functionName(L"")
-, fileName(L"")
-, lineNo(0)
-, description(L"")
-, numFrames(0)
-, stackFrames(NULL)
-, threadId(reinterpret_cast<void*>(DKThread::CurrentThreadId()))
+	: errorCode(0)
+	, functionName(L"")
+	, fileName(L"")
+	, lineNo(0)
+	, description(L"")
+	, numFrames(0)
+	, stackFrames(NULL)
+	, threadId(DKThread::CurrentThreadId())
 {
 }
 
 DKError::DKError(const DKString& desc)
-: errorCode(0)
-, functionName(L"")
-, fileName(L"")
-, lineNo(0)
-, description(desc)
-, numFrames(0)
-, stackFrames(NULL)
-, threadId(reinterpret_cast<void*>(DKThread::CurrentThreadId()))
+	: errorCode(0)
+	, functionName(L"")
+	, fileName(L"")
+	, lineNo(0)
+	, description(desc)
+	, numFrames(0)
+	, stackFrames(NULL)
+	, threadId(DKThread::CurrentThreadId())
 {
 }
 
 DKError::DKError(int ec, const DKString& desc)
-: errorCode(ec)
-, functionName(L"")
-, fileName(L"")
-, lineNo(0)
-, description(desc)
-, numFrames(0)
-, stackFrames(NULL)
-, threadId(reinterpret_cast<void*>(DKThread::CurrentThreadId()))
+	: errorCode(ec)
+	, functionName(L"")
+	, fileName(L"")
+	, lineNo(0)
+	, description(desc)
+	, numFrames(0)
+	, stackFrames(NULL)
+	, threadId(DKThread::CurrentThreadId())
 {
 }
 
 DKError::DKError(DKError&& e)
-: errorCode(0)
-, functionName(L"")
-, fileName(L"")
-, lineNo(0)
-, description(L"")
-, numFrames(0)
-, stackFrames(NULL)
-, threadId(reinterpret_cast<void*>(DKThread::CurrentThreadId()))
+	: errorCode(0)
+	, functionName(L"")
+	, fileName(L"")
+	, lineNo(0)
+	, description(L"")
+	, numFrames(0)
+	, stackFrames(NULL)
+	, threadId(DKThread::CurrentThreadId())
 {
 	errorCode = e.errorCode;
 	functionName = static_cast<DKString&&>(e.functionName);
@@ -689,14 +689,14 @@ DKError::DKError(DKError&& e)
 }
 
 DKError::DKError(const DKError& e)
-: errorCode(e.errorCode)
-, functionName(e.functionName)
-, fileName(e.fileName)
-, lineNo(e.lineNo)
-, description(e.description)
-, numFrames(0)
-, stackFrames(NULL)
-, threadId(e.threadId)
+	: errorCode(e.errorCode)
+	, functionName(e.functionName)
+	, fileName(e.fileName)
+	, lineNo(e.lineNo)
+	, description(e.description)
+	, numFrames(0)
+	, stackFrames(NULL)
+	, threadId(e.threadId)
 {
 	if (e.numFrames > 0)
 	{
@@ -834,7 +834,7 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 
 	numFrames = 0;
 	stackFrames = NULL;
-	threadId = reinterpret_cast<void*>(DKThread::CurrentThreadId());
+	threadId = DKThread::CurrentThreadId();
 
 	maxDepth = Clamp(maxDepth, 0, 1024);
 	if (maxDepth == 0 || skip > maxDepth)
@@ -952,7 +952,7 @@ void DKError::PrintDescription(const StringOutput* pfn) const
 	pfn->Invoke(DKString::Format("DKError(%p) Printing Description.\n", this));
 	pfn->Invoke(DKString::Format("Debug Build: %s\n", IsDebugBuild() ? "yes" : "no"));
 	pfn->Invoke(DKString::Format("Debugger Present: %s\n", IsDebuggerPresent() ? "yes" : "no"));
-	pfn->Invoke(DKString::Format("Thread-Id: %u\n", threadId));
+	pfn->Invoke(DKString::Format("Thread-Id: %lu\n", threadId));
 	pfn->Invoke(DKString::Format("Error-Code:%d(0x%x)\n", errorCode, errorCode));
 	if (functionName.Length() > 0)
 		pfn->Invoke(DKString::Format("Function: %ls\n", (const wchar_t*)functionName));
@@ -1107,7 +1107,7 @@ void DKError::DumpUnexpectedError(Private::UnexpectedError* e)
 			err.stackFrames[i] = frames[i];
 	}
 
-	DKLog("Unexpected exception occurred from thread id:0x%x\n", (void*)DKThread::CurrentThreadId());
+	DKLog("Unexpected exception occurred from thread id:0x%x\n", DKThread::CurrentThreadId());
 	err.PrintDescriptionWithStackFrames();	
 	
 	DKObject<DKCriticalErrorHandler> critErrFunc = Private::GetCriticalErrorHandler();	

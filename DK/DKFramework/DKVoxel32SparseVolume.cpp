@@ -2,7 +2,7 @@
 //  File: DKVoxel32SparseVolume.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2009-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -34,10 +34,10 @@ namespace DKFramework
 			}
 			void LogStatus(void)
 			{
-				unsigned long long active = activeChunks.Count();
-				unsigned long long total = active + inactiveChunks.Count();
-				unsigned long long activeSize = active * Blocks;
-				unsigned long long totalSize = total * Blocks;
+				uint64_t active = activeChunks.Count();
+				uint64_t total = active + inactiveChunks.Count();
+				uint64_t activeSize = active * Blocks;
+				uint64_t totalSize = total * Blocks;
 				DKLOG_DEBUG("Voxel32MemoryStorage Usage: %llu / %llu (%llu / %llu)\n", active, total, activeSize, totalSize);
 			}
 			size_t MaxActiveUnits(void) const

@@ -129,7 +129,7 @@ Extract file into your Python site-packages dir.
 - libtiff-4.0.3
 - libvorbis-1.3.3
 - libxml2-2.9.0
-- sqlite-3.7.15.2
+- lz4-r131
 - zlib-1.2.7
 
 ## Author

@@ -2,13 +2,15 @@
 //  File: DKHash.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2009 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../DKInclude.h"
 #include "DKObject.h"
+#include "DKEndianness.h"
 #include "DKString.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKHash
@@ -55,22 +57,21 @@ namespace DKFoundation
 		}
 	};
 	
-	typedef unsigned int		DKHashUnitType;
-	typedef DKHashResult<DKHashUnitType, 32>	DKHashResult32;			// CRC32
-	typedef DKHashResult<DKHashUnitType, 128>	DKHashResult128;		// MD5
-	typedef DKHashResult<DKHashUnitType, 160>	DKHashResult160;		// SHA1
-	typedef DKHashResult<DKHashUnitType, 224>	DKHashResult224;		// SHA2 (SHA-224)
-	typedef DKHashResult<DKHashUnitType, 256>	DKHashResult256;		// SHA2 (SHA-256)
-	typedef DKHashResult<DKHashUnitType, 384>	DKHashResult384;		// SHA2 (SHA-384)
-	typedef DKHashResult<DKHashUnitType, 512>	DKHashResult512;		// SHA2 (SHA-512)
+	typedef DKHashResult<uint32_t, 32>	DKHashResult32;			// CRC32
+	typedef DKHashResult<uint32_t, 128>	DKHashResult128;		// MD5
+	typedef DKHashResult<uint32_t, 160>	DKHashResult160;		// SHA1
+	typedef DKHashResult<uint32_t, 224>	DKHashResult224;		// SHA2 (SHA-224)
+	typedef DKHashResult<uint32_t, 256>	DKHashResult256;		// SHA2 (SHA-256)
+	typedef DKHashResult<uint32_t, 384>	DKHashResult384;		// SHA2 (SHA-384)
+	typedef DKHashResult<uint32_t, 512>	DKHashResult512;		// SHA2 (SHA-512)
 	
-	DKGL_API DKHashResult32  DKHashCRC32(const void* p, size_t len);		// CRC32
-	DKGL_API DKHashResult128 DKHashMD5(const void* p, size_t len);			// MD5
+	DKGL_API DKHashResult32  DKHashCRC32(const void* p, size_t len);	// CRC32
+	DKGL_API DKHashResult128 DKHashMD5(const void* p, size_t len);		// MD5
 	DKGL_API DKHashResult160 DKHashSHA1(const void* p, size_t len);		// SHA1
-	DKGL_API DKHashResult224 DKHashSHA224(const void* p, size_t len);		// SHA2 (SHA-224)
-	DKGL_API DKHashResult256 DKHashSHA256(const void* p, size_t len);		// SHA2 (SHA-256)
-	DKGL_API DKHashResult384 DKHashSHA384(const void* p, size_t len);		// SHA2 (SHA-384)
-	DKGL_API DKHashResult512 DKHashSHA512(const void* p, size_t len);		// SHA2 (SHA-512)
+	DKGL_API DKHashResult224 DKHashSHA224(const void* p, size_t len);	// SHA2 (SHA-224)
+	DKGL_API DKHashResult256 DKHashSHA256(const void* p, size_t len);	// SHA2 (SHA-256)
+	DKGL_API DKHashResult384 DKHashSHA384(const void* p, size_t len);	// SHA2 (SHA-384)
+	DKGL_API DKHashResult512 DKHashSHA512(const void* p, size_t len);	// SHA2 (SHA-512)
 
 
 	class DKGL_API DKHash

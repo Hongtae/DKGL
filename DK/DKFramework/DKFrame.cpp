@@ -2,7 +2,7 @@
 //  File: DKFrame.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -205,6 +205,44 @@ size_t DKFrame::NumberOfDescendants(void) const
 	for (size_t i = 0; i < subframes.Count(); ++i)
 		num += subframes.Value(i)->NumberOfDescendants();
 	return num;
+}
+
+DKFrame* DKFrame::FrameAtPosition(const DKPoint& pos, FrameFilter* filter)
+{
+	return const_cast<DKFrame*>(static_cast<const DKFrame*>(this)->FrameAtPosition(pos, filter));
+}
+
+const DKFrame* DKFrame::FrameAtPosition(const DKPoint& pos, FrameFilter* filter) const
+{
+	if (DKRect(0, 0, 1, 1).IsPointInside(pos))
+	{
+		DKVector2 localPos = DKVector2(pos.x * this->contentScale.width, pos.y * this->contentScale.height);
+		localPos.Transform(this->contentTransformInverse);
+
+		if (filter && !filter->Invoke(this))
+			return NULL;
+
+		if (!this->HitTest(localPos))
+			return NULL;
+
+		if (this->ContentHitTest(localPos))
+		{
+			for (FrameArray::Index index = 0; index < subframes.Count(); index++)
+			{
+				const DKFrame* frame = subframes.Value(index);
+				if (frame->IsHidden())
+					continue;
+
+				DKMatrix3 tm = frame->TransformInverse();
+				DKVector2 posInFrame = DKVector2(localPos).Transform(tm);
+
+				const DKFrame* target = frame->FrameAtPosition(posInFrame, filter);
+				if (target)
+					return target;
+			}
+		}
+	}
+	return NULL;
 }
 
 void DKFrame::Load(DKScreen* screen, const DKSize& resolution)

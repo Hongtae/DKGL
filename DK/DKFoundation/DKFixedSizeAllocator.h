@@ -2,7 +2,7 @@
 //  File: DKFixedSizeAllocator.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -25,7 +25,7 @@ namespace DKFoundation
 	template <
 		unsigned int UnitSize,				// allocation size (fixed size)
 		unsigned int Alignment = 1,			// byte alignment
-		unsigned int MaxUnits = 1024,			// max units per chunk
+		unsigned int MaxUnits = 1024,		// max units per chunk
 		typename Lock = DKSpinLock,
 		typename BaseAllocator = DKMemoryDefaultAllocator, // info table allocator. (small)
 		typename UnitAllocator = DKMemoryDefaultAllocator  // unit chunk allocator. (large)
@@ -40,12 +40,12 @@ namespace DKFoundation
 		static_assert((Alignment & (Alignment - 1)) == 0, "Alignment must be power of two.");
 
 		// maximum number of units per chunk.
-		enum : unsigned int { MaxUnitsPerChunk = MaxUnits };
-		enum : unsigned int { AlignedUnitSize = (UnitSize + (Alignment - 1)) & ~(Alignment - 1) };
+		enum : uint32_t { MaxUnitsPerChunk = MaxUnits };
+		enum : uint32_t { AlignedUnitSize = (UnitSize + (Alignment - 1)) & ~(Alignment - 1) };
 		union Unit
 		{
-			unsigned char data[AlignedUnitSize];
-			unsigned int nextUnitIndex;
+			uint8_t data[AlignedUnitSize];
+			uint32_t nextUnitIndex;
 		};
 		static_assert((sizeof(Unit) % Alignment) == 0, "Invalid unit alignment");
 
@@ -56,8 +56,8 @@ namespace DKFoundation
 		{
 			uintptr_t address;
 			Index freeUnitIndex;
-			unsigned short offset;
-			unsigned short occupied;
+			uint16_t offset;
+			uint16_t occupied;
 		};
 
 		// size of all units per chunk.
@@ -265,11 +265,15 @@ namespace DKFoundation
 							}
 							numChunks++;
 						}
-						uintptr_t addr = chunkTable[numChunks].address;
-						SortChunkTable();
-						if (cachedChunk == NULL || cachedChunk->occupied == MaxUnitsPerChunk)
-							cachedChunk = FindChunkInfo(addr);
-						DKASSERT_MEM_DEBUG(cachedChunk != NULL);
+						if (numChunks > 0)
+						{
+							// save last chunk's address.
+							uintptr_t addr = chunkTable[numChunks-1].address;
+							SortChunkTable();
+							if (cachedChunk == NULL || cachedChunk->occupied == MaxUnitsPerChunk)
+								cachedChunk = FindChunkInfo(addr);
+							DKASSERT_MEM_DEBUG(cachedChunk != NULL);
+						}
 					}
 				}
 			}
@@ -549,7 +553,7 @@ namespace DKFoundation
 				DKMemoryLocation Location(void) const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
 				DKFixedSizeAllocator allocator;
 			};
-			static DKAllocatorChain::StaticInitializer init; // extend allocator life cycle.
+			static DKAllocatorChain::Maintainer init; // extend allocator life cycle.
 			static AllocatorWrapper* instance = new AllocatorWrapper();
 			return *instance;
 		}

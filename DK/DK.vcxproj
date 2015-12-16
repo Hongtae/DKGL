@@ -91,7 +91,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -104,6 +104,7 @@
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -136,7 +137,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -150,6 +151,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>false</OmitFramePointers>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -179,7 +181,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -193,6 +195,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>true</OmitFramePointers>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -225,7 +228,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -238,6 +241,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>true</OmitFramePointers>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -288,6 +292,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKFile.h" />
     <ClInclude Include="DKFoundation\DKFileMap.h" />
     <ClInclude Include="DKFoundation\DKFixedSizeAllocator.h" />
+    <ClInclude Include="DKFoundation\DKFloat16.h" />
     <ClInclude Include="DKFoundation\DKFunction.h" />
     <ClInclude Include="DKFoundation\DKHash.h" />
     <ClInclude Include="DKFoundation\DKInvocation.h" />
@@ -425,6 +430,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFramework\DKTransform.h" />
     <ClInclude Include="DKFramework\DKTriangle.h" />
     <ClInclude Include="DKFramework\DKTriangleMesh.h" />
+    <ClInclude Include="DKFramework\DKTriangleMeshProxyShape.h" />
     <ClInclude Include="DKFramework\DKVariant.h" />
     <ClInclude Include="DKFramework\DKVector2.h" />
     <ClInclude Include="DKFramework\DKVector3.h" />
@@ -480,6 +486,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClCompile Include="DKFoundation\DKFence.cpp" />
     <ClCompile Include="DKFoundation\DKFile.cpp" />
     <ClCompile Include="DKFoundation\DKFileMap.cpp" />
+    <ClCompile Include="DKFoundation\DKFloat16.cpp" />
     <ClCompile Include="DKFoundation\DKHash.cpp" />
     <ClCompile Include="DKFoundation\DKLock.cpp" />
     <ClCompile Include="DKFoundation\DKLog.cpp" />
@@ -589,6 +596,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClCompile Include="DKFramework\DKTextureSampler.cpp" />
     <ClCompile Include="DKFramework\DKTransform.cpp" />
     <ClCompile Include="DKFramework\DKTriangle.cpp" />
+    <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp" />
     <ClCompile Include="DKFramework\DKVariant.cpp" />
     <ClCompile Include="DKFramework\DKVector2.cpp" />
     <ClCompile Include="DKFramework\DKVector3.cpp" />

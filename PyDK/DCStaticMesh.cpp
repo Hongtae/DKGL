@@ -205,20 +205,17 @@ static PyObject* DCVertexDeclToDict(const DKVertexBuffer::Decl* decl)
 	PyObject* declName = PyUnicode_FromWideChar(decl->name, -1);
 	PyObject* declType = PyLong_FromLong((long)decl->type);
 	PyObject* declNorm = PyBool_FromLong(decl->normalize);
-	PyObject* declOffset = PyLong_FromSize_t(decl->offset);
 
 	PyObject* dict = PyDict_New();
 	PyDict_SetItemString(dict, "id", declId);
 	PyDict_SetItemString(dict, "name", declName);
 	PyDict_SetItemString(dict, "type", declType);
 	PyDict_SetItemString(dict, "normalize", declNorm);
-	PyDict_SetItemString(dict, "offset", declOffset);
 
 	Py_DECREF(declId);
 	Py_DECREF(declName);
 	Py_DECREF(declType);
 	Py_DECREF(declNorm);
-	Py_DECREF(declOffset);
 
 	return dict;
 }
@@ -237,19 +234,19 @@ static PyObject* DCStaticMeshFindVertexStream(DCStaticMesh* self, PyObject* args
 		PyErr_SetString(PyExc_ValueError, "stream is out of range");
 		return NULL;
 	}
-	const DKStaticMesh::StreamInfo* si = NULL;
+	DKStaticMesh::StreamInfo si = { NULL, NULL, 0 };
 	if (name)
 		si = self->mesh->FindVertexStream((DKVertexStream::Stream)stream, DKString(name));
 	else
 		si = self->mesh->FindVertexStream((DKVertexStream::Stream)stream);
 
-	if (si)
+	if (si.decl)
 	{
-		DKASSERT_DEBUG(si->buffer);
-		PyObject* bufferObj = DCVertexBufferFromObject(si->buffer);
-		DKASSERT_DEBUG(DCVertexBufferToObject(bufferObj) == si->buffer);
+		DKASSERT_DEBUG(si.buffer);
+		PyObject* bufferObj = DCVertexBufferFromObject(const_cast<DKVertexBuffer*>(si.buffer));
+		DKASSERT_DEBUG(DCVertexBufferToObject(bufferObj) == si.buffer);
 
-		PyObject* dict = DCVertexDeclToDict(si->decl);
+		PyObject* dict = DCVertexDeclToDict(si.decl);
 		DKASSERT_DEBUG(PyDict_Check(dict));
 		PyDict_SetItemString(dict, "buffer", bufferObj);
 		Py_DECREF(bufferObj);

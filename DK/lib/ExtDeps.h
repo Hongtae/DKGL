@@ -4,11 +4,18 @@
 
 #ifdef DKGL_EXTDEPS_ZLIB
 #include "ExtDeps/zlib/zlib.h"
-#include "ExtDeps/zlib/zip.h"
-#include "ExtDeps/zlib/unzip.h"
+#include "ExtDeps/zlib/contrib/minizip/zip.h"
+#include "ExtDeps/zlib/contrib/minizip/unzip.h"
 	#ifdef _WIN32
-	#include "ExtDeps/zlib/iowin32.h"
+	#include "ExtDeps/zlib/contrib/minizip/iowin32.h"
 	#endif
+#endif
+
+#ifdef DKGL_EXTDEPS_LZ4
+#include "ExtDeps/lz4/lib/lz4.h"
+#include "ExtDeps/lz4/lib/lz4hc.h"
+#include "ExtDeps/lz4/lib/lz4frame.h"
+#include "ExtDeps/lz4/lib/xxhash.h"
 #endif
 
 #ifdef DKGL_EXTDEPS_LIBXML
@@ -65,8 +72,4 @@
 #include FT_OUTLINE_H
 #include FT_STROKER_H
 #include FT_BBOX_H
-#endif
-
-#ifdef DKGL_EXTDEPS_SQLITE3
-#include "ExtDeps/sqlite/sqlite3.h
 #endif

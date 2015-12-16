@@ -2,7 +2,7 @@
 //  File: DKOrderedArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -195,6 +195,16 @@ namespace DKFoundation
 		size_t CountNoLock(void) const
 		{
 			return container.Count();
+		}
+		size_t Capacity(void) const
+		{
+			CriticalSection guard(lock);
+			return container.Capacity();
+		}
+		void ShrinkToFit(void)
+		{
+			CriticalSection guard(lock);
+			container.ShrinkToFit();
 		}
 		void Reserve(size_t c)
 		{

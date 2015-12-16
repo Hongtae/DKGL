@@ -952,6 +952,14 @@
 		843A688F17C6145D000DE61A /* DKOpenGLInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688A17C6145D000DE61A /* DKOpenGLInterface.h */; };
 		843A689017C6145D000DE61A /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
 		843A689117C6145D000DE61A /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
+		844C64D91C08B93600FB97B6 /* DKFloat16.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844C64D71C08B93600FB97B6 /* DKFloat16.cpp */; };
+		844C64DA1C08B93600FB97B6 /* DKFloat16.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C64D81C08B93600FB97B6 /* DKFloat16.h */; };
+		844C64DB1C08BC7700FB97B6 /* DKFloat16.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844C64D71C08B93600FB97B6 /* DKFloat16.cpp */; };
+		844C64DC1C08BC7800FB97B6 /* DKFloat16.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844C64D71C08B93600FB97B6 /* DKFloat16.cpp */; };
+		844C64DD1C08BC7900FB97B6 /* DKFloat16.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844C64D71C08B93600FB97B6 /* DKFloat16.cpp */; };
+		844C64DE1C08BC7C00FB97B6 /* DKFloat16.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C64D81C08B93600FB97B6 /* DKFloat16.h */; };
+		844C64DF1C08BC7E00FB97B6 /* DKFloat16.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C64D81C08B93600FB97B6 /* DKFloat16.h */; };
+		844C64E01C08BC7F00FB97B6 /* DKFloat16.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C64D81C08B93600FB97B6 /* DKFloat16.h */; };
 		844C9C8F171EB64000605E69 /* DKVoxel32SparseVolume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844C9C8B171EB64000605E69 /* DKVoxel32SparseVolume.cpp */; };
 		844C9C90171EB64000605E69 /* DKVoxel32SparseVolume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844C9C8B171EB64000605E69 /* DKVoxel32SparseVolume.cpp */; };
 		844C9C91171EB64000605E69 /* DKVoxel32SparseVolume.h in Headers */ = {isa = PBXBuildFile; fileRef = 844C9C8C171EB64000605E69 /* DKVoxel32SparseVolume.h */; };
@@ -1300,6 +1308,11 @@
 		8489263B18D155BD00CFF0E3 /* DKTextureSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8489263818D155BD00CFF0E3 /* DKTextureSampler.h */; };
 		8489263C18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
 		8489263D18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
+		84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */; };
+		84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		84990C1C1BF0DC0E00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		84990C1D1BF0DC0F00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
@@ -1506,6 +1519,8 @@
 		84427FE017CDB91000095E62 /* efx-presets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "efx-presets.h"; sourceTree = "<group>"; };
 		84427FE117CDB91000095E62 /* efx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = efx.h; sourceTree = "<group>"; };
 		84427FE217CDB91000095E62 /* VERSION.TXT */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION.TXT; sourceTree = "<group>"; };
+		844C64D71C08B93600FB97B6 /* DKFloat16.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKFloat16.cpp; sourceTree = "<group>"; };
+		844C64D81C08B93600FB97B6 /* DKFloat16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKFloat16.h; sourceTree = "<group>"; };
 		844C9C8B171EB64000605E69 /* DKVoxel32SparseVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKVoxel32SparseVolume.cpp; sourceTree = "<group>"; };
 		844C9C8C171EB64000605E69 /* DKVoxel32SparseVolume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKVoxel32SparseVolume.h; sourceTree = "<group>"; };
 		844C9C8D171EB64000605E69 /* DKVoxel32Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKVoxel32Storage.h; sourceTree = "<group>"; };
@@ -1537,6 +1552,8 @@
 		848E9D921558CACD00833B52 /* DKFileMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFileMap.h; sourceTree = "<group>"; };
 		848F7E8F153DAE2C00E26A76 /* DKStringW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStringW.h; sourceTree = "<group>"; };
 		849206F01432CBCE00F0AFB3 /* DKStaticArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStaticArray.h; sourceTree = "<group>"; };
+		84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshProxyShape.cpp; sourceTree = "<group>"; };
+		84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTriangleMeshProxyShape.h; sourceTree = "<group>"; };
 		849E2A9115634718000CBE79 /* DKFence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFence.cpp; sourceTree = "<group>"; };
 		849E2A9215634718000CBE79 /* DKFence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFence.h; sourceTree = "<group>"; };
 		849E2A9315634719000CBE79 /* DKSharedLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSharedLock.cpp; sourceTree = "<group>"; };
@@ -2129,6 +2146,8 @@
 				848E9D911558CACD00833B52 /* DKFileMap.cpp */,
 				848E9D921558CACD00833B52 /* DKFileMap.h */,
 				84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */,
+				844C64D71C08B93600FB97B6 /* DKFloat16.cpp */,
+				844C64D81C08B93600FB97B6 /* DKFloat16.h */,
 				84A1E4A7141DD4B70091D2C0 /* DKFunction.h */,
 				84A1E4A9141DD4B70091D2C0 /* DKHash.cpp */,
 				84A1E4AA141DD4B70091D2C0 /* DKHash.h */,
@@ -2382,6 +2401,8 @@
 				84F96FF31B4ACA7200BA24E4 /* DKTriangleMesh.h */,
 				84F9700F1B4D711200BA24E4 /* DKTriangleMeshBvh.cpp */,
 				84F970101B4D711200BA24E4 /* DKTriangleMeshBvh.h */,
+				84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */,
+				84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */,
 				84A1E58B141DD4B70091D2C0 /* DKVariant.cpp */,
 				84A1E58C141DD4B70091D2C0 /* DKVariant.h */,
 				84A1E58D141DD4B70091D2C0 /* DKVector2.cpp */,
@@ -2572,6 +2593,7 @@
 				840CA6101928952800689BB6 /* DKSliderConstraint.h in Headers */,
 				840CA65B1928957700689BB6 /* DKFoundation.h in Headers */,
 				840CA58D1928952800689BB6 /* DKApplication.h in Headers */,
+				844C64DF1C08BC7E00FB97B6 /* DKFloat16.h in Headers */,
 				840CA5AA1928952800689BB6 /* DKConeShape.h in Headers */,
 				840CA5B41928952800689BB6 /* DKCylinderShape.h in Headers */,
 				840CA5F11928952800689BB6 /* DKRect.h in Headers */,
@@ -2768,6 +2790,7 @@
 				84798CCF19E51E96009378A6 /* DKZipUnarchiver.h in Headers */,
 				84798C8C19E51E80009378A6 /* DKWindow.h in Headers */,
 				84798C4219E51E7F009378A6 /* DKFont.h in Headers */,
+				844C64E01C08BC7F00FB97B6 /* DKFloat16.h in Headers */,
 				84798C1419E51E58009378A6 /* DKOpenGLInterface.h in Headers */,
 				84798C7519E51E80009378A6 /* DKStaticMesh.h in Headers */,
 				84798C6D19E51E7F009378A6 /* DKShaderProgram.h in Headers */,
@@ -2964,6 +2987,7 @@
 				84211D531665E89700B9B9A2 /* DKSphereShape.h in Headers */,
 				84211D541665E89700B9B9A2 /* DKSpline.h in Headers */,
 				84211D551665E89700B9B9A2 /* DKStaticPlaneShape.h in Headers */,
+				844C64DE1C08BC7C00FB97B6 /* DKFloat16.h in Headers */,
 				84211D561665E89700B9B9A2 /* DKStaticTriangleMeshShape.h in Headers */,
 				84211D571665E89700B9B9A2 /* DKTexture.h in Headers */,
 				84211D581665E89700B9B9A2 /* DKTexture2D.h in Headers */,
@@ -3117,6 +3141,7 @@
 				84211CC91665E88E00B9B9A2 /* DKLine.h in Headers */,
 				84211CCA1665E88E00B9B9A2 /* DKLinearTransform2.h in Headers */,
 				84211CCB1665E88E00B9B9A2 /* DKLinearTransform3.h in Headers */,
+				844C64DA1C08B93600FB97B6 /* DKFloat16.h in Headers */,
 				840CA6821928A2ED00689BB6 /* DKWindowView.h in Headers */,
 				840CA6551928957500689BB6 /* DKInclude.h in Headers */,
 				840C3DF8178D396600F57A8D /* DKObjectRefCounter.h in Headers */,
@@ -3178,6 +3203,7 @@
 				84211CFF1665E88E00B9B9A2 /* DKVector2.h in Headers */,
 				84211D001665E88E00B9B9A2 /* DKVector3.h in Headers */,
 				84211D011665E88E00B9B9A2 /* DKVector4.h in Headers */,
+				84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */,
 				84211D021665E88E00B9B9A2 /* DKVertexBuffer.h in Headers */,
 				84211D031665E88E00B9B9A2 /* DKVertexStream.h in Headers */,
 				84211D041665E88E00B9B9A2 /* DKVKey.h in Headers */,
@@ -3419,6 +3445,7 @@
 				840CA5881928952800689BB6 /* DKAnimation.cpp in Sources */,
 				840CA5B71928952800689BB6 /* DKFixedConstraint.cpp in Sources */,
 				840CA6111928952800689BB6 /* DKSoftBody.cpp in Sources */,
+				84990C1C1BF0DC0E00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				840CA59A1928952800689BB6 /* DKBoxShape.cpp in Sources */,
 				840CA58E1928952800689BB6 /* DKAudioListener.cpp in Sources */,
 				840CA5A71928952800689BB6 /* DKConcaveShape.cpp in Sources */,
@@ -3463,6 +3490,7 @@
 				840CA62B1928952800689BB6 /* DKTriangle.cpp in Sources */,
 				840CA6291928952800689BB6 /* DKTransform.cpp in Sources */,
 				8436CE211928A78900F18892 /* DKZipUnarchiver.cpp in Sources */,
+				844C64DC1C08BC7800FB97B6 /* DKFloat16.cpp in Sources */,
 				840CA5AF1928952800689BB6 /* DKConvexHullShape.cpp in Sources */,
 				84F970151B4D711B00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
 				840CA5BF1928952800689BB6 /* DKGeneric6DofConstraint.cpp in Sources */,
@@ -3568,6 +3596,7 @@
 				84798BD319E51E48009378A6 /* DKGearConstraint.cpp in Sources */,
 				84798BD619E51E48009378A6 /* DKGeometryBuffer.cpp in Sources */,
 				84798BA819E51DFB009378A6 /* DKStringW.cpp in Sources */,
+				84990C1D1BF0DC0F00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84798BD819E51E48009378A6 /* DKIndexBuffer.cpp in Sources */,
 				84798BFB19E51E48009378A6 /* DKSoftBody.cpp in Sources */,
 				84798BF119E51E48009378A6 /* DKResourcePool.cpp in Sources */,
@@ -3612,6 +3641,7 @@
 				84798BFC19E51E48009378A6 /* DKSphere.cpp in Sources */,
 				84798BC919E51E48009378A6 /* DKConeShape.cpp in Sources */,
 				84798B8E19E51DFB009378A6 /* DKAtomicNumber64.cpp in Sources */,
+				844C64DD1C08BC7900FB97B6 /* DKFloat16.cpp in Sources */,
 				84798C2219E51E69009378A6 /* DKWindowImpl.mm in Sources */,
 				84F970171B4D711C00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
 				84798BA919E51DFB009378A6 /* DKThread.cpp in Sources */,
@@ -3717,6 +3747,7 @@
 				840C3E22178D396E00F57A8D /* DKCondition.cpp in Sources */,
 				84211B6B1665E7FD00B9B9A2 /* DKApplication.cpp in Sources */,
 				840C3E23178D396E00F57A8D /* DKData.cpp in Sources */,
+				84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84211B6D1665E7FD00B9B9A2 /* DKAudioListener.cpp in Sources */,
 				840C3E1E178D396E00F57A8D /* DKAllocator.cpp in Sources */,
 				84211B6F1665E7FD00B9B9A2 /* DKAudioPlayer.cpp in Sources */,
@@ -3761,6 +3792,7 @@
 				840C3E2B178D396E00F57A8D /* DKHash.cpp in Sources */,
 				84211BB01665E7FD00B9B9A2 /* DKMatrix3.cpp in Sources */,
 				84211BB21665E7FD00B9B9A2 /* DKMatrix4.cpp in Sources */,
+				844C64DB1C08BC7700FB97B6 /* DKFloat16.cpp in Sources */,
 				84211BB41665E7FD00B9B9A2 /* DKMesh.cpp in Sources */,
 				84F970131B4D711A00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
 				84211BB61665E7FD00B9B9A2 /* DKModel.cpp in Sources */,
@@ -3866,6 +3898,7 @@
 				840C3DFE178D396D00F57A8D /* DKCondition.cpp in Sources */,
 				84211AB21665E7FC00B9B9A2 /* DKApplication.cpp in Sources */,
 				840C3DFF178D396D00F57A8D /* DKData.cpp in Sources */,
+				84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84211AB41665E7FC00B9B9A2 /* DKAudioListener.cpp in Sources */,
 				840C3DFA178D396D00F57A8D /* DKAllocator.cpp in Sources */,
 				84211AB61665E7FC00B9B9A2 /* DKAudioPlayer.cpp in Sources */,
@@ -3910,6 +3943,7 @@
 				840C3E07178D396D00F57A8D /* DKHash.cpp in Sources */,
 				84211AF71665E7FC00B9B9A2 /* DKMatrix3.cpp in Sources */,
 				84211AF91665E7FC00B9B9A2 /* DKMatrix4.cpp in Sources */,
+				844C64D91C08B93600FB97B6 /* DKFloat16.cpp in Sources */,
 				84211AFB1665E7FC00B9B9A2 /* DKMesh.cpp in Sources */,
 				84F970111B4D711A00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
 				840CA64D1928956600689BB6 /* DKWindowImpl.mm in Sources */,

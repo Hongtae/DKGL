@@ -369,7 +369,10 @@ DKObject<DKSerializer> DKGeometryBuffer::Serializer(void)
 		}
 		void SetContent(DKVariant& v)
 		{
-			content = DKBuffer::Create(&v.Data());
+			if (v.ValueType() == DKVariant::TypeData)
+				content = DKBuffer::Create(&v.Data());
+			else if (v.ValueType() == DKVariant::TypeStructData)
+				content = DKBuffer::Create(&v.StructuredData().data);
 		}
 		void GetBufferType(DKVariant& v) const
 		{
@@ -417,7 +420,15 @@ DKObject<DKSerializer> DKGeometryBuffer::Serializer(void)
 		{
 			DKObject<DKBuffer> data = target->CopyContent();
 			if (data)
-				v.SetData(*data);
+			{
+				DKVariant::VStructuredData stData;
+				stData.elementSize = 0;
+				stData.layout.Clear();
+
+				target->StructuredLayout(stData.layout, stData.elementSize);
+				//v.SetData(*data);
+				v.StructuredData() = std::move(stData);
+			}
 		}
 		bool CheckBufferType(const DKVariant& v) const
 		{
@@ -453,7 +464,7 @@ DKObject<DKSerializer> DKGeometryBuffer::Serializer(void)
 		}
 		bool CheckContent(const DKVariant& v) const
 		{
-			return v.ValueType() == DKVariant::TypeData;
+			return v.ValueType() == DKVariant::TypeData || v.ValueType() == DKVariant::TypeStructData;
 		}
 		void Callback(State s)
 		{

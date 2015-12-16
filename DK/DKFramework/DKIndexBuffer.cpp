@@ -2,7 +2,7 @@
 //  File: DKIndexBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -13,8 +13,8 @@ using namespace DKFramework;
 
 
 DKIndexBuffer::DKIndexBuffer(void)
-: primitiveType(DKPrimitive::TypePoints)
-, indexCount(0)
+	: primitiveType(DKPrimitive::TypePoints)
+	, indexCount(0)
 {
 }
 
@@ -29,7 +29,7 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned char* indices, size
 	{
 		buffer->primitiveType = p;
 		buffer->indexCount = count;
-		buffer->indexType = TypeUByte;
+		buffer->indexType = Type::UInt8;
 		return buffer;
 	}
 	return NULL;
@@ -42,7 +42,7 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned short* indices, siz
 	{
 		buffer->primitiveType = p;
 		buffer->indexCount = count;
-		buffer->indexType = TypeUShort;
+		buffer->indexType = Type::UInt16;
 		return buffer;
 	}
 	return NULL;
@@ -55,7 +55,7 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned int* indices, size_
 	{
 		buffer->primitiveType = p;
 		buffer->indexCount = count;
-		buffer->indexType = TypeUInt;
+		buffer->indexType = Type::UInt32;
 		return buffer;
 	}
 	return NULL;
@@ -65,13 +65,13 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const void* buffer, Type indexType
 {
 	switch (indexType)
 	{
-	case TypeUByte:
+	case Type::UInt8:
 		return Create(reinterpret_cast<const unsigned char*>(buffer), count, p, m, u);
 		break;
-	case TypeUShort:
+	case Type::UInt16:
 		return Create(reinterpret_cast<const unsigned short*>(buffer), count, p, m, u);
 		break;
-	case TypeUInt:
+	case Type::UInt32:
 		return Create(reinterpret_cast<const unsigned int*>(buffer), count, p, m, u);
 		break;
 	}
@@ -94,23 +94,17 @@ bool DKIndexBuffer::CopyIndices(DKArray<unsigned int>& indices) const
 		const void* p = data->LockShared();
 		switch (indexType)
 		{
-		case TypeUByte:
-			{
-				for (int i = 0; i < NumberOfIndices(); i++)
-					indices.Add(reinterpret_cast<const unsigned char*>(p)[i]);
-			}
+		case Type::UInt8:
+			for (int i = 0; i < NumberOfIndices(); i++)
+				indices.Add(reinterpret_cast<const uint8_t*>(p)[i]);
 			break;
-		case TypeUShort:
-			{
-				for (int i = 0; i < NumberOfIndices(); i++)
-					indices.Add(reinterpret_cast<const unsigned short*>(p)[i]);
-			}
+		case Type::UInt16:
+			for (int i = 0; i < NumberOfIndices(); i++)
+				indices.Add(reinterpret_cast<const uint16_t*>(p)[i]);
 			break;
-		case TypeUInt:
-			{
-				for (int i = 0; i < NumberOfIndices(); i++)
-					indices.Add(reinterpret_cast<const unsigned int*>(p)[i]);
-			}
+		case Type::UInt32:
+			for (int i = 0; i < NumberOfIndices(); i++)
+				indices.Add(reinterpret_cast<const uint32_t*>(p)[i]);
 			break;
 		}
 		data->UnlockShared();
@@ -135,6 +129,24 @@ DKIndexBuffer::Type DKIndexBuffer::IndexType(void) const
 	return indexType;
 }
 
+void DKIndexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
+{
+	switch (indexType)
+	{
+	case Type::UInt32:
+		elementSize = sizeof(uint32_t);
+		break;
+	case Type::UInt16:
+		elementSize = sizeof(uint16_t);
+		break;
+	default:
+		elementSize = sizeof(uint8_t);
+		break;
+	}
+	layout.Clear();
+	layout.Add(static_cast<DKVariant::StructElem>(elementSize));
+}
+
 DKObject<DKSerializer> DKIndexBuffer::Serializer(void)
 {
 	class LocalSerializer : public DKSerializer
@@ -157,7 +169,7 @@ DKObject<DKSerializer> DKIndexBuffer::Serializer(void)
 				DKFunction(this, &LocalSerializer::CheckPrimitiveType),
 				NULL);
 
-			this->Bind(L"indexType", 
+			this->Bind(L"indexType",
 				DKFunction(this, &LocalSerializer::GetIndexType),
 				DKFunction(this, &LocalSerializer::SetIndexType),
 				DKFunction(this, &LocalSerializer::CheckIndexType),
@@ -188,18 +200,18 @@ DKObject<DKSerializer> DKIndexBuffer::Serializer(void)
 		{
 			switch (target->indexType)
 			{
-			case TypeUByte:		v = (DKVariant::VInteger)1;		break;
-			case TypeUShort:	v = (DKVariant::VInteger)2;		break;
-			case TypeUInt:		v = (DKVariant::VInteger)4;		break;
+			case Type::UInt8:		v = (DKVariant::VInteger)1;		break;
+			case Type::UInt16:		v = (DKVariant::VInteger)2;		break;
+			case Type::UInt32:		v = (DKVariant::VInteger)4;		break;
 			}
 		}
 		void SetIndexType(DKVariant& v)
 		{
 			switch (v.Integer())
 			{
-			case 1:		target->indexType = TypeUByte;		break;
-			case 2:		target->indexType = TypeUShort;		break;
-			case 4:		target->indexType = TypeUInt;		break;
+			case 1:		target->indexType = Type::UInt8;		break;
+			case 2:		target->indexType = Type::UInt16;		break;
+			case 4:		target->indexType = Type::UInt32;		break;
 			}
 		}
 		bool CheckIndexType(const DKVariant& v) const

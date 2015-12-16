@@ -2,7 +2,7 @@
 //  File: DKIndexBuffer.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -23,11 +23,11 @@ namespace DKFramework
 	class DKGL_API DKIndexBuffer : public DKGeometryBuffer
 	{
 	public:
-		enum Type
+		enum class Type
 		{
-			TypeUByte,
-			TypeUShort,		// fastest
-			TypeUInt,
+			UInt8,
+			UInt16,		// fastest
+			UInt32,
 		};
 
 		DKIndexBuffer(void);
@@ -44,6 +44,10 @@ namespace DKFramework
 		bool				CopyIndices(DKFoundation::DKArray<unsigned int>& indices) const;
 
 		DKFoundation::DKObject<DKSerializer> Serializer(void);
+
+	protected:
+		void StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const override;
+
 	private:
 		DKPrimitive::Type	primitiveType;
 		Type				indexType;

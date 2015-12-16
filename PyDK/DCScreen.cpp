@@ -88,8 +88,8 @@ public:
 	}
 };
 
-// Python 의 PyGILState_Ensure 에서 생성되는 PyThreadState 는 카운트가 0 이되면 삭제된다.
-// 따라서 매번 호출시마다 생성/삭제가 반복을 막기 위해서 OnInitialize 에서 미리 생성해 둔다.
+// PyThreadState that created from PyGILState_Ensure(), will be deleted if count is 0.
+// To prevent re-creating PyThreadState repeatedly, pre-create object in OnInitialize().
 class DCLocalScreen : public DKScreen
 {
 	PyGILState_STATE gs;
@@ -478,7 +478,7 @@ static PyObject* DCScreenPostOperation(DCScreen* self, PyObject* args, PyObject*
 	{
 		if (waitUntilDone && self->screen->IsWrokingThread())
 		{
-			// 바로 호출한다.
+			// call immediately.
 			DCObjectCallPyCallable([=](){
 				PyObject* tmp = PyObject_Call(callable, tuple, dict);
 				Py_XDECREF(tmp);
@@ -495,10 +495,10 @@ static PyObject* DCScreenPostOperation(DCScreen* self, PyObject* args, PyObject*
 				{
 					bool result = false;
 					Py_BEGIN_ALLOW_THREADS
-						result = p->Result();		// 완료될 때 까지 기다림.
+						result = p->Result(); // wait until done.
 					Py_END_ALLOW_THREADS
 
-					if (!result)		// 실행 실패??
+					if (!result)		// error?
 					{
 						DKLog("Warning: DCScreenPostOperation failed!\n");
 					}

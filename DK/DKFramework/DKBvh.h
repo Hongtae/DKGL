@@ -2,7 +2,7 @@
 //  File: DKBvh.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 
 
 #pragma once
@@ -17,6 +17,7 @@
 // implementation of BVH (Bounding volume hierarchy) to perform ray-test fast.
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKGL_API DKBvh
@@ -39,26 +40,40 @@ namespace DKFramework
 		void Build(VolumeInterface*);
 		void Rebuild(void);
 
+		VolumeInterface* Volume(void) { return volume;}
+		const VolumeInterface* Volume(void) const { return volume;}
+
 		DKAabb Aabb(void) const;
 
 		// RayCastResultCallback : filter-callback function,
-		//   returns false if ray-test no longer necessary.
-		//   returns true if callback needs next ray-hit points continuously.
+		//   return false if ray-test no longer necessary.
+		//   return true if callback needs next ray hit object continuously.
 		// All filter callback returns false, this function returns false even if one or more
 		// ray hits detected. In this case, you need to get ray-test result from the callback.
+		// parameter: (object-index, line)
 		using RayCastResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKLine&)>;
 		bool RayTest(const DKLine& ray, RayCastResultCallback*) const;
 
+		// AabbCastResultCallback : filter-callback function.
+		//   return false if aabb-overlap test no longer necessary.
+		//   return true if callback needs next overlapped object continously.
+		// All filter callback returns false, this function returns false even if one or more
+		// overlap detected. In this case, you need to get ray-test result from the callback.
+		// parameter: (object-index, aabb)
+		using AabbOverlapResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKAabb&)>;
+		bool AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback*) const;
+
 	private:
-		struct QuantizedAabbNode // 16 bytes node
+		struct QuantizedAabbNode	// 16 bytes node
 		{
 			unsigned short aabbMin[3];
 			unsigned short aabbMax[3];
 			union {
-				int triangleIndex;		// for leaf-node
-				int negativeTreeSize;	// for sub-node
+				int32_t objectIndex;		// for leaf-node
+				int32_t negativeTreeSize;	// for sub-node
 			};
 		};
+
 		void BuildInternal(void);
 		void BuildTree(QuantizedAabbNode* nodes, int count);
 
@@ -68,3 +83,4 @@ namespace DKFramework
 		DKVector3 aabbScale;
 	};
 }
+#pragma pack(pop)

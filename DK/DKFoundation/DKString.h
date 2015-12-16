@@ -2,7 +2,7 @@
 //  File: DKString.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -25,28 +25,28 @@ namespace DKFoundation
 	typedef DKStringW DKString;
 
 	// Template Spealization for DKString. (for DKMap, DKSet)
-	template <> struct DKMapKeyComparison<DKStringW>
+	template <> struct DKMapKeyComparator<DKStringW>
 	{
 		int operator () (const DKStringW& lhs, const DKStringW& rhs) const
 		{
 			return lhs.Compare(rhs);
 		}
 	};
-	template <> struct DKMapKeyComparison<DKStringU8>
+	template <> struct DKMapKeyComparator<DKStringU8>
 	{
 		int operator () (const DKStringU8& lhs, const DKStringU8& rhs) const
 		{
 			return lhs.Compare(rhs);
 		}
 	};
-	template <> struct DKSetComparison<DKStringW>
+	template <> struct DKSetComparator<DKStringW>
 	{
 		int operator () (const DKStringW& lhs, const DKStringW& rhs) const
 		{
 			return lhs.Compare(rhs);
 		}
 	};
-	template <> struct DKSetComparison<DKStringU8>
+	template <> struct DKSetComparator<DKStringU8>
 	{
 		int operator () (const DKStringU8& lhs, const DKStringU8& rhs) const
 		{

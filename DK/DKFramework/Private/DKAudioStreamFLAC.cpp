@@ -2,7 +2,7 @@
 //  File: DKAudioStreamFLAC.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2010-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2010-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_LIBFLAC
@@ -23,8 +23,8 @@ namespace DKFramework
 			FLAC__StreamDecoder* decoder;
 			DKObject<DKStream> stream;
 
-			unsigned long long totalSamples;
-			unsigned long long sampleNumber;
+			FLAC__uint64 totalSamples;
+			FLAC__uint64 sampleNumber;
 			unsigned int sampleRate;
 			unsigned int channels;
 			unsigned int bps;

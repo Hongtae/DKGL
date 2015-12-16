@@ -2,7 +2,7 @@
 //  File: DKZipArchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #define DKGL_EXTDEPS_ZLIB
@@ -75,7 +75,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 			return false;
 
 		DKStream::Position streamOffset = stream->GetPos();
-		unsigned long long streamLength = stream->RemainLength();
+		uint64_t streamLength = stream->RemainLength();
 
 		char* buffer[0x4000];
 		const size_t bufferSize = 0x4000;		// 16384

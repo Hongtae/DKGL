@@ -56,7 +56,7 @@ void DCObjectSetAddress(const void* addr, PyObject* obj)
 #endif
 }
 
-// 사용자 정의 Type-Object.
+// User defined Type-Object. (Override types)
 struct DefaultClass
 {
 	PyTypeObject* baseType;
@@ -75,7 +75,7 @@ PyObject* DCObjectCreateDefaultClass(PyTypeObject* baseType, PyObject* args, PyO
 	PyTypeObject* tp = DCObjectDefaultClass(baseType);
 	DKASSERT_DEBUG(tp);
 	DKASSERT_DEBUG(PyType_IsSubtype(tp, baseType));
-	// 객체 생성.
+	// create object.
 	PyObject* ret = tp->tp_new(tp, args, kwds);
 	Py_DECREF(tp);
 	return ret;

@@ -3,7 +3,7 @@
 //  Platform: Win32, Linux
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -19,7 +19,7 @@
 
 extern "C" DKGL_API const char* DKVersion(void)
 {
-	return "DK 1.0.0";
+	return "DK 2.0.0";
 }
 extern "C" DKGL_API const char* DKCopyright(void)
 {

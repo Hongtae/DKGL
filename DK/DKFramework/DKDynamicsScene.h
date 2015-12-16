@@ -2,7 +2,7 @@
 //  File: DKDynamicsScene.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2012-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -41,10 +41,11 @@ namespace DKFramework
 		void SetFixedFrameRate(double fps);
 		double FixedFrameRate(void) const;
 
+		void RemoveAllObjects(void) override;
+
 	protected:
 		bool AddSingleObject(DKModel* obj) override;
 		void RemoveSingleObject(DKModel* obj) override;
-		void RemoveAllObjects(void) override;
 
 		typedef DKFoundation::DKSet<DKRigidBody*> RigidBodySet;
 		typedef DKFoundation::DKSet<DKSoftBody*> SoftBodySet;

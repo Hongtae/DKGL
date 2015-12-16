@@ -2,7 +2,7 @@
 //  File: DKStaticTriangleMeshShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2012-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletUtils.h"
@@ -12,9 +12,8 @@ using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-class DKStaticTriangleMeshShape::IndexedTriangleData : public btStridingMeshInterface
+struct DKStaticTriangleMeshShape::IndexedTriangleData : public btStridingMeshInterface
 {
-public:
 	int numTriangles;
 	void* vertices;
 	size_t numVertices;
@@ -30,11 +29,12 @@ public:
 			free(indices);
 	}
 
-	static DKSpinLock lock;
 	template <typename IndexType>
-	IndexedTriangleData(const DKVector3* verts, size_t numVerts,
-		const IndexType* indices, size_t numIndices,
-		const DKAabb& aabb, bool rebuild, float weld)
+	IndexedTriangleData(const DKVector3* vertices,
+						size_t numVertices,
+						const IndexType* indices,
+						size_t numIndices,
+						const DKAabb& aabb)
 		: vertices(NULL)
 		, numVertices(0)
 		, indices(NULL)
@@ -43,128 +43,53 @@ public:
 		, aabbMin(BulletVector3(aabb.positionMin))
 		, aabbMax(BulletVector3(aabb.positionMax))
 	{
+		static_assert(sizeof(IndexType) == 2 || sizeof(IndexType) == 4, "index size must be 2 or 4");
+
 		this->numTriangles = (int)(numIndices / 3);
 		if (numIndices % 3)
 			numIndices -= numIndices % 3;
 
-		if (this->numTriangles == 0 || verts == NULL || numVerts == 0 || indices == 0)
+		if (this->numTriangles == 0 || vertices == NULL || numVertices == 0 || indices == 0)
 			return;
 
-		if (rebuild)
+
+		this->numVertices = numVertices;
+		this->numIndices = numIndices;
+
+		this->vertices = malloc(numVertices * sizeof(DKVector3));
+		memcpy(this->vertices, vertices, numVertices * sizeof(DKVector3));
+
+		if (sizeof(IndexType) == 4 && numVertices <= 0xffff)
 		{
-			DKCriticalSection<DKSpinLock> guard(lock); // for protect weldingThreshold
+			this->indexType = PHY_SHORT;
 
-			static float weldingThreshold;
-			weldingThreshold = weld * weld;
-
-			struct Vert
-			{
-				Vert(const DKVector3& v) : pos(v), lengthSq(v.LengthSq()) {}
-				const DKVector3& pos;
-				float lengthSq;
-
-				// compare if longer distance than weldingThreshold
-				bool operator > (const Vert& rhs) const
-				{
-					if ((this->pos - rhs.pos).LengthSq() > weldingThreshold)
-					{
-						if (this->pos.x == rhs.pos.x)
-						{
-							if (this->pos.y == rhs.pos.y)
-								return this->pos.z > rhs.pos.z;
-							else
-								return this->pos.y > rhs.pos.y;
-						}
-						else
-							return this->pos.x > rhs.pos.x;
-					}
-					return false;
-				}
-				bool operator < (const Vert& rhs) const
-				{
-					if ((this->pos - rhs.pos).LengthSq() > weldingThreshold)
-					{
-						if (this->pos.x == rhs.pos.x)
-						{
-							if (this->pos.y == rhs.pos.y)
-								return this->pos.z < rhs.pos.z;
-							else
-								return this->pos.y < rhs.pos.y;
-						}
-						else
-							return this->pos.x < rhs.pos.x;
-					}
-					return false;
-				}
-			};
-
-			DKMap<Vert, unsigned int> VertIndexMap;
-			DKArray<unsigned int> indices2;
-			DKArray<DKVector3> vertices2;
-			indices2.Reserve(numIndices);
-			vertices2.Reserve(numVerts);
-
+			this->indices = malloc(numIndices * sizeof(unsigned short));
 			for (size_t i = 0; i < numIndices; ++i)
-			{
-				unsigned int index;
-				const DKVector3& v = verts[indices[i]];
-				auto p = VertIndexMap.Find(v);
-				if (p)
-					index = p->value;
-				else
-				{
-					index = (unsigned int)vertices2.Count();
-					vertices2.Add(v);
-					VertIndexMap.Insert(v, index);
-				}
-				indices2.Add(index);
-			}
-
-			this->numVertices = vertices2.Count();
-			this->vertices = new DKVector3[this->numVertices];
-			memcpy(this->vertices, (const DKVector3*)vertices2, this->numVertices * sizeof(DKVector3));
-			this->numIndices = indices2.Count();
-
-			if (vertices2.Count() > 0xFFFF)
-			{
-				this->indexType = PHY_INTEGER;
-				this->indices = malloc(this->numIndices * sizeof(unsigned int));
-				for (size_t i = 0; i < this->numIndices; ++i)
-					reinterpret_cast<unsigned int*>(this->indices)[i] = indices2.Value(i);
-			}
-			else
-			{
-				this->indexType = PHY_SHORT;
-				this->indices = malloc(this->numIndices * sizeof(unsigned short));
-				for (size_t i = 0; i < this->numIndices; ++i)
-					reinterpret_cast<unsigned short*>(this->indices)[i] = indices2.Value(i);
-			}
-			this->calculateAabbBruteForce(this->aabbMin, this->aabbMax);
+				reinterpret_cast<unsigned short*>(this->indices)[i] = static_cast<unsigned short>(indices[i]);
 		}
 		else
 		{
-			if (sizeof(IndexType) == 4)
-				this->indexType = PHY_INTEGER;
-			else
-				this->indexType = PHY_SHORT;
+			this->indexType = (sizeof(IndexType) == 4) ? PHY_INTEGER : PHY_SHORT;
 
-			this->numVertices = numVerts;
-			this->vertices = malloc(numVerts * sizeof(DKVector3));
-			this->numIndices = numIndices;
 			this->indices = malloc(numIndices * sizeof(IndexType));
-
-			memcpy(this->vertices, verts, numVerts * sizeof(DKVector3));
 			memcpy(this->indices, indices, numIndices * sizeof(IndexType));
-
-			if (this->aabbMax.x() < this->aabbMin.x() || this->aabbMax.y() < this->aabbMin.y() || this->aabbMax.z() < this->aabbMin.z())
-				this->calculateAabbBruteForce(this->aabbMin, this->aabbMax);
 		}
+
+		if (this->aabbMax.x() < this->aabbMin.x() || this->aabbMax.y() < this->aabbMin.y() || this->aabbMax.z() < this->aabbMin.z())
+			this->calculateAabbBruteForce(this->aabbMin, this->aabbMax);
 	}
 
 	// override from btStridingMeshInterface
 	void getLockedVertexIndexBase(unsigned char **vertexbase, int& numverts, PHY_ScalarType& type, int& stride, unsigned char **indexbase, int & indexstride, int& numfaces, PHY_ScalarType& indicestype, int subpart) override
 	{
-		return getLockedReadOnlyVertexIndexBase((const unsigned char**)vertexbase, numverts, type, stride, (const unsigned char**)indexbase, indexstride, numfaces, indicestype, subpart);
+		*vertexbase = 0;
+		numverts = 0;
+		type = PHY_FLOAT;
+		stride = 0;
+		*indexbase = 0;
+		indexstride = 0;
+		numfaces = 0;
+		indicestype = this->indexType;
 	}
 	void getLockedReadOnlyVertexIndexBase(const unsigned char **vertexbase, int& numverts, PHY_ScalarType& type, int& stride, const unsigned char **indexbase, int & indexstride, int& numfaces, PHY_ScalarType& indicestype, int subpart) const override
 	{
@@ -201,29 +126,27 @@ public:
 	mutable btVector3 aabbMin;
 	mutable btVector3 aabbMax;
 };
-DKSpinLock DKStaticTriangleMeshShape::IndexedTriangleData::lock;
+
 
 DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(
-	const DKVector3* verts, size_t numVerts,
+	const DKVector3* verts, size_t numVertices,
 	const unsigned int* indices, size_t numIndices,
-	const DKAabb& precalculatedAabb, bool rebuildIndex, float weldingThreshold)
-	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVerts, indices, numIndices,
-	precalculatedAabb, rebuildIndex, weldingThreshold))
+	const DKAabb& precalculatedAabb)
+	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVertices, indices, numIndices, precalculatedAabb))
 {
 }
 
 DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(
-	const DKVector3* verts, size_t numVerts,
+	const DKVector3* verts, size_t numVertices,
 	const unsigned short* indices, size_t numIndices,
-	const DKAabb& precalculatedAabb, bool rebuildIndex, float weldingThreshold)
-	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVerts, indices, numIndices,
-	precalculatedAabb, rebuildIndex, weldingThreshold))
+	const DKAabb& precalculatedAabb)
+	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVertices, indices, numIndices, precalculatedAabb))
 {
 }
 
 DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(IndexedTriangleData* data)
-: DKConcaveShape(ShapeType::StaticTriangleMesh, new btBvhTriangleMeshShape(data, true, true))
-, meshData(data)
+	: DKConcaveShape(ShapeType::StaticTriangleMesh, new btBvhTriangleMeshShape(data, true, true))
+	, meshData(data)
 {
 }
 
@@ -232,49 +155,19 @@ DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape(void)
 	delete meshData;
 }
 
-void DKStaticTriangleMeshShape::RefitBvh(const DKAabb& aabb)
+size_t DKStaticTriangleMeshShape::NumberOfVertices(void) const
 {
-	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
-	shape->refitTree(BulletVector3(aabb.positionMin), BulletVector3(aabb.positionMax));
+	return this->meshData->numVertices;
 }
 
-void DKStaticTriangleMeshShape::PartialRefitBvh(const DKAabb& aabb)
+size_t DKStaticTriangleMeshShape::NumberOfIndices(void) const
 {
-	btBvhTriangleMeshShape* shape = static_cast<btBvhTriangleMeshShape*>(this->impl);
-	shape->partialRefitTree(BulletVector3(aabb.positionMin), BulletVector3(aabb.positionMax));
+	return this->meshData->numIndices;
 }
 
-DKVector3* DKStaticTriangleMeshShape::VertexBuffer(size_t* numVerts)
+size_t DKStaticTriangleMeshShape::IndexSize(void) const
 {
-	if (numVerts)
-		*numVerts = this->meshData->numVertices;
-	return (DKVector3*)this->meshData->vertices;
-}
-
-const DKVector3* DKStaticTriangleMeshShape::VertexBuffer(size_t* numVerts) const
-{
-	if (numVerts)
-		*numVerts = this->meshData->numVertices;
-	return (DKVector3*)this->meshData->vertices;
-}
-
-const void* DKStaticTriangleMeshShape::IndexBuffer(size_t* numIndices, size_t* indexSize) const
-{
-	if (numIndices)
-		*numIndices = this->meshData->numIndices;
-	if (indexSize)
-	{
-		if (this->meshData->indexType == PHY_INTEGER)
-			*indexSize = 4;
-		else
-			*indexSize = 2;
-	}
-	return this->meshData->indices;
-}
-
-DKAabb DKStaticTriangleMeshShape::Aabb(void) const
-{
-	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
+	return (this->meshData->indexType == PHY_INTEGER) ? 4 : 2;
 }
 
 size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const
@@ -282,75 +175,45 @@ size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const
 	return this->meshData->numTriangles;
 }
 
-bool DKStaticTriangleMeshShape::GetTriangleVertexIndices(int triangle, unsigned int* index) const
+const DKVector3& DKStaticTriangleMeshShape::VertexAtIndex(int index) const
 {
-	size_t numTriangles = this->meshData->numTriangles;
-	if (triangle >= 0 && triangle < numTriangles)
-	{
-		if (this->meshData->indexType == PHY_INTEGER)
-		{
-			unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[triangle * 3];
-			index[0] = idx[0];
-			index[1] = idx[1];
-			index[2] = idx[2];
-		}
-		else
-		{
-			unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[triangle * 3];
-			index[0] = idx[0];
-			index[1] = idx[1];
-			index[2] = idx[2];
-		}
-		return true;
-	}
-	return false;
+	return reinterpret_cast<DKVector3*>(this->meshData->vertices)[index];
 }
 
-bool DKStaticTriangleMeshShape::GetTriangleFace(int index, DKTriangle& triangle) const
+DKTriangle DKStaticTriangleMeshShape::TriangleAtIndex(int index) const
 {
 	size_t numTriangles = this->meshData->numTriangles;
-	if (index >= 0 && index < numTriangles)
+	DKASSERT_DEBUG(index >= 0 && index < numTriangles);
+
+	DKTriangle triangle;
+	if (this->meshData->indexType == PHY_INTEGER)
 	{
-		if (this->meshData->indexType == PHY_INTEGER)
-		{
-			unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[index * 3];
-			triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-		}
-		else
-		{
-			unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[index * 3];
-			triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-			triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
-		}
-		return true;
+		unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[index * 3];
+		triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
 	}
-	return false;
+	else
+	{
+		unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[index * 3];
+		triangle.position1 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position2 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+		triangle.position3 = reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]];
+	}
+	return triangle;
 }
 
-bool DKStaticTriangleMeshShape::SetTriangleFace(int index, const DKTriangle& triangle)
+DKAabb DKStaticTriangleMeshShape::Aabb(void) const
 {
-	size_t numTriangles = this->meshData->numTriangles;
-	if (index >= 0 && index < numTriangles)
-	{
-		if (this->meshData->indexType == PHY_INTEGER)
-		{
-			unsigned int* idx = &reinterpret_cast<unsigned int*>(this->meshData->indices)[index * 3];
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position1;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position2;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position3;
-		}
-		else
-		{
-			unsigned short* idx = &reinterpret_cast<unsigned short*>(this->meshData->indices)[index * 3];
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position1;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position2;
-			reinterpret_cast<DKVector3*>(this->meshData->vertices)[idx[0]] = triangle.position3;
-		}
-		return true;
-	}
-	return false;
+	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
+}
 
+const DKVector3* DKStaticTriangleMeshShape::VertexData(void) const
+{
+	return (DKVector3*)this->meshData->vertices;
+}
+
+const void* DKStaticTriangleMeshShape::IndexData(void) const
+{
+	return this->meshData->indices;
 }

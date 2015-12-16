@@ -2,7 +2,7 @@
 //  File: DKStringUE.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <stdio.h>
@@ -61,9 +61,9 @@ namespace DKFoundation
 		////////////////////////////////////////////////////////////////////////////////
 
 		// using 'unsigned' for internal processes.
-		typedef unsigned char	UIntUTF8;
-		typedef unsigned short	UIntUTF16;
-		typedef unsigned int	UIntUTF32;
+		typedef uint8_t UIntUTF8;
+		typedef uint16_t UIntUTF16;
+		typedef uint32_t UIntUTF32;
 
 		static const char trailingBytesForUTF8[256] = {
 			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -300,7 +300,7 @@ namespace DKFoundation
 				}
 				else if (strict)
 				{
-					if (ch >= UNICODE_LOW_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF32 에서는 (UTF-16) surrogate 값을 가질 수 없음.
+					if (ch >= UNICODE_LOW_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF-32 cannot have surrogate pair
 						return false;
 				}					
 				setter((UIntUTF32)ch);
@@ -314,7 +314,7 @@ namespace DKFoundation
 				UIntUTF32 ch = *input++;
 				if (strict)
 				{
-					if (ch >= UNICODE_HIGH_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF16의 surrogate 값은 UTF32 에서 유효하지 않음.
+					if (ch >= UNICODE_HIGH_SURROGATE_BEGIN && ch <= UNICODE_LOW_SURROGATE_END)	// UTF-16 surrogate pair is not valid on UTF-32
 						return false;
 				}
 
@@ -540,7 +540,7 @@ namespace DKFoundation
 				{
 					static_assert( sizeof(UIntUTF16) == 2, "wrong size");
 					auto tmp1 = [&](UIntUTF16 ch) {outputSetter(&ch, 2);};
-					auto tmp2 = [&](UIntUTF16 ch) { ch = SWITCH_BYTE_ORDER_UINT16(ch); outputSetter(&ch, sizeof(ch));};
+					auto tmp2 = [&](UIntUTF16 ch) { ch = DKSwitchIntegralByteOrder(ch); outputSetter(&ch, sizeof(ch));};
 					switch (inputUnitSize)
 					{
 					case 1:			// from UTF8
@@ -569,7 +569,7 @@ namespace DKFoundation
 				{
 					static_assert( sizeof(UIntUTF32) == 4, "wrong size");
 					auto tmp1 = [&](UIntUTF32 ch) {outputSetter(&ch, sizeof(ch));};
-					auto tmp2 = [&](UIntUTF32 ch) {ch = SWITCH_BYTE_ORDER_UINT32(ch); outputSetter(&ch, sizeof(ch));};
+					auto tmp2 = [&](UIntUTF32 ch) {ch = DKSwitchIntegralByteOrder(ch); outputSetter(&ch, sizeof(ch));};
 					switch (inputUnitSize)
 					{
 					case 1:			// from UTF8
@@ -608,7 +608,7 @@ namespace DKFoundation
 					const UIntUTF16* pc = reinterpret_cast<const UIntUTF16*>(p);
 					size_t s = len / inputUnitSize;
 					for (size_t i = 0; i < s; ++i )
-						p2[i] = SWITCH_BYTE_ORDER_UINT16(pc[i]);
+						p2[i] = DKSwitchIntegralByteOrder(pc[i]);
 
 					bool result = EncodeString(p2, len, DKStringEncoding::UTF16, outputEnc, output);
 					free(p2);
@@ -620,7 +620,7 @@ namespace DKFoundation
 					const UIntUTF32* pc = reinterpret_cast<const UIntUTF32*>(p);
 					size_t s = len / inputUnitSize;
 					for (size_t i = 0; i < s; ++i )
-						p2[i] = SWITCH_BYTE_ORDER_UINT32(pc[i]);
+						p2[i] = DKSwitchIntegralByteOrder(pc[i]);
 
 					bool result = EncodeString(p2, len, DKStringEncoding::UTF32, outputEnc, output);
 					free(p2);
@@ -929,7 +929,7 @@ namespace DKFoundation
 						}
 					case 'C':		// wchar_t -> utf-8
 						{
-							wchar_t str[2] = { va_arg(ap, int), 0 };
+							wchar_t str[2] = { va_arg(ap, wchar_t), 0 };
 							ConvertUniChars((const StringWTraits::BaseCharT*)str, 1, utf8buff);
 						}
 						break;
@@ -1074,7 +1074,7 @@ namespace DKFoundation
 			Private::PrintV(printer, fmt, v);
 		}
 		else
-			strOut.SetValue(DKStringU8::EmptyString());
+			strOut.SetValue(DKStringU8::empty);
 	}
 
 	DKGL_API void DKStringFormatV(DKStringU8& strOut, const DKUniCharW* fmt, va_list v)
@@ -1092,7 +1092,7 @@ namespace DKFoundation
 				return DKStringFormatV(strOut, (const DKUniChar8*)buff, v);
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 	}
 
 	DKGL_API void DKStringFormatV(DKStringW& strOut, const DKUniChar8* fmt, va_list v)
@@ -1107,7 +1107,7 @@ namespace DKFoundation
 			Private::PrintV(printer, fmt, v);
 		}
 		else
-			strOut.SetValue(DKStringW::EmptyString());
+			strOut.SetValue(DKStringW::empty);
 	}
 
 	DKGL_API void DKStringFormatV(DKStringW& strOut, const DKUniCharW* fmt, va_list v)
@@ -1125,7 +1125,7 @@ namespace DKFoundation
 				return DKStringFormatV(strOut, (const DKUniChar8*)buff, v);
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 	}
 
 	DKGL_API bool DKStringSetValue(DKStringU8& strOut, const DKStringW& strIn)
@@ -1151,7 +1151,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 		return false;
 	}
 
@@ -1182,7 +1182,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 
@@ -1206,7 +1206,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 		return false;
 	}
 
@@ -1224,7 +1224,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringU8::EmptyString());
+		strOut.SetValue(DKStringU8::empty);
 		return false;
 	}
 
@@ -1247,7 +1247,7 @@ namespace DKFoundation
 				return true;
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 
@@ -1273,7 +1273,7 @@ namespace DKFoundation
 			strOut.SetValue(reinterpret_cast<const DKUniCharW*>(strIn), len);
 			return true;
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 
@@ -1307,7 +1307,7 @@ namespace DKFoundation
 				}
 			}
 		}
-		strOut.SetValue(DKStringW::EmptyString());
+		strOut.SetValue(DKStringW::empty);
 		return false;
 	}
 

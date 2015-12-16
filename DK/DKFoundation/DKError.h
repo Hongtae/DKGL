@@ -2,7 +2,7 @@
 //  File: DKError.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -129,13 +129,13 @@ namespace DKFoundation
 		int errorCode;
 		DKString functionName;
 		DKString fileName;
-		unsigned int lineNo;
+		uint32_t lineNo;
 		DKString description;
 
 		// callstack
 		size_t numFrames;
 		StackFrame* stackFrames;
-		void* threadId;
+		uintptr_t threadId;
 		friend struct Private::UnexpectedError;
 		static void DumpUnexpectedError(Private::UnexpectedError*);
 	};

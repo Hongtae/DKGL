@@ -30,18 +30,17 @@ static PyObject* DCDataNew(PyTypeObject* type, PyObject* args, PyObject* kwds)
 
 static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 {
-	// Data()    빈 객체 생성
-	// Data(source=obj) buffer 객체로부터 복사
-	// Data(source=string) string(url) 로부터 다운로드
-	// Data(filemap=string, writable=False) file map 열기 (기존 파일)
-	// Data(filemap=string, length=int, overwrite=False) file map 열기, (새파일 생성)
-	// Data(length=int) 빈 데이터 생성 (항상 writable)
+	// Data() create empty object.
+	// Data(source=obj) copy data from obj. (obj should be compliance with buffer-protocol)
+	// Data(source=string) copy data from url-string
+	// Data(filemap=string, writable=False) open file-map (file must be exists)
+	// Data(filemap=string, length=int, overwrite=False) create new file and map file.
+	// Data(length=int) create buffer object with given length. always writable.
 
-	// buffer, url, (filemap or length) 는 동시에 사용할 수 없음.
-	// writable 은 filemap 하고 같이 사용할 수 있음. 혼자서는 못씀.
-	// overwrite 는 filemap 하고 같이 사용할 수 있음. 혼자서는 못씀.
-	// length 는 혼자 또는 filemap (+ overwrite) 하고 같이 쓸수 있음.
-
+	// buffer, url, (filemap or length) cannot be combined together.
+	// 'writable' parameter should be combined with 'filemap'.
+	// 'overwrite' parameter should be combined with 'filemap'.
+	// 'length' parameter can be alone or combined with 'filemap'+'overwrite'.
 
 	if (self->data)
 		return 0;
@@ -85,7 +84,7 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 		return -1;
 	}
 
-	// 'length' 데이터 가져오기. length > 0 이면 ok, 그외엔 모두 오류
+	// get 'length', if length > 0 is OK, otherwise error!
 	PY_LONG_LONG dataLength = 0;
 	if (length)
 	{
@@ -103,9 +102,9 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 		}
 	}
 
-	if (source)		// buffer object 로부터 데이터 복사 또는 URL 다운로드
+	if (source) // copy from buffer object or download from URL.
 	{
-		if (PyUnicode_Check(source))		// url 로부터 다운로드
+		if (PyUnicode_Check(source))		// download from URL.
 		{
 			const char* url = PyUnicode_AsUTF8(source);
 			if (url && url[0])
@@ -120,15 +119,15 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 					self->data = buffer.SafeCast<DKData>();
 			}
 		}
-		else if (PyObject_TypeCheck(source, DCStreamTypeObject()))	// 스트림으로부터 복사
+		else if (PyObject_TypeCheck(source, DCStreamTypeObject()))	// copy from stream.
 		{
 			DKStream* s = DCStreamToObject(source);
-			// 스트림이 파일에서 읽어오는 경우, 오래걸릴수 있다.
+			// if stream is file, it can takes long time.
 			Py_BEGIN_ALLOW_THREADS
 			self->data = DKBuffer::Create(s);
 			Py_END_ALLOW_THREADS
 		}
-		else if (PyObject_CheckBuffer(source))	// buffer 복사
+		else if (PyObject_CheckBuffer(source))	// copy buffer
 		{
 			Py_buffer view;
 			if (PyObject_GetBuffer(source, &view, PyBUF_SIMPLE) != 0)
@@ -148,7 +147,7 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 			return -1;
 		}
 	}
-	else if (filemap)		// DKFileMap 객체로 파일 매핑
+	else if (filemap)		// map file with DKFileMap object.
 	{
 		auto getBool = [](PyObject* obj, bool& output)->bool
 		{
@@ -163,7 +162,7 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 		};
 
 		DKObject<DKFileMap> fm = NULL;
-		if (length)			// 새 파일 생성 DKFileMap::Create
+		if (length)			// create new file and map with DKFileMap::Create()
 		{
 			bool over = false;
 			if (!getBool(overwrite, over))
@@ -171,12 +170,12 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 				PyErr_SetString(PyExc_TypeError, "argument 'overwrite' must be True or False");
 				return -1;
 			}
-			// 디스크가 스핀다운 되었을 경우 오래 걸릴 수 있음.
+			// It can takes long time if a disk spun down.
 			Py_BEGIN_ALLOW_THREADS
 			fm = DKFileMap::Create(filemap, dataLength, over);
 			Py_END_ALLOW_THREADS
 		}
-		else				// 기존 파일 열기 DKFileMap::Open
+		else				// open existing file with DKFileMap::Open()
 		{
 			bool wt = false;
 			if (!getBool(writable, wt))
@@ -184,7 +183,7 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 				PyErr_SetString(PyExc_TypeError, "argument 'writable' must be True or False");
 				return -1;
 			}
-			// 디스크가 스핀다운 되었을 경우 오래 걸릴 수 있음.
+			// It can takes long time if a disk spun down.
 			Py_BEGIN_ALLOW_THREADS
 			fm = DKFileMap::Open(filemap, 0, wt);
 			Py_END_ALLOW_THREADS
@@ -197,7 +196,7 @@ static int DCDataInit(DCData *self, PyObject *args, PyObject *kwds)
 			return -1;
 		}
 	}
-	if (dataLength > 0)		// 빈 버퍼 생성 (0 으로 초기화)
+	if (dataLength > 0)		// create buffer object contains zero-filled buffer with given length.
 	{
 		self->data = DKBuffer::Create((const void*)NULL, dataLength);
 	}

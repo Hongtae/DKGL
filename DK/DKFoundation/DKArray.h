@@ -296,6 +296,30 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return capacity;
 		}
+		void ShrinkToFit(void)
+		{
+			CriticalSection guard(lock);
+			if (count < capacity)
+			{
+				DKASSERT_DEBUG(data);
+				if (count > 0)
+				{
+					VALUE* tmp = (VALUE*)Allocator::Realloc(data, sizeof(VALUE) * count);
+					DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
+					if (tmp)
+					{
+						data = tmp;
+						capacity = count;
+					}
+				}
+				else
+				{
+					Allocator::Free(data);
+					data = NULL;
+					capacity = 0;
+				}
+			}
+		}
 		void Resize(size_t s)
 		{
 			CriticalSection guard(lock);
@@ -626,12 +650,18 @@ namespace DKFoundation
 			if (c <= capacity)
 				return;
 
+			VALUE* old = data;
 			if (data)
 				data = (VALUE*)Allocator::Realloc(data, sizeof(VALUE) * c);
 			else
 				data = (VALUE*)Allocator::Alloc(sizeof(VALUE) * c);
 
-			capacity = c;
+			DKASSERT_DESC_DEBUG(data, "Out of memory!");
+
+			if (data)
+				capacity = c;
+			else	// out of memory!
+				data = old;
 		}
 		void ReserveItemCapsNL(size_t c)
 		{

@@ -2,7 +2,7 @@
 //  File: DKVariant.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -33,6 +33,7 @@
 //   - String (DKString)
 //   - DateTime (DKDateTime)
 //   - Data (DKBuffer)
+//   - StructuredData (Data with structure layout)
 //   - Array (DKArray<DKVariant>)
 //   - Pairs (DKMap<DKString, DKVariant>)
 //   - Undefined (no value, initial type)
@@ -40,7 +41,7 @@
 // DKVariant object can be serialized with XML or binary.
 ////////////////////////////////////////////////////////////////////////////////
 
-
+#pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKGL_API DKVariant
@@ -62,10 +63,12 @@ namespace DKFramework
 			TypeString		= 'strn',
 			TypeDateTime	= 'time',
 			TypeData		= 'data',
+			TypeStructData	= 'stdt',
 			TypeArray		= 'arry',
 			TypePairs		= 'pair',
 		};
-		typedef long long VInteger;
+
+		typedef int64_t VInteger;
 		typedef double VFloat;
 		typedef DKVector2 VVector2;
 		typedef DKVector3 VVector3;
@@ -80,6 +83,30 @@ namespace DKFramework
 		typedef DKFoundation::DKBuffer VData;
 		typedef DKFoundation::DKArray<DKVariant> VArray;
 		typedef DKFoundation::DKMap<VString, DKVariant> VPairs;
+
+		// structured data layout.
+		enum class StructElem : uint8_t
+		{
+			// Arithmetic types are byte-ordered automatically.
+			Arithmetic1 = 0x01,	// int8_t, uint8_t
+			Arithmetic2 = 0x02,	// int16_t, uint16_t
+			Arithmetic4 = 0x04,	// int32_t, uint32_t, float
+			Arithmetic8 = 0x08,	// int64_t, uint64_t, double
+
+			// Bypass (Raw) types are not byte-ordered. (treat as 'char*' buffer)
+			Bypass1 = 0xff,		// 1 byte item, (same as Arithmetic1)
+			Bypass2 = 0xfe,		// 2 bytes item
+			Bypass4 = 0xfc,		// 4 bytes item
+			Bypass8 = 0xf8,		// 8 bytes item
+		};
+		// VStructuredData: automatic-byte-order matching data.
+		// layout should be set properly. (describe item layout without padding)
+		struct VStructuredData
+		{
+			DKFoundation::DKBuffer data;	// buffer object
+			size_t elementSize;				// element size (include alignment padding)
+			DKFoundation::DKArray<StructElem> layout; // structured-element layout
+		};
 
 		DKVariant(Type t = TypeUndefined);
 
@@ -98,6 +125,7 @@ namespace DKFramework
 		DKVariant(const VString& v);
 		DKVariant(const VDateTime& v);
 		DKVariant(const VData& v);
+		DKVariant(const VStructuredData& v);
 		DKVariant(const VArray& v);
 		DKVariant(const VPairs& v);
 		DKVariant(const DKVariant& v);
@@ -131,6 +159,8 @@ namespace DKFramework
 		DKVariant& SetDateTime(const VDateTime& v);
 		DKVariant& SetData(const VData& v);
 		DKVariant& SetData(const void* p, size_t s);
+		DKVariant& SetStructuredData(const VStructuredData& v);
+		DKVariant& SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem> layout);
 		DKVariant& SetArray(const VArray& v);
 		DKVariant& SetPairs(const VPairs& v);
 		DKVariant& SetValue(const DKVariant& v);
@@ -165,6 +195,8 @@ namespace DKFramework
 		const VDateTime& DateTime(void) const;
 		VData& Data(void);
 		const VData& Data(void) const;
+		VStructuredData& StructuredData(void);
+		const VStructuredData& StructuredData(void) const;
 		VArray& Array(void);
 		const VArray& Array(void) const;
 		VPairs& Pairs(void);
@@ -182,3 +214,4 @@ namespace DKFramework
 		Type valueType;
 	};
 }
+#pragma pack(pop)

@@ -2,7 +2,7 @@
 //  File: DKDirectory.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -471,7 +471,7 @@ const DKString& DKDirectory::FileNameAtIndex(unsigned int index) const
 	{
 		return files.Value(index);
 	}
-	return DKString::EmptyString();
+	return DKString::empty;
 }
 
 const DKString& DKDirectory::SubdirNameAtIndex(unsigned int index) const
@@ -481,7 +481,7 @@ const DKString& DKDirectory::SubdirNameAtIndex(unsigned int index) const
 	{
 		return directories.Value(index);
 	}
-	return DKString::EmptyString();
+	return DKString::empty;
 }
 
 bool DKDirectory::DeleteSubDir(const DKString& name) const

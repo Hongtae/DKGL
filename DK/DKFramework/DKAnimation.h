@@ -2,7 +2,7 @@
 //  File: DKAnimation.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -33,6 +33,7 @@ namespace DKFramework
 		typedef long NodeIndex;
 		static const NodeIndex invalidNodeIndex = -1;
 
+#pragma pack(push, 4)
 		struct Node
 		{
 			enum NodeType
@@ -76,6 +77,7 @@ namespace DKFramework
 			DKFoundation::DKString	name;
 			DKTransformUnit			transform;
 		};
+#pragma pack(pop)
 
 		DKAnimation(void);
 		~DKAnimation(void);

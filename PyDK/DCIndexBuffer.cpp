@@ -45,9 +45,9 @@ static int DCIndexBufferInit(DCIndexBuffer *self, PyObject *args, PyObject *kwds
 			PyErr_SetString(PyExc_ValueError, "first argument is invalid. (empty buffer)");
 			return -1;
 		}
-		if (indexType != (int)DKIndexBuffer::TypeUByte &&
-			indexType != (int)DKIndexBuffer::TypeUShort &&
-			indexType != (int)DKIndexBuffer::TypeUInt)
+		if (indexType != (int)DKIndexBuffer::Type::UInt8 &&
+			indexType != (int)DKIndexBuffer::Type::UInt16 &&
+			indexType != (int)DKIndexBuffer::Type::UInt32)
 		{
 			PyErr_SetString(PyExc_ValueError, "second argument is invalid. (invalid type)");
 			return -1;

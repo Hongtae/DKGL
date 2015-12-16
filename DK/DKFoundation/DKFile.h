@@ -2,7 +2,7 @@
 //  File: DKFile.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -27,12 +27,12 @@ namespace DKFoundation
 	public:
 		struct FileInfo
 		{
-			unsigned long long	size;
-			DKDateTime			lastAccessed;
-			DKDateTime			lastModified;
-			DKDateTime			created;
-			bool 				readable;
-			bool 				writable;
+			uint64_t		size;
+			DKDateTime		lastAccessed;
+			DKDateTime		lastModified;
+			DKDateTime		created;
+			bool 			readable;
+			bool 			writable;
 		};
 		enum ModeOpen
 		{

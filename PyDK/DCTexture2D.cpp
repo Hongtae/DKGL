@@ -30,9 +30,9 @@ static int DCTexture2DInit(DCTexture2D *self, PyObject *args, PyObject *kwds)
 
 	if (self->texture == NULL)
 	{
-		// 빈 텍스쳐 생성할때, width, height, format, type
-		// 데이터 읽어들일때 width, height, source (width,height 는 옵션임.)
-		// source 는 file path 또는 data (Py_Buffer)
+		// to create emtpy texture following arguments must be followed: 'width', 'height', 'format', 'type'.
+		// to read from data following arugments must be followed: 'source', and 'width', 'height' can be combined optinally.
+		// source must be file-path (string) or data (Py_Buffer)
 		PyObject* source = NULL;
 		int width = 0;
 		int height = 0;

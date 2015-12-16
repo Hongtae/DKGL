@@ -2,7 +2,7 @@
 //  File: DKBitArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -17,8 +17,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKBitArray
-// A special array that contains bit.
-//
+// A special array that contains bit data.
+// This class does not support enumeration or pointer-casting operator,
+// because of only two values (true, false) are acceptable.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFoundation
@@ -258,6 +259,34 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return capacity;
 		}
+		void ShrinkToFit(void)
+		{
+			CriticalSection guard(lock);
+			size_t countBytes = UnitLengthForBits(count);
+			size_t capacityBytes = UnitLengthForBits(capacity);
+			if (countBytes != capacityBytes)
+			{
+				DKASSERT_DEBUG(capacityBytes > countBytes);
+				DKASSERT_DEBUG(data);
+				if (countBytes > 0)
+				{
+					Unit* tmp = (Unit*)Allocator::Realloc(data, countBytes);
+					DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
+					if (tmp)
+					{
+						data = tmp;
+						capacity = countBytes * 8;
+					}
+				}
+				else
+				{
+					DKASSERT_DEBUG(count == 0);
+					Allocator::Free(data);
+					data = 0;
+					capacity = 0;
+				}
+			}
+		}
 		void Resize(size_t s)
 		{
 			CriticalSection guard(lock);
@@ -495,12 +524,18 @@ namespace DKFoundation
 			size_t reqBytes = sizeof(Unit) * UnitLengthForBits(c);
 			DKASSERT_DEBUG(reqBytes);
 
+			Unit* old = data;
 			if (data)
 				data = (Unit*)Allocator::Realloc(data, reqBytes);
 			else
 				data = (Unit*)Allocator::Alloc(reqBytes);
-			
-			capacity = reqBytes * 8;
+
+			DKASSERT_DESC_DEBUG(data, "Out of memory!");
+
+			if (data)
+				capacity = reqBytes * 8;
+			else	// out of memory!
+				data = old;
 		}
 		void ReserveItemCapsNL(size_t c)
 		{
@@ -519,7 +554,7 @@ namespace DKFoundation
 		
 		
 		Unit*		data;
-		size_t		count;
-		size_t		capacity;
+		size_t		count;		// num items
+		size_t		capacity;	// bits (not bytes)
 	};
 }

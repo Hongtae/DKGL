@@ -81,8 +81,8 @@ private:
 			const VariantEntity* ve = ep->value->Variant();
 			if (ve && ve->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (ve->checker == NULL || ve->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (ve->validator == NULL || ve->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(ve->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -107,8 +107,8 @@ private:
 			const ExternalEntity* ee = ep->value->External();
 			if (ee && ee->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (ee->checker == NULL || ee->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (ee->validator == NULL || ee->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(ee->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -124,8 +124,8 @@ private:
 			const ExternalEntityArray* ea = ep->value->ExternalArray();
 			if (ea && ea->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (ea->checker == NULL || ea->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (ea->validator == NULL || ea->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(ea->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -141,8 +141,8 @@ private:
 			const ExternalEntityMap* em = ep->value->ExternalMap();
 			if (em && em->setter)
 			{
-				// checker->invoke() should return true, if checker available.
-				if (em->checker == NULL || em->checker->Invoke(p.value))
+				// validator->invoke() should return true, if validator available.
+				if (em->validator == NULL || em->validator->Invoke(p.value))
 				{
 					deserializer->operations.Add(em->setter->Invocation(p.value).SafeCast<DKOperation>());
 					remainsEntities.Remove(p.key);
@@ -225,24 +225,24 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 	return entityMap.Insert(key, se);
 }
 
-bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueChecker* checker, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueValidator* validator, FaultHandler* faultHandler)
 {
 	VariantEntity *ve = new (DKMemoryDefaultAllocator::Alloc(sizeof(VariantEntity))) VariantEntity;
 	ve->getter = getter;
 	ve->setter = setter;
-	ve->checker = checker;
+	ve->validator = validator;
 	ve->faultHandler = faultHandler;
 
 	DKCriticalSection<DKSpinLock> guard(lock);
 	return entityMap.Insert(key, ve);
 }
 
-bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
 	ExternalEntity* ee = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntity))) ExternalEntity;
 	ee->getter = getter;
 	ee->setter = setter;
-	ee->checker = checker;
+	ee->validator = validator;
 	ee->faultHandler = faultHandler;
 	ee->external = ext;
 
@@ -250,12 +250,12 @@ bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSet
 	return entityMap.Insert(key, ee);
 }
 
-bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
 	ExternalEntityArray* ea = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntityArray))) ExternalEntityArray;
 	ea->getter = getter;
 	ea->setter = setter;
-	ea->checker = checker;
+	ea->validator = validator;
 	ea->faultHandler = faultHandler;
 	ea->external = ext;
 
@@ -263,12 +263,12 @@ bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, Extern
 	return entityMap.Insert(key, ea);
 }
 
-bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapChecker* checker, ExternalResource ext, FaultHandler* faultHandler)
+bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
 	ExternalEntityMap* em = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntityMap))) ExternalEntityMap;
 	em->getter = getter;
 	em->setter = setter;
-	em->checker = checker;
+	em->validator = validator;
 	em->faultHandler = faultHandler;
 	em->external = ext;
 
@@ -357,13 +357,17 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 							buff = DKBuffer::Create(data);
 							data = NULL;
 						}
-						DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-						if (buff->CompressEncode(cdata->value))
+						DKObject<DKBuffer> compressed = buff->Compress(DKCompressor::Deflate);
+						if (compressed)
 						{
-							DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
-							extNode->name = L"External";
-							extNode->nodes.Add(cdata.SafeCast<DKXMLNode>());
-							return extNode;
+							DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+							if (compressed->Base64Encode(cdata->value))
+							{
+								DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
+								extNode->name = L"External";
+								extNode->nodes.Add(cdata.SafeCast<DKXMLNode>());
+								return extNode;
+							}
 						}
 					}
 				}
@@ -558,14 +562,18 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 						const DKBuffer* buffer = stream.BufferObject();
 						if (buffer && buffer->Length() > 0)
 						{
-							DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-							if (buffer->CompressEncode(cdata->value))
+							DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
+							if (compressed)
 							{
-								variantNode = DKObject<DKXMLElement>::New();
-								variantNode->name = L"Local";
-								DKXMLAttribute attrType = {0, L"type", L"binary"};
-								variantNode->attributes.Add(attrType);
-								variantNode->nodes.Add(cdata.SafeCast<DKXMLNode>());
+								DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+								if (compressed->Base64Encode(cdata->value))
+								{
+									variantNode = DKObject<DKXMLElement>::New();
+									variantNode->name = L"Local";
+									DKXMLAttribute attrType = {0, L"type", L"binary"};
+									variantNode->attributes.Add(attrType);
+									variantNode->nodes.Add(cdata.SafeCast<DKXMLNode>());
+								}
 							}
 						}
 					}					
@@ -777,11 +785,16 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 							const DKXMLCData* cdata = e->nodes.Value(i).SafeCast<DKXMLCData>();
 							DKASSERT_DEBUG(cdata != NULL);
 
-							DKObject<DKBuffer> data = DKBuffer::DecodeDecompress(cdata->value);
-							if (data)
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(cdata->value);
+							if (compressed)
 							{
-								res = loader->ResourceFromData(data, L"");
-								break;
+								DKObject<DKBuffer> data = compressed->Decompress();
+								if (data)
+								{
+									res = loader->ResourceFromData(data, L"");
+									break;
+								}
+
 							}
 						}
 					}
@@ -849,12 +862,16 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 					{
 						if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeCData)
 						{
-							DKObject<DKBuffer> d = DKBuffer::DecodeDecompress(node1->nodes.Value(j).SafeCast<DKXMLCData>()->value);
-							if (d)
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(node1->nodes.Value(j).SafeCast<DKXMLCData>()->value);
+							if (compressed)
 							{
-								DKDataStream stream(d);
-								if (restoreEntities.deserializer->rootValue.ImportStream(&stream))
-									break;
+								DKObject<DKBuffer> d = compressed->Decompress();
+								if (d)
+								{
+									DKDataStream stream(d);
+									if (restoreEntities.deserializer->rootValue.ImportStream(&stream))
+										break;
+								}
 							}
 						}
 					}
@@ -1095,7 +1112,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 		unsigned int		type;
 		unsigned int		cType;				// CRC or container type
 		DKObject<DKData>	data;
-		unsigned long long 	unpackedSize;		// original length
+		uint64_t 	unpackedSize;		// original length
 		bool Create(const DKString& key, const DKString& ckey, unsigned int type, unsigned int ctype, DKData* rawData, bool compress)
 		{
 			if (rawData)
@@ -1110,7 +1127,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 
 					DKObject<DKData> compressedData = NULL;
 					if (compress)
-						compressedData = DKBuffer::Compress(ptr, length).SafeCast<DKData>();
+						compressedData = DKBuffer::Compress(ptr, length, DKCompressor::Deflate).SafeCast<DKData>();
 
 					rawData->UnlockShared();
 
@@ -1318,7 +1335,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 			if (proceed)
 			{
 				DKStringU8 classId(this->resourceClass);
-				unsigned long long classIdLen = classId.Bytes();
+				uint64_t classIdLen = classId.Bytes();
 				size_t wrote = output->Write(&classIdLen, sizeof(classIdLen));
 				numBytesWritten += wrote;
 				if (wrote == sizeof(classIdLen))
@@ -1334,7 +1351,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 			// num-chunks
 			if (proceed)
 			{
-				unsigned long long numChunks = queryEntities.chunks.Count();
+				uint64_t numChunks = queryEntities.chunks.Count();
 				size_t wrote = output->Write(&numChunks, sizeof(numChunks));
 				if (wrote != sizeof(numChunks))
 					proceed = false;
@@ -1379,7 +1396,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 						break;
 					}
 					// objectKey
-					unsigned long long objKeyLen = chunk.key.Bytes();
+					uint64_t objKeyLen = chunk.key.Bytes();
 					wrote = output->Write(&objKeyLen, sizeof(objKeyLen));
 					numBytesWritten += wrote;
 					if (wrote == sizeof(objKeyLen))
@@ -1398,7 +1415,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 						break;
 					}
 					// containerKey
-					unsigned long long ctKeyLen = chunk.containerKey.Bytes();
+					uint64_t ctKeyLen = chunk.containerKey.Bytes();
 					wrote = output->Write(&ctKeyLen, sizeof(ctKeyLen));
 					numBytesWritten += wrote;
 					if (wrote == sizeof(ctKeyLen))
@@ -1426,7 +1443,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					}
 					// data (size, bytes)
 					const void* ptr = chunk.data->LockShared();
-					unsigned long long dataLen = chunk.data->Length();
+					uint64_t dataLen = chunk.data->Length();
 					wrote = output->Write(&dataLen, sizeof(dataLen));
 					numBytesWritten += wrote;
 					if (wrote == sizeof(dataLen))
@@ -1452,13 +1469,13 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					//size_t cmp = unpackedSize - packedSize;
 					//DKLog("DKSerializer class:%ls data size:%llu/%llu (compress ratio:%.1f%%)\n",
 					//	(const wchar_t*)this->resourceClass,
-					//	(unsigned long long)packedSize,
-					//	(unsigned long long)unpackedSize,
+					//	(uint64_t)packedSize,
+					//	(uint64_t)unpackedSize,
 					//	(static_cast<double>(cmp) / static_cast<double>(unpackedSize)) * 100.0);
 				}
 				else
 				{
-					//DKLog("DKSerializer class:%ls data size:%llu\n", (const wchar_t*)this->resourceClass, (unsigned long long)packedSize);
+					//DKLog("DKSerializer class:%ls data size:%llu\n", (const wchar_t*)this->resourceClass, (uint64_t)packedSize);
 				}
 			}
 			else
@@ -1514,17 +1531,17 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 	struct
 	{
-		unsigned short operator () (unsigned short v) const
+		uint16_t operator () (uint16_t v) const
 		{
-			return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT16(v) : BIG_ENDIAN_TO_SYSTEM_UINT16(v);
+			return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 		}
-		unsigned int operator () (unsigned int v) const
+		uint32_t operator () (uint32_t v) const
 		{
-			return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT32(v) : BIG_ENDIAN_TO_SYSTEM_UINT32(v);
+			return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 		}
-		unsigned long long operator () (unsigned long long v) const
+		uint64_t operator () (uint64_t v) const
 		{
-			return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT64(v) : BIG_ENDIAN_TO_SYSTEM_UINT64(v);
+			return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 		}
 		bool littleEndian;
 	} byteorder = {littleEndian};
@@ -1547,7 +1564,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			DKLog("DKSerializer::Deserialize warning: file is older version:0x%x current-version:0x%0x.\n", static_cast<unsigned int>(version), static_cast<unsigned int>(DKSERIALIZER_VERSION));
 		}
 		// verify class-id
-		unsigned long long classLen;
+		uint64_t classLen;
 		if (s->Read(&classLen, sizeof(classLen)) != sizeof(classLen))
 			return false;
 		classLen = byteorder(classLen);
@@ -1572,7 +1589,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			const DKString& key,
 			const DKString& cKey,
 			unsigned int type, unsigned int ctype, 
-			unsigned long long unpackedSize,
+			uint64_t unpackedSize,
 			DKData* d,
 			DKResourceLoader* loader,
 			EntityRestore::Entity& entity,
@@ -1678,7 +1695,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 		DKLog("DKSerializer::Deserialize failed: ClassId mismatch. (%ls != %ls)\n", (const wchar_t*)this->resourceClass, (const wchar_t*)classId);
 		return false;
 	}
-	unsigned long long numChunks;
+	uint64_t numChunks;
 	if (s->Read(&numChunks, sizeof(numChunks)) != sizeof(numChunks))
 	{
 		DKLog("DKSerializer::Deserialize failed: Stream error.");
@@ -1704,10 +1721,10 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 		unsigned int type;
 		unsigned int ctype;
-		unsigned long long keyLen;
-		unsigned long long cKeyLen;
-		unsigned long long unpackedSize;
-		unsigned long long dataLength;
+		uint64_t keyLen;
+		uint64_t cKeyLen;
+		uint64_t unpackedSize;
+		uint64_t dataLength;
 		DKString objectKey = L"";
 		DKString containerKey = L"";
 
@@ -1956,17 +1973,17 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 	{
 		struct
 		{
-			unsigned short operator () (unsigned short v) const
+			uint16_t operator () (uint16_t v) const
 			{
-				return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT16(v) : BIG_ENDIAN_TO_SYSTEM_UINT16(v);
+				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
-			unsigned int operator () (unsigned int v) const
+			uint32_t operator () (uint32_t v) const
 			{
-				return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT32(v) : BIG_ENDIAN_TO_SYSTEM_UINT32(v);
+				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
-			unsigned long long operator () (unsigned long long v) const
+			uint64_t operator () (uint64_t v) const
 			{
-				return this->littleEndian ? LITTLE_ENDIAN_TO_SYSTEM_UINT64(v) : BIG_ENDIAN_TO_SYSTEM_UINT64(v);
+				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
 			bool littleEndian;
 		} byteorder = {littleEndian};
@@ -1977,7 +1994,7 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 			ver = byteorder(ver);
 			if (ver <= DKSERIALIZER_VERSION)
 			{
-				unsigned long long clsLen;
+				uint64_t clsLen;
 				if (s->Read(&clsLen, sizeof(clsLen)) == sizeof(clsLen))
 				{
 					clsLen = byteorder(clsLen);

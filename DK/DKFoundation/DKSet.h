@@ -29,10 +29,10 @@
 
 namespace DKFoundation
 {
-	// compare VALUE, VALUE
-	template <typename VALUE> struct DKSetComparison
+	// compare Value, Value
+	template <typename Value> struct DKSetComparator
 	{
-		int operator () (const VALUE& lhs, const VALUE& rhs) const
+		int operator () (const Value& lhs, const Value& rhs) const
 		{
 			if (lhs > rhs)
 				return 1;
@@ -43,48 +43,51 @@ namespace DKFoundation
 	};
 
 	template <
-		typename VALUE,
-		typename LOCK = DKDummyLock,
-		typename COMPARE = DKSetComparison<VALUE>,
-		typename ALLOC = DKMemoryDefaultAllocator
+		typename Value,
+		typename Lock = DKDummyLock,
+		typename Comparator = DKSetComparator<Value>,
+		typename Allocator = DKMemoryDefaultAllocator
 	>
 	class DKSet
 	{
 	public:
-		typedef VALUE													Value;
-		typedef LOCK													Lock;
-		typedef COMPARE													Compare;
-		typedef ALLOC													Allocator;
-		typedef DKCriticalSection<Lock>									CriticalSection;
-		typedef DKTypeTraits<Value>										ValueTraits;
-		typedef DKAVLTree<Value, Value, Compare, Compare, DKTreeCopyValue<VALUE>, Allocator>	Container;
+		typedef DKCriticalSection<Lock>		CriticalSection;
+		typedef DKTypeTraits<Value>			ValueTraits;
+		typedef DKAVLTree<Value, Comparator, DKTreeItemReplacer<Value>, Allocator>	Container;
 
 		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
+
+		Comparator& comparator;
 
 		// lock is public. allow object being locked manually.
 		// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
 
 		DKSet(void)
+			: comparator(container.comparator)
 		{
 		}
 		DKSet(DKSet&& s)
 			: container(static_cast<Container&&>(s.container))
+			, comparator(container.comparator)
 		{
 		}
 		// copy constructor. same type of DKSet object are allowed only.
 		// template constructor not works on MSVC
 		DKSet(const DKSet& s)
+			: comparator(container.comparator)
 		{
 			CriticalSection guard(s.lock);
 			container = s.container;
 		}
 		DKSet(const Value* v, size_t n)
+			: comparator(container.comparator)
 		{
 			for (size_t i = 0; i < n; ++i)
 				container.Insert(v[i]);
 		}
 		DKSet(std::initializer_list<Value> il)
+			: comparator(container.comparator)
 		{
 			for (const Value& v : il)
 				container.Insert(v);
@@ -109,22 +112,22 @@ namespace DKFoundation
 			for (const Value& v : il)
 				container.Insert(v);
 		}
-		template <typename ...Args> DKSet& Union(const DKSet<VALUE, Args...>& s)
+		template <typename ...Args> DKSet& Union(const DKSet<Value, Args...>& s)
 		{
 			CriticalSection guard(lock);
-			s.EnumerateForward([this](const VALUE& val) { container.Insert(val); });
+			s.EnumerateForward([this](const Value& val) { container.Insert(val); });
 			return *this;
 		}
-		template <typename ...Args> DKSet& Intersect(const DKSet<VALUE, Args...>& s)
+		template <typename ...Args> DKSet& Intersect(const DKSet<Value, Args...>& s)
 		{
 			CriticalSection guard(lock);
-			s.EnumerateForward([this](const VALUE& val) {this->container.Remove(val);});
+			s.EnumerateForward([this](const Value& val) {this->container.Remove(val);});
 			return *this;
 		}
 		void Remove(const Value& v)
 		{
 			CriticalSection guard(lock);
-			container.Remove(v);
+			container.Remove(v, container.comparator);
 		}
 		void Remove(std::initializer_list<Value> il)
 		{
@@ -139,7 +142,7 @@ namespace DKFoundation
 		bool Contains(const Value& v) const
 		{
 			CriticalSection guard(lock);
-			return container.Find(v) != NULL;
+			return container.Find(v, container.comparator) != NULL;
 		}
 		bool ContainsNoLock(const Value& v) const
 		{
@@ -192,8 +195,8 @@ namespace DKFoundation
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
-			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
-			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
+			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const Value&>()};
+			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const Value&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
 
 			EnumerateForward(std::forward<T>(enumerator), typename Func::ParameterNumber());
@@ -201,8 +204,8 @@ namespace DKFoundation
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
-			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
-			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
+			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const Value&>()};
+			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const Value&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
@@ -212,12 +215,12 @@ namespace DKFoundation
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
 			CriticalSection guard(lock);
-			container.EnumerateForward([&enumerator](const VALUE& val, bool*) {enumerator(val);});
+			container.EnumerateForward([&enumerator](const Value& val, bool*) {enumerator(val);});
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
 			CriticalSection guard(lock);
-			container.EnumerateBackward([&enumerator](const VALUE& val, bool*) {enumerator(val);});
+			container.EnumerateBackward([&enumerator](const Value& val, bool*) {enumerator(val);});
 		}
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const

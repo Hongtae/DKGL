@@ -24,11 +24,11 @@
 
 #ifdef __ANDROID__
 #warning "CHECK 'wcstoll', 'wcstoull' FOR ANDROID!"
-long long int wcstoll(const wchar_t* str, wchar_t** endptr, int base)
+int64_t int wcstoll(const wchar_t* str, wchar_t** endptr, int base)
 {
 	return DKFoundation::DKStringU8(str).ToInteger();
 }
-unsigned long long int wcstoull(const wchar_t* str, wchar_t** endptr, int base)
+uint64_t wcstoull(const wchar_t* str, wchar_t** endptr, int base)
 {
 	return DKFoundation::DKStringU8(str).ToUnsignedInteger();
 }
@@ -114,11 +114,7 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-const DKStringW& DKStringW::EmptyString()
-{
-	static DKStringW s = L"";
-	return s;
-}
+const DKStringW DKStringW::empty = L"";
 
 DKStringEncoding DKStringW::SystemEncoding(void)
 {
@@ -940,14 +936,14 @@ DKObject<DKData> DKStringW::Encode(DKStringEncoding e) const
 	return data.SafeCast<DKData>();
 }
 
-long long DKStringW::ToInteger(void) const
+int64_t DKStringW::ToInteger(void) const
 {
 	if (stringData && stringData[0])
 		return wcstoll(stringData, 0, 0);
 	return 0LL;
 }
 
-unsigned long long DKStringW::ToUnsignedInteger(void) const
+uint64_t DKStringW::ToUnsignedInteger(void) const
 {
 	if (stringData && stringData[0])
 		return wcstoull(stringData, 0, 0);

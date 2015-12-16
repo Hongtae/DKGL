@@ -2,7 +2,7 @@
 //  File: DKWindow.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -170,7 +170,24 @@ void DKWindow::ResetKeyState(int deviceId)
 void DKWindow::ResetKeyStateForAllDevices(void)
 {
 	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
-	this->keyboardStateMap.Clear();
+	DKArray<int> deviceIdsToRemove;
+	deviceIdsToRemove.Reserve(this->keyboardStateMap.Count());
+	this->keyboardStateMap.EnumerateForward([&](DKMap<int, KeyboardState>::Pair& pair)
+	{
+		KeyboardState& state = pair.value;
+		if (state.textInputEnabled)
+		{
+			// text-input mode enabled, just clear key states.
+			memset(state.keyStateBits, 0, sizeof(state.keyStateBits));
+		}
+		else
+		{
+			// text-input mode is not enabled, just remove device key.
+			deviceIdsToRemove.Add(pair.key);
+		}
+	});
+	for (int deviceId : deviceIdsToRemove)
+		this->keyboardStateMap.Remove(deviceId);
 }
 
 DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const

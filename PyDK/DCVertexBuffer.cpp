@@ -64,7 +64,7 @@ static int DCVertexBufferInit(DCVertexBuffer *self, PyObject *args, PyObject *kw
 
 		PyObject* decl_args = PyTuple_New(0);
 		DCObjectRelease decl_args_(decl_args);
-		char* decl_kwlist[] = { "id", "name", "type", "normalize", "offset", NULL };
+		char* decl_kwlist[] = { "id", "name", "type", "normalize", NULL };
 
 		Py_ssize_t len = PySequence_Size(decls);
 		for (int i = 0; i < len; ++i)
@@ -87,10 +87,9 @@ static int DCVertexBufferInit(DCVertexBuffer *self, PyObject *args, PyObject *kw
 			const char* name;
 			int type;
 			int normalize;
-			Py_ssize_t offset;
 
-			if (!PyArg_ParseTupleAndKeywords(decl_args, dict, "isipn", decl_kwlist,
-				&stream, &name, &type, &normalize, &offset))
+			if (!PyArg_ParseTupleAndKeywords(decl_args, dict, "isip", decl_kwlist,
+				&stream, &name, &type, &normalize))
 			{
 				PyErr_Clear();
 				PyErr_SetString(PyExc_TypeError, "invalid decl data.");
@@ -107,18 +106,12 @@ static int DCVertexBufferInit(DCVertexBuffer *self, PyObject *args, PyObject *kw
 				PyErr_SetString(PyExc_ValueError, "decl['type'] is out of range");
 				return -1;
 			}
-			if (offset < 0)
-			{
-				PyErr_SetString(PyExc_ValueError, "decl['offset'] must be greater than zero.");
-				return -1;
-			}
 
 			DKVertexBuffer::Decl decl;
 			decl.id = (DKVertexStream::Stream)stream;
 			decl.name = name;
 			decl.type = (DKVertexStream::Type)type;
 			decl.normalize = normalize != 0;
-			decl.offset = offset;
 
 			declArray.Add(decl);
 		}
@@ -163,20 +156,17 @@ static PyObject* DCVertexDeclToDict(const DKVertexBuffer::Decl* decl)
 	PyObject* declName = PyUnicode_FromWideChar(decl->name, -1);
 	PyObject* declType = PyLong_FromLong((long)decl->type);
 	PyObject* declNorm = PyBool_FromLong(decl->normalize);
-	PyObject* declOffset = PyLong_FromSize_t(decl->offset);
 
 	PyObject* dict = PyDict_New();
 	PyDict_SetItemString(dict, "id", declId);
 	PyDict_SetItemString(dict, "name", declName);
 	PyDict_SetItemString(dict, "type", declType);
 	PyDict_SetItemString(dict, "normalize", declNorm);
-	PyDict_SetItemString(dict, "offset", declOffset);
 
 	Py_DECREF(declId);
 	Py_DECREF(declName);
 	Py_DECREF(declType);
 	Py_DECREF(declNorm);
-	Py_DECREF(declOffset);
 
 	return dict;
 }

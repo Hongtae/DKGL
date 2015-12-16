@@ -40,6 +40,7 @@ DKFOUNDATION_SRC := \
 	DKFoundation/DKFence.cpp \
 	DKFoundation/DKFile.cpp \
 	DKFoundation/DKFileMap.cpp \
+	DKFoundation/DKFloat16.cpp \
 	DKFoundation/DKHash.cpp \
 	DKFoundation/DKLock.cpp \
 	DKFoundation/DKLog.cpp \
@@ -150,6 +151,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKTransform.cpp \
 	DKFramework/DKTriangle.cpp \
 	DKFramework/DKTriangleMeshBvh.cpp \
+	DKFramework/DKTriangleMeshProxyShape.cpp \
 	DKFramework/DKVariant.cpp \
 	DKFramework/DKVector2.cpp \
 	DKFramework/DKVector3.cpp \

@@ -2,7 +2,7 @@
 //  File: DKGeometryBuffer.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -77,11 +77,14 @@ namespace DKFramework
 
 		// DKResource::Validate() override
 		bool Validate(void)					{return IsValid();}
+
 	protected:
 		DKGeometryBuffer(void);
 
 		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const DKFoundation::DKData* data);
 		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const void* data, size_t size);
+
+		virtual void StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const = 0;
 
 	private:
 		BufferType			resourceType;

@@ -74,11 +74,7 @@ namespace DKFoundation
 }
 using namespace DKFoundation;
 
-const DKStringU8& DKStringU8::EmptyString()
-{
-	static DKStringU8 s = "";
-	return s;
-}
+const DKStringU8 DKStringU8::empty = "";
 
 DKStringEncoding DKStringU8::SystemEncoding(void)
 {
@@ -471,14 +467,14 @@ DKStringU8 DKStringU8::operator + (DKUniChar8 c) const
 }
 
 // convert numeric values.
-long long DKStringU8::ToInteger(void) const
+int64_t DKStringU8::ToInteger(void) const
 {
 	if (stringData && stringData[0])
 		return strtoll(stringData, 0, 0);
 	return 0LL;
 }
 
-unsigned long long DKStringU8::ToUnsignedInteger(void) const
+uint64_t DKStringU8::ToUnsignedInteger(void) const
 {
 	if (stringData && stringData[0])
 		return strtoull(stringData, 0, 0);

@@ -126,7 +126,7 @@ static PyObject* DCGeneric6DofConstraintSetLimit(DCGeneric6DofConstraint* self, 
 	float lower, upper;
 	if (!PyArg_ParseTuple(args, "iff", &axis, &lower, &upper))
 		return NULL;
-	if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+	if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 	{
 		PyErr_Clear();
 		PyErr_SetString(PyExc_TypeError, "first argument is out of range.");
@@ -175,7 +175,7 @@ static PyObject* DCGeneric6DofConstraintGetAxisAttr(DCGeneric6DofConstraint* sel
 	int axis;
 	if (!PyArg_ParseTuple(args, "i", &axis))
 		return NULL;
-	if (axis < 1 || axis > 6)	// DKConstraint::ParamAxis::LinearX(1) 부터 AngularZ(6) 까지.
+	if (axis < 1 || axis > 6)	// from DKConstraint::ParamAxis::LinearX(1) to AngularZ(6).
 	{
 		PyErr_Clear();
 		PyErr_SetString(PyExc_TypeError, "first argument is out of range.");

@@ -28,11 +28,9 @@ static int DCStaticTriangleMeshShapeInit(DCStaticTriangleMeshShape *self, PyObje
 	{
 		Py_buffer vertexBuffer, indexBuffer;
 		int use16bit = 0;
-		int rebuildIndex = 1;
-		float welding = 0.0f;
-		char* kwlist[] = { "vertexBuffer", "indexBuffer", "use16bitIndex", "rebuildIndex", "weldingThreshold", NULL };
-		if (!PyArg_ParseTupleAndKeywords(args, kwds, "y*y*|ppf", kwlist,
-			&vertexBuffer, &indexBuffer, &use16bit, &rebuildIndex, &welding))
+		char* kwlist[] = { "vertexBuffer", "indexBuffer", "use16bitIndex", NULL };
+		if (!PyArg_ParseTupleAndKeywords(args, kwds, "y*y*p", kwlist,
+			&vertexBuffer, &indexBuffer, &use16bit))
 			return -1;
 
 		DKVector3* vertices = reinterpret_cast<DKVector3*>(vertexBuffer.buf);
@@ -44,7 +42,7 @@ static int DCStaticTriangleMeshShapeInit(DCStaticTriangleMeshShape *self, PyObje
 			size_t numIndices = indexBuffer.len / sizeof(unsigned int);
 			if (numVerts > 0 && numIndices > 0)
 			{
-				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAabb(), rebuildIndex != 0, welding);
+				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAabb());
 			}
 		}
 		else
@@ -53,7 +51,7 @@ static int DCStaticTriangleMeshShapeInit(DCStaticTriangleMeshShape *self, PyObje
 			size_t numIndices = indexBuffer.len / sizeof(unsigned int);
 			if (numVerts > 0 && numIndices > 0)
 			{
-				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAabb(), rebuildIndex != 0, welding);
+				shape = DKOBJECT_NEW DKStaticTriangleMeshShape(vertices, numVerts, indices, numIndices, DKAabb());
 			}
 		}
 		PyBuffer_Release(&vertexBuffer);
@@ -77,28 +75,6 @@ static void DCStaticTriangleMeshShapeDealloc(DCStaticTriangleMeshShape* self)
 	DCConcaveShapeTypeObject()->tp_dealloc((PyObject*)self);
 }
 
-static PyObject* DCStaticTriangleMeshShapeRefitBVH(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	DKVector3 aabbMin, aabbMax;
-	if (!PyArg_ParseTuple(args, "O&O&", &DCVector3Converter, &aabbMin, &DCVector3Converter, &aabbMax))
-		return NULL;
-
-	self->shape->RefitBvh(DKAabb(aabbMin, aabbMax));
-	Py_RETURN_NONE;
-}
-
-static PyObject* DCStaticTriangleMeshShapePartialRefitBVH(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	DKVector3 aabbMin, aabbMax;
-	if (!PyArg_ParseTuple(args, "O&O&", &DCVector3Converter, &aabbMin, &DCVector3Converter, &aabbMax))
-		return NULL;
-
-	self->shape->PartialRefitBvh(DKAabb(aabbMin, aabbMax));
-	Py_RETURN_NONE;
-}
-
 static PyObject* DCStaticTriangleMeshShapeMeshAABB(DCStaticTriangleMeshShape* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->shape, NULL);
@@ -106,114 +82,83 @@ static PyObject* DCStaticTriangleMeshShapeMeshAABB(DCStaticTriangleMeshShape* se
 	return Py_BuildValue("NN", DCVector3FromObject(&aabb.positionMin), DCVector3FromObject(&aabb.positionMax));
 }
 
-static PyObject* DCStaticTriangleMeshShapeNumberOfTriangles(DCStaticTriangleMeshShape* self, PyObject*)
+static PyObject* DCStaticTriangleMeshShapeVertexAtIndex(DCStaticTriangleMeshShape* self, PyObject* args)
+{
+	DCOBJECT_VALIDATE(self->shape, NULL);
+	int index;
+	if (!PyArg_ParseTuple(args, "i", &index))
+		return NULL;
+
+	size_t numVerts = self->shape->NumberOfVertices();
+	if (index >= 0 && index < numVerts)
+	{
+		DKVector3 vertex = self->shape->VertexAtIndex(index);
+		return DCVector3FromObject(&vertex);
+	}
+	PyErr_SetString(PyExc_IndexError, "vertex index is out of range.");
+	return NULL;
+}
+
+static PyObject* DCStaticTriangleMeshShapeTriangleAtIndex(DCStaticTriangleMeshShape* self, PyObject* args)
+{
+	DCOBJECT_VALIDATE(self->shape, NULL);
+	int index;
+	if (!PyArg_ParseTuple(args, "i", &index))
+		return NULL;
+
+	size_t numTriangles = self->shape->NumberOfTriangles();
+	if (index >= 0 && index < numTriangles)
+	{
+		DKTriangle triangle = self->shape->TriangleAtIndex(index);
+		return Py_BuildValue("NNN",
+							 DCVector3FromObject(&triangle.position1),
+							 DCVector3FromObject(&triangle.position2),
+							 DCVector3FromObject(&triangle.position3));
+	}
+	PyErr_SetString(PyExc_IndexError, "triangle index is out of range.");
+	return NULL;
+}
+
+
+static PyMethodDef methods[] = {
+	{ "meshAABB", (PyCFunction)&DCStaticTriangleMeshShapeMeshAABB, METH_NOARGS },
+	{ "vertexAtIndex", (PyCFunction)&DCStaticTriangleMeshShapeVertexAtIndex, METH_VARARGS },
+	{ "triangleAtIndex", (PyCFunction)&DCStaticTriangleMeshShapeTriangleAtIndex, METH_VARARGS },
+	{ NULL, NULL, NULL, NULL }  /* Sentinel */
+};
+
+static PyObject* DCStaticTriangleMeshShapeNumberOfVertices(DCStaticTriangleMeshShape* self, void*)
+{
+	DCOBJECT_VALIDATE(self->shape, NULL);
+	return PyLong_FromSize_t(self->shape->NumberOfVertices());
+}
+
+static PyObject* DCStaticTriangleMeshShapeNumberOfIndices(DCStaticTriangleMeshShape* self, void*)
+{
+	DCOBJECT_VALIDATE(self->shape, NULL);
+	return PyLong_FromSize_t(self->shape->NumberOfIndices());
+}
+
+static PyObject* DCStaticTriangleMeshShapeIndexSize(DCStaticTriangleMeshShape* self, void*)
+{
+	DCOBJECT_VALIDATE(self->shape, NULL);
+	return PyLong_FromSize_t(self->shape->IndexSize());
+}
+
+static PyObject* DCStaticTriangleMeshShapeNumberOfTriangles(DCStaticTriangleMeshShape* self, void*)
 {
 	DCOBJECT_VALIDATE(self->shape, NULL);
 	return PyLong_FromSize_t(self->shape->NumberOfTriangles());
 }
 
-static PyObject* DCStaticTriangleMeshShapeGetTriangleVertexIndices(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	int triangle;
-	if (!PyArg_ParseTuple(args, "i", &triangle))
-		return NULL;
-
-	unsigned int index[3];
-	if (self->shape->GetTriangleVertexIndices(triangle, index))
-	{
-		return Py_BuildValue("III", index[0], index[1], index[2]);
-	}
-	PyErr_SetString(PyExc_IndexError, "triangle index is out of range.");
-	return NULL;
-}
-
-static PyObject* DCStaticTriangleMeshShapeGetTriangleFace(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	int index;
-	if (!PyArg_ParseTuple(args, "i", &index))
-		return NULL;
-
-	DKTriangle triangle;
-	if (self->shape->GetTriangleFace(index, triangle))
-	{
-		return Py_BuildValue("NNN",
-			DCVector3FromObject(&triangle.position1),
-			DCVector3FromObject(&triangle.position2),
-			DCVector3FromObject(&triangle.position3));
-	}
-	PyErr_SetString(PyExc_IndexError, "triangle index is out of range.");
-	return NULL;
-}
-
-static PyObject* DCStaticTriangleMeshShapeSetTriangleFace(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	int index;
-	DKTriangle triangle;
-	if (!PyArg_ParseTuple(args, "iO&O&O&", &index,
-		&DCVector3Converter, &triangle.position1,
-		&DCVector3Converter, &triangle.position2,
-		&DCVector3Converter, &triangle.position3))
-		return NULL;
-
-	if (self->shape->SetTriangleFace(index, triangle))
-	{
-		Py_RETURN_NONE;
-	}
-	PyErr_SetString(PyExc_IndexError, "triangle index is out of range.");
-	return NULL;
-}
-
-static PyObject* DCStaticTriangleMeshShapeGetVertex(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	int index;
-	if (!PyArg_ParseTuple(args, "i", &index))
-		return NULL;
-
-	size_t numVerts;
-	DKVector3* verts = self->shape->VertexBuffer(&numVerts);
-	if (index >= 0 && index < numVerts)
-	{
-		return DCVector3FromObject(&verts[index]);
-	}
-	PyErr_SetString(PyExc_IndexError, "vertex index is out of range.");
-	return NULL;
-}
-
-static PyObject* DCStaticTriangleMeshShapeSetVertex(DCStaticTriangleMeshShape* self, PyObject* args)
-{
-	DCOBJECT_VALIDATE(self->shape, NULL);
-	int index;
-	DKVector3 vertex;
-	if (!PyArg_ParseTuple(args, "iO&", &index, &DCVector3Converter, &vertex))
-		return NULL;
-
-	size_t numVerts;
-	DKVector3* verts = self->shape->VertexBuffer(&numVerts);
-	if (index >= 0 && index < numVerts)
-	{
-		verts[index] = vertex;
-		Py_RETURN_NONE;
-	}
-	PyErr_SetString(PyExc_IndexError, "vertex index is out of range.");
-	return NULL;
-}
-
-static PyMethodDef methods[] = {
-	{ "refitBVH", (PyCFunction)&DCStaticTriangleMeshShapeRefitBVH, METH_VARARGS },
-	{ "partialRefitBVH", (PyCFunction)&DCStaticTriangleMeshShapePartialRefitBVH, METH_VARARGS },
-	{ "meshAABB", (PyCFunction)&DCStaticTriangleMeshShapeMeshAABB, METH_NOARGS },
-	{ "numberOfTriangles", (PyCFunction)&DCStaticTriangleMeshShapeNumberOfTriangles, METH_NOARGS },
-	{ "getTriangleVertexIndices", (PyCFunction)&DCStaticTriangleMeshShapeGetTriangleVertexIndices, METH_VARARGS },
-	{ "getTriangleFace", (PyCFunction)&DCStaticTriangleMeshShapeGetTriangleFace, METH_VARARGS },
-	{ "setTriangleFace", (PyCFunction)&DCStaticTriangleMeshShapeSetTriangleFace, METH_VARARGS },
-	{ "getVertex", (PyCFunction)&DCStaticTriangleMeshShapeGetVertex, METH_VARARGS },
-	{ "setVertex", (PyCFunction)&DCStaticTriangleMeshShapeSetVertex, METH_VARARGS },
-	{ NULL, NULL, NULL, NULL }  /* Sentinel */
+static PyGetSetDef getsets[] = {
+	{ "numberOfVertices", (getter)&DCStaticTriangleMeshShapeNumberOfVertices, NULL, 0, 0 },
+	{ "numberOfIndices", (getter)&DCStaticTriangleMeshShapeNumberOfIndices, NULL, 0, 0 },
+	{ "indexSize", (getter)&DCStaticTriangleMeshShapeIndexSize, NULL, 0, 0 },
+	{ "numberOfTriangles", (getter)&DCStaticTriangleMeshShapeNumberOfTriangles, NULL, 0, 0 },
+	{ NULL }  /* Sentinel */
 };
+
 
 static PyTypeObject objectType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
@@ -245,7 +190,7 @@ static PyTypeObject objectType = {
 	0,												/* tp_iternext */
 	methods,										/* tp_methods */
 	0,												/* tp_members */
-	0,												/* tp_getset */
+	getsets,										/* tp_getset */
 	DCConcaveShapeTypeObject(),						/* tp_base */
 	0,												/* tp_dict */
 	0,												/* tp_descr_get */

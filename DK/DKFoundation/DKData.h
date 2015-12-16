@@ -2,7 +2,7 @@
 //  File: DKData.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -39,31 +39,23 @@ namespace DKFoundation
 
 		// StaticData: using DKData with existing buffer,
 		// you can provide cleanup operation which will be invoked on finished.
-		static DKObject<DKData> StaticData(const void* p, size_t len, bool readonly = true, DKOperation* cleanup = NULL);
+		static DKObject<DKData> StaticData(void* p, size_t len, bool readonly, DKOperation* cleanup = NULL);
+		static DKObject<DKData> StaticData(const void* p, size_t len, DKOperation* cleanup = NULL);
 
 		bool WriteToFile(const DKString& file, bool overwrite) const;
 		bool WriteToStream(DKStream* stream) const;
 
 		// shared lock. (read-only)
 		// multiple-threads can be locked with this method simultaneously.
-		const void* LockShared(void) const;
-		bool TryLockShared(const void**) const;
-		void UnlockShared(void) const;
+		virtual const void* LockShared(void) const = 0;
+		virtual bool TryLockShared(const void**) const = 0;
+		virtual void UnlockShared(void) const = 0;
 
 		// exclusive lock. (read-write)
 		// only one thread can be locked.
-		void* LockExclusive(void);
-		bool TryLockExclusive(void**);
-		void UnlockExclusive(void);
-
-	protected:
-		virtual void* LockContent(void) = 0;
-		virtual void UnlockContent(void) = 0;
-		DKSharedLock sharedLock;
-	private:
-		DKSpinLock	spinLock;
-		mutable size_t numShared;
-		mutable const void* sharedPtr;
+		virtual void* LockExclusive(void)		{ return NULL; }
+		virtual bool TryLockExclusive(void**)	{ return false; }
+		virtual void UnlockExclusive(void)		{}
 	};
 
 	// scoped read, write accessor
@@ -104,7 +96,8 @@ namespace DKFoundation
 				return source->Length();
 			return 0;
 		}
-		operator const void* (void)	{return data;}
+		const void* Bytes(void) const		{return data;}
+		operator const void* (void) const	{return data;}
 	private:
 		DKObject<DKData> source;
 		const void* data;
@@ -129,6 +122,7 @@ namespace DKFoundation
 				return source->Length();
 			return 0;
 		}
+		void* Bytes(void) const		{return data;}
 		operator void* (void)		{return data;}
 	private:
 		DKObject<DKData> source;

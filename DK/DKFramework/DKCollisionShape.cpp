@@ -2,7 +2,7 @@
 //  File: DKCollisionShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2012-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletUtils.h"
@@ -304,17 +304,32 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 			case ShapeType::StaticTriangleMesh:
 				{
 					DKStaticTriangleMeshShape* meshShape = static_cast<DKStaticTriangleMeshShape*>(shape);
-					size_t numVertices = 0;
-					size_t numIndices = 0;
-					size_t indexSize = 0;
-					const void* vertices = meshShape->VertexBuffer(&numVertices);
-					const void* indices = meshShape->IndexBuffer(&numIndices, &indexSize);
+					size_t numVertices = meshShape->NumberOfVertices();
+					size_t numIndices = meshShape->NumberOfIndices();
+					size_t indexSize = meshShape->IndexSize();
+					const void* vertices = meshShape->VertexData();
+					const void* indices = meshShape->IndexData();
 					DKAabb aabb = meshShape->Aabb();
 
-					DKVariant::VData& vertsData = pairs.Value(L"vertices").Data();
-					vertsData.SetContent(vertices, numVertices * sizeof(DKVector3));
-					DKVariant::VData& indicesData = pairs.Value(L"indices").Data();
-					indicesData.SetContent(indices, indexSize * numIndices);
+					DKVariant::VStructuredData& vertsData = pairs.Value(L"vertices").StructuredData();
+					vertsData.elementSize = sizeof(DKVector3);
+					vertsData.layout = {
+						DKVariant::StructElem::Arithmetic4,
+						DKVariant::StructElem::Arithmetic4,
+						DKVariant::StructElem::Arithmetic4
+					};
+					vertsData.data.SetContent(vertices, numVertices * sizeof(DKVector3));
+					DKVariant::VStructuredData& indicesData = pairs.Value(L"indices").StructuredData();
+					indicesData.elementSize = meshShape->IndexSize();
+					if (meshShape->IndexSize() == 4)
+					{
+						indicesData.layout = { DKVariant::StructElem::Arithmetic4 };
+					}
+					else
+					{
+						indicesData.layout = { DKVariant::StructElem::Arithmetic2 };
+					}
+					indicesData.data.SetContent(indices, indexSize * numIndices);
 					pairs.Insert(L"indexSize", (DKVariant::VInteger)indexSize);
 					pairs.Insert(L"aabbMin", (const DKVariant::VVector3&)aabb.positionMin);
 					pairs.Insert(L"aabbMax", (const DKVariant::VVector3&)aabb.positionMax);
@@ -534,8 +549,8 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 					auto aabbMin = pairs.Find(L"aabbMin");
 					auto aabbMax = pairs.Find(L"aabbMax");
 					if (vertices && indices &&  indexSize &&
-						vertices->value.ValueType() == DKVariant::TypeData &&
-						indices->value.ValueType() == DKVariant::TypeData &&
+						vertices->value.ValueType() == DKVariant::TypeStructData &&
+						indices->value.ValueType() == DKVariant::TypeStructData &&
 						indexSize->value.ValueType() == DKVariant::TypeInteger)
 					{
 						DKAabb aabb;
@@ -554,16 +569,18 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 						{
 							if (p)
 							{
+								const DKVariant::VStructuredData& vertexData = vertices->value.StructuredData();
+								const DKVariant::VStructuredData& indexData = indices->value.StructuredData();
 								if (idxSize == 4)
 								*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-									(const DKVector3*)vertices->value.Data().LockShared(), numVerts,
-									(const unsigned int*)indices->value.Data().LockShared(), numIndices, aabb, false, 0.0f);
+									(const DKVector3*)vertexData.data.LockShared(), numVerts,
+									(const unsigned int*)indexData.data.LockShared(), numIndices, aabb);
 								else
 									*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-									(const DKVector3*)vertices->value.Data().LockShared(), numVerts,
-									(const unsigned short*)indices->value.Data().LockShared(), numIndices, aabb, false, 0.0f);
-								vertices->value.Data().UnlockShared();
-								indices->value.Data().UnlockShared();
+									(const DKVector3*)vertexData.data.LockShared(), numVerts,
+									(const unsigned short*)indexData.data.LockShared(), numIndices, aabb);
+								vertexData.data.UnlockShared();
+								indexData.data.UnlockShared();
 							}
 							break;
 						}

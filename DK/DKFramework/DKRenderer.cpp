@@ -113,10 +113,10 @@ namespace DKFramework
 			DKGL_GLSL_ES_VERSION
 			"uniform   highp mat4 transform;\n"
 			"attribute highp vec3 position;\n"
-			"attribute lowp  vec4 vcolor;\n"
+			"attribute lowp  vec4 vertColor;\n"
 			"varying   lowp  vec4 color;\n"
 			"void main(void) {\n"
-			"    color = vcolor;\n"
+			"    color = vertColor;\n"
 			"    gl_Position = transform * vec4(position, 1);\n"
 			"}\n",
 			DKShader::TypeVertexShader,
@@ -293,8 +293,8 @@ namespace DKFramework
 
 			// build mesh
 			const DKVertexBuffer::Decl decl[] = {
-					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat2, false, 0 },
-					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false, DKVertexStream::TypeSize(DKVertexStream::TypeFloat2) }
+					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat2, false },
+					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false }
 			};
 
 			DKObject<DKVertexBuffer> vb = DKVertexBuffer::Create(decl, 2, NULL, sizeof(float) * 4, 0, loc, usage);
@@ -339,7 +339,7 @@ namespace DKFramework
 			DKMaterial::SamplerProperty	tex = { DKShaderConstant::UniformUserDefine, DKShaderConstant::TypeSampler2D,
 				fallbackTexture ? DKMaterial::TextureArray(fallbackTexture, 1) : DKMaterial::TextureArray(), NULL };
 
-			material->renderingProperties.Add(GetRenderProperty3D(L"vertexColor", { &vertexShader3TC, 0, &varyingColorFragmentShader }));
+			material->renderingProperties.Add(GetRenderProperty3D(L"vertexColor", { &vertexShader3C, 0, &varyingColorFragmentShader }));
 			material->renderingProperties.Add(GetRenderProperty3D(L"textureColor", { &vertexShader3TC, 0, &varyingColorTextureFragmentShader }));
 
 			material->streamProperties.Insert(L"position", position);
@@ -366,9 +366,9 @@ namespace DKFramework
 
 			// build model
 			const DKVertexBuffer::Decl decl[] = {
-					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat3, false, 0 },
-					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false, sizeof(float) * 3 },
-					{ DKVertexStream::StreamColor, L"", DKVertexStream::TypeFloat4, false, sizeof(float) * 5 }
+					{ DKVertexStream::StreamPosition, L"", DKVertexStream::TypeFloat3, false },
+					{ DKVertexStream::StreamTexCoord, L"", DKVertexStream::TypeFloat2, false },
+					{ DKVertexStream::StreamColor, L"", DKVertexStream::TypeFloat4, false }
 			};
 
 			DKObject<DKVertexBuffer> vb = DKVertexBuffer::Create(decl, 3, NULL, sizeof(float) * 9, 0, loc, usage);
@@ -2163,13 +2163,13 @@ size_t DKRenderer::RenderMesh(const DKMesh* mesh, DKSceneState& st, const DKBlen
 
 					switch (info.indexType)
 					{
-					case DKIndexBuffer::TypeUByte:
+					case DKIndexBuffer::Type::UInt8:
 						numInstancesDrawn = drawCall(primType, info.numIndices, GL_UNSIGNED_BYTE, info.numInstances);
 						break;
-					case DKIndexBuffer::TypeUShort:
+					case DKIndexBuffer::Type::UInt16:
 						numInstancesDrawn = drawCall(primType, info.numIndices, GL_UNSIGNED_SHORT, info.numInstances);
 						break;
-					case DKIndexBuffer::TypeUInt:
+					case DKIndexBuffer::Type::UInt32:
 						numInstancesDrawn = drawCall(primType, info.numIndices, GL_UNSIGNED_INT, info.numInstances);
 						break;
 					}

@@ -2,7 +2,7 @@
 //  File: DKAllocator.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2014 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include "DKObjectRefCounter.h"
@@ -17,7 +17,7 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKAllocator::StaticInitializer init;
+		static DKAllocator::Maintainer init;
 
 		enum {AllocatorTableLength = 977}; // should be prime-number.
 		struct AllocationNode
@@ -31,10 +31,12 @@ namespace DKFoundation
 			typedef DKSpinLock							Lock;
 			typedef DKCriticalSection<Lock>				CriticalSection;
 
+			using Key = void*;
+
 			// use fixed-size allocator.
 			struct Allocator
 			{
-				enum { NodeSize = DKMap<void*, NodeInfo>::NodeSize() };
+				enum { NodeSize = DKMap<Key, NodeInfo>::NodeSize() };
 				enum { Alignment = sizeof(void*) };
 				using FixedAllocator = DKFixedSizeAllocator<NodeSize, Alignment, 1024, Lock>;
 
@@ -49,8 +51,7 @@ namespace DKFoundation
 				}
 			};
 
-			using Key = void*;
-			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparison<Key>, DKMapValueCopy<Key>, Allocator>;
+			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparator<Key>, DKMapValueReplacer<NodeInfo>, Allocator>;
 
 			Lock		lock;
 			Container	container;
@@ -82,8 +83,8 @@ namespace DKFoundation
 
 			AllocationNode& GetAllocationNode(void* ptr)
 			{
-				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
-				static DKAllocator::StaticInitializer init;
+				// Maintainer will initialize AllocationTable (see DKAllocatorChain.cpp)
+				static DKAllocator::Maintainer init;
 
 				AllocationTable* table = AllocationTable::Instance();
 				DKCriticalSection<DKSpinLock> guard(table->lock);
@@ -91,8 +92,8 @@ namespace DKFoundation
 			}
 			DKObjectRefCounter::RefIdValue GenerateRefId(void)
 			{
-				// StaticInitializer will initialize AllocationTable (see DKAllocatorChain.cpp)
-				static DKAllocator::StaticInitializer init;
+				// Maintainer will initialize AllocationTable (see DKAllocatorChain.cpp)
+				static DKAllocator::Maintainer init;
 
 				AllocationTable* table = AllocationTable::Instance();
 				DKCriticalSection<DKSpinLock> guard(table->lock);
@@ -103,7 +104,7 @@ namespace DKFoundation
 			}
 		}
 
-		void CreateAllocationTable(void) // called by StaticInitializer
+		void CreateAllocationTable(void) // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			if (table == NULL)
@@ -112,7 +113,7 @@ namespace DKFoundation
 				AllocationTable::Instance() = table;
 			}
 		}
-		void DestroyAllocationTable(void) // called by StaticInitializer
+		void DestroyAllocationTable(void) // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			AllocationTable::Instance() = NULL;
