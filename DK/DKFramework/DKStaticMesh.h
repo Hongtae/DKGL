@@ -73,11 +73,6 @@ namespace DKFramework
 		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKStaticMesh* Copy(UUIDObjectMap&, const DKStaticMesh*);
 
-		typedef DKFoundation::DKMap<DKVertexStream::Stream, StreamInfo> StreamIdMap;		// predefined-stream id
-		typedef DKFoundation::DKMap<DKFoundation::DKString, StreamInfo> StreamNameMap;		// user-defined stream
-		StreamIdMap		streamIdMap;		// for fast search
-		StreamNameMap	streamNameMap;
-
 		DKFoundation::DKArray<DKFoundation::DKObject<DKVertexBuffer>>	vertexBuffers;
 		DKFoundation::DKObject<DKIndexBuffer>							indexBuffer;
 	};

@@ -250,11 +250,6 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	if (resourceId == 0)
 		glGenBuffers(1, &resourceId);
 
-	if (t == BufferTypeVertexArray)
-		DKOpenGLContext::RenderState().BindVertexBuffer(resourceId);
-	else
-		DKOpenGLContext::RenderState().BindIndexBuffer(resourceId);
-
 	GLenum target = t == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
 	glBindBuffer(target, resourceId);
 	glBufferData(target, size, NULL, usage);		// invalidate current data
@@ -265,6 +260,12 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	resourceLocation = m;
 	resourceUsage = u;
 	resourceSize = size;
+
+	glBindBuffer(target, 0);
+	if (t == BufferTypeVertexArray)
+		DKOpenGLContext::RenderState().BindVertexBuffer(0);
+	else
+		DKOpenGLContext::RenderState().BindIndexBuffer(0);
 
 	return true;
 }
@@ -421,13 +422,12 @@ DKObject<DKSerializer> DKGeometryBuffer::Serializer(void)
 			DKObject<DKBuffer> data = target->CopyContent();
 			if (data)
 			{
-				DKVariant::VStructuredData stData;
+				DKVariant::VStructuredData& stData = v.StructuredData();
+				stData.data = std::move(*data);
 				stData.elementSize = 0;
 				stData.layout.Clear();
 
 				target->StructuredLayout(stData.layout, stData.elementSize);
-				//v.SetData(*data);
-				v.StructuredData() = std::move(stData);
 			}
 		}
 		bool CheckBufferType(const DKVariant& v) const

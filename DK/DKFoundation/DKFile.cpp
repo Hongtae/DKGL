@@ -524,9 +524,10 @@ size_t DKFile::Write(const void* p, size_t s)
 	const char* cp = reinterpret_cast<const char*>(p);
 
 	size_t totalWritten = 0;
-	while (s > 0)
+	while (totalWritten < s)
 	{
-		int toWrite = Min(s, platformMaxSize);
+		size_t remains = s - totalWritten;
+		int toWrite = (int)Min(remains, platformMaxSize);
 #ifdef _WIN32
 		DWORD numWrote = 0;
 		if (::WriteFile((HANDLE)this->file, cp + totalWritten, toWrite, &numWrote, 0) == 0)
@@ -538,7 +539,6 @@ size_t DKFile::Write(const void* p, size_t s)
 		if (numWrote <= 0)
 			break;
 #endif
-		s -= numWrote;
 		totalWritten += numWrote;
 	}
 	return totalWritten;

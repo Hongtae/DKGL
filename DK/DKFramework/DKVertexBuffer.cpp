@@ -320,24 +320,35 @@ bool DKVertexBuffer::BindStream(const DKVertexStream& stream) const
 void DKVertexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
 {
 	elementSize = this->vertexSize;
+	layout.Clear();
 	layout.Reserve(declarations.Count());
 
 	for (const Decl& decl : declarations)
 	{
+		size_t baseSize = DKVertexStream::BaseTypeSize(decl.type);
 		size_t typeSize = DKVertexStream::TypeSize(decl.type);
-		switch (typeSize)
+
+		size_t n = 0;
+
+		switch (baseSize)
 		{
-			case 1:
-			case 2:
-			case 4:
-			case 8:
-				layout.Add( static_cast<DKVariant::StructElem>( typeSize ) );
-				break;
-			default:
-				for (int i = 0; i < typeSize; ++i)
-					layout.Add( DKVariant::StructElem::Bypass1 );
-				break;
-		};
+		case 1:
+		case 2:
+		case 4:
+		case 8:
+			while (n + baseSize <= typeSize)
+			{
+				layout.Add( static_cast<DKVariant::StructElem>( baseSize ) );
+				n += baseSize;
+			}
+			break;
+		}
+
+		while ( n < typeSize)
+		{
+			layout.Add( DKVariant::StructElem::Bypass1 );
+			n++;
+		}
 	}
 }
 

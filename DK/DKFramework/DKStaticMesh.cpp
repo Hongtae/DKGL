@@ -29,8 +29,6 @@ DKStaticMesh* DKStaticMesh::Copy(UUIDObjectMap& uuids, const DKStaticMesh* mesh)
 {
 	if (DKMesh::Copy(uuids, mesh))
 	{
-		this->streamIdMap = mesh->streamIdMap;
-		this->streamNameMap = mesh->streamNameMap;
 		this->vertexBuffers = mesh->vertexBuffers;
 		this->indexBuffer = mesh->indexBuffer;
 		return this;
@@ -65,21 +63,6 @@ bool DKStaticMesh::AddVertexBuffer(DKVertexBuffer* buffer)
 				return false;
 		}
 
-		for (size_t i = 0; i < buffer->NumberOfDeclarations(); ++i)
-		{
-			const DKVertexBuffer::Decl* d = buffer->DeclarationAtIndex(i);
-
-			StreamInfo si = {d, buffer};
-
-			if (d->id < DKVertexStream::StreamUserDefine)
-			{
-				this->streamIdMap.Update(d->id, si);
-			}
-			else
-			{
-				this->streamNameMap.Update(d->name, si);
-			}
-		}
 		this->vertexBuffers.Add(buffer);
 		return true;
 	}
@@ -110,14 +93,6 @@ void DKStaticMesh::RemoveVertexBuffer(const DKVertexBuffer* buffer)
 		DKVertexBuffer* b = vertexBuffers.Value(i);
 		if (b == buffer)
 		{
-			for (size_t j = 0; j < buffer->NumberOfDeclarations(); ++j)
-			{
-				const DKVertexBuffer::Decl* d = buffer->DeclarationAtIndex(j);
-				if (d->id < DKVertexStream::StreamUserDefine)
-					streamIdMap.Remove(d->id);
-				else
-					streamNameMap.Remove(d->name);
-			}
 			vertexBuffers.Remove(i);
 			return;
 		}
@@ -127,8 +102,6 @@ void DKStaticMesh::RemoveVertexBuffer(const DKVertexBuffer* buffer)
 void DKStaticMesh::RemoveAllVertexBuffers(void)
 {
 	vertexBuffers.Clear();
-	streamIdMap.Clear();
-	streamNameMap.Clear();
 }
 
 void DKStaticMesh::SetIndexBuffer(DKIndexBuffer* buffer)

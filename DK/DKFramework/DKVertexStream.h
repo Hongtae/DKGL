@@ -101,6 +101,38 @@ namespace DKFramework
 			}
 			return 0;
 		}
+		static size_t BaseTypeSize(Type t)
+		{
+			switch (t)
+			{
+				case TypeFloat1:		
+				case TypeFloat2:		
+				case TypeFloat3:		
+				case TypeFloat4:		
+				case TypeFloat2x2:		
+				case TypeFloat3x3:
+				case TypeFloat4x4:		return sizeof(float);
+				case TypeByte1:			
+				case TypeByte2:			
+				case TypeByte3:			
+				case TypeByte4:			
+				case TypeUByte1:		
+				case TypeUByte2:		
+				case TypeUByte3:		
+				case TypeUByte4:		return sizeof(int8_t);
+				case TypeShort1:
+				case TypeShort2:		
+				case TypeShort3:		
+				case TypeShort4:		
+				case TypeUShort1:		
+				case TypeUShort2:		
+				case TypeUShort3:
+				case TypeUShort4:		return sizeof(int16_t);
+				default:
+					break;
+			}
+			return 0;
+		}
 		static DKFoundation::DKString StreamToString(Stream s)
 		{
 			switch (s)

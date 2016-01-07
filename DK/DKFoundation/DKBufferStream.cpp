@@ -127,7 +127,8 @@ size_t DKBufferStream::Write(const void* p, size_t s)
 				data2->UnlockExclusive();
 				this->data->UnlockShared();
 
-				this->data->SetContent(data2);
+				//this->data->SetContent(data2);
+				this->data = data2;
 			}
 			else
 			{

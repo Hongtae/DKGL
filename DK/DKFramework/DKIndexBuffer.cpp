@@ -22,7 +22,7 @@ DKIndexBuffer::~DKIndexBuffer(void)
 {
 }
 
-DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned char* indices, size_t count, DKPrimitive::Type p, MemoryLocation m, BufferUsage u)
+DKObject<DKIndexBuffer> DKIndexBuffer::Create(const uint8_t* indices, size_t count, DKPrimitive::Type p, MemoryLocation m, BufferUsage u)
 {
 	DKObject<DKIndexBuffer> buffer = DKObject<DKIndexBuffer>::New();
 	if (buffer->UpdateContent(BufferTypeElementArray, m, u, indices, count))
@@ -35,7 +35,7 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned char* indices, size
 	return NULL;
 }
 
-DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned short* indices, size_t count, DKPrimitive::Type p, MemoryLocation m, BufferUsage u)
+DKObject<DKIndexBuffer> DKIndexBuffer::Create(const uint16_t* indices, size_t count, DKPrimitive::Type p, MemoryLocation m, BufferUsage u)
 {
 	DKObject<DKIndexBuffer> buffer = DKObject<DKIndexBuffer>::New();
 	if (buffer->UpdateContent(BufferTypeElementArray, m, u, indices, count * 2))
@@ -48,7 +48,7 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned short* indices, siz
 	return NULL;
 }
 
-DKObject<DKIndexBuffer> DKIndexBuffer::Create(const unsigned int* indices, size_t count, DKPrimitive::Type p, MemoryLocation m, BufferUsage u)
+DKObject<DKIndexBuffer> DKIndexBuffer::Create(const uint32_t* indices, size_t count, DKPrimitive::Type p, MemoryLocation m, BufferUsage u)
 {
 	DKObject<DKIndexBuffer> buffer = DKObject<DKIndexBuffer>::New();
 	if (buffer->UpdateContent(BufferTypeElementArray, m, u, indices, count * 4))
@@ -66,19 +66,19 @@ DKObject<DKIndexBuffer> DKIndexBuffer::Create(const void* buffer, Type indexType
 	switch (indexType)
 	{
 	case Type::UInt8:
-		return Create(reinterpret_cast<const unsigned char*>(buffer), count, p, m, u);
+		return Create(reinterpret_cast<const uint8_t*>(buffer), count, p, m, u);
 		break;
 	case Type::UInt16:
-		return Create(reinterpret_cast<const unsigned short*>(buffer), count, p, m, u);
+		return Create(reinterpret_cast<const uint16_t*>(buffer), count, p, m, u);
 		break;
 	case Type::UInt32:
-		return Create(reinterpret_cast<const unsigned int*>(buffer), count, p, m, u);
+		return Create(reinterpret_cast<const uint32_t*>(buffer), count, p, m, u);
 		break;
 	}
 	return NULL;
 }
 
-bool DKIndexBuffer::CopyIndices(DKArray<unsigned int>& indices) const
+bool DKIndexBuffer::CopyIndices(DKArray<uint32_t>& indices) const
 {
 	if (IsValid())
 	{

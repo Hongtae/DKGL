@@ -2200,6 +2200,9 @@ DKVariant& DKVariant::SetValue(const DKVariant& v)
 	case TypeData:
 		this->Data() = v.Data();
 		break;
+	case TypeStructData:
+		this->StructuredData() = v.StructuredData();
+		break;
 	case TypeArray:
 		this->Array() = v.Array();
 		break;
@@ -2256,14 +2259,46 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 		case TypeData:
 			if (this->Data().Length() == v.Data().Length())
 			{
-				size_t count = this->Data().Length();
+				size_t length = this->Data().Length();
 				const void* ptr1 = this->Data().LockShared();
 				const void* ptr2 = v.Data().LockShared();
 
-				result = memcmp(ptr1, ptr2, count) == 0;
+				result = memcmp(ptr1, ptr2, length) == 0;
 
 				this->Data().UnlockShared();
 				v.Data().UnlockShared();
+			}
+			break;
+		case TypeStructData:
+			if (true)
+			{
+				const VStructuredData& s1 = this->StructuredData();
+				const VStructuredData& s2 = v.StructuredData();
+				if (s1.elementSize == s2.elementSize &&
+					s1.layout.Count() == s2.layout.Count() &&
+					s1.data.Length() == s2.data.Length())
+				{
+					result = true;
+					for (size_t i = 0; i < s1.layout.Count(); ++i)
+					{
+						if (s1.layout.Value(i) != s2.layout.Value(i))
+						{
+							result = false;
+							break;
+						}
+					}
+					if (result)
+					{
+						size_t length = s1.data.Length();
+						const void* ptr1 = s1.data.LockShared();
+						const void* ptr2 = s2.data.LockShared();
+
+						result = memcmp(ptr1, ptr2, length) == 0;
+
+						s1.data.UnlockShared();
+						s2.data.UnlockShared();
+					}
+				}
 			}
 			break;
 		case TypeArray:
