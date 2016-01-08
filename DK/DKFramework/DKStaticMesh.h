@@ -2,7 +2,7 @@
 //  File: DKStaticMesh.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -18,17 +18,12 @@
 // this class can have multiple vertex buffers.
 // and buffers can be separated or interleaved.
 //
-// Note:
-//    On OpenGL ES, following features are not available.
-//      - copy buffer data from buffer.
-//      - make separated or interleaved.
-//      - modify stream
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
 {
 	class DKGL_API DKStaticMesh : public DKMesh
-	{	
+	{
 	public:
 		struct StreamInfo
 		{
@@ -72,11 +67,6 @@ namespace DKFramework
 
 		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKStaticMesh* Copy(UUIDObjectMap&, const DKStaticMesh*);
-
-		typedef DKFoundation::DKMap<DKVertexStream::Stream, StreamInfo> StreamIdMap;		// predefined-stream id
-		typedef DKFoundation::DKMap<DKFoundation::DKString, StreamInfo> StreamNameMap;		// user-defined stream
-		StreamIdMap		streamIdMap;		// for fast search
-		StreamNameMap	streamNameMap;
 
 		DKFoundation::DKArray<DKFoundation::DKObject<DKVertexBuffer>>	vertexBuffers;
 		DKFoundation::DKObject<DKIndexBuffer>							indexBuffer;

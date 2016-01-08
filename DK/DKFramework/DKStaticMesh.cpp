@@ -2,7 +2,7 @@
 //  File: DKStaticMesh.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -29,8 +29,6 @@ DKStaticMesh* DKStaticMesh::Copy(UUIDObjectMap& uuids, const DKStaticMesh* mesh)
 {
 	if (DKMesh::Copy(uuids, mesh))
 	{
-		this->streamIdMap = mesh->streamIdMap;
-		this->streamNameMap = mesh->streamNameMap;
 		this->vertexBuffers = mesh->vertexBuffers;
 		this->indexBuffer = mesh->indexBuffer;
 		return this;
@@ -52,7 +50,7 @@ bool DKStaticMesh::CanAdoptMaterial(const DKMaterial* m) const
 				return false;
 		}
 	}
-	return true;	
+	return true;
 }
 
 bool DKStaticMesh::AddVertexBuffer(DKVertexBuffer* buffer)
@@ -65,21 +63,6 @@ bool DKStaticMesh::AddVertexBuffer(DKVertexBuffer* buffer)
 				return false;
 		}
 
-		for (size_t i = 0; i < buffer->NumberOfDeclarations(); ++i)
-		{
-			const DKVertexBuffer::Decl* d = buffer->DeclarationAtIndex(i);
-
-			StreamInfo si = {d, buffer};
-
-			if (d->id < DKVertexStream::StreamUserDefine)
-			{
-				this->streamIdMap.Update(d->id, si);
-			}
-			else
-			{
-				this->streamNameMap.Update(d->name, si);
-			}
-		}
 		this->vertexBuffers.Add(buffer);
 		return true;
 	}
@@ -110,14 +93,6 @@ void DKStaticMesh::RemoveVertexBuffer(const DKVertexBuffer* buffer)
 		DKVertexBuffer* b = vertexBuffers.Value(i);
 		if (b == buffer)
 		{
-			for (size_t j = 0; j < buffer->NumberOfDeclarations(); ++j)
-			{
-				const DKVertexBuffer::Decl* d = buffer->DeclarationAtIndex(j);
-				if (d->id < DKVertexStream::StreamUserDefine)
-					streamIdMap.Remove(d->id);
-				else
-					streamNameMap.Remove(d->name);
-			}
 			vertexBuffers.Remove(i);
 			return;
 		}
@@ -127,8 +102,6 @@ void DKStaticMesh::RemoveVertexBuffer(const DKVertexBuffer* buffer)
 void DKStaticMesh::RemoveAllVertexBuffers(void)
 {
 	vertexBuffers.Clear();
-	streamIdMap.Clear();
-	streamNameMap.Clear();
 }
 
 void DKStaticMesh::SetIndexBuffer(DKIndexBuffer* buffer)
@@ -165,12 +138,12 @@ DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream s
 			const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
 			if (decl->id == stream)
 			{
-				return { decl, buffer, offset };
+				return{ decl, buffer, offset };
 			}
 			offset += DKVertexStream::TypeSize(decl->type);
 		}
 	}
-	return { NULL, NULL, 0 };
+	return{ NULL, NULL, 0 };
 }
 
 DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(const DKFoundation::DKString& name) const
@@ -184,12 +157,12 @@ DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(const DKFoundation::DKSt
 			const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
 			if (decl->name == name)
 			{
-				return { decl, buffer, offset };
+				return{ decl, buffer, offset };
 			}
 			offset += DKVertexStream::TypeSize(decl->type);
 		}
 	}
-	return { NULL, NULL, 0 };
+	return{ NULL, NULL, 0 };
 }
 
 DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
@@ -205,7 +178,7 @@ DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream s
 				const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
 				if (decl->id == stream)
 				{
-					return { decl, buffer, offset };
+					return{ decl, buffer, offset };
 				}
 				offset += DKVertexStream::TypeSize(decl->type);
 			}
@@ -221,13 +194,13 @@ DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream s
 				const DKVertexBuffer::Decl* decl = buffer->DeclarationAtIndex(i);
 				if (decl->id == DKVertexStream::StreamUserDefine && decl->name == name)
 				{
-					return { decl, buffer, offset };
+					return{ decl, buffer, offset };
 				}
 				offset += DKVertexStream::TypeSize(decl->type);
 			}
 		}
 	}
-	return { NULL, NULL, 0 };
+	return{ NULL, NULL, 0 };
 }
 
 bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVertexBuffer::BufferUsage usage)
@@ -277,7 +250,7 @@ bool DKStaticMesh::MakeInterleaved(DKVertexBuffer::MemoryLocation location, DKVe
 		{
 			for (int k = 0; k < vertexCount; k++)
 			{
-				memcpy(&pDst[k * vertexSize + offset], &pSrc[k * pVB->VertexSize()], pVB->VertexSize()); 
+				memcpy(&pDst[k * vertexSize + offset], &pSrc[k * pVB->VertexSize()], pVB->VertexSize());
 			}
 			pVB->Unlock();
 		}
@@ -331,7 +304,7 @@ bool DKStaticMesh::MakeSeparated(DKVertexBuffer::MemoryLocation location, DKVert
 				DKLog("[%s] failed to copy stream.\n", DKGL_FUNCTION_NAME);
 				return false;
 			}
-			DKVertexBuffer::Decl d = {decl.id, decl.name, decl.type, decl.normalize };
+			DKVertexBuffer::Decl d = { decl.id, decl.name, decl.type, decl.normalize };
 			DKObject<DKVertexBuffer> newBuffer = DKVertexBuffer::Create(&d, 1, buffer->LockShared(), DKVertexStream::TypeSize(d.type), pVB->NumberOfVertices(), location, usage);
 			buffer->UnlockShared();
 
@@ -403,7 +376,7 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 	}
 	else	// buffer not exists, create new one
 	{
-		DKVertexBuffer::Decl d = {stream, name, type, normalize };
+		DKVertexBuffer::Decl d = { stream, name, type, normalize };
 		DKObject<DKVertexBuffer> newBuffer = DKVertexBuffer::Create(&d, 1, data, vertexSize, vertexCount, location, usage);
 		if (newBuffer)
 		{

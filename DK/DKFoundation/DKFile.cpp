@@ -2,7 +2,7 @@
 //  File: DKFile.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <fcntl.h>
@@ -36,7 +36,7 @@ namespace DKFoundation
 			// error!
 			LPVOID lpMsgBuf;
 			::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-							 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR) &lpMsgBuf, 0, NULL );
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
 
 			ret = (const wchar_t*)lpMsgBuf;
 			::LocalFree(lpMsgBuf);
@@ -137,12 +137,12 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 		f->file = (intptr_t)hFile;
 		f->modeOpen = mod;
 		f->modeShare = share;
-		DKASSERT_DEBUG(hFile == (HANDLE)f->file);		
+		DKASSERT_DEBUG(hFile == (HANDLE)f->file);
 		return f;
 	}
 	else
 	{
-		DKLog("CreateFile(%ls) failed:%ls\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(::GetLastError()));	
+		DKLog("CreateFile(%ls) failed:%ls\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(::GetLastError()));
 	}
 #else
 	int nOpenMode = 0;
@@ -207,7 +207,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 					// ERROR!
 					if (::close(fd) != 0)
 						DKLog("close failed:%s\n", strerror(errno));
-					
+
 					fd = -1;
 				}
 			}
@@ -216,7 +216,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 		{
 			DKLog("open(%s) failed:%s\n", (const char*)filenameUTF8, strerror(errno));
 		}
-		
+
 		if (fd != -1)
 		{
 			DKObject<DKFile> f = DKObject<DKFile>::New();
@@ -224,7 +224,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 			f->file = fd;
 			f->modeOpen = mod;
 			f->modeShare = share;
-			DKASSERT_DEBUG(fd == (ptrdiff_t)f->file);			
+			DKASSERT_DEBUG(fd == (ptrdiff_t)f->file);
 			return f;
 		}
 	}
@@ -235,86 +235,86 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 DKObject<DKFile> DKFile::CreateTemporary(void)
 {
 #ifdef _WIN32
-		DKString tmpPath = DKTemporaryDirectory();
-		HANDLE hFile = INVALID_HANDLE_VALUE;
-		while (hFile == INVALID_HANDLE_VALUE)
-		{
-			DKString filePath = tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String());
+	DKString tmpPath = DKTemporaryDirectory();
+	HANDLE hFile = INVALID_HANDLE_VALUE;
+	while (hFile == INVALID_HANDLE_VALUE)
+	{
+		DKString filePath = tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String());
 
-			hFile = ::CreateFileW((const wchar_t*)filePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW,
-				FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_FLAG_DELETE_ON_CLOSE, 
-				NULL);
-			if (hFile == INVALID_HANDLE_VALUE)
-			{
-				DWORD err = ::GetLastError();
-				if (err != ERROR_FILE_EXISTS)
-				{
-					DKLog("CreateFile(%ls) failed:%s\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(err));
-					break;
-				}
-			}
-			else
-			{
-				DKLog("DKFile::CreateTemporary file:%ls created.\n", (const wchar_t*)filePath);
-				DKObject<DKFile> f = DKObject<DKFile>::New();
-				f->path = filePath;
-				f->file = (intptr_t)hFile;
-				f->modeOpen = ModeOpenCreate;
-				f->modeShare = ModeShareExclusive;
-				DKASSERT_DEBUG(hFile == (HANDLE)f->file);	
-				return f;
-			}
-		}
-#else
-		DKString tmpPath = DKTemporaryDirectory();
-		DKStringU8 filePath = "";
-		int fd = -1;
-		while (fd == -1)
+		hFile = ::CreateFileW((const wchar_t*)filePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW,
+			FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_FLAG_DELETE_ON_CLOSE,
+			NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
 		{
-			filePath = DKStringU8(tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String()));
-			if (filePath.Length() == 0)
+			DWORD err = ::GetLastError();
+			if (err != ERROR_FILE_EXISTS)
 			{
-				DKLog("cannot create temp file!\n");
+				DKLog("CreateFile(%ls) failed:%s\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(err));
 				break;
 			}
+		}
+		else
+		{
+			DKLog("DKFile::CreateTemporary file:%ls created.\n", (const wchar_t*)filePath);
+			DKObject<DKFile> f = DKObject<DKFile>::New();
+			f->path = filePath;
+			f->file = (intptr_t)hFile;
+			f->modeOpen = ModeOpenCreate;
+			f->modeShare = ModeShareExclusive;
+			DKASSERT_DEBUG(hFile == (HANDLE)f->file);
+			return f;
+		}
+	}
+#else
+	DKString tmpPath = DKTemporaryDirectory();
+	DKStringU8 filePath = "";
+	int fd = -1;
+	while (fd == -1)
+	{
+		filePath = DKStringU8(tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String()));
+		if (filePath.Length() == 0)
+		{
+			DKLog("cannot create temp file!\n");
+			break;
+		}
 
 #ifdef O_EXLOCK
-			fd = ::open((const char*)filePath, O_RDWR|O_CREAT|O_EXCL|O_EXLOCK);
+		fd = ::open((const char*)filePath, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK);
 #else
-			fd = ::open((const char*)filePath, O_RDWR|O_CREAT|O_EXCL);
-			if (fd != -1)
-				flock(fd, LOCK_EX);
+		fd = ::open((const char*)filePath, O_RDWR | O_CREAT | O_EXCL);
+		if (fd != -1)
+			flock(fd, LOCK_EX);
 #endif
-			if (fd == -1)
-			{
-				int err = errno;
-				DKLog("file open error: %s\n", ::strerror(err));
+		if (fd == -1)
+		{
+			int err = errno;
+			DKLog("file open error: %s\n", ::strerror(err));
 
-				if (err != EEXIST) // stop if not in case of file exists.
-				{
-					break;
-				}
-			}
-			else
+			if (err != EEXIST) // stop if not in case of file exists.
 			{
-				DKLog("DKFile::CreateTemporary file:%s created.\n", (const char*)filePath);
-				if (::unlink((const char*)filePath) == 0)
-				{
-					DKObject<DKFile> f = DKObject<DKFile>::New();
-					f->file = fd;
-					f->path = L"";
-					f->modeOpen = ModeOpenCreate;
-					f->modeShare = ModeShareExclusive;
-					DKASSERT_DEBUG(fd == (ptrdiff_t)f->file);
-					return f;
-				}
-				else
-				{
-					DKLog("unlink(%s) failed: %s\n", (const char*)filePath, strerror(errno));
-				}
 				break;
 			}
 		}
+		else
+		{
+			DKLog("DKFile::CreateTemporary file:%s created.\n", (const char*)filePath);
+			if (::unlink((const char*)filePath) == 0)
+			{
+				DKObject<DKFile> f = DKObject<DKFile>::New();
+				f->file = fd;
+				f->path = L"";
+				f->modeOpen = ModeOpenCreate;
+				f->modeShare = ModeShareExclusive;
+				DKASSERT_DEBUG(fd == (ptrdiff_t)f->file);
+				return f;
+			}
+			else
+			{
+				DKLog("unlink(%s) failed: %s\n", (const char*)filePath, strerror(errno));
+			}
+			break;
+		}
+	}
 #endif
 	return NULL;
 }
@@ -400,7 +400,7 @@ DKObject<DKBuffer> DKFile::Read(size_t s, DKAllocator& alloc) const
 		{
 			int bytesToRead = 0x10000;
 			if (bytesRead + bytesToRead > s)
-				bytesToRead = s - bytesRead;			
+				bytesToRead = s - bytesRead;
 #ifdef _WIN32
 			DWORD numRead = 0;
 			if (::ReadFile((HANDLE)this->file, &tmp[bytesRead], bytesToRead, &numRead, 0) == 0)
@@ -428,7 +428,7 @@ DKObject<DKBuffer> DKFile::Read(size_t s, DKAllocator& alloc) const
 		}
 		else
 		{
-			data->SetContent(0,0);
+			data->SetContent(0, 0);
 		}
 	}
 	return data;
@@ -524,9 +524,10 @@ size_t DKFile::Write(const void* p, size_t s)
 	const char* cp = reinterpret_cast<const char*>(p);
 
 	size_t totalWritten = 0;
-	while (s > 0)
+	while (totalWritten < s)
 	{
-		int toWrite = Min(s, platformMaxSize);
+		size_t remains = s - totalWritten;
+		int toWrite = (int)Min(remains, platformMaxSize);
 #ifdef _WIN32
 		DWORD numWrote = 0;
 		if (::WriteFile((HANDLE)this->file, cp + totalWritten, toWrite, &numWrote, 0) == 0)
@@ -538,7 +539,6 @@ size_t DKFile::Write(const void* p, size_t s)
 		if (numWrote <= 0)
 			break;
 #endif
-		s -= numWrote;
 		totalWritten += numWrote;
 	}
 	return totalWritten;
@@ -644,9 +644,9 @@ bool DKFile::GetInfo(DKFile::FileInfo& info) const
 		wt.ft = fileInfo.ftLastWriteTime;
 
 		info.size = fileSize.QuadPart;
-		info.created = DKDateTime((ct.ns100 / 10) & 1000000LL, (ct.ns100-116444736000000000LL) / 10000000LL);
-		info.lastAccessed = DKDateTime((at.ns100 / 10) & 1000000LL, (at.ns100-116444736000000000LL) / 10000000LL);
-		info.lastModified = DKDateTime((wt.ns100 / 10) & 1000000LL, (wt.ns100-116444736000000000LL) / 10000000LL);
+		info.created = DKDateTime((ct.ns100 / 10) & 1000000LL, (ct.ns100 - 116444736000000000LL) / 10000000LL);
+		info.lastAccessed = DKDateTime((at.ns100 / 10) & 1000000LL, (at.ns100 - 116444736000000000LL) / 10000000LL);
+		info.lastModified = DKDateTime((wt.ns100 / 10) & 1000000LL, (wt.ns100 - 116444736000000000LL) / 10000000LL);
 	}
 	else
 		return false;
@@ -792,12 +792,12 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const						{return length;}
-			virtual bool IsReadable(void) const				{return readable;}
-			virtual bool IsWritable(void) const				{return writable;}
-			virtual bool IsExcutable(void) const			{return false;}
+			size_t Length(void) const { return length; }
+			virtual bool IsReadable(void) const { return readable; }
+			virtual bool IsWritable(void) const { return writable; }
+			virtual bool IsExcutable(void) const { return false; }
 
-			const void* LockShared(void) const				{ lock.LockShared(); return &ptr[offset]; }
+			const void* LockShared(void) const { lock.LockShared(); return &ptr[offset]; }
 			bool TryLockShared(const void** ptr) const
 			{
 				if (lock.TryLockShared())
@@ -808,9 +808,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const					{ lock.UnlockShared(); }
+			void UnlockShared(void) const { lock.UnlockShared(); }
 
-			void* LockExclusive(void)						{ lock.Lock(); return &ptr[offset]; }
+			void* LockExclusive(void) { lock.Lock(); return &ptr[offset]; }
 			bool TryLockExclusive(void** ptr)
 			{
 				if (lock.TryLock())
@@ -821,7 +821,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void)						{ lock.Unlock(); }
+			void UnlockExclusive(void) { lock.Unlock(); }
 
 			size_t length;
 			size_t offset;
@@ -894,12 +894,12 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const						{return length;}
-			bool IsReadable(void) const						{return (prot & PROT_READ) != 0;}
-			bool IsWritable(void) const						{return (prot & PROT_WRITE) != 0;}
-			bool IsExcutable(void) const					{return false;}
+			size_t Length(void) const { return length; }
+			bool IsReadable(void) const { return (prot & PROT_READ) != 0; }
+			bool IsWritable(void) const { return (prot & PROT_WRITE) != 0; }
+			bool IsExcutable(void) const { return false; }
 
-			const void* LockShared(void) const				{ lock.LockShared(); return &ptr[offset]; }
+			const void* LockShared(void) const { lock.LockShared(); return &ptr[offset]; }
 			bool TryLockShared(const void** ptr) const
 			{
 				if (lock.TryLockShared())
@@ -910,9 +910,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const					{ lock.UnlockShared(); }
+			void UnlockShared(void) const { lock.UnlockShared(); }
 
-			void* LockExclusive(void)						{ lock.Lock(); return &ptr[offset]; }
+			void* LockExclusive(void) { lock.Lock(); return &ptr[offset]; }
 			bool TryLockExclusive(void** ptr)
 			{
 				if (lock.TryLock())
@@ -923,7 +923,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void)		{ lock.Unlock(); }
+			void UnlockExclusive(void) { lock.Unlock(); }
 
 			int prot;
 			size_t length;
@@ -942,8 +942,8 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 		DKASSERT_DEBUG(pageSize > 0);
 		size_t mapOffset = offset & ~(pageSize - 1);
 		DKASSERT_DEBUG(offset >= mapOffset);
-		
-		void* p = ::mmap(0, length + (offset - mapOffset), prot, MAP_FILE|MAP_SHARED, (int)this->file, mapOffset);
+
+		void* p = ::mmap(0, length + (offset - mapOffset), prot, MAP_FILE | MAP_SHARED, (int)this->file, mapOffset);
 		if (p == MAP_FAILED)
 		{
 			DKLog("mmap failed:%s\n", strerror(errno));

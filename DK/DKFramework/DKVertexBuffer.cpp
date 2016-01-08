@@ -2,7 +2,7 @@
 //  File: DKVertexBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -30,7 +30,7 @@ DKObject<DKVertexBuffer> DKVertexBuffer::Create(const Decl* decls, size_t declCo
 
 	if (decls == NULL || declCount == 0 || size == 0)
 		return NULL;
-	
+
 	DKSet<DKString> userDefineNames;
 	DKSet<DKVertexStream::Stream> streamSet;
 
@@ -320,24 +320,35 @@ bool DKVertexBuffer::BindStream(const DKVertexStream& stream) const
 void DKVertexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
 {
 	elementSize = this->vertexSize;
+	layout.Clear();
 	layout.Reserve(declarations.Count());
 
 	for (const Decl& decl : declarations)
 	{
+		size_t baseSize = DKVertexStream::BaseTypeSize(decl.type);
 		size_t typeSize = DKVertexStream::TypeSize(decl.type);
-		switch (typeSize)
+
+		size_t n = 0;
+
+		switch (baseSize)
 		{
-			case 1:
-			case 2:
-			case 4:
-			case 8:
-				layout.Add( static_cast<DKVariant::StructElem>( typeSize ) );
-				break;
-			default:
-				for (int i = 0; i < typeSize; ++i)
-					layout.Add( DKVariant::StructElem::Bypass1 );
-				break;
-		};
+		case 1:
+		case 2:
+		case 4:
+		case 8:
+			while (n + baseSize <= typeSize)
+			{
+				layout.Add(static_cast<DKVariant::StructElem>(baseSize));
+				n += baseSize;
+			}
+			break;
+		}
+
+		while (n < typeSize)
+		{
+			layout.Add(DKVariant::StructElem::Bypass1);
+			n++;
+		}
 	}
 }
 
@@ -394,7 +405,7 @@ DKObject<DKSerializer> DKVertexBuffer::Serializer(void)
 		void SetDecl(DKVariant& v)
 		{
 			target->declarations.Clear();
-			
+
 			for (const DKVariant& declMap : v.Array())
 			{
 				if (declMap.ValueType() == DKVariant::TypePairs)

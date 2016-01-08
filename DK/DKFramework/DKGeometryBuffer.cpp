@@ -2,7 +2,7 @@
 //  File: DKGeometryBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenGL.h"
@@ -14,8 +14,8 @@ using namespace DKFramework;
 
 
 DKGeometryBuffer::DKGeometryBuffer(void)
-: resourceId(0)
-, resourceSize(0)
+	: resourceId(0)
+	, resourceSize(0)
 {
 }
 
@@ -42,7 +42,7 @@ bool DKGeometryBuffer::IsValid(void) const
 		return false;
 
 #ifdef DKGL_DEBUG_ENABLED
-		return glIsBuffer(resourceId) == GL_TRUE;
+	return glIsBuffer(resourceId) == GL_TRUE;
 #endif
 	return true;
 }
@@ -115,12 +115,12 @@ bool DKGeometryBuffer::IsLocked(AccessMode* lock) const
 
 			switch (access)
 			{
-				case GL_READ_ONLY:	*lock = AccessModeReadOnly;		break;
-				case GL_WRITE_ONLY:	*lock = AccessModeWriteOnly;	break;
-				case GL_READ_WRITE:	*lock = AccessModeReadWrite;	break;
-				default:
-					DKLog("[%s] Unsupported buffer access.\n", DKGL_FUNCTION_NAME);
-					break;
+			case GL_READ_ONLY:	*lock = AccessModeReadOnly;		break;
+			case GL_WRITE_ONLY:	*lock = AccessModeWriteOnly;	break;
+			case GL_READ_WRITE:	*lock = AccessModeReadWrite;	break;
+			default:
+				DKLog("[%s] Unsupported buffer access.\n", DKGL_FUNCTION_NAME);
+				break;
 			}
 #endif
 		}
@@ -159,13 +159,13 @@ void* DKGeometryBuffer::Lock(AccessMode lock)
 	switch (lock)
 	{
 #ifdef DKGL_OPENGL_ES
-		case AccessModeReadOnly:	access = GL_MAP_READ_BIT;					break;
-		case AccessModeWriteOnly:	access = GL_MAP_WRITE_BIT;					break;
-		case AccessModeReadWrite:	access = GL_MAP_READ_BIT|GL_MAP_WRITE_BIT;	break;
+	case AccessModeReadOnly:	access = GL_MAP_READ_BIT;					break;
+	case AccessModeWriteOnly:	access = GL_MAP_WRITE_BIT;					break;
+	case AccessModeReadWrite:	access = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT;	break;
 #else
-		case AccessModeReadOnly:	access = GL_READ_ONLY;	break;
-		case AccessModeWriteOnly:	access = GL_WRITE_ONLY;	break;
-		case AccessModeReadWrite:	access = GL_READ_WRITE;	break;
+	case AccessModeReadOnly:	access = GL_READ_ONLY;	break;
+	case AccessModeWriteOnly:	access = GL_WRITE_ONLY;	break;
+	case AccessModeReadWrite:	access = GL_READ_WRITE;	break;
 #endif
 	default:
 		DKLog("[%s] Unsupported buffer access.\n", DKGL_FUNCTION_NAME);
@@ -250,21 +250,22 @@ bool DKGeometryBuffer::UpdateContent(BufferType t, MemoryLocation m, BufferUsage
 	if (resourceId == 0)
 		glGenBuffers(1, &resourceId);
 
-	if (t == BufferTypeVertexArray)
-		DKOpenGLContext::RenderState().BindVertexBuffer(resourceId);
-	else
-		DKOpenGLContext::RenderState().BindIndexBuffer(resourceId);
-
 	GLenum target = t == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
 	glBindBuffer(target, resourceId);
 	glBufferData(target, size, NULL, usage);		// invalidate current data
 	if (data && size > 0)
 		glBufferData(target, size, data, usage);	// upload new data
-	
+
 	resourceType = t;
 	resourceLocation = m;
 	resourceUsage = u;
 	resourceSize = size;
+
+	glBindBuffer(target, 0);
+	if (t == BufferTypeVertexArray)
+		DKOpenGLContext::RenderState().BindVertexBuffer(0);
+	else
+		DKOpenGLContext::RenderState().BindIndexBuffer(0);
 
 	return true;
 }
@@ -283,7 +284,7 @@ bool DKGeometryBuffer::UpdateSubContent(const void* data, size_t offset, size_t 
 
 	GLenum target = resourceType == BufferTypeVertexArray ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
 	glBufferSubData(target, offset, size, data);
-	
+
 	return true;
 }
 
@@ -421,13 +422,12 @@ DKObject<DKSerializer> DKGeometryBuffer::Serializer(void)
 			DKObject<DKBuffer> data = target->CopyContent();
 			if (data)
 			{
-				DKVariant::VStructuredData stData;
+				DKVariant::VStructuredData& stData = v.StructuredData();
+				stData.data = std::move(*data);
 				stData.elementSize = 0;
 				stData.layout.Clear();
 
 				target->StructuredLayout(stData.layout, stData.elementSize);
-				//v.SetData(*data);
-				v.StructuredData() = std::move(stData);
 			}
 		}
 		bool CheckBufferType(const DKVariant& v) const

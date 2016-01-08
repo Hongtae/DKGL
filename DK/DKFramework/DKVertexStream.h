@@ -2,7 +2,7 @@
 //  File: DKVertexStream.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -73,29 +73,64 @@ namespace DKFramework
 		{
 			switch (t)
 			{
-			case TypeFloat1:		return sizeof(float)*1;
-			case TypeFloat2:		return sizeof(float)*2;
-			case TypeFloat3:		return sizeof(float)*3;
-			case TypeFloat4:		return sizeof(float)*4;
-			case TypeFloat2x2:		return sizeof(float)*4;
-			case TypeFloat3x3:		return sizeof(float)*9;
-			case TypeFloat4x4:		return sizeof(float)*16;
-			case TypeByte1:			return sizeof(char)*1;
-			case TypeByte2:			return sizeof(char)*2;
-			case TypeByte3:			return sizeof(char)*3;
-			case TypeByte4:			return sizeof(char)*4;
-			case TypeUByte1:		return sizeof(unsigned char)*1;
-			case TypeUByte2:		return sizeof(unsigned char)*2;
-			case TypeUByte3:		return sizeof(unsigned char)*3;
-			case TypeUByte4:		return sizeof(unsigned char)*4;
-			case TypeShort1:		return sizeof(short)*1;
-			case TypeShort2:		return sizeof(short)*2;
-			case TypeShort3:		return sizeof(short)*3;
-			case TypeShort4:		return sizeof(short)*4;
-			case TypeUShort1:		return sizeof(unsigned short)*1;
-			case TypeUShort2:		return sizeof(unsigned short)*2;
-			case TypeUShort3:		return sizeof(unsigned short)*3;
-			case TypeUShort4:		return sizeof(unsigned short)*4;
+			case TypeFloat1:		return sizeof(float) * 1;
+			case TypeFloat2:		return sizeof(float) * 2;
+			case TypeFloat3:		return sizeof(float) * 3;
+			case TypeFloat4:		return sizeof(float) * 4;
+			case TypeFloat2x2:		return sizeof(float) * 4;
+			case TypeFloat3x3:		return sizeof(float) * 9;
+			case TypeFloat4x4:		return sizeof(float) * 16;
+			case TypeByte1:			return sizeof(char) * 1;
+			case TypeByte2:			return sizeof(char) * 2;
+			case TypeByte3:			return sizeof(char) * 3;
+			case TypeByte4:			return sizeof(char) * 4;
+			case TypeUByte1:		return sizeof(unsigned char) * 1;
+			case TypeUByte2:		return sizeof(unsigned char) * 2;
+			case TypeUByte3:		return sizeof(unsigned char) * 3;
+			case TypeUByte4:		return sizeof(unsigned char) * 4;
+			case TypeShort1:		return sizeof(short) * 1;
+			case TypeShort2:		return sizeof(short) * 2;
+			case TypeShort3:		return sizeof(short) * 3;
+			case TypeShort4:		return sizeof(short) * 4;
+			case TypeUShort1:		return sizeof(unsigned short) * 1;
+			case TypeUShort2:		return sizeof(unsigned short) * 2;
+			case TypeUShort3:		return sizeof(unsigned short) * 3;
+			case TypeUShort4:		return sizeof(unsigned short) * 4;
+			default:
+				break;
+			}
+			return 0;
+		}
+		static size_t BaseTypeSize(Type t)
+		{
+			switch (t)
+			{
+			case TypeFloat1:
+			case TypeFloat2:
+			case TypeFloat3:
+			case TypeFloat4:
+			case TypeFloat2x2:
+			case TypeFloat3x3:
+			case TypeFloat4x4:
+				return sizeof(float);
+			case TypeByte1:
+			case TypeByte2:
+			case TypeByte3:
+			case TypeByte4:
+			case TypeUByte1:
+			case TypeUByte2:
+			case TypeUByte3:
+			case TypeUByte4:
+				return sizeof(int8_t);
+			case TypeShort1:
+			case TypeShort2:
+			case TypeShort3:
+			case TypeShort4:
+			case TypeUShort1:
+			case TypeUShort2:
+			case TypeUShort3:
+			case TypeUShort4:
+				return sizeof(int16_t);
 			default:
 				break;
 			}
@@ -121,15 +156,15 @@ namespace DKFramework
 		}
 		static Stream StringToStream(const DKFoundation::DKString& str)
 		{
-					if (!str.CompareNoCase(StreamToString(StreamPosition)))			return StreamPosition;
-			else	if (!str.CompareNoCase(StreamToString(StreamNormal)))			return StreamNormal;
-			else	if (!str.CompareNoCase(StreamToString(StreamColor)))			return StreamColor;
-			else	if (!str.CompareNoCase(StreamToString(StreamTexCoord)))			return StreamTexCoord;
-			else	if (!str.CompareNoCase(StreamToString(StreamTangent)))			return StreamTangent;
-			else	if (!str.CompareNoCase(StreamToString(StreamBitangent)))		return StreamBitangent;
-			else	if (!str.CompareNoCase(StreamToString(StreamBlendIndices)))		return StreamBlendIndices;
-			else	if (!str.CompareNoCase(StreamToString(StreamBlendWeights)))		return StreamBlendWeights;
-			else	if (!str.CompareNoCase(StreamToString(StreamUserDefine)))		return StreamUserDefine;
+			if (!str.CompareNoCase(StreamToString(StreamPosition)))				return StreamPosition;
+			else if (!str.CompareNoCase(StreamToString(StreamNormal)))			return StreamNormal;
+			else if (!str.CompareNoCase(StreamToString(StreamColor)))			return StreamColor;
+			else if (!str.CompareNoCase(StreamToString(StreamTexCoord)))		return StreamTexCoord;
+			else if (!str.CompareNoCase(StreamToString(StreamTangent)))			return StreamTangent;
+			else if (!str.CompareNoCase(StreamToString(StreamBitangent)))		return StreamBitangent;
+			else if (!str.CompareNoCase(StreamToString(StreamBlendIndices)))	return StreamBlendIndices;
+			else if (!str.CompareNoCase(StreamToString(StreamBlendWeights)))	return StreamBlendWeights;
+			else if (!str.CompareNoCase(StreamToString(StreamUserDefine)))		return StreamUserDefine;
 			return StreamUnknown;
 		}
 		static DKFoundation::DKString TypeToString(Type t)
@@ -166,7 +201,7 @@ namespace DKFramework
 		}
 		static Type StringToType(const DKFoundation::DKString& str)
 		{
-			if		(!str.CompareNoCase(TypeToString(TypeFloat1)))		return TypeFloat1;
+			if (!str.CompareNoCase(TypeToString(TypeFloat1)))			return TypeFloat1;
 			else if (!str.CompareNoCase(TypeToString(TypeFloat2)))		return TypeFloat2;
 			else if (!str.CompareNoCase(TypeToString(TypeFloat3)))		return TypeFloat3;
 			else if (!str.CompareNoCase(TypeToString(TypeFloat4)))		return TypeFloat4;

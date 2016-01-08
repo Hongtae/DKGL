@@ -2,7 +2,7 @@
 //  File: DKVariant.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKVariant.h"
@@ -116,9 +116,9 @@ namespace DKFramework
 		}
 		static bool ConvertStructuredDataByteOrder(VStructuredData& sd, DKByteOrder bo)
 		{
-			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.layout.Count() > 0)
+			size_t len = sd.data.Length();
+			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.elementSize <= len && sd.layout.Count() > 0)
 			{
-				size_t len = sd.data.Length();
 				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data.LockExclusive());
 				if (p)
 				{
@@ -284,7 +284,7 @@ DKVariant::DKVariant(const VData& v)
 }
 
 DKVariant::DKVariant(const VStructuredData& v)
-: valueType(TypeUndefined)
+	: valueType(TypeUndefined)
 {
 	memset(vblock, 0, sizeof(vblock));
 	this->SetStructuredData(v);
@@ -380,7 +380,7 @@ DKVariant& DKVariant::SetValueType(Type t)
 		break;
 	case TypeDateTime:
 		VariantBlock<VDateTime, sizeof(vblock)>::Dealloc(vblock);
-		break;	
+		break;
 	case TypeArray:
 		VariantBlock<VArray, sizeof(vblock)>::Dealloc(vblock);
 		break;
@@ -860,7 +860,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			else if (this->ValueType() == TypeRational)
 			{
 				DKString::IntegerArray intArray = value.ToIntegerArray(L"/");
-				VRational::Integer val[2] = {0LL, 1LL};
+				VRational::Integer val[2] = { 0LL, 1LL };
 				for (size_t i = 0; i < 2 && i < intArray.Count(); ++i)
 					val[i] = intArray.Value(i);
 				this->Rational() = VRational(val[0], val[1]);
@@ -869,7 +869,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			{
 				if (!DKDateTime::GetDateTime(this->DateTime(), value))
 				{
-					this->DateTime() = DKDateTime(0,0);
+					this->DateTime() = DKDateTime(0, 0);
 				}
 			}
 			else if (this->ValueType() == TypeInteger)
@@ -886,21 +886,21 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 				if (this->ValueType() == TypeVector2)
 				{
 					if (floatArray.Count() < 2)
-						this->Vector2() = VVector2(0,0);
+						this->Vector2() = VVector2(0, 0);
 					else
 						this->Vector2() = VVector2(floatArray.Value(0), floatArray.Value(1));
 				}
 				else if (this->ValueType() == TypeVector3)
 				{
 					if (floatArray.Count() < 3)
-						this->Vector3() = VVector3(0,0,0);
+						this->Vector3() = VVector3(0, 0, 0);
 					else
 						this->Vector3() = VVector3(floatArray.Value(0), floatArray.Value(1), floatArray.Value(2));
 				}
 				else if (this->ValueType() == TypeVector4)
 				{
 					if (floatArray.Count() < 4)
-						this->Vector4() = VVector4(0,0,0,0);
+						this->Vector4() = VVector4(0, 0, 0, 0);
 					else
 						this->Vector4() = VVector4(floatArray.Value(0), floatArray.Value(1), floatArray.Value(2), floatArray.Value(3));
 				}
@@ -1172,8 +1172,8 @@ bool DKVariant::ExportStream(DKStream* stream) const
 			struct
 			{
 				int64_t n, d;
-			} r = {this->Rational().Numerator(), this->Rational().Denominator()};
-			
+			} r = { this->Rational().Numerator(), this->Rational().Denominator() };
+
 			if (stream->Write(&r, sizeof(r)) != sizeof(r))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -1265,7 +1265,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
-			}			
+			}
 			for (size_t i = 0; i < a.Count(); ++i)
 			{
 				if (a.Value(i).ExportStream(stream) == false)
@@ -1286,7 +1286,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
-			}			
+			}
 			for (size_t i = 0; i < a.Count(); ++i)
 			{
 				const VPairs::Pair* pair = a.Value(i);
@@ -1341,7 +1341,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 	{
 		errorDesc = L"Invalid stream.";
 		goto FAILED;
-	}		
+	}
 
 	char name[64];
 	if (stream->Read(name, headerLen) != headerLen)
@@ -1382,7 +1382,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 				return this->littleEndian ? DKLittleEndianToSystem(v) : DKBigEndianToSystem(v);
 			}
 			bool littleEndian;
-		} byteorder = {littleEndian};
+		} byteorder = { littleEndian };
 
 		unsigned short v;
 		if (stream->Read(&v, sizeof(v)) != sizeof(v))
@@ -1572,8 +1572,8 @@ bool DKVariant::ImportStream(DKStream* stream)
 				{
 					struct
 					{
-						int64_t n,d;
-					} r = {0LL, 0LL};
+						int64_t n, d;
+					} r = { 0LL, 0LL };
 
 					if (stream->Read(&r, sizeof(r)) != sizeof(r))
 					{
@@ -1616,7 +1616,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					{
 						uint64_t s;
 						uint32_t ms;
-					} dt = {0LL, 0};
+					} dt = { 0LL, 0 };
 
 					if (stream->Read(&dt, sizeof(dt)) != sizeof(dt))
 					{
@@ -2200,6 +2200,9 @@ DKVariant& DKVariant::SetValue(const DKVariant& v)
 	case TypeData:
 		this->Data() = v.Data();
 		break;
+	case TypeStructData:
+		this->StructuredData() = v.StructuredData();
+		break;
 	case TypeArray:
 		this->Array() = v.Array();
 		break;
@@ -2256,14 +2259,46 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 		case TypeData:
 			if (this->Data().Length() == v.Data().Length())
 			{
-				size_t count = this->Data().Length();
+				size_t length = this->Data().Length();
 				const void* ptr1 = this->Data().LockShared();
 				const void* ptr2 = v.Data().LockShared();
 
-				result = memcmp(ptr1, ptr2, count) == 0;
+				result = memcmp(ptr1, ptr2, length) == 0;
 
 				this->Data().UnlockShared();
 				v.Data().UnlockShared();
+			}
+			break;
+		case TypeStructData:
+			if (true)
+			{
+				const VStructuredData& s1 = this->StructuredData();
+				const VStructuredData& s2 = v.StructuredData();
+				if (s1.elementSize == s2.elementSize &&
+					s1.layout.Count() == s2.layout.Count() &&
+					s1.data.Length() == s2.data.Length())
+				{
+					result = true;
+					for (size_t i = 0; i < s1.layout.Count(); ++i)
+					{
+						if (s1.layout.Value(i) != s2.layout.Value(i))
+						{
+							result = false;
+							break;
+						}
+					}
+					if (result)
+					{
+						size_t length = s1.data.Length();
+						const void* ptr1 = s1.data.LockShared();
+						const void* ptr2 = s2.data.LockShared();
+
+						result = memcmp(ptr1, ptr2, length) == 0;
+
+						s1.data.UnlockShared();
+						s2.data.UnlockShared();
+					}
+				}
 			}
 			break;
 		case TypeArray:
@@ -2291,8 +2326,8 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 				pairs1.Reserve(this->Pairs().Count());
 				pairs2.Reserve(v.Pairs().Count());
 
-				this->Pairs().EnumerateForward([&pairs1](const VPairs::Pair& pair){pairs1.Add(&pair);});
-				v.Pairs().EnumerateForward([&pairs2](const VPairs::Pair& pair){pairs2.Add(&pair);});
+				this->Pairs().EnumerateForward([&pairs1](const VPairs::Pair& pair) {pairs1.Add(&pair);});
+				v.Pairs().EnumerateForward([&pairs2](const VPairs::Pair& pair) {pairs2.Add(&pair);});
 
 				if (pairs1.Count() == pairs2.Count())
 				{
