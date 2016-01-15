@@ -235,7 +235,8 @@ void DKBvh::BuildTree(QuantizedAabbNode* leafNodes, int count)
 }
 
 template <typename T>
-FORCEINLINE static bool IsAabbOverlapped(const T(& min1)[3], const T(&min2)[3], const T(&max1)[3], const T(&max2)[3])
+//FORCEINLINE static bool IsAabbOverlapped(const T(& min1)[3], const T(&max1)[3], const T(&min2)[3], const T(&max2)[3])
+FORCEINLINE static bool IsAabbOverlapped(const T* min1, const T* max1, const T* min2, const T* max2)
 {
 	if (min1[0] > max2[0] || max1[0] < min2[0] ||
 		min1[1] > max2[1] || max1[1] < min2[1] ||
