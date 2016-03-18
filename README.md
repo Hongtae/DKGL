@@ -6,9 +6,11 @@ DK is core library for C\++ and PyDK is Python bindings for DK.
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
 This is low level game library written with C\++ and supports full multi-threaded, 64-bits environments.
+DKGL supports [Khronos Vulkan](https://www.khronos.org/vulkan/), [Apple Metal](https://developer.apple.com/metal/), [Microsoft DirectX 12](https://msdn.microsoft.com/en-us/library/windows/desktop/dn903821.aspx)
+
 You can use Python-script to improve productivity.
 
-DK library has following contents with two frameworks layer.
+DK library has two layers of API level.
 ##### DKFoundation - `Foundation Classes, Managing System Tasks.`
 * C\++ Metaprograms (Type Libraries, etc.)
 * Data Collections (Array, Map, Tuples, etc.)
@@ -43,7 +45,7 @@ DK library has following contents with two frameworks layer.
 * Text Font (TTF, PS, etc.)
 * 3D Audio
 * Mathematics (Matrices, Vectors, Quaternion, etc.)
-* OpenGL Context Interface (OpenGL/OpenGL ES)
+* Graphics / Compute Interface (Vulkan, Metal, DirectX12)
 * Resource Management
 * Material and Shader Management
 * Window, Screen Management
@@ -57,11 +59,9 @@ any modifictations that platform dependent.
 You can use DK with other UI Tools also. (MFC, Cocoa, wxWidgets, etc.)
 
 ### Running platforms.
-- Windows Vista or later.
-- Mac OS X 10.9 or later.
-- iOS 7.0 or later. (for OpenGL ES 3.0)
-- ~~Android 4.3 or later~~ (Not yet, I'm working)
-    - JNI birdge required (I'll merge project as soon as possible.)
+- Windows 10 or later. (DirectX 12 Required)
+- Mac OS X 10.11 or later. (Metal Required)
+- iOS 9.0 or later. (Metal Required)
 
 For other platforms including linux or android, You can implement
 DK interfaces to use DK library with other GUI OSes.
@@ -70,11 +70,11 @@ DK interfaces to use DK library with other GUI OSes.
 
 ## Build Environments
 - Visual Studio 2015 for Windows
-- Xcode6 for Mac, iOS
+- Xcode7 for Mac, iOS
 - C\++11 compiler
 
 # PyDK
-Python bindings for DK. (Python 3.4 or later).   
+Python bindings for DK. (Python 3.5 or later).   
 You can build PyDK with or without python interpreter embedded.
 
 ### DK Scripts
