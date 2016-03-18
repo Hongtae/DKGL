@@ -85,8 +85,6 @@ DKAudioDevice::DKAudioDevice(void)
 
 DKAudioDevice::~DKAudioDevice(void)
 {
-	DKCriticalSection<DKSpinLock> section(contextLock);
-
 	if (alcGetCurrentContext() == (ALCcontext*)context)
 		alcMakeContextCurrent(NULL);
 	if (context)

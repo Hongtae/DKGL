@@ -46,7 +46,6 @@ namespace DKFramework
 		DKAudioDevice(const DKAudioDevice&);
 		DKAudioDevice& operator = (const DKAudioDevice&);
 
-		static DKFoundation::DKSpinLock		contextLock;
 		DeviceList							deviceList;
 		void *device;		// OpenAL device
 		void *context;		// OpenAL context
