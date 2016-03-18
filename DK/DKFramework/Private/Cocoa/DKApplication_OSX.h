@@ -10,7 +10,7 @@
 
 #if defined(__APPLE__) && defined(__MACH__)
 
-#import <TargetConditionals.h>
+#include <TargetConditionals.h>
 #if !TARGET_OS_IPHONE
 
 #ifdef __OBJC__
