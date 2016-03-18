@@ -1,5 +1,5 @@
 ﻿//
-//  File: DKWindowView.h
+//  File: DKWindowView_OSX.h
 //  Platform: Mac OS X
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,7 +18,7 @@
 #include "../../../DKFoundation.h"
 #include "../../DKWindow.h"
 
-@interface DKWindowView : NSView <NSTextInputClient, NSWindowDelegate>
+@interface DKWindowView_OSX : NSView <NSTextInputClient, NSWindowDelegate>
 {
 @private
 	DKFramework::DKWindow* handler;

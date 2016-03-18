@@ -10,7 +10,7 @@
 #include "DKAudioPlayer.h"
 #include "DKAudioStream.h"
 #include "DKAudioSource.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 
 using namespace DKFoundation;
 namespace DKFramework
@@ -203,7 +203,7 @@ private:
 	{
 		DKLog("AudioQueue thread initialized.\n");
 
-		DKObject<DKOpenALContext> alContext = DKOpenALContext::SharedInstance();
+		DKObject<DKAudioDevice> alContext = DKAudioDevice::SharedInstance();
 		alContext->Bind();
 
 		playbackCond.Lock();

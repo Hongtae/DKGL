@@ -14,7 +14,7 @@
 #include <io.h>
 #include <iostream>
 
-#include "DKLoggerImpl.h"
+#include "DKLogger_Win32.h"
 
 using namespace DKFoundation;
 
@@ -87,7 +87,7 @@ namespace DKFramework
 
 using namespace DKFramework;
 
-void DKLoggerImpl::Log(const DKString& msg)
+void DKLogger_Win32::Log(const DKString& msg)
 {
 	::OutputDebugStringW((const wchar_t*)msg);
 	Private::WriteLog((const wchar_t*)msg);

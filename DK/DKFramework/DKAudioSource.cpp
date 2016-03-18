@@ -8,7 +8,7 @@
 #include <float.h>
 #include "../lib/OpenAL.h"
 #include "DKAudioSource.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
@@ -602,7 +602,7 @@ int DKAudioSource::Format(int bits, int channels)
 		{
 			static FormatTable fmts;
 			
-			DKObject<DKOpenALContext> alContext = DKOpenALContext::SharedInstance();
+			DKObject<DKAudioDevice> alContext = DKAudioDevice::SharedInstance();
 			alContext->Bind();
 			
 			fmts.Update(formatKey( 4, 1), alGetEnumValue("AL_FORMAT_MONO_IMA4"));

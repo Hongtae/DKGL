@@ -1,9 +1,9 @@
 //
-//  File: DKApplicationImpl.mm
+//  File: DKApplication_iOS.mm
 //  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -15,8 +15,8 @@
 #import <UIKit/UIKit.h>
 #import "../../DKApplication.h"
 #import "../../DKLinearTransform3.h"
-#import "../../DKOpenALContext.h"
-#import "DKApplicationImpl.h"
+#import "../../DKAudioDevice.h"
+#import "DKApplication_iOS.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
@@ -141,10 +141,7 @@ using namespace DKFramework::Private;
 @synthesize viewController;
 
 - (void)initialize
-{
-	[[AVAudioSession sharedInstance] setDelegate:self];
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
-		
+{		
     window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];  
     window.backgroundColor = [UIColor blackColor];
 	
@@ -157,7 +154,7 @@ using namespace DKFramework::Private;
 	
 	initialized = YES;
 
-	((DKApplicationImpl*)DKApplicationInterface::SharedInstance())->AppInitialize();
+	((DKApplication_iOS*)DKApplicationInterface::SharedInstance())->AppInitialize();
 	
 	if (initialized)
 		[window makeKeyAndVisible];  	
@@ -168,7 +165,7 @@ using namespace DKFramework::Private;
 	if (initialized == NO)
 		return;
 
-	((DKApplicationImpl*)DKApplicationInterface::SharedInstance())->AppFinalize();
+	((DKApplication_iOS*)DKApplicationInterface::SharedInstance())->AppFinalize();
 
 	[window release];
 	window = nil;
@@ -230,59 +227,33 @@ using namespace DKFramework::Private;
 		  @"################################################################################\n");
 }
 
-#pragma mark AVAudioSession delegate
-- (void)beginInterruption
-{
-	DKOpenALContext::Deactivate();
-	[[AVAudioSession sharedInstance] setActive:NO error:nil];
-	DKLog("Audio Session begin interruption.\n");
-}
-
-- (void)endInterruption
-{
-	DKTimer timer;
-	timer.Reset();
-
-	while ([[AVAudioSession sharedInstance] setActive:YES error:nil] == NO)
-	{
-		if (timer.Elapsed() > 3.0)
-		{
-			DKLog("FATAL ERROR: Failed to active audio session!!\n");
-			break;
-		}
-	}
-	
-	DKLog("Audio Session end interruption.\n");		
-	DKOpenALContext::Activate();
-}
-
 @end
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKApplicationImpl implementation
-#pragma mark - DKApplicationImpl implementation
+// DKApplication_iOS implementation
+#pragma mark - DKApplication_iOS implementation
 DKApplicationInterface* DKApplicationInterface::CreateInterface(DKApplication* app)
 {
-	return new DKApplicationImpl(app);
+	return new DKApplication_iOS(app);
 }
 
-DKApplicationImpl::DKApplicationImpl(DKApplication* app)
+DKApplication_iOS::DKApplication_iOS(DKApplication* app)
 : mainApp(app)
 , terminateRequested(false)
 {
 }
 
-DKApplicationImpl::~DKApplicationImpl(void)
+DKApplication_iOS::~DKApplication_iOS(void)
 {
 }
 
-int DKApplicationImpl::Run(DKArray<char*>& args)
+int DKApplication_iOS::Run(DKArray<char*>& args)
 {
 	this->terminateRequested = false;
 	return UIApplicationMain((int)args.Count(), (char**)args, @"UIApplication", @"DKApplicationDelegate");
 }
 
-void DKApplicationImpl::Terminate(int exitCode)
+void DKApplication_iOS::Terminate(int exitCode)
 {
 	if (this->terminateRequested)
 		return;
@@ -303,7 +274,7 @@ void DKApplicationImpl::Terminate(int exitCode)
 	}
 }
 
-void DKApplicationImpl::PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone)
+void DKApplication_iOS::PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone)
 {
 	if (op)
 	{
@@ -313,17 +284,17 @@ void DKApplicationImpl::PerformOperationOnMainThread(DKOperation* op, bool waitU
 	}
 }
 
-void DKApplicationImpl::AppInitialize(void)
+void DKApplication_iOS::AppInitialize(void)
 {
 	DKApplicationInterface::AppInitialize(mainApp);
 }
 
-void DKApplicationImpl::AppFinalize(void)
+void DKApplication_iOS::AppFinalize(void)
 {
 	DKApplicationInterface::AppFinalize(mainApp);
 }
 
-DKLogger& DKApplicationImpl::DefaultLogger(void)
+DKLogger& DKApplication_iOS::DefaultLogger(void)
 {
 	struct Logger : public DKLogger
 	{
@@ -336,7 +307,7 @@ DKLogger& DKApplicationImpl::DefaultLogger(void)
 	return logger;
 }
 
-DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
+DKString DKApplication_iOS::EnvironmentPath(SystemPath s)
 {
 	auto SearchPath = [](NSSearchPathDirectory path) -> DKString
 	{
@@ -405,12 +376,12 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 	return path;
 }
 
-DKString DKApplicationImpl::ModulePath(void)
+DKString DKApplication_iOS::ModulePath(void)
 {
 	return [[[NSBundle mainBundle] executablePath] UTF8String];
 }
 
-DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocator& alloc)
+DKObject<DKData> DKApplication_iOS::LoadResource(const DKString& res, DKAllocator& alloc)
 {
 	DKObject<DKData> ret = NULL;
 	DKObject<DKDirectory> dir = DKDirectory::OpenDir(EnvironmentPath(SystemPath::SystemPathAppResource));
@@ -427,7 +398,7 @@ DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocato
 	return ret;
 }
 
-DKObject<DKData> DKApplicationImpl::LoadStaticResource(const DKString& res)
+DKObject<DKData> DKApplication_iOS::LoadStaticResource(const DKString& res)
 {
 	DKObject<DKData> ret = NULL;
 	DKObject<DKDirectory> dir = DKDirectory::OpenDir(EnvironmentPath(SystemPath::SystemPathAppResource));
@@ -438,7 +409,7 @@ DKObject<DKData> DKApplicationImpl::LoadStaticResource(const DKString& res)
 	return ret;
 }
 
-DKRect DKApplicationImpl::DisplayBounds(int displayId) const
+DKRect DKApplication_iOS::DisplayBounds(int displayId) const
 {
 	if (displayId <= 0)
 	{
@@ -448,7 +419,7 @@ DKRect DKApplicationImpl::DisplayBounds(int displayId) const
 	return DKRect(0,0,0,0);
 }
 
-DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
+DKRect DKApplication_iOS::ScreenContentBounds(int displayId) const
 {
 	if (displayId <= 0)
 	{
@@ -467,12 +438,12 @@ DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
 	return DKRect(0,0,0,0);
 }
 
-DKString DKApplicationImpl::HostName(void) const
+DKString DKApplication_iOS::HostName(void) const
 {
 	return [[[UIDevice currentDevice] name] UTF8String];
 }
 
-DKString DKApplicationImpl::OSName(void) const
+DKString DKApplication_iOS::OSName(void) const
 {
 	NSString* systemName = [[UIDevice currentDevice] systemName];
 	NSString* systemVersion = [[UIDevice currentDevice] systemVersion];
@@ -480,7 +451,7 @@ DKString DKApplicationImpl::OSName(void) const
 	return [[NSString stringWithFormat:@"%@ (Version:%@)", systemName, systemVersion] UTF8String];
 }
 
-DKString DKApplicationImpl::UserName(void) const
+DKString DKApplication_iOS::UserName(void) const
 {
 	return [NSUserName() UTF8String];
 }

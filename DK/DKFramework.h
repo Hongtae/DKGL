@@ -50,7 +50,7 @@
 #include "DKFramework/DKMesh.h"
 #include "DKFramework/DKModel.h"
 #include "DKFramework/DKMultiSphereShape.h"
-#include "DKFramework/DKOpenALContext.h"
+#include "DKFramework/DKAudioDevice.h"
 #include "DKFramework/DKOpenGLContext.h"
 #include "DKFramework/DKPlane.h"
 #include "DKFramework/DKPoint.h"

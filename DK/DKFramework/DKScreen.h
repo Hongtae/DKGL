@@ -12,7 +12,7 @@
 #include "DKRenderer.h"
 #include "DKPoint.h"
 #include "DKSize.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 #include "DKOpenGLContext.h"
 #include "DKFrame.h"
 
@@ -118,7 +118,7 @@ namespace DKFramework
 		double						inactiveFrameLatency;
 		DKSize						screenResolution;
 
-		DKFoundation::DKObject<DKOpenALContext> alContext;
+		DKFoundation::DKObject<DKAudioDevice> alContext;
 		DKFoundation::DKObject<DKOpenGLContext> glContext;
 		
 		void RenderScreen(bool invalidate);

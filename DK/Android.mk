@@ -113,7 +113,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKMesh.cpp \
 	DKFramework/DKModel.cpp \
 	DKFramework/DKMultiSphereShape.cpp \
-	DKFramework/DKOpenALContext.cpp \
+	DKFramework/DKAudioDevice.cpp \
 	DKFramework/DKOpenGLContext.cpp \
 	DKFramework/DKPlane.cpp \
 	DKFramework/DKPoint2PointConstraint.cpp \

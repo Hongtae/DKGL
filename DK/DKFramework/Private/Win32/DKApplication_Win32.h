@@ -1,5 +1,5 @@
 ﻿//
-//  File: DKApplicationImpl.h
+//  File: DKApplication_Win32.h
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -23,11 +23,11 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		class DKApplicationImpl : public DKApplicationInterface
+		class DKApplication_Win32 : public DKApplicationInterface
 		{
 		public:
-			DKApplicationImpl(DKApplication* app);
-			~DKApplicationImpl(void);
+			DKApplication_Win32(DKApplication* app);
+			~DKApplication_Win32(void);
 
 			int Run(DKArray<char*>& args);
 			void Terminate(int exitCode);

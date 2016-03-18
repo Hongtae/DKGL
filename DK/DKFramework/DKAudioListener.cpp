@@ -7,13 +7,13 @@
 
 #include "../lib/OpenAL.h"
 #include "DKAudioListener.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
 
 DKAudioListener::DKAudioListener(void)
-	: context(DKOpenALContext::SharedInstance())
+	: context(DKAudioDevice::SharedInstance())
 	, position(0,0,0)
 	, velocity(1,1,1)
 	, forward(0,0,-1)

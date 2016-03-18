@@ -1,5 +1,5 @@
 //
-//  File: DKApplicationImpl.cpp
+//  File: DKApplication_Win32.cpp
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -13,9 +13,9 @@
 #include <shlobj.h>
 
 #include "../../DKApplication.h"
-#include "DKApplicationImpl.h"
-#include "DKWindowImpl.h"
-#include "DKLoggerImpl.h"
+#include "DKApplication_Win32.h"
+#include "DKWindow_Win32.h"
+#include "DKLogger_Win32.h"
 
 using namespace DKFoundation;
 
@@ -149,7 +149,7 @@ namespace DKFramework
 		{
 			if (hWnd)		// window message
 			{
-				DKWindowImpl* pWindow = (DKWindowImpl*)::GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+				DKWindow_Win32* pWindow = (DKWindow_Win32*)::GetWindowLongPtrW(hWnd, GWLP_USERDATA);
 				if (pWindow && pWindow->PlatformHandle() == hWnd)
 				{
 					return pWindow->WindowProc(uMsg, wParam, lParam);
@@ -172,23 +172,23 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKApplicationImpl implementation
+// DKApplication_Win32 implementation
 DKApplicationInterface* DKApplicationInterface::CreateInterface(DKApplication* app)
 {
-	return new DKApplicationImpl(app);
+	return new DKApplication_Win32(app);
 }
 
-DKApplicationImpl::DKApplicationImpl(DKApplication* app)
+DKApplication_Win32::DKApplication_Win32(DKApplication* app)
 	: mainApp(app)
 	, threadId(0)
 {
 }
 
-DKApplicationImpl::~DKApplicationImpl(void)
+DKApplication_Win32::~DKApplication_Win32(void)
 {
 }
 
-int DKApplicationImpl::Run(DKArray<char*>& args)
+int DKApplication_Win32::Run(DKArray<char*>& args)
 {
 	// 2011-07-05: If keyboard hook installed, debugger become extremely slow.
 	//             Don't install hook if debugger has been attached.
@@ -264,7 +264,7 @@ int DKApplicationImpl::Run(DKArray<char*>& args)
 	return static_cast<int>(msg.wParam);
 }
 
-void DKApplicationImpl::PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone)
+void DKApplication_Win32::PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone)
 {
 	if (op == NULL)
 		return;
@@ -302,18 +302,18 @@ void DKApplicationImpl::PerformOperationOnMainThread(DKOperation* op, bool waitU
 	}
 }
 
-void DKApplicationImpl::Terminate(int exitCode)
+void DKApplication_Win32::Terminate(int exitCode)
 {
 	::PostThreadMessageW(threadId, WM_QUIT, static_cast<WPARAM>(exitCode), 0);
 }
 
-DKLogger& DKApplicationImpl::DefaultLogger(void)
+DKLogger& DKApplication_Win32::DefaultLogger(void)
 {
-	static DKLoggerImpl logger;
+	static DKLogger_Win32 logger;
 	return logger;
 }
 
-DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
+DKString DKApplication_Win32::EnvironmentPath(SystemPath s)
 {
 	wchar_t path[MAX_PATH];
 	auto GetWindowsFolder = [&path](std::initializer_list<int> folders)-> DKString
@@ -377,14 +377,14 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 	return path;
 }
 
-DKString DKApplicationImpl::ModulePath(void)
+DKString DKApplication_Win32::ModulePath(void)
 {
 	wchar_t path[MAX_PATH];
 	::GetModuleFileNameW(::GetModuleHandle(NULL), path, MAX_PATH);
 	return DKString(path);
 }
 
-DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocator& alloc)
+DKObject<DKData> DKApplication_Win32::LoadResource(const DKString& res, DKAllocator& alloc)
 {
 	DKObject<DKData> ret = NULL;
 	HRSRC hRes = ::FindResourceW(0, (const wchar_t*)res, (LPCWSTR)RT_RCDATA);
@@ -405,7 +405,7 @@ DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocato
 	return ret;
 }
 
-DKObject<DKData> DKApplicationImpl::LoadStaticResource(const DKString& res)
+DKObject<DKData> DKApplication_Win32::LoadStaticResource(const DKString& res)
 {
 	DKObject<DKData> ret = NULL;
 	HRSRC hRes = ::FindResourceW(0, (const wchar_t*)res, (LPCWSTR)RT_RCDATA);
@@ -425,7 +425,7 @@ DKObject<DKData> DKApplicationImpl::LoadStaticResource(const DKString& res)
 	return ret;
 }
 
-DKRect DKApplicationImpl::DisplayBounds(int displayId) const
+DKRect DKApplication_Win32::DisplayBounds(int displayId) const
 {
 	MONITORINFO	mi;
 	memset(&mi, 0, sizeof(MONITORINFO));
@@ -442,7 +442,7 @@ DKRect DKApplicationImpl::DisplayBounds(int displayId) const
 	return DKRect(0,0,0,0);
 }
 
-DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
+DKRect DKApplication_Win32::ScreenContentBounds(int displayId) const
 {
 	MONITORINFO	mi;
 	memset(&mi, 0, sizeof(MONITORINFO));
@@ -461,7 +461,7 @@ DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
 	return DKRect(0,0,0,0);
 }
 
-DKString DKApplicationImpl::HostName(void) const
+DKString DKApplication_Win32::HostName(void) const
 {
 	wchar_t comName[1024];
 	DWORD len = 1024;
@@ -471,7 +471,7 @@ DKString DKApplicationImpl::HostName(void) const
 	return L"Unknown";
 }
 
-DKString DKApplicationImpl::OSName(void) const
+DKString DKApplication_Win32::OSName(void) const
 {
 	DKString ret("Microsoft Windows");
 
@@ -488,7 +488,7 @@ DKString DKApplicationImpl::OSName(void) const
 	return ret;
 }
 
-DKString DKApplicationImpl::UserName(void) const
+DKString DKApplication_Win32::UserName(void) const
 {
 	wchar_t userName[1024];
 	DWORD len = 1024;

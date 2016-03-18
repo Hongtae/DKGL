@@ -1,28 +1,18 @@
 //
-//  File: DKOpenALContext.cpp
+//  File: DKAudioDevice.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "../lib/OpenAL.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 
-namespace DKFramework
-{
-	namespace Private
-	{
-		ALCcontext* bindContextWhenActivated = NULL;
-		bool audioSessionActivated = true;
-	}
-}
 
 using namespace DKFoundation;
 using namespace DKFramework;
 
-DKSpinLock DKOpenALContext::contextLock;
-
-DKOpenALContext::DKOpenALContext(void)
+DKAudioDevice::DKAudioDevice(void)
 	: device(NULL)
 	, context(NULL)
 {	
@@ -90,10 +80,10 @@ DKOpenALContext::DKOpenALContext(void)
 	{
 		DKERROR_THROW_DEBUG("alcCreateContext failed.");
 	}
-	DKLog("DKOpenALContext:0x%x Created.\n", this);
+	DKLog("DKAudioDevice:0x%x Created.\n", this);
 }
 
-DKOpenALContext::~DKOpenALContext(void)
+DKAudioDevice::~DKAudioDevice(void)
 {
 	DKCriticalSection<DKSpinLock> section(contextLock);
 
@@ -106,57 +96,21 @@ DKOpenALContext::~DKOpenALContext(void)
 
 	context = NULL;
 	device = NULL;
-	DKLog("DKOpenALContext:0x%x Destroyed.\n", this);
+	DKLog("DKAudioDevice:0x%x Destroyed.\n", this);
 }
 
-bool DKOpenALContext::IsBound(void) const
+bool DKAudioDevice::IsBound(void) const
 {
 	return alcGetCurrentContext() == (ALCcontext*)context;
 }
 
-void DKOpenALContext::Bind(void) const
+void DKAudioDevice::Bind(void) const
 {
-	if (DKFramework::Private::audioSessionActivated)
-		alcMakeContextCurrent((ALCcontext*)context);
-	else
-		DKFramework::Private::bindContextWhenActivated = (ALCcontext*)context;		
+	alcMakeContextCurrent((ALCcontext*)context);
 }
 
-void DKOpenALContext::Unbind(void) const
+void DKAudioDevice::Unbind(void) const
 {
-}
-
-bool DKOpenALContext::IsActivated(void) const
-{
-	return Private::audioSessionActivated;
-}
-
-void DKOpenALContext::Activate(void)
-{
-	DKCriticalSection<DKSpinLock> section(contextLock);
-	
-	ALCcontext* current = alcGetCurrentContext();
-	if (current == NULL && DKFramework::Private::audioSessionActivated == false)
-	{
-		alcMakeContextCurrent(DKFramework::Private::bindContextWhenActivated);
-		
-		DKFramework::Private::audioSessionActivated = true;
-		DKFramework::Private::bindContextWhenActivated = NULL;
-		
-		DKLog("DKOpenALContext activated.\n");
-	}
-}
-
-void DKOpenALContext::Deactivate(void)
-{
-	DKCriticalSection<DKSpinLock> section(contextLock);
-	
-	ALCcontext* current = alcGetCurrentContext();
-	if (current || DKFramework::Private::audioSessionActivated)
-	{
-		DKFramework::Private::audioSessionActivated = false;
-		DKFramework::Private::bindContextWhenActivated = current;
+	if (alcGetCurrentContext() == (ALCcontext*)context)
 		alcMakeContextCurrent(NULL);
-	}
-	DKLog("DKOpenALContext deactivated.\n");
 }

@@ -1,5 +1,5 @@
 //
-//  File: DKLoggerImpl.h
+//  File: DKLogger_Win32.h
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,7 +17,7 @@ using namespace DKFoundation;
 
 namespace DKFramework
 {
-	struct DKLoggerImpl : public DKLogger
+	struct DKLogger_Win32 : public DKLogger
 	{
 		void Log(const DKString&) override;
 	};

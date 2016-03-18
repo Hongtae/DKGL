@@ -1,5 +1,5 @@
 //
-//  File: DKWindowImpl.h
+//  File: DKWindow_Win32.h
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -19,11 +19,11 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		class DKWindowImpl : public DKWindowInterface
+		class DKWindow_Win32 : public DKWindowInterface
 		{
 		public:
-			DKWindowImpl(class DKWindow* window);
-			~DKWindowImpl(void);
+			DKWindow_Win32(class DKWindow* window);
+			~DKWindow_Win32(void);
 			bool Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style);
 			bool CreateProxy(void* systemHandle);
 			void UpdateProxy(void);

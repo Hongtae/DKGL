@@ -1,5 +1,5 @@
 //
-//  File: DKWindowView.mm
+//  File: DKWindowView_iOS.mm
 //  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -10,13 +10,12 @@
 
 #import <TargetConditionals.h>
 #if TARGET_OS_IPHONE
-#warning Compiling DKWindowView for iOS
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-#include "DKWindowImpl.h"
-#import "DKWindowView.h"
+#include "DKWindow_iOS.h"
+#import "DKWindowView_iOS.h"
 
 using namespace DKFoundation;
 namespace DKFramework
@@ -37,10 +36,10 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-#pragma mark - DKWindowView
+#pragma mark - DKWindowView_iOS
 ////////////////////////////////////////////////////////////////////////////////
-// DKWindowView
-@interface DKWindowView ()
+// DKWindowView_iOS
+@interface DKWindowView_iOS ()
 {
 	DKWindow*			handler;
 	DKArray<TouchInfo>	touchTrackingData;
@@ -57,7 +56,7 @@ using namespace DKFramework::Private;
 constexpr int defaultTextFieldHeight = 30;
 constexpr int defaultTextFieldMargin = 2;
 
-@implementation DKWindowView
+@implementation DKWindowView_iOS
 @synthesize handler;
 @synthesize origin;
 @synthesize contentSize;

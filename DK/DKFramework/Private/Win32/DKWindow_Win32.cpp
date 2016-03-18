@@ -1,5 +1,5 @@
 //
-//  File: DKWindowImpl.cpp
+//  File: DKWindow_Win32.cpp
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -7,7 +7,7 @@
 //
 
 #include "../../DKWindow.h"
-#include "DKWindowImpl.h"
+#include "DKWindow_Win32.h"
 #include <math.h>
 
 #ifdef _WIN32
@@ -34,13 +34,13 @@ namespace DKFramework
 
 	DKWindowInterface* DKWindowInterface::CreateInterface(DKWindow* win)
 	{
-		return new DKWindowImpl(win);
+		return new DKWindow_Win32(win);
 	}
 }
 
 #pragma comment(lib, "Imm32.lib")
 
-DKWindowImpl::DKWindowImpl(DKWindow* window)
+DKWindow_Win32::DKWindow_Win32(DKWindow* window)
 : ownerWindow(window)
 , windowHandle(NULL)
 , baseThreadId(0)
@@ -67,12 +67,12 @@ DKWindowImpl::DKWindowImpl(DKWindow* window)
 	DKASSERT_DESC(a != 0, "Failed to register WndClass");
 }
 
-DKWindowImpl::~DKWindowImpl(void)
+DKWindow_Win32::~DKWindow_Win32(void)
 {
 	DKASSERT_DESC_DEBUG(windowHandle == NULL, "Window must be destroyed before instance being released.");
 }
 
-bool DKWindowImpl::CreateProxy(void* systemHandle)
+bool DKWindow_Win32::CreateProxy(void* systemHandle)
 {
 	if (::IsWindow((HWND)systemHandle))
 	{
@@ -94,7 +94,7 @@ bool DKWindowImpl::CreateProxy(void* systemHandle)
 	return false;
 }
 
-void DKWindowImpl::UpdateProxy(void)
+void DKWindow_Win32::UpdateProxy(void)
 {
 	if (isProxyWindow)
 	{
@@ -116,12 +116,12 @@ void DKWindowImpl::UpdateProxy(void)
 	}
 }
 
-bool DKWindowImpl::IsProxy(void) const
+bool DKWindow_Win32::IsProxy(void) const
 {
 	return isProxyWindow;
 }
 
-bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style)
+bool DKWindow_Win32::Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style)
 {
 	DWORD dwStyle = 0;
 	if (style & DKWindow::StyleTitle)
@@ -209,7 +209,7 @@ bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoi
 	return true;
 }
 
-void DKWindowImpl::Destroy(void)
+void DKWindow_Win32::Destroy(void)
 {
 	isActive = false;
 	if (windowHandle)
@@ -242,7 +242,7 @@ void DKWindowImpl::Destroy(void)
 	}
 }
 
-void DKWindowImpl::ShowMouse(int deviceId, bool bShow)
+void DKWindow_Win32::ShowMouse(int deviceId, bool bShow)
 {
 	// hiding or showing mouse must be called on thread where the window
 	// has been created. If other thread need to control of mouse visibility
@@ -283,7 +283,7 @@ void DKWindowImpl::ShowMouse(int deviceId, bool bShow)
 	::PostMessageW(windowHandle, WM_SHOWCURSOR, bShow, 0);
 }
 
-bool DKWindowImpl::IsMouseVisible(int deviceId) const
+bool DKWindow_Win32::IsMouseVisible(int deviceId) const
 {
 	if (deviceId == 0)
 	{
@@ -296,7 +296,7 @@ bool DKWindowImpl::IsMouseVisible(int deviceId) const
 	return false;
 }
 
-void DKWindowImpl::HoldMouse(int deviceId, bool hold)
+void DKWindow_Win32::HoldMouse(int deviceId, bool hold)
 {
 	if (isProxyWindow)
 		return;
@@ -313,7 +313,7 @@ void DKWindowImpl::HoldMouse(int deviceId, bool hold)
 	::PostMessageW(windowHandle, WM_UPDATEMOUSECAPTURE, 0, 0);
 }
 
-bool DKWindowImpl::IsMouseHeld(int deviceId) const
+bool DKWindow_Win32::IsMouseHeld(int deviceId) const
 {
 	if (deviceId == 0)
 	{
@@ -322,7 +322,7 @@ bool DKWindowImpl::IsMouseHeld(int deviceId) const
 	return false;
 }
 
-void DKWindowImpl::Show(void)
+void DKWindow_Win32::Show(void)
 {
 	if (windowHandle)
 	{
@@ -333,13 +333,13 @@ void DKWindowImpl::Show(void)
 	}
 }
 
-void DKWindowImpl::Hide(void)
+void DKWindow_Win32::Hide(void)
 {
 	if (windowHandle)
 		::ShowWindow(windowHandle, SW_HIDE);
 }
 
-void DKWindowImpl::Activate(void)
+void DKWindow_Win32::Activate(void)
 {
 	if (windowHandle)
 	{
@@ -352,13 +352,13 @@ void DKWindowImpl::Activate(void)
 	}
 }
 
-void DKWindowImpl::Minimize(void)
+void DKWindow_Win32::Minimize(void)
 {
 	if (windowHandle)
 		::ShowWindow(windowHandle, SW_MINIMIZE);
 }
 
-void DKWindowImpl::Resize(const DKSize& s, const DKPoint* pt)
+void DKWindow_Win32::Resize(const DKSize& s, const DKPoint* pt)
 {
 	int w = floor(s.width + 0.5);
 	int h = floor(s.height + 0.5);
@@ -388,7 +388,7 @@ void DKWindowImpl::Resize(const DKSize& s, const DKPoint* pt)
 	}
 }
 
-void DKWindowImpl::SetOrigin(const DKPoint& pt)
+void DKWindow_Win32::SetOrigin(const DKPoint& pt)
 {
 	int x = floor(pt.x + 0.5f);
 	int y = floor(pt.y + 0.5f);
@@ -397,12 +397,12 @@ void DKWindowImpl::SetOrigin(const DKPoint& pt)
 		::SetWindowPos(windowHandle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
-void DKWindowImpl::SetTitle(const DKString& title)
+void DKWindow_Win32::SetTitle(const DKString& title)
 {
 	::SetWindowTextW(windowHandle, (const wchar_t*)title);
 }
 
-DKString DKWindowImpl::Title(void) const
+DKString DKWindow_Win32::Title(void) const
 {
 	DKString ret = "";
 	int len = ::GetWindowTextLengthW(windowHandle);
@@ -417,7 +417,7 @@ DKString DKWindowImpl::Title(void) const
 	return ret;
 }
 
-void DKWindowImpl::SetMousePosition(int deviceId, const DKPoint& pt)
+void DKWindow_Win32::SetMousePosition(int deviceId, const DKPoint& pt)
 {
 	if (deviceId != 0)
 		return;
@@ -432,7 +432,7 @@ void DKWindowImpl::SetMousePosition(int deviceId, const DKPoint& pt)
 	mousePosition = pt;
 }
 
-DKPoint DKWindowImpl::MousePosition(int deviceId) const
+DKPoint DKWindow_Win32::MousePosition(int deviceId) const
 {
 	if (deviceId != 0)
 		return DKPoint(-1, -1);
@@ -445,7 +445,7 @@ DKPoint DKWindowImpl::MousePosition(int deviceId) const
 	return pt2;
 }
 
-void DKWindowImpl::EnableTextInput(int deviceId, bool bTextInput)
+void DKWindow_Win32::EnableTextInput(int deviceId, bool bTextInput)
 {
 	if (deviceId != 0)
 		return;
@@ -456,7 +456,7 @@ void DKWindowImpl::EnableTextInput(int deviceId, bool bTextInput)
 	isTextInputMode = bTextInput;
 }
 
-void DKWindowImpl::UpdateKeyboard(void)
+void DKWindow_Win32::UpdateKeyboard(void)
 {
 	if (!isActive)
 		return;
@@ -505,7 +505,7 @@ void DKWindowImpl::UpdateKeyboard(void)
 	memcpy(savedKeyboardState, keyStateCurrent, 256);
 }
 
-void DKWindowImpl::UpdateMouse(void)
+void DKWindow_Win32::UpdateMouse(void)
 {
 	if (!isActive)
 		return;
@@ -524,7 +524,7 @@ void DKWindowImpl::UpdateMouse(void)
 	}
 }
 
-void DKWindowImpl::ResetKeyboard(void)
+void DKWindow_Win32::ResetKeyboard(void)
 {
 	for (int i = 0; i < 256; i++)
 	{
@@ -550,7 +550,7 @@ void DKWindowImpl::ResetKeyboard(void)
 	memset(savedKeyboardState, 0, sizeof(savedKeyboardState));
 }
 
-void DKWindowImpl::ResetMouse(void)
+void DKWindow_Win32::ResetMouse(void)
 {
 	POINT ptMouse;
 	::GetCursorPos(&ptMouse);
@@ -562,7 +562,7 @@ void DKWindowImpl::ResetMouse(void)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Window message handler
-LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT DKWindow_Win32::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
@@ -986,14 +986,14 @@ LRESULT DKWindowImpl::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProcW(windowHandle, uMsg, wParam, lParam);
 }
 
-bool DKWindowImpl::IsValid(void) const
+bool DKWindow_Win32::IsValid(void) const
 {
 	if (windowHandle && ::IsWindow(windowHandle))
 		return true;
 	return false;
 }
 
-DKVirtualKey DKWindowImpl::ConvertVKey(int key)
+DKVirtualKey DKWindow_Win32::ConvertVKey(int key)
 {
 
 	switch (key)
@@ -1145,7 +1145,7 @@ DKVirtualKey DKWindowImpl::ConvertVKey(int key)
 }
 
 
-DKPoint& DKWindowImpl::ConvertCoordinateOrigin(DKPoint& pt) const
+DKPoint& DKWindow_Win32::ConvertCoordinateOrigin(DKPoint& pt) const
 {
 	if (windowHandle)
 	{

@@ -1,5 +1,5 @@
 //
-//  File: DKWindowView.mm
+//  File: DKWindowView_OSX.mm
 //  Platform: Mac OS X
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -10,18 +10,17 @@
 
 #import <TargetConditionals.h>
 #if !TARGET_OS_IPHONE
-#warning Compiling DKWindowView for Mac OS X
 
 #include "../../DKVKey.h"
-#include "DKWindowImpl.h"
-#import "DKWindowView.h"
+#include "DKWindow_OSX.h"
+#import "DKWindowView_OSX.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-@interface DKWindowView ()
+@interface DKWindowView_OSX ()
 - (void)mouseDownEvent:(NSEvent*)event;
 - (void)mouseUpEvent:(NSEvent*)event;
 - (void)mouseMoveEvent:(NSEvent*)event;
@@ -29,13 +28,13 @@ using namespace DKFramework::Private;
 @property (nonatomic, retain) NSString* markedText;
 @end
 
-@implementation DKWindowView
+@implementation DKWindowView_OSX
 @synthesize handler;
 @synthesize markedText;
 @synthesize textInput;
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKWindowView initialize
+// DKWindowView_OSX initialize
 - (id)initWithFrame:(NSRect)frame handler:(DKWindow*)h
 {
     self = [super initWithFrame:frame];
@@ -335,7 +334,7 @@ using namespace DKFramework::Private;
 		[[self inputContext] handleEvent:event];
 	}
 	// if ([event isARepeat] == 0)
-	handler->PostKeyboardEvent(DKWindow::EventKeyboardDown, 0, DKWindowImpl::ConvertVKey( [event keyCode] ), L"", false);
+	handler->PostKeyboardEvent(DKWindow::EventKeyboardDown, 0, DKWindow_OSX::ConvertVKey( [event keyCode] ), L"", false);
 }
 
 - (void)keyUp:(NSEvent*)event
@@ -343,7 +342,7 @@ using namespace DKFramework::Private;
 	if (self.textInput)
 	{
 	}
-	handler->PostKeyboardEvent(DKWindow::EventKeyboardUp, 0, DKWindowImpl::ConvertVKey( [event keyCode] ), L"", false);
+	handler->PostKeyboardEvent(DKWindow::EventKeyboardUp, 0, DKWindow_OSX::ConvertVKey( [event keyCode] ), L"", false);
 }
 
 #define LEFT_SHIFT_BIT		0x20002
@@ -539,7 +538,7 @@ using namespace DKFramework::Private;
 	{
 #ifdef DKGL_DEBUG_ENABLED
 		NSEvent *event = [[self window] currentEvent];
-		DKVirtualKey key = DKWindowImpl::ConvertVKey([event keyCode]);
+		DKVirtualKey key = DKWindow_OSX::ConvertVKey([event keyCode]);
 		NSLog(@"[NSTextInput] doCommandBySelector:(%@) for key:(%@) not processed.\n",
 			  NSStringFromSelector(aSelector),
 			  [NSString stringWithUTF8String:(const char *)DKStringU8(DKWindow::GetVKName(key))]);

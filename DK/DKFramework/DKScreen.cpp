@@ -391,7 +391,7 @@ const DKSize& DKScreen::ScreenResolution(void) const
 
 void DKScreen::OnInitialize(void)
 {
-	alContext = DKOpenALContext::SharedInstance();	
+	alContext = DKAudioDevice::SharedInstance();	
 	glContext = DKOpenGLContext::SharedInstance();
 	
 	alContext->Bind();

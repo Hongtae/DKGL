@@ -8,7 +8,7 @@
 #pragma once
 #include "../DKInclude.h"
 #include "../DKFoundation.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 #include "DKVector3.h"
 #include "DKQuaternion.h"
 #include "DKMatrix3.h"
@@ -57,6 +57,6 @@ namespace DKFramework
 		DKAudioListener(const DKAudioListener&);
 		DKAudioListener& operator = (const DKAudioListener&);		
 
-		DKFoundation::DKObject<DKOpenALContext> context;
+		DKFoundation::DKObject<DKAudioDevice> context;
 	};
 }

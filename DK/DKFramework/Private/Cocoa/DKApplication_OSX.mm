@@ -1,5 +1,5 @@
 //
-//  File: DKApplicationImpl.mm
+//  File: DKApplication_OSX.mm
 //  Platform: Mac OS X
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -13,7 +13,7 @@
 #warning Compiling DKApplication for Mac OS X
 
 #import <AppKit/AppKit.h>
-#import "DKApplicationImpl.h"
+#import "DKApplication_OSX.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
@@ -59,9 +59,9 @@ using namespace DKFramework::Private;
 @interface DKApplicationDelegate : NSObject<NSApplicationDelegate>
 {
 @private
-	DKApplicationImpl* mainAppImpl;
+	DKApplication_OSX* mainAppImpl;
 }
-@property (readwrite, nonatomic) DKApplicationImpl* mainAppImpl;
+@property (readwrite, nonatomic) DKApplication_OSX* mainAppImpl;
 @end
 
 @implementation DKApplicationDelegate
@@ -180,25 +180,25 @@ using namespace DKFramework::Private;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKApplicationImpl implementation
-#pragma mark - DKApplicationImpl implementation
+// DKApplication_OSX implementation
+#pragma mark - DKApplication_OSX implementation
 DKApplicationInterface* DKApplicationInterface::CreateInterface(DKApplication* app)
 {
-	return new DKApplicationImpl(app);
+	return new DKApplication_OSX(app);
 }
 
-DKApplicationImpl::DKApplicationImpl(DKApplication* app)
+DKApplication_OSX::DKApplication_OSX(DKApplication* app)
 : mainApp(app)
 , retCode(0)
 , terminate(false)
 {
 }
 
-DKApplicationImpl::~DKApplicationImpl(void)
+DKApplication_OSX::~DKApplication_OSX(void)
 {
 }
 
-int DKApplicationImpl::Run(DKArray<char*>& args)
+int DKApplication_OSX::Run(DKArray<char*>& args)
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSApplication* app = [NSApplication sharedApplication];
@@ -222,7 +222,7 @@ int DKApplicationImpl::Run(DKArray<char*>& args)
 	return retCode;
 }
 
-void DKApplicationImpl::Terminate(int exitCode)
+void DKApplication_OSX::Terminate(int exitCode)
 {
 	if (terminate)
 		return;
@@ -233,7 +233,7 @@ void DKApplicationImpl::Terminate(int exitCode)
 //	[app performSelectorOnMainThread:@selector(terminate:) withObject:nil waitUntilDone:NO];
 }
 
-void DKApplicationImpl::PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone)
+void DKApplication_OSX::PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone)
 {
 	if (op)
 	{
@@ -243,7 +243,7 @@ void DKApplicationImpl::PerformOperationOnMainThread(DKOperation* op, bool waitU
 	}
 }
 
-DKLogger& DKApplicationImpl::DefaultLogger(void)
+DKLogger& DKApplication_OSX::DefaultLogger(void)
 {
 	struct Logger : public DKLogger
 	{
@@ -256,7 +256,7 @@ DKLogger& DKApplicationImpl::DefaultLogger(void)
 	return logger;
 }
 
-DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
+DKString DKApplication_OSX::EnvironmentPath(SystemPath s)
 {
 	auto SearchPath = [](NSSearchPathDirectory path) -> DKString
 	{
@@ -325,12 +325,12 @@ DKString DKApplicationImpl::EnvironmentPath(SystemPath s)
 	return path;
 }
 
-DKString DKApplicationImpl::ModulePath(void)
+DKString DKApplication_OSX::ModulePath(void)
 {
 	return [[[NSBundle mainBundle] executablePath] UTF8String];
 }
 
-DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocator& alloc)
+DKObject<DKData> DKApplication_OSX::LoadResource(const DKString& res, DKAllocator& alloc)
 {
 	DKObject<DKData> ret = NULL;
 	DKObject<DKDirectory> dir = DKDirectory::OpenDir(EnvironmentPath(SystemPath::SystemPathAppResource));
@@ -347,7 +347,7 @@ DKObject<DKData> DKApplicationImpl::LoadResource(const DKString& res, DKAllocato
 	return ret;
 }
 
-DKObject<DKData> DKApplicationImpl::LoadStaticResource(const DKString& res)
+DKObject<DKData> DKApplication_OSX::LoadStaticResource(const DKString& res)
 {
 	DKObject<DKData> ret = NULL;
 	DKObject<DKDirectory> dir = DKDirectory::OpenDir(EnvironmentPath(SystemPath::SystemPathAppResource));
@@ -358,7 +358,7 @@ DKObject<DKData> DKApplicationImpl::LoadStaticResource(const DKString& res)
 	return ret;
 }
 
-DKRect DKApplicationImpl::DisplayBounds(int displayId) const
+DKRect DKApplication_OSX::DisplayBounds(int displayId) const
 {
 	if (displayId <= 0)
 	{
@@ -368,7 +368,7 @@ DKRect DKApplicationImpl::DisplayBounds(int displayId) const
 	return DKRect(0,0,0,0);
 }
 
-DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
+DKRect DKApplication_OSX::ScreenContentBounds(int displayId) const
 {
 	if (displayId <= 0)
 	{
@@ -378,12 +378,12 @@ DKRect DKApplicationImpl::ScreenContentBounds(int displayId) const
 	return DKRect(0,0,0,0);
 }
 
-DKString DKApplicationImpl::HostName(void) const
+DKString DKApplication_OSX::HostName(void) const
 {
 	return [[[NSProcessInfo processInfo] hostName] UTF8String];
 }
 
-DKString DKApplicationImpl::OSName(void) const
+DKString DKApplication_OSX::OSName(void) const
 {
 	NSString* osName = [[NSProcessInfo processInfo] operatingSystemName];
 	NSString* osVer = [[NSProcessInfo processInfo] operatingSystemVersionString];
@@ -391,7 +391,7 @@ DKString DKApplicationImpl::OSName(void) const
 	return [[NSString stringWithFormat:@"@ (Mac OS X) @", osName, osVer] UTF8String];
 }
 
-DKString DKApplicationImpl::UserName(void) const
+DKString DKApplication_OSX::UserName(void) const
 {
 	return [NSUserName() UTF8String];
 }

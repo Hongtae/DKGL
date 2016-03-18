@@ -1,5 +1,5 @@
 //
-//  File: DKWindowImpl.mm
+//  File: DKWindow_iOS.mm
 //  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -10,12 +10,12 @@
 
 #import <TargetConditionals.h>
 #if TARGET_OS_IPHONE
-#warning Compiling DKWindowImpl for iOS
+#warning Compiling DKWindow for iOS
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#include "DKWindowImpl.h"
-#include "DKApplicationImpl.h"
+#include "DKWindow_iOS.h"
+#include "DKApplication_iOS.h"
 
 using namespace DKFoundation;
 using namespace DKFramework;
@@ -23,47 +23,47 @@ using namespace DKFramework::Private;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKWindowImpl implementation
-#pragma mark - DKWindowImpl implementation
+// DKWindow_iOS implementation
+#pragma mark - DKWindow_iOS implementation
 DKWindowInterface* DKWindowInterface::CreateInterface(DKWindow* win)
 {
-	return new DKWindowImpl(win);
+	return new DKWindow_iOS(win);
 }
 
-DKWindowImpl::DKWindowImpl(DKWindow *window)
+DKWindow_iOS::DKWindow_iOS(DKWindow *window)
 : ownerWindow(window)
 , view(nil)
 {
 }
 
-DKWindowImpl::~DKWindowImpl(void)
+DKWindow_iOS::~DKWindow_iOS(void)
 {
 	DKASSERT_DEBUG(view == nil);
 }
 
-bool DKWindowImpl::CreateProxy(void* systemHandle)
+bool DKWindow_iOS::CreateProxy(void* systemHandle)
 {
 	DKLog("A Proxy Window is not supported in DK version of iOS.\n");
 	return false;
 }
 
-void DKWindowImpl::UpdateProxy(void)
+void DKWindow_iOS::UpdateProxy(void)
 {
 }
 
-bool DKWindowImpl::IsProxy(void) const
+bool DKWindow_iOS::IsProxy(void) const
 {
 	return false;
 }
 
-bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style)
+bool DKWindow_iOS::Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style)
 {
 	DKASSERT_DEBUG(this->view == nil);
 
 	CGRect rect = CGRectMake(origin.x, origin.y, size.width, size.height);
 	if (rect.size.width < 1 || rect.size.height < 1)
 	{
-		CGRect screenBounds = [[UIScreen mainScreen] applicationFrame];
+		CGRect screenBounds = [[UIScreen mainScreen] bounds];
 
 		UIApplication* app = [UIApplication sharedApplication];
 		if ([app.delegate isKindOfClass:[DKApplicationDelegate class]])
@@ -79,7 +79,7 @@ bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoi
 	}
 
 
-	DKWindowView* targetView = [[DKWindowView alloc] initWithFrame:rect handler:ownerWindow];
+	DKWindowView_iOS* targetView = [[DKWindowView_iOS alloc] initWithFrame:rect handler:ownerWindow];
 
 	// Attach view to key-window's subview if running application instance
 	// is DKApplication. Otherwise, You need to handle this view by calling
@@ -111,7 +111,7 @@ bool DKWindowImpl::Create(const DKString& title, const DKSize& size, const DKPoi
 	return true;
 }
 
-void DKWindowImpl::Destroy(void)
+void DKWindow_iOS::Destroy(void)
 {
 	if (view)
 	{
@@ -123,27 +123,27 @@ void DKWindowImpl::Destroy(void)
 	view = nil;
 }
 
-void DKWindowImpl::Show(void)
+void DKWindow_iOS::Show(void)
 {
 	view.hidden = NO;
 }
 
-void DKWindowImpl::Hide(void)
+void DKWindow_iOS::Hide(void)
 {
 	view.hidden = YES;
 }
 
-void DKWindowImpl::Activate(void)
+void DKWindow_iOS::Activate(void)
 {
 	view.hidden = NO;
 	[view becomeFirstResponder];
 }
 
-void DKWindowImpl::Minimize(void)
+void DKWindow_iOS::Minimize(void)
 {
 }
 
-void DKWindowImpl::Resize(const DKSize& s, const DKPoint* pt)
+void DKWindow_iOS::Resize(const DKSize& s, const DKPoint* pt)
 {
 	CGRect frame = view.frame;
 	frame.size = CGSizeMake(s.width, s.height);
@@ -153,82 +153,82 @@ void DKWindowImpl::Resize(const DKSize& s, const DKPoint* pt)
 	view.frame = frame;
 }
 
-void DKWindowImpl::SetOrigin(const DKPoint& pt)
+void DKWindow_iOS::SetOrigin(const DKPoint& pt)
 {
 	CGRect frame = view.frame;
 	frame.origin = CGPointMake(pt.x, pt.y);
 	view.frame = frame;
 }
 
-DKSize DKWindowImpl::ContentSize(void) const
+DKSize DKWindow_iOS::ContentSize(void) const
 {
 	return view.contentSize;
 }
 
-DKPoint DKWindowImpl::Origin(void) const
+DKPoint DKWindow_iOS::Origin(void) const
 {
 	return view.origin;
 }
 
-double DKWindowImpl::ContentScaleFactor(void) const
+double DKWindow_iOS::ContentScaleFactor(void) const
 {
 	return view.contentScaleFactor;
 }
 
-void DKWindowImpl::SetTitle(const DKString& title)
+void DKWindow_iOS::SetTitle(const DKString& title)
 {
 }
 
-DKString DKWindowImpl::Title(void) const
+DKString DKWindow_iOS::Title(void) const
 {
 	return L"";
 }
 
-bool DKWindowImpl::IsVisible(void) const
+bool DKWindow_iOS::IsVisible(void) const
 {
 	return [view isHidden];
 }
 
-void* DKWindowImpl::PlatformHandle(void) const
+void* DKWindow_iOS::PlatformHandle(void) const
 {
 	return view;
 }
 
-void DKWindowImpl::ShowMouse(int deviceId, bool bShow)
+void DKWindow_iOS::ShowMouse(int deviceId, bool bShow)
 {
 }
 
-bool DKWindowImpl::IsMouseVisible(int deviceId) const
-{
-	return false;
-}
-
-void DKWindowImpl::HoldMouse(int deviceId, bool bHold)
-{
-}
-
-bool DKWindowImpl::IsMouseHeld(int deviceId) const
+bool DKWindow_iOS::IsMouseVisible(int deviceId) const
 {
 	return false;
 }
 
-void DKWindowImpl::SetMousePosition(int deviceId, const DKPoint& pt)
+void DKWindow_iOS::HoldMouse(int deviceId, bool bHold)
+{
+}
+
+bool DKWindow_iOS::IsMouseHeld(int deviceId) const
+{
+	return false;
+}
+
+void DKWindow_iOS::SetMousePosition(int deviceId, const DKPoint& pt)
 {
 	[view setTouchPosition:pt atIndex:deviceId];
 }
 
-DKPoint DKWindowImpl::MousePosition(int deviceId) const
+DKPoint DKWindow_iOS::MousePosition(int deviceId) const
 {
 	return [view touchPositionAtIndex:deviceId];
 }
 
-void DKWindowImpl::EnableTextInput(int deviceId, bool enable)
+void DKWindow_iOS::EnableTextInput(int deviceId, bool enable)
 {
 	if (deviceId == 0)
 		[view enableTextInput:enable];
 }
 
-bool DKWindowImpl::IsValid(void) const
+bool DKWindow_iOS::IsValid(void) const
 {
 	if (view)
 		return true;
@@ -236,7 +236,7 @@ bool DKWindowImpl::IsValid(void) const
 	return false;			
 }
 
-DKVirtualKey DKWindowImpl::ConvertVKey(unsigned long key)
+DKVirtualKey DKWindow_iOS::ConvertVKey(unsigned long key)
 {
 	switch (key)
 	{

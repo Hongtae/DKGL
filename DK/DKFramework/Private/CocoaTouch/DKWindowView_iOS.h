@@ -1,5 +1,5 @@
 //
-//  File: DKWindowView.h
+//  File: DKWindowView_iOS.h
 //  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -19,11 +19,11 @@
 #import "../../DKWindow.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKWindowView
+// DKWindowView_iOS
 // using UITextFile to process text input.
 //
 
-@interface DKWindowView : UIView <UITextFieldDelegate>
+@interface DKWindowView_iOS : UIView <UITextFieldDelegate>
 
 @property (readonly, nonatomic)		DKFramework::DKWindow* handler;
 @property (readwrite, nonatomic)	DKFramework::DKPoint origin;		// OS unit based

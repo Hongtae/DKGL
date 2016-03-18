@@ -1,9 +1,9 @@
 ﻿//
-//  File: DKApplicationImpl.h
-//  Platform: Mac OS X
+//  File: DKApplication_iOS.h
+//  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,10 +11,20 @@
 #if defined(__APPLE__) && defined(__MACH__)
 
 #import <TargetConditionals.h>
-#if !TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
 
 #ifdef __OBJC__
-#import <AppKit/AppKit.h> 
+#import <UIKit/UIKit.h> 
+
+@interface DKApplicationDelegate : NSObject<UIApplicationDelegate>
+{
+	UIWindow*					window;
+	UIViewController*			viewController;
+	BOOL						initialized;
+}
+
+@property (readonly) UIViewController* viewController;
+@end
 #else
 
 #endif	//ifdef __OBJC__
@@ -27,12 +37,12 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		class DKApplicationImpl : public DKApplicationInterface
+		class DKApplication_iOS : public DKApplicationInterface
 		{
 		public:
-			DKApplicationImpl(DKApplication* app);
-			~DKApplicationImpl(void);
-
+			DKApplication_iOS(DKApplication* app);
+			~DKApplication_iOS(void);
+			
 			int Run(DKArray<char*>& args);
 			void Terminate(int exitCode);
 
@@ -52,13 +62,15 @@ namespace DKFramework
 			DKString OSName(void) const;
 			DKString UserName(void) const;
 
+			void AppInitialize(void);
+			void AppFinalize(void);
+
 			DKApplication* mainApp;
-			int retCode;
-			bool terminate;
+			bool terminateRequested;
 		};
 	}
 }
 
-#endif //if !TARGET_OS_IPHONE
+#endif //if TARGET_OS_IPHONE
 #endif //if defined(__APPLE__) && defined(__MACH__)
 
