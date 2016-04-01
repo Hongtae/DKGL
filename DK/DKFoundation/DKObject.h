@@ -245,6 +245,31 @@ namespace DKFoundation
 				return ref;
 			return 0;
 		}
+		bool ReleaseIfNotShared(void)
+		{
+			if (_target)
+			{
+				DKAllocator* allocator = NULL;
+				void* addr = BaseAddress(_target);
+				if (RefCounter::UnsetRefCounterIfEqual(addr, 1, &allocator))
+				{
+					_target->~T();
+					_target = NULL;
+					if (allocator)
+					{
+						allocator->Dealloc(addr);
+					}
+					else
+					{
+						// leak!
+						DKASSERT_MEM_DESC_DEBUG(false, "Leak: Memory Allocator not found!");
+					}
+					return true;
+				}
+				return false;
+			}
+			return true;
+		}
 		// determine base address of polymorphic type
 		void* BaseAddress(void) const
 		{
@@ -269,15 +294,18 @@ namespace DKFoundation
 			{
 				// decrease ref-count, delete if ref-count becomes zero.
 				DKAllocator* allocator = NULL;
-				if (RefCounter::DecrementRefCountAndUnsetIfZero(BaseAddress(p), &allocator))
+				void* addr = BaseAddress(p);
+				if (RefCounter::DecrementRefCountAndUnsetIfZero(addr, &allocator))
 				{
+					p->~T();
 					if (allocator)
 					{
-						// get base-address before calling destructor!
-						// we will lost polymorphic type info.
-						void* ptr = BaseAddress(p);
-						p->~T();
-						allocator->Dealloc(ptr);
+						allocator->Dealloc(addr);
+					}
+					else
+					{
+						// leak!
+						DKASSERT_MEM_DESC_DEBUG(false, "Leak: Memory Allocator not found!");
 					}
 				}
 			}
