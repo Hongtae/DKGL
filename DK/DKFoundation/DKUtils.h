@@ -14,8 +14,9 @@
 
 namespace DKFoundation
 {
-	DKGL_API unsigned int DKRandom(void);
+	DKGL_API uint32_t DKRandom(void);
 	DKGL_API DKString DKTemporaryDirectory(void);
 	DKGL_API DKArray<DKString> DKProcessArguments(void);
 	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void);
+	DKGL_API uint32_t DKNumberOfProcessors(void);
 }

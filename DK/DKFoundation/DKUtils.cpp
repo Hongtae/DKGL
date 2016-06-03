@@ -29,9 +29,9 @@ extern "C" DKGL_API const char* DKCopyright(void)
 namespace DKFoundation
 {
 #ifdef _WIN32
-	DKGL_API unsigned int DKRandom(void)
+	DKGL_API uint32_t DKRandom(void)
 	{
-		unsigned int value;
+		uint32_t value;
 		if (rand_s(&value) == 0)
 		{
 			return value;
@@ -46,12 +46,12 @@ namespace DKFoundation
 			}
 		} init;
 
-		unsigned int h = rand();
-		unsigned int l = rand();
+		uint32_t h = rand();
+		uint32_t l = rand();
 		return ((h << 16) & 0xffff0000) | ( l & 0x0000ffff);
 	}
 #elif defined(__linux__)
-	DKGL_API unsigned int DKRandom(void)
+	DKGL_API uint32_t DKRandom(void)
 	{
 		static struct InitSeed
 		{
@@ -125,6 +125,18 @@ namespace DKFoundation
 		}
 		return env;
 	}
+
+	DKGL_API uint32_t DKNumberOfProcessors(void)
+	{
+		int ncpu = 0;
+		SYSTEM_INFO sysinfo;
+		GetSystemInfo(&sysinfo);
+		ncpu = sysinfo.dwNumberOfProcessors;
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
+	}
 #elif defined(__linux__)
 	DKGL_API DKString DKTemporaryDirectory(void)
 	{
@@ -150,6 +162,16 @@ namespace DKFoundation
 	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
 	{
 		return DKMap<DKString, DKString>();
+	}
+
+	DKGL_API uint32_t DKNumberOfProcessors(void)
+	{
+		int ncpu = 0;
+		ncpu = sysconf(_SC_NPROCESSORS_ONLN);
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
 	}
 #endif
 }

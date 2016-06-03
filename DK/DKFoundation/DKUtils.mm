@@ -17,6 +17,8 @@
 #import <AppKit/AppKit.h>
 #endif	// if TARGET_OS_IPHONE
 
+#include <sys/types.h>
+#include <sys/sysctl.h>
 #include "DKUtils.h"
 
 namespace DKFoundation
@@ -39,7 +41,7 @@ namespace DKFoundation
 		}
 	}
 
-	DKGL_API unsigned int DKRandom(void)
+	DKGL_API uint32_t DKRandom(void)
 	{
 		return arc4random();
 	}
@@ -89,6 +91,21 @@ namespace DKFoundation
 		 }];
 		[pool release];
 		return result;
+	}
+
+	DKGL_API uint32_t DKNumberOfProcessors(void)
+	{
+		int ncpu = 0;
+		int mib[2];
+		size_t len = sizeof(ncpu);
+		mib[0] = CTL_HW;
+		mib[1] = HW_NCPU;
+		if (sysctl(mib, 2, &ncpu, &len, NULL, 0) != 0)
+			ncpu = 0;
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
 	}
 }
 #endif //if defined(__APPLE__) && defined(__MACH__)
