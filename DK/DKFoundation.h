@@ -33,7 +33,7 @@
 
 // hash, UUID
 #include "DKFoundation/DKHash.h"
-#include "DKFoundation/DKUuid.h"
+#include "DKFoundation/DKUUID.h"
 
 // thread, mutex, synchronization objects.
 #include "DKFoundation/DKAtomicNumber32.h"

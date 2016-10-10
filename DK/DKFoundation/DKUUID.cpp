@@ -1,5 +1,5 @@
 //
-//  File: DKUuid.cpp
+//  File: DKUUID.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -18,14 +18,14 @@
 #include <uuid/uuid.h>
 #endif
 
-#include "DKUuid.h"
+#include "DKUUID.h"
 #include "DKSpinLock.h"
 #include "DKCriticalSection.h"
 #include "DKEndianness.h"
 
 using namespace DKGL;
 
-DKUuid::DKUuid(void)
+DKUUID::DKUUID(void)
 {
 	int* v = reinterpret_cast<int*>(data);
 	v[0] = 0;
@@ -34,7 +34,7 @@ DKUuid::DKUuid(void)
 	v[3] = 0;
 }
 
-DKUuid::DKUuid(const DKUuid& uuid)
+DKUUID::DKUUID(const DKUUID& uuid)
 {
 	int* v1 = reinterpret_cast<int*>(data);
 	const int* v2 = reinterpret_cast<const int*>(uuid.data);
@@ -44,7 +44,7 @@ DKUuid::DKUuid(const DKUuid& uuid)
 	v1[3] = v2[3];
 }
 
-void DKUuid::SetZero(void)
+void DKUUID::SetZero(void)
 {
 	int* v = reinterpret_cast<int*>(data);
 	v[0] = 0;
@@ -53,7 +53,7 @@ void DKUuid::SetZero(void)
 	v[3] = 0;
 }
 
-DKUuid::DKUuid(const DKString& str)
+DKUUID::DKUUID(const DKString& str)
 {
 	memset(this->data, 0, sizeof(this->data));
 	size_t inputLength = str.Length();
@@ -103,9 +103,9 @@ DKUuid::DKUuid(const DKString& str)
 	}
 }
 
-DKUuid DKUuid::Create(void)
+DKUUID DKUUID::Create(void)
 {
-	DKUuid uuid;
+	DKUUID uuid;
 	static DKSpinLock lock;
 	DKCriticalSection<DKSpinLock> guard(lock);
 
@@ -131,7 +131,7 @@ DKUuid DKUuid::Create(void)
 	return uuid;
 }
 
-DKString DKUuid::String(void) const
+DKString DKUUID::String(void) const
 {
 	char buff[40];
 
@@ -170,7 +170,7 @@ DKString DKUuid::String(void) const
 	return DKString(buff);
 }
 
-int DKUuid::Compare(const DKUuid& rhs) const
+int DKUUID::Compare(const DKUUID& rhs) const
 {
 	int cmp = 0;
 	for (int i = 0; i < 16 && cmp == 0; ++i)
@@ -180,7 +180,7 @@ int DKUuid::Compare(const DKUuid& rhs) const
 	return cmp;
 }
 
-DKUuid& DKUuid::operator = (const DKUuid& uuid)
+DKUUID& DKUUID::operator = (const DKUUID& uuid)
 {
 	int* v1 = reinterpret_cast<int*>(data);
 	const int* v2 = reinterpret_cast<const int*>(uuid.data);
@@ -191,12 +191,12 @@ DKUuid& DKUuid::operator = (const DKUuid& uuid)
 	return *this;
 }
 
-bool DKUuid::IsValid(void) const
+bool DKUUID::IsValid(void) const
 {
 	return IsZero() == false;
 }
 
-bool DKUuid::IsZero(void) const
+bool DKUUID::IsZero(void) const
 {
 	const int* iv = reinterpret_cast<const int*>(this->data);
 	return iv[0] == 0 && iv[1] == 0 && iv[2] == 0 && iv[3] == 0;

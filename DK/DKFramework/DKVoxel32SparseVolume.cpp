@@ -263,7 +263,7 @@ bool DKVoxel32SparseVolume::SetVoxelAtLocation(unsigned int x, unsigned int y, u
 					UnloadOldBlocks(maxLoadable - blocksLoaded + 1);
 
 				DKVoxel32 solid = block.solid;
-				block.storageId = DKUuid::Create();
+				block.storageId = DKUUID::Create();
 				block.voxels = storage->Create(block.storageId);
 				DKASSERT_DEBUG(block.voxels);
 				for (size_t i = 0; i < numVoxels; ++i)

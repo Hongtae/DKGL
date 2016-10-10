@@ -29,8 +29,8 @@ namespace DKGL
 
 		virtual void SetName(const DKString& name);
 		const DKString& Name(void) const;
-		virtual void SetUUID(const DKUuid& uuid);
-		const DKUuid& UUID(void) const;
+		virtual void SetUUID(const DKUUID& uuid);
+		const DKUUID& UUID(void) const;
 
 		virtual DKObject<DKSerializer> Serializer(void);
 		virtual DKObject<DKData> Serialize(DKSerializer::SerializeForm) const;
@@ -47,7 +47,7 @@ namespace DKGL
 
 	private:
 		DKString objectName;
-		DKUuid objectUUID;
+		DKUUID objectUUID;
 		DKAllocator* allocator;
 
 		DKResource(const DKResource&);

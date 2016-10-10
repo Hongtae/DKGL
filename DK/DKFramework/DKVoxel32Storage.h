@@ -35,7 +35,7 @@ namespace DKGL
 		DKVoxel32Storage(void) {}
 		virtual ~DKVoxel32Storage(void) {}
 
-		typedef DKUuid StorageId;
+		typedef DKUUID StorageId;
 	
 		virtual size_t MaxActiveUnits(void) const = 0;
 

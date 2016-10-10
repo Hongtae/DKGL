@@ -34,7 +34,7 @@
 #include "DKLog.h"
 #include "DKString.h"
 #include "DKUtils.h"
-#include "DKUuid.h"
+#include "DKUUID.h"
 #include "DKFixedSizeAllocator.h"
 
 
