@@ -91,7 +91,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/FreeType/include;lib/libxml2/include;lib/libogg/include;lib/zlib;lib/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -137,7 +137,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/FreeType/include;lib/libxml2/include;lib/libogg/include;lib/zlib;lib/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -181,7 +181,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/FreeType/include;lib/libxml2/include;lib/libogg/include;lib/zlib;lib/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -228,7 +228,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib/FreeType/include;lib/libxml2/include;lib/libogg/include;lib/zlib;lib/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -636,13 +636,38 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
-    <ProjectReference Include="lib\ExtDeps\ExtDeps.vcxproj">
-      <Project>{b748dbfc-45ea-4c3f-8d2b-58f6c42fb2b2}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    <ProjectReference Include="lib\bzip2\bzip2.vcxproj">
+      <Project>{9ea18f12-e46f-47ba-9ccb-3516fc120e51}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\CxImage\CxImage.vcxproj">
+      <Project>{c6b99c7b-7f59-4c34-ac85-5dcc7dc3b86b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\FreeType\FreeType.vcxproj">
+      <Project>{468db90f-bb39-4513-9db4-4a02aeb204cf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\jpeg\jpeg.vcxproj">
+      <Project>{122901e4-0a34-424d-acb6-2a35f0533946}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\libFLAC\libFLAC.vcxproj">
+      <Project>{b2919ce0-792e-4477-8663-153b3b0d7f9f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\libogg\libogg.vcxproj">
+      <Project>{1721c237-7b3b-4b64-8f66-e7579da0a02d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\libpng\libpng.vcxproj">
+      <Project>{816915c1-9ab2-4cfa-8d11-4192d927e248}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\libtiff\libtiff.vcxproj">
+      <Project>{72062708-2398-42a9-b935-aed90f9ee6b9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\libvorbis\libvorbis.vcxproj">
+      <Project>{efa8a22d-c9e7-4ce7-beba-b476de7cd09b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\libxml2\libxml2.vcxproj">
+      <Project>{66454320-29ab-4e59-be3f-d3c3a4b9f6f7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lib\lz4\lz4.vcxproj">
+      <Project>{0ff4da8e-3c93-43b0-b6ce-358864f69062}</Project>
     </ProjectReference>
     <ProjectReference Include="lib\OpenAL\OpenAL.vcxproj">
       <Project>{5a9d1eb1-c8d8-4eb8-a60e-7bc6009cd709}</Project>
@@ -651,6 +676,9 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="lib\zlib\zlib.vcxproj">
+      <Project>{b79870dd-49d1-41c0-835e-e38024ae9455}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

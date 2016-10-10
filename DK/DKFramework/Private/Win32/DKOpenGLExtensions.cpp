@@ -10,9 +10,9 @@
 
 #include <windows.h>
 #include <gl/gl.h>
-#include "../../../../lib/OpenGL/glext.h"
-#include "../../../../lib/OpenGL/glcorearb.h"
-#include "../../../../lib/OpenGL/wglext.h"
+#include "../../../lib/OpenGL/glext.h"
+#include "../../../lib/OpenGL/glcorearb.h"
+#include "../../../lib/OpenGL/wglext.h"
 #include "../../../DKInclude.h"
 #include "../../../DKFoundation.h"
 

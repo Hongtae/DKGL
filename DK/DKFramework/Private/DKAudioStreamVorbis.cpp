@@ -2,13 +2,12 @@
 //  File: DKAudioStreamVorbis.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_LIBOGG
-#define DKGL_EXTDEPS_LIBVORBIS
 #include <memory.h>
-#include "../../../lib/ExtDeps.h"
+#include "../../../lib/libogg.h"
+#include "../../../lib/libvorbis.h"
 
 #include "DKAudioStreamVorbis.h"
 

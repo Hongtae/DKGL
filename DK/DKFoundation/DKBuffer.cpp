@@ -2,16 +2,15 @@
 //  File: DKBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <ctype.h>
 #include <wctype.h>
 
-#define DKGL_EXTDEPS_ZLIB
-#define DKGL_EXTDEPS_LZ4
-#define DKGL_EXTDEPS_LIBXML
-#include "../lib/ExtDeps.h"
+#include "../lib/zlib.h"
+#include "../lib/lz4.h"
+#include "../lib/libxml2.h"
 
 #include "DKEndianness.h"
 #include "DKString.h"
