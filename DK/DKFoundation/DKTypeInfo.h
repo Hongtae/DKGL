@@ -16,7 +16,7 @@
 // You can use std::type_info directly.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKTypeInfo
 	{

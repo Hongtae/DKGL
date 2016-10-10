@@ -15,7 +15,7 @@
 // subclass should override functions that read, write to voxel.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	template <typename VoxelType> class DKVoxelVolume
 	{

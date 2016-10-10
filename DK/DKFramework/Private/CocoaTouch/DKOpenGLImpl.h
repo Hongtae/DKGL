@@ -22,7 +22,7 @@ class EAGLContext;
 
 #include "../../Interface/DKOpenGLInterface.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -60,10 +60,10 @@ namespace DKFramework
 			};
 
 			// OpenGL ES extensions
-			DKFoundation::DKSet<DKFoundation::DKString> extensions;
+			DKSet<DKString> extensions;
 			
 			// context pool
-			typedef DKFoundation::DKMap<pthread_t, BoundContext, DKFoundation::DKSpinLock> SharedContextMap;
+			typedef DKMap<pthread_t, BoundContext, DKSpinLock> SharedContextMap;
 			mutable SharedContextMap		sharedContexts;
 		};
 	}

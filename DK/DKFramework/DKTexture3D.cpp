@@ -10,8 +10,8 @@
 #include "DKOpenGLContext.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKTexture3D::DKTexture3D(void)

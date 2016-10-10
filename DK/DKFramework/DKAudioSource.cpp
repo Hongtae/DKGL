@@ -10,8 +10,8 @@
 #include "DKAudioSource.h"
 #include "DKOpenALContext.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKAudioSource::DKAudioSource(void)
 	: sourceId(0)

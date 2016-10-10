@@ -14,7 +14,7 @@
 
 #include "DKAtomicNumber32.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKAtomicNumber32::Value DKAtomicNumber32::Increment(void)
 {

@@ -29,15 +29,15 @@
 //    This applied for all subclasses.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKCollisionShape
 	{
 	public:
 		struct SerializeHelper : public DKResource
 		{
-			DKFoundation::DKObject<DKSerializer> Serializer(void) override;
-			DKFoundation::DKObject<DKCollisionShape> shape;
+			DKObject<DKSerializer> Serializer(void) override;
+			DKObject<DKCollisionShape> shape;
 		};
 
 		enum class UpAxis

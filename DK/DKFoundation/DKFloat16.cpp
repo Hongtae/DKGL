@@ -6,7 +6,7 @@
 
 
 #include "DKFloat16.h"
-using namespace DKFoundation;
+using namespace DKGL;
 
 static inline DKFloat16 UInt16ToFloat16(uint16_t val)
 {

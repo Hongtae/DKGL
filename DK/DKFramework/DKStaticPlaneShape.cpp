@@ -8,9 +8,9 @@
 #include "Private/BulletUtils.h"
 #include "DKStaticPlaneShape.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKStaticPlaneShape::DKStaticPlaneShape(const DKVector3& planeNormal, float planeConstant)
 	: DKConcaveShape(ShapeType::StaticPlane, new btStaticPlaneShape(btVector3(planeNormal.x, planeNormal.y, planeNormal.z), planeConstant))

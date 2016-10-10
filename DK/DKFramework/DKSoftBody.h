@@ -17,7 +17,7 @@
 // This class is not implemented yet. DON'T USE.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	// NOT IMPLEMENTED.
 	class DKGL_API DKSoftBody : public DKCollisionObject
@@ -29,9 +29,9 @@ namespace DKFramework
 		DKCollisionShape* CollisionShape(void)				{return NULL;}
 		const DKCollisionShape* CollisionShape(void) const	{return NULL;}
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 	};
 }

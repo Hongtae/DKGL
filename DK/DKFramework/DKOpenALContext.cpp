@@ -8,7 +8,7 @@
 #include "../lib/OpenAL.h"
 #include "DKOpenALContext.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -17,8 +17,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKSpinLock DKOpenALContext::contextLock;
 
@@ -67,7 +67,7 @@ DKOpenALContext::DKOpenALContext(void)
 	}
 	else
 	{
-		DKFoundation::DKLog("[DKAVMediaController] ALC_ENUMERATION_EXT not valid\n");
+		DKLog("[DKAVMediaController] ALC_ENUMERATION_EXT not valid\n");
 	}
 
 
@@ -116,10 +116,10 @@ bool DKOpenALContext::IsBound(void) const
 
 void DKOpenALContext::Bind(void) const
 {
-	if (DKFramework::Private::audioSessionActivated)
+	if (Private::audioSessionActivated)
 		alcMakeContextCurrent((ALCcontext*)context);
 	else
-		DKFramework::Private::bindContextWhenActivated = (ALCcontext*)context;		
+		Private::bindContextWhenActivated = (ALCcontext*)context;		
 }
 
 void DKOpenALContext::Unbind(void) const
@@ -136,12 +136,12 @@ void DKOpenALContext::Activate(void)
 	DKCriticalSection<DKSpinLock> section(contextLock);
 	
 	ALCcontext* current = alcGetCurrentContext();
-	if (current == NULL && DKFramework::Private::audioSessionActivated == false)
+	if (current == NULL && Private::audioSessionActivated == false)
 	{
-		alcMakeContextCurrent(DKFramework::Private::bindContextWhenActivated);
+		alcMakeContextCurrent(Private::bindContextWhenActivated);
 		
-		DKFramework::Private::audioSessionActivated = true;
-		DKFramework::Private::bindContextWhenActivated = NULL;
+		Private::audioSessionActivated = true;
+		Private::bindContextWhenActivated = NULL;
 		
 		DKLog("DKOpenALContext activated.\n");
 	}
@@ -152,10 +152,10 @@ void DKOpenALContext::Deactivate(void)
 	DKCriticalSection<DKSpinLock> section(contextLock);
 	
 	ALCcontext* current = alcGetCurrentContext();
-	if (current || DKFramework::Private::audioSessionActivated)
+	if (current || Private::audioSessionActivated)
 	{
-		DKFramework::Private::audioSessionActivated = false;
-		DKFramework::Private::bindContextWhenActivated = current;
+		Private::audioSessionActivated = false;
+		Private::bindContextWhenActivated = current;
 		alcMakeContextCurrent(NULL);
 	}
 	DKLog("DKOpenALContext deactivated.\n");

@@ -23,7 +23,7 @@
 
 
 #pragma pack(push, 2)
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKFloat16
 	{

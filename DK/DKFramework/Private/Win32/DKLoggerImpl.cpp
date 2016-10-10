@@ -16,9 +16,9 @@
 
 #include "DKLoggerImpl.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -85,7 +85,7 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
+using namespace DKGL;
 
 void DKLoggerImpl::Log(const DKString& msg)
 {

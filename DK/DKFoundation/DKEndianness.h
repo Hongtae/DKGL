@@ -14,7 +14,7 @@
 #error System endianness not defined.
 #endif
 
-namespace DKFoundation
+namespace DKGL
 {
 	////////////////////////////////////////////////////////////////////////////////
 	// byteorder swap template functions.

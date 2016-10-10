@@ -31,7 +31,7 @@
 #define POSIX_USE_SELECT_SLEEP	1
 #endif
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -163,8 +163,8 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFoundation::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 const DKThread::ThreadId DKThread::invalidId = (DKThread::ThreadId)0;
 

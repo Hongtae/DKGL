@@ -40,9 +40,9 @@
 #include "DKSceneState.h"
 #include "DKRenderState.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	static_assert(sizeof(DKPoint) == sizeof(float) * 2, "size mismatch");
 	static_assert(sizeof(DKSize) == sizeof(float) * 2, "size mismatch");
@@ -236,7 +236,7 @@ namespace DKFramework
 
 		static DKObject<DKStaticMesh> Build2DMesh(DKVertexBuffer::MemoryLocation loc, DKVertexBuffer::BufferUsage usage, DKTexture* fallbackTexture)
 		{
-			auto GetRenderProperty2D = [](const DKFoundation::DKString& name,
+			auto GetRenderProperty2D = [](const DKString& name,
 				std::initializer_list<const DKMaterial::ShaderSource*> shaders) -> DKMaterial::RenderingProperty
 			{
 				DKMaterial::RenderingProperty rp =
@@ -310,7 +310,7 @@ namespace DKFramework
 
 		static DKObject<DKStaticMesh> Build3DMesh(DKVertexBuffer::MemoryLocation loc, DKVertexBuffer::BufferUsage usage, DKTexture* fallbackTexture)
 		{
-			auto GetRenderProperty3D = [](const DKFoundation::DKString& name,
+			auto GetRenderProperty3D = [](const DKString& name,
 				std::initializer_list<const DKMaterial::ShaderSource*> shaders) -> DKMaterial::RenderingProperty
 			{
 				DKMaterial::RenderingProperty rp =
@@ -388,11 +388,11 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
-class DKRenderer::RendererContext : public DKFoundation::DKSharedInstance<RendererContext>, public DKUnknown
+class DKRenderer::RendererContext : public DKSharedInstance<RendererContext>, public DKUnknown
 {
 public:
 	typedef DKCriticalSection<DKSpinLock> CriticalSection;
@@ -1924,7 +1924,7 @@ void DKRenderer::RenderWireAabb(const DKVector3& aabbMin, const DKVector3& aabbM
 	reusableVert3DBuffer.Clear();
 }
 
-void DKRenderer::RenderText(const DKRect& bounds, const DKMatrix3& transform, const DKFoundation::DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend) const
+void DKRenderer::RenderText(const DKRect& bounds, const DKMatrix3& transform, const DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend) const
 {
 	if (IsDrawable() == false)
 		return;
@@ -2070,7 +2070,7 @@ void DKRenderer::RenderText(const DKRect& bounds, const DKMatrix3& transform, co
 	}
 }
 
-void DKRenderer::RenderText(const DKPoint& baselineBegin, const DKPoint& baselineEnd, const DKFoundation::DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend) const
+void DKRenderer::RenderText(const DKPoint& baselineBegin, const DKPoint& baselineEnd, const DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend) const
 {
 	if (IsDrawable() == false)
 		return;

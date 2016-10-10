@@ -10,9 +10,9 @@
 #include "DKOpenGLContext.h"
 #include "DKResourceLoader.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -216,7 +216,7 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
+using namespace DKGL;
 
 
 DKShaderProgram::DKShaderProgram(void)
@@ -277,7 +277,7 @@ bool DKShaderProgram::IsValid(void) const
 	return false;
 }
 
-int	DKShaderProgram::GetUniformComponents(const DKFoundation::DKString& name) const
+int	DKShaderProgram::GetUniformComponents(const DKString& name) const
 {
 	for (int i = 0; i < uniforms.Count(); i++)
 	{
@@ -287,7 +287,7 @@ int	DKShaderProgram::GetUniformComponents(const DKFoundation::DKString& name) co
 	return 0;
 }
 
-int DKShaderProgram::GetAttribComponents(const DKFoundation::DKString& name) const
+int DKShaderProgram::GetAttribComponents(const DKString& name) const
 {
 	for (int i = 0; i < attributes.Count(); i++)
 	{

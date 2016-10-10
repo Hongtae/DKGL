@@ -19,7 +19,7 @@
 // this class provides DOM includes DTD.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKXMLDocument
 	{

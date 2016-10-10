@@ -15,7 +15,7 @@
 // an implicit sphere class. centered local origin with radius.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKSphereShape : public DKConvexShape
 	{

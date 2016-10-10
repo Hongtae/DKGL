@@ -2,8 +2,8 @@
 #include "PyDKPython.h"
 #include "DCObject.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 // posix 에서는 _sysconfigdata 모듈이 필요함. (빌드정보)

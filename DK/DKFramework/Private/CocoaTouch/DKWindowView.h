@@ -25,14 +25,14 @@
 
 @interface DKWindowView : UIView <UITextFieldDelegate>
 
-@property (readonly, nonatomic)		DKFramework::DKWindow* handler;
-@property (readwrite, nonatomic)	DKFramework::DKPoint origin;		// OS unit based
-@property (readwrite, nonatomic)	DKFramework::DKSize contentSize;	// pixel based
+@property (readonly, nonatomic)		DKWindow* handler;
+@property (readwrite, nonatomic)	DKPoint origin;		// OS unit based
+@property (readwrite, nonatomic)	DKSize contentSize;	// pixel based
 @property (readonly, nonatomic)		BOOL appActivated;
 
-- (id)initWithFrame:(CGRect)frame handler:(DKFramework::DKWindow*)handler;
-- (void)setTouchPosition:(const DKFramework::DKPoint&)pos atIndex:(NSUInteger)index;
-- (DKFramework::DKPoint)touchPositionAtIndex:(NSUInteger)index;
+- (id)initWithFrame:(CGRect)frame handler:(DKWindow*)handler;
+- (void)setTouchPosition:(const DKPoint&)pos atIndex:(NSUInteger)index;
+- (DKPoint)touchPositionAtIndex:(NSUInteger)index;
 - (void)enableTextInput:(BOOL)enable;
 @end
 

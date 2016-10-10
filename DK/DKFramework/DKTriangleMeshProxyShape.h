@@ -18,7 +18,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKTriangleMeshProxyShape : public DKConcaveShape
 	{
@@ -28,7 +28,7 @@ namespace DKFramework
 
 		// TriangleCallback : reports AABB-overlapped triangle.
 		// parameter: (triangle, mesh-parts, triangle-index)
-		using TriangleCallback = DKFoundation::DKFunctionSignature<void (DKTriangle&, int, int)>;
+		using TriangleCallback = DKFunctionSignature<void (DKTriangle&, int, int)>;
 
 		// subclass should AABB-casting to all triangles and report overlaps.
 		virtual void QueryTrianglesInAabb(const DKAabb&, TriangleCallback*) = 0;

@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
-namespace DKFramework
+namespace DKGL
 {
 	class DKColor
 	{
@@ -77,10 +77,10 @@ namespace DKFramework
 		RGBA32 RGBA32Value(void) const
 		{
 			RGBA32 val = {
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(b * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(a * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(r * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(g * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(b * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(a * 255.0f, 0, 0xff)),
 			};
 			return val;
 		}
@@ -88,10 +88,10 @@ namespace DKFramework
 		ARGB32 ARGB32Value(void) const
 		{
 			ARGB32 val = {
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(a * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(b * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(a * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(r * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(g * 255.0f, 0, 0xff)),
+				static_cast<unsigned char>(Clamp<int>(b * 255.0f, 0, 0xff)),
 			};
 			return val;
 		}

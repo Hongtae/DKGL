@@ -12,8 +12,8 @@
 #include "DKAudioSource.h"
 #include "DKOpenALContext.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -30,8 +30,8 @@ namespace DKFramework
 				QueueStateBufferFeeding,
 			};
 			typedef DKAudioSource::AudioState AudioState;
-			typedef DKFoundation::DKFunctionSignature<void(void*, size_t, double)> StreamCallback;
-			typedef DKFoundation::DKFunctionSignature<void(int, double)> StateCallback;
+			typedef DKFunctionSignature<void(void*, size_t, double)> StreamCallback;
+			typedef DKFunctionSignature<void(int, double)> StateCallback;
 
 			struct SourceStream
 			{
@@ -56,8 +56,8 @@ namespace DKFramework
 		}
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 class DKAudioPlayer::AudioQueue : public DKSharedInstance<AudioQueue>
 {

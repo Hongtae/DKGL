@@ -19,7 +19,7 @@
 
 #include "DKUtils.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{

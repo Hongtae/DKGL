@@ -20,8 +20,8 @@ We will ignore warning until the parameter type changes to 'const char**'.
 #pragma clang diagnostic ignored "-Wdeprecated-writable-strings"
 #endif
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 PyObject* DCObjectFromAddress(const void* addr);
 void DCObjectSetAddress(const void* addr, PyObject* obj);

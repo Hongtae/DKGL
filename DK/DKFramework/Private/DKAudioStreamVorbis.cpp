@@ -13,9 +13,9 @@
 
 #define SWAP_CHANNEL16(x, y)		{short t = x; x = y ; y = t;}
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -67,8 +67,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 DKAudioStreamVorbis::DKAudioStreamVorbis(void)

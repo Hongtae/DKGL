@@ -22,9 +22,9 @@ class DKWindowView;
 
 #include "../../Interface/DKWindowInterface.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{

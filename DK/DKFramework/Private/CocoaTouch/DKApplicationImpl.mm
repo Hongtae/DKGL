@@ -18,9 +18,9 @@
 #import "../../DKOpenALContext.h"
 #import "DKApplicationImpl.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 #pragma mark - DKAppOperationWrapper

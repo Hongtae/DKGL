@@ -24,18 +24,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-namespace DKFramework
+namespace DKGL
 {
-	class DKGL_API DKScreen : public DKFoundation::DKRunLoop
+	class DKGL_API DKScreen : public DKRunLoop
 	{
-		friend class DKFoundation::DKObject<DKScreen>;
+		friend class DKObject<DKScreen>;
 	public:
 		DKScreen(void);
 		~DKScreen(void);
 
 		bool Run(DKWindow* window, DKFrame* rootFrame);
 
-		DKFoundation::DKRunLoop* RunLoop(void) const;
+		DKRunLoop* RunLoop(void) const;
 
 		// system window (initial render target)
 		DKWindow* Window(void);
@@ -92,34 +92,34 @@ namespace DKFramework
 		void OnInitialize(void) override;
 		void OnTerminate(void) override;
 		void OnIdle(void) override;
-		void PerformOperation(const DKFoundation::DKOperation* operation) override;
+		void PerformOperation(const DKOperation* operation) override;
 
 		void OnWindowEvent(DKWindow::EventWindow type, DKSize contentSize, DKPoint windowOrigin);
 		void OnMouseEvent(DKWindow::EventMouse type, int deviceId, int buttonId, DKPoint pos, DKVector2 delta);
-		void OnKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, DKFoundation::DKString text);
+		void OnKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, DKString text);
 
 	private:
-		DKFoundation::DKObject<DKRenderer>		renderer;
-		DKFoundation::DKMap<int, DKFrame*>		keyboardHolders;
-		DKFoundation::DKMap<int, DKFrame*>		mouseHolders;
-		DKFoundation::DKObject<DKWindow>		window;
-		DKFoundation::DKObject<DKFrame>			rootFrame;
+		DKObject<DKRenderer>		renderer;
+		DKMap<int, DKFrame*>		keyboardHolders;
+		DKMap<int, DKFrame*>		mouseHolders;
+		DKObject<DKWindow>		window;
+		DKObject<DKFrame>			rootFrame;
 
-		DKFoundation::DKSet<DKFrame*, DKFoundation::DKSpinLock>		autoUnloadFrames; // unload when screen being terminated.
+		DKSet<DKFrame*, DKSpinLock>		autoUnloadFrames; // unload when screen being terminated.
 
 		bool						suspended;
 		bool						activated;
 		bool						visible;
 		double						tickDelta;
-		DKFoundation::DKDateTime	tickDate;
-		DKFoundation::DKTimeTick	tickCount;
-		DKFoundation::DKTimer		timer;
+		DKDateTime	tickDate;
+		DKTimeTick	tickCount;
+		DKTimer		timer;
 		double						activeFrameLatency;
 		double						inactiveFrameLatency;
 		DKSize						screenResolution;
 
-		DKFoundation::DKObject<DKOpenALContext> alContext;
-		DKFoundation::DKObject<DKOpenGLContext> glContext;
+		DKObject<DKOpenALContext> alContext;
+		DKObject<DKOpenGLContext> glContext;
 		
 		void RenderScreen(bool invalidate);
 	};

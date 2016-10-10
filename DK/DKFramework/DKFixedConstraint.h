@@ -14,7 +14,7 @@
 // a constraint fixes reference bodis.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKFixedConstraint : public DKConstraint
 	{
@@ -30,13 +30,13 @@ namespace DKFramework
 		void SetFrameB(const DKNSTransform& t);
 		void SetFrames(const DKNSTransform& ta, const DKNSTransform& tb);
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		void ResetContext(void) override;
 		void ResetContextImpl(void) override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKFixedConstraint* Copy(UUIDObjectMap&, const DKFixedConstraint*);
 	};
 }

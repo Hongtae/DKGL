@@ -22,7 +22,7 @@
 #include "DKFile.h"
 #include "DKFileMap.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKDirectory::DKDirectory(void)
 : currentPath(L"")

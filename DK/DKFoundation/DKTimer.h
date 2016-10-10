@@ -25,7 +25,7 @@
 //  it calculates time offset since Reset().
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	typedef int			DKTimeTick;		// counter type default.
 	typedef uint32_t	DKTimeTick32;	// 32bit counter type.

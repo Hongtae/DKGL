@@ -20,7 +20,7 @@
 // OpenGL texture interface.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	inline bool IsPowerOfTwo(int v)	{return ((v & (v - 1)) == 0);}
 
@@ -134,7 +134,7 @@ namespace DKFramework
 
 		unsigned int TextureId(void) const	{return resourceId;}		// OpenGL resource id
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 
 		static int MaxTextureSize(void);
 

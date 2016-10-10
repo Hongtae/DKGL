@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
-namespace DKFramework
+namespace DKGL
 {
 	class DKLine;
 	class DKGL_API DKBox

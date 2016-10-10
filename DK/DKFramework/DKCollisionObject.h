@@ -18,7 +18,7 @@
 // for dynamics use DKRigidBody instead.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKCollisionObject : public DKModel
 	{
@@ -61,11 +61,11 @@ namespace DKFramework
 		DKCollisionShape* CollisionShape(void);
 		const DKCollisionShape* CollisionShape(void) const;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		DKCollisionObject* Copy(UUIDObjectMap&, const DKCollisionObject*);
-		DKFoundation::DKObject<DKCollisionShape> collisionShape;
+		DKObject<DKCollisionShape> collisionShape;
 
 		DKCollisionObject(ObjectType t, class btCollisionObject* co);
 		class btCollisionObject* impl;

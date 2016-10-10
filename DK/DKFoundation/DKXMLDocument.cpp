@@ -10,7 +10,7 @@
 #include "DKStack.h"
 #include "DKLog.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 // DocumentBuilder : inherited from DKXMLParser, to building DKXMLDocument object.
 class DKXMLDocument::DocumentBuilder : public DKXMLParser

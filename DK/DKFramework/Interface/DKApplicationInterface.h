@@ -16,7 +16,7 @@
 // DKApplication.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKApplicationInterface
 	{
@@ -25,22 +25,22 @@ namespace DKFramework
 
 		virtual ~DKApplicationInterface(void) {}
 
-		virtual int Run(DKFoundation::DKArray<char*>& args) = 0;
+		virtual int Run(DKArray<char*>& args) = 0;
 		virtual void Terminate(int exitCode) = 0;
 
-		virtual DKFoundation::DKLogger& DefaultLogger(void) = 0;
-		virtual DKFoundation::DKString EnvironmentPath(SystemPath) = 0;
-		virtual DKFoundation::DKString ModulePath(void) = 0;
+		virtual DKLogger& DefaultLogger(void) = 0;
+		virtual DKString EnvironmentPath(SystemPath) = 0;
+		virtual DKString ModulePath(void) = 0;
 
-		virtual DKFoundation::DKObject<DKFoundation::DKData> LoadResource(const DKFoundation::DKString& res, DKFoundation::DKAllocator& alloc) = 0;		// read-writable
-		virtual DKFoundation::DKObject<DKFoundation::DKData> LoadStaticResource(const DKFoundation::DKString& res) = 0;	// read-only
+		virtual DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) = 0;		// read-writable
+		virtual DKObject<DKData> LoadStaticResource(const DKString& res) = 0;	// read-only
 
 		virtual DKRect DisplayBounds(int displayId) const = 0;
 		virtual DKRect ScreenContentBounds(int displayId) const = 0;
 
-		virtual DKFoundation::DKString HostName(void) const = 0;
-		virtual DKFoundation::DKString OSName(void) const = 0;
-		virtual DKFoundation::DKString UserName(void) const = 0;
+		virtual DKString HostName(void) const = 0;
+		virtual DKString OSName(void) const = 0;
+		virtual DKString UserName(void) const = 0;
 
 		static DKApplicationInterface* CreateInterface(DKApplication*);
 

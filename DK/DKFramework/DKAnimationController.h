@@ -17,14 +17,14 @@
 // Used for DKModel node animation.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKAnimatedTransform
 	{
 	public:
-		typedef DKFoundation::DKString NodeId;
+		typedef DKString NodeId;
 		virtual ~DKAnimatedTransform(void) {}
-		virtual void Update(double timeDelta, DKFoundation::DKTimeTick tick) {}
+		virtual void Update(double timeDelta, DKTimeTick tick) {}
 		virtual bool GetTransform(const NodeId& key, DKTransformUnit& out) = 0;
 	};
 
@@ -34,7 +34,7 @@ namespace DKFramework
 		DKAnimationController(void);
 		virtual ~DKAnimationController(void);
 
-		void Update(double timeDelta, DKFoundation::DKTimeTick tick);
+		void Update(double timeDelta, DKTimeTick tick);
 
 		virtual bool GetTransform(const NodeId& key, DKTransformUnit& out) = 0;
 
@@ -55,6 +55,6 @@ namespace DKFramework
 		float			frame;
 		float			speed;
 
-		DKFoundation::DKTimeTick lastUpdatedTick;
+		DKTimeTick lastUpdatedTick;
 	};
 }

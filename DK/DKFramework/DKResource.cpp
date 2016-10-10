@@ -10,8 +10,8 @@
 #include "DKSerializer.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKResource::DKResource(void)
 : allocator(NULL)
@@ -34,7 +34,7 @@ const DKString& DKResource::Name(void) const
 	return objectName;
 }
 
-void DKResource::SetUUID(const DKFoundation::DKUuid& uuid)
+void DKResource::SetUUID(const DKUuid& uuid)
 {
 	DKASSERT_DEBUG(uuid.IsValid());
 	this->objectUUID = uuid;

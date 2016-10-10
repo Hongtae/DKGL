@@ -18,8 +18,8 @@
 
 #define AUDIO_FORMAT_HEADER_LENGTH		35
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKAudioStream::DKAudioStream(FileType t)
 	: type(t)
@@ -106,7 +106,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(DKStream* stream)
 	return NULL;
 }
 
-DKObject<DKAudioStream> DKAudioStream::Create(const DKFoundation::DKString& file)
+DKObject<DKAudioStream> DKAudioStream::Create(const DKString& file)
 {
 	DKObject<DKFile> f = DKFile::Create(file, DKFile::ModeOpenReadOnly, DKFile::ModeShareAll);
 	if (f == NULL)

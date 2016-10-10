@@ -13,8 +13,8 @@
 #include "DKMatrix4.h"
 #include "DKAabb.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKBox::DKBox(void)
 	: center(0,0,0), u(0,0,0), v(0,0,0), w(0,0,0), hu(-FLT_MAX), hv(-FLT_MAX), hw(-FLT_MAX)

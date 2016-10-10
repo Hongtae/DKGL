@@ -15,7 +15,7 @@
 // set/get position and read/write data at position of stream.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKStream
 	{

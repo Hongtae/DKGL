@@ -160,7 +160,7 @@
 #ifdef __cplusplus
 #	include <stdexcept>
 #	include <type_traits>
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename T> using _UnRef = typename std::remove_reference<T>::type;
 	template <typename T> using _UnCV = typename std::remove_cv<T>::type;
@@ -218,7 +218,7 @@ namespace DKFoundation
 #		define DKGL_FUNCTION_NAME		__func__
 #	endif
 
-#	define DKERROR_THROW(desc)				DKFoundation::DKErrorRaiseException(DKGL_FUNCTION_NAME, __FILE__, __LINE__, desc)
+#	define DKERROR_THROW(desc)				DKErrorRaiseException(DKGL_FUNCTION_NAME, __FILE__, __LINE__, desc)
 #	define DKASSERT_DESC(expr, desc)		{if (!(expr)) DKERROR_THROW(desc);}
 #	define DKASSERT(expr)					{if (!(expr)) DKERROR_THROW("");}
 #	define DKASSERT_STD_DESC(expr, desc)	{if (!(expr)) throw std::runtime_error(desc);}

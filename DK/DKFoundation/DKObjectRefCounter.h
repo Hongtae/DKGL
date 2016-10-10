@@ -19,7 +19,7 @@
 //  Using this class is optinal.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	struct DKGL_API DKObjectRefCounter
 	{

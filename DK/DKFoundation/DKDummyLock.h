@@ -18,7 +18,7 @@
 //  to create your own locking class, you need provide Lock, TryLock, Unlock functions
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKDummyLock
 	{

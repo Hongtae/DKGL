@@ -10,8 +10,8 @@
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 const DKVector4 DKVector4::zero = DKVector4(0,0,0,0);
 

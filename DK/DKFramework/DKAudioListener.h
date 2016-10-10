@@ -22,9 +22,9 @@
 // You can create one or more instances, but they share same environment.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
-	class DKGL_API DKAudioListener : public DKFoundation::DKSharedInstance<DKAudioListener>
+	class DKGL_API DKAudioListener : public DKSharedInstance<DKAudioListener>
 	{
 	public:
 		~DKAudioListener(void);
@@ -51,12 +51,12 @@ namespace DKFramework
 		DKVector3 up;
 		float gain;
 		
-		friend class DKFoundation::DKObject<DKAudioListener>;
-		friend class DKFoundation::DKSharedInstance<DKAudioListener>;		
+		friend class DKObject<DKAudioListener>;
+		friend class DKSharedInstance<DKAudioListener>;		
 		DKAudioListener(void);
 		DKAudioListener(const DKAudioListener&);
 		DKAudioListener& operator = (const DKAudioListener&);		
 
-		DKFoundation::DKObject<DKOpenALContext> context;
+		DKObject<DKOpenALContext> context;
 	};
 }

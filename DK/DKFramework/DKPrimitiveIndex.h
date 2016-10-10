@@ -107,7 +107,7 @@
 //   (OpenGL ES not supported)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	struct DKPrimitive
 	{
@@ -126,8 +126,8 @@ namespace DKFramework
 			TypeTrianglesAdjacency,
 			TypeTriangleStripAdjacency,
 		};
-		static DKFoundation::DKString TypeToString(Type p);
-		static Type StringToType(const DKFoundation::DKString& str);
+		static DKString TypeToString(Type p);
+		static Type StringToType(const DKString& str);
 	};
 
 	class DKGL_API DKPrimitiveIndex
@@ -156,11 +156,11 @@ namespace DKFramework
 		DKPrimitive::Type GetType(void) const		{return type;}
 		size_t GetIndexCount(void) const			{return indices.Count();}
 
-		size_t GetTriangles(const DKVector3* positions, size_t start, size_t count, DKFoundation::DKArray<DKTriangle>& output) const;
-		size_t GetLines(const DKVector3* positions, size_t start, size_t count, DKFoundation::DKArray<DKLine>& output) const;
-		size_t GetPoints(const DKVector3* positions, size_t start, size_t count, DKFoundation::DKArray<DKVector3>& output) const;
+		size_t GetTriangles(const DKVector3* positions, size_t start, size_t count, DKArray<DKTriangle>& output) const;
+		size_t GetLines(const DKVector3* positions, size_t start, size_t count, DKArray<DKLine>& output) const;
+		size_t GetPoints(const DKVector3* positions, size_t start, size_t count, DKArray<DKVector3>& output) const;
 	private:
-		DKFoundation::DKArray<unsigned int>	indices;
+		DKArray<unsigned int>	indices;
 		DKPrimitive::Type					type;
 		size_t								maxVertexIndex;
 	};

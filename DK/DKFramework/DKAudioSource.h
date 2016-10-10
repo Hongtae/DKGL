@@ -15,7 +15,7 @@
 // audio source class. interface for OpenAL source control.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKAudioSource
 	{
@@ -101,7 +101,7 @@ namespace DKFramework
 
 		static int Format(int bits, int channels);
 		static int ErrorCode(void);
-		static DKFoundation::DKString ErrorString(int errCode);
+		static DKString ErrorString(int errCode);
 		
 	private:
 		unsigned int sourceId;
@@ -113,7 +113,7 @@ namespace DKFramework
 			size_t bytesSecond;
 			unsigned int bufferId;
 		};
-		DKFoundation::DKSpinLock bufferLock;
-		mutable DKFoundation::DKArray<BufferInfo> buffers;
+		DKSpinLock bufferLock;
+		mutable DKArray<BufferInfo> buffers;
 	};
 }

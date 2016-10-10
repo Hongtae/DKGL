@@ -20,7 +20,7 @@
 // use DKTriangleMeshProxyShape class.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKStaticTriangleMeshShape : public DKConcaveShape
 	{

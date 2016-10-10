@@ -19,7 +19,7 @@
 //  subclassing is recommended.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <class TYPE> class DKSingleton
 	{

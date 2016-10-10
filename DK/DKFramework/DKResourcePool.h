@@ -44,7 +44,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKResourcePool : public DKResourceLoader
 	{
@@ -55,42 +55,42 @@ namespace DKFramework
 		struct Locator
 		{
 			virtual ~Locator(void) {}
-			virtual DKFoundation::DKString FindSystemPath(const DKFoundation::DKString&) const = 0;
-			virtual DKFoundation::DKObject<DKFoundation::DKStream> OpenStream(const DKFoundation::DKString&) const = 0;
+			virtual DKString FindSystemPath(const DKString&) const = 0;
+			virtual DKObject<DKStream> OpenStream(const DKString&) const = 0;
 		};
 
 		DKResourcePool(void);
 		~DKResourcePool(void);
 
-		bool AddLocator(Locator*, const DKFoundation::DKString& name);
-		Locator* AddLocatorForPath(const DKFoundation::DKString& path);
-		Locator* FindLocator(const DKFoundation::DKString& name);
-		void RemoveLocator(const DKFoundation::DKString& name);
+		bool AddLocator(Locator*, const DKString& name);
+		Locator* AddLocatorForPath(const DKString& path);
+		Locator* FindLocator(const DKString& name);
+		void RemoveLocator(const DKString& name);
 		void RemoveAllLocators(void);
-		DKFoundation::DKString::StringArray AllLocatorNames(void) const;
+		DKString::StringArray AllLocatorNames(void) const;
 
-		bool AddSearchPath(const DKFoundation::DKString& path)
+		bool AddSearchPath(const DKString& path)
 		{
 			return AddLocatorForPath(path) != NULL;
 		}
 
 		// find resource object from pool. (previous loaded)
-		DKFoundation::DKObject<DKResource> FindResource(const DKFoundation::DKString& name) const;
+		DKObject<DKResource> FindResource(const DKString& name) const;
 		// find resource data from pool. (previous loaded)
-		DKFoundation::DKObject<DKFoundation::DKData> FindResourceData(const DKFoundation::DKString& name) const;
+		DKObject<DKData> FindResourceData(const DKString& name) const;
 		// load resource object. recycles if object loaded already.
-		DKFoundation::DKObject<DKResource> LoadResource(const DKFoundation::DKString& name);
+		DKObject<DKResource> LoadResource(const DKString& name);
 		// load resource data. recycles if data loaded already.
-		DKFoundation::DKObject<DKFoundation::DKData> LoadResourceData(const DKFoundation::DKString& name, bool mapFileIfPossible = true);
+		DKObject<DKData> LoadResourceData(const DKString& name, bool mapFileIfPossible = true);
 
 		// insert resource object into pool.
-		void AddResource(const DKFoundation::DKString& name, DKResource* res);
+		void AddResource(const DKString& name, DKResource* res);
 		// insert resource data into pool.
-		void AddResourceData(const DKFoundation::DKString& name, DKFoundation::DKData* data);
+		void AddResourceData(const DKString& name, DKData* data);
 		// remove resource object from pool.
-		void RemoveResource(const DKFoundation::DKString& name);
+		void RemoveResource(const DKString& name);
 		// remove resource data from pool.
-		void RemoveResourceData(const DKFoundation::DKString& name);
+		void RemoveResourceData(const DKString& name);
 		// remove all resource data from pool.
 		void RemoveAllResourceData(void);
 		// remove all resource objects from pool.
@@ -102,30 +102,30 @@ namespace DKFramework
 		void ClearUnreferencedObjects(void);
 
 		// return absolute file path string, if specified file are exists in file-system directory.
-		DKFoundation::DKString ResourceFilePath(const DKFoundation::DKString& name) const;
+		DKString ResourceFilePath(const DKString& name) const;
 		// open resource as stream.
-		DKFoundation::DKObject<DKFoundation::DKStream> OpenResourceStream(const DKFoundation::DKString& name) const;
+		DKObject<DKStream> OpenResourceStream(const DKString& name) const;
 
-		DKFoundation::DKObject<DKResourcePool> Clone(void) const;
+		DKObject<DKResourcePool> Clone(void) const;
 
-		void SetAllocator(DKFoundation::DKMemoryLocation loc);
-		void SetAllocator(DKFoundation::DKAllocator* alloc);
-		DKFoundation::DKAllocator& Allocator(void) const;
+		void SetAllocator(DKMemoryLocation loc);
+		void SetAllocator(DKAllocator* alloc);
+		DKAllocator& Allocator(void) const;
 
 	private:
 		struct NamedLocator
 		{
-			DKFoundation::DKString name;
-			DKFoundation::DKObject<Locator> locator;
+			DKString name;
+			DKObject<Locator> locator;
 		};
-		DKFoundation::DKArray<NamedLocator> locators;
+		DKArray<NamedLocator> locators;
 
-		typedef DKFoundation::DKMap<DKFoundation::DKString, DKFoundation::DKObject<DKResource>>						ResourceMap;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, DKFoundation::DKObject<DKFoundation::DKData>>			DataMap;
+		typedef DKMap<DKString, DKObject<DKResource>>						ResourceMap;
+		typedef DKMap<DKString, DKObject<DKData>>			DataMap;
 		ResourceMap			resources;
 		DataMap				resourceData;
 
-		DKFoundation::DKSpinLock lock;
-		mutable DKFoundation::DKAllocator* allocator;
+		DKSpinLock lock;
+		mutable DKAllocator* allocator;
 	};
 }

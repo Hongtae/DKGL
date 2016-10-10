@@ -47,7 +47,7 @@
 	#endif
 #endif
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -622,7 +622,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKError::DKError(void)
 	: errorCode(0)

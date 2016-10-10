@@ -37,7 +37,7 @@
 //  CopyValue() function is always thread-safe.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename T>
 	bool DKArraySortAscending(const T& lhs, const T& rhs) // ascending, smaller first

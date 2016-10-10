@@ -17,7 +17,7 @@
 // data from your storage that can be file or memory or anything else.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	union DKVoxel32 // 32bit voxel
 	{
@@ -35,7 +35,7 @@ namespace DKFramework
 		DKVoxel32Storage(void) {}
 		virtual ~DKVoxel32Storage(void) {}
 
-		typedef DKFoundation::DKUuid StorageId;
+		typedef DKUuid StorageId;
 	
 		virtual size_t MaxActiveUnits(void) const = 0;
 

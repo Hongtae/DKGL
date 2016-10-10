@@ -14,7 +14,7 @@
 // abstract class, convex shape for detecting collision.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKLine;
 	class DKGL_API DKConvexShape : public DKCollisionShape

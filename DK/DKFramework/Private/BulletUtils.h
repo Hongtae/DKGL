@@ -24,9 +24,9 @@
 // Utilities for bridge functons between DK and BulletPhysics conversion.
 ////////////////////////////////////////////////////////////////////////////////
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKScene::CollisionWorldContext
 	{

@@ -2,8 +2,8 @@
 #include <DK/DK.h>
 #include "DKMaxExporter.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 void DecompMatrix(const GMatrix& m, DKVector3& vScale, DKQuaternion& qRotate, DKVector3& vTranslate);

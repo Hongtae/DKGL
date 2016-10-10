@@ -24,9 +24,9 @@
 //      DKOpenALContext::Deactivate(), DKOpenALContext::Activate().
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
-	class DKGL_API DKOpenALContext : public DKFoundation::DKSharedInstance<DKOpenALContext>
+	class DKGL_API DKOpenALContext : public DKSharedInstance<DKOpenALContext>
 	{
 	public:
 		~DKOpenALContext(void);
@@ -45,23 +45,23 @@ namespace DKFramework
 		{
 			struct Device
 			{
-				DKFoundation::DKString name;
+				DKString name;
 				int majorVersion;
 				int minorVersion;
 			};
-			DKFoundation::DKString			defaultDeivce;
-			DKFoundation::DKArray<Device>	list;
+			DKString			defaultDeivce;
+			DKArray<Device>	list;
 		};
 
 		//static bool debugMode;
 	private:
-		friend class DKFoundation::DKObject<DKOpenALContext>;
-		friend class DKFoundation::DKSharedInstance<DKOpenALContext>;
+		friend class DKObject<DKOpenALContext>;
+		friend class DKSharedInstance<DKOpenALContext>;
 		DKOpenALContext(void);
 		DKOpenALContext(const DKOpenALContext&);
 		DKOpenALContext& operator = (const DKOpenALContext&);
 
-		static DKFoundation::DKSpinLock		contextLock;
+		static DKSpinLock		contextLock;
 		DeviceList							deviceList;
 		void *device;		// OpenAL device
 		void *context;		// OpenAL context

@@ -17,7 +17,7 @@
 // (such as small computation, without I/O.)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKSpinLock
 	{

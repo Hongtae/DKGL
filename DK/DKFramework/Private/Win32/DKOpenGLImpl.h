@@ -14,7 +14,7 @@
 #include "../../Interface/DKOpenGLInterface.h"
 #include "../../DKWindow.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -54,7 +54,7 @@ namespace DKFramework
 			};
 
 			// context pool
-			typedef DKFoundation::DKMap<DWORD, BoundContext, DKFoundation::DKSpinLock> SharedContextMap;
+			typedef DKMap<DWORD, BoundContext, DKSpinLock> SharedContextMap;
 			mutable SharedContextMap		sharedContexts;
 		};
 	}

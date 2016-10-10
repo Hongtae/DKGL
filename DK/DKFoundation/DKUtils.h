@@ -12,7 +12,7 @@
 #include "DKString.h"
 
 
-namespace DKFoundation
+namespace DKGL
 {
 	DKGL_API unsigned int DKRandom(void);
 	DKGL_API DKString DKTemporaryDirectory(void);

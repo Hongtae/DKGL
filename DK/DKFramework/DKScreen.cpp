@@ -13,8 +13,8 @@
 #include "DKLinearTransform2.h"
 #include "DKAffineTransform2.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKScreen::DKScreen(void)
 	: renderer(NULL)
@@ -489,7 +489,7 @@ void DKScreen::OnIdle(void)
 	}
 }
 
-void DKScreen::PerformOperation(const DKFoundation::DKOperation* operation)
+void DKScreen::PerformOperation(const DKOperation* operation)
 {
 	operation->Perform();
 }

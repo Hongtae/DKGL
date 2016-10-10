@@ -21,7 +21,7 @@
 // If you abandon ownership of thread, thread will be detached automatically.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKThread
 	{

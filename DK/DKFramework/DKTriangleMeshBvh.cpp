@@ -8,8 +8,8 @@
 #include "DKMath.h"
 #include "DKTriangleMeshBvh.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKTriangleMeshBvh::DKTriangleMeshBvh(void) : mesh(NULL)
 {

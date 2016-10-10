@@ -17,7 +17,7 @@
 // box shape for detecting collision.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKBoxShape : public DKPolyhedralConvexShape
 	{

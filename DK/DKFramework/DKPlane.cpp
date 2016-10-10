@@ -10,8 +10,8 @@
 #include "DKVector4.h"
 #include "DKLine.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKPlane::DKPlane(void)
 	: a(0)

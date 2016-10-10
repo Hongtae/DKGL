@@ -10,8 +10,8 @@
 #include "DKMatrix2.h"
 #include "DKMatrix3.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 const DKVector2 DKVector2::zero = DKVector2(0,0);
 

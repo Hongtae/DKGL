@@ -16,7 +16,7 @@
 // a collision shape, convex hull of a collection of spheres.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKMultiSphereShape : public DKConvexShape
 	{

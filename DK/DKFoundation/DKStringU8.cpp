@@ -12,7 +12,7 @@
 #include "DKString.h"
 #include "DKBuffer.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -72,7 +72,7 @@ namespace DKFoundation
 		size_t NumberOfCharactersInUTF8(const DKUniChar8* input, size_t length);
 	}
 }
-using namespace DKFoundation;
+using namespace DKGL;
 
 const DKStringU8 DKStringU8::empty = "";
 

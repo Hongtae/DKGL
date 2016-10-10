@@ -11,9 +11,9 @@
 #include "../../../lib/OpenGL/wglext.h"
 #include "DKOpenGLImpl.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -155,8 +155,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKOpenGLInterface* DKOpenGLInterface::CreateInterface(DKOpenGLContext*)
 {

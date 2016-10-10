@@ -21,7 +21,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKDynamicsScene : public DKScene
 	{
@@ -32,7 +32,7 @@ namespace DKFramework
 		void SetGravity(const DKVector3& g);
 		DKVector3 Gravity(void) const;
 
-		void Update(double tickDelta, DKFoundation::DKTimeTick tick) override;
+		void Update(double tickDelta, DKTimeTick tick) override;
 
 		// if FixedFrameRate is greater than 0,
 		// it works as fixed-frame rate in physics. (determinism)
@@ -47,10 +47,10 @@ namespace DKFramework
 		bool AddSingleObject(DKModel* obj) override;
 		void RemoveSingleObject(DKModel* obj) override;
 
-		typedef DKFoundation::DKSet<DKRigidBody*> RigidBodySet;
-		typedef DKFoundation::DKSet<DKSoftBody*> SoftBodySet;
-		typedef DKFoundation::DKSet<DKConstraint*> ConstraintSet;
-		typedef DKFoundation::DKSet<DKActionController*> ActionSet;
+		typedef DKSet<DKRigidBody*> RigidBodySet;
+		typedef DKSet<DKSoftBody*> SoftBodySet;
+		typedef DKSet<DKConstraint*> ConstraintSet;
+		typedef DKSet<DKActionController*> ActionSet;
 
 		RigidBodySet rigidBodies;
 		SoftBodySet softBodies;

@@ -15,7 +15,7 @@
 // you can retrieve stream types from shader program. (see DKShaderProgram.h)
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	struct DKVertexStream
 	{
@@ -62,7 +62,7 @@ namespace DKFramework
 			TypeMax,
 		};
 
-		DKFoundation::DKString	name;
+		DKString	name;
 		Stream					id;
 		Type					type;
 		size_t					components;
@@ -136,7 +136,7 @@ namespace DKFramework
 			}
 			return 0;
 		}
-		static DKFoundation::DKString StreamToString(Stream s)
+		static DKString StreamToString(Stream s)
 		{
 			switch (s)
 			{
@@ -154,7 +154,7 @@ namespace DKFramework
 			}
 			return L"Unknown";
 		}
-		static Stream StringToStream(const DKFoundation::DKString& str)
+		static Stream StringToStream(const DKString& str)
 		{
 			if (!str.CompareNoCase(StreamToString(StreamPosition)))				return StreamPosition;
 			else if (!str.CompareNoCase(StreamToString(StreamNormal)))			return StreamNormal;
@@ -167,7 +167,7 @@ namespace DKFramework
 			else if (!str.CompareNoCase(StreamToString(StreamUserDefine)))		return StreamUserDefine;
 			return StreamUnknown;
 		}
-		static DKFoundation::DKString TypeToString(Type t)
+		static DKString TypeToString(Type t)
 		{
 			switch (t)
 			{
@@ -199,7 +199,7 @@ namespace DKFramework
 			}
 			return L"Unknown";
 		}
-		static Type StringToType(const DKFoundation::DKString& str)
+		static Type StringToType(const DKString& str)
 		{
 			if (!str.CompareNoCase(TypeToString(TypeFloat1)))			return TypeFloat1;
 			else if (!str.CompareNoCase(TypeToString(TypeFloat2)))		return TypeFloat2;

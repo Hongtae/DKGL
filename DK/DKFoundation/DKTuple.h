@@ -45,7 +45,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	// DKTupleUnit: a class which can store value for specified template type.
 	// Note: References are stored as pointers.

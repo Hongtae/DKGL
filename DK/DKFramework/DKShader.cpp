@@ -9,9 +9,9 @@
 #include "DKShader.h"
 #include "DKScreen.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -96,7 +96,7 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
+using namespace DKGL;
 
 
 DKShader::DKShader(void)
@@ -112,13 +112,13 @@ DKShader::~DKShader(void)
 	}
 }
 
-DKObject<DKShader> DKShader::Create(const DKFoundation::DKString& implement, Type t)
+DKObject<DKShader> DKShader::Create(const DKString& implement, Type t)
 {
 	DKString err = L"";
 	return Create(implement, t, err);
 }
 
-DKObject<DKShader> DKShader::Create(const DKFoundation::DKString& implement, Type t, DKFoundation::DKString& err)
+DKObject<DKShader> DKShader::Create(const DKString& implement, Type t, DKString& err)
 {
 	GLuint hShader = Private::CompileShader(implement, t, err);
 	if (hShader)

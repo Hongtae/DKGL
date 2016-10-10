@@ -20,20 +20,20 @@
 //  all nodes (DKModel) can be used as bone.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKSkinMesh : public DKStaticMesh
 	{
 	public:
-		typedef DKFoundation::DKString NodeId;
+		typedef DKString NodeId;
 		struct Bone
 		{
 			NodeId id;
 			DKMatrix4 tm;		// bone's world transform
 		};
-		typedef DKFoundation::DKArray<Bone> BoneArray;
-		typedef DKFoundation::DKArray<DKModel*> NodeArray;
-		typedef DKFoundation::DKMap<NodeId, DKModel*> NodeMap;
+		typedef DKArray<Bone> BoneArray;
+		typedef DKArray<DKModel*> NodeArray;
+		typedef DKMap<NodeId, DKModel*> NodeMap;
 
 		DKSkinMesh(void);
 		~DKSkinMesh(void);
@@ -49,7 +49,7 @@ namespace DKFramework
 
 		bool NodeResolved(void) const	{ return transformNodeResolved; }
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		void OnUpdateTreeReferences(NamedObjectMap&, UUIDObjectMap&) override;
@@ -57,7 +57,7 @@ namespace DKFramework
 
 		bool BindTransform(DKSceneState&) const override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const;
 		DKSkinMesh* Copy(UUIDObjectMap&, const DKSkinMesh*);
 
 	private:
@@ -69,7 +69,7 @@ namespace DKFramework
 			DKMatrix4 initInvTM;	// inverse of initial transform
 			DKMatrix4 nodeTM;
 		};
-		typedef DKFoundation::DKArray<TransformData> TransformDataArray;
+		typedef DKArray<TransformData> TransformDataArray;
 		TransformDataArray transformData;
 		bool transformNodeResolved;
 	};

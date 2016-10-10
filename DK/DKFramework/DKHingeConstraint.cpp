@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKHingeConstraint.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -20,8 +20,8 @@ namespace DKFramework
 		};
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKHingeConstraint::DKHingeConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKNSTransform& ta, const DKNSTransform& tb)
 : DKConstraint(LinkType::Hinge, rbA, rbB, NewConstraintImpl<btHingeConstraint>::Create(rbA, rbB, ta, tb))

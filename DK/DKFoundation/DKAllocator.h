@@ -15,7 +15,7 @@
 // interface class for memory allocation, deallocation.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKAllocator : public DKAllocatorChain
 	{
@@ -43,5 +43,5 @@ namespace DKFoundation
 // You need DKAllocator or inherited object.
 ////////////////////////////////////////////////////////////////////////////////
 
-DKGL_API void* operator new (size_t, DKFoundation::DKAllocator&);	// to generation internal ref-count.
-DKGL_API void operator delete (void*, DKFoundation::DKAllocator&);	// invoked when allocation failed.
+DKGL_API void* operator new (size_t, DKGL::DKAllocator&);	// to generation internal ref-count.
+DKGL_API void operator delete (void*, DKGL::DKAllocator&);	// invoked when allocation failed.

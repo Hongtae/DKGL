@@ -24,13 +24,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKShaderProgram
 	{
 	public:
-		typedef DKFoundation::DKArray<DKShaderConstant>		UniformArray;
-		typedef DKFoundation::DKArray<DKVertexStream>		AttributeArray;
+		typedef DKArray<DKShaderConstant>		UniformArray;
+		typedef DKArray<DKVertexStream>		AttributeArray;
 
 		AttributeArray		attributes;
 		UniformArray		uniforms;
@@ -40,14 +40,14 @@ namespace DKFramework
 
 		void Bind(void) const;
 
-		static DKFoundation::DKObject<DKShaderProgram> Create(const DKFoundation::DKArray<DKFoundation::DKObject<DKShader>>& shaders, DKFoundation::DKString& err);
-		static DKFoundation::DKObject<DKShaderProgram> Create(const DKFoundation::DKArray<DKShader*>& shaders, DKFoundation::DKString& err);
+		static DKObject<DKShaderProgram> Create(const DKArray<DKObject<DKShader>>& shaders, DKString& err);
+		static DKObject<DKShaderProgram> Create(const DKArray<DKShader*>& shaders, DKString& err);
 
 		unsigned int GetId(void) const				{return programId;}
 		bool IsValid(void) const;
 
-		int	GetUniformComponents(const DKFoundation::DKString& name) const;
-		int GetAttribComponents(const DKFoundation::DKString& name) const;
+		int	GetUniformComponents(const DKString& name) const;
+		int GetAttribComponents(const DKString& name) const;
 
 	private:
 		unsigned int programId;

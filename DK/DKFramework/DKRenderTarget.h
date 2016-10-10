@@ -25,7 +25,7 @@
 //     sharing with other threads.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKRenderTarget
 	{
@@ -45,10 +45,10 @@ namespace DKFramework
 			DepthFormat depth;
 			unsigned int fbo;
 		};
-		typedef DKFoundation::DKInvocation<TargetQuery> ProxyQuery;
+		typedef DKInvocation<TargetQuery> ProxyQuery;
 
-		static DKFoundation::DKObject<DKRenderTarget> Create(int width, int height, DepthFormat depth);
-		static DKFoundation::DKObject<DKRenderTarget> Create(ProxyQuery* proxy);
+		static DKObject<DKRenderTarget> Create(int width, int height, DepthFormat depth);
+		static DKObject<DKRenderTarget> Create(ProxyQuery* proxy);
 
 		DKRenderTarget(void);
 		virtual ~DKRenderTarget(void);
@@ -82,10 +82,10 @@ namespace DKFramework
 
 		void UpdateResolution(void);
 
-		DKFoundation::DKArray<DKFoundation::DKObject<DKTexture2D>>	colorTextures;
-		DKFoundation::DKObject<DKTexture2D>							depthTexture;  // optional
+		DKArray<DKObject<DKTexture2D>>	colorTextures;
+		DKObject<DKTexture2D>							depthTexture;  // optional
 		unsigned int												depthBuffer;
 
-		DKFoundation::DKObject<ProxyQuery>	proxyQuery;		
+		DKObject<ProxyQuery>	proxyQuery;		
 	};
 }

@@ -8,9 +8,9 @@
 #include "Private/BulletUtils.h"
 #include "DKPolyhedralConvexShape.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKPolyhedralConvexShape::DKPolyhedralConvexShape(ShapeType t, btPolyhedralConvexShape* impl)
 	: DKConvexShape(t, impl)

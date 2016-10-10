@@ -13,7 +13,7 @@
 #include "DKString.h"
 #include "DKDataStream.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -506,7 +506,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKXMLParser::DKXMLParser(void)
 {

@@ -38,7 +38,7 @@
 //   Matrix will be transposed (as Column-major order) when transfer to shader.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKMaterial : public DKResource
 	{
@@ -48,8 +48,8 @@ namespace DKFramework
 		// Property value object that can be used by ShadingProperty.
 		struct PropertyArray
 		{
-			DKFoundation::DKArray<int> integers;
-			DKFoundation::DKArray<float> floatings;
+			DKArray<int> integers;
+			DKArray<float> floatings;
 
 			PropertyArray(void) {}
 			PropertyArray(int value, size_t count = 1) : integers(value, count) {}
@@ -58,11 +58,11 @@ namespace DKFramework
 			PropertyArray(const float* value, size_t count) : floatings(value, count) {}
 		};
 
-		typedef DKFoundation::DKArray<DKFoundation::DKObject<DKTexture>> TextureArray;
+		typedef DKArray<DKObject<DKTexture>> TextureArray;
 		struct Sampler
 		{
 			TextureArray								textures;
-			DKFoundation::DKObject<DKTextureSampler>	sampler;
+			DKObject<DKTextureSampler>	sampler;
 		};
 
 		// SamplerProperty
@@ -72,7 +72,7 @@ namespace DKFramework
 			DKShaderConstant::Uniform					id;				// sampler
 			DKShaderConstant::Type						type;
 			TextureArray								textures;
-			DKFoundation::DKObject<DKTextureSampler>	sampler;
+			DKObject<DKTextureSampler>	sampler;
 		};
 
 		// ShadingProperty
@@ -101,10 +101,10 @@ namespace DKFramework
 		// sources can be shared by multiple programs (in RenderingProperty)
 		struct ShaderSource
 		{
-			DKFoundation::DKString				name;
-			DKFoundation::DKString				source;
+			DKString				name;
+			DKString				source;
 			DKShader::Type						type;
-			DKFoundation::DKObject<DKShader>	shader;
+			DKObject<DKShader>	shader;
 		};
 		// RenderingProperty
 		// Used when rendering. This class has shader program which used by
@@ -124,19 +124,19 @@ namespace DKFramework
 				DepthFuncNotEqual,
 			};
 
-			DKFoundation::DKString						name;
+			DKString						name;
 			DepthFunc									depthFunc;
 			bool										depthWrite;
 			DKBlendState								blendState;
-			DKFoundation::DKArray<ShaderSource>			shaders;
-			DKFoundation::DKObject<DKShaderProgram>		program;
+			DKArray<ShaderSource>			shaders;
+			DKObject<DKShaderProgram>		program;
 		};
 
 		class PropertyCallback
 		{
 		public:
-			typedef DKFoundation::DKStaticArray<int> IntArray;
-			typedef DKFoundation::DKStaticArray<float> FloatArray;
+			typedef DKStaticArray<int> IntArray;
+			typedef DKStaticArray<float> FloatArray;
 			typedef DKMaterial::Sampler Sampler;
 
 			virtual IntArray GetIntProperty(const DKShaderConstant&, int) = 0;
@@ -148,33 +148,33 @@ namespace DKFramework
 		DKMaterial(void);
 		~DKMaterial(void);
 
-		int IndexOfRenderPropertyName(const DKFoundation::DKString& name) const;
+		int IndexOfRenderPropertyName(const DKString& name) const;
 		size_t NumberOfRenderProperties(void) const;
 
 		bool Bind(int programIndex, PropertyCallback* callback, const DKBlendState* blending = NULL) const;
 
-		const DKFoundation::DKArray<DKVertexStream>& StreamArray(int state) const;
+		const DKArray<DKVertexStream>& StreamArray(int state) const;
 
 		struct BuildLog
 		{
-			DKFoundation::DKString errorLog;
-			DKFoundation::DKString failedShader;
-			DKFoundation::DKString failedProgram;
+			DKString errorLog;
+			DKString failedShader;
+			DKString failedProgram;
 		};
-		static bool CompileShaderSource(ShaderSource* src, DKFoundation::DKString& errorLog);
+		static bool CompileShaderSource(ShaderSource* src, DKString& errorLog);
 		bool BuildProgram(int index, BuildLog* log);
 		bool Build(BuildLog* log);
 
 		// cleanup shader compiler resources.
 		static void ReleaseShaderCompiler(void);
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 
-		typedef DKFoundation::DKMap<DKFoundation::DKString, ShadingProperty>	ShadingPropertyMap;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, SamplerProperty>	SamplerPropertyMap;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, StreamProperty>		StreamPropertyMap;
-		typedef DKFoundation::DKArray<ShaderSource>								ShaderSourceArray;
-		typedef DKFoundation::DKArray<RenderingProperty>						RenderingPropertyArray;
+		typedef DKMap<DKString, ShadingProperty>	ShadingPropertyMap;
+		typedef DKMap<DKString, SamplerProperty>	SamplerPropertyMap;
+		typedef DKMap<DKString, StreamProperty>		StreamPropertyMap;
+		typedef DKArray<ShaderSource>								ShaderSourceArray;
+		typedef DKArray<RenderingProperty>						RenderingPropertyArray;
 
 		// Default properties of material object.
 		// This is fallback values, used if property callbacks did not returns proper value.

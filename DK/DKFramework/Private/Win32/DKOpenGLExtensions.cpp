@@ -779,11 +779,11 @@ namespace OpenGL
 }
 
 using namespace OpenGL;
-using namespace DKFoundation;
+using namespace DKGL;
 
 #define GET_GL_PROC(func)		*(PROC*)&func = wglGetProcAddress(#func)
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{

@@ -20,7 +20,7 @@
 // (but convert and store with wchar_t string internally.)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKData;
 	class DKGL_API DKStringW

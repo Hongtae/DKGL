@@ -8,9 +8,9 @@
 #include "Private/BulletUtils.h"
 #include "DKBoxShape.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKBoxShape::DKBoxShape(float u, float v, float w)
 	: DKPolyhedralConvexShape(ShapeType::Box, new btBoxShape(btVector3(u,v,w)))

@@ -24,7 +24,7 @@
 //   Do not store pointer address returned by above functions!
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKQueue

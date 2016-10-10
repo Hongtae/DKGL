@@ -36,7 +36,7 @@
 // This class using external array (by pointer), of course, not thread safe.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	// iterator class for range-based for loop
 	template <typename CONTAINER, typename ITEMREF>

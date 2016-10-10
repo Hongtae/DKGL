@@ -13,7 +13,7 @@
 
 #define BUCKET_SIZE		17
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -28,8 +28,8 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFoundation::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKFence::DKFence(const void* p, bool exclusive)
 : key(p)

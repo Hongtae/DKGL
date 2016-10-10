@@ -19,7 +19,7 @@
 //  convex decomposition from triangle mesh.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKTriangle;
 	class DKGL_API DKConvexHullShape : public DKPolyhedralConvexShape
@@ -35,14 +35,14 @@ namespace DKFramework
 
 		// create convex-hull using HACD convex decomposition library.
 		// more info: https://code.google.com/p/v-hacd/
-		static DKFoundation::DKObject<DKConvexHullShape> CreateHull(const DKTriangle* tri, size_t num);
+		static DKObject<DKConvexHullShape> CreateHull(const DKTriangle* tri, size_t num);
 
 		struct ConvexHull
 		{
-			DKFoundation::DKObject<DKConvexHullShape> shape;
+			DKObject<DKConvexHullShape> shape;
 			DKNSTransform offset;
 		};
-		typedef DKFoundation::DKArray<ConvexHull> ConvexHullArray;
+		typedef DKArray<ConvexHull> ConvexHullArray;
 
 		static ConvexHullArray DecomposeTriangleMesh(
 			const DKVector3* verts,

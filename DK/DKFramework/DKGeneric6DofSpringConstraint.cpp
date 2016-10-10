@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKGeneric6DofSpringConstraint.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -22,8 +22,8 @@ namespace DKFramework
 		};
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKGeneric6DofSpringConstraint::DKGeneric6DofSpringConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKNSTransform& ta, const DKNSTransform& tb)
 : DKGeneric6DofConstraint(LinkType::Generic6DofSpring, rbA, rbB, NewConstraintImpl<btGeneric6DofSpringConstraint>::Create(rbA, rbB, ta, tb, true))

@@ -26,15 +26,15 @@
 #warning "CHECK 'wcstoll', 'wcstoull' FOR ANDROID!"
 int64_t int wcstoll(const wchar_t* str, wchar_t** endptr, int base)
 {
-	return DKFoundation::DKStringU8(str).ToInteger();
+	return DKStringU8(str).ToInteger();
 }
 uint64_t wcstoull(const wchar_t* str, wchar_t** endptr, int base)
 {
-	return DKFoundation::DKStringU8(str).ToUnsignedInteger();
+	return DKStringU8(str).ToUnsignedInteger();
 }
 #endif
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -112,7 +112,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 const DKStringW DKStringW::empty = L"";
 

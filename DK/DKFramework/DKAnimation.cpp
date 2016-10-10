@@ -8,8 +8,8 @@
 #include "DKMath.h"
 #include "DKAnimation.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -136,8 +136,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 DKAnimation::DKAnimation(void)
@@ -161,7 +161,7 @@ bool DKAnimation::GetNodeTransform(NodeIndex index, float t, DKTransformUnit& ou
 	return false;
 }
 
-bool DKAnimation::GetNodeTransform(const DKFoundation::DKString& name, float t, DKTransformUnit& output) const
+bool DKAnimation::GetNodeTransform(const DKString& name, float t, DKTransformUnit& output) const
 {
 	return GetNodeTransform(IndexOfNode(name), t, output);
 }
@@ -194,7 +194,7 @@ DKArray<DKAnimation::NodeSnapshot> DKAnimation::CreateSnapshot(float t) const
 	return result;
 }
 
-DKObject<DKAnimation> DKAnimation::Create(DKFoundation::DKArray<SamplingNode>* samples, DKFoundation::DKArray<KeyframeNode>* keyframes, float duration)
+DKObject<DKAnimation> DKAnimation::Create(DKArray<SamplingNode>* samples, DKArray<KeyframeNode>* keyframes, float duration)
 {
 	DKObject<DKAnimation> ani = DKObject<DKAnimation>::New();
 
@@ -208,7 +208,7 @@ DKObject<DKAnimation> DKAnimation::Create(DKFoundation::DKArray<SamplingNode>* s
 	return ani;
 }
 
-DKObject<DKAnimation> DKAnimation::Create(DKFoundation::DKArray<NodeSnapshot>* begin, DKFoundation::DKArray<NodeSnapshot>* end, float duration)
+DKObject<DKAnimation> DKAnimation::Create(DKArray<NodeSnapshot>* begin, DKArray<NodeSnapshot>* end, float duration)
 {
 	DKObject<DKAnimation> ani = DKObject<DKAnimation>::New();
 
@@ -310,7 +310,7 @@ bool DKAnimation::AddKeyframeNode(const DKString& name,
 	return false;
 }
 
-void DKAnimation::RemoveNode(const DKFoundation::DKString& name)
+void DKAnimation::RemoveNode(const DKString& name)
 {
 	DKMap<DKString, size_t>::Pair* indexPtr = nodeIndexMap.Find(name);
 	if (indexPtr)
@@ -341,7 +341,7 @@ size_t DKAnimation::NodeCount(void) const
 	return nodes.Count();
 }
 
-DKAnimation::NodeIndex DKAnimation::IndexOfNode(const DKFoundation::DKString& name) const
+DKAnimation::NodeIndex DKAnimation::IndexOfNode(const DKString& name) const
 {
 	const DKMap<DKString, size_t>::Pair* indexPtr = nodeIndexMap.Find(name);
 	if (indexPtr)

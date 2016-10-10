@@ -20,7 +20,7 @@
 // vertex buffer with given positions. (calculated from this class)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKVoxelPolygonizer
 	{

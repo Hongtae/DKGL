@@ -17,7 +17,7 @@
 // DKWindow.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKWindow;
 	class DKWindowInterface
@@ -25,7 +25,7 @@ namespace DKFramework
 	public:
 		virtual ~DKWindowInterface(void) {}
 
-		virtual bool Create(const DKFoundation::DKString& title, const DKSize& size, const DKPoint& origin, int style) = 0;
+		virtual bool Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style) = 0;
 		virtual bool CreateProxy(void* systemHandle) = 0;
 		virtual bool IsProxy(void) const = 0;
 		virtual void UpdateProxy(void) = 0;
@@ -52,8 +52,8 @@ namespace DKFramework
 
 		virtual double ContentScaleFactor(void) const = 0;  // logical coords by pixel ratio.
 
-		virtual void SetTitle(const DKFoundation::DKString& title) = 0;
-		virtual DKFoundation::DKString Title(void) const = 0;
+		virtual void SetTitle(const DKString& title) = 0;
+		virtual DKString Title(void) const = 0;
 
 		virtual void SetMousePosition(int deviceId, const DKPoint& pt) = 0;
 		virtual DKPoint MousePosition(int deviceId) const = 0;

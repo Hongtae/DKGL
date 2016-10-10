@@ -20,7 +20,7 @@
 //  Use DKSharedLockReadOnlySecton instead for shared-locking with scoped context.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKSharedLock
 	{

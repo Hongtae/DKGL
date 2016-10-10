@@ -8,16 +8,16 @@
 #include "../lib/OpenGL.h"
 #include "DKTextureSampler.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
 		GLenum GetTextureTargetGLValue(DKTexture::Target t);
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKTextureSampler::DKTextureSampler(void)
 : minFilter(MinFilterUndefined)

@@ -17,7 +17,7 @@
 //   ogg-flac, ogg-vorbis, flac, wav(PCM) are supported currently.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKAudioStream
 	{
@@ -32,8 +32,8 @@ namespace DKFramework
 			FileTypeWave,
 		};
 
-		static DKFoundation::DKObject<DKAudioStream>	Create(DKFoundation::DKStream* stream);
-		static DKFoundation::DKObject<DKAudioStream>	Create(const DKFoundation::DKString& file);
+		static DKObject<DKAudioStream>	Create(DKStream* stream);
+		static DKObject<DKAudioStream>	Create(const DKString& file);
 
 		DKAudioStream(FileType t);
 		virtual ~DKAudioStream(void);

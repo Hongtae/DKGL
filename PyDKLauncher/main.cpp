@@ -3,8 +3,8 @@
 #include <DK/DK.h>
 #include <PyDK/PyDK.h>
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKString AbsolutePathStringOfPyStd(void);
 

@@ -10,7 +10,7 @@
 #include "DKRenderTarget.h"
 #include "DKOpenGLContext.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -21,8 +21,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKTextureCube::DKTextureCube(void)

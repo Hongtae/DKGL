@@ -16,7 +16,7 @@
 // OpenGL context (OpenGL, OpenGL ES)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKOpenGLInterface;
 	template <typename T> class DKContextScopeBinder
@@ -27,7 +27,7 @@ namespace DKFramework
 		T* operator -> (void)							{return context;}
 		const T* operator -> (void) const				{return context;}
 	private:
-		DKFoundation::DKObject<T> context;
+		DKObject<T> context;
 	};
 	template <typename T, typename R> class DKContextScopeBinderWithParam
 	{
@@ -37,10 +37,10 @@ namespace DKFramework
 		T* operator -> (void)											{return context;}
 		const T* operator -> (void) const								{return context;}
 	private:
-		DKFoundation::DKObject<T> context;
+		DKObject<T> context;
 	};
 
-	class DKGL_API DKOpenGLContext : public DKFoundation::DKSharedInstance<DKOpenGLContext>
+	class DKGL_API DKOpenGLContext : public DKSharedInstance<DKOpenGLContext>
 	{
 	public:
 		~DKOpenGLContext(void);
@@ -63,15 +63,15 @@ namespace DKFramework
 		unsigned int FramebufferId(void) const;
 		
 	private:
-		friend class DKFoundation::DKObject<DKOpenGLContext>;
-		friend class DKFoundation::DKSharedInstance<DKOpenGLContext>;
+		friend class DKObject<DKOpenGLContext>;
+		friend class DKSharedInstance<DKOpenGLContext>;
 		DKOpenGLContext(void);
 		DKOpenGLContext(const DKOpenGLContext&);
 		DKOpenGLContext& operator = (const DKOpenGLContext&);
 		
-		typedef DKFoundation::DKMap<DKFoundation::DKThread::ThreadId, DKFoundation::DKObject<DKRenderState>> RenderStateMap;
+		typedef DKMap<DKThread::ThreadId, DKObject<DKRenderState>> RenderStateMap;
 		static RenderStateMap stateMap;
-		static DKFoundation::DKSpinLock stateLock;
+		static DKSpinLock stateLock;
 		DKOpenGLInterface* impl; // core-interface
 	};
 }

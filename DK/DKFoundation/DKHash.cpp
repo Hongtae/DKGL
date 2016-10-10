@@ -10,6 +10,7 @@
 #include "DKHash.h"
 #include "DKEndianness.h"
 
+using namespace DKGL;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -35,7 +36,7 @@
 // hash160 (SHA-1) uses hash[0]~[4].
 // hash224,256 (SHA-224, SHA-256) uses hash[0]~[7].
 // hash384,512 (SHA-384, SHA-512) uses hash[0]~[15].
-struct DKFoundation::DKHash::Context
+struct DKHash::Context
 {
 	union {
 		uint64_t	hash64[8];
@@ -54,7 +55,7 @@ struct DKFoundation::DKHash::Context
 	uint32_t len; // message hash length (bytes)
 };
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -595,7 +596,7 @@ namespace DKFoundation
 }
 
 
-namespace DKFoundation
+namespace DKGL
 {
 #define DEBUG_CHECK_RUNTIME_ENDIANNESS	DKASSERT_DESC_DEBUG(DKVerifyByteOrder(), "System Byte-Order Mismatch!")
 
@@ -690,7 +691,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKHash::DKHash(Type t)
 	: type(t)

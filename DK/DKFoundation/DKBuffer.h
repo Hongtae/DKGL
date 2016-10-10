@@ -25,7 +25,7 @@
 //  Encode means 'encode with base64' in this class
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	enum class DKCompressor
 	{

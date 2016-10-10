@@ -10,7 +10,7 @@
 #include "DKString.h"
 #include "DKLog.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -166,7 +166,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKZipUnarchiver::DKZipUnarchiver(void)
 : zipHandle(NULL)

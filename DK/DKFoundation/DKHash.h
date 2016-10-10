@@ -19,7 +19,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename BASE, int BIT> struct DKHashResult
 	{

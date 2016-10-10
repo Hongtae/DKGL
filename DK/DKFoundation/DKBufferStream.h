@@ -18,7 +18,7 @@
 // using memory like stream object.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKBufferStream : public DKDataStream
 	{

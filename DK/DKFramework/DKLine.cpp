@@ -8,8 +8,8 @@
 #include "DKMath.h"
 #include "DKLine.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKLine::DKLine(void)

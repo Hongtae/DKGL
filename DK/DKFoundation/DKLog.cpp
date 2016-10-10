@@ -21,7 +21,7 @@
 #include "DKString.h"
 #include "DKSpinLock.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -66,7 +66,7 @@ namespace DKFoundation
 		else
 			DKLoggerSet(NULL);
 	}
-	DKGL_API void DKLog(const DKFoundation::DKString& str)
+	DKGL_API void DKLog(const DKString& str)
 	{
 		Private::spinLock.Lock();
 		if (Private::defaultLogger)

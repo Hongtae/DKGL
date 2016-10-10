@@ -16,7 +16,7 @@
 // You can use DKInvocation to retrieve result.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKOperation
 	{

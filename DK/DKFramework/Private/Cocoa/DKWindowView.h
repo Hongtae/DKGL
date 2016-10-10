@@ -21,7 +21,7 @@
 @interface DKWindowView : NSView <NSTextInputClient, NSWindowDelegate>
 {
 @private
-	DKFramework::DKWindow* handler;
+	DKWindow* handler;
 	BOOL holdMouse;
 	BOOL textInput;
 	NSPoint holdPosition;
@@ -29,13 +29,13 @@
 	NSString* markedText;
 }
 
-@property (readonly, nonatomic) DKFramework::DKWindow* handler;
-@property (readonly, nonatomic) DKFramework::DKPoint windowOrigin;
-@property (readonly, nonatomic) DKFramework::DKSize contentSize;
-@property (readwrite, nonatomic) DKFramework::DKPoint mousePosition;
+@property (readonly, nonatomic) DKWindow* handler;
+@property (readonly, nonatomic) DKPoint windowOrigin;
+@property (readonly, nonatomic) DKSize contentSize;
+@property (readwrite, nonatomic) DKPoint mousePosition;
 @property (readwrite, nonatomic) BOOL textInput;
 
-- (id)initWithFrame:(NSRect)frame handler:(DKFramework::DKWindow*)handler;
+- (id)initWithFrame:(NSRect)frame handler:(DKWindow*)handler;
 - (void)holdMouse:(BOOL)hold;
 - (BOOL)isMouseHeld;
 @end

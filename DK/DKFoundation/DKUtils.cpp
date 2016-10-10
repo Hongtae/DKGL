@@ -26,7 +26,7 @@ extern "C" DKGL_API const char* DKCopyright(void)
 	return "Copyright (c) 2004-2015 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
 }
 
-namespace DKFoundation
+namespace DKGL
 {
 #ifdef _WIN32
 	DKGL_API unsigned int DKRandom(void)

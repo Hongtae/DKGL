@@ -9,7 +9,6 @@
 #include "../DKInclude.h"
 #include "DKString.h"
 
-typedef void(*DKLogCallbackProc)(const DKFoundation::DKString &);
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKLogger
@@ -17,8 +16,10 @@ typedef void(*DKLogCallbackProc)(const DKFoundation::DKString &);
 // you can sublcass DKLogger to handle log text.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
+	typedef void(*DKLogCallbackProc)(const DKString &);
+
 	struct DKLogger
 	{
 		virtual ~DKLogger(void) {}
@@ -33,12 +34,12 @@ namespace DKFoundation
 
 	DKGL_API void DKLogInit(DKLogCallbackProc proc);	// deprecated
 
-	DKGL_API void DKLog(const DKFoundation::DKString& str);
+	DKGL_API void DKLog(const DKString& str);
 	DKGL_API void DKLog(const char* fmt, ...);
 }
 
 #ifdef DKGL_DEBUG_ENABLED
-#define DKLOG_DEBUG(...)	DKFoundation::DKLog(__VA_ARGS__)
+#define DKLOG_DEBUG(...)	DKLog(__VA_ARGS__)
 #else
 #define DKLOG_DEBUG(...)	(void)0
 #endif

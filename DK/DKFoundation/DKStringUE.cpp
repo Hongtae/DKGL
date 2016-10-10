@@ -23,7 +23,7 @@
 #define snprintf _snprintf
 #endif
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{

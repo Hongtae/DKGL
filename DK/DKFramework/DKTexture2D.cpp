@@ -11,9 +11,9 @@
 #include "DKOpenGLContext.h"
 #include "DKResourceLoader.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -282,7 +282,7 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
+using namespace DKGL;
 
 
 DKTexture2D::DKTexture2D(void)

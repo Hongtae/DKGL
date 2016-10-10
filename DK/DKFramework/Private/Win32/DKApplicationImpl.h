@@ -17,9 +17,9 @@
 #undef GetUserName
 #endif
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -37,8 +37,8 @@ namespace DKFramework
 			void PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone);
 
 			DKLogger& DefaultLogger(void);
-			DKFoundation::DKString EnvironmentPath(SystemPath);
-			DKFoundation::DKString ModulePath(void);
+			DKString EnvironmentPath(SystemPath);
+			DKString ModulePath(void);
 
 			DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc);
 			DKObject<DKData> LoadStaticResource(const DKString& res);

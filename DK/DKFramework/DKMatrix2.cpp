@@ -9,8 +9,8 @@
 #include "DKMatrix2.h"
 #include "DKVector2.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 const DKMatrix2 DKMatrix2::identity = DKMatrix2().Identity();
 

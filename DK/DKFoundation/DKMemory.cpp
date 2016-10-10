@@ -40,7 +40,7 @@
 
 #define DKLog(...)	fprintf(stderr, __VA_ARGS__)
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{

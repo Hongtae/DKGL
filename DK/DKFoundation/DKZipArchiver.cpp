@@ -11,7 +11,7 @@
 #include "DKString.h"
 #include "DKLog.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKZipArchiver::DKZipArchiver(void)
 : zipHandle(NULL)

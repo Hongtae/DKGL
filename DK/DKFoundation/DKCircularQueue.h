@@ -36,7 +36,7 @@
 //  using CopyValue() to retrieve item for thread-safe.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKCircularQueue

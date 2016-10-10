@@ -8,8 +8,8 @@
 #include "DKMath.h"
 #include "DKVoxelIsosurfacePolygonizer.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKVoxelIsosurfacePolygonizer::DKVoxelIsosurfacePolygonizer(void)
 	: levels(NULL)

@@ -9,8 +9,8 @@
 #include "DKOpenGLContext.h"
 #include "Interface/DKOpenGLInterface.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKOpenGLContext::RenderStateMap DKOpenGLContext::stateMap;
 DKSpinLock DKOpenGLContext::stateLock;

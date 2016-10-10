@@ -10,14 +10,14 @@
 #include "DKRenderTarget.h"
 #include "DKOpenGLContext.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
-		GLenum GetTextureFormatGLValue(DKFramework::DKTexture::Format f);
-		GLenum GetTextureInternalFormatGLValue(DKFramework::DKTexture::Format f);
+		GLenum GetTextureFormatGLValue(DKTexture::Format f);
+		GLenum GetTextureInternalFormatGLValue(DKTexture::Format f);
 
 		GLint GetMaxTextureSize(void);		// defined in DKTexture.cpp
 
@@ -155,7 +155,7 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
+using namespace DKGL;
 
 DKRenderTarget::DKRenderTarget(void)
 : proxyQuery(NULL)

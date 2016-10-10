@@ -3,8 +3,8 @@
 #include "DCObject.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 // type size check.
 static_assert(SIZEOF_LONG == sizeof(long), "size mismatch");

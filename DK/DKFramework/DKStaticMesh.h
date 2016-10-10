@@ -20,7 +20,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKStaticMesh : public DKMesh
 	{
@@ -48,27 +48,27 @@ namespace DKFramework
 
 		// stream
 		virtual StreamInfo FindVertexStream(DKVertexStream::Stream stream) const;
-		virtual StreamInfo FindVertexStream(const DKFoundation::DKString& name) const;
-		virtual StreamInfo FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const;
+		virtual StreamInfo FindVertexStream(const DKString& name) const;
+		virtual StreamInfo FindVertexStream(DKVertexStream::Stream stream, const DKString& name) const;
 
 		bool MakeInterleaved(DKVertexBuffer::MemoryLocation location = DKVertexBuffer::MemoryLocationStatic, DKVertexBuffer::BufferUsage usage = DKVertexBuffer::BufferUsageDraw);
 		bool MakeSeparated(DKVertexBuffer::MemoryLocation location = DKVertexBuffer::MemoryLocationStatic, DKVertexBuffer::BufferUsage usage = DKVertexBuffer::BufferUsageDraw);
-		bool UpdateStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name, DKVertexStream::Type type, bool normalize, size_t vertexSize, size_t vertexCount, void* data, DKVertexBuffer::MemoryLocation location = DKVertexBuffer::MemoryLocationStatic, DKVertexBuffer::BufferUsage usage = DKVertexBuffer::BufferUsageDraw);
-		bool RemoveStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name);
+		bool UpdateStream(DKVertexStream::Stream stream, const DKString& name, DKVertexStream::Type type, bool normalize, size_t vertexSize, size_t vertexCount, void* data, DKVertexBuffer::MemoryLocation location = DKVertexBuffer::MemoryLocationStatic, DKVertexBuffer::BufferUsage usage = DKVertexBuffer::BufferUsageDraw);
+		bool RemoveStream(DKVertexStream::Stream stream, const DKString& name);
 
 		bool CanAdoptMaterial(const DKMaterial* m) const override;
 		DKPrimitive::Type PrimitiveType(void) const override;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		int BindStream(const DKVertexStream&) const override;
 		bool BindPrimitiveIndex(DKPrimitive::Type*, int*, DKIndexBuffer::Type*) const override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKStaticMesh* Copy(UUIDObjectMap&, const DKStaticMesh*);
 
-		DKFoundation::DKArray<DKFoundation::DKObject<DKVertexBuffer>>	vertexBuffers;
-		DKFoundation::DKObject<DKIndexBuffer>							indexBuffer;
+		DKArray<DKObject<DKVertexBuffer>>	vertexBuffers;
+		DKObject<DKIndexBuffer>							indexBuffer;
 	};
 }

@@ -19,7 +19,7 @@
 // read and decompress from zip-archive file.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKZipUnarchiver
 	{

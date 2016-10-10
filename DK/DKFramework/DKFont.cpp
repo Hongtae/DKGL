@@ -11,10 +11,10 @@
 #include "DKFont.h"
 #include "DKTexture2D.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -483,7 +483,7 @@ float DKFont::LineWidth(const DKString& str) const
 	return ceilf(lineLength);
 }
 
-DKRect DKFont::Bounds(const DKFoundation::DKString& str) const
+DKRect DKFont::Bounds(const DKString& str) const
 {
 	DKPoint bboxMin(0, 0);
 	DKPoint bboxMax(0, 0);

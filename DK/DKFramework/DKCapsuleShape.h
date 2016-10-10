@@ -15,7 +15,7 @@
 // capsule shape for detecting collision.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKCapsuleShape : public DKConvexShape
 	{

@@ -16,7 +16,7 @@
 // a string class with UTF-8 encoded character string.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKData;
 	class DKGL_API DKStringU8

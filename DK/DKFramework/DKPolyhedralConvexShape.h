@@ -16,7 +16,7 @@
 // interface class for polyhedral convex shapes.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKPolyhedralConvexShape : public DKConvexShape
 	{

@@ -12,8 +12,8 @@
 #include "DKModel.h"
 #include "DKMesh.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -841,8 +841,8 @@ namespace DKFramework
 		};
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 DKScene::DKScene(void)

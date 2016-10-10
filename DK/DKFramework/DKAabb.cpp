@@ -10,8 +10,8 @@
 #include "DKLine.h"
 #include "DKBox.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKAabb::DKAabb(void)
 	: positionMin(DKVector3(FLT_MAX, FLT_MAX, FLT_MAX))

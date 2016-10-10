@@ -42,7 +42,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename Key, typename Value> class DKMapPair
 	{

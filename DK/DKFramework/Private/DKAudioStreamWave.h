@@ -14,7 +14,7 @@
 // This class supports audio stream for Wave format.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -25,8 +25,8 @@ namespace DKFramework
 			DKAudioStreamWave(void);
 			~DKAudioStreamWave(void);
 
-			bool Open(const DKFoundation::DKString& file);
-			bool Open(DKFoundation::DKStream* stream);
+			bool Open(const DKString& file);
+			bool Open(DKStream* stream);
 
 			size_t Read(void* pBuffer, size_t nSize);
 

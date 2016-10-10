@@ -50,7 +50,7 @@
 #undef GetUserName
 #endif
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKApplicationInterface;
 	class DKGL_API DKApplication
@@ -90,15 +90,15 @@ namespace DKFramework
 		void Terminate(int exitCode);
 
 		// retrieve pre-defined paths
-		DKFoundation::DKString EnvironmentPath(SystemPath);
+		DKString EnvironmentPath(SystemPath);
 
 		// retrieve current module (or executable) path.
-		DKFoundation::DKString ModulePath(void);
+		DKString ModulePath(void);
 
 		// LoadResource loads application resource into read,writable buffer.
-		DKFoundation::DKObject<DKFoundation::DKData> LoadResource(const DKFoundation::DKString& res, DKFoundation::DKAllocator& alloc = DKFoundation::DKAllocator::DefaultAllocator());
+		DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		// LoadStaticResource loads application resource into read-only buffer. (faster)
-		DKFoundation::DKObject<DKFoundation::DKData> LoadStaticResource(const DKFoundation::DKString& res);
+		DKObject<DKData> LoadStaticResource(const DKString& res);
 
 		// get entire display bounds. (displayId = 0 is main screen)
 		DKRect DisplayBounds(int displayId) const;
@@ -107,9 +107,9 @@ namespace DKFramework
 		DKRect ScreenContentBounds(int displayId) const;
 
 		// misc (user name, host name, os name)
-		DKFoundation::DKString HostName(void) const;
-		DKFoundation::DKString OSName(void) const;
-		DKFoundation::DKString UserName(void) const;
+		DKString HostName(void) const;
+		DKString OSName(void) const;
+		DKString UserName(void) const;
 
 	protected:
 		virtual void OnHidden(void);        // application become hidden. (not minimized)
@@ -122,9 +122,9 @@ namespace DKFramework
 	private:
 		void Initialize();
 		void Finalize();
-		DKFoundation::DKDateTime			initializedAt;
-		DKFoundation::DKArray<char*>		args;
-		DKFoundation::DKMutex				mutex;
+		DKDateTime			initializedAt;
+		DKArray<char*>		args;
+		DKMutex				mutex;
 		DKApplicationInterface*				impl;
 	};
 }

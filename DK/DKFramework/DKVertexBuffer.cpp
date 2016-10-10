@@ -9,8 +9,8 @@
 #include "DKVertexBuffer.h"
 #include "DKOpenGLContext.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKVertexBuffer::DKVertexBuffer(void)
@@ -96,7 +96,7 @@ const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(DKVertexStream::Stream s
 	return NULL;
 }
 
-const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(const DKFoundation::DKString& name) const
+const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(const DKString& name) const
 {
 	for (const Decl& decl : declarations)
 	{
@@ -106,7 +106,7 @@ const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(const DKFoundation::DKSt
 	return NULL;
 }
 
-const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
+const DKVertexBuffer::Decl* DKVertexBuffer::Declaration(DKVertexStream::Stream stream, const DKString& name) const
 {
 	if (stream < DKVertexStream::StreamUserDefine)
 	{
@@ -144,14 +144,14 @@ DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream) con
 	return NULL;
 }
 
-DKObject<DKBuffer> DKVertexBuffer::CopyStream(const DKFoundation::DKString& name) const
+DKObject<DKBuffer> DKVertexBuffer::CopyStream(const DKString& name) const
 {
 	if (name.Length() > 0)
 		return CopyStream(DKVertexStream::StreamUserDefine, name);
 	return NULL;
 }
 
-DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
+DKObject<DKBuffer> DKVertexBuffer::CopyStream(DKVertexStream::Stream stream, const DKString& name) const
 {
 	if (IsValid())
 	{
@@ -317,7 +317,7 @@ bool DKVertexBuffer::BindStream(const DKVertexStream& stream) const
 	return false;
 }
 
-void DKVertexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
+void DKVertexBuffer::StructuredLayout(DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
 {
 	elementSize = this->vertexSize;
 	layout.Clear();

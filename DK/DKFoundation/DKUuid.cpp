@@ -23,7 +23,7 @@
 #include "DKCriticalSection.h"
 #include "DKEndianness.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKUuid::DKUuid(void)
 {

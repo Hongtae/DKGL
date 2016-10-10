@@ -9,7 +9,7 @@
 #include "DKTypeInfo.h"
 #include "DKString.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -17,7 +17,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKTypeInfo::DKTypeInfo(void)
 	: info(&typeid(Private::InvalidType))

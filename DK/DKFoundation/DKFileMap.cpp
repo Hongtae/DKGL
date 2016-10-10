@@ -25,7 +25,7 @@
 #include "DKUtils.h"
 #include "DKUuid.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -63,7 +63,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKFileMap::DKFileMap(void)
 	: mapContext(NULL)

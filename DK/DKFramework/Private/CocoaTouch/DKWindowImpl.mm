@@ -17,9 +17,9 @@
 #include "DKWindowImpl.h"
 #include "DKApplicationImpl.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 ////////////////////////////////////////////////////////////////////////////////

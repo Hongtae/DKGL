@@ -16,9 +16,9 @@
 #include "DKWindowImpl.h"
 #import "DKWindowView.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 @interface DKWindowView ()

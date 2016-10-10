@@ -48,7 +48,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKConstraint : public DKModel
 	{
@@ -109,7 +109,7 @@ namespace DKFramework
 
 		virtual bool Retarget(DKRigidBody* a, DKRigidBody* b);
 
-		virtual DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		virtual DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		DKConstraint(LinkType type, DKRigidBody* rbA, DKRigidBody* rbB, class btTypedConstraint* p);
@@ -120,8 +120,8 @@ namespace DKFramework
 		virtual void ResetContext(void);
 		virtual void ResetContextImpl(void) = 0;
 
-		DKFoundation::DKObject<DKRigidBody> bodyA;
-		DKFoundation::DKObject<DKRigidBody> bodyB;
+		DKObject<DKRigidBody> bodyA;
+		DKObject<DKRigidBody> bodyB;
 
 		// called on object has restored.
 		void OnUpdateTreeReferences(NamedObjectMap&, UUIDObjectMap&) override;
@@ -143,10 +143,10 @@ namespace DKFramework
 
 		struct TargetRestoreInfo
 		{
-			DKFoundation::DKUuid bodyA;
-			DKFoundation::DKUuid bodyB;
+			DKUuid bodyA;
+			DKUuid bodyB;
 		};
-		DKFoundation::DKObject<TargetRestoreInfo> restoreInfo; // restore-info
+		DKObject<TargetRestoreInfo> restoreInfo; // restore-info
 		void RestoreTargets(UUIDObjectMap&);
 	};
 }

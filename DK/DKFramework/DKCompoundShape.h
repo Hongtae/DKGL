@@ -15,7 +15,7 @@
 // a compound shape with one or more collision shapes with transform.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKCompoundShape : public DKCollisionShape
 	{
@@ -35,6 +35,6 @@ namespace DKFramework
 		void SetTransformAtIndex(const DKNSTransform& transform, long index);
 
 	private:
-		DKFoundation::DKArray<DKFoundation::DKObject<DKCollisionShape>> shapes;
+		DKArray<DKObject<DKCollisionShape>> shapes;
 	};
 }

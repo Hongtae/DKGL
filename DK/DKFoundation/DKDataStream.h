@@ -17,7 +17,7 @@
 // provide stream interface.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKDataStream : public DKStream
 	{

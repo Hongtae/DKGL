@@ -8,8 +8,8 @@
 #include "DKModel.h"
 #include "DKScene.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKModel::DKModel(Type t)
 : type(t), parent(NULL), scene(NULL), hideDescendants(false), needResolveTree(true)
@@ -130,7 +130,7 @@ size_t DKModel::NumberOfDescendants(void) const
 	return num;
 }
 
-DKModel* DKModel::FindDescendant(const DKFoundation::DKString& name)
+DKModel* DKModel::FindDescendant(const DKString& name)
 {
 	if (Name() == name)
 		return this;
@@ -143,7 +143,7 @@ DKModel* DKModel::FindDescendant(const DKFoundation::DKString& name)
 	return NULL;
 }
 
-const DKModel* DKModel::FindDescendant(const DKFoundation::DKString& name) const
+const DKModel* DKModel::FindDescendant(const DKString& name) const
 {
 	return const_cast<DKModel&>(*this).FindDescendant(name);
 }
@@ -331,7 +331,7 @@ void DKModel::ResolveTree(bool force)
 	}
 }
 
-void DKModel::ReloadSceneContext(DKFoundation::DKOperation* op)
+void DKModel::ReloadSceneContext(DKOperation* op)
 {
 	if (scene)
 	{
