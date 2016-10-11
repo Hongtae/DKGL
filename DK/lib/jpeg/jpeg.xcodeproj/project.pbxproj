@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		66DA0E521DA38ABF00B3056E /* jpeg_iOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0E511DA38ABF00B3056E /* jpeg_iOS.m */; };
-		66DA0E531DA38ABF00B3056E /* jpeg_iOS.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DA0E501DA38ABF00B3056E /* jpeg_iOS.h */; };
 		66DA0E961DA38ADA00B3056E /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0E5F1DA38ADA00B3056E /* jaricom.c */; };
 		66DA0E971DA38ADA00B3056E /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0E5F1DA38ADA00B3056E /* jaricom.c */; };
 		66DA0E981DA38ADA00B3056E /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0E601DA38ADA00B3056E /* jcapimin.c */; };
@@ -119,7 +117,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				66DA0E531DA38ABF00B3056E /* jpeg_iOS.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,8 +124,6 @@
 
 /* Begin PBXFileReference section */
 		66DA0E4D1DA38ABF00B3056E /* libjpeg_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjpeg_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		66DA0E501DA38ABF00B3056E /* jpeg_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jpeg_iOS.h; sourceTree = "<group>"; };
-		66DA0E511DA38ABF00B3056E /* jpeg_iOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jpeg_iOS.m; sourceTree = "<group>"; };
 		66DA0E5B1DA38ACD00B3056E /* libjpeg_macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjpeg_macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		66DA0E5F1DA38ADA00B3056E /* jaricom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jaricom.c; sourceTree = "<group>"; };
 		66DA0E601DA38ADA00B3056E /* jcapimin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jcapimin.c; sourceTree = "<group>"; };
@@ -263,7 +258,6 @@
 				66DA0E931DA38ADA00B3056E /* jquant2.c */,
 				66DA0E941DA38ADA00B3056E /* jutils.c */,
 				66DA0E951DA38ADA00B3056E /* jversion.h */,
-				66DA0E4F1DA38ABF00B3056E /* jpeg_iOS */,
 				66DA0E4E1DA38ABF00B3056E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -275,15 +269,6 @@
 				66DA0E5B1DA38ACD00B3056E /* libjpeg_macOS.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		66DA0E4F1DA38ABF00B3056E /* jpeg_iOS */ = {
-			isa = PBXGroup;
-			children = (
-				66DA0E501DA38ABF00B3056E /* jpeg_iOS.h */,
-				66DA0E511DA38ABF00B3056E /* jpeg_iOS.m */,
-			);
-			path = jpeg_iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -383,7 +368,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66DA0E521DA38ABF00B3056E /* jpeg_iOS.m in Sources */,
 				66DA0EA21DA38ADA00B3056E /* jcdctmgr.c in Sources */,
 				66DA0EC81DA38ADA00B3056E /* jddctmgr.c in Sources */,
 				66DA0ED01DA38ADA00B3056E /* jdmarker.c in Sources */,
@@ -495,6 +479,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Debug;
 		};
@@ -538,7 +523,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -581,6 +565,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -609,7 +594,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -619,6 +603,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;

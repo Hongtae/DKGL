@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		84A409781DA3F22900E5A725 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A4096F1DA3F22900E5A725 /* lz4.c */; settings = {ASSET_TAGS = (); }; };
-		84A409791DA3F22900E5A725 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A4096F1DA3F22900E5A725 /* lz4.c */; settings = {ASSET_TAGS = (); }; };
-		84A4097A1DA3F22900E5A725 /* lz4.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409701DA3F22900E5A725 /* lz4.h */; settings = {ASSET_TAGS = (); }; };
-		84A4097B1DA3F22900E5A725 /* lz4frame_static.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409711DA3F22900E5A725 /* lz4frame_static.h */; settings = {ASSET_TAGS = (); }; };
-		84A4097C1DA3F22900E5A725 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409721DA3F22900E5A725 /* lz4frame.c */; settings = {ASSET_TAGS = (); }; };
-		84A4097D1DA3F22900E5A725 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409721DA3F22900E5A725 /* lz4frame.c */; settings = {ASSET_TAGS = (); }; };
-		84A4097E1DA3F22900E5A725 /* lz4frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409731DA3F22900E5A725 /* lz4frame.h */; settings = {ASSET_TAGS = (); }; };
-		84A4097F1DA3F22900E5A725 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409741DA3F22900E5A725 /* lz4hc.c */; settings = {ASSET_TAGS = (); }; };
-		84A409801DA3F22900E5A725 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409741DA3F22900E5A725 /* lz4hc.c */; settings = {ASSET_TAGS = (); }; };
-		84A409811DA3F22900E5A725 /* lz4hc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409751DA3F22900E5A725 /* lz4hc.h */; settings = {ASSET_TAGS = (); }; };
-		84A409821DA3F22900E5A725 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409761DA3F22900E5A725 /* xxhash.c */; settings = {ASSET_TAGS = (); }; };
-		84A409831DA3F22900E5A725 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409761DA3F22900E5A725 /* xxhash.c */; settings = {ASSET_TAGS = (); }; };
-		84A409841DA3F22900E5A725 /* xxhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409771DA3F22900E5A725 /* xxhash.h */; settings = {ASSET_TAGS = (); }; };
+		84A409781DA3F22900E5A725 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A4096F1DA3F22900E5A725 /* lz4.c */; };
+		84A409791DA3F22900E5A725 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A4096F1DA3F22900E5A725 /* lz4.c */; };
+		84A4097A1DA3F22900E5A725 /* lz4.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409701DA3F22900E5A725 /* lz4.h */; };
+		84A4097B1DA3F22900E5A725 /* lz4frame_static.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409711DA3F22900E5A725 /* lz4frame_static.h */; };
+		84A4097C1DA3F22900E5A725 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409721DA3F22900E5A725 /* lz4frame.c */; };
+		84A4097D1DA3F22900E5A725 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409721DA3F22900E5A725 /* lz4frame.c */; };
+		84A4097E1DA3F22900E5A725 /* lz4frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409731DA3F22900E5A725 /* lz4frame.h */; };
+		84A4097F1DA3F22900E5A725 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409741DA3F22900E5A725 /* lz4hc.c */; };
+		84A409801DA3F22900E5A725 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409741DA3F22900E5A725 /* lz4hc.c */; };
+		84A409811DA3F22900E5A725 /* lz4hc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409751DA3F22900E5A725 /* lz4hc.h */; };
+		84A409821DA3F22900E5A725 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409761DA3F22900E5A725 /* xxhash.c */; };
+		84A409831DA3F22900E5A725 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 84A409761DA3F22900E5A725 /* xxhash.c */; };
+		84A409841DA3F22900E5A725 /* xxhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A409771DA3F22900E5A725 /* xxhash.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -211,6 +211,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Debug;
 		};
@@ -227,6 +228,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -254,7 +256,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -264,6 +265,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -320,7 +322,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -377,6 +378,7 @@
 				84A4095F1DA3F20600E5A725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		84A4096B1DA3F21300E5A725 /* Build configuration list for PBXNativeTarget "lz4_iOS" */ = {
 			isa = XCConfigurationList;
@@ -385,6 +387,7 @@
 				84A4096D1DA3F21300E5A725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 
 #include "DKTexture.h"
 #include "DKOpenGLContext.h"

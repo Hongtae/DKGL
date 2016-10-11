@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/zlib.h"
+#include "../lib/Inc_zlib.h"
 #include "DKZipArchiver.h"
 #include "DKCriticalSection.h"
 #include "DKString.h"

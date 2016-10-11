@@ -18,6 +18,8 @@
 #include "../../../DKFoundation.h"
 #include "../../DKWindow.h"
 
+using namespace DKGL;
+
 @interface DKWindowView : NSView <NSTextInputClient, NSWindowDelegate>
 {
 @private

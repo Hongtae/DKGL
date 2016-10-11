@@ -5,13 +5,12 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/FreeType.h"
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_FreeType.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKMath.h"
 #include "DKFont.h"
 #include "DKTexture2D.h"
 
-using namespace DKGL;
 using namespace DKGL;
 
 namespace DKGL

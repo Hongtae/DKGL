@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		66DA0F1A1DA38B1F00B3056E /* libFLAC_iOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0F191DA38B1F00B3056E /* libFLAC_iOS.m */; };
-		66DA0F1B1DA38B1F00B3056E /* libFLAC_iOS.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DA0F181DA38B1F00B3056E /* libFLAC_iOS.h */; };
 		66DA0F3F1DA38B3500B3056E /* all.h in Headers */ = {isa = PBXBuildFile; fileRef = 66DA0F1F1DA38B3500B3056E /* all.h */; };
 		66DA0F401DA38B3500B3056E /* callback.h in Headers */ = {isa = PBXBuildFile; fileRef = 66DA0F201DA38B3500B3056E /* callback.h */; };
 		66DA0F411DA38B3500B3056E /* export.h in Headers */ = {isa = PBXBuildFile; fileRef = 66DA0F211DA38B3500B3056E /* export.h */; };
@@ -69,7 +67,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				66DA0F1B1DA38B1F00B3056E /* libFLAC_iOS.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,8 +75,6 @@
 /* Begin PBXFileReference section */
 		66DA0F0D1DA38B0C00B3056E /* liblibFLAC_macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibFLAC_macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		66DA0F161DA38B1F00B3056E /* liblibFLAC_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibFLAC_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		66DA0F181DA38B1F00B3056E /* libFLAC_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libFLAC_iOS.h; sourceTree = "<group>"; };
-		66DA0F191DA38B1F00B3056E /* libFLAC_iOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = libFLAC_iOS.m; sourceTree = "<group>"; };
 		66DA0F1F1DA38B3500B3056E /* all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = all.h; sourceTree = "<group>"; };
 		66DA0F201DA38B3500B3056E /* callback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = callback.h; sourceTree = "<group>"; };
 		66DA0F211DA38B3500B3056E /* export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = export.h; sourceTree = "<group>"; };
@@ -135,7 +130,6 @@
 			children = (
 				66DA0F271DA38B3500B3056E /* FLAC */,
 				66DA0F3E1DA38B3500B3056E /* Source Files */,
-				66DA0F171DA38B1F00B3056E /* libFLAC_iOS */,
 				66DA0F0E1DA38B0C00B3056E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -147,15 +141,6 @@
 				66DA0F161DA38B1F00B3056E /* liblibFLAC_iOS.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		66DA0F171DA38B1F00B3056E /* libFLAC_iOS */ = {
-			isa = PBXGroup;
-			children = (
-				66DA0F181DA38B1F00B3056E /* libFLAC_iOS.h */,
-				66DA0F191DA38B1F00B3056E /* libFLAC_iOS.m */,
-			);
-			path = libFLAC_iOS;
 			sourceTree = "<group>";
 		};
 		66DA0F271DA38B3500B3056E /* FLAC */ = {
@@ -335,7 +320,6 @@
 				66DA0F6F1DA38B3500B3056E /* stream_encoder_framing.c in Sources */,
 				66DA0F511DA38B3500B3056E /* crc.c in Sources */,
 				66DA0F4C1DA38B3500B3056E /* bitwriter.c in Sources */,
-				66DA0F1A1DA38B1F00B3056E /* libFLAC_iOS.m in Sources */,
 				66DA0F591DA38B3500B3056E /* lpc.c in Sources */,
 				66DA0F4F1DA38B3500B3056E /* cpu.c in Sources */,
 				66DA0F711DA38B3500B3056E /* window.c in Sources */,
@@ -367,6 +351,7 @@
 					include,
 					../libogg/include,
 				);
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Debug;
 		};
@@ -387,6 +372,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -415,7 +401,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -425,6 +410,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -483,7 +469,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

@@ -16,7 +16,7 @@
 #import <AppKit/AppKit.h> 
 
 #include "../../../DKInclude.h"
-#include "../../../../lib/OpenGL.h"
+#include "../../../lib/Inc_OpenGL.h"
 #include "DKOpenGLImpl.h"
 
 

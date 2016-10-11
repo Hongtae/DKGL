@@ -7,7 +7,7 @@
 
 #include <memory.h>
 #include <math.h>
-#include "../../../lib/libFLAC.h"
+#include "../../../lib/Inc_libFLAC.h"
 #include "DKAudioStreamFLAC.h"
 
 using namespace DKGL;

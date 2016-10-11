@@ -8,9 +8,9 @@
 #include <ctype.h>
 #include <wctype.h>
 
-#include "../lib/zlib.h"
-#include "../lib/lz4.h"
-#include "../lib/libxml2.h"
+#include "../lib/Inc_zlib.h"
+#include "../lib/Inc_lz4.h"
+#include "../lib/Inc_libxml2.h"
 
 #include "DKEndianness.h"
 #include "DKString.h"

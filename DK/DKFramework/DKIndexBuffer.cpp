@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKIndexBuffer.h"
 
 using namespace DKGL;

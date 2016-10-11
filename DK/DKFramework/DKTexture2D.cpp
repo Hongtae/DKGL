@@ -5,8 +5,8 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/CxImage.h"
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_CxImage.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKTexture2D.h"
 #include "DKOpenGLContext.h"
 #include "DKResourceLoader.h"

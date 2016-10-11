@@ -18,6 +18,8 @@
 #import "../../../DKFoundation.h"
 #import "../../DKWindow.h"
 
+using namespace DKGL;
+
 ////////////////////////////////////////////////////////////////////////////////
 // DKWindowView
 // using UITextFile to process text input.
