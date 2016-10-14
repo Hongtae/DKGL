@@ -1,9 +1,9 @@
 ﻿//
-//  File: DKApplication_OSX.h
+//  File: DKApplication_macOS.h
 //  Platform: Mac OS X
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -25,11 +25,11 @@ namespace DKGL
 {
 	namespace Private
 	{
-		class DKApplication_OSX : public DKApplicationInterface
+		class DKApplication_macOS : public DKApplicationInterface
 		{
 		public:
-			DKApplication_OSX(DKApplication* app);
-			~DKApplication_OSX(void);
+			DKApplication_macOS(DKApplication* app);
+			~DKApplication_macOS(void);
 
 			int Run(DKArray<char*>& args);
 			void Terminate(int exitCode);

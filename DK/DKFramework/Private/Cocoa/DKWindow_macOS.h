@@ -1,9 +1,9 @@
 //
-//  File: DKWindow_OSX.h
+//  File: DKWindow_macOS.h
 //  Platform: Mac OS X
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -15,10 +15,10 @@
 
 #ifdef __OBJC__
 #import <AppKit/AppKit.h> 
-#import "DKWindowView_OSX.h"
+#import "DKWindowView_macOS.h"
 #else
 //class NSWindow;
-//class DKWindowView_OSX;
+//class DKWindowView_macOS;
 #endif	//ifdef __OBJC__
 
 #include "../../Interface/DKWindowInterface.h"
@@ -27,11 +27,11 @@ namespace DKGL
 {
 	namespace Private
 	{
-		class DKWindow_OSX : public DKWindowInterface
+		class DKWindow_macOS : public DKWindowInterface
 		{
 		public:
-			DKWindow_OSX(DKWindow *window);
-			~DKWindow_OSX(void);
+			DKWindow_macOS(DKWindow *window);
+			~DKWindow_macOS(void);
 			
 			bool CreateProxy(void* systemHandle);
 			void UpdateProxy(void);

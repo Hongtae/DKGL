@@ -1,9 +1,9 @@
 //
-//  File: DKWindow_OSX.mm
+//  File: DKWindow_macOS.mm
 //  Platform: Mac OS X
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -13,7 +13,7 @@
 #warning Compiling DKWindow for Mac OS X
 
 #import <AppKit/AppKit.h> 
-#import "DKWindow_OSX.h"
+#import "DKWindow_macOS.h"
 
 using namespace DKGL;
 using namespace DKGL::Private;
@@ -33,15 +33,15 @@ using namespace DKGL::Private;
 }
 @end
 
-#pragma mark - DKWindow_OSX implementation
+#pragma mark - DKWindow_macOS implementation
 ////////////////////////////////////////////////////////////////////////////////
-// DKWindow_OSX implementation
+// DKWindow_macOS implementation
 DKWindowInterface* DKWindowInterface::CreateInterface(DKWindow* win)
 {
-	return new DKWindow_OSX(win);
+	return new DKWindow_macOS(win);
 }
 
-DKWindow_OSX::DKWindow_OSX(DKWindow *window)
+DKWindow_macOS::DKWindow_macOS(DKWindow *window)
 : ownerWindow(window)
 , window(nil)
 , view(nil)
@@ -53,13 +53,13 @@ DKWindow_OSX::DKWindow_OSX(DKWindow *window)
 	DKLog("NSThread MainThread result: %d\n", bMainThread);
 }
 
-DKWindow_OSX::~DKWindow_OSX(void)
+DKWindow_macOS::~DKWindow_macOS(void)
 {
 	DKASSERT_DEBUG(this->window == nil);
 	DKASSERT_DEBUG(this->view == nil);
 }
 
-bool DKWindow_OSX::CreateProxy(void* systemHandle)
+bool DKWindow_macOS::CreateProxy(void* systemHandle)
 {
 	if (systemHandle == nil)
 		return false;
@@ -99,7 +99,7 @@ bool DKWindow_OSX::CreateProxy(void* systemHandle)
 	return false;
 }
 
-void DKWindow_OSX::UpdateProxy(void)
+void DKWindow_macOS::UpdateProxy(void)
 {
 	if (proxyWindow)
 	{
@@ -113,12 +113,12 @@ void DKWindow_OSX::UpdateProxy(void)
 	}
 }
 
-bool DKWindow_OSX::IsProxy(void) const
+bool DKWindow_macOS::IsProxy(void) const
 {
 	return proxyWindow;
 }
 
-bool DKWindow_OSX::Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style)
+bool DKWindow_macOS::Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style)
 {
 	NSRect screenBounds = [[NSScreen mainScreen] visibleFrame];
 
@@ -152,7 +152,7 @@ bool DKWindow_OSX::Create(const DKString& title, const DKSize& size, const DKPoi
 													 defer:NO];
 
 	// create view
-	this->view = [[DKWindowView_OSX alloc] initWithFrame:rect handler:ownerWindow];
+	this->view = [[DKWindowView_macOS alloc] initWithFrame:rect handler:ownerWindow];
 	[this->window setContentView:view];
 	[window setTitle:[NSString stringWithUTF8String:(const char*)DKStringU8(title)]];
 
@@ -192,7 +192,7 @@ bool DKWindow_OSX::Create(const DKString& title, const DKSize& size, const DKPoi
 	return true;
 }
 
-void DKWindow_OSX::Destroy(void)
+void DKWindow_macOS::Destroy(void)
 {
 	if (window)
 	{
@@ -215,7 +215,7 @@ void DKWindow_OSX::Destroy(void)
 	view = nil;
 }
 
-void DKWindow_OSX::Show(void)
+void DKWindow_macOS::Show(void)
 {
 	DKASSERT_DEBUG(window != nil);
 
@@ -224,7 +224,7 @@ void DKWindow_OSX::Show(void)
 	ownerWindow->PostWindowEvent(DKWindow::EventWindowShown, this->ContentSize(), this->Origin(), false);
 }
 
-void DKWindow_OSX::Hide(void)
+void DKWindow_macOS::Hide(void)
 {
 	DKASSERT_DEBUG(window != nil);
 
@@ -234,7 +234,7 @@ void DKWindow_OSX::Hide(void)
 	ownerWindow->PostWindowEvent(DKWindow::EventWindowHidden, this->ContentSize(), this->Origin(), false);
 }
 
-void DKWindow_OSX::Activate(void)
+void DKWindow_macOS::Activate(void)
 {
 	DKASSERT_DEBUG(window != nil);
 
@@ -247,14 +247,14 @@ void DKWindow_OSX::Activate(void)
 	ownerWindow->PostWindowEvent(DKWindow::EventWindowActivated, contentSize, origin, false);
 }
 
-void DKWindow_OSX::Minimize(void)
+void DKWindow_macOS::Minimize(void)
 {
 	DKASSERT_DEBUG(window != nil);
 
 	[window miniaturize: nil];
 }
 
-void DKWindow_OSX::Resize(const DKSize& s, const DKPoint* pt)
+void DKWindow_macOS::Resize(const DKSize& s, const DKPoint* pt)
 {
 	DKASSERT_DEBUG(window != nil);
 
@@ -270,20 +270,20 @@ void DKWindow_OSX::Resize(const DKSize& s, const DKPoint* pt)
 	}
 }
 
-void DKWindow_OSX::SetOrigin(const DKPoint& origin)
+void DKWindow_macOS::SetOrigin(const DKPoint& origin)
 {
 	[this->window setFrameOrigin:NSMakePoint(origin.x, origin.y)];
 }
 
-DKSize DKWindow_OSX::ContentSize(void) const
+DKSize DKWindow_macOS::ContentSize(void) const
 {
 	DKASSERT_DEBUG(view != nil);
-	DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_OSX class]]);
+	DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_macOS class]]);
 
-	return [(DKWindowView_OSX*)view contentSize];
+	return [(DKWindowView_macOS*)view contentSize];
 }
 
-DKPoint DKWindow_OSX::Origin(void) const
+DKPoint DKWindow_macOS::Origin(void) const
 {
 	DKASSERT_DEBUG(window != nil);
 
@@ -291,32 +291,32 @@ DKPoint DKWindow_OSX::Origin(void) const
 	return DKPoint(rect.origin.x, rect.origin.y);
 }
 
-double DKWindow_OSX::ContentScaleFactor(void) const
+double DKWindow_macOS::ContentScaleFactor(void) const
 {
 	return window.backingScaleFactor;
 }
 
-void DKWindow_OSX::SetTitle(const DKString& title)
+void DKWindow_macOS::SetTitle(const DKString& title)
 {
 	[window setTitle:[NSString stringWithUTF8String:(const char*)DKStringU8(title)]];
 }
 
-DKString DKWindow_OSX::Title(void) const
+DKString DKWindow_macOS::Title(void) const
 {
 	return [[window title] UTF8String];
 }
 
-bool DKWindow_OSX::IsVisible(void) const
+bool DKWindow_macOS::IsVisible(void) const
 {
 	return [window isVisible];
 }
 
-void* DKWindow_OSX::PlatformHandle(void) const
+void* DKWindow_macOS::PlatformHandle(void) const
 {
 	return view;
 }
 
-void DKWindow_OSX::ShowMouse(int deviceId, bool bShow)
+void DKWindow_macOS::ShowMouse(int deviceId, bool bShow)
 {
 	if (deviceId != 0)
 		return;
@@ -327,7 +327,7 @@ void DKWindow_OSX::ShowMouse(int deviceId, bool bShow)
 		[NSCursor hide];
 }
 
-bool DKWindow_OSX::IsMouseVisible(int deviceId) const
+bool DKWindow_macOS::IsMouseVisible(int deviceId) const
 {
 	if (deviceId == 0)
 	{
@@ -336,61 +336,61 @@ bool DKWindow_OSX::IsMouseVisible(int deviceId) const
 	return false;
 }
 
-void DKWindow_OSX::HoldMouse(int deviceId, bool bHold)
+void DKWindow_macOS::HoldMouse(int deviceId, bool bHold)
 {
 	if (deviceId != 0)
 		return;
 
 	if (!proxyWindow)
 	{
-		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_OSX class]] == YES);
-		[(DKWindowView_OSX*)view holdMouse: (bHold ? YES : NO) ];
+		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_macOS class]] == YES);
+		[(DKWindowView_macOS*)view holdMouse: (bHold ? YES : NO) ];
 	}
 }
 
-bool DKWindow_OSX::IsMouseHeld(int deviceId) const
+bool DKWindow_macOS::IsMouseHeld(int deviceId) const
 {
 	if (!proxyWindow)
 	{
-		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_OSX class]] == YES);
+		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_macOS class]] == YES);
 		if (deviceId == 0)
-			return [(DKWindowView_OSX*)view isMouseHeld];
+			return [(DKWindowView_macOS*)view isMouseHeld];
 	}
 	return false;
 }
 
-void DKWindow_OSX::SetMousePosition(int deviceId, const DKPoint& pt)
+void DKWindow_macOS::SetMousePosition(int deviceId, const DKPoint& pt)
 {
 	if (!proxyWindow)
 	{
-		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_OSX class]] == YES);
+		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_macOS class]] == YES);
 		if (deviceId == 0)
-			[(DKWindowView_OSX*)view setMousePosition: pt];
+			[(DKWindowView_macOS*)view setMousePosition: pt];
 	}
 }
 
-DKPoint DKWindow_OSX::MousePosition(int deviceId) const
+DKPoint DKWindow_macOS::MousePosition(int deviceId) const
 {
 	if (!proxyWindow)
 	{
-		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_OSX class]] == YES);
+		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_macOS class]] == YES);
 		if (deviceId == 0)
-			return ((DKWindowView_OSX*)view).mousePosition;
+			return ((DKWindowView_macOS*)view).mousePosition;
 	}
 	return DKPoint(-1,-1);
 }
 
-void DKWindow_OSX::EnableTextInput(int deviceId, bool enable)
+void DKWindow_macOS::EnableTextInput(int deviceId, bool enable)
 {
 	if (!proxyWindow)
 	{
-		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_OSX class]] == YES);
+		DKASSERT_DEBUG([view isKindOfClass:[DKWindowView_macOS class]] == YES);
 		if (deviceId == 0)
-			((DKWindowView_OSX*)view).textInput = enable;
+			((DKWindowView_macOS*)view).textInput = enable;
 	}
 }
 
-bool DKWindow_OSX::IsValid(void) const
+bool DKWindow_macOS::IsValid(void) const
 {
 	if (window && view)
 		return true;
@@ -398,7 +398,7 @@ bool DKWindow_OSX::IsValid(void) const
 	return false;			
 }
 
-DKVirtualKey DKWindow_OSX::ConvertVKey(unsigned long key)
+DKVirtualKey DKWindow_macOS::ConvertVKey(unsigned long key)
 {
 	switch (key)
 	{
