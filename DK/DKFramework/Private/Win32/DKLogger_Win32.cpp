@@ -16,9 +16,7 @@
 
 #include "DKLogger_Win32.h"
 
-using namespace DKFoundation;
-
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -85,7 +83,7 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
+using namespace DKGL;
 
 void DKLogger_Win32::Log(const DKString& msg)
 {

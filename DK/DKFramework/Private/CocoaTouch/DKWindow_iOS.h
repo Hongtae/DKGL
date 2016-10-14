@@ -22,9 +22,7 @@
 
 #include "../../Interface/DKWindowInterface.h"
 
-using namespace DKFoundation;
-
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{

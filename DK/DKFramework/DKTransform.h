@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
-namespace DKFramework
+namespace DKGL
 {
 	struct DKGL_API DKTransformUnit
 	{

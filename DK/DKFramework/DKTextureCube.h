@@ -22,7 +22,7 @@
 //    This class is not tested.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKRenderTarget;
 	class DKGL_API DKTextureCube : public DKTexture
@@ -31,13 +31,13 @@ namespace DKFramework
 		DKTextureCube(void);
 		~DKTextureCube(void);
 
-		static DKFoundation::DKObject<DKTextureCube> Create(int width, int height, Format imageFormat, Type dataType);
+		static DKObject<DKTextureCube> Create(int width, int height, Format imageFormat, Type dataType);
 
 		DKRenderTarget* GetRenderTarget(void);
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 
 	private:
-		DKFoundation::DKObject<DKRenderTarget>	renderTarget;
+		DKObject<DKRenderTarget>	renderTarget;
 	};
 }

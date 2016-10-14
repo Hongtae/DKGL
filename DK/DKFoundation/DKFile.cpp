@@ -23,9 +23,9 @@
 #include "DKLog.h"
 #include "DKString.h"
 #include "DKUtils.h"
-#include "DKUuid.h"
+#include "DKUUID.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -48,7 +48,7 @@ namespace DKFoundation
 
 #define DKFILE_INVALID_FILE_HANDLE		(-1)
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKFile::DKFile(void)
 	: file(DKFILE_INVALID_FILE_HANDLE)
@@ -239,7 +239,7 @@ DKObject<DKFile> DKFile::CreateTemporary(void)
 	HANDLE hFile = INVALID_HANDLE_VALUE;
 	while (hFile == INVALID_HANDLE_VALUE)
 	{
-		DKString filePath = tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String());
+		DKString filePath = tmpPath.FilePathStringByAppendingPath(DKUUID::Create().String());
 
 		hFile = ::CreateFileW((const wchar_t*)filePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW,
 			FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_FLAG_DELETE_ON_CLOSE,
@@ -271,7 +271,7 @@ DKObject<DKFile> DKFile::CreateTemporary(void)
 	int fd = -1;
 	while (fd == -1)
 	{
-		filePath = DKStringU8(tmpPath.FilePathStringByAppendingPath(DKUuid::Create().String()));
+		filePath = DKStringU8(tmpPath.FilePathStringByAppendingPath(DKUUID::Create().String()));
 		if (filePath.Length() == 0)
 		{
 			DKLog("cannot create temp file!\n");

@@ -5,12 +5,12 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 
 #include "DKTexture.h"
 #include "DKOpenGLContext.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -32,7 +32,7 @@ namespace DKFramework
 				case DKTexture::Target3D:			return GL_TEXTURE_3D;
 				case DKTexture::TargetCube:			return GL_TEXTURE_CUBE_MAP;
 			}
-			DKFoundation::DKLog("Warning: DKTexture target (%x) invalid or not supported.\n", t);
+			DKLog("Warning: DKTexture target (%x) invalid or not supported.\n", t);
 			return 0;
 		}
 		int GetTextureFormatComponents(DKTexture::Format f)
@@ -88,7 +88,7 @@ namespace DKFramework
 				case DKTexture::FormatDepth32F:
 					return 1;
 			}
-			DKFoundation::DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
+			DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
 			return 0;
 		}
 		GLenum GetTextureFormatGLValue(DKTexture::Format f)
@@ -144,7 +144,7 @@ namespace DKFramework
 				case DKTexture::FormatDepth32F:
 					return GL_DEPTH_COMPONENT;
 			}
-			DKFoundation::DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
+			DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
 			return 0;
 		}
 		GLenum GetTextureInternalFormatGLValue(DKTexture::Format f)
@@ -193,7 +193,7 @@ namespace DKFramework
 				case DKTexture::FormatDepth24:	return GL_DEPTH_COMPONENT24;
 				case DKTexture::FormatDepth32F:	return GL_DEPTH_COMPONENT32F;
 			}
-			DKFoundation::DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
+			DKLog("Warning: DKTexture format (%x) invalid or not supported.\n", f);
 			return 0;
 		}
 		GLenum GetTextureTypeGLValue(DKTexture::Type t)
@@ -212,15 +212,15 @@ namespace DKFramework
 				case DKTexture::TypeDouble:			return GL_DOUBLE;
 #endif
 			}
-			DKFoundation::DKLog("Warning: DKTexture type (%x) invalid or not supported.\n", t);
+			DKLog("Warning: DKTexture type (%x) invalid or not supported.\n", t);
 			return 0;
 		}
 	}
 }
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKTexture::DKTexture(void)

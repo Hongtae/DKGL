@@ -5,12 +5,12 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKGeometryBuffer.h"
 #include "DKOpenGLContext.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKGeometryBuffer::DKGeometryBuffer(void)

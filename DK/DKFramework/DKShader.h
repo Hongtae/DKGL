@@ -17,7 +17,7 @@
 // a shader program module can be transferred to GPU when bind to context.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKShader
 	{
@@ -39,10 +39,10 @@ namespace DKFramework
 		Type GetType(void) const;
 
 		// compile and create shader object from source.
-		static DKFoundation::DKObject<DKShader> Create(const DKFoundation::DKString& source, Type t);
-		static DKFoundation::DKObject<DKShader> Create(const DKFoundation::DKString& source, Type t, DKFoundation::DKString& err);
+		static DKObject<DKShader> Create(const DKString& source, Type t);
+		static DKObject<DKShader> Create(const DKString& source, Type t, DKString& err);
 
-		DKFoundation::DKString GetSource(void) const;
+		DKString GetSource(void) const;
 
 	private:
 		unsigned int objectId;

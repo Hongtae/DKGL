@@ -11,7 +11,7 @@
 #include "DKObjectRefCounter.h"
 #include "DKSpinLock.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKAllocator::DKAllocator(void)
 {
@@ -81,7 +81,7 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 	return *hma;
 }
 
-DKGL_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
+DKGL_API void* operator new (size_t s, DKAllocator& a)
 {
 	void* p = a.Alloc(s);
 	bool b = DKObjectRefCounter::SetRefCounter(p, &a, 0, NULL);
@@ -89,7 +89,7 @@ DKGL_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
 	return p;
 }
 
-DKGL_API void operator delete (void* p, DKFoundation::DKAllocator& a)
+DKGL_API void operator delete (void* p, DKAllocator& a)
 {
 	DKAllocator* alloc = NULL;
 	DKObjectRefCounter::UnsetRefCounter(p, 0, &alloc);

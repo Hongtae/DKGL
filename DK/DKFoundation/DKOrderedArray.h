@@ -24,7 +24,7 @@
 // comparison function, if your item(VALUE) has comparison operators.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKOrderedArray

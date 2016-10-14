@@ -14,7 +14,7 @@
 // this Virtual-Key make easy to build cross-platform.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	enum DKVirtualKey
 	{

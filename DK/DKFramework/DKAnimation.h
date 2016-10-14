@@ -25,7 +25,7 @@
 //   This class can handles affine-transform only.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKAnimation : public DKResource
 	{
@@ -41,7 +41,7 @@ namespace DKFramework
 				NodeTypeSampling,
 				NodeTypeKeyframe,
 			};
-			DKFoundation::DKString	name;
+			DKString	name;
 			const NodeType	type;
 
 			Node(NodeType t) : type(t) {}
@@ -50,7 +50,7 @@ namespace DKFramework
 		};
 		struct SamplingNode : public Node
 		{
-			DKFoundation::DKArray<DKTransformUnit>	frames;
+			DKArray<DKTransformUnit>	frames;
 			SamplingNode(void) : Node(NodeTypeSampling) {}
 			bool IsEmpty(void) const			{return frames.IsEmpty();}
 		};
@@ -65,16 +65,16 @@ namespace DKFramework
 			typedef Key<DKQuaternion>	RotationKey;
 			typedef Key<DKVector3>		TranslationKey;
 
-			DKFoundation::DKArray<ScaleKey>			scaleKeys;
-			DKFoundation::DKArray<RotationKey>		rotationKeys;
-			DKFoundation::DKArray<TranslationKey>	translationKeys;
+			DKArray<ScaleKey>			scaleKeys;
+			DKArray<RotationKey>		rotationKeys;
+			DKArray<TranslationKey>	translationKeys;
 
 			KeyframeNode(void) : Node(NodeTypeKeyframe) {}
 			bool IsEmpty(void) const		{return translationKeys.IsEmpty() && rotationKeys.IsEmpty() && scaleKeys.IsEmpty();}
 		};
 		struct NodeSnapshot
 		{
-			DKFoundation::DKString	name;
+			DKString	name;
 			DKTransformUnit			transform;
 		};
 #pragma pack(pop)
@@ -84,29 +84,29 @@ namespace DKFramework
 
 		// Node insertion
 		bool		AddNode(const Node* node);
-		bool		AddSamplingNode(const DKFoundation::DKString& name, const DKTransformUnit* frames, size_t numFrames);
-		bool		AddKeyframeNode(const DKFoundation::DKString& name,
+		bool		AddSamplingNode(const DKString& name, const DKTransformUnit* frames, size_t numFrames);
+		bool		AddKeyframeNode(const DKString& name,
 									const KeyframeNode::ScaleKey* scaleKeys, size_t numSk,
 									const KeyframeNode::RotationKey* rotationKeys, size_t numRk,
 									const KeyframeNode::TranslationKey* translationKeys, size_t numTk);
 
-		void		RemoveNode(const DKFoundation::DKString& name);
+		void		RemoveNode(const DKString& name);
 		void		RemoveAllNodes(void);
 		size_t		NodeCount(void) const;
-		NodeIndex	IndexOfNode(const DKFoundation::DKString& name) const;
+		NodeIndex	IndexOfNode(const DKString& name) const;
 		const Node*	NodeAtIndex(NodeIndex index) const;
 
 		// calculate transform at time ( 0.0 <= t <= 1.0 )
 		bool GetNodeTransform(NodeIndex index, float t, DKTransformUnit& output) const;
-		bool GetNodeTransform(const DKFoundation::DKString& name, float t, DKTransformUnit& output) const;
+		bool GetNodeTransform(const DKString& name, float t, DKTransformUnit& output) const;
 
 		// generate snap-shot.
 		// snap-shot can be combined with other animation object. (interpolated altogether)
-		DKFoundation::DKArray<NodeSnapshot> CreateSnapshot(float t) const;
+		DKArray<NodeSnapshot> CreateSnapshot(float t) const;
 
 		// create object from snap-shots (useful to interpolate transition of two animations)
-		static DKFoundation::DKObject<DKAnimation> Create(DKFoundation::DKArray<SamplingNode>* samples, DKFoundation::DKArray<KeyframeNode>* keyframes, float duration);
-		static DKFoundation::DKObject<DKAnimation> Create(DKFoundation::DKArray<NodeSnapshot>* begin, DKFoundation::DKArray<NodeSnapshot>* end, float duration);
+		static DKObject<DKAnimation> Create(DKArray<SamplingNode>* samples, DKArray<KeyframeNode>* keyframes, float duration);
+		static DKObject<DKAnimation> Create(DKArray<NodeSnapshot>* begin, DKArray<NodeSnapshot>* end, float duration);
 
 		// get affine-transform of specified node at time.
 		static DKTransformUnit GetTransform(const Node& node, float time);
@@ -121,14 +121,14 @@ namespace DKFramework
 		float	Duration(void) const;
 
 		// create loop controller. (useful to apply repeated animation to DKModel)
-		DKFoundation::DKObject<DKAnimationController> CreateLoopController(void);
+		DKObject<DKAnimationController> CreateLoopController(void);
 
 		// serializer object.
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 	private:
 		float	duration;
 
-		DKFoundation::DKMap<DKFoundation::DKString, size_t> nodeIndexMap; // for fast search
-		DKFoundation::DKArray<Node*>	nodes;
+		DKMap<DKString, size_t> nodeIndexMap; // for fast search
+		DKArray<Node*>	nodes;
 	};
 }

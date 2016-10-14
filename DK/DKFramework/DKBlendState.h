@@ -15,7 +15,7 @@
 // class for OpenGL blend functions.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKBlendState
 	{
@@ -47,10 +47,10 @@ namespace DKFramework
 			BlendFuncMax,
 		};
 
-		static DKFoundation::DKString FuncToString(const BlendFunc f);
-		static DKFoundation::DKString ModeToString(const BlendMode m);
-		static BlendFunc StringToFunc(const DKFoundation::DKString& str);
-		static BlendMode StringToMode(const DKFoundation::DKString& str);
+		static DKString FuncToString(const BlendFunc f);
+		static DKString ModeToString(const BlendMode m);
+		static BlendFunc StringToFunc(const DKString& str);
+		static BlendMode StringToMode(const DKString& str);
 
 		DKBlendState(BlendMode srcRGB,
 					 BlendMode srcAlpha,

@@ -10,9 +10,9 @@
 #include "DKRigidBody.h"
 #include "DKScene.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 DKConstraint::DKConstraint(LinkType t, DKRigidBody* rbA, DKRigidBody* rbB, class btTypedConstraint* p)
@@ -210,7 +210,7 @@ void DKConstraint::UpdateCopiedReferenceUUIDs(UUIDObjectMap& uuids)
 
 void DKConstraint::RestoreTargets(UUIDObjectMap& uuids)
 {
-	auto find = [&uuids](const DKUuid& uuid) -> DKRigidBody*
+	auto find = [&uuids](const DKUUID& uuid) -> DKRigidBody*
 	{
 		auto p = uuids.Find(uuid);
 		if (p)
@@ -399,8 +399,8 @@ DKObject<DKSerializer> DKConstraint::Serializer(void)
 			return this;
 		}
 		DKObject<DKConstraint> target;
-		DKUuid bodyA;
-		DKUuid bodyB;
+		DKUUID bodyA;
+		DKUUID bodyB;
 	};
 	return DKObject<LocalSerializer>::New()->Init(this);
 }

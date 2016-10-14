@@ -7,8 +7,8 @@
 
 #include "DKVoxel32FileStorage.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKVoxel32FileStorage::DKVoxel32FileStorage(void)
 	: maxLoadableUnits(-1)

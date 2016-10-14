@@ -15,11 +15,11 @@
 #endif
 
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 #pragma pack(push, 4)
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -107,8 +107,8 @@ namespace DKFramework
 
 #pragma pack(pop)
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 static_assert(sizeof(WaveFileHeader) == 12, "sizeof(WaveFileHeader) == 12");
 static_assert(sizeof(RiffChunk) == 8, "sizeof(RiffChunk) == 8");

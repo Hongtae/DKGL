@@ -22,7 +22,7 @@
 // because of only two values (true, false) are acceptable.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKBitArray

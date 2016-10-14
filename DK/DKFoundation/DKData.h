@@ -22,7 +22,7 @@
 // full thread-safe.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKOperation;
 	class DKStream;

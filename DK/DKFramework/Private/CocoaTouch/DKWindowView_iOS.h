@@ -18,6 +18,8 @@
 #import "../../../DKFoundation.h"
 #import "../../DKWindow.h"
 
+using namespace DKGL;
+
 ////////////////////////////////////////////////////////////////////////////////
 // DKWindowView_iOS
 // using UITextFile to process text input.
@@ -25,17 +27,16 @@
 
 @interface DKWindowView_iOS : UIView <UITextFieldDelegate>
 
-@property (readonly, nonatomic)		DKFramework::DKWindow* handler;
-@property (readwrite, nonatomic)	DKFramework::DKPoint origin;		// OS unit based
-@property (readwrite, nonatomic)	DKFramework::DKSize contentSize;	// pixel based
+@property (readonly, nonatomic)		DKWindow* handler;
+@property (readwrite, nonatomic)	DKPoint origin;		// OS unit based
+@property (readwrite, nonatomic)	DKSize contentSize;	// pixel based
 @property (readonly, nonatomic)		BOOL appActivated;
 
-- (id)initWithFrame:(CGRect)frame handler:(DKFramework::DKWindow*)handler;
-- (void)setTouchPosition:(const DKFramework::DKPoint&)pos atIndex:(NSUInteger)index;
-- (DKFramework::DKPoint)touchPositionAtIndex:(NSUInteger)index;
+- (id)initWithFrame:(CGRect)frame handler:(DKWindow*)handler;
+- (void)setTouchPosition:(const DKPoint&)pos atIndex:(NSUInteger)index;
+- (DKPoint)touchPositionAtIndex:(NSUInteger)index;
 - (void)enableTextInput:(BOOL)enable;
 @end
 
 #endif	//if TARGET_OS_IPHONE
 #endif	//if defined(__APPLE__) && defined(__MACH__) && defined(__OBJC__)
-

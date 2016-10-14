@@ -9,8 +9,8 @@
 #include "DKModel.h"
 #include "DKAffineTransform3.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKSkinMesh::DKSkinMesh(void)
 : transformNodeResolved(false)

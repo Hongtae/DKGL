@@ -4,8 +4,8 @@
 #include "DCTexture.h"
 #include "DCObject.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 struct DCTexture3D
 {

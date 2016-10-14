@@ -15,7 +15,7 @@
 // (see DKGeneric6DofConstraint.h)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKGeneric6DofSpringConstraint : public DKGeneric6DofConstraint
 	{
@@ -42,13 +42,13 @@ namespace DKFramework
 		void SetEquilibriumPoint(ParamAxis axis, float val);
 		float EquilibriumPoint(ParamAxis axis) const;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		void ResetContext(void) override;
 		void ResetContextImpl(void) override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGeneric6DofSpringConstraint* Copy(UUIDObjectMap&, const DKGeneric6DofSpringConstraint*);
 	};
 }

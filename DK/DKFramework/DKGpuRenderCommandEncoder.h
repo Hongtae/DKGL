@@ -13,7 +13,7 @@
 // DKGpuRenderCommandEncoder
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGpuRenderCommandEncoder
 	{
@@ -25,6 +25,6 @@ namespace DKFramework
 	{
 	public:
 		virtual ~DKParallelGpuRenderCommandEncoder(void) {}
-		virtual DKFoundation::DKObject<DKGpuRenderCommandEncoder> CreateEncoder(void) = 0;
+		virtual DKObject<DKGpuRenderCommandEncoder> CreateEncoder(void) = 0;
 	};
 }

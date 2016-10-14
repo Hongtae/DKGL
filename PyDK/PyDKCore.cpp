@@ -3,8 +3,8 @@
 #include "DCObject.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 // type size check.
 static_assert(SIZEOF_LONG == sizeof(long), "size mismatch");
@@ -107,7 +107,7 @@ PyMODINIT_FUNC PyInit__dk_core(void)
 	};
 	auto uuidgen = [](PyObject*, PyObject*)->PyObject*
 	{
-		return PyUnicode_FromWideChar(DKUuid::Create().String(), -1);
+		return PyUnicode_FromWideChar(DKUUID::Create().String(), -1);
 	};
 	auto logger = [](PyObject*, PyObject* args)->PyObject*
 	{

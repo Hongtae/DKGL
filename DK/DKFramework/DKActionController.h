@@ -19,13 +19,13 @@
 //    Use DKAnimationController for individual node animation.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKActionController : public DKModel
 	{
 	public:
 		DKActionController(void) : DKModel(TypeAction) {}
 		virtual ~DKActionController(void) {}
-		virtual void Update(double timeDelta, DKFoundation::DKTimeTick tick) = 0;
+		virtual void Update(double timeDelta, DKTimeTick tick) = 0;
 	};
 }

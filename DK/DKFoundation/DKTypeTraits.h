@@ -15,7 +15,7 @@
 // a template type traits class.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	// type traits of global function pointer.
 	template <typename> struct DKFunctionPointerTraits

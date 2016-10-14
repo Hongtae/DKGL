@@ -2,8 +2,8 @@
 #include <Python.h>
 #include <DK/DK.h>
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 struct DCScene
 {

@@ -14,7 +14,7 @@
 // This class supports audio stream for OGG-Vorbis format.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -25,8 +25,8 @@ namespace DKFramework
 			DKAudioStreamVorbis(void);
 			~DKAudioStreamVorbis(void);
 
-			bool Open(const DKFoundation::DKString& file);
-			bool Open(DKFoundation::DKStream* stream);
+			bool Open(const DKString& file);
+			bool Open(DKStream* stream);
 
 			size_t Read(void* buffer, size_t size);
 

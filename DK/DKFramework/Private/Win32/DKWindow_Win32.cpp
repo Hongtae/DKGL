@@ -12,10 +12,6 @@
 
 #ifdef _WIN32
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
-
 #define WM_SHOWCURSOR				(WM_USER + 0x1175)
 #define WM_UPDATEMOUSECAPTURE		(WM_USER + 0x1180)
 
@@ -23,7 +19,7 @@ using namespace DKFramework::Private;
 
 #define DKGL_WNDCLASS	L"DKGL_Win32_WndClass"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -37,6 +33,9 @@ namespace DKFramework
 		return new DKWindow_Win32(win);
 	}
 }
+
+using namespace DKGL;
+using namespace DKGL::Private;
 
 #pragma comment(lib, "Imm32.lib")
 

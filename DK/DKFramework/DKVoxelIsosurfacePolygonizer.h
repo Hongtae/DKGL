@@ -17,7 +17,7 @@
 // isosurface level.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKVoxelIsosurfacePolygonizer : public DKVoxelPolygonizer
 	{

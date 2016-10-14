@@ -18,7 +18,7 @@
 // You can use UniformUserDefined type for your custom value.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	struct DKShaderConstant
 	{
@@ -79,7 +79,7 @@ namespace DKFramework
 			BaseTypeSampler,
 		};
 
-		DKFoundation::DKString	name;			// value name (should be matched with defined on code)
+		DKString	name;			// value name (should be matched with defined on code)
 		Uniform 				id;				// Uniform id
 		Type					type;			// value type
 		size_t					components;		// value components
@@ -117,7 +117,7 @@ namespace DKFramework
 			return BaseTypeUnknown;
 		}
 
-		static inline DKFoundation::DKString UniformToString(Uniform u)
+		static inline DKString UniformToString(Uniform u)
 		{
 			switch (u)
 			{
@@ -147,7 +147,7 @@ namespace DKFramework
 			}
 			return L"Unknown";
 		}
-		static inline Uniform StringToUniform(const DKFoundation::DKString& str)
+		static inline Uniform StringToUniform(const DKString& str)
 		{
 			if		(!str.CompareNoCase(UniformToString(UniformUnknown)))								return UniformUnknown;
 			else if (!str.CompareNoCase(UniformToString(UniformModelMatrix)))							return UniformModelMatrix;
@@ -174,7 +174,7 @@ namespace DKFramework
 			return UniformUnknown;
 		}
 
-		static inline DKFoundation::DKString TypeToString(Type t)
+		static inline DKString TypeToString(Type t)
 		{
 			switch (t)
 			{
@@ -200,7 +200,7 @@ namespace DKFramework
 			}
 			return L"Unknown";
 		}
-		static inline Type StringToType(const DKFoundation::DKString& str)
+		static inline Type StringToType(const DKString& str)
 		{
 			if		(!str.CompareNoCase(TypeToString(TypeFloat1)))							return TypeFloat1;
 			else if (!str.CompareNoCase(TypeToString(TypeFloat2)))							return TypeFloat2;

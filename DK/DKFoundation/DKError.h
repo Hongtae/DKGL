@@ -42,7 +42,7 @@
 
 #define DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH	1024
 
-namespace DKFoundation
+namespace DKGL
 {
 	typedef DKFunctionSignature<void (class DKError&)> DKCriticalErrorHandler;
 

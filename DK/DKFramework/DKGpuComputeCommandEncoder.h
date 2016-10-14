@@ -13,7 +13,7 @@
 // DKGpuComputeCommandEncoder
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGpuComputeCommandEncoder
 	{

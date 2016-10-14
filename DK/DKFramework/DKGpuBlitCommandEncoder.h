@@ -13,7 +13,7 @@
 // DKGpuBlitCommandEncoder
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGpuBlitCommandEncoder
 	{

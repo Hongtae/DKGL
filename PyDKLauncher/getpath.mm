@@ -12,7 +12,7 @@
 
 #include <DK/dk.h>
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKString AbsolutePathStringOfPyStd(void)
 {

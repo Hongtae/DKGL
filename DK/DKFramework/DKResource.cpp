@@ -5,18 +5,18 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKResource.h"
 #include "DKSerializer.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKResource::DKResource(void)
 : allocator(NULL)
 , objectName("")
-, objectUUID(DKUuid::Create())
+, objectUUID(DKUUID::Create())
 {
 }
 
@@ -34,13 +34,13 @@ const DKString& DKResource::Name(void) const
 	return objectName;
 }
 
-void DKResource::SetUUID(const DKFoundation::DKUuid& uuid)
+void DKResource::SetUUID(const DKUUID& uuid)
 {
 	DKASSERT_DEBUG(uuid.IsValid());
 	this->objectUUID = uuid;
 }
 
-const DKUuid& DKResource::UUID(void) const
+const DKUUID& DKResource::UUID(void) const
 {
 	return objectUUID;
 }
@@ -107,12 +107,12 @@ DKObject<DKSerializer> DKResource::Serializer(void)
 		bool CheckUUID(const DKVariant& v) const
 		{
 			if (v.ValueType() == DKVariant::TypeString)
-				return DKUuid(v.String()).IsValid();
+				return DKUUID(v.String()).IsValid();
 			return false;
 		}
 		void ResetUUID(void)
 		{
-			target->objectUUID = DKUuid::Create();
+			target->objectUUID = DKUUID::Create();
 		}
 		void GetMetadata(DKVariant& v) const
 		{

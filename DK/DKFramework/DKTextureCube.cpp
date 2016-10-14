@@ -5,12 +5,12 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKTextureCube.h"
 #include "DKRenderTarget.h"
 #include "DKOpenGLContext.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -21,8 +21,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKTextureCube::DKTextureCube(void)

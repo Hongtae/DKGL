@@ -15,7 +15,7 @@
 // around given local axis and ratio.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKGearConstraint : public DKConstraint
 	{
@@ -34,13 +34,13 @@ namespace DKFramework
 		float Ratio(void) const;
 		void SetRatio(float r);
 		
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		void ResetContext(void) override;
 		void ResetContextImpl(void) override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGearConstraint* Copy(UUIDObjectMap&, const DKGearConstraint*);
 	};
 }

@@ -22,7 +22,7 @@ class NSOpenGLContext;
 
 #include "../../Interface/DKOpenGLInterface.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -58,7 +58,7 @@ namespace DKFramework
 			};
 
 			// context pool
-			typedef DKFoundation::DKMap<pthread_t, BoundContext, DKFoundation::DKSpinLock> SharedContextMap;
+			typedef DKMap<pthread_t, BoundContext, DKSpinLock> SharedContextMap;
 			mutable SharedContextMap		sharedContexts;
 		};
 	}

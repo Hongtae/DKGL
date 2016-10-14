@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
-namespace DKFramework
+namespace DKGL
 {
 	class DKMatrix2;
 	class DKMatrix3;

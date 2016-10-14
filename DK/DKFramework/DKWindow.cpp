@@ -9,8 +9,8 @@
 #include "DKWindow.h"
 #include "Interface/DKWindowInterface.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -31,8 +31,8 @@ namespace DKFramework
 		}
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 const DKPoint DKWindow::undefinedOrigin = DKPoint(-3.402823466e+38F, -3.402823466e+38F);
 
@@ -212,7 +212,7 @@ void DKWindow::PostMouseEvent(EventMouse type, int deviceId, int buttonId, const
 		mouseEventHandlers.PostInvocation(type, deviceId, buttonId, pos, delta);
 }
 
-void DKWindow::PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey key, const DKFoundation::DKString& textInput, bool sync)
+void DKWindow::PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey key, const DKString& textInput, bool sync)
 {
 	if (true)
 	{

@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKMesh.h"
 #include "DKTexture2D.h"
 #include "DKTexture3D.h"
@@ -13,8 +13,8 @@
 #include "DKOpenGLContext.h"
 #include "DKRenderTarget.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKMesh::DKMesh(void)
 : DKModel(TypeMesh)
@@ -43,7 +43,7 @@ void DKMesh::AppendSampler(const DKString& name, DKTexture* texture)
 	}
 }
 
-void DKMesh::SetSampler(const DKFoundation::DKString& name, DKTexture* texture, DKTextureSampler* sampler)
+void DKMesh::SetSampler(const DKString& name, DKTexture* texture, DKTextureSampler* sampler)
 {
 	if (texture)
 	{
@@ -102,7 +102,7 @@ size_t DKMesh::SamplerCount(void) const
 	return samplers.Count();
 }
 
-void DKMesh::RemoveSampler(const DKFoundation::DKString& name)
+void DKMesh::RemoveSampler(const DKString& name)
 {
 	samplers.Remove(name);
 }

@@ -7,8 +7,8 @@
 
 #include "DKSceneState.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 void DKSceneState::Clear(void)

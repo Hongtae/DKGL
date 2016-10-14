@@ -6,12 +6,12 @@
 //
 
 #include <float.h>
-#include "../lib/OpenAL.h"
+#include "../lib/Inc_OpenAL.h"
 #include "DKAudioSource.h"
 #include "DKAudioDevice.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKAudioSource::DKAudioSource(void)
 	: sourceId(0)

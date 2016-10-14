@@ -162,7 +162,7 @@ static int DCResourceSetUUID(DCResource* self, PyObject* value, void*)
 	}
 
 	char* str = PyUnicode_AsUTF8(value);
-	DKUuid uuid(str);
+	DKUUID uuid(str);
 	if (uuid.IsValid())
 	{
 		self->resource->SetUUID(uuid);

@@ -30,7 +30,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKResource;
 	class DKGL_API DKResourceLoader
@@ -39,33 +39,33 @@ namespace DKFramework
 		DKResourceLoader(void);
 		virtual ~DKResourceLoader(void);
 
-		DKFoundation::DKObject<DKResource> ResourceFromXML(const DKFoundation::DKXMLElement* element);
-		DKFoundation::DKObject<DKResource> ResourceFromData(const DKFoundation::DKData* data, const DKFoundation::DKString& name);
-		DKFoundation::DKObject<DKResource> ResourceFromStream(DKFoundation::DKStream* stream, const DKFoundation::DKString& name);
-		DKFoundation::DKObject<DKResource> ResourceFromFile(const DKFoundation::DKString& path, const DKFoundation::DKString& name);
+		DKObject<DKResource> ResourceFromXML(const DKXMLElement* element);
+		DKObject<DKResource> ResourceFromData(const DKData* data, const DKString& name);
+		DKObject<DKResource> ResourceFromStream(DKStream* stream, const DKString& name);
+		DKObject<DKResource> ResourceFromFile(const DKString& path, const DKString& name);
 
 		// resource-pool
-		virtual void AddResource(const DKFoundation::DKString& name, DKResource* res) = 0;
-		virtual DKFoundation::DKObject<DKResource> FindResource(const DKFoundation::DKString& name) const = 0;
-		virtual DKFoundation::DKObject<DKResource> LoadResource(const DKFoundation::DKString& name) = 0;
-		virtual DKFoundation::DKObject<DKFoundation::DKStream> OpenResourceStream(const DKFoundation::DKString& name) const = 0;
+		virtual void AddResource(const DKString& name, DKResource* res) = 0;
+		virtual DKObject<DKResource> FindResource(const DKString& name) const = 0;
+		virtual DKObject<DKResource> LoadResource(const DKString& name) = 0;
+		virtual DKObject<DKStream> OpenResourceStream(const DKString& name) const = 0;
 
 		// resource memory location (Memory-Allocator)
-		virtual DKFoundation::DKAllocator& Allocator(void) const;
+		virtual DKAllocator& Allocator(void) const;
 
 		// ResourceAllocator : allocate DKResource object. (or subclass of DKResource)
-		typedef DKFoundation::DKFunctionSignature<DKFoundation::DKObject<DKResource>(DKFoundation::DKAllocator&)> ResourceAllocator;
+		typedef DKFunctionSignature<DKObject<DKResource>(DKAllocator&)> ResourceAllocator;
 		// ResourceLoader : restore object from stream.
-		typedef DKFoundation::DKFunctionSignature<DKFoundation::DKObject<DKResource>(DKFoundation::DKStream*, DKFoundation::DKAllocator&)> ResourceLoader;
+		typedef DKFunctionSignature<DKObject<DKResource>(DKStream*, DKAllocator&)> ResourceLoader;
 
-		static void SetResourceAllocator(const DKFoundation::DKString& URI, const DKFoundation::DKString& classId, ResourceAllocator* allocator);
-		static void SetResourceFileExtension(const DKFoundation::DKString& ext, ResourceLoader* loader);
+		static void SetResourceAllocator(const DKString& URI, const DKString& classId, ResourceAllocator* allocator);
+		static void SetResourceFileExtension(const DKString& ext, ResourceLoader* loader);
 	};
 
 	// DKResourceAlloc is default function of DKResourceLoader::ResourceAllocator.
 	// It can be used when object being restored. You can use your own allocator function if you want.
-	template <typename T> static DKFoundation::DKObject<DKResource> DKResourceAlloc(DKFoundation::DKAllocator& alloc)
+	template <typename T> static DKObject<DKResource> DKResourceAlloc(DKAllocator& alloc)
 	{
-		return DKFoundation::DKObject<T>(new (alloc)T()).template SafeCast<DKResource>();
+		return DKObject<T>(new (alloc)T()).template SafeCast<DKResource>();
 	}
 }

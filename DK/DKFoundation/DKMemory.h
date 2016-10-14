@@ -21,7 +21,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-namespace DKFoundation
+namespace DKGL
 {
 	// heap memory
 	DKGL_API void* DKMemoryHeapAlloc(size_t);

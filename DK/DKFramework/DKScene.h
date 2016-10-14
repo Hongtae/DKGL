@@ -21,7 +21,7 @@
 // you can detect collision with DKModel nodes.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKScene
 	{
@@ -31,8 +31,8 @@ namespace DKFramework
 
 		struct DrawCallback
 		{
-			using VertexArray = DKFoundation::DKArray<DKRenderer::Vertex3DColored>;
-			using MeshArray = DKFoundation::DKArray<const DKMesh*>;
+			using VertexArray = DKArray<DKRenderer::Vertex3DColored>;
+			using MeshArray = DKArray<const DKMesh*>;
 
 			virtual ~DrawCallback(void) {}
 			virtual void DrawTriangles(VertexArray&, const DKMatrix4&) = 0;
@@ -43,7 +43,7 @@ namespace DKFramework
 		};
 		void Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const;
 
-		virtual void Update(double tickDelta, DKFoundation::DKTimeTick tick);
+		virtual void Update(double tickDelta, DKTimeTick tick);
 
 		enum : unsigned int
 		{
@@ -60,8 +60,8 @@ namespace DKFramework
 
 		DKColor ambientColor;
 
-		typedef DKFoundation::DKFunctionSignature<float (DKCollisionObject*, float, const DKVector3&)> RayResultCallback;
-		typedef DKFoundation::DKFunctionSignature<float (const DKCollisionObject*, float, const DKVector3&)> ConstRayResultCallback;
+		typedef DKFunctionSignature<float (DKCollisionObject*, float, const DKVector3&)> RayResultCallback;
+		typedef DKFunctionSignature<float (const DKCollisionObject*, float, const DKVector3&)> ConstRayResultCallback;
 
 		// ray-test to query all hit objects.
 		size_t RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb);
@@ -80,8 +80,8 @@ namespace DKFramework
 		class CollisionWorldContext;
 
 		size_t NumberOfSceneObjects(void) const;
-		typedef DKFoundation::DKFunctionSignature<bool(const DKModel*)> BEnumerator;
-		typedef DKFoundation::DKFunctionSignature<void(const DKModel*)> VEnumerator;
+		typedef DKFunctionSignature<bool(const DKModel*)> BEnumerator;
+		typedef DKFunctionSignature<void(const DKModel*)> VEnumerator;
 		void Enumerate(BEnumerator* e) const;
 		void Enumerate(VEnumerator* e) const;
 
@@ -89,10 +89,10 @@ namespace DKFramework
 		CollisionWorldContext* context;
 		DKScene(CollisionWorldContext* ctxt);
 
-		DKFoundation::DKSet<DKFoundation::DKObject<DKModel>> sceneObjects;
-		DKFoundation::DKSet<DKMesh*> meshes;
+		DKSet<DKObject<DKModel>> sceneObjects;
+		DKSet<DKMesh*> meshes;
 
-		void UpdateObjectKinematics(double tickDelta, DKFoundation::DKTimeTick tick);
+		void UpdateObjectKinematics(double tickDelta, DKTimeTick tick);
 		void UpdateObjectSceneStates(void);
 
 		virtual bool AddSingleObject(DKModel* obj);
@@ -103,9 +103,9 @@ namespace DKFramework
 		void CleanupUpdateNode(void);
 
 	private:
-		DKFoundation::DKSpinLock lock;
+		DKSpinLock lock;
 
-		DKFoundation::DKArray<DKFoundation::DKObject<DKModel>> updatePendingObjects;
+		DKArray<DKObject<DKModel>> updatePendingObjects;
 
 		DKScene(const DKScene&);
 		DKScene& operator = (const DKScene&);

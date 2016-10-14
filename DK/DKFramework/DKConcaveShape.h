@@ -14,7 +14,7 @@
 // a concave shape, for collision object or static rigid body.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKConcaveShape : public DKCollisionShape
 	{
@@ -27,7 +27,7 @@ namespace DKFramework
 			int partId;
 			int triangleIndex;
 		};
-		typedef DKFoundation::DKFunctionSignature<void (const Triangle&)> TriangleEnumerator;
+		typedef DKFunctionSignature<void (const Triangle&)> TriangleEnumerator;
 
 		void EnumerateTrianglesInsideAabb(TriangleEnumerator* e, const DKVector3 aabbMin, const DKVector3& aabbMax) const;
 

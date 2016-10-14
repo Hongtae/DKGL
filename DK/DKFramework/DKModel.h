@@ -28,7 +28,7 @@
 //    behavior.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKScene;
 	class DKGL_API DKModel : public DKResource
@@ -42,13 +42,13 @@ namespace DKFramework
 			TypeConstraint,
 			TypeAction,
 		};
-		using NamedObjectMap = DKFoundation::DKMap<DKFoundation::DKString, DKModel*>;
-		using UUIDObjectMap = DKFoundation::DKMap<DKFoundation::DKUuid, DKModel*>;
+		using NamedObjectMap = DKMap<DKString, DKModel*>;
+		using UUIDObjectMap = DKMap<DKUUID, DKModel*>;
 
-		using Enumerator = DKFoundation::DKFunctionSignature<bool(DKModel*)>;
-		using EnumeratorLoop = DKFoundation::DKFunctionSignature<void(DKModel*)>;
-		using ConstEnumerator = DKFoundation::DKFunctionSignature<bool(const DKModel*)>;
-		using ConstEnumeratorLoop = DKFoundation::DKFunctionSignature<void(const DKModel*)>;
+		using Enumerator = DKFunctionSignature<bool(DKModel*)>;
+		using EnumeratorLoop = DKFunctionSignature<void(DKModel*)>;
+		using ConstEnumerator = DKFunctionSignature<bool(const DKModel*)>;
+		using ConstEnumeratorLoop = DKFunctionSignature<void(const DKModel*)>;
 
 		const Type type;
 
@@ -70,8 +70,8 @@ namespace DKFramework
 
 		bool IsDescendantOf(const DKModel* obj) const;
 		size_t NumberOfDescendants(void) const;
-		DKModel* FindDescendant(const DKFoundation::DKString&);
-		const DKModel* FindDescendant(const DKFoundation::DKString&) const;
+		DKModel* FindDescendant(const DKString&);
+		const DKModel* FindDescendant(const DKString&) const;
 		DKModel* FindCommonAncestor(DKModel*, DKModel*, Type t = TypeCustom);
 
 		DKModel* ChildAtIndex(unsigned int i)					{ return children.Value(i); }
@@ -102,16 +102,16 @@ namespace DKFramework
 
 		// UpdateKinematic : before simulate
 		// UpdateSceneState : after simulate, before rendering
-		void UpdateKinematic(double timeDelta, DKFoundation::DKTimeTick tick);
+		void UpdateKinematic(double timeDelta, DKTimeTick tick);
 		void UpdateSceneState(const DKNSTransform&);
 
 		void UpdateLocalTransform(bool recursive = true);
 		void UpdateWorldTransform(bool recursive = true);
 
 		// clone object. (internal resources are shared)
-		DKFoundation::DKObject<DKModel> Clone(void) const;
+		DKObject<DKModel> Clone(void) const;
 		// serializer
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		virtual void OnAddedToScene(void) {}
@@ -124,7 +124,7 @@ namespace DKFramework
 		virtual void OnUpdateTreeReferences(NamedObjectMap&, UUIDObjectMap&) {}
 
 		// OnUpdateKinematic: called before simulate.
-		virtual void OnUpdateKinematic(double timeDelta, DKFoundation::DKTimeTick tick);
+		virtual void OnUpdateKinematic(double timeDelta, DKTimeTick tick);
 
 		// OnUpdateSceneState: called after simulate, before render.
 		virtual void OnUpdateSceneState(const DKNSTransform& parentWorldTransform);
@@ -137,14 +137,14 @@ namespace DKFramework
 		// if object be in scene, temporary removed from scene and calls given
 		// operation(op) then add to scene again.
 		// parameter op must have object-reset routines.
-		void ReloadSceneContext(DKFoundation::DKOperation* op);
+		void ReloadSceneContext(DKOperation* op);
 
 		DKModel(Type t); // t = TypeCustom for custom subclass.
 
 		// Clone: clone node tree. (current object's clone will be root of cloned tree)
 		// clone operation does save object's UUIDs to given parameter (UUIDObjectMap&)
 		// You can find cloned object with original object's UUID with UUIDObjectMap
-		virtual DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const;
+		virtual DKObject<DKModel> Clone(UUIDObjectMap&) const;
 		DKModel* Copy(UUIDObjectMap&, const DKModel*);
 
 		// UpdateCopiedReferenceUUIDs: called on object has been cloned. (UUID has changed).
@@ -165,8 +165,8 @@ namespace DKFramework
 	private:
 		DKModel* parent;
 		DKScene* scene;
-		DKFoundation::DKArray<DKFoundation::DKObject<DKModel>> children;
-		DKFoundation::DKObject<DKAnimatedTransform> animation;
+		DKArray<DKObject<DKModel>> children;
+		DKObject<DKAnimatedTransform> animation;
 
 		bool hideDescendants;
 

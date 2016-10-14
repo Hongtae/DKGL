@@ -14,7 +14,7 @@
 // This class supports audio stream for FLAC format.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -25,8 +25,8 @@ namespace DKFramework
 			DKAudioStreamFLAC(void);
 			virtual ~DKAudioStreamFLAC(void);
 
-			virtual bool Open(const DKFoundation::DKString& file);
-			virtual bool Open(DKFoundation::DKStream* stream);
+			virtual bool Open(const DKString& file);
+			virtual bool Open(DKStream* stream);
 
 			size_t Read(void* pBuffer, size_t nSize);
 
@@ -52,8 +52,8 @@ namespace DKFramework
 		public:
 			DKAudioStreamOggFLAC(void);
 			~DKAudioStreamOggFLAC(void);
-			bool Open(const DKFoundation::DKString& file);
-			bool Open(DKFoundation::DKStream* stream);
+			bool Open(const DKString& file);
+			bool Open(DKStream* stream);
 		};
 	}
 }

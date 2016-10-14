@@ -22,7 +22,7 @@
 //   the data object must not be modified after object created.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKTexture2D;
 	class DKGL_API DKFont
@@ -30,7 +30,7 @@ namespace DKFramework
 	public:
 		struct GlyphData
 		{
-			DKFoundation::DKObject<DKTexture2D>		texture;
+			DKObject<DKTexture2D>		texture;
 			DKPoint									position;
 			DKSize									advance;
 			DKRect									rect;
@@ -40,23 +40,23 @@ namespace DKFramework
 		~DKFont(void);
 
 		// create object from file (path)
-		static DKFoundation::DKObject<DKFont> Create(const DKFoundation::DKString& file);
+		static DKObject<DKFont> Create(const DKString& file);
 		// create object from data pointer. (data will be copied inside)
-		static DKFoundation::DKObject<DKFont> Create(void* data, size_t size);
+		static DKObject<DKFont> Create(void* data, size_t size);
 		// create object from DKData object. (data must not be modified by outside)
-		static DKFoundation::DKObject<DKFont> Create(DKFoundation::DKData* data);
+		static DKObject<DKFont> Create(DKData* data);
 		// create object from stream, stream can be copied if necessary.
-		static DKFoundation::DKObject<DKFont> Create(DKFoundation::DKStream* stream);
+		static DKObject<DKFont> Create(DKStream* stream);
 
 		const GlyphData* GlyphDataForChar(wchar_t c) const;
 
 		// LineWidth: text pixel-width from baseline. not includes outline.
-		float LineWidth(const DKFoundation::DKString& str) const;
+		float LineWidth(const DKString& str) const;
 		// LineHeight: pixel-height from baseline. not includes outline.
 		float LineHeight(void) const;
 
 		float Baseline(void) const;	// baseline offset (in pixel unit)
-		DKRect Bounds(const DKFoundation::DKString& str) const; // text bounding box.
+		DKRect Bounds(const DKString& str) const; // text bounding box.
 		DKPoint	KernAdvance(wchar_t left, wchar_t right) const; // calculate kern advance between characters.
 
 		int				PointSize(void) const							{ return pointSize; }
@@ -66,8 +66,8 @@ namespace DKFramework
 		bool			KerningEnabled(void) const						{ return kerningEnabled; }
 		bool			ForceBitmap(void) const							{ return forceBitmap; }
 
-		DKFoundation::DKString FamilyName(void) const;
-		DKFoundation::DKString StyleName(void) const;
+		DKString FamilyName(void) const;
+		DKString StyleName(void) const;
 
 		// point, embolden is point-size, outline is pixel-size.
 		bool SetStyle(int point, float embolden = 0, float outline = 0, DKPoint dpi = DKPoint(72,72), bool enableKerning = true, bool forceBitmap = false);
@@ -88,20 +88,20 @@ namespace DKFramework
 
 		struct SharedTextures
 		{
-			DKFoundation::DKObject<DKTexture2D>	texture;
+			DKObject<DKTexture2D>	texture;
 			unsigned int freeSpaceWidth;
 		};
-		typedef DKFoundation::DKMap<wchar_t, GlyphData>		GlyphDataMap;
-		typedef DKFoundation::DKMap<wchar_t, unsigned int>	CharIndexMap;
+		typedef DKMap<wchar_t, GlyphData>		GlyphDataMap;
+		typedef DKMap<wchar_t, unsigned int>	CharIndexMap;
 		
 		mutable GlyphDataMap								glyphMap;
 		mutable CharIndexMap								charIndexMap;
-		mutable DKFoundation::DKArray<SharedTextures>		textures;
+		mutable DKArray<SharedTextures>		textures;
 		mutable unsigned int								numGlyphsLoaded;
 
 		void* ftFace;
-		DKFoundation::DKSpinLock lock;
-		DKFoundation::DKObject<DKFoundation::DKData> fontData;
+		DKSpinLock lock;
+		DKObject<DKData> fontData;
 		DKTexture2D* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const;
 	};
 }

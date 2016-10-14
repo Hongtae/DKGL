@@ -17,9 +17,8 @@
 #include "DKWindow_iOS.h"
 #include "DKApplication_iOS.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 ////////////////////////////////////////////////////////////////////////////////

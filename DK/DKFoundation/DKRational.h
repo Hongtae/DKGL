@@ -16,7 +16,7 @@
 // to convert real-number: numerator / denominator. (call RealNumber())
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKRational
 	{

@@ -18,7 +18,7 @@
 // a variable or constant bounds, will become result of invocation.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename T> class DKInvocationValue : public DKInvocation<T>
 	{

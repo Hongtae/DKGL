@@ -9,7 +9,7 @@
 #include "DKFile.h"
 #include "DKFunction.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 
 DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperation* cleanup)

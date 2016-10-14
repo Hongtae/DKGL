@@ -15,9 +15,8 @@
 #import <AppKit/AppKit.h> 
 #import "DKWindow_OSX.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 #pragma mark - DKNSWindow

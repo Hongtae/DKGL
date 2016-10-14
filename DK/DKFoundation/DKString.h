@@ -20,7 +20,7 @@
 // using wchar_t for character type. (see DKStringW.h)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	typedef DKStringW DKString;
 

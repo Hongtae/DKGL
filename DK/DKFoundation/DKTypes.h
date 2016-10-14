@@ -15,7 +15,7 @@
 // basic types for template.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename T> struct DKTypeTraitsCppExt
 	{

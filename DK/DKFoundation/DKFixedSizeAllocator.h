@@ -20,7 +20,7 @@
 // it is useful to template collection classes like DKMap, DKSet.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <
 		unsigned int UnitSize,				// allocation size (fixed size)

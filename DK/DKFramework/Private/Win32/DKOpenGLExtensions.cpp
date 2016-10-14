@@ -10,9 +10,9 @@
 
 #include <windows.h>
 #include <gl/gl.h>
-#include "../../../../lib/OpenGL/glext.h"
-#include "../../../../lib/OpenGL/glcorearb.h"
-#include "../../../../lib/OpenGL/wglext.h"
+#include "../../../lib/Inc_OpenGL/glext.h"
+#include "../../../lib/Inc_OpenGL/glcorearb.h"
+#include "../../../lib/Inc_OpenGL/wglext.h"
 #include "../../../DKInclude.h"
 #include "../../../DKFoundation.h"
 
@@ -779,11 +779,10 @@ namespace OpenGL
 }
 
 using namespace OpenGL;
-using namespace DKFoundation;
 
 #define GET_GL_PROC(func)		*(PROC*)&func = wglGetProcAddress(#func)
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{

@@ -8,7 +8,7 @@
 #include "DKSpinLock.h"
 #include "DKThread.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -20,8 +20,8 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFoundation::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKSpinLock::DKSpinLock(void)
 	: state(SpinLockStateFree)

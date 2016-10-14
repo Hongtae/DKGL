@@ -8,8 +8,8 @@
 #include "DKResourcePool.h"
 #include "DKResource.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKResourcePool::DKResourcePool(void)
@@ -175,7 +175,7 @@ DKString DKResourcePool::ResourceFilePath(const DKString& name) const
 	return "";
 }
 
-DKObject<DKStream> DKResourcePool::OpenResourceStream(const DKFoundation::DKString& name) const
+DKObject<DKStream> DKResourcePool::OpenResourceStream(const DKString& name) const
 {
 	DKObject<DKData> ret = FindResourceData(name); // use previous loaded data
 	if (ret)
@@ -218,7 +218,7 @@ void DKResourcePool::RemoveResource(const DKString& name)
 	resources.Remove(name);
 }
 
-void DKResourcePool::RemoveResourceData(const DKFoundation::DKString& name)
+void DKResourcePool::RemoveResourceData(const DKString& name)
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	resourceData.Remove(name);

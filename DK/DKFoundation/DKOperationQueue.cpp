@@ -12,7 +12,7 @@
 #include "DKTimer.h"
 #include "DKCondition.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -56,8 +56,8 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFoundation::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKOperationQueue::DKOperationQueue(ThreadFilter* f)
 	: maxConcurrentOperations(16)

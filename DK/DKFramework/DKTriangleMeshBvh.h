@@ -20,7 +20,7 @@
 // a triangle mesh class, using BVH tree internally
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKTriangleMeshBvh
 	{
@@ -37,7 +37,7 @@ namespace DKFramework
 		const DKBvh& Bvh(void) const { return bvh; }
 
 	private:
-		DKFoundation::DKObject<DKTriangleMesh> mesh;
+		DKObject<DKTriangleMesh> mesh;
 		DKBvh bvh;
 	};
 }

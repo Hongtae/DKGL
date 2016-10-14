@@ -5,12 +5,12 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKOpenGLContext.h"
 #include "Interface/DKOpenGLInterface.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKOpenGLContext::RenderStateMap DKOpenGLContext::stateMap;
 DKSpinLock DKOpenGLContext::stateLock;

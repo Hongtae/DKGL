@@ -2,16 +2,15 @@
 //  File: DKZipUnarchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_ZLIB
-#include "../lib/ExtDeps.h"
+#include "../lib/Inc_zlib.h"
 #include "DKZipUnarchiver.h"
 #include "DKString.h"
 #include "DKLog.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -167,7 +166,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKZipUnarchiver::DKZipUnarchiver(void)
 : zipHandle(NULL)

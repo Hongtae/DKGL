@@ -8,9 +8,9 @@
 #include "Private/BulletUtils.h"
 #include "DKCompoundShape.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKCompoundShape::DKCompoundShape(void)
 	: DKCollisionShape(ShapeType::Compound, new btCompoundShape())

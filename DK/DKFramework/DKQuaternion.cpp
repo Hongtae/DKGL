@@ -13,8 +13,8 @@
 #include "DKVector4.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 const DKQuaternion DKQuaternion::identity = DKQuaternion().Identity();
 

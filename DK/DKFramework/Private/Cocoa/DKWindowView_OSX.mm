@@ -15,9 +15,8 @@
 #include "DKWindow_OSX.h"
 #import "DKWindowView_OSX.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 @interface DKWindowView_OSX ()

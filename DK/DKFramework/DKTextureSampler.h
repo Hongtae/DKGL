@@ -18,7 +18,7 @@
 // sampler object can be shared between textures, materials.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKTextureSampler : public DKResource
 	{
@@ -68,6 +68,6 @@ namespace DKFramework
 		Wrap					wrap[3];
 		float					LODBias;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 	};
 }

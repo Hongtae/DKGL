@@ -5,12 +5,12 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKOpenGLContext.h"
 #include "DKStaticMesh.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKStaticMesh::DKStaticMesh(void)
 {
@@ -146,7 +146,7 @@ DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream s
 	return{ NULL, NULL, 0 };
 }
 
-DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(const DKFoundation::DKString& name) const
+DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(const DKString& name) const
 {
 	size_t offset;
 	for (const DKVertexBuffer* buffer : vertexBuffers)
@@ -165,7 +165,7 @@ DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(const DKFoundation::DKSt
 	return{ NULL, NULL, 0 };
 }
 
-DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const
+DKStaticMesh::StreamInfo DKStaticMesh::FindVertexStream(DKVertexStream::Stream stream, const DKString& name) const
 {
 	size_t offset;
 	if (stream < DKVertexStream::StreamUserDefine)
@@ -397,7 +397,7 @@ bool DKStaticMesh::UpdateStream(DKVertexStream::Stream stream, const DKString& n
 	return false;
 }
 
-bool DKStaticMesh::RemoveStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name)
+bool DKStaticMesh::RemoveStream(DKVertexStream::Stream stream, const DKString& name)
 {
 	StreamInfo si = FindVertexStream(stream, name);
 	if (si.buffer)

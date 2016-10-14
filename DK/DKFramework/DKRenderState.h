@@ -16,7 +16,7 @@
 // Every OpenGL bound thread has one DKRenderState object at least.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKRenderState
 	{
@@ -96,7 +96,7 @@ namespace DKFramework
 		{
 			unsigned int	vertexBuffer;
 			unsigned int	indexBuffer;
-			DKFoundation::DKArray<bool>	attribArrayEnabled;
+			DKArray<bool>	attribArrayEnabled;
 		};
 		struct TextureUnit
 		{
@@ -129,8 +129,8 @@ namespace DKFramework
 		float			polygonOffsetUnits;
 		float			lineWidth;
 
-		DKFoundation::DKMap<unsigned int, VertexArray>	vertexArrays;
-		DKFoundation::DKArray<TextureUnit>				activeTextures;
+		DKMap<unsigned int, VertexArray>	vertexArrays;
+		DKArray<TextureUnit>				activeTextures;
 
 		enum {GLStateLength = (GLStateMaxValue / 8) + (GLStateMaxValue % 8 ? 1 : 0)};
 		unsigned char glStates[GLStateLength];

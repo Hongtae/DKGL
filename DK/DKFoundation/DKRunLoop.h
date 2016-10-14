@@ -42,7 +42,7 @@
 //               if system time has changed, calling operations will adjusted.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKRunLoop
 	{

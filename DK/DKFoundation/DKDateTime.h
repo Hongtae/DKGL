@@ -43,7 +43,7 @@
 //    This implementation will not handles BC. (Year >= 0)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKDateTime
 	{

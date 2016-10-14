@@ -15,7 +15,7 @@
 // orientation of the hinge axis.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKHingeConstraint : public DKConstraint
 	{
@@ -59,13 +59,13 @@ namespace DKFramework
 		bool IsValidParam(ParamType type, ParamAxis axis) const override;
 		bool HasParam(ParamType type, ParamAxis axis) const override;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:
 		void ResetContext(void) override;
 		void ResetContextImpl(void) override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKHingeConstraint* Copy(UUIDObjectMap&, const DKHingeConstraint*);
 	};
 }

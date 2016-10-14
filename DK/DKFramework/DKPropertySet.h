@@ -18,49 +18,49 @@
 // created, deleted. You can register your callback functions.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKPropertySet
 	{
 	public:
 		static DKPropertySet& DefaultSet(void);
 
-		typedef void InsertionFunc(DKFoundation::DKString, DKVariant);					// key, new-value
-		typedef void ModificationFunc(DKFoundation::DKString, DKVariant, DKVariant);	// key, old-value, new-value
-		typedef void DeletionFunc(DKFoundation::DKString, DKVariant);					// key, old-value
+		typedef void InsertionFunc(DKString, DKVariant);					// key, new-value
+		typedef void ModificationFunc(DKString, DKVariant, DKVariant);	// key, old-value, new-value
+		typedef void DeletionFunc(DKString, DKVariant);					// key, old-value
 
-		typedef DKFoundation::DKFunctionSignature<InsertionFunc>		InsertionCallback;
-		typedef DKFoundation::DKFunctionSignature<ModificationFunc>		ModificationCallback;
-		typedef DKFoundation::DKFunctionSignature<DeletionFunc>			DeletionCallback;
-		typedef DKFoundation::DKFunctionSignature<void (const DKFoundation::DKString&, const DKVariant&)> Enumerator;
+		typedef DKFunctionSignature<InsertionFunc>		InsertionCallback;
+		typedef DKFunctionSignature<ModificationFunc>		ModificationCallback;
+		typedef DKFunctionSignature<DeletionFunc>			DeletionCallback;
+		typedef DKFunctionSignature<void (const DKString&, const DKVariant&)> Enumerator;
 
 		DKPropertySet(void);
 		~DKPropertySet(void);
 
 		// Import, import from file or URL
 		// returns number of pairs imported or -1 if import failed.
-		int Import(const DKFoundation::DKString& url, bool overwrite);
+		int Import(const DKString& url, bool overwrite);
 		int Import(const DKPropertySet& prop, bool overwrite);
-		int Import(const DKFoundation::DKXMLElement* e, bool overwrite);
-		int Import(DKFoundation::DKStream* stream, bool overwrite);
+		int Import(const DKXMLElement* e, bool overwrite);
+		int Import(DKStream* stream, bool overwrite);
 		// Export to file, returns number of pairs exported or -1 if export filed.
 		// You can export with XML or binary format
-		int Export(const DKFoundation::DKString& file, bool exportXML) const;
-		int Export(DKFoundation::DKStream* stream, bool exportXML) const;
-		DKFoundation::DKObject<DKFoundation::DKXMLElement> Export(bool exportXML, int* numExported) const;
+		int Export(const DKString& file, bool exportXML) const;
+		int Export(DKStream* stream, bool exportXML) const;
+		DKObject<DKXMLElement> Export(bool exportXML, int* numExported) const;
 
 		// SetInitialValue, add new value for key, or fail if key is exits already.
-		bool SetInitialValue(const DKFoundation::DKString& key, const DKVariant& value);
+		bool SetInitialValue(const DKString& key, const DKVariant& value);
 
-		void SetValue(const DKFoundation::DKString& key, const DKVariant& value);
-		const DKVariant& Value(const DKFoundation::DKString& key) const;
-		bool HasValue(const DKFoundation::DKString& key) const;
-		void Remove(const DKFoundation::DKString& key);
+		void SetValue(const DKString& key, const DKVariant& value);
+		const DKVariant& Value(const DKString& key) const;
+		bool HasValue(const DKString& key) const;
+		void Remove(const DKString& key);
 		size_t NumberOfEntries(void) const;
 
 		// Add / Remove callback for key insertion, modification, deletion.
-		void SetCallback(const DKFoundation::DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKFoundation::DKRunLoop* runLoop, void* context);
-		void RemoveCallback(const DKFoundation::DKString& key, void* context);
+		void SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKRunLoop* runLoop, void* context);
+		void RemoveCallback(const DKString& key, void* context);
 		void RemoveCallback(void* context);
 
 		// enumerate all key, value pairs. (read-only)
@@ -68,13 +68,13 @@ namespace DKFramework
 		void EnumerateBackward(const Enumerator* e) const;
 				
 	private:
-		DKFoundation::DKSpinLock lock;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, DKVariant> PropertyMap;
+		DKSpinLock lock;
+		typedef DKMap<DKString, DKVariant> PropertyMap;
 		PropertyMap properties;
 
-		typedef DKFoundation::DKMap<DKFoundation::DKString, DKFoundation::DKCallback<InsertionFunc, void*, DKFoundation::DKSpinLock>>		InsertionCallbackMap;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, DKFoundation::DKCallback<ModificationFunc, void*, DKFoundation::DKSpinLock>>	ModificationCallbackMap;
-		typedef DKFoundation::DKMap<DKFoundation::DKString, DKFoundation::DKCallback<DeletionFunc, void*, DKFoundation::DKSpinLock>>		DeletionCallbackMap;
+		typedef DKMap<DKString, DKCallback<InsertionFunc, void*, DKSpinLock>>		InsertionCallbackMap;
+		typedef DKMap<DKString, DKCallback<ModificationFunc, void*, DKSpinLock>>	ModificationCallbackMap;
+		typedef DKMap<DKString, DKCallback<DeletionFunc, void*, DKSpinLock>>		DeletionCallbackMap;
 
 		InsertionCallbackMap		insertionCallbacks;
 		ModificationCallbackMap		modificationCallbacks;

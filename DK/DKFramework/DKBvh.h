@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKBvh
 	{
@@ -51,7 +51,7 @@ namespace DKFramework
 		// All filter callback returns false, this function returns false even if one or more
 		// ray hits detected. In this case, you need to get ray-test result from the callback.
 		// parameter: (object-index, line)
-		using RayCastResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKLine&)>;
+		using RayCastResultCallback = DKFunctionSignature<bool (int, const DKLine&)>;
 		bool RayTest(const DKLine& ray, RayCastResultCallback*) const;
 
 		// AabbCastResultCallback : filter-callback function.
@@ -60,7 +60,7 @@ namespace DKFramework
 		// All filter callback returns false, this function returns false even if one or more
 		// overlap detected. In this case, you need to get ray-test result from the callback.
 		// parameter: (object-index, aabb)
-		using AabbOverlapResultCallback = DKFoundation::DKFunctionSignature<bool (int, const DKAabb&)>;
+		using AabbOverlapResultCallback = DKFunctionSignature<bool (int, const DKAabb&)>;
 		bool AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback*) const;
 
 	private:
@@ -77,8 +77,8 @@ namespace DKFramework
 		void BuildInternal(void);
 		void BuildTree(QuantizedAabbNode* nodes, int count);
 
-		DKFoundation::DKObject<VolumeInterface> volume;
-		DKFoundation::DKArray<QuantizedAabbNode> nodes;
+		DKObject<VolumeInterface> volume;
+		DKArray<QuantizedAabbNode> nodes;
 		DKVector3 aabbOffset;
 		DKVector3 aabbScale;
 	};

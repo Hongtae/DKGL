@@ -8,7 +8,7 @@
 // Python app class
 // 
 
-namespace DKFramework
+namespace DKGL
 {
 	class PYDK_API PyDKApplication : public DKApplication
 	{

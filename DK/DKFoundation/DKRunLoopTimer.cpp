@@ -8,7 +8,7 @@
 #include "DKRunLoopTimer.h"
 #include "DKFunction.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKRunLoopTimer::DKRunLoopTimer(void)
 {

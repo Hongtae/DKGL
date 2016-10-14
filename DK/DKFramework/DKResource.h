@@ -18,7 +18,7 @@
 // A lots of serializable objects inherited from DKResource.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKResourceLoader;
 	class DKGL_API DKResource
@@ -27,28 +27,28 @@ namespace DKFramework
 		DKResource(void);
 		virtual ~DKResource(void);
 
-		virtual void SetName(const DKFoundation::DKString& name);
-		const DKFoundation::DKString& Name(void) const;
-		virtual void SetUUID(const DKFoundation::DKUuid& uuid);
-		const DKFoundation::DKUuid& UUID(void) const;
+		virtual void SetName(const DKString& name);
+		const DKString& Name(void) const;
+		virtual void SetUUID(const DKUUID& uuid);
+		const DKUUID& UUID(void) const;
 
-		virtual DKFoundation::DKObject<DKSerializer> Serializer(void);
-		virtual DKFoundation::DKObject<DKFoundation::DKData> Serialize(DKSerializer::SerializeForm) const;
-		virtual DKFoundation::DKObject<DKFoundation::DKXMLElement> SerializeXML(DKSerializer::SerializeForm) const;
-		virtual bool Deserialize(const DKFoundation::DKData*, DKResourceLoader*);
-		virtual bool Deserialize(const DKFoundation::DKXMLElement*, DKResourceLoader*);
+		virtual DKObject<DKSerializer> Serializer(void);
+		virtual DKObject<DKData> Serialize(DKSerializer::SerializeForm) const;
+		virtual DKObject<DKXMLElement> SerializeXML(DKSerializer::SerializeForm) const;
+		virtual bool Deserialize(const DKData*, DKResourceLoader*);
+		virtual bool Deserialize(const DKXMLElement*, DKResourceLoader*);
 
 		virtual bool Validate(void); // resource validation
 
 		DKVariant::VPairs metadata;
 
 	protected:
-		DKFoundation::DKAllocator& Allocator(void);
+		DKAllocator& Allocator(void);
 
 	private:
-		DKFoundation::DKString objectName;
-		DKFoundation::DKUuid objectUUID;
-		DKFoundation::DKAllocator* allocator;
+		DKString objectName;
+		DKUUID objectUUID;
+		DKAllocator* allocator;
 
 		DKResource(const DKResource&);
 		DKResource& operator = (const DKResource&);

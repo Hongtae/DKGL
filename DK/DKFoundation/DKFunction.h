@@ -61,7 +61,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	// DKFunctionSignature interface (abstract class)
 	template <typename Function> struct DKFunctionSignature;

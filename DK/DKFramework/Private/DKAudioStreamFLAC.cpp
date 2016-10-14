@@ -2,18 +2,17 @@
 //  File: DKAudioStreamFLAC.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2010-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2010-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_LIBFLAC
 #include <memory.h>
 #include <math.h>
-#include "../../../lib/ExtDeps.h"
+#include "../../../lib/Inc_libFLAC.h"
 #include "DKAudioStreamFLAC.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -161,8 +160,8 @@ namespace DKFramework
 }
 
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 
 DKAudioStreamFLAC::DKAudioStreamFLAC(void)

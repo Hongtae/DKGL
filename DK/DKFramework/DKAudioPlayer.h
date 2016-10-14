@@ -19,14 +19,14 @@
 // calling DKAudioPlayer::AudioSource().
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKAudioPlayer
 	{
 	public:
 		// PCM audio buffer filter.
 		// a function or function object which prototype must be 'void (data, size, time)'
-		typedef DKFoundation::DKFunctionSignature<void (void*, size_t, double)>	StreamFilter;
+		typedef DKFunctionSignature<void (void*, size_t, double)>	StreamFilter;
 		
 		typedef DKAudioSource::AudioState AudioState;
 
@@ -34,12 +34,12 @@ namespace DKFramework
 		virtual ~DKAudioPlayer(void);
 
 		// create instance from data stream.
-		static DKFoundation::DKObject<DKAudioPlayer> Create(DKFoundation::DKStream* stream);
+		static DKObject<DKAudioPlayer> Create(DKStream* stream);
 		// create instance from file.
-		static DKFoundation::DKObject<DKAudioPlayer> Create(const DKFoundation::DKString& file);
+		static DKObject<DKAudioPlayer> Create(const DKString& file);
 		// create instance from audio stream.
 		// Note: stream should not be shared.
-		static DKFoundation::DKObject<DKAudioPlayer> Create(DKAudioStream* stream);
+		static DKObject<DKAudioPlayer> Create(DKAudioStream* stream);
 
 		int Channels(void) const;
 		int Bits(void) const;
@@ -70,7 +70,7 @@ namespace DKFramework
 	private:
 		class AudioQueue;
 
-		DKFoundation::DKObject<StreamFilter> filter;
+		DKObject<StreamFilter> filter;
 
 		double			bufferingTime;
 		double			timePosition;
@@ -84,9 +84,9 @@ namespace DKFramework
 		AudioState	playerState;
 		int			queuePlaybackState;
 		int			queueBufferState;
-		DKFoundation::DKObject<DKAudioStream>	stream; // audio data
-		DKFoundation::DKObject<DKAudioSource>	source;
-		DKFoundation::DKObject<AudioQueue>		queue;
-		DKFoundation::DKSpinLock				lock;
+		DKObject<DKAudioStream>	stream; // audio data
+		DKObject<DKAudioSource>	source;
+		DKObject<AudioQueue>		queue;
+		DKSpinLock				lock;
 	};
 }

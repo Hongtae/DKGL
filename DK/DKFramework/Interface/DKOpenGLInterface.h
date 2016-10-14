@@ -15,7 +15,7 @@
 // DKOpenGLContext.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKOpenGLContext;
 	class DKOpenGLInterface

@@ -25,7 +25,7 @@
 //    Subclass should implement it's own Clone() function.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKMesh : public DKModel
 	{
@@ -41,9 +41,9 @@ namespace DKFramework
 		};
 		using TextureArray = DKMaterial::TextureArray;
 		using TextureSampler = DKMaterial::Sampler;
-		using TextureSamplerMap = DKFoundation::DKMap<DKFoundation::DKString, TextureSampler>;
+		using TextureSamplerMap = DKMap<DKString, TextureSampler>;
 		using PropertyArray = DKMaterial::PropertyArray;
-		using PropertyMap = DKFoundation::DKMap<DKFoundation::DKString, PropertyArray>;
+		using PropertyMap = DKMap<DKString, PropertyArray>;
 
 		// material
 		DKMaterial* Material(void)								{return material;}
@@ -53,25 +53,25 @@ namespace DKFramework
 		virtual void SetMaterial(DKMaterial* m); // assigning material.
 
 		// Append texture to sampler for name.
-		void AppendSampler(const DKFoundation::DKString& name, DKTexture* texture);
+		void AppendSampler(const DKString& name, DKTexture* texture);
 		// Set multiple textures and one sampler for name.
-		void SetSampler(const DKFoundation::DKString& name, const TextureArray& textures, DKTextureSampler* sampler);
+		void SetSampler(const DKString& name, const TextureArray& textures, DKTextureSampler* sampler);
 		// Set one texture and one sampler for name. (Remove sampler if texture is NULL)
-		void SetSampler(const DKFoundation::DKString& name, DKTexture* texture, DKTextureSampler* sampler);
+		void SetSampler(const DKString& name, DKTexture* texture, DKTextureSampler* sampler);
 		// get sampler data
-		TextureSampler* Sampler(const DKFoundation::DKString& name);
-		const TextureSampler* Sampler(const DKFoundation::DKString& name) const;
+		TextureSampler* Sampler(const DKString& name);
+		const TextureSampler* Sampler(const DKString& name) const;
 		size_t SamplerCount(void) const;
 		// remove sampler
-		void RemoveSampler(const DKFoundation::DKString& name);
+		void RemoveSampler(const DKString& name);
 		void RemoveAllSamplers(void);
 
 		// Material Properties
-		void SetMaterialProperty(const DKFoundation::DKString& name, const PropertyArray& value);
-		size_t MaterialPropertyCount(const DKFoundation::DKString& name) const;
-		const PropertyArray* MaterialProperty(const DKFoundation::DKString& name) const;
-		PropertyArray* MaterialProperty(const DKFoundation::DKString& name);
-		void RemoveMaterialProperty(const DKFoundation::DKString& name);
+		void SetMaterialProperty(const DKString& name, const PropertyArray& value);
+		size_t MaterialPropertyCount(const DKString& name) const;
+		const PropertyArray* MaterialProperty(const DKString& name) const;
+		PropertyArray* MaterialProperty(const DKString& name);
+		void RemoveMaterialProperty(const DKString& name);
 		void RemoveAllMaterialProperties(void);
 
 		// get property maps to access directly.
@@ -117,7 +117,7 @@ namespace DKFramework
 		};
 		bool Bind(DKSceneState&, RenderInfo* info, const DKBlendState* blending = NULL) const;
 
-		virtual DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		virtual DKObject<DKSerializer> Serializer(void) override;
 
 		unsigned int drawingGroupFlags;	// filtering bits mask
 
@@ -147,6 +147,6 @@ namespace DKFramework
 		// samplers will overrides material's
 		TextureSamplerMap	samplers;
 
-		DKFoundation::DKObject<DKMaterial>	material;
+		DKObject<DKMaterial>	material;
 	};
 }

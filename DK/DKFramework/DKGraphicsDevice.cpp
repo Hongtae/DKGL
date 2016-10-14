@@ -8,8 +8,7 @@
 #include "DKGraphicsDevice.h"
 #include "Interface/DKGraphicsDeviceInterface.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
 
 DKGraphicsDevice::DKGraphicsDevice(void)
 {

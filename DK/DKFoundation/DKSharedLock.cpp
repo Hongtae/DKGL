@@ -18,7 +18,7 @@
 #include "DKSpinLock.h"
 
 #ifdef _WIN32
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -151,7 +151,7 @@ namespace DKFoundation
 	}
 }
 #else
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -227,8 +227,8 @@ namespace DKFoundation
 }
 #endif
 
-using namespace DKFoundation;
-using namespace DKFoundation::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKSharedLock::DKSharedLock(void)
 {

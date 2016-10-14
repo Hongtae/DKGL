@@ -27,7 +27,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename Function, typename Context, typename Lock = DKDummyLock> class DKCallback;
 	template <typename R, typename... Ps, typename Context, typename Lock> class DKCallback<R (Ps...), Context, Lock>

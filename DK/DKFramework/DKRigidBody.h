@@ -18,7 +18,7 @@
 // this class not designed for subclassing.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKRigidBody : public DKCollisionObject
 	{
@@ -43,7 +43,7 @@ namespace DKFramework
 			float additionalAngularDampingFactor;
 		};
 
-		DKRigidBody(const DKFoundation::DKString& name = L"");
+		DKRigidBody(const DKString& name = L"");
 		DKRigidBody(DKCollisionShape* shape, float mass = 0.0f);
 		DKRigidBody(DKCollisionShape* shape, float mass, const DKVector3& localInertia);
 		DKRigidBody(DKCollisionShape* shape, const ObjectData& data);
@@ -109,10 +109,10 @@ namespace DKFramework
 		float LinearSleepingThreshold(void) const;
 		float AngularSleepingThreshold(void) const;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;  
+		DKObject<DKSerializer> Serializer(void) override;  
 
 	protected:
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKRigidBody* Copy(UUIDObjectMap&, const DKRigidBody*);
 
 		bool ResetObject(DKCollisionShape* shape, const ObjectData& data);

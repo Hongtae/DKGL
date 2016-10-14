@@ -9,9 +9,8 @@
 
 #include "DKGraphicsDevice_Metal.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKGraphicsDevice_Metal::~DKGraphicsDevice_Metal(void)
 {

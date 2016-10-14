@@ -42,7 +42,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKVariant
 	{
@@ -77,12 +77,12 @@ namespace DKFramework
 		typedef DKMatrix3 VMatrix3;
 		typedef DKMatrix4 VMatrix4;
 		typedef DKQuaternion VQuaternion;
-		typedef DKFoundation::DKRational VRational;
-		typedef DKFoundation::DKString VString;
-		typedef DKFoundation::DKDateTime VDateTime;
-		typedef DKFoundation::DKBuffer VData;
-		typedef DKFoundation::DKArray<DKVariant> VArray;
-		typedef DKFoundation::DKMap<VString, DKVariant> VPairs;
+		typedef DKRational VRational;
+		typedef DKString VString;
+		typedef DKDateTime VDateTime;
+		typedef DKBuffer VData;
+		typedef DKArray<DKVariant> VArray;
+		typedef DKMap<VString, DKVariant> VPairs;
 
 		// structured data layout.
 		enum class StructElem : uint8_t
@@ -103,15 +103,15 @@ namespace DKFramework
 		// layout should be set properly. (describe item layout without padding)
 		struct VStructuredData
 		{
-			DKFoundation::DKBuffer data;	// buffer object
+			DKBuffer data;	// buffer object
 			size_t elementSize;				// element size (include alignment padding)
-			DKFoundation::DKArray<StructElem> layout; // structured-element layout
+			DKArray<StructElem> layout; // structured-element layout
 		};
 
 		DKVariant(Type t = TypeUndefined);
 
-		DKVariant(const DKFoundation::DKUniChar8* v);
-		DKVariant(const DKFoundation::DKUniCharW* v);
+		DKVariant(const DKUniChar8* v);
+		DKVariant(const DKUniCharW* v);
 		DKVariant(const VInteger& v);
 		DKVariant(const VFloat& v);
 		DKVariant(const VVector2& v);
@@ -131,19 +131,19 @@ namespace DKFramework
 		DKVariant(const DKVariant& v);
 		DKVariant(DKVariant&& v);
 
-		explicit DKVariant(const DKFoundation::DKXMLElement* e);
+		explicit DKVariant(const DKXMLElement* e);
 		~DKVariant(void);
 
 		DKVariant& SetValueType(Type t);
 		Type ValueType(void) const;
 
 		// XML input/output
-		DKFoundation::DKObject<DKFoundation::DKXMLElement> ExportXML(void) const;
-		bool ImportXML(const DKFoundation::DKXMLElement* e);
+		DKObject<DKXMLElement> ExportXML(void) const;
+		bool ImportXML(const DKXMLElement* e);
 
 		// Binary-stream input/output
-		bool ExportStream(DKFoundation::DKStream* stream) const;
-		bool ImportStream(DKFoundation::DKStream* stream);
+		bool ExportStream(DKStream* stream) const;
+		bool ImportStream(DKStream* stream);
 
 		DKVariant& SetInteger(const VInteger& v);
 		DKVariant& SetFloat(const VFloat& v);

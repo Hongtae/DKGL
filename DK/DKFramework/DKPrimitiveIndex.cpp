@@ -7,8 +7,8 @@
 
 #include "DKPrimitiveIndex.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKString DKPrimitive::TypeToString(Type p)
@@ -176,7 +176,7 @@ size_t DKPrimitiveIndex::NumberOfPoints(void) const
 	return 0;
 }
 
-size_t DKPrimitiveIndex::GetTriangles(const DKVector3* positions, size_t start, size_t count, DKFoundation::DKArray<DKTriangle>& output) const
+size_t DKPrimitiveIndex::GetTriangles(const DKVector3* positions, size_t start, size_t count, DKArray<DKTriangle>& output) const
 {
 	DKArray<DKTriangle> triangles;
 	triangles.Reserve(count);
@@ -196,7 +196,7 @@ size_t DKPrimitiveIndex::GetTriangles(const DKVector3* positions, size_t start, 
 	return triangles.Count();
 }
 
-size_t DKPrimitiveIndex::GetLines(const DKVector3* positions, size_t start, size_t count, DKFoundation::DKArray<DKLine>& output) const
+size_t DKPrimitiveIndex::GetLines(const DKVector3* positions, size_t start, size_t count, DKArray<DKLine>& output) const
 {
 	DKArray<DKLine> lines;
 	lines.Reserve(count);
@@ -216,7 +216,7 @@ size_t DKPrimitiveIndex::GetLines(const DKVector3* positions, size_t start, size
 	return lines.Count();
 }
 
-size_t DKPrimitiveIndex::GetPoints(const DKVector3* positions, size_t start, size_t count, DKFoundation::DKArray<DKVector3>& output) const
+size_t DKPrimitiveIndex::GetPoints(const DKVector3* positions, size_t start, size_t count, DKArray<DKVector3>& output) const
 {
 	DKArray<DKVector3> points;
 	points.Reserve(count);

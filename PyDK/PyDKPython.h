@@ -13,10 +13,10 @@
 class PYDK_API PyDKPython : public PyDKInterpreter
 {
 public:
-	static DKFoundation::DKObject<PyDKPython> Create(const DKFoundation::DKString::StringArray& paths);
+	static DKObject<PyDKPython> Create(const DKString::StringArray& paths);
 	static PyDKPython* SharedInstance(void);
 
-	DKFoundation::DKObject<PyDKInterpreter> NewInterpreter(void);
+	DKObject<PyDKInterpreter> NewInterpreter(void);
 
 	~PyDKPython(void);
 

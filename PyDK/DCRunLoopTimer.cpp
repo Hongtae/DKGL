@@ -4,8 +4,8 @@
 #include <DK/DK.h>
 #include "DCObject.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 struct DCRunLoopTimer
 {

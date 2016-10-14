@@ -18,7 +18,7 @@
 //  Using C++11 variadic-templates instead of macros in this implmentation.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename... Types> class DKTypeList
 	{

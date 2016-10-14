@@ -22,7 +22,7 @@
 
 #include "DKTimer.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKTimer::DKTimer(void)
 	: timeStamp(0)

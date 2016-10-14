@@ -19,7 +19,7 @@
 // this class manages thread pool automatically.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKOperationQueue
 	{

@@ -51,15 +51,15 @@
 //    frame must be loaded by calling Load() with screen object before use.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKScreen;
 	class DKGL_API DKFrame
 	{
 		friend class DKScreen;
 	public:
-		using FrameArray = DKFoundation::DKArray<DKFoundation::DKObject<DKFrame>>;
-		using FrameFilter = DKFoundation::DKFunctionSignature<bool(const DKFrame*)>;
+		using FrameArray = DKArray<DKObject<DKFrame>>;
+		using FrameFilter = DKFunctionSignature<bool(const DKFrame*)>;
 
 		DKFrame(void);
 		virtual ~DKFrame(void);
@@ -190,7 +190,7 @@ namespace DKFramework
 		// Update: update frame. It is called by system automatically.
 		//  Don't call directly unless frame is off-screen and not in hierarchy.
 		//  this function invokes OnUpdate() which can be overridden.
-		void Update(double tickDelta, DKFoundation::DKTimeTick tick, const DKFoundation::DKDateTime& tickDate);
+		void Update(double tickDelta, DKTimeTick tick, const DKDateTime& tickDate);
 
 		// Load frame and it's children with specified screen object and
 		// desired resolution. Load frame does not affect hierarchy.
@@ -238,7 +238,7 @@ namespace DKFramework
 	protected:
 		// frame events
 		virtual void OnRender(DKRenderer&) const; // for custom drawing.
-		virtual void OnUpdate(double, DKFoundation::DKTimeTick, const DKFoundation::DKDateTime&) {} // called every frames.
+		virtual void OnUpdate(double, DKTimeTick, const DKDateTime&) {} // called every frames.
 		virtual void OnLoaded(void) {} // initialize frame, you can add child frame at here.
 		virtual void OnUnload(void) {} // do something clean-up actions
 		virtual void OnContentResized(void) {} // resolution has changed.
@@ -255,8 +255,8 @@ namespace DKFramework
 		// keyboard, text events
 		virtual void OnKeyDown(int deviceId, DKVirtualKey key) {}
 		virtual void OnKeyUp(int deviceId, DKVirtualKey key) {}
-		virtual void OnTextInput(int deviceId, const DKFoundation::DKString& str) {}
-		virtual void OnTextInputCandidate(int deviceId, const DKFoundation::DKString& str) {}
+		virtual void OnTextInput(int deviceId, const DKString& str) {}
+		virtual void OnTextInputCandidate(int deviceId, const DKString& str) {}
 		virtual void OnKeyboardLost(int deviceId) {}
 
 		// Pre-process event.
@@ -267,7 +267,7 @@ namespace DKFramework
 		{
 			return false;
 		}
-		virtual bool PreprocessKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, const DKFoundation::DKString& text)
+		virtual bool PreprocessKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, const DKString& text)
 		{
 			return false;
 		}
@@ -287,8 +287,8 @@ namespace DKFramework
 		DKColor::RGBA32 color;
 		DKBlendState	blendState;
 
-		DKFoundation::DKObject<DKRenderer>		renderer;
-		DKFoundation::DKMap<int, bool>			mouseHover;  // store mouse hover states.
+		DKObject<DKRenderer>		renderer;
+		DKMap<int, bool>			mouseHover;  // store mouse hover states.
 		DKRenderTarget::DepthFormat				depthFormat;
 
 		bool			loaded: 1;
@@ -299,7 +299,7 @@ namespace DKFramework
 
 		bool RenderInternal(void); // return true, if drawn actually happen.
 		bool InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm) const; // checking frame covers parent region entirely.
-		bool ProcessKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, const DKFoundation::DKString& text);
+		bool ProcessKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, const DKString& text);
 		bool ProcessMouseEvent(DKWindow::EventMouse type, int deviceId, int buttonId, const DKPoint& pos, const DKVector2& delta, bool propagate);
 		bool ProcessMouseInOut(int deviceId, const DKPoint& pos, bool insideParent);
 		void ReleaseMouseData(void);

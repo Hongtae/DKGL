@@ -5,12 +5,10 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenAL.h"
+#include "../lib/Inc_OpenAL.h"
 #include "DKAudioDevice.h"
 
-
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
 
 DKAudioDevice::DKAudioDevice(void)
 	: device(NULL)
@@ -57,7 +55,7 @@ DKAudioDevice::DKAudioDevice(void)
 	}
 	else
 	{
-		DKFoundation::DKLog("[DKAVMediaController] ALC_ENUMERATION_EXT not valid\n");
+		DKLog("[DKAVMediaController] ALC_ENUMERATION_EXT not valid\n");
 	}
 
 
@@ -109,6 +107,5 @@ void DKAudioDevice::Bind(void) const
 
 void DKAudioDevice::Unbind(void) const
 {
-	if (alcGetCurrentContext() == (ALCcontext*)context)
 		alcMakeContextCurrent(NULL);
 }

@@ -15,9 +15,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
-	class DKGL_API DKAudioDevice : public DKFoundation::DKSharedInstance<DKAudioDevice>
+	class DKGL_API DKAudioDevice : public DKSharedInstance<DKAudioDevice>
 	{
 	public:
 		~DKAudioDevice(void);
@@ -30,23 +30,23 @@ namespace DKFramework
 		{
 			struct Device
 			{
-				DKFoundation::DKString name;
+				DKString name;
 				int majorVersion;
 				int minorVersion;
 			};
-			DKFoundation::DKString			defaultDeivce;
-			DKFoundation::DKArray<Device>	list;
+			DKString		defaultDeivce;
+			DKArray<Device>	list;
 		};
 
 		//static bool debugMode;
 	private:
-		friend class DKFoundation::DKObject<DKAudioDevice>;
-		friend class DKFoundation::DKSharedInstance<DKAudioDevice>;
+		friend class DKObject<DKAudioDevice>;
+		friend class DKSharedInstance<DKAudioDevice>;
 		DKAudioDevice(void);
 		DKAudioDevice(const DKAudioDevice&);
 		DKAudioDevice& operator = (const DKAudioDevice&);
 
-		DeviceList							deviceList;
+		DeviceList deviceList;
 		void *device;		// OpenAL device
 		void *context;		// OpenAL context
 	};

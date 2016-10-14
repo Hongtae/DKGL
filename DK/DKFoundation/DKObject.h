@@ -72,9 +72,9 @@
 //      then you will lost object if you cast your object to other types.
 ////////////////////////////////////////////////////////////////////////////////
 
-#define DKOBJECT_NEW			new(DKFoundation::DKAllocator::DefaultAllocator())
+#define DKOBJECT_NEW			new(DKAllocator::DefaultAllocator())
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename T> class DKObject
 	{

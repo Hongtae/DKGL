@@ -15,7 +15,7 @@
 // This class does not provide any numeric operators. (except assign)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKAtomicNumber64
 	{

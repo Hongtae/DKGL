@@ -18,7 +18,7 @@
 // this class provides parsing DTD.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	class DKGL_API DKXMLParser
 	{

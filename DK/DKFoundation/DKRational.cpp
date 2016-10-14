@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include "DKRational.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
@@ -59,7 +59,7 @@ namespace DKFoundation
 	}
 }
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKRational::DKRational(void)
 	: numerator(0), denominator(1)

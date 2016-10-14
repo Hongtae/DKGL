@@ -9,8 +9,8 @@
 #include "DKSphere.h"
 #include "DKLine.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKSphere::DKSphere(void)
 : center(DKVector3(0,0,0))

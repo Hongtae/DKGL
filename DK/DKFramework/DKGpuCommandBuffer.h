@@ -17,7 +17,7 @@
 // DKGpuCommandBuffer
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKRenderPassDescriptor;
 
@@ -36,10 +36,10 @@ namespace DKFramework
 
 		virtual ~DKGpuCommandBuffer(void) {}
 
-		virtual DKFoundation::DKObject<DKGpuRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
-		virtual DKFoundation::DKObject<DKParallelGpuRenderCommandEncoder> CreateParallelRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
+		virtual DKObject<DKGpuRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
+		virtual DKObject<DKParallelGpuRenderCommandEncoder> CreateParallelRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
 
-		virtual DKFoundation::DKObject<DKGpuComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
-		virtual DKFoundation::DKObject<DKGpuBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
+		virtual DKObject<DKGpuComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
+		virtual DKObject<DKGpuBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
 	};
 }

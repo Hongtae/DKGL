@@ -13,9 +13,7 @@
 #include <tchar.h>
 #include "../../Interface/DKApplicationInterface.h"
 
-using namespace DKFoundation;
-
-namespace DKFramework
+namespace DKGL
 {
 	struct DKLogger_Win32 : public DKLogger
 	{

@@ -18,7 +18,7 @@
 // Use DKVoxel32SparseVolume instead.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	// NOT IMPLEMENTED. (Use DKVoxel32SparseVolume)
 	class DKGL_API DKVoxel32FileStorage : public DKVoxel32Storage

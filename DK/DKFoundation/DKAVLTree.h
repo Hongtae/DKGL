@@ -26,7 +26,7 @@
 //  You can use DKMap, DKSet instead, they are thread safe.
 //
 
-namespace DKFoundation
+namespace DKGL
 {
 	template <typename Value, typename Key> struct DKTreeItemComparator
 	{

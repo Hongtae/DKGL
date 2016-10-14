@@ -14,7 +14,7 @@
 // a unicode string conversion utility.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFoundation
+namespace DKGL
 {
 	enum class DKStringEncoding
 	{

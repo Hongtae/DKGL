@@ -8,7 +8,7 @@
 #include <memory.h>
 #include "DKDataStream.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKDataStream::DKDataStream(void)
 	: offset(0)

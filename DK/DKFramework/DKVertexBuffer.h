@@ -19,7 +19,7 @@
 // Once you declare your vertex stream types, declarations will not be modified.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKVertexBuffer : public DKGeometryBuffer
 	{
@@ -27,7 +27,7 @@ namespace DKFramework
 		struct Decl  // Vertex stream declaration.
 		{
 			DKVertexStream::Stream	id;
-			DKFoundation::DKString	name;  // used if id is DKVertexStream::StreamUserDefine.
+			DKString	name;  // used if id is DKVertexStream::StreamUserDefine.
 			DKVertexStream::Type	type;
 			bool					normalize;  // normalize integer to float. (0.0~1.0 for unsigned, -1.0~1.0 for signed)
 		};
@@ -35,38 +35,38 @@ namespace DKFramework
 		DKVertexBuffer(void);
 		~DKVertexBuffer(void);
 		
-		static DKFoundation::DKObject<DKVertexBuffer> Create(const Decl* decls, size_t declCount, const void* vertices, size_t size, size_t count, MemoryLocation m, BufferUsage u);
+		static DKObject<DKVertexBuffer> Create(const Decl* decls, size_t declCount, const void* vertices, size_t size, size_t count, MemoryLocation m, BufferUsage u);
 		template <typename T, typename U>
-		static DKFoundation::DKObject<DKVertexBuffer> Create(const Decl* decls, size_t declCount, const DKFoundation::DKArray<T,U>& vertices, MemoryLocation m, BufferUsage u)
+		static DKObject<DKVertexBuffer> Create(const Decl* decls, size_t declCount, const DKArray<T,U>& vertices, MemoryLocation m, BufferUsage u)
 		{
 			return Create(decls, declCount, (const T*)vertices, sizeof(T), vertices.Count(), m, u);
 		}
 
 		const Decl* DeclarationAtIndex(long index) const;
 		const Decl* Declaration(DKVertexStream::Stream stream) const;       // find by id, not for DKVertexStream::StreamUserDefine
-		const Decl* Declaration(const DKFoundation::DKString& name) const;	// find by name, for DKVertexStream::StreamUserDefine only.
-		const Decl* Declaration(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const; // find by id or name
+		const Decl* Declaration(const DKString& name) const;	// find by name, for DKVertexStream::StreamUserDefine only.
+		const Decl* Declaration(DKVertexStream::Stream stream, const DKString& name) const; // find by id or name
 
 		size_t NumberOfDeclarations(void) const;
 		size_t VertexSize(void) const;
 		size_t NumberOfVertices(void) const;
 
-		DKFoundation::DKObject<DKFoundation::DKBuffer> CopyStream(DKVertexStream::Stream stream) const;
-		DKFoundation::DKObject<DKFoundation::DKBuffer> CopyStream(const DKFoundation::DKString& name) const;
-		DKFoundation::DKObject<DKFoundation::DKBuffer> CopyStream(DKVertexStream::Stream stream, const DKFoundation::DKString& name) const;
+		DKObject<DKBuffer> CopyStream(DKVertexStream::Stream stream) const;
+		DKObject<DKBuffer> CopyStream(const DKString& name) const;
+		DKObject<DKBuffer> CopyStream(DKVertexStream::Stream stream, const DKString& name) const;
 
 		bool IsValid(void) const;
 		bool UpdateContent(const void* vertexData, size_t vertexCount, MemoryLocation m, BufferUsage u);
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 
 		bool BindStream(const DKVertexStream& stream) const;
 
 	protected:
-		void StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const override;
+		void StructuredLayout(DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const override;
 
 	private:
-		DKFoundation::DKArray<Decl>		declarations;
+		DKArray<Decl>		declarations;
 		size_t							vertexCount;   // number of vertices
 		size_t							vertexSize;    // size of one vertex
 	};

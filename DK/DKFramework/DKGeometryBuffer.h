@@ -17,7 +17,7 @@
 // Use DKIndexBuffer for Index-Buffer. (see DKIndexBuffer.h)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKGeometryBuffer : public DKResource
 	{
@@ -59,7 +59,7 @@ namespace DKFramework
 		void* AcquireLockedBuffer(void) const;
 
 		// Copy object contents into buffer object and return.
-		DKFoundation::DKObject<DKFoundation::DKBuffer> CopyContent(void) const;
+		DKObject<DKBuffer> CopyContent(void) const;
 
 		// update sub content
 		bool UpdateSubContent(const void* data, size_t offset, size_t size);
@@ -73,7 +73,7 @@ namespace DKFramework
 		bool	IsValid(void) const;
 
 		// create serializer object for serialization.
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 
 		// DKResource::Validate() override
 		bool Validate(void)					{return IsValid();}
@@ -81,10 +81,10 @@ namespace DKFramework
 	protected:
 		DKGeometryBuffer(void);
 
-		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const DKFoundation::DKData* data);
+		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const DKData* data);
 		bool UpdateContent(BufferType t, MemoryLocation m, BufferUsage u, const void* data, size_t size);
 
-		virtual void StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const = 0;
+		virtual void StructuredLayout(DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const = 0;
 
 	private:
 		BufferType			resourceType;

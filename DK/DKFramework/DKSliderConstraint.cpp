@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKSliderConstraint.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -19,8 +19,8 @@ namespace DKFramework
 		};
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKSliderConstraint::DKSliderConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKNSTransform& ta, const DKNSTransform& tb)
 : DKConstraint(LinkType::Slider, rbA, rbB, NewConstraintImpl<btSliderConstraint>::Create(rbA, rbB, ta, tb, true))

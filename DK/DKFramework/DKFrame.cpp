@@ -11,8 +11,8 @@
 #include "DKVector2.h"
 #include "DKAffineTransform2.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 DKFrame::DKFrame(void)
 	: transform(DKMatrix3::identity)

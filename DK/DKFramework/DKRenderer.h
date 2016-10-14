@@ -33,7 +33,7 @@
 //   (each axis range is -1.0 ~ 1.0)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKTexture;
 	class DKTextureSampler;
@@ -169,8 +169,8 @@ namespace DKFramework
 		struct RenderSceneCallback
 		{
 			using MaterialCallback = DKMaterial::PropertyCallback;
-			using ObjectColorCallback = DKFoundation::DKFunctionSignature<bool (const DKCollisionObject*, DKColor&, DKColor&)>;
-			using MeshFilter = DKFoundation::DKFunctionSignature<void (DKFoundation::DKArray<const DKMesh*>&)>;
+			using ObjectColorCallback = DKFunctionSignature<bool (const DKCollisionObject*, DKColor&, DKColor&)>;
+			using MeshFilter = DKFunctionSignature<void (DKArray<const DKMesh*>&)>;
 
 			MaterialCallback* materialCallback = NULL;
 			ObjectColorCallback* objectColors = NULL;
@@ -179,13 +179,13 @@ namespace DKFramework
 		void RenderScene(const DKScene*, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter = 0xffffffff, bool enableCulling = true, RenderSceneCallback* sc = NULL) const;
 
 		// drawing text with font.
-		void RenderText(const DKRect& bounds, const DKMatrix3& transform, const DKFoundation::DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultAlpha) const;
-		void RenderText(const DKPoint& baselineBegin, const DKPoint& baselineEnd, const DKFoundation::DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultAlpha) const;
+		void RenderText(const DKRect& bounds, const DKMatrix3& transform, const DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultAlpha) const;
+		void RenderText(const DKPoint& baselineBegin, const DKPoint& baselineEnd, const DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultAlpha) const;
 
 	private:
 		class RendererContext;
-		DKFoundation::DKObject<DKRenderTarget>			renderTarget;
-		DKFoundation::DKObject<DKFoundation::DKUnknown>	context;
+		DKObject<DKRenderTarget>			renderTarget;
+		DKObject<DKUnknown>	context;
 		DKRect											contentBounds;
 		DKRect											viewport;
 		DKMatrix3										contentTM;

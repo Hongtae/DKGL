@@ -2,17 +2,16 @@
 //  File: DKZipArchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_ZLIB
-#include "../lib/ExtDeps.h"
+#include "../lib/Inc_zlib.h"
 #include "DKZipArchiver.h"
 #include "DKCriticalSection.h"
 #include "DKString.h"
 #include "DKLog.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
 DKZipArchiver::DKZipArchiver(void)
 : zipHandle(NULL)

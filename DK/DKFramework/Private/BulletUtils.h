@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "../../../lib/BulletPhysics.h"
+#include "../../../lib/Inc_BulletPhysics.h"
 #include "../../DKFoundation.h"
 #include "../DKVector3.h"
 #include "../DKQuaternion.h"
@@ -24,9 +24,9 @@
 // Utilities for bridge functons between DK and BulletPhysics conversion.
 ////////////////////////////////////////////////////////////////////////////////
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKScene::CollisionWorldContext
 	{

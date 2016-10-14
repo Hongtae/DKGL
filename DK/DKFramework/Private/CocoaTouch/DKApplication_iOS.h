@@ -31,9 +31,7 @@
 
 #include "../../Interface/DKApplicationInterface.h"
 
-using namespace DKFoundation;
-
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{

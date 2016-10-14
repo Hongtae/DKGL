@@ -616,9 +616,6 @@
     <ClInclude Include="DKFoundation\DKUtils.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKUuid.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
     <ClInclude Include="DKFoundation\DKValue.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
@@ -641,6 +638,9 @@
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKFloat16.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKUUID.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1056,9 +1056,6 @@
     <ClCompile Include="DKFoundation\DKUtils.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
-    <ClCompile Include="DKFoundation\DKUuid.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
     <ClCompile Include="DKFoundation\DKXMLDocument.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
@@ -1075,6 +1072,9 @@
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFoundation\DKFloat16.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKUUID.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
   </ItemGroup>

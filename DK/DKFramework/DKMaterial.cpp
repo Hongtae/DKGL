@@ -5,12 +5,12 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKMaterial.h"
 #include "DKOpenGLContext.h"
 #include "DKTexture.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -20,24 +20,24 @@ namespace DKFramework
 			{
 				switch (d)
 				{
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncNever:			return GL_NEVER;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncAlways:			return GL_ALWAYS;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncLess:				return GL_LESS;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncLessEqual:		return GL_LEQUAL;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncEqual:			return GL_EQUAL;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncGreater:			return GL_GREATER;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncGreaterEqual:		return GL_GEQUAL;
-				case DKFramework::DKMaterial::RenderingProperty::DepthFuncNotEqual:			return GL_NOTEQUAL;
+				case DKMaterial::RenderingProperty::DepthFuncNever:			return GL_NEVER;
+				case DKMaterial::RenderingProperty::DepthFuncAlways:			return GL_ALWAYS;
+				case DKMaterial::RenderingProperty::DepthFuncLess:				return GL_LESS;
+				case DKMaterial::RenderingProperty::DepthFuncLessEqual:		return GL_LEQUAL;
+				case DKMaterial::RenderingProperty::DepthFuncEqual:			return GL_EQUAL;
+				case DKMaterial::RenderingProperty::DepthFuncGreater:			return GL_GREATER;
+				case DKMaterial::RenderingProperty::DepthFuncGreaterEqual:		return GL_GEQUAL;
+				case DKMaterial::RenderingProperty::DepthFuncNotEqual:			return GL_NOTEQUAL;
 				}
-				DKFoundation::DKLog("Warning: DepthFunc (%x) invalid or not supported.\n", d);
+				DKLog("Warning: DepthFunc (%x) invalid or not supported.\n", d);
 				return GL_NEVER;
 			}
 		}
 	}
 }
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKMaterial::DKMaterial(void)
@@ -261,7 +261,7 @@ bool DKMaterial::Bind(int programIndex, PropertyCallback* callback, const DKBlen
 	return false;
 }
 
-const DKFoundation::DKArray<DKVertexStream>& DKMaterial::StreamArray(int state) const
+const DKArray<DKVertexStream>& DKMaterial::StreamArray(int state) const
 {
 	return renderingProperties.Value(state).program->attributes;
 }
@@ -421,7 +421,7 @@ size_t DKMaterial::NumberOfRenderProperties(void) const
 	return renderingProperties.Count();
 }
 
-int DKMaterial::IndexOfRenderPropertyName(const DKFoundation::DKString& name) const
+int DKMaterial::IndexOfRenderPropertyName(const DKString& name) const
 {
 	for (int i = 0; i < renderingProperties.Count(); i++)
 	{

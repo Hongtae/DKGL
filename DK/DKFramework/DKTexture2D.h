@@ -21,7 +21,7 @@
 // (jpg, png, bmp, gif, tga, etc.)
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKTexture2D : public DKTexture
 	{
@@ -29,24 +29,24 @@ namespace DKFramework
 		DKTexture2D(void);
 		~DKTexture2D(void);
 
-		static DKFoundation::DKObject<DKTexture2D> Create(int width, int height, Format imageFormat, Type dataType, const void* data = NULL);
-		static DKFoundation::DKObject<DKTexture2D> Create(const DKFoundation::DKString& file, int width, int height);
-		static DKFoundation::DKObject<DKTexture2D> Create(const DKFoundation::DKString& file);
-		static DKFoundation::DKObject<DKTexture2D> Create(const DKFoundation::DKData* data, int width, int height);
-		static DKFoundation::DKObject<DKTexture2D> Create(const DKFoundation::DKData* data);
-		static DKFoundation::DKObject<DKTexture2D> Create(DKFoundation::DKStream* stream, int width, int height);
-		static DKFoundation::DKObject<DKTexture2D> Create(DKFoundation::DKStream* stream);
+		static DKObject<DKTexture2D> Create(int width, int height, Format imageFormat, Type dataType, const void* data = NULL);
+		static DKObject<DKTexture2D> Create(const DKString& file, int width, int height);
+		static DKObject<DKTexture2D> Create(const DKString& file);
+		static DKObject<DKTexture2D> Create(const DKData* data, int width, int height);
+		static DKObject<DKTexture2D> Create(const DKData* data);
+		static DKObject<DKTexture2D> Create(DKStream* stream, int width, int height);
+		static DKObject<DKTexture2D> Create(DKStream* stream);
 
 		void SetPixelData(const DKRect& rc, const void* data);
-		DKFoundation::DKObject<DKFoundation::DKData> CopyPixelData(const DKRect& rc, Format format=FormatUnknown, Type type=TypeUnsignedByte) const;
+		DKObject<DKData> CopyPixelData(const DKRect& rc, Format format=FormatUnknown, Type type=TypeUnsignedByte) const;
 
-		DKFoundation::DKObject<DKTexture2D> Duplicate(void) const;
+		DKObject<DKTexture2D> Duplicate(void) const;
 
 		// CreateImageFileData: this function will write to file, which assumes format as RGB or RGBA.
-		DKFoundation::DKObject<DKFoundation::DKData> CreateImageFileData(const DKFoundation::DKString& format) const;
+		DKObject<DKData> CreateImageFileData(const DKString& format) const;
 
-		bool Deserialize(const DKFoundation::DKXMLElement* e, DKResourceLoader* loader);
-		DKFoundation::DKObject<DKFoundation::DKXMLElement> SerializeXML(DKSerializer::SerializeForm sf) const;
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		bool Deserialize(const DKXMLElement* e, DKResourceLoader* loader);
+		DKObject<DKXMLElement> SerializeXML(DKSerializer::SerializeForm sf) const;
+		DKObject<DKSerializer> Serializer(void);
 	};
 }

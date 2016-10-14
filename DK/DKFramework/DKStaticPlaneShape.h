@@ -15,7 +15,7 @@
 // a collision shape for static plane
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKStaticPlaneShape : public DKConcaveShape
 	{

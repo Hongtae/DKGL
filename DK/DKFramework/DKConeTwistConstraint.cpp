@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKConeTwistConstraint.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
@@ -26,8 +26,8 @@ namespace DKFramework
 		};
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKConeTwistConstraint::DKConeTwistConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKNSTransform& ta, const DKNSTransform& tb)
 : DKConstraint(LinkType::ConeTwist, rbA, rbB, NewConstraintImpl<btConeTwistConstraint>::Create(rbA, rbB, ta, tb))

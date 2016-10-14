@@ -10,9 +10,9 @@
 #include "DKDynamicsScene.h"
 #include "DKRenderer.h"
 
-using namespace DKFoundation;
+using namespace DKGL;
 
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -85,8 +85,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKDynamicsScene::DKDynamicsScene(void)
 	: DKScene(CreateDynamicsWorldContext())

@@ -900,7 +900,7 @@
 		84C45DD715A90E73000A0982 /* quat_aos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quat_aos.h; sourceTree = "<group>"; };
 		84C45DD815A90E73000A0982 /* vec_aos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vec_aos.h; sourceTree = "<group>"; };
 		84C45DD915A90E73000A0982 /* vectormath_aos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectormath_aos.h; sourceTree = "<group>"; };
-		84C45DF115A9113C000A0982 /* libBulletPhysics_OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBulletPhysics_OSX.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		84C45DF115A9113C000A0982 /* libBulletPhysics_macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBulletPhysics_macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C45DF215A9113C000A0982 /* libBulletPhysics_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBulletPhysics_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C991AB13C8958D00B28333 /* btBulletCollisionCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btBulletCollisionCommon.h; sourceTree = "<group>"; };
 		84C991AC13C8958D00B28333 /* btBulletDynamicsCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btBulletDynamicsCommon.h; sourceTree = "<group>"; };
@@ -1381,7 +1381,7 @@
 		84C45F2D15A91A08000A0982 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				84C45DF115A9113C000A0982 /* libBulletPhysics_OSX.a */,
+				84C45DF115A9113C000A0982 /* libBulletPhysics_macOS.a */,
 				84C45DF215A9113C000A0982 /* libBulletPhysics_iOS.a */,
 			);
 			name = Products;
@@ -2312,9 +2312,9 @@
 			productReference = 84C45DF215A9113C000A0982 /* libBulletPhysics_iOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		D2AAC045055464E500DB518D /* BulletPhysics_OSX */ = {
+		D2AAC045055464E500DB518D /* BulletPhysics_macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "BulletPhysics_OSX" */;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "BulletPhysics_macOS" */;
 			buildPhases = (
 				D2AAC043055464E500DB518D /* Headers */,
 				D2AAC044055464E500DB518D /* Sources */,
@@ -2324,9 +2324,9 @@
 			);
 			dependencies = (
 			);
-			name = BulletPhysics_OSX;
+			name = BulletPhysics_macOS;
 			productName = DKExternal;
-			productReference = 84C45DF115A9113C000A0982 /* libBulletPhysics_OSX.a */;
+			productReference = 84C45DF115A9113C000A0982 /* libBulletPhysics_macOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -2350,8 +2350,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2AAC045055464E500DB518D /* BulletPhysics_OSX */,
 				84C5F7A413013E11005F4449 /* BulletPhysics_iOS */,
+				D2AAC045055464E500DB518D /* BulletPhysics_macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -2671,7 +2671,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
-				PRODUCT_NAME = BulletPhysics_OSX;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -2681,7 +2680,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
-				PRODUCT_NAME = BulletPhysics_OSX;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -2709,7 +2707,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = src;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = BulletPhysics;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -2738,7 +2736,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = src;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = BulletPhysics;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2748,7 +2746,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				PRODUCT_NAME = BulletPhysics_iOS;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2757,7 +2754,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				PRODUCT_NAME = BulletPhysics_iOS;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -2765,7 +2761,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "BulletPhysics_OSX" */ = {
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "BulletPhysics_macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91EC08733DB70010E9CD /* Debug */,

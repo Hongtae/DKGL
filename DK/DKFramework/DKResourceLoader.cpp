@@ -42,13 +42,13 @@
 #include "DKRenderTarget.h"
 
 
-using namespace DKFoundation;
-namespace DKFramework
+using namespace DKGL;
+namespace DKGL
 {
 	namespace Private
 	{
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceAllocator>>	AllocatorMap;
-		typedef DKMap<DKString, AllocatorMap, DKFoundation::DKDummyLock>		AllocatorURIMap;
+		typedef DKMap<DKString, AllocatorMap, DKDummyLock>		AllocatorURIMap;
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceLoader>>		LoaderMap;
 
 		DKSpinLock& GetAllocatorURIMapLock(void)
@@ -159,8 +159,8 @@ namespace DKFramework
 		static bool init = InitBuiltinResourceTypes();
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKResourceLoader::DKResourceLoader(void)
 {

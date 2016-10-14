@@ -27,7 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-namespace DKFoundation
+namespace DKGL
 {
 	// compare Value, Value
 	template <typename Value> struct DKSetComparator

@@ -2,8 +2,8 @@
 #include <errcode.h>
 #include "PyDKInterpreter.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 #define PYDK_DISPATCH_FAILED_ERROR		DKERROR_THROW("Interpreter dispatch failed!")
@@ -387,7 +387,7 @@ PyDKInterpreter* PyDKInterpreter::CurrentInterpreter(void)
 	return dispatcher.CurrentInterpreter();
 }
 
-void PyDKInterpreter::PrintStdout(const DKFoundation::DKString& str)
+void PyDKInterpreter::PrintStdout(const DKString& str)
 {
 	if (this->BindContext(this->interpreterState))
 	{
@@ -396,7 +396,7 @@ void PyDKInterpreter::PrintStdout(const DKFoundation::DKString& str)
 	}
 }
 
-void PyDKInterpreter::PrintStderr(const DKFoundation::DKString& str)
+void PyDKInterpreter::PrintStderr(const DKString& str)
 {
 	if (this->BindContext(this->interpreterState))
 	{

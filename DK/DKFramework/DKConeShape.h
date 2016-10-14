@@ -15,7 +15,7 @@
 // a cone shape for detecting collision.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKConeShape : public DKConvexShape
 	{

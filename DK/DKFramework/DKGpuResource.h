@@ -9,7 +9,7 @@
 #include "../DKInclude.h"
 #include "../DKFoundation.h"
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGpuBuffer
 	{

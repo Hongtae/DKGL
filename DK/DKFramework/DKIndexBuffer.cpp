@@ -5,11 +5,11 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenGL.h"
+#include "../lib/Inc_OpenGL.h"
 #include "DKIndexBuffer.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 DKIndexBuffer::DKIndexBuffer(void)
@@ -129,7 +129,7 @@ DKIndexBuffer::Type DKIndexBuffer::IndexType(void) const
 	return indexType;
 }
 
-void DKIndexBuffer::StructuredLayout(DKFoundation::DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
+void DKIndexBuffer::StructuredLayout(DKArray<DKVariant::StructElem>& layout, size_t& elementSize) const
 {
 	switch (indexType)
 	{

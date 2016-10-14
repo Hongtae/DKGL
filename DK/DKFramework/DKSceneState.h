@@ -25,19 +25,19 @@
 // individual object's state can be overriden by object itself.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKSceneState : public DKMaterial::PropertyCallback
 	{
 	public:
-		template <typename T> using StringKeyMap = DKFoundation::DKMap<DKFoundation::DKString, T>;
+		template <typename T> using StringKeyMap = DKMap<DKString, T>;
 
-		typedef DKFoundation::DKArray<DKVector2> Vector2Array;
-		typedef DKFoundation::DKArray<DKVector3> Vector3Array;
-		typedef DKFoundation::DKArray<DKVector4> Vector4Array;
-		typedef DKFoundation::DKArray<DKMatrix2> Matrix2Array;
-		typedef DKFoundation::DKArray<DKMatrix3> Matrix3Array;
-		typedef DKFoundation::DKArray<DKMatrix4> Matrix4Array;
+		typedef DKArray<DKVector2> Vector2Array;
+		typedef DKArray<DKVector3> Vector3Array;
+		typedef DKArray<DKVector4> Vector4Array;
+		typedef DKArray<DKMatrix2> Matrix2Array;
+		typedef DKArray<DKMatrix3> Matrix3Array;
+		typedef DKArray<DKMatrix4> Matrix4Array;
 		typedef StringKeyMap<DKMaterial::PropertyArray> PropertyMap;
 		typedef StringKeyMap<DKMaterial::Sampler> SamplerMap;
 
@@ -78,7 +78,7 @@ namespace DKFramework
 		const SamplerMap* materialSamplers = NULL;
 
 		// user material callback
-		DKFoundation::DKObject<DKMaterial::PropertyCallback> userMaterialPropertyCallback;
+		DKObject<DKMaterial::PropertyCallback> userMaterialPropertyCallback;
 
 		IntArray GetIntProperty(const DKShaderConstant& sc, int programIndex) override;
 		FloatArray GetFloatProperty(const DKShaderConstant& sc, int programIndex) override;

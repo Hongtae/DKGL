@@ -9,8 +9,8 @@
 #include "DKResource.h"
 #include "DKResourceLoader.h"
 
-using namespace DKFoundation;
-using namespace DKFramework;
+using namespace DKGL;
+using namespace DKGL;
 
 
 // generate operations which can restore data from DKVariant
@@ -2112,7 +2112,7 @@ bool DKSerializer::RestoreObject(const DKData* d, DKResourceLoader* p, Selector*
 	return false;
 }
 
-size_t DKSerializer::Serialize(SerializeForm sf, DKFoundation::DKStream* output) const
+size_t DKSerializer::Serialize(SerializeForm sf, DKStream* output) const
 {
 	size_t s = 0;
 	switch (sf)

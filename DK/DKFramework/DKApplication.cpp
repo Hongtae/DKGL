@@ -8,28 +8,19 @@
 #include "DKApplication.h"
 #include "Interface/DKApplicationInterface.h"
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{
 		void WaitTerminateAllRunLoops(void);
 		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
-	}
-}
 
-using namespace DKFoundation;
-
-namespace DKFramework
-{
-	namespace Private
-	{
 		static DKCondition appCond;
 		static DKApplication *application = NULL;
 	}
 }
 
-using namespace DKFramework;
-
+using namespace DKGL;
 
 DKApplication::DKApplication(int argc, char* argv[])
 	: args(argv, argc)
@@ -83,7 +74,7 @@ int DKApplication::Run(void)
 		}
 	};
 	ContextRun run(*this);
-	DKFoundation::Private::PerformOperationWithErrorHandler( &run, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
+	Private::PerformOperationWithErrorHandler( &run, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
 	return run.result;
 }
 
@@ -114,7 +105,7 @@ void DKApplication::Finalize()
 	OnTerminate();
 	
 	DKLog("Waiting for runloop being terminated...\n");
-	DKFoundation::Private::WaitTerminateAllRunLoops();
+	Private::WaitTerminateAllRunLoops();
 
 	DKDateTime current = DKDateTime::Now();
 	DKLog("DKApplication terminated at %04d-%02d-%02d %02d:%02d:%02d.%06d.(MainThread:0x%x)\n",

@@ -17,8 +17,7 @@
 #include "DKWindow_iOS.h"
 #import "DKWindowView_iOS.h"
 
-using namespace DKFoundation;
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -33,8 +32,8 @@ namespace DKFramework
 		}
 	}
 }
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 #pragma mark - DKWindowView_iOS
 ////////////////////////////////////////////////////////////////////////////////

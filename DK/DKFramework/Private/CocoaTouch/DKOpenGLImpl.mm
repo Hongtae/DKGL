@@ -18,13 +18,12 @@
 #import <QuartzCore/QuartzCore.h>
 
 #include "../../../DKInclude.h"
-#include "../../../../lib/OpenGL.h"
+#include "../../../lib/Inc_OpenGL.h"
 #include "DKOpenGLImpl.h"
 
 
-using namespace DKFoundation;
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 DKOpenGLInterface* DKOpenGLInterface::CreateInterface(DKOpenGLContext*)
 {

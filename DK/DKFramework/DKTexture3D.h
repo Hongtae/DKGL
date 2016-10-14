@@ -19,7 +19,7 @@
 // NOT IMPLEMENTED YET. DO NOT USE.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	// NOT IMPLEMENTED
 	class DKGL_API DKTexture3D : public DKTexture
@@ -29,6 +29,6 @@ namespace DKFramework
 		~DKTexture3D(void);
 
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer(void);
 	};
 }

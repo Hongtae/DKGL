@@ -22,14 +22,14 @@
 //   If you want to polygonize voxels, see DKVoxelPolygonizer.h
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	class DKGL_API DKVoxel32SparseVolume : public DKVoxelVolume<DKVoxel32>
 	{
 	public:
 		typedef DKVoxel32Storage Storage;
 		typedef Storage::StorageId StorageId;
-		typedef DKFoundation::DKTimer::Tick TimeStamp;
+		typedef DKTimer::Tick TimeStamp;
 
 		enum {UnitSize = 16};
 		enum {UnitDimensions = UnitSize * UnitSize * UnitSize};
@@ -54,7 +54,7 @@ namespace DKFramework
 	private:
 		struct VolumetricBlock
 		{
-			DKFoundation::DKSpinLock lock;
+			DKSpinLock lock;
 			StorageId storageId;			// zero for solid-block
 			TimeStamp ts;
 			union
@@ -71,8 +71,8 @@ namespace DKFramework
 		size_t blocksLoaded;				// number of blocks loaded.
 		VolumetricBlock* volumeBlocks;		// all blocks
 
-		DKFoundation::DKObject<Storage> storage;
-		DKFoundation::DKSharedLock volumeLock;	// rw-lock for changing volume.
+		DKObject<Storage> storage;
+		DKSharedLock volumeLock;	// rw-lock for changing volume.
 		TimeStamp lastCompactedTS;
 
 		void UnloadOldBlocks(size_t);

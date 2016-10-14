@@ -17,9 +17,7 @@
 #include "DKWindow_Win32.h"
 #include "DKLogger_Win32.h"
 
-using namespace DKFoundation;
-
-namespace DKFramework
+namespace DKGL
 {
 	namespace Private
 	{
@@ -168,8 +166,8 @@ namespace DKFramework
 	}
 }
 
-using namespace DKFramework;
-using namespace DKFramework::Private;
+using namespace DKGL;
+using namespace DKGL::Private;
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKApplication_Win32 implementation

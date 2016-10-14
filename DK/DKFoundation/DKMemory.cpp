@@ -34,13 +34,13 @@
 #include "DKLog.h"
 #include "DKString.h"
 #include "DKUtils.h"
-#include "DKUuid.h"
+#include "DKUUID.h"
 #include "DKFixedSizeAllocator.h"
 
 
 #define DKLog(...)	fprintf(stderr, __VA_ARGS__)
 
-namespace DKFoundation
+namespace DKGL
 {
 	namespace Private
 	{

@@ -15,7 +15,7 @@
 // an abstract class, defines triangle-mesh.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKGL
 {
 	struct DKTriangleMesh
 	{
