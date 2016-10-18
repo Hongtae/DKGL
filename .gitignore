@@ -63,3 +63,7 @@ Build/**
 # Visual Studio 2015 and later
 *.VC.db
 *.VC.opendb
+
+# separated workspace file inside xcodeproj
+**/*.xcodeproj/project.xcworkspace
+
