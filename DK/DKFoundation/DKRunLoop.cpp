@@ -59,7 +59,7 @@ namespace DKGL
 			GetRunLoopMapLock().Unlock();
 			return ret;
 		}
-		static bool IsRunLoopExist(DKRunLoop* runloop)
+		static bool IsRunLoopExist(const DKRunLoop* runloop)
 		{
 			bool found = false;
 			GetRunLoopMapLock().Lock();
@@ -183,7 +183,6 @@ bool DKRunLoop::InternalCommandCompareOrder(const InternalCommandTime& lhs, cons
 
 DKRunLoop::DKRunLoop(void)
 : terminate(true)
-, thread(NULL)
 , threadId(DKThread::invalidId)
 , commandQueueTick(&DKRunLoop::InternalCommandCompareOrder)
 , commandQueueTime(&DKRunLoop::InternalCommandCompareOrder)
@@ -192,7 +191,7 @@ DKRunLoop::DKRunLoop(void)
 
 DKRunLoop::~DKRunLoop(void)
 {
-	if (thread && thread->IsAlive())
+	if (threadId != DKThread::invalidId)
 	{
 		DKERROR_THROW_DEBUG("RunLoop must be terminated before destroy!");
 	}
@@ -202,27 +201,36 @@ DKRunLoop::~DKRunLoop(void)
 
 bool DKRunLoop::Run(void)
 {
-	if (thread && thread->IsAlive())
-		return false;
+	if (BindThread())
+	{
+		OnStart();
 
-	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
+		bool loop = true;
+		bool next = true;
+		while (loop)
+		{
+			next = this->Process();
+			loop = !this->terminate;
+			if (!next && loop)
+				OnIdle();
+		}
 
-	// Using DKObject<DKRunLoop> type to prevent loosing ownership on thread.
-	// calling Terminate() will destory instance.
-	this->thread = DKThread::Create(DKFunction(DKObject<DKRunLoop>(this), &DKRunLoop::RunLoopProc)->Invocation());
-	commandQueueCond.Signal();
+		OnStop();
 
-	threadLock.Lock();
-	terminate = false;
-	threadLock.Unlock();
-
-	return this->thread != NULL;
+		UnbindThread();
+		return true;
+	}
+	return false;
 }
 
 bool DKRunLoop::IsRunning(void) const
 {
-	if (thread)
-		return thread->IsAlive();
+	DKCriticalSection<DKCondition> guard(terminateCond);
+	if (threadId != DKThread::invalidId)
+	{
+		DKASSERT_DEBUG(IsRunLoopExist(this));
+		return true;
+	}
 	return false;
 }
 
@@ -240,27 +248,75 @@ void DKRunLoop::InternalPostCommand(const InternalCommandTime& cmd)
 	commandQueueCond.Signal();
 }
 
-void DKRunLoop::Terminate(bool wait)
+bool DKRunLoop::BindThread(void)
 {
-	if (thread && thread->IsAlive())
-	{
-		threadLock.Lock();
-		terminate = true;
-		threadLock.Unlock();
+	DKCriticalSection<DKCondition> guard(terminateCond);
 
-		// On called by worker-thread:
-		//    post quit message and return immediately.
-		// On called by outside:
-		//    Wait until being terminated if wait is true.
-		//    otherwise, return immediately.
-		if (wait)
+	if (this->threadId == DKThread::invalidId)
+	{
+		DKASSERT_DEBUG(IsRunLoopExist(this) == false);
+		DKThread::ThreadId tid = DKThread::CurrentThreadId();
+		if (RegisterRunLoop(tid, this))
 		{
-			if (DKThread::CurrentThreadId() != thread->Id())
-			{
-				thread->WaitTerminate();
-			}
+			this->threadId = tid;
+			terminate = false;
+
+			terminateCond.Broadcast();
+
+			return true;
+		}
+		else
+		{
+
+			DKLog("BindThread failed!\n");
 		}
 	}
+	return false;
+}
+
+void DKRunLoop::UnbindThread(void)
+{
+	DKCriticalSection<DKCondition> guard(terminateCond);
+
+	DKASSERT_DEBUG(IsRunLoopExist(this));
+	DKASSERT_DEBUG(threadId != DKThread::invalidId);
+	DKASSERT_DEBUG(GetRunLoop(threadId) == this);
+	UnregisterRunLoop(this->threadId);
+	threadId = DKThread::invalidId;
+
+	terminateCond.Broadcast();
+}
+
+void DKRunLoop::Terminate(bool wait)
+{
+	if (threadId != DKThread::invalidId)
+	{
+		DKASSERT_DEBUG(IsRunLoopExist(this));
+
+		if (wait)
+		{
+			this->ProcessOperation(DKFunction([this]() {
+				this->terminate = true;
+			})->Invocation());
+
+			DKCriticalSection<DKCondition> guard(terminateCond);
+			while (this->threadId == DKThread::invalidId)
+			{
+				terminateCond.Wait();
+			}
+		}
+		else
+		{
+			this->PostOperation(DKFunction([this]() {
+				this->terminate = true;
+			})->Invocation());
+		}
+	}
+}
+
+bool DKRunLoop::ShouldTerminate(void) const
+{
+    return terminate;
 }
 
 DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation* operation, double delay)
@@ -422,25 +478,12 @@ bool DKRunLoop::WaitNextLoopTimeout(double t)
 	return false;
 }
 
-void DKRunLoop::OnInitialize(void)
-{
-}
-
-void DKRunLoop::OnTerminate(void)
-{
-}
-
-void DKRunLoop::OnIdle(void)
-{
-	WaitNextLoop();
-}
-
 void DKRunLoop::PerformOperation(const DKOperation* operation)
 {
 	operation->Perform();
 }
 
-bool DKRunLoop::ProcessOne(bool processIdle)
+bool DKRunLoop::Process(void)
 {
 	DKASSERT_DEBUG(this->threadId == DKThread::CurrentThreadId());
 
@@ -504,81 +547,12 @@ bool DKRunLoop::ProcessOne(bool processIdle)
 
 		return true;
 	}
-	if (processIdle && !this->terminate)
-	{
-		struct IdleWrapper : public DKOperation
-		{
-			IdleWrapper(DKRunLoop* r) : rl(r) {}
-			DKRunLoop* rl;
-
-			void Perform(void) const override
-			{
-				rl->OnIdle();
-			}
-		};
-		IdleWrapper op(this);
-		Private::PerformOperationInsidePool(&op);
-	}
 	return false;
-}
-
-size_t DKRunLoop::ProcessInTime(size_t maxCmd, double timeout)
-{
-	DKASSERT_DEBUG(this->threadId == DKThread::CurrentThreadId());
-
-	size_t processed = 0;
-	DKTimer timer;
-	timer.Reset();
-
-	while (processed < maxCmd && timer.Elapsed() < timeout)
-	{
-		if (this->ProcessOne(true))
-			processed++;
-	}
-	return processed;
 }
 
 bool DKRunLoop::IsWrokingThread(void) const
 {
 	return DKThread::CurrentThreadId() == this->threadId;
-}
-
-void DKRunLoop::RunLoopProc(void)
-{
-	this->commandQueueCond.Lock();
-	while (this->thread == NULL)
-		this->commandQueueCond.Wait();
-	this->commandQueueCond.Unlock();
-
-	this->threadId = DKThread::CurrentThreadId();
-	DKASSERT_DEBUG(threadId == this->thread->Id());
-
-	DKTimer timer;
-	timer.Reset();
-
-	// registering thread for RunLoop.
-	RegisterRunLoop(this->threadId, this);
-
-	this->OnInitialize();
-	DKLog("DKRunLoop Thread:0x%x initialized.\n", threadId);
-
-	auto TerminateRequest = [this]()->bool
-	{
-		DKCriticalSection<DKSpinLock> tmp(threadLock);
-		return this->terminate;
-	};
-
-	while (!TerminateRequest())
-	{
-		DKASSERT_DEBUG(this->threadId == this->thread->Id());
-		this->ProcessOne(true);
-	}
-
-	this->OnTerminate();
-	UnregisterRunLoop(this->threadId);
-
-	DKLog("DKRunLoop Thread:0x%x terminated. (running %f seconds)\n", threadId, timer.Elapsed());
-	this->threadId = DKThread::invalidId;
 }
 
 DKRunLoop* DKRunLoop::CurrentRunLoop(void)

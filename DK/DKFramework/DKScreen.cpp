@@ -58,7 +58,7 @@ double DKScreen::InactiveFrameLatency(void) const
 
 bool DKScreen::Run(DKWindow* window, DKFrame* frame)
 {
-	if (this->IsRunning())
+	if (this->renderThread && this->renderThread->IsAlive())
 		return false;
 
 	if (window && window->IsValid() && frame)
@@ -69,12 +69,13 @@ bool DKScreen::Run(DKWindow* window, DKFrame* frame)
 		this->visible = this->window->IsVisible();
 		this->activated = this->window->IsActive();
 
-		if (DKRunLoop::Run())
-		{
-			// wait until first frame be drawn.
-			this->ProcessOperation(DKFunction(this, &DKScreen::RenderScreen)->Invocation(true));
-			return true;
-		}
+		renderThread = DKThread::Create(DKFunction([this]() {
+			DKRunLoop::Run();
+		})->Invocation());
+
+		// wait until first frame be drawn.
+		this->ProcessOperation(DKFunction(this, &DKScreen::RenderScreen)->Invocation(true));
+		return true;
 	}
 	return false;
 }
@@ -389,7 +390,7 @@ const DKSize& DKScreen::ScreenResolution(void) const
 	return screenResolution;
 }
 
-void DKScreen::OnInitialize(void)
+void DKScreen::OnStart(void)
 {
 	alContext = DKAudioDevice::SharedInstance();	
 	glContext = DKOpenGLContext::SharedInstance();
@@ -431,7 +432,7 @@ void DKScreen::OnInitialize(void)
 	timer.Reset();  // set first frame's delta nearest to 0
 }
 
-void DKScreen::OnTerminate(void)
+void DKScreen::OnStop(void)
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 

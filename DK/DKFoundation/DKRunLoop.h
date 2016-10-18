@@ -2,7 +2,7 @@
 //  File: DKRunLoop.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -20,21 +20,19 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKRunLoop
-// Installs Run-Loop system into internal thread, and provides control interfaces.
+// Installs Run-Loop system into current thread which called DKRunLoop::Run(),
+// and provides control interfaces.
 // The Run-Loop is running loops and invoke operations.
 // Operations can be scheduled by specifed date or delayed by specified delay value.
 //
-// If you call 'Run()', the RunLoop creates internal worker-thread and running.
-// It runs with thread which RunLoop has ownership.
-// You need to call 'Terminate()' to terminate RunLoop loops by internal thread.
+// If you call 'Run()', the RunLoop enter infinite loop and dispatch messages.
+// You can post termination message with DKRunLoop::Terminate() to terminate loop.
 //
 // On main thread, application should waits RunLoop's beging terminated by
 // calling 'Terminate(true)' on application exits.
 //
 // You can control individual operation would be process or not by overrides in
-// subclass. You can call 'ProcessOne', 'ProcessInTime' for process one operation,
-// process multiple operations in time, they should be called in worker-thread.
-// (a worker-thread which is IsWorkingThread() returns true.)
+// subclass. You can call 'DKRunLoop::Process()' for process one operation,
 //
 // PostOperation has two version with overloaded.
 //   tick-based: system-tick based, calling operation with delayed time.
@@ -66,17 +64,15 @@ namespace DKGL
 		virtual bool Run(void);
 		virtual void Terminate(bool wait);
 
-		bool ProcessOne(bool processIdle);
-		size_t ProcessInTime(size_t maxCmd, double timeout);
-		void WaitNextLoop(void);
+        void WaitNextLoop(void);
 		bool WaitNextLoopTimeout(double t);
 
 		// PostOperation: insert operation and return immediately.
-		DKObject<OperationResult> PostOperation(const DKOperation* operation, double delay = 0);			// tick base
-		DKObject<OperationResult> PostOperation(const DKOperation* operation, const DKDateTime& runAfter);	// time base
+		virtual DKObject<OperationResult> PostOperation(const DKOperation* operation, double delay = 0);			// tick base
+		virtual DKObject<OperationResult> PostOperation(const DKOperation* operation, const DKDateTime& runAfter);	// time base
 
 		// ProcessOperation: insert operation and wait until done.
-		bool ProcessOperation(const DKOperation* operation);
+		virtual bool ProcessOperation(const DKOperation* operation);
 
 		// returns RunLoop object which runs on current thread as worker-thread.
 		static DKRunLoop* CurrentRunLoop(void);
@@ -85,14 +81,23 @@ namespace DKGL
 		static bool IsRunning(DKRunLoop* runloop);
 
 	protected:
-		virtual void OnInitialize(void);
-		virtual void OnTerminate(void);
-		virtual void OnIdle(void);
 		virtual void PerformOperation(const DKOperation* operation);
+		virtual void OnStart(void) {}
+		virtual void OnStop(void) {}
+		virtual void OnIdle(void) { WaitNextLoop(); }
+
+		bool Process(void); // return true if a message has been dispatched.
+
+        // If you override 'Run()' for customize behaviors, you should bind-thread
+        // by calling 'BindThread()', and unbind by calling 'UnbindThread()',
+        // within your customized 'Run()'. Do not call DKRunLoop::Run() in your
+        // overridden version of 'Run()'.
+        bool BindThread(void);
+        void UnbindThread(void);
+        bool ShouldTerminate(void) const;
+		size_t RevokeAllOperations(void);
 
 	private:
-		size_t RevokeAllOperations(void);
-		void RunLoopProc(void);
 		bool GetNextLoopIntervalNL(double*) const;
 
 		struct InternalCommand
@@ -111,9 +116,8 @@ namespace DKGL
 		DKOrderedArray<InternalCommandTick>		commandQueueTick;
 		DKOrderedArray<InternalCommandTime>		commandQueueTime;
 
-		DKObject<DKThread>	thread;
+		DKCondition			terminateCond; // wait for shut-down
 		DKThread::ThreadId	threadId;
-		DKSpinLock			threadLock;
 		bool				terminate;
 
 		static bool InternalCommandCompareOrder(const InternalCommandTick&, const InternalCommandTick&);

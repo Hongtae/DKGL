@@ -89,8 +89,8 @@ namespace DKGL
 		double InactiveFrameLatency(void) const;
 		
 	protected:
-		void OnInitialize(void) override;
-		void OnTerminate(void) override;
+		void OnStart(void) override;
+		void OnStop(void) override;
 		void OnIdle(void) override;
 		void PerformOperation(const DKOperation* operation) override;
 
@@ -99,6 +99,7 @@ namespace DKGL
 		void OnKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, DKString text);
 
 	private:
+		DKObject<DKThread>			renderThread;
 		DKObject<DKRenderer>		renderer;
 		DKMap<int, DKFrame*>		keyboardHolders;
 		DKMap<int, DKFrame*>		mouseHolders;
