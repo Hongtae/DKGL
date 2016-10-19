@@ -23,7 +23,7 @@
 // renderer class, render to render-target.
 // provides simple 2D/3D rendering features. (includes drawing text)
 // If you need to complex scene with custom shader,
-// you will need to use DKScene with DKModel, DKMesh.
+// you will need to use DKWorld with DKModel, DKMesh.
 //
 // if DKMatrix3 used as parameters, it should be affine-transform matrix.
 //
@@ -39,7 +39,7 @@ namespace DKGL
 	class DKTextureSampler;
 	class DKFont;
 	class DKMesh;
-	class DKScene;
+	class DKWorld;
 	class DKSceneState;
 	class DKRenderState;
 	class DKCollisionObject;
@@ -165,7 +165,7 @@ namespace DKGL
 		// DKMesh
 		size_t RenderMesh(const DKMesh*, DKSceneState&, const DKBlendState* blend = NULL) const;
 
-		// DKScene
+		// DKWorld
 		struct RenderSceneCallback
 		{
 			using MaterialCallback = DKMaterial::PropertyCallback;
@@ -176,7 +176,7 @@ namespace DKGL
 			ObjectColorCallback* objectColors = NULL;
 			MeshFilter* meshFilter = NULL;
 		};
-		void RenderScene(const DKScene*, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter = 0xffffffff, bool enableCulling = true, RenderSceneCallback* sc = NULL) const;
+		void RenderScene(const DKWorld*, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter = 0xffffffff, bool enableCulling = true, RenderSceneCallback* sc = NULL) const;
 
 		// drawing text with font.
 		void RenderText(const DKRect& bounds, const DKMatrix3& transform, const DKString& text, const DKFont* font, const DKColor& color, const DKBlendState& blend = DKBlendState::defaultAlpha) const;

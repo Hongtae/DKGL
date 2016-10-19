@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKConstraint.h"
 #include "DKRigidBody.h"
-#include "DKScene.h"
+#include "DKWorld.h"
 
 using namespace DKGL;
 using namespace DKGL;

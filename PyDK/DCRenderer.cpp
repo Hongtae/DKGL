@@ -632,7 +632,7 @@ static PyObject* DCRendererRenderScene(DCRenderer* self, PyObject* args, PyObjec
 	PyObject* sceneObj;
 	PyObject* cameraObj;
 	int sceneIndex;
-	unsigned int drawModes = DKScene::DrawMeshes;
+	unsigned int drawModes = DKWorld::DrawMeshes;
 	unsigned int groupFilter = 0xffffffff;
 	int enableCulling = 1;
 	PyObject* materialDict = NULL;
@@ -646,7 +646,7 @@ static PyObject* DCRendererRenderScene(DCRenderer* self, PyObject* args, PyObjec
 									 &enableCulling, &materialDict, &filterCb, &colorCb))
 		return NULL;
 
-	DKScene* scene = DCSceneToObject(sceneObj);
+	DKWorld* scene = DCWorldToObject(sceneObj);
 	if (scene == NULL)
 	{
 		PyErr_SetString(PyExc_TypeError, "first argument must be Scene object.");

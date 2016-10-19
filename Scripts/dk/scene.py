@@ -58,7 +58,7 @@ class Scene(core.Scene):
         super().setLights(*self.lights)
 
 
-class DynamicsScene(Scene, core.DynamicsScene):
+class DynamicsWorld(Scene, core.DynamicsWorld):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fixedFrameRate = 0.0
@@ -80,4 +80,4 @@ class DynamicsScene(Scene, core.DynamicsScene):
 
 
 # core.setDefaultClass(core.Scene, Scene)
-# core.setDefaultClass(core.DynamicsScene, DynamicsScene)
+# core.setDefaultClass(core.DynamicsWorld, DynamicsWorld)

@@ -5,10 +5,10 @@
 using namespace DKGL;
 using namespace DKGL;
 
-struct DCScene
+struct DCWorld
 {
 	PyObject_HEAD
-	DKObject<DKScene> scene;
+	DKObject<DKWorld> scene;
 	PyObject* nodes;
 	void UpdateNodes(void);
 };

@@ -46,7 +46,7 @@ PYDK_SRC := \
 	DCConvexShape.cpp \
 	DCCylinderShape.cpp \
 	DCData.cpp \
-	DCDynamicsScene.cpp \
+	DCDynamicsWorld.cpp \
 	DCFixedConstraint.cpp \
 	DCFont.cpp \
 	DCFrame.cpp \
@@ -80,7 +80,7 @@ PYDK_SRC := \
 	DCResourceLoader.cpp \
 	DCRigidBody.cpp \
 	DCRunLoopTimer.cpp \
-	DCScene.cpp \
+	DCWorld.cpp \
 	DCScreen.cpp \
 	DCShader.cpp \
 	DCShaderProgram.cpp \

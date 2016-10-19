@@ -36,7 +36,7 @@
 #include "DKTextureSampler.h"
 #include "DKFont.h"
 #include "DKMesh.h"
-#include "DKScene.h"
+#include "DKWorld.h"
 #include "DKSceneState.h"
 #include "DKRenderState.h"
 
@@ -2188,11 +2188,11 @@ size_t DKRenderer::RenderMesh(const DKMesh* mesh, DKSceneState& st, const DKBlen
 	return numInstancesDrawn;
 }
 
-void DKRenderer::RenderScene(const DKScene* scene, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter, bool enableCulling, RenderSceneCallback* sc) const
+void DKRenderer::RenderScene(const DKWorld* scene, const DKCamera& camera, int sceneIndex, unsigned int drawModes, unsigned int groupFilter, bool enableCulling, RenderSceneCallback* sc) const
 {
 	if (scene && IsDrawable() && this->Bind())
 	{
-		struct Callback : public DKScene::DrawCallback
+		struct Callback : public DKWorld::DrawCallback
 		{
 			const DKRenderer* renderer;
 			RenderSceneCallback::MaterialCallback* material;

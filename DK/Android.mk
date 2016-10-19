@@ -93,7 +93,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKConvexHullShape.cpp \
 	DKFramework/DKConvexShape.cpp \
 	DKFramework/DKCylinderShape.cpp \
-	DKFramework/DKDynamicsScene.cpp \
+	DKFramework/DKDynamicsWorld.cpp \
 	DKFramework/DKFixedConstraint.cpp \
 	DKFramework/DKFont.cpp \
 	DKFramework/DKFrame.cpp \
@@ -129,7 +129,7 @@ DKFRAMEWORK_SRC := \
 	DKFramework/DKResourceLoader.cpp \
 	DKFramework/DKResourcePool.cpp \
 	DKFramework/DKRDKidBody.cpp \
-	DKFramework/DKScene.cpp \
+	DKFramework/DKWorld.cpp \
 	DKFramework/DKScreen.cpp \
 	DKFramework/DKSerializer.cpp \
 	DKFramework/DKShader.cpp \

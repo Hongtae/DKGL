@@ -1,5 +1,5 @@
 ﻿//
-//  File: DKScene.cpp
+//  File: DKWorld.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -7,7 +7,7 @@
 
 #include "Private/BulletUtils.h"
 #include "DKMath.h"
-#include "DKScene.h"
+#include "DKWorld.h"
 #include "DKRenderer.h"
 #include "DKModel.h"
 #include "DKMesh.h"
@@ -790,7 +790,7 @@ namespace DKGL
 				size_t num = this->expiredShapes.Count();
 				this->expiredShapes.Clear();
 				if (num > 0)
-					DKLog("[DKScene] %u cached convex shape removed.\n", num);
+					DKLog("[DKWorld] %u cached convex shape removed.\n", num);
 			}
 
 			void setDebugMode(int mode)		{ debugMode = mode; }
@@ -845,7 +845,7 @@ using namespace DKGL;
 using namespace DKGL::Private;
 
 
-DKScene::DKScene(void)
+DKWorld::DKWorld(void)
 : context(NULL)
 , ambientColor(0, 0, 0)
 {
@@ -868,7 +868,7 @@ DKScene::DKScene(void)
 	context->world->setForceUpdateAllAabbs(false);
 }
 
-DKScene::DKScene(CollisionWorldContext* ctxt)
+DKWorld::DKWorld(CollisionWorldContext* ctxt)
 : context(ctxt)
 , ambientColor(0, 0, 0)
 {
@@ -882,7 +882,7 @@ DKScene::DKScene(CollisionWorldContext* ctxt)
 	context->world->setDebugDrawer(new ShapeDrawer);
 }
 
-DKScene::~DKScene(void)
+DKWorld::~DKWorld(void)
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -913,7 +913,7 @@ DKScene::~DKScene(void)
 	delete drawer;
 }
 
-void DKScene::Update(double tickDelta, DKTimeTick tick)
+void DKWorld::Update(double tickDelta, DKTimeTick tick)
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -964,7 +964,7 @@ void DKScene::Update(double tickDelta, DKTimeTick tick)
 	CleanupUpdateNode();
 }
 
-void DKScene::PrepareUpdateNode(void)
+void DKWorld::PrepareUpdateNode(void)
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -982,12 +982,12 @@ void DKScene::PrepareUpdateNode(void)
 	});
 }
 
-void DKScene::CleanupUpdateNode(void)
+void DKWorld::CleanupUpdateNode(void)
 {
 	updatePendingObjects.Clear();
 }
 
-void DKScene::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
+void DKWorld::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
 {
 	for (DKModel* m : updatePendingObjects)
 	{
@@ -995,7 +995,7 @@ void DKScene::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
 	}
 }
 
-void DKScene::UpdateObjectSceneStates(void)
+void DKWorld::UpdateObjectSceneStates(void)
 {
 	for (DKModel* m : updatePendingObjects)
 	{
@@ -1003,7 +1003,7 @@ void DKScene::UpdateObjectSceneStates(void)
 	}
 }
 
-void DKScene::Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const
+void DKWorld::Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -1199,12 +1199,12 @@ void DKScene::Render(const DKCamera& camera, int sceneIndex, unsigned int modes,
 	}
 }
 
-size_t DKScene::RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb)
+size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb)
 {
 	struct Callback : public btCollisionWorld::RayResultCallback
 	{
-		Callback(DKScene::RayResultCallback* cb) : callback(cb), numCollisions(0) {}
-		DKScene::RayResultCallback* callback;
+		Callback(DKWorld::RayResultCallback* cb) : callback(cb), numCollisions(0) {}
+		DKWorld::RayResultCallback* callback;
 		size_t numCollisions;
 
 		btScalar addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace) override
@@ -1241,12 +1241,12 @@ size_t DKScene::RayTest(const DKVector3& begin, const DKVector3& end, RayResultC
 	return rayResult.numCollisions;
 }
 
-size_t DKScene::RayTest(const DKVector3& begin, const DKVector3& end, ConstRayResultCallback* cb) const
+size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, ConstRayResultCallback* cb) const
 {
 	struct Callback : public btCollisionWorld::RayResultCallback
 	{
-		Callback(DKScene::ConstRayResultCallback* cb) : callback(cb), numCollisions(0) {}
-		DKScene::ConstRayResultCallback* callback;
+		Callback(DKWorld::ConstRayResultCallback* cb) : callback(cb), numCollisions(0) {}
+		DKWorld::ConstRayResultCallback* callback;
 		size_t numCollisions;
 
 		btScalar addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace) override
@@ -1283,12 +1283,12 @@ size_t DKScene::RayTest(const DKVector3& begin, const DKVector3& end, ConstRayRe
 	return rayResult.numCollisions;
 }
 
-DKCollisionObject* DKScene::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal)
+DKCollisionObject* DKWorld::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal)
 {
-	return const_cast<DKCollisionObject*>( static_cast<const DKScene*>(this)->RayTestClosest(begin, end, hitPoint, hitNormal));
+	return const_cast<DKCollisionObject*>( static_cast<const DKWorld*>(this)->RayTestClosest(begin, end, hitPoint, hitNormal));
 }
 
-const DKCollisionObject* DKScene::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal) const
+const DKCollisionObject* DKWorld::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal) const
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1315,7 +1315,7 @@ const DKCollisionObject* DKScene::RayTestClosest(const DKVector3& begin, const D
 	return result;
 }
 
-void DKScene::SetSceneState(const DKCamera& cam, DKSceneState& state) const
+void DKWorld::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 {
 	state.Clear();
 
@@ -1332,7 +1332,7 @@ void DKScene::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 	state.ambientColor = this->ambientColor;
 }
 
-bool DKScene::AddObject(DKModel* obj)
+bool DKWorld::AddObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1349,8 +1349,8 @@ bool DKScene::AddObject(DKModel* obj)
 
 	struct InsertObject
 	{
-		InsertObject(DKScene* s) : target(s) {}
-		DKScene* target;
+		InsertObject(DKWorld* s) : target(s) {}
+		DKWorld* target;
 		void operator () (DKModel* model)
 		{
 			DKASSERT_DEBUG(target->sceneObjects.Contains(model) == false);
@@ -1372,7 +1372,7 @@ bool DKScene::AddObject(DKModel* obj)
 	return true;
 }
 
-void DKScene::RemoveObject(DKModel* obj)
+void DKWorld::RemoveObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1389,8 +1389,8 @@ void DKScene::RemoveObject(DKModel* obj)
 
 	struct RemoveObject
 	{
-		RemoveObject(DKScene* s) : target(s) {}
-		DKScene* target;
+		RemoveObject(DKWorld* s) : target(s) {}
+		DKWorld* target;
 		void operator () (DKModel* model)
 		{
 			size_t num = model->NumberOfChildren();
@@ -1410,7 +1410,7 @@ void DKScene::RemoveObject(DKModel* obj)
 	RemoveObject(this)(obj);
 }
 
-bool DKScene::AddSingleObject(DKModel* obj)
+bool DKWorld::AddSingleObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(obj->Scene() == this);
@@ -1436,7 +1436,7 @@ bool DKScene::AddSingleObject(DKModel* obj)
 	return false;
 }
 
-void DKScene::RemoveSingleObject(DKModel* obj)
+void DKWorld::RemoveSingleObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(obj->Scene() == this);
@@ -1459,7 +1459,7 @@ void DKScene::RemoveSingleObject(DKModel* obj)
 	}
 }
 
-void DKScene::RemoveAllObjects(void)
+void DKWorld::RemoveAllObjects(void)
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1481,12 +1481,12 @@ void DKScene::RemoveAllObjects(void)
 	this->meshes.Clear();
 }
 
-size_t DKScene::NumberOfSceneObjects(void) const
+size_t DKWorld::NumberOfSceneObjects(void) const
 {
 	return this->sceneObjects.Count();
 }
 
-void DKScene::Enumerate(BEnumerator* e) const
+void DKWorld::Enumerate(BEnumerator* e) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	this->sceneObjects.EnumerateForward([e](const DKModel* m)
@@ -1495,7 +1495,7 @@ void DKScene::Enumerate(BEnumerator* e) const
 	});
 }
 
-void DKScene::Enumerate(VEnumerator* e) const
+void DKWorld::Enumerate(VEnumerator* e) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	this->sceneObjects.EnumerateForward([e](const DKModel* m)

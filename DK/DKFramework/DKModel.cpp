@@ -6,7 +6,7 @@
 //
 
 #include "DKModel.h"
-#include "DKScene.h"
+#include "DKWorld.h"
 
 using namespace DKGL;
 using namespace DKGL;

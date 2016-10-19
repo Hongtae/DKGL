@@ -13,7 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // DKActionController
 // Abstract class, Action control node class inherited from DKModel.
-// Useful for dynamics control of DKDynamicsScene. (called by DKDynamicsScene)
+// Useful for dynamics control of DKDynamicsWorld. (called by DKDynamicsWorld)
 //
 // Note:
 //    Use DKAnimationController for individual node animation.

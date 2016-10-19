@@ -14,7 +14,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // DKModel
-// a skeletal node object for scene (DKScene).
+// a skeletal node object for scene (DKWorld).
 // this object can be structured hierarchical. (parent-children relationship)
 // this is basic entry for scene.
 // this object can be animated with DKAnimationController.
@@ -30,7 +30,7 @@
 
 namespace DKGL
 {
-	class DKScene;
+	class DKWorld;
 	class DKGL_API DKModel : public DKResource
 	{
 	public:
@@ -55,8 +55,8 @@ namespace DKGL
 		DKModel(void);
 		virtual ~DKModel(void);
 
-		DKScene* Scene(void)					{ return scene; }
-		const DKScene* Scene(void) const		{ return scene; }
+		DKWorld* Scene(void)					{ return scene; }
+		const DKWorld* Scene(void) const		{ return scene; }
 		virtual void RemoveFromScene(void);
 
 		bool AddChild(DKModel*);
@@ -164,7 +164,7 @@ namespace DKGL
 
 	private:
 		DKModel* parent;
-		DKScene* scene;
+		DKWorld* scene;
 		DKArray<DKObject<DKModel>> children;
 		DKObject<DKAnimatedTransform> animation;
 
@@ -180,6 +180,6 @@ namespace DKGL
 
 		DKModel& operator = (const DKModel&);
 
-		friend class DKScene;
+		friend class DKWorld;
 	};
 }

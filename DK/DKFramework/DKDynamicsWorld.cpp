@@ -1,5 +1,5 @@
 ﻿//
-//  File: DKDynamicsScene.cpp
+//  File: DKDynamicsWorld.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -7,7 +7,7 @@
 
 #include "Private/BulletUtils.h"
 #include "DKMath.h"
-#include "DKDynamicsScene.h"
+#include "DKDynamicsWorld.h"
 #include "DKRenderer.h"
 
 using namespace DKGL;
@@ -88,8 +88,8 @@ namespace DKGL
 using namespace DKGL;
 using namespace DKGL::Private;
 
-DKDynamicsScene::DKDynamicsScene(void)
-	: DKScene(CreateDynamicsWorldContext())
+DKDynamicsWorld::DKDynamicsWorld(void)
+	: DKWorld(CreateDynamicsWorldContext())
 	, dynamicsFixedFPS(0.0)
 	, actionInterface(NULL)
 {
@@ -104,20 +104,20 @@ DKDynamicsScene::DKDynamicsScene(void)
 	CollisionDispatcher* dispatcher = dynamic_cast<CollisionDispatcher*>(context->dispatcher);
 	DKASSERT_DEBUG(dispatcher);
 
-	dispatcher->collisionFunc = DKFunction(this, &DKDynamicsScene::NeedCollision);
-	dispatcher->responseFunc = DKFunction(this, &DKDynamicsScene::NeedResponse);
+	dispatcher->collisionFunc = DKFunction(this, &DKDynamicsWorld::NeedCollision);
+	dispatcher->responseFunc = DKFunction(this, &DKDynamicsWorld::NeedResponse);
 
 	btDiscreteDynamicsWorld* world = static_cast<btDiscreteDynamicsWorld*>(context->world);
-	world->setInternalTickCallback((btInternalTickCallback)DKDynamicsScene::PreTickCallback, this, true);
-	world->setInternalTickCallback((btInternalTickCallback)DKDynamicsScene::PostTickCallback, this, false);
+	world->setInternalTickCallback((btInternalTickCallback)DKDynamicsWorld::PreTickCallback, this, true);
+	world->setInternalTickCallback((btInternalTickCallback)DKDynamicsWorld::PostTickCallback, this, false);
 
 	ActionInterface* act = new ActionInterface();
-	act->updater = DKFunction(this, &DKDynamicsScene::UpdateActions);
+	act->updater = DKFunction(this, &DKDynamicsWorld::UpdateActions);
 	this->actionInterface = act;
 	world->addAction(this->actionInterface);	
 }
 
-DKDynamicsScene::~DKDynamicsScene(void)
+DKDynamicsWorld::~DKDynamicsWorld(void)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -135,20 +135,20 @@ DKDynamicsScene::~DKDynamicsScene(void)
 	delete this->actionInterface;
 }
 
-void DKDynamicsScene::PreTickCallback(void* world, float delta)
+void DKDynamicsWorld::PreTickCallback(void* world, float delta)
 {
-	DKDynamicsScene* scene = static_cast<DKDynamicsScene*>(static_cast<btDynamicsWorld*>(world)->getWorldUserInfo());
+	DKDynamicsWorld* scene = static_cast<DKDynamicsWorld*>(static_cast<btDynamicsWorld*>(world)->getWorldUserInfo());
 
 	scene->context->internalTick++;
 	scene->UpdateObjectKinematics(delta, scene->context->internalTick);
 }
 
-void DKDynamicsScene::PostTickCallback(void* world, float delta)
+void DKDynamicsWorld::PostTickCallback(void* world, float delta)
 {
-	DKDynamicsScene* scene = static_cast<DKDynamicsScene*>(static_cast<btDynamicsWorld*>(world)->getWorldUserInfo());
+	DKDynamicsWorld* scene = static_cast<DKDynamicsWorld*>(static_cast<btDynamicsWorld*>(world)->getWorldUserInfo());
 }
 
-void DKDynamicsScene::Update(double tickDelta, DKTimeTick tick)
+void DKDynamicsWorld::Update(double tickDelta, DKTimeTick tick)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -179,17 +179,17 @@ void DKDynamicsScene::Update(double tickDelta, DKTimeTick tick)
 	CleanupUpdateNode();
 }
 
-void DKDynamicsScene::SetFixedFrameRate(double fps)
+void DKDynamicsWorld::SetFixedFrameRate(double fps)
 {
 	dynamicsFixedFPS = fps;
 }
 
-double DKDynamicsScene::FixedFrameRate(void) const
+double DKDynamicsWorld::FixedFrameRate(void) const
 {
 	return dynamicsFixedFPS;
 }
 
-void DKDynamicsScene::UpdateActions(double tickDelta)
+void DKDynamicsWorld::UpdateActions(double tickDelta)
 {
 	this->actions.EnumerateForward([=](const DKActionController* p)
 	{
@@ -197,7 +197,7 @@ void DKDynamicsScene::UpdateActions(double tickDelta)
 	});
 }
 
-void DKDynamicsScene::SetGravity(const DKVector3& g)
+void DKDynamicsWorld::SetGravity(const DKVector3& g)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -205,7 +205,7 @@ void DKDynamicsScene::SetGravity(const DKVector3& g)
 	static_cast<btDiscreteDynamicsWorld*>(context->world)->setGravity(btVector3(g.x, g.y, g.z));
 }
 
-DKVector3 DKDynamicsScene::Gravity(void) const
+DKVector3 DKDynamicsWorld::Gravity(void) const
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -214,7 +214,7 @@ DKVector3 DKDynamicsScene::Gravity(void) const
 	return DKVector3(g.x(), g.y(), g.z());
 }
 
-bool DKDynamicsScene::AddSingleObject(DKModel* obj)
+bool DKDynamicsWorld::AddSingleObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -274,12 +274,12 @@ bool DKDynamicsScene::AddSingleObject(DKModel* obj)
 		}
 		break;
 	default:
-		return DKScene::AddSingleObject(obj);
+		return DKWorld::AddSingleObject(obj);
 	}
 	return false;
 }
 
-void DKDynamicsScene::RemoveSingleObject(DKModel* obj)
+void DKDynamicsWorld::RemoveSingleObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -335,11 +335,11 @@ void DKDynamicsScene::RemoveSingleObject(DKModel* obj)
 		}
 		break;
 	default:
-		DKScene::RemoveSingleObject(obj);
+		DKWorld::RemoveSingleObject(obj);
 	}
 }
 
-void DKDynamicsScene::RemoveAllObjects(void)
+void DKDynamicsWorld::RemoveAllObjects(void)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -361,17 +361,17 @@ void DKDynamicsScene::RemoveAllObjects(void)
 	this->softBodies.Clear();
 	this->constraints.Clear();
 	this->actions.Clear();
-	DKScene::RemoveAllObjects();
+	DKWorld::RemoveAllObjects();
 }
 
-bool DKDynamicsScene::NeedCollision(DKCollisionObject* objA, DKCollisionObject* objB)
+bool DKDynamicsWorld::NeedCollision(DKCollisionObject* objA, DKCollisionObject* objB)
 {
-	//DKLog("DKDynamicsScene::NeedCollision: %ls, %ls\n", (const wchar_t*)objA->Name(), (const wchar_t*)objB->Name());
+	//DKLog("DKDynamicsWorld::NeedCollision: %ls, %ls\n", (const wchar_t*)objA->Name(), (const wchar_t*)objB->Name());
 	return true;
 }
 
-bool DKDynamicsScene::NeedResponse(DKCollisionObject* objA, DKCollisionObject* objB)
+bool DKDynamicsWorld::NeedResponse(DKCollisionObject* objA, DKCollisionObject* objB)
 {
-	//DKLog("DKDynamicsScene::NeedResponse: %ls, %ls\n", (const wchar_t*)objA->Name(), (const wchar_t*)objB->Name());
+	//DKLog("DKDynamicsWorld::NeedResponse: %ls, %ls\n", (const wchar_t*)objA->Name(), (const wchar_t*)objB->Name());
 	return true;
 }

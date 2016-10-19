@@ -1,5 +1,5 @@
 //
-//  File: DKScene.h
+//  File: DKWorld.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -16,18 +16,18 @@
 #include "DKCollisionObject.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKScene
+// DKWorld
 // compose scene with DKModel tree.
 // you can detect collision with DKModel nodes.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKGL
 {
-	class DKGL_API DKScene
+	class DKGL_API DKWorld
 	{
 	public:
-		DKScene(void);
-		virtual ~DKScene(void);
+		DKWorld(void);
+		virtual ~DKWorld(void);
 
 		struct DrawCallback
 		{
@@ -87,7 +87,7 @@ namespace DKGL
 
 	protected:
 		CollisionWorldContext* context;
-		DKScene(CollisionWorldContext* ctxt);
+		DKWorld(CollisionWorldContext* ctxt);
 
 		DKSet<DKObject<DKModel>> sceneObjects;
 		DKSet<DKMesh*> meshes;
@@ -107,8 +107,8 @@ namespace DKGL
 
 		DKArray<DKObject<DKModel>> updatePendingObjects;
 
-		DKScene(const DKScene&);
-		DKScene& operator = (const DKScene&);
+		DKWorld(const DKWorld&);
+		DKWorld& operator = (const DKWorld&);
 
 		friend class DKModel;
 	};

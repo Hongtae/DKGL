@@ -2,7 +2,7 @@
 #include <structmember.h>
 #include <DK/DK.h>
 #include "DCModel.h"
-#include "DCScene.h"
+#include "DCWorld.h"
 #include "DCObject.h"
 
 void DCModel::UpdateChildren(void)
@@ -104,9 +104,9 @@ static PyObject* DCModelScene(DCModel* self, PyObject*)
 {
 	if (self->model)
 	{
-		DKScene* s = self->model->Scene();
+		DKWorld* s = self->model->Scene();
 		if (s)
-			return DCSceneFromObject(s);
+			return DCWorldFromObject(s);
 	}
 	Py_RETURN_NONE;
 }
@@ -118,9 +118,9 @@ static PyObject* DCModelParent(DCModel* self, PyObject*)
 		DKModel* parent = self->model->Parent();
 		if (parent)
 			return DCModelFromObject(parent);
-		DKScene* scene = self->model->Scene();
+		DKWorld* scene = self->model->Scene();
 		if (scene)
-			return DCSceneFromObject(scene);
+			return DCWorldFromObject(scene);
 	}
 	Py_RETURN_NONE;
 }
@@ -213,7 +213,7 @@ static PyObject* DCModelRemoveFromParent(DCModel* self, PyObject*)
 			Py_DECREF(obj);
 		}
 	}
-	DKScene* scene = self->model->Scene();
+	DKWorld* scene = self->model->Scene();
 	if (scene)
 	{
 		self->model->RemoveFromScene();
@@ -221,8 +221,8 @@ static PyObject* DCModelRemoveFromParent(DCModel* self, PyObject*)
 		if (obj)
 		{
 			Py_INCREF(obj);
-			DKASSERT_DEBUG(DCSceneToObject(obj) == scene);
-			((DCScene*)obj)->UpdateNodes();
+			DKASSERT_DEBUG(DCWorldToObject(obj) == scene);
+			((DCWorld*)obj)->UpdateNodes();
 			Py_DECREF(obj);
 		}
 	}

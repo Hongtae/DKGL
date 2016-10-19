@@ -2,6 +2,7 @@
 #include <DK/DK.h>
 #include "PyDKApi.h"
 
+using namespace DKGL;
 ///////////////////////////////////////////////////////////////////////////////
 // PyDKInterpreter : Python sub interpreter
 

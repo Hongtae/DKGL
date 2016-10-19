@@ -1,13 +1,13 @@
 #include <Python.h>
 #include <structmember.h>
 #include <DK/DK.h>
-#include "DCScene.h"
+#include "DCWorld.h"
 #include "DCObject.h"
 
-class DCLocalDynamicsScene : public DKDynamicsScene
+class DCLocalDynamicsWorld : public DKDynamicsWorld
 {
 public:
-	DCLocalDynamicsScene(PyObject* obj) : object(obj)
+	DCLocalDynamicsWorld(PyObject* obj) : object(obj)
 	{
 		DKASSERT_DEBUG(object);
 	}
@@ -34,7 +34,7 @@ public:
 			Py_XDECREF(obj2);
 		});
 		if (result < 0)
-			return DKDynamicsScene::NeedCollision(objA, objB);
+			return DKDynamicsWorld::NeedCollision(objA, objB);
 		return result > 0;
 	}
 	bool NeedResponse(DKCollisionObject* objA, DKCollisionObject* objB) override
@@ -59,22 +59,22 @@ public:
 			Py_XDECREF(obj2);
 		});
 		if (result < 0)
-			return DKDynamicsScene::NeedCollision(objA, objB);
+			return DKDynamicsWorld::NeedCollision(objA, objB);
 		return result > 0;
 	}
 
 	PyObject* object = NULL;
 };
 
-struct DCDynamicsScene
+struct DCDynamicsWorld
 {
-	DCScene base;
-	DKDynamicsScene* scene;
+	DCWorld base;
+	DKDynamicsWorld* scene;
 };
 
-static PyObject* DCDynamicsSceneNew(PyTypeObject* type, PyObject* args, PyObject* kwds)
+static PyObject* DCDynamicsWorldNew(PyTypeObject* type, PyObject* args, PyObject* kwds)
 {
-	DCDynamicsScene* self = (DCDynamicsScene*)DCSceneTypeObject()->tp_new(type, args, kwds);
+	DCDynamicsWorld* self = (DCDynamicsWorld*)DCWorldTypeObject()->tp_new(type, args, kwds);
 	if (self)
 	{
 		self->scene = NULL;
@@ -83,34 +83,34 @@ static PyObject* DCDynamicsSceneNew(PyTypeObject* type, PyObject* args, PyObject
 	return NULL;
 }
 
-static int DCDynamicsSceneInit(DCDynamicsScene *self, PyObject *args, PyObject *kwds)
+static int DCDynamicsWorldInit(DCDynamicsWorld *self, PyObject *args, PyObject *kwds)
 {
-	DKObject<DKDynamicsScene> scene = NULL;
+	DKObject<DKDynamicsWorld> scene = NULL;
 	if (self->scene == NULL)
 	{
-		scene = DKOBJECT_NEW DCLocalDynamicsScene((PyObject*)self);
+		scene = DKOBJECT_NEW DCLocalDynamicsWorld((PyObject*)self);
 		self->scene = scene;
 		DCObjectSetAddress(self->scene, (PyObject*)self);
 	}
 
 	self->base.scene = self->scene;
-	return DCSceneTypeObject()->tp_init((PyObject*)self, args, kwds);
+	return DCWorldTypeObject()->tp_init((PyObject*)self, args, kwds);
 }
 
-static void DCDynamicsSceneDealloc(DCDynamicsScene* self)
+static void DCDynamicsWorldDealloc(DCDynamicsWorld* self)
 {
 	self->scene = NULL;
-	DCSceneTypeObject()->tp_dealloc((PyObject*)self);
+	DCWorldTypeObject()->tp_dealloc((PyObject*)self);
 }
 
-static PyObject* DCDynamicsSceneGravity(DCDynamicsScene* self, PyObject*)
+static PyObject* DCDynamicsWorldGravity(DCDynamicsWorld* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 	DKVector3 v = self->scene->Gravity();
 	return DCVector3FromObject(&v);
 }
 
-static PyObject* DCDynamicsSceneSetGravity(DCDynamicsScene* self, PyObject* args)
+static PyObject* DCDynamicsWorldSetGravity(DCDynamicsWorld* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 	DKVector3 v;
@@ -125,20 +125,20 @@ static PyObject* DCDynamicsSceneSetGravity(DCDynamicsScene* self, PyObject* args
 }
 
 static PyMethodDef methods[] = {
-	{ "gravity", (PyCFunction)&DCDynamicsSceneGravity, METH_NOARGS },
-	{ "setGravity", (PyCFunction)&DCDynamicsSceneSetGravity, METH_VARARGS },
+	{ "gravity", (PyCFunction)&DCDynamicsWorldGravity, METH_NOARGS },
+	{ "setGravity", (PyCFunction)&DCDynamicsWorldSetGravity, METH_VARARGS },
 	{ "needCollision", &DCObjectMethodTrue, METH_VARARGS },
 	{ "needResponse", &DCObjectMethodTrue, METH_VARARGS },
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */
 };
 
-static PyObject* DCDynamicsSceneFixedFrameRate(DCDynamicsScene* self, void*)
+static PyObject* DCDynamicsWorldFixedFrameRate(DCDynamicsWorld* self, void*)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 	return PyFloat_FromDouble(self->scene->FixedFrameRate());
 }
 
-static int DCDynamicsSceneSetFixedFrameRate(DCDynamicsScene* self, PyObject* value, void*)
+static int DCDynamicsWorldSetFixedFrameRate(DCDynamicsWorld* self, PyObject* value, void*)
 {
 	DCOBJECT_VALIDATE(self->scene, -1);
 	DCOBJECT_ATTRIBUTE_NOT_DELETABLE(value);
@@ -154,16 +154,16 @@ static int DCDynamicsSceneSetFixedFrameRate(DCDynamicsScene* self, PyObject* val
 }
 
 static PyGetSetDef getsets[] = {
-	{ "fixedFrameRate", (getter)&DCDynamicsSceneFixedFrameRate, (setter)&DCDynamicsSceneSetFixedFrameRate, 0, 0 },
+	{ "fixedFrameRate", (getter)&DCDynamicsWorldFixedFrameRate, (setter)&DCDynamicsWorldSetFixedFrameRate, 0, 0 },
 	{ NULL }  /* Sentinel */
 };
 
 static PyTypeObject objectType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
-	PYDK_MODULE_NAME ".DynamicsScene",			/* tp_name */
-	sizeof(DCDynamicsScene),					/* tp_basicsize */
+	PYDK_MODULE_NAME ".DynamicsWorld",			/* tp_name */
+	sizeof(DCDynamicsWorld),					/* tp_basicsize */
 	0,											/* tp_itemsize */
-	(destructor)&DCDynamicsSceneDealloc,		/* tp_dealloc */
+	(destructor)&DCDynamicsWorldDealloc,		/* tp_dealloc */
 	0,											/* tp_print */
 	0,											/* tp_getattr */
 	0,											/* tp_setattr */
@@ -189,26 +189,26 @@ static PyTypeObject objectType = {
 	methods,									/* tp_methods */
 	0,											/* tp_members */
 	getsets,									/* tp_getset */
-	DCSceneTypeObject(),						/* tp_base */
+	DCWorldTypeObject(),						/* tp_base */
 	0,											/* tp_dict */
 	0,											/* tp_descr_get */
 	0,											/* tp_descr_set */
 	0,											/* tp_dictoffset */
-	(initproc)&DCDynamicsSceneInit,				/* tp_init */
+	(initproc)&DCDynamicsWorldInit,				/* tp_init */
 	0,											/* tp_alloc */
-	&DCDynamicsSceneNew,						/* tp_new */
+	&DCDynamicsWorldNew,						/* tp_new */
 };
 
-PyTypeObject* DCDynamicsSceneTypeObject(void)
+PyTypeObject* DCDynamicsWorldTypeObject(void)
 {
 	return &objectType;
 }
 
-PyObject* DCDynamicsSceneFromObject(DKDynamicsScene* scene)
+PyObject* DCDynamicsWorldFromObject(DKDynamicsWorld* scene)
 {
 	if (scene)
 	{
-		DCDynamicsScene* self = (DCDynamicsScene*)DCObjectFromAddress(scene);
+		DCDynamicsWorld* self = (DCDynamicsWorld*)DCObjectFromAddress(scene);
 		if (self)
 		{
 			Py_INCREF(self);
@@ -216,12 +216,12 @@ PyObject* DCDynamicsSceneFromObject(DKDynamicsScene* scene)
 		}
 		else
 		{
-			DKASSERT_DEBUG(dynamic_cast<DCLocalDynamicsScene*>(scene) == NULL);
+			DKASSERT_DEBUG(dynamic_cast<DCLocalDynamicsWorld*>(scene) == NULL);
 
 			PyObject* args = PyTuple_New(0);
 			PyObject* kwds = PyDict_New();
 
-			self = (DCDynamicsScene*)DCObjectCreateDefaultClass(&objectType, args, kwds);
+			self = (DCDynamicsWorld*)DCObjectCreateDefaultClass(&objectType, args, kwds);
 			if (self)
 			{
 				self->scene = scene;
@@ -236,11 +236,11 @@ PyObject* DCDynamicsSceneFromObject(DKDynamicsScene* scene)
 	Py_RETURN_NONE;
 }
 
-DKDynamicsScene* DCDynamicsSceneToObject(PyObject* obj)
+DKDynamicsWorld* DCDynamicsWorldToObject(PyObject* obj)
 {
 	if (obj && PyObject_TypeCheck(obj, &objectType))
 	{
-		return ((DCDynamicsScene*)obj)->scene;
+		return ((DCDynamicsWorld*)obj)->scene;
 	}
 	return NULL;
 }

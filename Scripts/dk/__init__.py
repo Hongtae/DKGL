@@ -89,7 +89,7 @@ from .geometry import IndexBuffer
 from .material import Material
 
 from .scene import Scene
-from .scene import DynamicsScene
+from .scene import DynamicsWorld
 
 from .resourcepool import ResourcePool
 

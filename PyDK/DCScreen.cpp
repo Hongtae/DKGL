@@ -95,15 +95,15 @@ class DCLocalScreen : public DKScreen
 	PyGILState_STATE gs;
 	PyThreadState* ts = NULL;
 public:
-	void OnInitialize(void) override
+	void OnStart(void) override
 	{
 		this->gs = PyGILState_Ensure();
 		this->ts = PyEval_SaveThread();
-		DKScreen::OnInitialize();
+		DKScreen::OnStart();
 	}
-	void OnTerminate(void) override
+	void OnStop(void) override
 	{
-		DKScreen::OnTerminate();
+		DKScreen::OnStop();
 		PyEval_RestoreThread(this->ts);
 		PyGILState_Release(this->gs);
 	}

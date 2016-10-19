@@ -3,10 +3,10 @@
 #include <typeinfo>
 #include <typeindex>
 #include <unordered_map>
-#include "DCScene.h"
+#include "DCWorld.h"
 #include "DCObject.h"
 
-void DCScene::UpdateNodes(void)
+void DCWorld::UpdateNodes(void)
 {
 	DKArray<DKModel*> models;
 	models.Reserve(this->scene->NumberOfSceneObjects());
@@ -28,42 +28,42 @@ void DCScene::UpdateNodes(void)
 	this->nodes = tuple;
 }
 
-static PyObject* DCSceneNew(PyTypeObject* type, PyObject* args, PyObject* kwds)
+static PyObject* DCWorldNew(PyTypeObject* type, PyObject* args, PyObject* kwds)
 {
-	DCScene* self = (DCScene*)type->tp_alloc(type, 0);
+	DCWorld* self = (DCWorld*)type->tp_alloc(type, 0);
 	if (self)
 	{
-		new (&self->scene) DKObject<DKScene>();
+		new (&self->scene) DKObject<DKWorld>();
 		self->nodes = NULL;
 		return (PyObject*)self;
 	}
 	return NULL;
 }
 
-static int DCSceneInit(DCScene *self, PyObject *args, PyObject *kwds)
+static int DCWorldInit(DCWorld *self, PyObject *args, PyObject *kwds)
 {
 	if (self->scene == NULL)
 	{
-		self->scene = DKObject<DKScene>::New();
+		self->scene = DKObject<DKWorld>::New();
 		DCObjectSetAddress(self->scene, (PyObject*)self);
 	}
 	self->UpdateNodes();
 	return 0;
 }
 
-static int DCSceneClear(DCScene* self)
+static int DCWorldClear(DCWorld* self)
 {
 	Py_CLEAR(self->nodes);
 	return 0;
 }
 
-static int DCSceneTraverse(DCScene* self, visitproc visit, void* arg)
+static int DCWorldTraverse(DCWorld* self, visitproc visit, void* arg)
 {
 	Py_VISIT(self->nodes);
 	return 0;
 }
 
-static void DCSceneDealloc(DCScene* self)
+static void DCWorldDealloc(DCWorld* self)
 {
 	if (self->scene)
 	{
@@ -74,11 +74,11 @@ static void DCSceneDealloc(DCScene* self)
 
 	Py_CLEAR(self->nodes);
 
-	self->scene.~DKObject<DKScene>();
+	self->scene.~DKObject<DKWorld>();
 	Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* DCSceneAddObject(DCScene* self, PyObject* args)
+static PyObject* DCWorldAddObject(DCWorld* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 
@@ -107,7 +107,7 @@ static PyObject* DCSceneAddObject(DCScene* self, PyObject* args)
 	Py_RETURN_FALSE;
 }
 
-static PyObject* DCSceneRemoveAllObjects(DCScene* self, PyObject*)
+static PyObject* DCWorldRemoveAllObjects(DCWorld* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 
@@ -115,7 +115,7 @@ static PyObject* DCSceneRemoveAllObjects(DCScene* self, PyObject*)
 	Py_RETURN_NONE;
 }
 
-static PyObject* DCSceneRayTest(DCScene* self, PyObject* args)
+static PyObject* DCWorldRayTest(DCWorld* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 
@@ -172,7 +172,7 @@ static PyObject* DCSceneRayTest(DCScene* self, PyObject* args)
 	return PyLong_FromSize_t(ret);
 }
 
-static PyObject* DCSceneRayTestClosest(DCScene* self, PyObject* args)
+static PyObject* DCWorldRayTestClosest(DCWorld* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 
@@ -195,7 +195,7 @@ static PyObject* DCSceneRayTestClosest(DCScene* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
-static PyObject* DCSceneUpdate(DCScene* self, PyObject* args)
+static PyObject* DCWorldUpdate(DCWorld* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 
@@ -208,7 +208,7 @@ static PyObject* DCSceneUpdate(DCScene* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
-static PyObject* DCSceneSetAmbientColor(DCScene* self, PyObject* args)
+static PyObject* DCWorldSetAmbientColor(DCWorld* self, PyObject* args)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 
@@ -220,29 +220,29 @@ static PyObject* DCSceneSetAmbientColor(DCScene* self, PyObject* args)
 	Py_RETURN_NONE;
 }
 
-static PyObject* DCSceneAmbientColor(DCScene* self, PyObject*)
+static PyObject* DCWorldAmbientColor(DCWorld* self, PyObject*)
 {
 	DCOBJECT_VALIDATE(self->scene, NULL);
 	return DCColorFromObject(&self->scene->ambientColor);
 }
 
 static PyMethodDef methods[] = {
-	{ "addObject", (PyCFunction)&DCSceneAddObject, METH_VARARGS },
-	{ "removeAllObjects", (PyCFunction)&DCSceneRemoveAllObjects, METH_NOARGS },
-	{ "rayTest", (PyCFunction)&DCSceneRayTest, METH_VARARGS },
-	{ "rayTestClosest", (PyCFunction)&DCSceneRayTestClosest, METH_VARARGS },
-	{ "update", (PyCFunction)&DCSceneUpdate, METH_VARARGS },
-	{ "setAmbientColor", (PyCFunction)&DCSceneSetAmbientColor, METH_VARARGS },
-	{ "ambientColor", (PyCFunction)&DCSceneAmbientColor, METH_VARARGS },
+	{ "addObject", (PyCFunction)&DCWorldAddObject, METH_VARARGS },
+	{ "removeAllObjects", (PyCFunction)&DCWorldRemoveAllObjects, METH_NOARGS },
+	{ "rayTest", (PyCFunction)&DCWorldRayTest, METH_VARARGS },
+	{ "rayTestClosest", (PyCFunction)&DCWorldRayTestClosest, METH_VARARGS },
+	{ "update", (PyCFunction)&DCWorldUpdate, METH_VARARGS },
+	{ "setAmbientColor", (PyCFunction)&DCWorldSetAmbientColor, METH_VARARGS },
+	{ "ambientColor", (PyCFunction)&DCWorldAmbientColor, METH_VARARGS },
 	{ NULL, NULL, NULL, NULL }  /* Sentinel */
 };
 
 static PyTypeObject objectType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	PYDK_MODULE_NAME ".Scene",					/* tp_name */
-	sizeof(DCScene),							/* tp_basicsize */
+	sizeof(DCWorld),							/* tp_basicsize */
 	0,											/* tp_itemsize */
-	(destructor)&DCSceneDealloc,				/* tp_dealloc */
+	(destructor)&DCWorldDealloc,				/* tp_dealloc */
 	0,											/* tp_print */
 	0,											/* tp_getattr */
 	0,											/* tp_setattr */
@@ -261,8 +261,8 @@ static PyTypeObject objectType = {
 	Py_TPFLAGS_BASETYPE |
 	Py_TPFLAGS_HAVE_GC,							/* tp_flags */
 	0,											/* tp_doc */
-	(traverseproc)&DCSceneTraverse,				/* tp_traverse */
-	(inquiry)&DCSceneClear,						/* tp_clear */
+	(traverseproc)&DCWorldTraverse,				/* tp_traverse */
+	(inquiry)&DCWorldClear,						/* tp_clear */
 	0,											/* tp_richcompare */
 	0,											/* tp_weaklistoffset */
 	0,											/* tp_iter */
@@ -275,21 +275,21 @@ static PyTypeObject objectType = {
 	0,											/* tp_descr_get */
 	0,											/* tp_descr_set */
 	0,											/* tp_dictoffset */
-	(initproc)&DCSceneInit,						/* tp_init */
+	(initproc)&DCWorldInit,						/* tp_init */
 	0,											/* tp_alloc */
-	&DCSceneNew,								/* tp_new */
+	&DCWorldNew,								/* tp_new */
 };
 
-PyTypeObject* DCSceneTypeObject(void)
+PyTypeObject* DCWorldTypeObject(void)
 {
 	return &objectType;
 }
 
-PyObject* DCSceneFromObject(DKScene* scene)
+PyObject* DCWorldFromObject(DKWorld* scene)
 {
 	if (scene)
 	{
-		DCScene* self = (DCScene*)DCObjectFromAddress(scene);
+		DCWorld* self = (DCWorld*)DCObjectFromAddress(scene);
 		if (self)
 		{
 			Py_INCREF(self);
@@ -297,12 +297,12 @@ PyObject* DCSceneFromObject(DKScene* scene)
 		}
 		else
 		{
-			DCOBJECT_DYANMIC_CAST_CONVERT(DynamicsScene, scene);
+			DCOBJECT_DYANMIC_CAST_CONVERT(DynamicsWorld, scene);
 
 			PyObject* args = PyTuple_New(0);
 			PyObject* kwds = PyDict_New();
 
-			self = (DCScene*)DCObjectCreateDefaultClass(&objectType, args, kwds);
+			self = (DCWorld*)DCObjectCreateDefaultClass(&objectType, args, kwds);
 			if (self)
 			{
 				self->scene = scene;
@@ -317,11 +317,11 @@ PyObject* DCSceneFromObject(DKScene* scene)
 	Py_RETURN_NONE;
 }
 
-DKScene* DCSceneToObject(PyObject* obj)
+DKWorld* DCWorldToObject(PyObject* obj)
 {
 	if (obj && PyObject_TypeCheck(obj, &objectType))
 	{
-		return ((DCScene*)obj)->scene;
+		return ((DCWorld*)obj)->scene;
 	}
 	return NULL;
 }

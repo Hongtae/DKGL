@@ -1,5 +1,5 @@
 //
-//  File: DKDynamicsScene.h
+//  File: DKDynamicsWorld.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -8,14 +8,14 @@
 #pragma once
 #include "../DKInclude.h"
 #include "../DKFoundation.h"
-#include "DKScene.h"
+#include "DKWorld.h"
 #include "DKRigidBody.h"
 #include "DKSoftBody.h"
 #include "DKConstraint.h"
 #include "DKActionController.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKDynamicsScene
+// DKDynamicsWorld
 // a scene with dynamics.
 // You can extend physical behavior with DKActionController.
 //
@@ -23,11 +23,11 @@
 
 namespace DKGL
 {
-	class DKGL_API DKDynamicsScene : public DKScene
+	class DKGL_API DKDynamicsWorld : public DKWorld
 	{
 	public:
-		DKDynamicsScene(void);
-		virtual ~DKDynamicsScene(void);
+		DKDynamicsWorld(void);
+		virtual ~DKDynamicsWorld(void);
 
 		void SetGravity(const DKVector3& g);
 		DKVector3 Gravity(void) const;

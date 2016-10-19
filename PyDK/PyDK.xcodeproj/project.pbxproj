@@ -37,7 +37,7 @@
 		8455C7B01AEE6C180003A417 /* DCConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420611A600F9B00C92847 /* DCConvexShape.cpp */; };
 		8455C7B11AEE6C180003A417 /* DCCylinderShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420631A600F9B00C92847 /* DCCylinderShape.cpp */; };
 		8455C7B21AEE6C180003A417 /* DCData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420641A600F9B00C92847 /* DCData.cpp */; };
-		8455C7B31AEE6C180003A417 /* DCDynamicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsScene.cpp */; };
+		8455C7B31AEE6C180003A417 /* DCDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */; };
 		8455C7B41AEE6C180003A417 /* DCFixedConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420661A600F9B00C92847 /* DCFixedConstraint.cpp */; };
 		8455C7B51AEE6C180003A417 /* DCFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420671A600F9B00C92847 /* DCFont.cpp */; };
 		8455C7B61AEE6C180003A417 /* DCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420681A600F9B00C92847 /* DCFrame.cpp */; };
@@ -71,7 +71,7 @@
 		8455C7D31AEE6C180003A417 /* DCRigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208C1A600F9B00C92847 /* DCRigidBody.cpp */; };
 		8455C7D41AEE6C180003A417 /* DCRunLoopOperationResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */; };
 		8455C7D51AEE6C180003A417 /* DCRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */; };
-		8455C7D61AEE6C180003A417 /* DCScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCScene.cpp */; };
+		8455C7D61AEE6C180003A417 /* DCWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCWorld.cpp */; };
 		8455C7D71AEE6C180003A417 /* DCScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420911A600F9B00C92847 /* DCScreen.cpp */; };
 		8455C7D81AEE6C180003A417 /* DCShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420921A600F9B00C92847 /* DCShader.cpp */; };
 		8455C7D91AEE6C180003A417 /* DCShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420931A600F9B00C92847 /* DCShaderProgram.cpp */; };
@@ -117,7 +117,7 @@
 		8455C8011AEE6C180003A417 /* DCObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414207F1A600F9B00C92847 /* DCObject.h */; };
 		8455C8021AEE6C180003A417 /* DCPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420841A600F9B00C92847 /* DCPolyhedralConvexShape.h */; };
 		8455C8031AEE6C180003A417 /* DCResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414208A1A600F9B00C92847 /* DCResource.h */; };
-		8455C8041AEE6C180003A417 /* DCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCScene.h */; };
+		8455C8041AEE6C180003A417 /* DCWorld.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCWorld.h */; };
 		8455C8051AEE6C180003A417 /* DCStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414209B1A600F9B00C92847 /* DCStaticMesh.h */; };
 		8455C8061AEE6C180003A417 /* DCTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420A01A600F9B00C92847 /* DCTexture.h */; };
 		8455C8071AEE6C190003A417 /* DCActionController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420461A600F9B00C92847 /* DCActionController.cpp */; };
@@ -145,7 +145,7 @@
 		8455C81D1AEE6C190003A417 /* DCConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420611A600F9B00C92847 /* DCConvexShape.cpp */; };
 		8455C81E1AEE6C190003A417 /* DCCylinderShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420631A600F9B00C92847 /* DCCylinderShape.cpp */; };
 		8455C81F1AEE6C190003A417 /* DCData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420641A600F9B00C92847 /* DCData.cpp */; };
-		8455C8201AEE6C190003A417 /* DCDynamicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsScene.cpp */; };
+		8455C8201AEE6C190003A417 /* DCDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */; };
 		8455C8211AEE6C190003A417 /* DCFixedConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420661A600F9B00C92847 /* DCFixedConstraint.cpp */; };
 		8455C8221AEE6C190003A417 /* DCFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420671A600F9B00C92847 /* DCFont.cpp */; };
 		8455C8231AEE6C190003A417 /* DCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420681A600F9B00C92847 /* DCFrame.cpp */; };
@@ -179,7 +179,7 @@
 		8455C8401AEE6C190003A417 /* DCRigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208C1A600F9B00C92847 /* DCRigidBody.cpp */; };
 		8455C8411AEE6C190003A417 /* DCRunLoopOperationResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */; };
 		8455C8421AEE6C190003A417 /* DCRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */; };
-		8455C8431AEE6C190003A417 /* DCScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCScene.cpp */; };
+		8455C8431AEE6C190003A417 /* DCWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCWorld.cpp */; };
 		8455C8441AEE6C190003A417 /* DCScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420911A600F9B00C92847 /* DCScreen.cpp */; };
 		8455C8451AEE6C190003A417 /* DCShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420921A600F9B00C92847 /* DCShader.cpp */; };
 		8455C8461AEE6C190003A417 /* DCShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420931A600F9B00C92847 /* DCShaderProgram.cpp */; };
@@ -225,7 +225,7 @@
 		8455C86E1AEE6C190003A417 /* DCObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414207F1A600F9B00C92847 /* DCObject.h */; };
 		8455C86F1AEE6C190003A417 /* DCPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420841A600F9B00C92847 /* DCPolyhedralConvexShape.h */; };
 		8455C8701AEE6C190003A417 /* DCResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414208A1A600F9B00C92847 /* DCResource.h */; };
-		8455C8711AEE6C190003A417 /* DCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCScene.h */; };
+		8455C8711AEE6C190003A417 /* DCWorld.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCWorld.h */; };
 		8455C8721AEE6C190003A417 /* DCStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414209B1A600F9B00C92847 /* DCStaticMesh.h */; };
 		8455C8731AEE6C190003A417 /* DCTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420A01A600F9B00C92847 /* DCTexture.h */; };
 		8455C8741AEE6C1A0003A417 /* DCActionController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420461A600F9B00C92847 /* DCActionController.cpp */; };
@@ -253,7 +253,7 @@
 		8455C88A1AEE6C1A0003A417 /* DCConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420611A600F9B00C92847 /* DCConvexShape.cpp */; };
 		8455C88B1AEE6C1A0003A417 /* DCCylinderShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420631A600F9B00C92847 /* DCCylinderShape.cpp */; };
 		8455C88C1AEE6C1A0003A417 /* DCData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420641A600F9B00C92847 /* DCData.cpp */; };
-		8455C88D1AEE6C1A0003A417 /* DCDynamicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsScene.cpp */; };
+		8455C88D1AEE6C1A0003A417 /* DCDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */; };
 		8455C88E1AEE6C1A0003A417 /* DCFixedConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420661A600F9B00C92847 /* DCFixedConstraint.cpp */; };
 		8455C88F1AEE6C1A0003A417 /* DCFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420671A600F9B00C92847 /* DCFont.cpp */; };
 		8455C8901AEE6C1A0003A417 /* DCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420681A600F9B00C92847 /* DCFrame.cpp */; };
@@ -287,7 +287,7 @@
 		8455C8AD1AEE6C1A0003A417 /* DCRigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208C1A600F9B00C92847 /* DCRigidBody.cpp */; };
 		8455C8AE1AEE6C1A0003A417 /* DCRunLoopOperationResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */; };
 		8455C8AF1AEE6C1A0003A417 /* DCRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */; };
-		8455C8B01AEE6C1A0003A417 /* DCScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCScene.cpp */; };
+		8455C8B01AEE6C1A0003A417 /* DCWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCWorld.cpp */; };
 		8455C8B11AEE6C1A0003A417 /* DCScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420911A600F9B00C92847 /* DCScreen.cpp */; };
 		8455C8B21AEE6C1A0003A417 /* DCShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420921A600F9B00C92847 /* DCShader.cpp */; };
 		8455C8B31AEE6C1A0003A417 /* DCShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420931A600F9B00C92847 /* DCShaderProgram.cpp */; };
@@ -333,7 +333,7 @@
 		8455C8DB1AEE6C1A0003A417 /* DCObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414207F1A600F9B00C92847 /* DCObject.h */; };
 		8455C8DC1AEE6C1A0003A417 /* DCPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420841A600F9B00C92847 /* DCPolyhedralConvexShape.h */; };
 		8455C8DD1AEE6C1A0003A417 /* DCResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414208A1A600F9B00C92847 /* DCResource.h */; };
-		8455C8DE1AEE6C1A0003A417 /* DCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCScene.h */; };
+		8455C8DE1AEE6C1A0003A417 /* DCWorld.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCWorld.h */; };
 		8455C8DF1AEE6C1A0003A417 /* DCStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414209B1A600F9B00C92847 /* DCStaticMesh.h */; };
 		8455C8E01AEE6C1A0003A417 /* DCTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420A01A600F9B00C92847 /* DCTexture.h */; };
 		8455C8E11AEE6C1B0003A417 /* DCActionController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420461A600F9B00C92847 /* DCActionController.cpp */; };
@@ -361,7 +361,7 @@
 		8455C8F71AEE6C1B0003A417 /* DCConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420611A600F9B00C92847 /* DCConvexShape.cpp */; };
 		8455C8F81AEE6C1B0003A417 /* DCCylinderShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420631A600F9B00C92847 /* DCCylinderShape.cpp */; };
 		8455C8F91AEE6C1B0003A417 /* DCData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420641A600F9B00C92847 /* DCData.cpp */; };
-		8455C8FA1AEE6C1B0003A417 /* DCDynamicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsScene.cpp */; };
+		8455C8FA1AEE6C1B0003A417 /* DCDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */; };
 		8455C8FB1AEE6C1B0003A417 /* DCFixedConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420661A600F9B00C92847 /* DCFixedConstraint.cpp */; };
 		8455C8FC1AEE6C1B0003A417 /* DCFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420671A600F9B00C92847 /* DCFont.cpp */; };
 		8455C8FD1AEE6C1B0003A417 /* DCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420681A600F9B00C92847 /* DCFrame.cpp */; };
@@ -395,7 +395,7 @@
 		8455C91A1AEE6C1B0003A417 /* DCRigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208C1A600F9B00C92847 /* DCRigidBody.cpp */; };
 		8455C91B1AEE6C1B0003A417 /* DCRunLoopOperationResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */; };
 		8455C91C1AEE6C1B0003A417 /* DCRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */; };
-		8455C91D1AEE6C1B0003A417 /* DCScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCScene.cpp */; };
+		8455C91D1AEE6C1B0003A417 /* DCWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCWorld.cpp */; };
 		8455C91E1AEE6C1B0003A417 /* DCScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420911A600F9B00C92847 /* DCScreen.cpp */; };
 		8455C91F1AEE6C1B0003A417 /* DCShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420921A600F9B00C92847 /* DCShader.cpp */; };
 		8455C9201AEE6C1B0003A417 /* DCShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420931A600F9B00C92847 /* DCShaderProgram.cpp */; };
@@ -441,7 +441,7 @@
 		8455C9481AEE6C1B0003A417 /* DCObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414207F1A600F9B00C92847 /* DCObject.h */; };
 		8455C9491AEE6C1B0003A417 /* DCPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420841A600F9B00C92847 /* DCPolyhedralConvexShape.h */; };
 		8455C94A1AEE6C1B0003A417 /* DCResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414208A1A600F9B00C92847 /* DCResource.h */; };
-		8455C94B1AEE6C1B0003A417 /* DCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCScene.h */; };
+		8455C94B1AEE6C1B0003A417 /* DCWorld.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCWorld.h */; };
 		8455C94C1AEE6C1B0003A417 /* DCStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414209B1A600F9B00C92847 /* DCStaticMesh.h */; };
 		8455C94D1AEE6C1B0003A417 /* DCTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420A01A600F9B00C92847 /* DCTexture.h */; };
 		8455C94E1AEE6C1C0003A417 /* DCActionController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420461A600F9B00C92847 /* DCActionController.cpp */; };
@@ -469,7 +469,7 @@
 		8455C9641AEE6C1C0003A417 /* DCConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420611A600F9B00C92847 /* DCConvexShape.cpp */; };
 		8455C9651AEE6C1C0003A417 /* DCCylinderShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420631A600F9B00C92847 /* DCCylinderShape.cpp */; };
 		8455C9661AEE6C1C0003A417 /* DCData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420641A600F9B00C92847 /* DCData.cpp */; };
-		8455C9671AEE6C1C0003A417 /* DCDynamicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsScene.cpp */; };
+		8455C9671AEE6C1C0003A417 /* DCDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */; };
 		8455C9681AEE6C1C0003A417 /* DCFixedConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420661A600F9B00C92847 /* DCFixedConstraint.cpp */; };
 		8455C9691AEE6C1C0003A417 /* DCFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420671A600F9B00C92847 /* DCFont.cpp */; };
 		8455C96A1AEE6C1C0003A417 /* DCFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420681A600F9B00C92847 /* DCFrame.cpp */; };
@@ -503,7 +503,7 @@
 		8455C9871AEE6C1C0003A417 /* DCRigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208C1A600F9B00C92847 /* DCRigidBody.cpp */; };
 		8455C9881AEE6C1C0003A417 /* DCRunLoopOperationResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */; };
 		8455C9891AEE6C1C0003A417 /* DCRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */; };
-		8455C98A1AEE6C1C0003A417 /* DCScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCScene.cpp */; };
+		8455C98A1AEE6C1C0003A417 /* DCWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8414208F1A600F9B00C92847 /* DCWorld.cpp */; };
 		8455C98B1AEE6C1C0003A417 /* DCScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420911A600F9B00C92847 /* DCScreen.cpp */; };
 		8455C98C1AEE6C1C0003A417 /* DCShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420921A600F9B00C92847 /* DCShader.cpp */; };
 		8455C98D1AEE6C1C0003A417 /* DCShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 841420931A600F9B00C92847 /* DCShaderProgram.cpp */; };
@@ -549,7 +549,7 @@
 		8455C9B51AEE6C1C0003A417 /* DCObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414207F1A600F9B00C92847 /* DCObject.h */; };
 		8455C9B61AEE6C1C0003A417 /* DCPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420841A600F9B00C92847 /* DCPolyhedralConvexShape.h */; };
 		8455C9B71AEE6C1C0003A417 /* DCResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414208A1A600F9B00C92847 /* DCResource.h */; };
-		8455C9B81AEE6C1C0003A417 /* DCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCScene.h */; };
+		8455C9B81AEE6C1C0003A417 /* DCWorld.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420901A600F9B00C92847 /* DCWorld.h */; };
 		8455C9B91AEE6C1C0003A417 /* DCStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 8414209B1A600F9B00C92847 /* DCStaticMesh.h */; };
 		8455C9BA1AEE6C1C0003A417 /* DCTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420A01A600F9B00C92847 /* DCTexture.h */; };
 		8455C9BB1AEE6C360003A417 /* PyDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 841420AF1A600F9B00C92847 /* PyDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -687,7 +687,7 @@
 		841420621A600F9B00C92847 /* DCConvexShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCConvexShape.h; sourceTree = "<group>"; };
 		841420631A600F9B00C92847 /* DCCylinderShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCCylinderShape.cpp; sourceTree = "<group>"; };
 		841420641A600F9B00C92847 /* DCData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCData.cpp; sourceTree = "<group>"; };
-		841420651A600F9B00C92847 /* DCDynamicsScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCDynamicsScene.cpp; sourceTree = "<group>"; };
+		841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCDynamicsWorld.cpp; sourceTree = "<group>"; };
 		841420661A600F9B00C92847 /* DCFixedConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCFixedConstraint.cpp; sourceTree = "<group>"; };
 		841420671A600F9B00C92847 /* DCFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCFont.cpp; sourceTree = "<group>"; };
 		841420681A600F9B00C92847 /* DCFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCFrame.cpp; sourceTree = "<group>"; };
@@ -728,8 +728,8 @@
 		8414208C1A600F9B00C92847 /* DCRigidBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCRigidBody.cpp; sourceTree = "<group>"; };
 		8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCRunLoopOperationResult.cpp; sourceTree = "<group>"; };
 		8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCRunLoopTimer.cpp; sourceTree = "<group>"; };
-		8414208F1A600F9B00C92847 /* DCScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCScene.cpp; sourceTree = "<group>"; };
-		841420901A600F9B00C92847 /* DCScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCScene.h; sourceTree = "<group>"; };
+		8414208F1A600F9B00C92847 /* DCWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCWorld.cpp; sourceTree = "<group>"; };
+		841420901A600F9B00C92847 /* DCWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWorld.h; sourceTree = "<group>"; };
 		841420911A600F9B00C92847 /* DCScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCScreen.cpp; sourceTree = "<group>"; };
 		841420921A600F9B00C92847 /* DCShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCShader.cpp; sourceTree = "<group>"; };
 		841420931A600F9B00C92847 /* DCShaderProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCShaderProgram.cpp; sourceTree = "<group>"; };
@@ -1004,7 +1004,7 @@
 				841420621A600F9B00C92847 /* DCConvexShape.h */,
 				841420631A600F9B00C92847 /* DCCylinderShape.cpp */,
 				841420641A600F9B00C92847 /* DCData.cpp */,
-				841420651A600F9B00C92847 /* DCDynamicsScene.cpp */,
+				841420651A600F9B00C92847 /* DCDynamicsWorld.cpp */,
 				841420661A600F9B00C92847 /* DCFixedConstraint.cpp */,
 				841420671A600F9B00C92847 /* DCFont.cpp */,
 				841420681A600F9B00C92847 /* DCFrame.cpp */,
@@ -1045,8 +1045,8 @@
 				8414208C1A600F9B00C92847 /* DCRigidBody.cpp */,
 				8414208D1A600F9B00C92847 /* DCRunLoopOperationResult.cpp */,
 				8414208E1A600F9B00C92847 /* DCRunLoopTimer.cpp */,
-				8414208F1A600F9B00C92847 /* DCScene.cpp */,
-				841420901A600F9B00C92847 /* DCScene.h */,
+				8414208F1A600F9B00C92847 /* DCWorld.cpp */,
+				841420901A600F9B00C92847 /* DCWorld.h */,
 				841420911A600F9B00C92847 /* DCScreen.cpp */,
 				841420921A600F9B00C92847 /* DCShader.cpp */,
 				841420931A600F9B00C92847 /* DCShaderProgram.cpp */,
@@ -1292,7 +1292,7 @@
 				8455C86F1AEE6C190003A417 /* DCPolyhedralConvexShape.h in Headers */,
 				8455C9CA1AEE6C520003A417 /* PyDK.h in Headers */,
 				8455C8731AEE6C190003A417 /* DCTexture.h in Headers */,
-				8455C8711AEE6C190003A417 /* DCScene.h in Headers */,
+				8455C8711AEE6C190003A417 /* DCWorld.h in Headers */,
 				8455C86E1AEE6C190003A417 /* DCObject.h in Headers */,
 				8455C86A1AEE6C190003A417 /* DCGeneric6DofConstraint.h in Headers */,
 				8455C86B1AEE6C190003A417 /* DCGeometryBuffer.h in Headers */,
@@ -1320,7 +1320,7 @@
 				8455C9B61AEE6C1C0003A417 /* DCPolyhedralConvexShape.h in Headers */,
 				8455C9C01AEE6C370003A417 /* PyDK.h in Headers */,
 				8455C9BA1AEE6C1C0003A417 /* DCTexture.h in Headers */,
-				8455C9B81AEE6C1C0003A417 /* DCScene.h in Headers */,
+				8455C9B81AEE6C1C0003A417 /* DCWorld.h in Headers */,
 				8455C9B51AEE6C1C0003A417 /* DCObject.h in Headers */,
 				8455C9B11AEE6C1C0003A417 /* DCGeneric6DofConstraint.h in Headers */,
 				8455C9B21AEE6C1C0003A417 /* DCGeometryBuffer.h in Headers */,
@@ -1348,7 +1348,7 @@
 				8455C8021AEE6C180003A417 /* DCPolyhedralConvexShape.h in Headers */,
 				8455C9C51AEE6C510003A417 /* PyDK.h in Headers */,
 				8455C8061AEE6C180003A417 /* DCTexture.h in Headers */,
-				8455C8041AEE6C180003A417 /* DCScene.h in Headers */,
+				8455C8041AEE6C180003A417 /* DCWorld.h in Headers */,
 				8455C8011AEE6C180003A417 /* DCObject.h in Headers */,
 				8455C7FD1AEE6C180003A417 /* DCGeneric6DofConstraint.h in Headers */,
 				8455C7FE1AEE6C180003A417 /* DCGeometryBuffer.h in Headers */,
@@ -1376,7 +1376,7 @@
 				8455C8DC1AEE6C1A0003A417 /* DCPolyhedralConvexShape.h in Headers */,
 				8455C9CF1AEE6C530003A417 /* PyDK.h in Headers */,
 				8455C8E01AEE6C1A0003A417 /* DCTexture.h in Headers */,
-				8455C8DE1AEE6C1A0003A417 /* DCScene.h in Headers */,
+				8455C8DE1AEE6C1A0003A417 /* DCWorld.h in Headers */,
 				8455C8DB1AEE6C1A0003A417 /* DCObject.h in Headers */,
 				8455C8D71AEE6C1A0003A417 /* DCGeneric6DofConstraint.h in Headers */,
 				8455C8D81AEE6C1A0003A417 /* DCGeometryBuffer.h in Headers */,
@@ -1404,7 +1404,7 @@
 				8455C9491AEE6C1B0003A417 /* DCPolyhedralConvexShape.h in Headers */,
 				8455C9BB1AEE6C360003A417 /* PyDK.h in Headers */,
 				8455C94D1AEE6C1B0003A417 /* DCTexture.h in Headers */,
-				8455C94B1AEE6C1B0003A417 /* DCScene.h in Headers */,
+				8455C94B1AEE6C1B0003A417 /* DCWorld.h in Headers */,
 				8455C9481AEE6C1B0003A417 /* DCObject.h in Headers */,
 				8455C9441AEE6C1B0003A417 /* DCGeneric6DofConstraint.h in Headers */,
 				8455C9451AEE6C1B0003A417 /* DCGeometryBuffer.h in Headers */,
@@ -1648,7 +1648,7 @@
 				8455C8151AEE6C190003A417 /* DCCollisionShape.cpp in Sources */,
 				8455C8601AEE6C190003A417 /* PyDKApplication.cpp in Sources */,
 				8455C8471AEE6C190003A417 /* DCSize.cpp in Sources */,
-				8455C8431AEE6C190003A417 /* DCScene.cpp in Sources */,
+				8455C8431AEE6C190003A417 /* DCWorld.cpp in Sources */,
 				8455C8371AEE6C190003A417 /* DCPoint.cpp in Sources */,
 				8455C84F1AEE6C190003A417 /* DCStaticTriangleMeshShape.cpp in Sources */,
 				8455C8171AEE6C190003A417 /* DCCompoundShape.cpp in Sources */,
@@ -1676,7 +1676,7 @@
 				8455C85F1AEE6C190003A417 /* DCZipUnarchiver.cpp in Sources */,
 				8455C8101AEE6C190003A417 /* DCBlendState.cpp in Sources */,
 				8455C8281AEE6C190003A417 /* DCHingeConstraint.cpp in Sources */,
-				8455C8201AEE6C190003A417 /* DCDynamicsScene.cpp in Sources */,
+				8455C8201AEE6C190003A417 /* DCDynamicsWorld.cpp in Sources */,
 				8455C82B1AEE6C190003A417 /* DCLinearTransform2.cpp in Sources */,
 				8455C8261AEE6C190003A417 /* DCGeneric6DofSpringConstraint.cpp in Sources */,
 				8455C82D1AEE6C190003A417 /* DCMaterial.cpp in Sources */,
@@ -1747,7 +1747,7 @@
 				8455C95C1AEE6C1C0003A417 /* DCCollisionShape.cpp in Sources */,
 				8455C9A71AEE6C1C0003A417 /* PyDKApplication.cpp in Sources */,
 				8455C98E1AEE6C1C0003A417 /* DCSize.cpp in Sources */,
-				8455C98A1AEE6C1C0003A417 /* DCScene.cpp in Sources */,
+				8455C98A1AEE6C1C0003A417 /* DCWorld.cpp in Sources */,
 				8455C97E1AEE6C1C0003A417 /* DCPoint.cpp in Sources */,
 				8455C9961AEE6C1C0003A417 /* DCStaticTriangleMeshShape.cpp in Sources */,
 				8455C95E1AEE6C1C0003A417 /* DCCompoundShape.cpp in Sources */,
@@ -1775,7 +1775,7 @@
 				8455C9A61AEE6C1C0003A417 /* DCZipUnarchiver.cpp in Sources */,
 				8455C9571AEE6C1C0003A417 /* DCBlendState.cpp in Sources */,
 				8455C96F1AEE6C1C0003A417 /* DCHingeConstraint.cpp in Sources */,
-				8455C9671AEE6C1C0003A417 /* DCDynamicsScene.cpp in Sources */,
+				8455C9671AEE6C1C0003A417 /* DCDynamicsWorld.cpp in Sources */,
 				8455C9721AEE6C1C0003A417 /* DCLinearTransform2.cpp in Sources */,
 				8455C96D1AEE6C1C0003A417 /* DCGeneric6DofSpringConstraint.cpp in Sources */,
 				8455C9741AEE6C1C0003A417 /* DCMaterial.cpp in Sources */,
@@ -1846,7 +1846,7 @@
 				8455C7A81AEE6C180003A417 /* DCCollisionShape.cpp in Sources */,
 				8455C7F31AEE6C180003A417 /* PyDKApplication.cpp in Sources */,
 				8455C7DA1AEE6C180003A417 /* DCSize.cpp in Sources */,
-				8455C7D61AEE6C180003A417 /* DCScene.cpp in Sources */,
+				8455C7D61AEE6C180003A417 /* DCWorld.cpp in Sources */,
 				8455C7CA1AEE6C180003A417 /* DCPoint.cpp in Sources */,
 				8455C7E21AEE6C180003A417 /* DCStaticTriangleMeshShape.cpp in Sources */,
 				8455C7AA1AEE6C180003A417 /* DCCompoundShape.cpp in Sources */,
@@ -1874,7 +1874,7 @@
 				8455C7F21AEE6C180003A417 /* DCZipUnarchiver.cpp in Sources */,
 				8455C7A31AEE6C180003A417 /* DCBlendState.cpp in Sources */,
 				8455C7BB1AEE6C180003A417 /* DCHingeConstraint.cpp in Sources */,
-				8455C7B31AEE6C180003A417 /* DCDynamicsScene.cpp in Sources */,
+				8455C7B31AEE6C180003A417 /* DCDynamicsWorld.cpp in Sources */,
 				8455C7BE1AEE6C180003A417 /* DCLinearTransform2.cpp in Sources */,
 				8455C7B91AEE6C180003A417 /* DCGeneric6DofSpringConstraint.cpp in Sources */,
 				8455C7C01AEE6C180003A417 /* DCMaterial.cpp in Sources */,
@@ -1945,7 +1945,7 @@
 				8455C8821AEE6C1A0003A417 /* DCCollisionShape.cpp in Sources */,
 				8455C8CD1AEE6C1A0003A417 /* PyDKApplication.cpp in Sources */,
 				8455C8B41AEE6C1A0003A417 /* DCSize.cpp in Sources */,
-				8455C8B01AEE6C1A0003A417 /* DCScene.cpp in Sources */,
+				8455C8B01AEE6C1A0003A417 /* DCWorld.cpp in Sources */,
 				8455C8A41AEE6C1A0003A417 /* DCPoint.cpp in Sources */,
 				8455C8BC1AEE6C1A0003A417 /* DCStaticTriangleMeshShape.cpp in Sources */,
 				8455C8841AEE6C1A0003A417 /* DCCompoundShape.cpp in Sources */,
@@ -1973,7 +1973,7 @@
 				8455C8CC1AEE6C1A0003A417 /* DCZipUnarchiver.cpp in Sources */,
 				8455C87D1AEE6C1A0003A417 /* DCBlendState.cpp in Sources */,
 				8455C8951AEE6C1A0003A417 /* DCHingeConstraint.cpp in Sources */,
-				8455C88D1AEE6C1A0003A417 /* DCDynamicsScene.cpp in Sources */,
+				8455C88D1AEE6C1A0003A417 /* DCDynamicsWorld.cpp in Sources */,
 				8455C8981AEE6C1A0003A417 /* DCLinearTransform2.cpp in Sources */,
 				8455C8931AEE6C1A0003A417 /* DCGeneric6DofSpringConstraint.cpp in Sources */,
 				8455C89A1AEE6C1A0003A417 /* DCMaterial.cpp in Sources */,
@@ -2044,7 +2044,7 @@
 				8455C8EF1AEE6C1B0003A417 /* DCCollisionShape.cpp in Sources */,
 				8455C93A1AEE6C1B0003A417 /* PyDKApplication.cpp in Sources */,
 				8455C9211AEE6C1B0003A417 /* DCSize.cpp in Sources */,
-				8455C91D1AEE6C1B0003A417 /* DCScene.cpp in Sources */,
+				8455C91D1AEE6C1B0003A417 /* DCWorld.cpp in Sources */,
 				8455C9111AEE6C1B0003A417 /* DCPoint.cpp in Sources */,
 				8455C9291AEE6C1B0003A417 /* DCStaticTriangleMeshShape.cpp in Sources */,
 				8455C8F11AEE6C1B0003A417 /* DCCompoundShape.cpp in Sources */,
@@ -2072,7 +2072,7 @@
 				8455C9391AEE6C1B0003A417 /* DCZipUnarchiver.cpp in Sources */,
 				8455C8EA1AEE6C1B0003A417 /* DCBlendState.cpp in Sources */,
 				8455C9021AEE6C1B0003A417 /* DCHingeConstraint.cpp in Sources */,
-				8455C8FA1AEE6C1B0003A417 /* DCDynamicsScene.cpp in Sources */,
+				8455C8FA1AEE6C1B0003A417 /* DCDynamicsWorld.cpp in Sources */,
 				8455C9051AEE6C1B0003A417 /* DCLinearTransform2.cpp in Sources */,
 				8455C9001AEE6C1B0003A417 /* DCGeneric6DofSpringConstraint.cpp in Sources */,
 				8455C9071AEE6C1B0003A417 /* DCMaterial.cpp in Sources */,

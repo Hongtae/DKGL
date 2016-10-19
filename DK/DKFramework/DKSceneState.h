@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKSceneState
-// scene state used when drawing one scene. (DKScene)
+// scene state used when drawing one scene. (DKWorld)
 // scene state is global scene state for scene.
 // individual object's state can be overriden by object itself.
 ////////////////////////////////////////////////////////////////////////////////
