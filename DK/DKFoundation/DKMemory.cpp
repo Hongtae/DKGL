@@ -22,7 +22,6 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #endif
@@ -1020,7 +1019,7 @@ namespace DKGL
 			DKASSERT_MEM_DESC_DEBUG(s > 0, "Unallocated address.");
 			if (s > 0)
 			{
-				DKASSERT_MEM_DEBUG((s % getpagesize()) == 0);
+				DKASSERT_MEM_DEBUG((s % DKMemoryPageSize()) == 0);
 				if (::munmap(p, s) != 0)
 				{
 					DKLog("munmap failed: %s\n", strerror(errno));
@@ -1063,7 +1062,10 @@ namespace DKGL
 			GetSystemInfo(&sysInfo);
 			return sysInfo.dwPageSize;
 #else
-			return getpagesize();
+			long pg = sysconf(_SC_PAGESIZE);
+			if (pg == -1)
+				return (long)getpagesize();
+			return pg;
 #endif
 		}();
 		return pageSize;

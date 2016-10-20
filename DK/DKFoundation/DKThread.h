@@ -48,7 +48,7 @@ namespace DKGL
 		static void Sleep(double d);
 
 		// create new thread with DKOperation and run.
-		static DKObject<DKThread> Create(const DKOperation* op);
+		static DKObject<DKThread> Create(const DKOperation* op, size_t stackSize = 0);
 
 		// a constant of invalid-thread id.
 		static const ThreadId invalidId;

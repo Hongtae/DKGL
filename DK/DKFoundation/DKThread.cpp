@@ -13,6 +13,7 @@
 #include <sys/select.h>
 #include <sched.h>		// to using sched_yield() in DKThread::Yield()
 #include <errno.h>
+#include <limits.h>
 #endif
 
 #include "DKThread.h"
@@ -115,7 +116,7 @@ namespace DKGL
 			return 0;
 		}
 
-		static ThreadContext* CreateThread(DKOperation* op)
+		static ThreadContext* CreateThread(DKOperation* op, size_t stackSize)
 		{
 			if (op == NULL)
 				return NULL;
@@ -126,8 +127,14 @@ namespace DKGL
 
 			bool failed = true;
 #ifdef _WIN32
+			if (stackSize > 0)
+			{
+				size_t pageSize = DKMemoryPageSize();
+				if (stackSize % pageSize)
+					stackSize += pageSize - (stackSize % pageSize);
+			}
 			unsigned int id;
-			HANDLE h = (HANDLE)_beginthreadex(0, 0, ThreadProc, reinterpret_cast<void*>(&param), 0, &id);
+			HANDLE h = (HANDLE)_beginthreadex(0, stackSize, ThreadProc, reinterpret_cast<void*>(&param), 0, &id);
 			if (h)
 			{
 				// a closed handle could be recycled by system.
@@ -140,6 +147,14 @@ namespace DKGL
 			pthread_attr_t attr;
 			pthread_attr_init(&attr);
 			pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+			if (stackSize > 0)
+			{
+				stackSize = Max(stackSize, (size_t)PTHREAD_STACK_MIN);
+				size_t pageSize = DKMemoryPageSize();
+				if (stackSize % pageSize)
+					stackSize += pageSize - (stackSize % pageSize);
+				pthread_attr_setstacksize(&attr, stackSize);
+			}
 			failed = (bool)pthread_create((pthread_t*)&id, &attr, ThreadProc, reinterpret_cast<void*>(&param));
 			pthread_attr_destroy(&attr);
 #endif
@@ -240,12 +255,12 @@ void DKThread::Sleep(double d)
 #endif
 }
 
-DKObject<DKThread> DKThread::Create(const DKOperation* operation)
+DKObject<DKThread> DKThread::Create(const DKOperation* operation, size_t stackSize)
 {
 	if (operation == NULL)
 		return NULL;
 
-	ThreadContext* ctxt = CreateThread(const_cast<DKOperation*>(operation));
+	ThreadContext* ctxt = CreateThread(const_cast<DKOperation*>(operation), stackSize);
 	if (ctxt)
 	{
 		DKObject<DKThread> ret = DKObject<DKThread>::New();

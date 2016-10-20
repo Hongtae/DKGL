@@ -938,7 +938,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 		if (this->IsWritable())
 			prot |= PROT_WRITE;
 
-		long pageSize = getpagesize();
+		long pageSize = DKMemoryPageSize();
 		DKASSERT_DEBUG(pageSize > 0);
 		size_t mapOffset = offset & ~(pageSize - 1);
 		DKASSERT_DEBUG(offset >= mapOffset);
