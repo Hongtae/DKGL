@@ -70,6 +70,8 @@ namespace DKGL
 		bool IsSuspended(void) const;
 		void Resume(void);                // resume render
 
+		void Terminate(bool wait);		// terminate render-thread
+
 		const DKSize& ScreenResolution(void) const;
 
 		// convert coordinates
@@ -89,8 +91,8 @@ namespace DKGL
 		double InactiveFrameLatency(void) const;
 		
 	protected:
-		void OnStart(void) override;
-		void OnStop(void) override;
+		virtual void Initialize(void);
+		virtual void Finalize(void);
 		void OnIdle(void) override;
 		void PerformOperation(const DKOperation* operation) override;
 

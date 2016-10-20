@@ -11,9 +11,9 @@
 #include "DKThread.h"
 #include "DKOperation.h"
 #include "DKDateTime.h"
-#include "DKQueue.h"
+//#include "DKQueue.h"
 #include "DKSpinLock.h"
-#include "DKArray.h"
+//#include "DKArray.h"
 #include "DKOrderedArray.h"
 #include "DKTimer.h"
 #include "DKCondition.h"
@@ -29,7 +29,7 @@
 // You can post termination message with DKRunLoop::Terminate() to terminate loop.
 //
 // On main thread, application should waits RunLoop's beging terminated by
-// calling 'Terminate(true)' on application exits.
+// calling 'Terminate()' on application exits.
 //
 // You can control individual operation would be process or not by overrides in
 // subclass. You can call 'DKRunLoop::Process()' for process one operation,
@@ -38,6 +38,27 @@
 //   tick-based: system-tick based, calling operation with delayed time.
 //   time-based: system time based, calling operation at specified system time.
 //               if system time has changed, calling operations will adjusted.
+//
+// Note:
+//  To make Run-Loop working on a new thread, create a DKThread object and call
+//  'DKRunLoop::Run()' inside new working thread.
+//
+// Ex:
+//     DKRunLoop* myLoop;
+//     // detach new thread with RunLoop.
+//     DKObject<DKThread> workerThread = DKThread::Create([myLoop]() {
+//                                     // your initialize code here.
+//                                     myLoop->Run();  // run dispatch
+//                                     // your finalize code here.
+//                                     // thread is about to be terminated.
+//                                     })->Invocation());
+//      // do something with Run-Loop from outside of worker thread.
+//      myLoop->PostOperation(...);
+//
+//      // terminate Run-Loop
+//      myLoop->Terminate();
+//      workerThread->WaitTerminate();  // wait for termination.
+//
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKGL
@@ -62,7 +83,7 @@ namespace DKGL
 		bool IsWrokingThread(void) const;
 
 		virtual bool Run(void);
-		virtual void Terminate(bool wait);
+		virtual void Terminate(void);
 
         void WaitNextLoop(void);
 		bool WaitNextLoopTimeout(double t);
@@ -72,7 +93,7 @@ namespace DKGL
 		virtual DKObject<OperationResult> PostOperation(const DKOperation* operation, const DKDateTime& runAfter);	// time base
 
 		// ProcessOperation: insert operation and wait until done.
-		virtual bool ProcessOperation(const DKOperation* operation);
+		bool ProcessOperation(const DKOperation* operation);
 
 		// returns RunLoop object which runs on current thread as worker-thread.
 		static DKRunLoop* CurrentRunLoop(void);
@@ -82,8 +103,6 @@ namespace DKGL
 
 	protected:
 		virtual void PerformOperation(const DKOperation* operation);
-		virtual void OnStart(void) {}
-		virtual void OnStop(void) {}
 		virtual void OnIdle(void) { WaitNextLoop(); }
 
 		bool Process(void); // return true if a message has been dispatched.
@@ -116,7 +135,6 @@ namespace DKGL
 		DKOrderedArray<InternalCommandTick>		commandQueueTick;
 		DKOrderedArray<InternalCommandTime>		commandQueueTime;
 
-		DKCondition			terminateCond; // wait for shut-down
 		DKThread::ThreadId	threadId;
 		bool				terminate;
 

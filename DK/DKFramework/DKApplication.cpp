@@ -12,7 +12,7 @@ namespace DKGL
 {
 	namespace Private
 	{
-		void WaitTerminateAllRunLoops(void);
+		void TerminateAllRunLoops(void);
 		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
 
 		static DKCondition appCond;
@@ -105,7 +105,7 @@ void DKApplication::Finalize()
 	OnTerminate();
 	
 	DKLog("Waiting for runloop being terminated...\n");
-	Private::WaitTerminateAllRunLoops();
+	Private::TerminateAllRunLoops();
 
 	DKDateTime current = DKDateTime::Now();
 	DKLog("DKApplication terminated at %04d-%02d-%02d %02d:%02d:%02d.%06d.(MainThread:0x%x)\n",

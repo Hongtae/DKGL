@@ -75,7 +75,7 @@ namespace DKGL
 			return found;
 		}
 
-		void WaitTerminateAllRunLoops(void)
+		void TerminateAllRunLoops(void)
 		{
 			GetRunLoopMapLock().Lock();
 
@@ -85,7 +85,7 @@ namespace DKGL
 			GetRunLoopMap().EnumerateForward([&runloopThreadIds](RunLoopMap::Pair& pair)
 			{
 				runloopThreadIds.Add(pair.key);
-				pair.value->Terminate(0);
+				pair.value->Terminate();
 
 			});
 			GetRunLoopMapLock().Unlock();
@@ -203,8 +203,6 @@ bool DKRunLoop::Run(void)
 {
 	if (BindThread())
 	{
-		OnStart();
-
 		bool loop = true;
 		bool next = true;
 		while (loop)
@@ -214,9 +212,6 @@ bool DKRunLoop::Run(void)
 			if (!next && loop)
 				OnIdle();
 		}
-
-		OnStop();
-
 		UnbindThread();
 		return true;
 	}
@@ -225,7 +220,6 @@ bool DKRunLoop::Run(void)
 
 bool DKRunLoop::IsRunning(void) const
 {
-	DKCriticalSection<DKCondition> guard(terminateCond);
 	if (threadId != DKThread::invalidId)
 	{
 		DKASSERT_DEBUG(IsRunLoopExist(this));
@@ -250,8 +244,6 @@ void DKRunLoop::InternalPostCommand(const InternalCommandTime& cmd)
 
 bool DKRunLoop::BindThread(void)
 {
-	DKCriticalSection<DKCondition> guard(terminateCond);
-
 	if (this->threadId == DKThread::invalidId)
 	{
 		DKASSERT_DEBUG(IsRunLoopExist(this) == false);
@@ -260,9 +252,6 @@ bool DKRunLoop::BindThread(void)
 		{
 			this->threadId = tid;
 			terminate = false;
-
-			terminateCond.Broadcast();
-
 			return true;
 		}
 		else
@@ -276,41 +265,22 @@ bool DKRunLoop::BindThread(void)
 
 void DKRunLoop::UnbindThread(void)
 {
-	DKCriticalSection<DKCondition> guard(terminateCond);
-
 	DKASSERT_DEBUG(IsRunLoopExist(this));
 	DKASSERT_DEBUG(threadId != DKThread::invalidId);
 	DKASSERT_DEBUG(GetRunLoop(threadId) == this);
 	UnregisterRunLoop(this->threadId);
 	threadId = DKThread::invalidId;
-
-	terminateCond.Broadcast();
 }
 
-void DKRunLoop::Terminate(bool wait)
+void DKRunLoop::Terminate(void)
 {
 	if (threadId != DKThread::invalidId)
 	{
 		DKASSERT_DEBUG(IsRunLoopExist(this));
 
-		if (wait)
-		{
-			this->ProcessOperation(DKFunction([this]() {
-				this->terminate = true;
-			})->Invocation());
-
-			DKCriticalSection<DKCondition> guard(terminateCond);
-			while (this->threadId == DKThread::invalidId)
-			{
-				terminateCond.Wait();
-			}
-		}
-		else
-		{
-			this->PostOperation(DKFunction([this]() {
-				this->terminate = true;
-			})->Invocation());
-		}
+		this->PostOperation(DKFunction([this]() {
+			this->terminate = true;
+		})->Invocation());
 	}
 }
 

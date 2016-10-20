@@ -284,7 +284,7 @@ template <typename T> bool DCObjectCallPyCallable(T&& callable)
 			DKRunLoop* runLoop = DKRunLoop::CurrentRunLoop();
 			if (runLoop)
 			{
-				DKObject<DKOperation> op = DKFunction(runLoop, &DKRunLoop::Terminate)->Invocation(false).SafeCast<DKOperation>();
+				DKObject<DKOperation> op = DKFunction(runLoop, &DKRunLoop::Terminate)->Invocation().SafeCast<DKOperation>();
 				runLoop->PostOperation(op);
 			}
 
