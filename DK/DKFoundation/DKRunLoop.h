@@ -56,7 +56,7 @@
 //      myLoop->PostOperation(...);
 //
 //      // terminate Run-Loop
-//      myLoop->Terminate();
+//      myLoop->Stop();
 //      workerThread->WaitTerminate();  // wait for termination.
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ namespace DKGL
 		bool IsWrokingThread(void) const;
 
 		virtual bool Run(void);
-		virtual void Terminate(void);
+		virtual void Stop(void);
 
         void WaitNextLoop(void);
 		bool WaitNextLoopTimeout(double t);
@@ -113,7 +113,6 @@ namespace DKGL
         // overridden version of 'Run()'.
         bool BindThread(void);
         void UnbindThread(void);
-        bool ShouldTerminate(void) const;
 		size_t RevokeAllOperations(void);
 
 	private:
@@ -136,7 +135,7 @@ namespace DKGL
 		DKOrderedArray<InternalCommandTime>		commandQueueTime;
 
 		DKThread::ThreadId	threadId;
-		bool				terminate;
+		bool				run;
 
 		static bool InternalCommandCompareOrder(const InternalCommandTick&, const InternalCommandTick&);
 		static bool InternalCommandCompareOrder(const InternalCommandTime&, const InternalCommandTime&);

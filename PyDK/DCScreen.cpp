@@ -187,7 +187,7 @@ static int DCScreenClear(DCScreen* self)
 		Py_CLEAR(self->window);
 
 		Py_BEGIN_ALLOW_THREADS
-		self->screen->Terminate(true);
+		self->screen->Stop(true);
 		Py_END_ALLOW_THREADS
 
 		DCObjectSetAddress(self->screen, NULL);
@@ -575,11 +575,11 @@ static PyObject* DCScreenTerminate(DCScreen* self, PyObject* args)
 	if (wait)
 	{
 		Py_BEGIN_ALLOW_THREADS
-			self->screen->Terminate(true);
+			self->screen->Stop(true);
 		Py_END_ALLOW_THREADS
 	}
 	else
-		self->screen->Terminate(false);
+		self->screen->Stop(false);
 	Py_RETURN_NONE;
 }
 

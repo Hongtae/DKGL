@@ -70,7 +70,7 @@ namespace DKGL
 		bool IsSuspended(void) const;
 		void Resume(void);                // resume render
 
-		void Terminate(bool wait);		// terminate render-thread
+		void Stop(bool wait);		// terminate render-thread
 
 		const DKSize& ScreenResolution(void) const;
 
@@ -100,6 +100,7 @@ namespace DKGL
 		void OnMouseEvent(DKWindow::EventMouse type, int deviceId, int buttonId, DKPoint pos, DKVector2 delta);
 		void OnKeyboardEvent(DKWindow::EventKeyboard type, int deviceId, DKVirtualKey key, DKString text);
 
+		void Stop(void) override { Stop(true); }
 	private:
 		DKObject<DKThread>			renderThread;
 		DKObject<DKRenderer>		renderer;

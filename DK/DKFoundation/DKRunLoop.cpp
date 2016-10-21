@@ -85,7 +85,7 @@ namespace DKGL
 			GetRunLoopMap().EnumerateForward([&runloopThreadIds](RunLoopMap::Pair& pair)
 			{
 				runloopThreadIds.Add(pair.key);
-				pair.value->Terminate();
+				pair.value->Stop();
 
 			});
 			GetRunLoopMapLock().Unlock();
@@ -182,7 +182,7 @@ bool DKRunLoop::InternalCommandCompareOrder(const InternalCommandTime& lhs, cons
 }
 
 DKRunLoop::DKRunLoop(void)
-: terminate(true)
+: run(false)
 , threadId(DKThread::invalidId)
 , commandQueueTick(&DKRunLoop::InternalCommandCompareOrder)
 , commandQueueTime(&DKRunLoop::InternalCommandCompareOrder)
@@ -208,7 +208,7 @@ bool DKRunLoop::Run(void)
 		while (loop)
 		{
 			next = this->Process();
-			loop = !this->terminate;
+			loop = this->run;
 			if (!next && loop)
 				OnIdle();
 		}
@@ -251,7 +251,7 @@ bool DKRunLoop::BindThread(void)
 		if (RegisterRunLoop(tid, this))
 		{
 			this->threadId = tid;
-			terminate = false;
+			run = true;
 			return true;
 		}
 		else
@@ -272,21 +272,16 @@ void DKRunLoop::UnbindThread(void)
 	threadId = DKThread::invalidId;
 }
 
-void DKRunLoop::Terminate(void)
+void DKRunLoop::Stop(void)
 {
 	if (threadId != DKThread::invalidId)
 	{
 		DKASSERT_DEBUG(IsRunLoopExist(this));
 
 		this->PostOperation(DKFunction([this]() {
-			this->terminate = true;
+			this->run = false;
 		})->Invocation());
 	}
-}
-
-bool DKRunLoop::ShouldTerminate(void) const
-{
-    return terminate;
 }
 
 DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation* operation, double delay)

@@ -33,7 +33,7 @@ DKScreen::DKScreen(void)
 
 DKScreen::~DKScreen(void)
 {
-	Terminate(true);
+	Stop(true);
 }
 
 void DKScreen::SetActiveFrameLatency(double f)
@@ -56,11 +56,11 @@ double DKScreen::InactiveFrameLatency(void) const
 	return inactiveFrameLatency;
 }
 
-void DKScreen::Terminate(bool wait)
+void DKScreen::Stop(bool wait)
 {
 	if (this->renderThread && this->renderThread->IsAlive())
 	{
-		DKRunLoop::Terminate();
+		DKRunLoop::Stop();
 		if (wait && this->renderThread->Id() != DKThread::CurrentThreadId())
 			this->renderThread->WaitTerminate();
 	}
@@ -516,7 +516,7 @@ void DKScreen::OnWindowEvent(DKWindow::EventWindow type, DKSize contentSize, DKP
 	case DKWindow::EventWindowMoved:
 		break;			
 	case DKWindow::EventWindowClosed:    // window closed.
-		Terminate(false);
+		Stop(false);
 		break;
 	case DKWindow::EventWindowUpdate:    // refresh screen.
 		RenderScreen(true);
