@@ -59,7 +59,7 @@ namespace DKGL
 		size_t NumberOfEntries(void) const;
 
 		// Add / Remove callback for key insertion, modification, deletion.
-		void SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKRunLoop* runLoop, void* context);
+		void SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKEventLoop* eventLoop, void* context);
 		void RemoveCallback(const DKString& key, void* context);
 		void RemoveCallback(void* context);
 

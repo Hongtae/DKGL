@@ -19,14 +19,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 // DKScreen
 // screen object, which render it's frames (DKFrame) to window surface.
-// screen has one RunLoop internally, to process events, messages, operations
+// screen has one EventLoop internally, to process events, messages, operations
 // asynchronous. (delivers event to target frame)
 ////////////////////////////////////////////////////////////////////////////////
 
 
 namespace DKGL
 {
-	class DKGL_API DKScreen : public DKRunLoop
+	class DKGL_API DKScreen : public DKEventLoop
 	{
 		friend class DKObject<DKScreen>;
 	public:
@@ -35,7 +35,7 @@ namespace DKGL
 
 		bool Run(DKWindow* window, DKFrame* rootFrame);
 
-		DKRunLoop* RunLoop(void) const;
+		DKEventLoop* EventLoop(void) const;
 
 		// system window (initial render target)
 		DKWindow* Window(void);

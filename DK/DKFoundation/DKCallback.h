@@ -8,7 +8,7 @@
 #pragma once
 #include "../DKInclude.h"
 #include "DKFunction.h"
-#include "DKRunLoop.h"
+#include "DKEventLoop.h"
 #include "DKArray.h"
 #include "DKSet.h"
 #include "DKMap.h"
@@ -17,10 +17,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKCallback
-// enabling Group-Invocations by using DKFunctionSignature, DKRunLoop objects.
+// enabling Group-Invocations by using DKFunctionSignature, DKEventLoop objects.
 //
 // Note:
-//  If you don't specify runloop (DKRunLoop), then invocation will be called directly.
+//  If you don't specify runloop (DKEventLoop), then invocation will be called directly.
 //  DKCallback's template argument 'Function' must be a function type.
 //   (same as DKFunctionSignature's argument types)
 //   ex:  DKCallback<int (int), void*> (function-type, context-type)
@@ -40,7 +40,7 @@ namespace DKGL
 		struct Callback
 		{
 			DKObject<FunctionSignature>	function;
-			DKRunLoop*					runLoop;
+			DKEventLoop*					eventLoop;
 		};
 
 		void PostInvocation(Ps... vs) const
@@ -67,11 +67,11 @@ namespace DKGL
 				InvokeTargetsWithTuple(targets, tuple, false);
 			}
 		}
-		void SetCallback(FunctionSignature* function, DKRunLoop* runLoop, Context context)
+		void SetCallback(FunctionSignature* function, DKEventLoop* eventLoop, Context context)
 		{
 			Callback callback;
 			callback.function = function;
-			callback.runLoop = runLoop;
+			callback.eventLoop = eventLoop;
 			SetCallback(&callback, context);
 		}
 		void SetCallback(Callback* c, Context context)
@@ -107,18 +107,18 @@ namespace DKGL
 				return p->value.function;
 			return NULL;
 		}
-		DKRunLoop* RunLoopForContext(Context context)
+		DKEventLoop* EventLoopForContext(Context context)
 		{
 			typename ContextCallbackMap::Pair* p = contextCallbackMap.Find(context);
 			if (p)
-				return p->value.runLoop;
+				return p->value.eventLoop;
 			return NULL;
 		}
-		const DKRunLoop* RunLoopForContext(Context context) const
+		const DKEventLoop* EventLoopForContext(Context context) const
 		{
 			const typename ContextCallbackMap::Pair* p = contextCallbackMap.Find(context);
 			if (p)
-				return p->value.runLoop;
+				return p->value.eventLoop;
 			return NULL;
 		}
 	private:
@@ -126,7 +126,7 @@ namespace DKGL
 		struct CallbackWithResult
 		{
 			Callback callback;
-			DKObject<DKRunLoop::OperationResult> result;
+			DKObject<DKEventLoop::OperationResult> result;
 		};
 		using CallbackList = DKArray<CallbackWithResult>;
 
@@ -134,10 +134,10 @@ namespace DKGL
 		{
 			for (CallbackWithResult& c : targets)
 			{
-				if (c.callback.runLoop)
+				if (c.callback.eventLoop)
 				{
 					DKObject<DKOperation> op = c.callback.function->InvocationWithTuple(tuple).template SafeCast<DKOperation>();
-					DKObject<DKRunLoop::OperationResult> r = c.callback.runLoop->PostOperation(op);
+					DKObject<DKEventLoop::OperationResult> r = c.callback.eventLoop->Post(op);
 					if (!async)
 						c.result = r;
 				}

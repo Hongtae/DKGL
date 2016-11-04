@@ -30,7 +30,7 @@ namespace DKGL
 			int Run(DKArray<char*>& args);
 			void Terminate(int exitCode);
 
-			// perform operation on main-thread. (main thread is Running-RunLoop)
+			// perform operation on main-thread. (main thread is Running-EventLoop)
 			// operation could be processed through OnInitialize() to OnTerminate().
 			void PerformOperationOnMainThread(DKOperation* op, bool waitUntilDone);
 

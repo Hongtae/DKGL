@@ -170,8 +170,8 @@
 		840C3E0C178D396D00F57A8D /* DKObjectRefCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840C3DF4178D396600F57A8D /* DKObjectRefCounter.cpp */; };
 		840C3E0D178D396D00F57A8D /* DKOperationQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4BD141DD4B70091D2C0 /* DKOperationQueue.cpp */; };
 		840C3E0E178D396D00F57A8D /* DKRational.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B43D4F15D0F9A700C7A681 /* DKRational.cpp */; };
-		840C3E0F178D396D00F57A8D /* DKRunLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKRunLoop.cpp */; };
-		840C3E10178D396D00F57A8D /* DKRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKRunLoopTimer.cpp */; };
+		840C3E0F178D396D00F57A8D /* DKEventLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKEventLoop.cpp */; };
+		840C3E10178D396D00F57A8D /* DKEventLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKEventLoopTimer.cpp */; };
 		840C3E11178D396D00F57A8D /* DKSharedLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849E2A9315634719000CBE79 /* DKSharedLock.cpp */; };
 		840C3E12178D396D00F57A8D /* DKSpinLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C9141DD4B70091D2C0 /* DKSpinLock.cpp */; };
 		840C3E13178D396D00F57A8D /* DKStringU8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4CF141DD4B70091D2C0 /* DKStringU8.cpp */; };
@@ -206,8 +206,8 @@
 		840C3E30178D396E00F57A8D /* DKObjectRefCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840C3DF4178D396600F57A8D /* DKObjectRefCounter.cpp */; };
 		840C3E31178D396E00F57A8D /* DKOperationQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4BD141DD4B70091D2C0 /* DKOperationQueue.cpp */; };
 		840C3E32178D396E00F57A8D /* DKRational.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B43D4F15D0F9A700C7A681 /* DKRational.cpp */; };
-		840C3E33178D396E00F57A8D /* DKRunLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKRunLoop.cpp */; };
-		840C3E34178D396E00F57A8D /* DKRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKRunLoopTimer.cpp */; };
+		840C3E33178D396E00F57A8D /* DKEventLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKEventLoop.cpp */; };
+		840C3E34178D396E00F57A8D /* DKEventLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKEventLoopTimer.cpp */; };
 		840C3E35178D396E00F57A8D /* DKSharedLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849E2A9315634719000CBE79 /* DKSharedLock.cpp */; };
 		840C3E36178D396E00F57A8D /* DKSpinLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C9141DD4B70091D2C0 /* DKSpinLock.cpp */; };
 		840C3E37178D396E00F57A8D /* DKStringU8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4CF141DD4B70091D2C0 /* DKStringU8.cpp */; };
@@ -657,8 +657,8 @@
 		84211C411665E86300B9B9A2 /* DKOrderedArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BF141DD4B70091D2C0 /* DKOrderedArray.h */; };
 		84211C431665E86300B9B9A2 /* DKQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C1141DD4B70091D2C0 /* DKQueue.h */; };
 		84211C441665E86300B9B9A2 /* DKRational.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B43D5015D0F9A700C7A681 /* DKRational.h */; };
-		84211C451665E86300B9B9A2 /* DKRunLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKRunLoop.h */; };
-		84211C461665E86300B9B9A2 /* DKRunLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKRunLoopTimer.h */; };
+		84211C451665E86300B9B9A2 /* DKEventLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKEventLoop.h */; };
+		84211C461665E86300B9B9A2 /* DKEventLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKEventLoopTimer.h */; };
 		84211C471665E86300B9B9A2 /* DKSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C6141DD4B70091D2C0 /* DKSet.h */; };
 		84211C481665E86300B9B9A2 /* DKSharedInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C7141DD4B70091D2C0 /* DKSharedInstance.h */; };
 		84211C491665E86300B9B9A2 /* DKSharedLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 849E2A9415634719000CBE79 /* DKSharedLock.h */; };
@@ -719,8 +719,8 @@
 		84211C871665E86400B9B9A2 /* DKOrderedArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BF141DD4B70091D2C0 /* DKOrderedArray.h */; };
 		84211C891665E86400B9B9A2 /* DKQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C1141DD4B70091D2C0 /* DKQueue.h */; };
 		84211C8A1665E86400B9B9A2 /* DKRational.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B43D5015D0F9A700C7A681 /* DKRational.h */; };
-		84211C8B1665E86400B9B9A2 /* DKRunLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKRunLoop.h */; };
-		84211C8C1665E86400B9B9A2 /* DKRunLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKRunLoopTimer.h */; };
+		84211C8B1665E86400B9B9A2 /* DKEventLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKEventLoop.h */; };
+		84211C8C1665E86400B9B9A2 /* DKEventLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKEventLoopTimer.h */; };
 		84211C8D1665E86400B9B9A2 /* DKSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C6141DD4B70091D2C0 /* DKSet.h */; };
 		84211C8E1665E86400B9B9A2 /* DKSharedInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C7141DD4B70091D2C0 /* DKSharedInstance.h */; };
 		84211C8F1665E86400B9B9A2 /* DKSharedLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 849E2A9415634719000CBE79 /* DKSharedLock.h */; };
@@ -1005,10 +1005,10 @@
 		8436CDF31928A78900F18892 /* DKQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C1141DD4B70091D2C0 /* DKQueue.h */; };
 		8436CDF41928A78900F18892 /* DKRational.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B43D4F15D0F9A700C7A681 /* DKRational.cpp */; };
 		8436CDF51928A78900F18892 /* DKRational.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B43D5015D0F9A700C7A681 /* DKRational.h */; };
-		8436CDF61928A78900F18892 /* DKRunLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKRunLoop.cpp */; };
-		8436CDF71928A78900F18892 /* DKRunLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKRunLoop.h */; };
-		8436CDF81928A78900F18892 /* DKRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKRunLoopTimer.cpp */; };
-		8436CDF91928A78900F18892 /* DKRunLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKRunLoopTimer.h */; };
+		8436CDF61928A78900F18892 /* DKEventLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKEventLoop.cpp */; };
+		8436CDF71928A78900F18892 /* DKEventLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKEventLoop.h */; };
+		8436CDF81928A78900F18892 /* DKEventLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKEventLoopTimer.cpp */; };
+		8436CDF91928A78900F18892 /* DKEventLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKEventLoopTimer.h */; };
 		8436CDFA1928A78900F18892 /* DKSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C6141DD4B70091D2C0 /* DKSet.h */; };
 		8436CDFB1928A78900F18892 /* DKSharedInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C7141DD4B70091D2C0 /* DKSharedInstance.h */; };
 		8436CDFC1928A78900F18892 /* DKSharedLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849E2A9315634719000CBE79 /* DKSharedLock.cpp */; };
@@ -1106,8 +1106,8 @@
 		84798B9F19E51DFB009378A6 /* DKObjectRefCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840C3DF4178D396600F57A8D /* DKObjectRefCounter.cpp */; };
 		84798BA019E51DFB009378A6 /* DKOperationQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4BD141DD4B70091D2C0 /* DKOperationQueue.cpp */; };
 		84798BA119E51DFB009378A6 /* DKRational.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B43D4F15D0F9A700C7A681 /* DKRational.cpp */; };
-		84798BA219E51DFB009378A6 /* DKRunLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKRunLoop.cpp */; };
-		84798BA319E51DFB009378A6 /* DKRunLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKRunLoopTimer.cpp */; };
+		84798BA219E51DFB009378A6 /* DKEventLoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C2141DD4B70091D2C0 /* DKEventLoop.cpp */; };
+		84798BA319E51DFB009378A6 /* DKEventLoopTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C4141DD4B70091D2C0 /* DKEventLoopTimer.cpp */; };
 		84798BA419E51DFB009378A6 /* DKSharedLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849E2A9315634719000CBE79 /* DKSharedLock.cpp */; };
 		84798BA519E51DFB009378A6 /* DKSpinLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4C9141DD4B70091D2C0 /* DKSpinLock.cpp */; };
 		84798BA619E51DFB009378A6 /* DKStringU8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4CF141DD4B70091D2C0 /* DKStringU8.cpp */; };
@@ -1367,8 +1367,8 @@
 		84798CB019E51E96009378A6 /* DKOrderedArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4BF141DD4B70091D2C0 /* DKOrderedArray.h */; };
 		84798CB119E51E96009378A6 /* DKQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C1141DD4B70091D2C0 /* DKQueue.h */; };
 		84798CB219E51E96009378A6 /* DKRational.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B43D5015D0F9A700C7A681 /* DKRational.h */; };
-		84798CB319E51E96009378A6 /* DKRunLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKRunLoop.h */; };
-		84798CB419E51E96009378A6 /* DKRunLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKRunLoopTimer.h */; };
+		84798CB319E51E96009378A6 /* DKEventLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C3141DD4B70091D2C0 /* DKEventLoop.h */; };
+		84798CB419E51E96009378A6 /* DKEventLoopTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C5141DD4B70091D2C0 /* DKEventLoopTimer.h */; };
 		84798CB519E51E96009378A6 /* DKSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C6141DD4B70091D2C0 /* DKSet.h */; };
 		84798CB619E51E96009378A6 /* DKSharedInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4C7141DD4B70091D2C0 /* DKSharedInstance.h */; };
 		84798CB719E51E96009378A6 /* DKSharedLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 849E2A9415634719000CBE79 /* DKSharedLock.h */; };
@@ -2123,7 +2123,6 @@
 		844FA8EC155DBF0700344694 /* DKDataStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKDataStream.h; sourceTree = "<group>"; };
 		844FA8ED155DBF0700344694 /* DKList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKList.h; sourceTree = "<group>"; };
 		845422C8159314B000A0431D /* DKCircularQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKCircularQueue.h; sourceTree = "<group>"; };
-		84583C0D17D36FF4000F2186 /* Android.mk */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; lineEnding = 0; path = Android.mk; sourceTree = "<group>"; };
 		8463F696148266B300CEA51E /* DKAudioListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAudioListener.cpp; sourceTree = "<group>"; };
 		8463F697148266B300CEA51E /* DKAudioListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAudioListener.h; sourceTree = "<group>"; };
 		8464DA6D171C1C2A00E1E9CD /* DKVoxel32FileStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKVoxel32FileStorage.cpp; sourceTree = "<group>"; };
@@ -2189,10 +2188,10 @@
 		84A1E4BE141DD4B70091D2C0 /* DKOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKOperationQueue.h; sourceTree = "<group>"; };
 		84A1E4BF141DD4B70091D2C0 /* DKOrderedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKOrderedArray.h; sourceTree = "<group>"; };
 		84A1E4C1141DD4B70091D2C0 /* DKQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKQueue.h; sourceTree = "<group>"; };
-		84A1E4C2141DD4B70091D2C0 /* DKRunLoop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKRunLoop.cpp; sourceTree = "<group>"; };
-		84A1E4C3141DD4B70091D2C0 /* DKRunLoop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRunLoop.h; sourceTree = "<group>"; };
-		84A1E4C4141DD4B70091D2C0 /* DKRunLoopTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKRunLoopTimer.cpp; sourceTree = "<group>"; };
-		84A1E4C5141DD4B70091D2C0 /* DKRunLoopTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRunLoopTimer.h; sourceTree = "<group>"; };
+		84A1E4C2141DD4B70091D2C0 /* DKEventLoop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKEventLoop.cpp; sourceTree = "<group>"; };
+		84A1E4C3141DD4B70091D2C0 /* DKEventLoop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKEventLoop.h; sourceTree = "<group>"; };
+		84A1E4C4141DD4B70091D2C0 /* DKEventLoopTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKEventLoopTimer.cpp; sourceTree = "<group>"; };
+		84A1E4C5141DD4B70091D2C0 /* DKEventLoopTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKEventLoopTimer.h; sourceTree = "<group>"; };
 		84A1E4C6141DD4B70091D2C0 /* DKSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSet.h; sourceTree = "<group>"; };
 		84A1E4C7141DD4B70091D2C0 /* DKSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSharedInstance.h; sourceTree = "<group>"; };
 		84A1E4C8141DD4B70091D2C0 /* DKSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSingleton.h; sourceTree = "<group>"; };
@@ -2509,7 +2508,6 @@
 		08FB7794FE84155DC02AAC07 /* DK */ = {
 			isa = PBXGroup;
 			children = (
-				84583C0D17D36FF4000F2186 /* Android.mk */,
 				84798B8719E51CFA009378A6 /* DK_iOS-Info.plist */,
 				840CA4F71928946800689BB6 /* DK_OSX-Info.plist */,
 				84A1E492141DD4B70091D2C0 /* DKFoundation */,
@@ -2878,10 +2876,10 @@
 				84A1E4C1141DD4B70091D2C0 /* DKQueue.h */,
 				84B43D4F15D0F9A700C7A681 /* DKRational.cpp */,
 				84B43D5015D0F9A700C7A681 /* DKRational.h */,
-				84A1E4C2141DD4B70091D2C0 /* DKRunLoop.cpp */,
-				84A1E4C3141DD4B70091D2C0 /* DKRunLoop.h */,
-				84A1E4C4141DD4B70091D2C0 /* DKRunLoopTimer.cpp */,
-				84A1E4C5141DD4B70091D2C0 /* DKRunLoopTimer.h */,
+				84A1E4C2141DD4B70091D2C0 /* DKEventLoop.cpp */,
+				84A1E4C3141DD4B70091D2C0 /* DKEventLoop.h */,
+				84A1E4C4141DD4B70091D2C0 /* DKEventLoopTimer.cpp */,
+				84A1E4C5141DD4B70091D2C0 /* DKEventLoopTimer.h */,
 				84A1E4C6141DD4B70091D2C0 /* DKSet.h */,
 				84A1E4C7141DD4B70091D2C0 /* DKSharedInstance.h */,
 				849E2A9315634719000CBE79 /* DKSharedLock.cpp */,
@@ -3158,7 +3156,7 @@
 				840CA6261928952800689BB6 /* DKTextureCube.h in Headers */,
 				840CA5C01928952800689BB6 /* DKGeneric6DofConstraint.h in Headers */,
 				8436CE201928A78900F18892 /* DKZipArchiver.h in Headers */,
-				8436CDF71928A78900F18892 /* DKRunLoop.h in Headers */,
+				8436CDF71928A78900F18892 /* DKEventLoop.h in Headers */,
 				84F970051B4C26C400BA24E4 /* DKBvh.h in Headers */,
 				840CA5B01928952800689BB6 /* DKConvexHullShape.h in Headers */,
 				666ECA891DB1725900354463 /* DKWindow_macOS.h in Headers */,
@@ -3250,7 +3248,7 @@
 				8436CE001928A78900F18892 /* DKSpinLock.h in Headers */,
 				840CA5A81928952800689BB6 /* DKConcaveShape.h in Headers */,
 				840CA6091928952800689BB6 /* DKShaderConstant.h in Headers */,
-				8436CDF91928A78900F18892 /* DKRunLoopTimer.h in Headers */,
+				8436CDF91928A78900F18892 /* DKEventLoopTimer.h in Headers */,
 				8436CDEC1928A78900F18892 /* DKObject.h in Headers */,
 				8436CE0E1928A78900F18892 /* DKTimer.h in Headers */,
 				840CA5D11928952800689BB6 /* DKMaterial.h in Headers */,
@@ -3363,7 +3361,7 @@
 				84798C7B19E51E80009378A6 /* DKTextureCube.h in Headers */,
 				84798C3619E51E7F009378A6 /* DKCollisionShape.h in Headers */,
 				84798CCE19E51E96009378A6 /* DKZipArchiver.h in Headers */,
-				84798CB319E51E96009378A6 /* DKRunLoop.h in Headers */,
+				84798CB319E51E96009378A6 /* DKEventLoop.h in Headers */,
 				84F970081B4C26C500BA24E4 /* DKBvh.h in Headers */,
 				84798C8119E51E80009378A6 /* DKVector3.h in Headers */,
 				84798C7A19E51E80009378A6 /* DKTexture3D.h in Headers */,
@@ -3458,7 +3456,7 @@
 				84798C2719E51E7F009378A6 /* DKAffineTransform2.h in Headers */,
 				84798C5519E51E7F009378A6 /* DKMultiSphereShape.h in Headers */,
 				666ECAEB1DB172A700354463 /* DKApplication_iOS.h in Headers */,
-				84798CB419E51E96009378A6 /* DKRunLoopTimer.h in Headers */,
+				84798CB419E51E96009378A6 /* DKEventLoopTimer.h in Headers */,
 				84798CAC19E51E96009378A6 /* DKObject.h in Headers */,
 				84798CC219E51E96009378A6 /* DKTimer.h in Headers */,
 				84798C6519E51E7F009378A6 /* DKResourcePool.h in Headers */,
@@ -3605,9 +3603,9 @@
 				84211C871665E86400B9B9A2 /* DKOrderedArray.h in Headers */,
 				84211C891665E86400B9B9A2 /* DKQueue.h in Headers */,
 				84211C8A1665E86400B9B9A2 /* DKRational.h in Headers */,
-				84211C8B1665E86400B9B9A2 /* DKRunLoop.h in Headers */,
+				84211C8B1665E86400B9B9A2 /* DKEventLoop.h in Headers */,
 				840CA6591928957600689BB6 /* DKInclude.h in Headers */,
-				84211C8C1665E86400B9B9A2 /* DKRunLoopTimer.h in Headers */,
+				84211C8C1665E86400B9B9A2 /* DKEventLoopTimer.h in Headers */,
 				84211C8D1665E86400B9B9A2 /* DKSet.h in Headers */,
 				84A6A3AD1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84211C8E1665E86400B9B9A2 /* DKSharedInstance.h in Headers */,
@@ -3807,8 +3805,8 @@
 				84211C431665E86300B9B9A2 /* DKQueue.h in Headers */,
 				84211C441665E86300B9B9A2 /* DKRational.h in Headers */,
 				666ECA661DB1703600354463 /* DKAudioDevice.h in Headers */,
-				84211C451665E86300B9B9A2 /* DKRunLoop.h in Headers */,
-				84211C461665E86300B9B9A2 /* DKRunLoopTimer.h in Headers */,
+				84211C451665E86300B9B9A2 /* DKEventLoop.h in Headers */,
+				84211C461665E86300B9B9A2 /* DKEventLoopTimer.h in Headers */,
 				84211C471665E86300B9B9A2 /* DKSet.h in Headers */,
 				84A6A3AC1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84211C481665E86300B9B9A2 /* DKSharedInstance.h in Headers */,
@@ -4454,7 +4452,7 @@
 				840CA6051928952800689BB6 /* DKSerializer.cpp in Sources */,
 				8436CDCF1928A78900F18892 /* DKDateTime.cpp in Sources */,
 				840CA5901928952800689BB6 /* DKAudioPlayer.cpp in Sources */,
-				8436CDF81928A78900F18892 /* DKRunLoopTimer.cpp in Sources */,
+				8436CDF81928A78900F18892 /* DKEventLoopTimer.cpp in Sources */,
 				840CA5F61928952800689BB6 /* DKRenderTarget.cpp in Sources */,
 				840CA59E1928952800689BB6 /* DKCapsuleShape.cpp in Sources */,
 				840CA6171928952800689BB6 /* DKSpline.cpp in Sources */,
@@ -4528,7 +4526,7 @@
 				8436CDCD1928A78900F18892 /* DKDataStream.cpp in Sources */,
 				840CA64A1928954600689BB6 /* DKAudioStreamWave.cpp in Sources */,
 				8436CDD11928A78900F18892 /* DKDirectory.cpp in Sources */,
-				8436CDF61928A78900F18892 /* DKRunLoop.cpp in Sources */,
+				8436CDF61928A78900F18892 /* DKEventLoop.cpp in Sources */,
 				840CA61F1928952800689BB6 /* DKTexture.cpp in Sources */,
 				8436CE171928A78900F18892 /* DKUtils.mm in Sources */,
 				840CA62F1928952800689BB6 /* DKVector2.cpp in Sources */,
@@ -4612,7 +4610,7 @@
 				84798BA419E51DFB009378A6 /* DKSharedLock.cpp in Sources */,
 				84798BF619E51E48009378A6 /* DKSerializer.cpp in Sources */,
 				84798BD419E51E48009378A6 /* DKGeneric6DofConstraint.cpp in Sources */,
-				84798BA219E51DFB009378A6 /* DKRunLoop.cpp in Sources */,
+				84798BA219E51DFB009378A6 /* DKEventLoop.cpp in Sources */,
 				84798BF419E51E48009378A6 /* DKSceneState.cpp in Sources */,
 				84798BD119E51E48009378A6 /* DKFont.cpp in Sources */,
 				84798BA119E51DFB009378A6 /* DKRational.cpp in Sources */,
@@ -4658,7 +4656,7 @@
 				84798BB819E51E48009378A6 /* DKAffineTransform3.cpp in Sources */,
 				84798C1919E51E5F009378A6 /* DKAudioStreamVorbis.cpp in Sources */,
 				84798BC119E51E48009378A6 /* DKBox.cpp in Sources */,
-				84798BA319E51DFB009378A6 /* DKRunLoopTimer.cpp in Sources */,
+				84798BA319E51DFB009378A6 /* DKEventLoopTimer.cpp in Sources */,
 				84798BC319E51E48009378A6 /* DKCamera.cpp in Sources */,
 				84798BE119E51E48009378A6 /* DKModel.cpp in Sources */,
 				84798BB719E51E48009378A6 /* DKAffineTransform2.cpp in Sources */,
@@ -4865,7 +4863,7 @@
 				84211E0C1665EB4400B9B9A2 /* DKConvexShape.cpp in Sources */,
 				84211E101665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp in Sources */,
 				84211E141665EB4400B9B9A2 /* DKStaticMesh.cpp in Sources */,
-				840C3E33178D396E00F57A8D /* DKRunLoop.cpp in Sources */,
+				840C3E33178D396E00F57A8D /* DKEventLoop.cpp in Sources */,
 				84211E991665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp in Sources */,
 				84211E9D1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp in Sources */,
 				666ECB181DB180E800354463 /* DKGraphicsDevice.cpp in Sources */,
@@ -4880,7 +4878,7 @@
 				844C9C90171EB64000605E69 /* DKVoxel32SparseVolume.cpp in Sources */,
 				84CDB22A1725668700B16983 /* DKVoxelIsosurfacePolygonizer.cpp in Sources */,
 				840C3E20178D396E00F57A8D /* DKBuffer.cpp in Sources */,
-				840C3E34178D396E00F57A8D /* DKRunLoopTimer.cpp in Sources */,
+				840C3E34178D396E00F57A8D /* DKEventLoopTimer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5017,7 +5015,7 @@
 				84211E0B1665EB4400B9B9A2 /* DKConvexShape.cpp in Sources */,
 				84211E0F1665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp in Sources */,
 				84211E131665EB4400B9B9A2 /* DKStaticMesh.cpp in Sources */,
-				840C3E0F178D396D00F57A8D /* DKRunLoop.cpp in Sources */,
+				840C3E0F178D396D00F57A8D /* DKEventLoop.cpp in Sources */,
 				84211E981665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp in Sources */,
 				84211E9C1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp in Sources */,
 				84211EA01665EB8F00B9B9A2 /* DKAudioStreamWave.cpp in Sources */,
@@ -5033,7 +5031,7 @@
 				844C9C8F171EB64000605E69 /* DKVoxel32SparseVolume.cpp in Sources */,
 				84CDB2291725668700B16983 /* DKVoxelIsosurfacePolygonizer.cpp in Sources */,
 				840C3DFC178D396D00F57A8D /* DKBuffer.cpp in Sources */,
-				840C3E10178D396D00F57A8D /* DKRunLoopTimer.cpp in Sources */,
+				840C3E10178D396D00F57A8D /* DKEventLoopTimer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

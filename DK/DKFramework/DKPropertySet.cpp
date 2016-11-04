@@ -356,20 +356,20 @@ DKPropertySet& DKPropertySet::DefaultSet(void)
 	return p;
 }
 
-void DKPropertySet::SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKRunLoop* runLoop, void* context)
+void DKPropertySet::SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKEventLoop* eventLoop, void* context)
 {
 	if (context)
 	{
 		if (insertion)
-			insertionCallbacks.Value(key).SetCallback(insertion, runLoop, context);
+			insertionCallbacks.Value(key).SetCallback(insertion, eventLoop, context);
 		else if (insertionCallbacks.Find(key))
 			insertionCallbacks.Value(key).Remove(context);
 		if (modification)
-			modificationCallbacks.Value(key).SetCallback(modification, runLoop, context);
+			modificationCallbacks.Value(key).SetCallback(modification, eventLoop, context);
 		else if (modificationCallbacks.Find(key))
 			modificationCallbacks.Value(key).Remove(context);
 		if (deletion)
-			deletionCallbacks.Value(key).SetCallback(deletion, runLoop, context);
+			deletionCallbacks.Value(key).SetCallback(deletion, eventLoop, context);
 		else if (deletionCallbacks.Find(key))
 			deletionCallbacks.Value(key).Remove(context);
 	}

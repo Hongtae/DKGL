@@ -420,13 +420,13 @@ void DKWindow::AddObserver(void* context,
 						   WindowEventHandler* windowProc,
 						   KeyboardEventHandler* keyboardProc,
 						   MouseEventHandler* mouseProc,
-						   DKRunLoop* runLoop)
+						   DKEventLoop* eventLoop)
 {
 	if (context)
 	{
-		windowEventHandlers.SetCallback(windowProc, runLoop, context);
-		keyboardEventHandlers.SetCallback(keyboardProc, runLoop, context);
-		mouseEventHandlers.SetCallback(mouseProc, runLoop, context);
+		windowEventHandlers.SetCallback(windowProc, eventLoop, context);
+		keyboardEventHandlers.SetCallback(keyboardProc, eventLoop, context);
+		mouseEventHandlers.SetCallback(mouseProc, eventLoop, context);
 	}
 }
 	

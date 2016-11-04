@@ -27,7 +27,7 @@
 //    You don't have to create windows, screens if your application does not
 //    need window to display. (ie console application).
 //    Whether your application has window or not, an application will have
-//    main loop (RunLoop) and looping till Terminate() has called.
+//    main loop (DKEventLoop) and looping till Terminate() has called.
 // 2. Override OnTerminate(). this is called when application terminated by
 //    calling Terminate(). Your cleanup operations must be here.
 //    (destory windows, destroy screens, closing files, etc.)
@@ -116,8 +116,8 @@ namespace DKGL
 		virtual void OnRestore(void);       // application has restored.
 		virtual void OnActivated(void);     // application has activated.
 		virtual void OnDeactivated(void);   // application has deactivated.
-		virtual void OnInitialize(void);    // application being initialized. (entering RunLoop)
-		virtual void OnTerminate(void);     // application being terminated. (exiting RunLoop)
+		virtual void OnInitialize(void);    // application being initialized. (entering EventLoop)
+		virtual void OnTerminate(void);     // application being terminated. (exiting EventLoop)
 
 	private:
 		void Initialize();

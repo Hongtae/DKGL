@@ -60,7 +60,7 @@ void DKScreen::Stop(bool wait)
 {
 	if (this->renderThread && this->renderThread->IsAlive())
 	{
-		DKRunLoop::Stop();
+		DKEventLoop::Stop();
 		if (wait && this->renderThread->Id() != DKThread::CurrentThreadId())
 			this->renderThread->WaitTerminate();
 	}
@@ -81,20 +81,20 @@ bool DKScreen::Run(DKWindow* window, DKFrame* frame)
 
 		renderThread = DKThread::Create(DKFunction([this]() {
 			this->Initialize();
-			DKRunLoop::Run();
+			DKEventLoop::Run();
 			this->Finalize();
 		})->Invocation());
 
 		// wait until first frame be drawn.
-		this->ProcessOperation(DKFunction(this, &DKScreen::RenderScreen)->Invocation(true));
+		this->Process(DKFunction(this, &DKScreen::RenderScreen)->Invocation(true));
 		return true;
 	}
 	return false;
 }
 
-DKRunLoop* DKScreen::RunLoop(void) const
+DKEventLoop* DKScreen::EventLoop(void) const
 {
-	return static_cast<DKRunLoop*>(const_cast<DKScreen*>(this));
+	return static_cast<DKEventLoop*>(const_cast<DKScreen*>(this));
 }
 
 DKWindow* DKScreen::Window(void)
@@ -317,7 +317,7 @@ void DKScreen::RemoveAllFocusFramesForAnyDevices(bool notify)
 
 void DKScreen::Render(bool forced)
 {
-	PostOperation(DKFunction(this, &DKScreen::RenderScreen)->Invocation(forced));
+	Post(DKFunction(this, &DKScreen::RenderScreen)->Invocation(forced));
 }
 
 void DKScreen::RenderScreen(bool invalidate)
@@ -437,7 +437,7 @@ void DKScreen::Initialize(void)
 	rootFrame->Load(this, contentResolution);
 	rootFrame->SetRedraw();
 
-	window->AddObserver(this, DKFunction(this, &DKScreen::OnWindowEvent), DKFunction(this, &DKScreen::OnKeyboardEvent), DKFunction(this, &DKScreen::OnMouseEvent), this->RunLoop());
+	window->AddObserver(this, DKFunction(this, &DKScreen::OnWindowEvent), DKFunction(this, &DKScreen::OnKeyboardEvent), DKFunction(this, &DKScreen::OnMouseEvent), this->EventLoop());
 
 	double elapsed = timer.Elapsed();
 	DKLog("DKScreen::OnInitialize %f seconds.\n", elapsed);
@@ -493,12 +493,12 @@ void DKScreen::OnIdle(void)
 		}
 		else
 		{
-			DKRunLoop::WaitNextLoopTimeout(delay);
+			DKEventLoop::WaitNextLoopTimeout(delay);
 		}
 	}
 	else
 	{
-		DKRunLoop::OnIdle();
+		DKEventLoop::OnIdle();
 	}
 }
 

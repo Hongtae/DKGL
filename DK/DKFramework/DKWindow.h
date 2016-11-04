@@ -134,7 +134,7 @@ namespace DKGL
 
 		// add event handler.
 		// (a event that can be processed asynchronously, and dont need to response)
-		void AddObserver(void* context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*, DKRunLoop*);
+		void AddObserver(void* context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*, DKEventLoop*);
 		void RemoveObserver(void* context);
 
 		// control keyboard state

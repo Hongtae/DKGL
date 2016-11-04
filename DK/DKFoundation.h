@@ -79,10 +79,10 @@
 #include "DKFoundation/DKOperation.h"
 #include "DKFoundation/DKValue.h"
 
-// run-loop, operation queue, message-handler
+// event-loop, event-loop timer, operation queue
+#include "DKFoundation/DKEventLoop.h"
+#include "DKFoundation/DKEventLoopTimer.h"
 #include "DKFoundation/DKOperationQueue.h"
-#include "DKFoundation/DKRunLoop.h"
-#include "DKFoundation/DKRunLoopTimer.h"
 
 // etc
 #include "DKFoundation/DKEndianness.h"

@@ -1,12 +1,12 @@
 //
-//  File: DKRunLoop.cpp
+//  File: DKEventLoop.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKObject.h"
-#include "DKRunLoop.h"
+#include "DKEventLoop.h"
 #include "DKMap.h"
 #include "DKArray.h"
 #include "DKSpinLock.h"
@@ -24,46 +24,46 @@ namespace DKGL
 		static inline void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
 #endif
 
-		typedef DKMap<DKThread::ThreadId, DKObject<DKRunLoop>, DKDummyLock> RunLoopMap;
-		static RunLoopMap& GetRunLoopMap(void)
+		typedef DKMap<DKThread::ThreadId, DKObject<DKEventLoop>, DKDummyLock> EventLoopMap;
+		static EventLoopMap& GetEventLoopMap(void)
 		{
-			static RunLoopMap runloopMap;
+			static EventLoopMap runloopMap;
 			return runloopMap;
 		}
-		static DKSpinLock& GetRunLoopMapLock(void)
+		static DKSpinLock& GetEventLoopMapLock(void)
 		{
 			static DKSpinLock lock;
 			return lock;
 		}
-		static bool RegisterRunLoop(DKThread::ThreadId id, DKRunLoop* runLoop)
+		static bool RegisterEventLoop(DKThread::ThreadId id, DKEventLoop* eventLoop)
 		{
 			bool ret = false;
-			GetRunLoopMapLock().Lock();
-			ret = GetRunLoopMap().Insert(id, runLoop);
-			GetRunLoopMapLock().Unlock();
+			GetEventLoopMapLock().Lock();
+			ret = GetEventLoopMap().Insert(id, eventLoop);
+			GetEventLoopMapLock().Unlock();
 			return ret;
 		}
-		static void UnregisterRunLoop(DKThread::ThreadId id)
+		static void UnregisterEventLoop(DKThread::ThreadId id)
 		{
-			GetRunLoopMapLock().Lock();
-			GetRunLoopMap().Remove(id);
-			GetRunLoopMapLock().Unlock();
+			GetEventLoopMapLock().Lock();
+			GetEventLoopMap().Remove(id);
+			GetEventLoopMapLock().Unlock();
 		}
-		static DKRunLoop* GetRunLoop(DKThread::ThreadId id)
+		static DKEventLoop* GetEventLoop(DKThread::ThreadId id)
 		{
-			DKRunLoop* ret = NULL;
-			GetRunLoopMapLock().Lock();
-			RunLoopMap::Pair* p = GetRunLoopMap().Find(id);
+			DKEventLoop* ret = NULL;
+			GetEventLoopMapLock().Lock();
+			EventLoopMap::Pair* p = GetEventLoopMap().Find(id);
 			if (p)
 				ret = p->value;
-			GetRunLoopMapLock().Unlock();
+			GetEventLoopMapLock().Unlock();
 			return ret;
 		}
-		static bool IsRunLoopExist(const DKRunLoop* runloop)
+		static bool IsEventLoopExist(const DKEventLoop* runloop)
 		{
 			bool found = false;
-			GetRunLoopMapLock().Lock();
-			GetRunLoopMap().EnumerateForward([&](RunLoopMap::Pair& pair, bool* stop)
+			GetEventLoopMapLock().Lock();
+			GetEventLoopMap().EnumerateForward([&](EventLoopMap::Pair& pair, bool* stop)
 			{
 				if (pair.value == runloop)
 				{
@@ -71,24 +71,24 @@ namespace DKGL
 					found = true;
 				}
 			});
-			GetRunLoopMapLock().Unlock();
+			GetEventLoopMapLock().Unlock();
 			return found;
 		}
 
-		void TerminateAllRunLoops(void)
+		void TerminateAllEventLoops(void)
 		{
-			GetRunLoopMapLock().Lock();
+			GetEventLoopMapLock().Lock();
 
 			DKArray<DKThread::ThreadId> runloopThreadIds;
-			runloopThreadIds.Reserve(GetRunLoopMap().Count());
-			// Terminate all RunLoops
-			GetRunLoopMap().EnumerateForward([&runloopThreadIds](RunLoopMap::Pair& pair)
+			runloopThreadIds.Reserve(GetEventLoopMap().Count());
+			// Terminate all EventLoops
+			GetEventLoopMap().EnumerateForward([&runloopThreadIds](EventLoopMap::Pair& pair)
 			{
 				runloopThreadIds.Add(pair.key);
 				pair.value->Stop();
 
 			});
-			GetRunLoopMapLock().Unlock();
+			GetEventLoopMapLock().Unlock();
 
 			// Wait until all runloops being terminated.
 			for (DKThread::ThreadId tid : runloopThreadIds)
@@ -100,7 +100,7 @@ namespace DKGL
 		}
 
 		static DKCondition resultCond;
-		struct RunLoopResultCallback : public DKRunLoop::OperationResult
+		struct EventLoopResultCallback : public DKEventLoop::OperationResult
 		{
 			enum State
 			{
@@ -111,7 +111,7 @@ namespace DKGL
 			};
 			mutable State state;
 
-			RunLoopResultCallback(void) : state(StatePending)
+			EventLoopResultCallback(void) : state(StatePending)
 			{
 			}
 			bool EnterOperation(void) const
@@ -171,35 +171,35 @@ namespace DKGL
 using namespace DKGL;
 using namespace DKGL::Private;
 
-bool DKRunLoop::InternalCommandCompareOrder(const InternalCommandTick& lhs, const InternalCommandTick& rhs)
+bool DKEventLoop::InternalCommandCompareOrder(const InternalCommandTick& lhs, const InternalCommandTick& rhs)
 {
 	return lhs.fire < rhs.fire;
 }
 
-bool DKRunLoop::InternalCommandCompareOrder(const InternalCommandTime& lhs, const InternalCommandTime& rhs)
+bool DKEventLoop::InternalCommandCompareOrder(const InternalCommandTime& lhs, const InternalCommandTime& rhs)
 {
 	return lhs.fire < rhs.fire;
 }
 
-DKRunLoop::DKRunLoop(void)
+DKEventLoop::DKEventLoop(void)
 : run(false)
 , threadId(DKThread::invalidId)
-, commandQueueTick(&DKRunLoop::InternalCommandCompareOrder)
-, commandQueueTime(&DKRunLoop::InternalCommandCompareOrder)
+, commandQueueTick(&DKEventLoop::InternalCommandCompareOrder)
+, commandQueueTime(&DKEventLoop::InternalCommandCompareOrder)
 {
 }
 
-DKRunLoop::~DKRunLoop(void)
+DKEventLoop::~DKEventLoop(void)
 {
 	if (threadId != DKThread::invalidId)
 	{
-		DKERROR_THROW_DEBUG("RunLoop must be terminated before destroy!");
+		DKERROR_THROW_DEBUG("EventLoop must be terminated before destroy!");
 	}
 
-	RevokeAllOperations();
+	RevokeAll();
 }
 
-bool DKRunLoop::Run(void)
+bool DKEventLoop::Run(void)
 {
 	if (BindThread())
 	{
@@ -207,7 +207,7 @@ bool DKRunLoop::Run(void)
 		bool next = true;
 		while (loop)
 		{
-			next = this->Process();
+			next = this->Dispatch();
 			loop = this->run;
 			if (!next && loop)
 				OnIdle();
@@ -218,37 +218,37 @@ bool DKRunLoop::Run(void)
 	return false;
 }
 
-bool DKRunLoop::IsRunning(void) const
+bool DKEventLoop::IsRunning(void) const
 {
 	if (threadId != DKThread::invalidId)
 	{
-		DKASSERT_DEBUG(IsRunLoopExist(this));
+		DKASSERT_DEBUG(IsEventLoopExist(this));
 		return true;
 	}
 	return false;
 }
 
-void DKRunLoop::InternalPostCommand(const InternalCommandTick& cmd)
+void DKEventLoop::InternalPostCommand(const InternalCommandTick& cmd)
 {
 	DKCriticalSection<DKCondition> guard(commandQueueCond);
 	commandQueueTick.Insert(cmd);
 	commandQueueCond.Signal();
 }
 
-void DKRunLoop::InternalPostCommand(const InternalCommandTime& cmd)
+void DKEventLoop::InternalPostCommand(const InternalCommandTime& cmd)
 {
 	DKCriticalSection<DKCondition> guard(commandQueueCond);
 	commandQueueTime.Insert(cmd);
 	commandQueueCond.Signal();
 }
 
-bool DKRunLoop::BindThread(void)
+bool DKEventLoop::BindThread(void)
 {
 	if (this->threadId == DKThread::invalidId)
 	{
-		DKASSERT_DEBUG(IsRunLoopExist(this) == false);
+		DKASSERT_DEBUG(IsEventLoopExist(this) == false);
 		DKThread::ThreadId tid = DKThread::CurrentThreadId();
-		if (RegisterRunLoop(tid, this))
+		if (RegisterEventLoop(tid, this))
 		{
 			this->threadId = tid;
 			run = true;
@@ -263,34 +263,34 @@ bool DKRunLoop::BindThread(void)
 	return false;
 }
 
-void DKRunLoop::UnbindThread(void)
+void DKEventLoop::UnbindThread(void)
 {
-	DKASSERT_DEBUG(IsRunLoopExist(this));
+	DKASSERT_DEBUG(IsEventLoopExist(this));
 	DKASSERT_DEBUG(threadId != DKThread::invalidId);
-	DKASSERT_DEBUG(GetRunLoop(threadId) == this);
-	UnregisterRunLoop(this->threadId);
+	DKASSERT_DEBUG(GetEventLoop(threadId) == this);
+	UnregisterEventLoop(this->threadId);
 	threadId = DKThread::invalidId;
 }
 
-void DKRunLoop::Stop(void)
+void DKEventLoop::Stop(void)
 {
 	if (threadId != DKThread::invalidId)
 	{
-		DKASSERT_DEBUG(IsRunLoopExist(this));
+		DKASSERT_DEBUG(IsEventLoopExist(this));
 
-		this->PostOperation(DKFunction([this]() {
+		this->Post(DKFunction([this]() {
 			this->run = false;
 		})->Invocation());
 	}
 }
 
-DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation* operation, double delay)
+DKObject<DKEventLoop::OperationResult> DKEventLoop::Post(const DKOperation* operation, double delay)
 {
 	if (operation)
 	{
 		InternalCommandTick cmd;
 		cmd.operation = const_cast<DKOperation*>(operation);
-		cmd.result = DKOBJECT_NEW RunLoopResultCallback();
+		cmd.result = DKOBJECT_NEW EventLoopResultCallback();
 		cmd.fire = DKTimer::SystemTick() + static_cast<DKTimer::Tick>(DKTimer::SystemTickFrequency() * Max(delay, 0.0));
 		InternalPostCommand(cmd);
 
@@ -299,13 +299,13 @@ DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation*
 	return NULL;
 }
 
-DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation* operation, const DKDateTime& runAfter)
+DKObject<DKEventLoop::OperationResult> DKEventLoop::Post(const DKOperation* operation, const DKDateTime& runAfter)
 {
 	if (operation)
 	{
 		InternalCommandTime cmd;
 		cmd.operation = const_cast<DKOperation*>(operation);
-		cmd.result = DKOBJECT_NEW RunLoopResultCallback();
+		cmd.result = DKOBJECT_NEW EventLoopResultCallback();
 		cmd.fire = runAfter;
 		InternalPostCommand(cmd);
 
@@ -314,7 +314,7 @@ DKObject<DKRunLoop::OperationResult> DKRunLoop::PostOperation(const DKOperation*
 	return NULL;
 }
 
-bool DKRunLoop::ProcessOperation(const DKOperation* op)
+bool DKEventLoop::Process(const DKOperation* op)
 {
 	if (op)
 	{
@@ -325,7 +325,7 @@ bool DKRunLoop::ProcessOperation(const DKOperation* op)
 		}
 		else
 		{
-			auto p = this->PostOperation(op);
+			auto p = this->Post(op);
 			if (p)
 				return p->Result();
 		}
@@ -333,7 +333,7 @@ bool DKRunLoop::ProcessOperation(const DKOperation* op)
 	return false;
 }
 
-size_t DKRunLoop::RevokeAllOperations(void)
+size_t DKEventLoop::RevokeAll(void)
 {
 	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
 
@@ -343,7 +343,7 @@ size_t DKRunLoop::RevokeAllOperations(void)
 
 	auto revoke = [](const InternalCommand& ic)
 	{
-		const RunLoopResultCallback* callback = ic.result.StaticCast<RunLoopResultCallback>();
+		const EventLoopResultCallback* callback = ic.result.StaticCast<EventLoopResultCallback>();
 		if (callback)
 			callback->Revoke();
 	};
@@ -358,7 +358,7 @@ size_t DKRunLoop::RevokeAllOperations(void)
 	return numItems;
 }
 
-bool DKRunLoop::GetNextLoopIntervalNL(double* d) const
+bool DKEventLoop::GetNextLoopIntervalNL(double* d) const
 {
 	DKTimer::Tick currentTick = DKTimer::SystemTick();
 	DKDateTime currentDate = DKDateTime::Now();
@@ -402,7 +402,7 @@ bool DKRunLoop::GetNextLoopIntervalNL(double* d) const
 	return false;
 }
 
-void DKRunLoop::WaitNextLoop(void)
+void DKEventLoop::WaitNextLoop(void)
 {
 	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
 
@@ -419,7 +419,7 @@ void DKRunLoop::WaitNextLoop(void)
 	}
 }
 
-bool DKRunLoop::WaitNextLoopTimeout(double t)
+bool DKEventLoop::WaitNextLoopTimeout(double t)
 {
 	if (t > 0.0)
 	{
@@ -443,12 +443,12 @@ bool DKRunLoop::WaitNextLoopTimeout(double t)
 	return false;
 }
 
-void DKRunLoop::PerformOperation(const DKOperation* operation)
+void DKEventLoop::PerformOperation(const DKOperation* operation)
 {
 	operation->Perform();
 }
 
-bool DKRunLoop::Process(void)
+bool DKEventLoop::Dispatch(void)
 {
 	DKASSERT_DEBUG(this->threadId == DKThread::CurrentThreadId());
 
@@ -486,17 +486,17 @@ bool DKRunLoop::Process(void)
 	{
 		struct OpWrapper : public DKOperation
 		{
-			OpWrapper(DKRunLoop* r, DKOperation* o) : rl(r), op(o) {}
-			DKRunLoop* rl;
+			OpWrapper(DKEventLoop* e, DKOperation* o) : el(e), op(o) {}
+			DKEventLoop* el;
 			DKOperation* op;
 
 			void Perform(void) const override
 			{
-				rl->PerformOperation(op);
+				el->PerformOperation(op);
 			}
 		};
 		OpWrapper op(this, operation);
-		RunLoopResultCallback* resultCallback = result.StaticCast<RunLoopResultCallback>();
+		EventLoopResultCallback* resultCallback = result.StaticCast<EventLoopResultCallback>();
 		if (resultCallback)
 		{
 			if (resultCallback->EnterOperation())
@@ -515,22 +515,22 @@ bool DKRunLoop::Process(void)
 	return false;
 }
 
-bool DKRunLoop::IsWrokingThread(void) const
+bool DKEventLoop::IsWrokingThread(void) const
 {
 	return DKThread::CurrentThreadId() == this->threadId;
 }
 
-DKRunLoop* DKRunLoop::CurrentRunLoop(void)
+DKEventLoop* DKEventLoop::CurrentEventLoop(void)
 {
-	return GetRunLoop(DKThread::CurrentThreadId());
+	return GetEventLoop(DKThread::CurrentThreadId());
 }
 
-DKRunLoop* DKRunLoop::RunLoopForThreadID(DKThread::ThreadId id)
+DKEventLoop* DKEventLoop::EventLoopForThreadID(DKThread::ThreadId id)
 {
-	return GetRunLoop(id);
+	return GetEventLoop(id);
 }
 
-bool DKRunLoop::IsRunning(DKRunLoop* runloop)
+bool DKEventLoop::IsRunning(DKEventLoop* runloop)
 {
-	return IsRunLoopExist(runloop);
+	return IsEventLoopExist(runloop);
 }
