@@ -1,5 +1,5 @@
 //
-//  File: DKGraphicsDevice_Metal.mm
+//  File: GraphicsDevice.mm
 //  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -7,12 +7,12 @@
 //
 
 
-#include "DKGraphicsDevice_Metal.h"
+#include "GraphicsDevice.h"
 
 using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKGL::Private::Metal;
 
-DKGraphicsDevice_Metal::~DKGraphicsDevice_Metal(void)
+GraphicsDevice::~GraphicsDevice(void)
 {
 }
 

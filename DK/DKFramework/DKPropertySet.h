@@ -2,7 +2,7 @@
 //  File: DKPropertySet.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -25,14 +25,15 @@ namespace DKGL
 	public:
 		static DKPropertySet& DefaultSet(void);
 
-		typedef void InsertionFunc(DKString, DKVariant);					// key, new-value
-		typedef void ModificationFunc(DKString, DKVariant, DKVariant);	// key, old-value, new-value
-		typedef void DeletionFunc(DKString, DKVariant);					// key, old-value
+		using InsertionFunc = void (DKString, DKVariant);				// key, new-value
+		using ModificationFunc = void (DKString, DKVariant, DKVariant);	// key, old-value, new-value
+		using DeletionFunc = void (DKString, DKVariant);				// key, old-value
 
-		typedef DKFunctionSignature<InsertionFunc>		InsertionCallback;
-		typedef DKFunctionSignature<ModificationFunc>		ModificationCallback;
-		typedef DKFunctionSignature<DeletionFunc>			DeletionCallback;
-		typedef DKFunctionSignature<void (const DKString&, const DKVariant&)> Enumerator;
+		using InsertionCallback = DKFunctionSignature<InsertionFunc>;
+		using ModificationCallback = DKFunctionSignature<ModificationFunc>;
+		using DeletionCallback = DKFunctionSignature<DeletionFunc>;
+
+		using Enumerator = DKFunctionSignature<void (const DKString&, const DKVariant&)>;
 
 		DKPropertySet(void);
 		~DKPropertySet(void);
@@ -59,9 +60,10 @@ namespace DKGL
 		size_t NumberOfEntries(void) const;
 
 		// Add / Remove callback for key insertion, modification, deletion.
-		void SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKEventLoop* eventLoop, void* context);
-		void RemoveCallback(const DKString& key, void* context);
-		void RemoveCallback(void* context);
+		using ObserverContext = const void*;
+		void AddObserver(ObserverContext context, const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion);
+		void RemoveObserver(ObserverContext context, const DKString& key);
+		void RemoveObserver(ObserverContext context); // remove all keys for context
 
 		// enumerate all key, value pairs. (read-only)
 		void EnumerateForward(const Enumerator* e) const;
@@ -72,12 +74,12 @@ namespace DKGL
 		typedef DKMap<DKString, DKVariant> PropertyMap;
 		PropertyMap properties;
 
-		typedef DKMap<DKString, DKCallback<InsertionFunc, void*, DKSpinLock>>		InsertionCallbackMap;
-		typedef DKMap<DKString, DKCallback<ModificationFunc, void*, DKSpinLock>>	ModificationCallbackMap;
-		typedef DKMap<DKString, DKCallback<DeletionFunc, void*, DKSpinLock>>		DeletionCallbackMap;
+		DKSpinLock callbackLock;
+		template <typename T> using ObserverMap = DKMap<ObserverContext, T>;
+		DKMap<DKString, ObserverMap<DKObject<InsertionCallback>>> insertionCallbacks;
+		DKMap<DKString, ObserverMap<DKObject<ModificationCallback>>> modificationCallbacks;
+		DKMap<DKString, ObserverMap<DKObject<DeletionCallback>>> deletionCallbacks;
 
-		InsertionCallbackMap		insertionCallbacks;
-		ModificationCallbackMap		modificationCallbacks;
-		DeletionCallbackMap			deletionCallbacks;
+		template <typename T, typename... Args> void CallbackObservers(const DKString& key, const DKMap<DKString, ObserverMap<DKObject<T>>>& target, Args&&... args) const;
 	};
 }

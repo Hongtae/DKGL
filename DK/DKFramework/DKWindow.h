@@ -110,10 +110,10 @@ namespace DKGL
 		// if contentSize is smaller than 1, then using OS default value.
 		static const DKPoint undefinedOrigin;
 		static DKObject<DKWindow> Create(const DKString& title,		// window title
-													   const DKSize& contentSize,				// content size (system coordinates)
-													   const DKPoint& origin = undefinedOrigin,	// window origin (system coordinates)
-													   int style = StyleGeneralWindow,			// window style
-													   const WindowCallback& cb = WindowCallback());
+										 const DKSize& contentSize,				// content size (system coordinates)
+										 const DKPoint& origin = undefinedOrigin,	// window origin (system coordinates)
+										 int style = StyleGeneralWindow,			// window style
+										 const WindowCallback& cb = WindowCallback());
 		// Create proxy window. (can be used to interface of existing window)
 		static DKObject<DKWindow> CreateProxy(void* systemHandle);
 		void UpdateProxy(void);							// update proxy window status
@@ -134,8 +134,9 @@ namespace DKGL
 
 		// add event handler.
 		// (a event that can be processed asynchronously, and dont need to response)
-		void AddObserver(void* context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*, DKEventLoop*);
-		void RemoveObserver(void* context);
+		using EventHandlerContext = const void*;
+		void AddEventHandler(EventHandlerContext context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*);
+		void RemoveEventHandler(EventHandlerContext context);
 
 		// control keyboard state
 		// Keyboard has two states: raw-key input mode, text composition mode.
@@ -174,9 +175,10 @@ namespace DKGL
 		void PostWindowEvent(EventWindow type, const DKSize& contentSize, const DKPoint& windowOrigin, bool sync = false);
 
 	private:
-		DKCallback<WindowProc, void*, DKSpinLock>		windowEventHandlers;
-		DKCallback<KeyboardProc, void*, DKSpinLock>		keyboardEventHandlers;
-		DKCallback<MouseProc, void*, DKSpinLock>		mouseEventHandlers;
+		DKSpinLock handlerLock;
+		DKMap<EventHandlerContext, DKObject<WindowEventHandler>> windowEventHandlers;
+		DKMap<EventHandlerContext, DKObject<KeyboardEventHandler>> keyboardEventHandlers;
+		DKMap<EventHandlerContext, DKObject<MouseEventHandler>> mouseEventHandlers;
 
 		struct KeyboardState
 		{

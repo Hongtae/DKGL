@@ -437,7 +437,7 @@ void DKScreen::Initialize(void)
 	rootFrame->Load(this, contentResolution);
 	rootFrame->SetRedraw();
 
-	window->AddObserver(this, DKFunction(this, &DKScreen::OnWindowEvent), DKFunction(this, &DKScreen::OnKeyboardEvent), DKFunction(this, &DKScreen::OnMouseEvent), this->EventLoop());
+	window->AddEventHandler(this, DKFunction(this, &DKScreen::OnWindowEvent), DKFunction(this, &DKScreen::OnKeyboardEvent), DKFunction(this, &DKScreen::OnMouseEvent));
 
 	double elapsed = timer.Elapsed();
 	DKLog("DKScreen::OnInitialize %f seconds.\n", elapsed);
@@ -448,7 +448,7 @@ void DKScreen::Finalize(void)
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 
-	window->RemoveObserver(this);
+	window->RemoveEventHandler(this);
 
 	// unload main frame.
 	rootFrame->Unload();

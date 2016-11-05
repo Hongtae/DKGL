@@ -205,11 +205,17 @@ DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
 
 void DKWindow::PostMouseEvent(EventMouse type, int deviceId, int buttonId, const DKPoint& pos, const DKVector2& delta, bool sync)
 {
-	// call mouse handler
-	if (sync)
-		mouseEventHandlers.ProcessInvocation(type, deviceId, buttonId, pos, delta);
-	else
-		mouseEventHandlers.PostInvocation(type, deviceId, buttonId, pos, delta);
+	handlerLock.Lock();
+	DKArray<DKObject<MouseEventHandler>> callbacks;
+	callbacks.Reserve(mouseEventHandlers.Count());
+	mouseEventHandlers.EnumerateForward([&callbacks](decltype(mouseEventHandlers)::Pair& pair){
+		if (pair.value)
+			callbacks.Add(pair.value);
+	});
+	handlerLock.Unlock();
+
+	for (MouseEventHandler* handler : callbacks)
+		handler->Invoke(type, deviceId, buttonId, pos, delta);
 }
 
 void DKWindow::PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey key, const DKString& textInput, bool sync)
@@ -237,12 +243,18 @@ void DKWindow::PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey 
 		if (!keyboard.textInputEnabled && (type == EventKeyboardTextInput || type == EventKeyboardTextInputCandidate))
 			return;
 	}
-	
-	// call keyboard handler
-	if (sync)
-		keyboardEventHandlers.ProcessInvocation(type, deviceId, key, textInput);
-	else
-		keyboardEventHandlers.PostInvocation(type, deviceId, key, textInput);
+
+	handlerLock.Lock();
+	DKArray<DKObject<KeyboardEventHandler>> callbacks;
+	callbacks.Reserve(keyboardEventHandlers.Count());
+	keyboardEventHandlers.EnumerateForward([&callbacks](decltype(keyboardEventHandlers)::Pair& pair){
+		if (pair.value)
+			callbacks.Add(pair.value);
+	});
+	handlerLock.Unlock();
+
+	for (KeyboardEventHandler* handler : callbacks)
+		handler->Invoke(type, deviceId, key, textInput);
 }
 
 void DKWindow::PostWindowEvent(EventWindow type, const DKSize& contentSize, const DKPoint& windowOrigin, bool sync)
@@ -298,11 +310,17 @@ void DKWindow::PostWindowEvent(EventWindow type, const DKSize& contentSize, cons
 		break;
 	}
 
-	// call window handler
-	if (sync)
-		windowEventHandlers.ProcessInvocation(type, contentSize, windowOrigin);
-	else
-		windowEventHandlers.PostInvocation(type, contentSize, windowOrigin);
+	handlerLock.Lock();
+	DKArray<DKObject<WindowEventHandler>> callbacks;
+	callbacks.Reserve(windowEventHandlers.Count());
+	windowEventHandlers.EnumerateForward([&callbacks](decltype(windowEventHandlers)::Pair& pair){
+		if (pair.value)
+			callbacks.Add(pair.value);
+	});
+	handlerLock.Unlock();
+
+	for (WindowEventHandler* handler : callbacks)
+		handler->Invoke(type, contentSize, windowOrigin);
 }
 
 void DKWindow::ShowMouse(int deviceId, bool bShow)
@@ -416,24 +434,25 @@ DKString DKWindow::Title(void) const
 	return L"";
 }
 
-void DKWindow::AddObserver(void* context,
-						   WindowEventHandler* windowProc,
-						   KeyboardEventHandler* keyboardProc,
-						   MouseEventHandler* mouseProc,
-						   DKEventLoop* eventLoop)
+void DKWindow::AddEventHandler(EventHandlerContext context,
+							   WindowEventHandler* windowProc,
+							   KeyboardEventHandler* keyboardProc,
+							   MouseEventHandler* mouseProc)
 {
 	if (context)
 	{
-		windowEventHandlers.SetCallback(windowProc, eventLoop, context);
-		keyboardEventHandlers.SetCallback(keyboardProc, eventLoop, context);
-		mouseEventHandlers.SetCallback(mouseProc, eventLoop, context);
+		DKCriticalSection<DKSpinLock> guard(handlerLock);
+		windowEventHandlers.Update(context, windowProc);
+		keyboardEventHandlers.Update(context, keyboardProc);
+		mouseEventHandlers.Update(context, mouseProc);
 	}
 }
 	
-void DKWindow::RemoveObserver(void* context)
+void DKWindow::RemoveEventHandler(EventHandlerContext context)
 {
 	if (context)
 	{
+		DKCriticalSection<DKSpinLock> guard(handlerLock);
 		windowEventHandlers.Remove(context);
 		keyboardEventHandlers.Remove(context);
 		mouseEventHandlers.Remove(context);

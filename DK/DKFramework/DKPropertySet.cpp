@@ -2,7 +2,7 @@
 //  File: DKPropertySet.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKPropertySet.h"
@@ -280,9 +280,7 @@ bool DKPropertySet::SetInitialValue(const DKString& key, const DKVariant& value)
 
 	if (result)
 	{
-		auto p = insertionCallbacks.Find(key);
-		if (p)
-			p->value.PostInvocation(key, value);
+		CallbackObservers(key, insertionCallbacks, value);
 	}
 
 	return result;
@@ -307,15 +305,11 @@ void DKPropertySet::SetValue(const DKString& key, const DKVariant& value)
 
 	if (modification)
 	{
-		auto p = modificationCallbacks.Find(key);
-		if (p)
-			p->value.PostInvocation(key, oldValue, value);
+		CallbackObservers(key, modificationCallbacks, oldValue, value);
 	}
 	else
 	{
-		auto p = insertionCallbacks.Find(key);
-		if (p)
-			p->value.PostInvocation(key, value);
+		CallbackObservers(key, insertionCallbacks, value);
 	}
 }
 
@@ -339,9 +333,7 @@ void DKPropertySet::Remove(const DKString& key)
 
 	if (deletion)
 	{
-			auto p = deletionCallbacks.Find(key);
-			if (p)
-				p->value.PostInvocation(key, oldValue);
+		CallbackObservers(key, deletionCallbacks, oldValue);
 	}
 }
 
@@ -356,29 +348,37 @@ DKPropertySet& DKPropertySet::DefaultSet(void)
 	return p;
 }
 
-void DKPropertySet::SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKEventLoop* eventLoop, void* context)
+void DKPropertySet::AddObserver(ObserverContext context,
+								const DKString& key,
+								InsertionCallback* insertion,
+								ModificationCallback* modification,
+								DeletionCallback* deletion)
 {
 	if (context)
 	{
+		DKCriticalSection<DKSpinLock> guard(callbackLock);
+
 		if (insertion)
-			insertionCallbacks.Value(key).SetCallback(insertion, eventLoop, context);
+			insertionCallbacks.Value(key).Update(context, insertion);
 		else if (insertionCallbacks.Find(key))
 			insertionCallbacks.Value(key).Remove(context);
 		if (modification)
-			modificationCallbacks.Value(key).SetCallback(modification, eventLoop, context);
+			modificationCallbacks.Value(key).Update(context, modification);
 		else if (modificationCallbacks.Find(key))
 			modificationCallbacks.Value(key).Remove(context);
 		if (deletion)
-			deletionCallbacks.Value(key).SetCallback(deletion, eventLoop, context);
+			deletionCallbacks.Value(key).Update(context, deletion);
 		else if (deletionCallbacks.Find(key))
 			deletionCallbacks.Value(key).Remove(context);
 	}
 }
 
-void DKPropertySet::RemoveCallback(const DKString& key, void* context)
+void DKPropertySet::RemoveObserver(ObserverContext context, const DKString& key)
 {
 	if (context)
 	{
+		DKCriticalSection<DKSpinLock> guard(callbackLock);
+
 		auto p1 = insertionCallbacks.Find(key);
 		if (p1)
 			p1->value.Remove(context);
@@ -391,19 +391,21 @@ void DKPropertySet::RemoveCallback(const DKString& key, void* context)
 	}
 }
 
-void DKPropertySet::RemoveCallback(void* context)
+void DKPropertySet::RemoveObserver(ObserverContext context)
 {
 	if (context)
 	{
-		insertionCallbacks.EnumerateForward([context](InsertionCallbackMap::Pair& pair)
+		DKCriticalSection<DKSpinLock> guard(callbackLock);
+
+		insertionCallbacks.EnumerateForward([context](decltype(insertionCallbacks)::Pair& pair)
 		{
 			pair.value.Remove(context);
 		});
-		modificationCallbacks.EnumerateForward([context](ModificationCallbackMap::Pair& pair)
+		modificationCallbacks.EnumerateForward([context](decltype(modificationCallbacks)::Pair& pair)
 		{
 			pair.value.Remove(context);
 		});
-		deletionCallbacks.EnumerateForward([context](DeletionCallbackMap::Pair& pair)
+		deletionCallbacks.EnumerateForward([context](decltype(deletionCallbacks)::Pair& pair)
 		{
 			pair.value.Remove(context);
 		});
@@ -428,3 +430,21 @@ void DKPropertySet::EnumerateBackward(const Enumerator* e) const
 	}	
 }
 
+template <typename T, typename... Args>
+void DKPropertySet::CallbackObservers(const DKString& key, const DKMap<DKString, ObserverMap<DKObject<T>>>& target, Args&&... args) const
+{
+	callbackLock.Lock();
+	DKArray<DKObject<T>> callbacks;
+	auto p = target.Find(key);
+	if (p)
+	{
+		callbacks.Reserve(p->value.Count());
+		p->value.EnumerateForward([&callbacks](const typename decltype(p->value)::Pair& pair) {
+			callbacks.Add(pair.value);
+		});
+	}
+	callbackLock.Unlock();
+	for (T* cb : callbacks)
+		cb->Invoke(key, std::forward<Args>(args)...);
+
+}

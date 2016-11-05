@@ -16,11 +16,14 @@ namespace DKGL
 {
 	namespace Private
 	{
-		class DKGraphicsDevice_Metal : public DKGraphicsDeviceInterface
+		namespace Metal
 		{
-		public:
-			~DKGraphicsDevice_Metal(void);
-		};
+			class GraphicsDevice : public DKGraphicsDeviceInterface
+			{
+			public:
+				~GraphicsDevice(void);
+			};
+		}
 	}
 }
 
