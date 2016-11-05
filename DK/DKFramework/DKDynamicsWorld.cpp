@@ -8,9 +8,6 @@
 #include "Private/BulletUtils.h"
 #include "DKMath.h"
 #include "DKDynamicsWorld.h"
-#include "DKRenderer.h"
-
-using namespace DKGL;
 
 namespace DKGL
 {

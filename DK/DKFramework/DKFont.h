@@ -30,7 +30,8 @@ namespace DKGL
 	public:
 		struct GlyphData
 		{
-			DKObject<DKTexture2D>		texture;
+			//DKObject<DKTexture2D>		texture;
+			void* texture;
 			DKPoint									position;
 			DKSize									advance;
 			DKRect									rect;
@@ -86,22 +87,26 @@ namespace DKGL
 		bool		kerningEnabled;		// kerning on/off
 		bool		forceBitmap;		// force bitmap loads
 
-		struct SharedTextures
+		struct GlyphTextureAtlas
 		{
-			DKObject<DKTexture2D>	texture;
+			//DKObject<DKTexture2D>	texture;
+			void* texture;
 			unsigned int freeSpaceWidth;
 		};
+
 		typedef DKMap<wchar_t, GlyphData>		GlyphDataMap;
 		typedef DKMap<wchar_t, unsigned int>	CharIndexMap;
 		
-		mutable GlyphDataMap								glyphMap;
-		mutable CharIndexMap								charIndexMap;
-		mutable DKArray<SharedTextures>		textures;
-		mutable unsigned int								numGlyphsLoaded;
+		mutable GlyphDataMap				glyphMap;
+		mutable CharIndexMap				charIndexMap;
+		mutable DKArray<GlyphTextureAtlas> 	textures;
+		mutable unsigned int				numGlyphsLoaded;
 
 		void* ftFace;
 		DKSpinLock lock;
 		DKObject<DKData> fontData;
-		DKTexture2D* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const;
+
+		//DKTexture2D* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const;
+		void* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const { return NULL; }
 	};
 }

@@ -2,18 +2,15 @@
 //  File: DKTextureSampler.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/Inc_OpenGL.h"
 #include "DKTextureSampler.h"
 
-using namespace DKGL;
 namespace DKGL
 {
 	namespace Private
 	{
-		GLenum GetTextureTargetGLValue(DKTexture::Target t);
 	}
 }
 using namespace DKGL;
@@ -31,66 +28,6 @@ DKTextureSampler::DKTextureSampler(void)
 
 DKTextureSampler::~DKTextureSampler(void)
 {
-}
-
-void DKTextureSampler::Bind(DKTexture::Target t) const
-{
-	GLenum target = GetTextureTargetGLValue(t);
-	if (target == 0)
-		return;
-
-	switch (this->minFilter)
-	{
-	case MagFilterNearest:
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		break;
-	case MagFilterLinear:
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		break;
-	}
-	switch (this->magFilter)
-	{
-	case MinFilterNearest:
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		break;
-	case MinFilterLinear:
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		break;
-	case MinFilterNearestMipmapNearest:
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-		break;
-	case MinFilterNearestMipmapLinear:
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-		break;
-	case MinFilterLinearMipmapNearest:
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-		break;
-	case MinFilterLinearMipmapLinear:
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		break;
-	}
-	
-	GLenum wrapModes[] = {
-		GL_TEXTURE_WRAP_S,
-		GL_TEXTURE_WRAP_T,
-		GL_TEXTURE_WRAP_R,
-	};
-	int numModes = sizeof(wrapModes) / sizeof(wrapModes[0]);
-	for (int i = 0; i < numModes; i++)
-	{
-		switch (wrap[i])
-		{
-		case WrapRepeat:
-			glTexParameteri(target, wrapModes[i], GL_REPEAT);
-			break;
-		case WrapMirroredRepeat:
-			glTexParameteri(target, wrapModes[i], GL_MIRRORED_REPEAT);
-			break;
-		case WrapClampToEdge:
-			glTexParameteri(target, wrapModes[i], GL_CLAMP_TO_EDGE);
-			break;
-		}
-	}
 }
 
 DKObject<DKSerializer> DKTextureSampler::Serializer(void)

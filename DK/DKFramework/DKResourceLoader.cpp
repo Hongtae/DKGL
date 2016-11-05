@@ -9,25 +9,12 @@
 #include "DKResourceLoader.h"
 #include "DKSerializer.h"
 
-// 2011-08-16
-// includes resource class headers
-// to register default handler.
 #include "DKAnimation.h"
-#include "DKMaterial.h"
-#include "DKTexture.h"
-#include "DKTexture2D.h"
-#include "DKTexture3D.h"
-#include "DKTextureCube.h"
-#include "DKVertexBuffer.h"
-#include "DKIndexBuffer.h"
-
 #include "DKCollisionShape.h"
 
-#include "DKModel.h"
 #include "DKRigidBody.h"
 #include "DKSoftBody.h"
-#include "DKStaticMesh.h"
-#include "DKSkinMesh.h"
+#include "DKModel.h"
 
 // constraints
 #include "DKConeTwistConstraint.h"
@@ -37,9 +24,6 @@
 #include "DKHingeConstraint.h"
 #include "DKPoint2PointConstraint.h"
 #include "DKSliderConstraint.h"
-
-// others
-#include "DKRenderTarget.h"
 
 
 using namespace DKGL;
@@ -123,24 +107,13 @@ namespace DKGL
 			// make sure to allocator exists before register class-types.
 			static DKAllocator::Maintainer init;
 
-
 			REGISTER_RESOURCE_CLASS(DKAnimation);
-			REGISTER_RESOURCE_CLASS(DKMaterial);
-
-			REGISTER_RESOURCE_CLASS(DKTexture);
-			REGISTER_RESOURCE_CLASS(DKTexture2D);
-			REGISTER_RESOURCE_CLASS(DKTexture3D);
-			REGISTER_RESOURCE_CLASS(DKTextureCube);
-
-			REGISTER_RESOURCE_CLASS(DKVertexBuffer);
-			REGISTER_RESOURCE_CLASS(DKIndexBuffer);
 
 			// collision shape helper
 			REGISTER_RESOURCE_CLASS(DKCollisionShape::SerializeHelper);
+
 			// model object
 			REGISTER_RESOURCE_CLASS(DKModel);
-			REGISTER_RESOURCE_CLASS(DKStaticMesh);
-			REGISTER_RESOURCE_CLASS(DKSkinMesh);
 			REGISTER_RESOURCE_CLASS(DKCollisionObject);
 			REGISTER_RESOURCE_CLASS(DKRigidBody);
 			REGISTER_RESOURCE_CLASS(DKSoftBody);

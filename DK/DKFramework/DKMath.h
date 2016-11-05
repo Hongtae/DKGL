@@ -8,7 +8,6 @@
 #pragma once
 #include <math.h>
 #include <float.h>
-#include "../DKInclude.h"
 
 // DKMath.h
 // predefined math macros.

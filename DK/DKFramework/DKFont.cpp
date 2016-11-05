@@ -6,12 +6,8 @@
 //
 
 #include "../lib/Inc_FreeType.h"
-#include "../lib/Inc_OpenGL.h"
 #include "DKMath.h"
 #include "DKFont.h"
-#include "DKTexture2D.h"
-
-using namespace DKGL;
 
 namespace DKGL
 {
@@ -42,6 +38,8 @@ namespace DKGL
 		}
 	}
 }
+
+using namespace DKGL;
 
 DKFont::DKFont(void)
 	: ftFace(NULL)
@@ -318,6 +316,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	return &glyphMap.Value(c);
 }
 
+#if 0
 DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const
 {
 	// keep padding between each glyphs.
@@ -342,14 +341,14 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 	bool createNewTexture = true;
 	for (int i = 0; i < textures.Count(); i++)
 	{
-		SharedTextures& st = textures.Value(i);
-		if (st.freeSpaceWidth >= (width + padding))
+		GlyphTextureAtlas& gta = textures.Value(i);
+		if (gta.freeSpaceWidth >= (width + padding))
 		{
-			rect = DKRect(st.texture->Width() - st.freeSpaceWidth, 0, width, height);
-			st.texture->SetPixelData(rect, buff);
-			DKASSERT_DEBUG((width + padding) <= st.freeSpaceWidth);
-			st.freeSpaceWidth -= width + padding; // add padding next to glyph
-			tex = st.texture;
+			rect = DKRect(gta.texture->Width() - gta.freeSpaceWidth, 0, width, height);
+			gta.texture->SetPixelData(rect, buff);
+			DKASSERT_DEBUG((width + padding) <= gta.freeSpaceWidth);
+			gta.freeSpaceWidth -= width + padding; // add padding next to glyph
+			tex = gta.texture;
 			createNewTexture = false;
 			break;
 		}
@@ -358,6 +357,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 	{
 		// create new texture.
 		int reqWidth = (Width() + padding) * (face->num_glyphs - numGlyphsLoaded); // padding for each glyphs.
+
 		static int maxTextureSize = 0;
 		if (maxTextureSize == 0)
 			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
@@ -376,14 +376,15 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 		rect = DKRect(0,0,width,height);
 		tex->SetPixelData(rect, buff);
 		DKASSERT_DEBUG((newTexWidth - width - padding) > 0);
-		SharedTextures st = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
-		textures.Add(st);
+		GlyphTextureAtlas gta = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
+		textures.Add(gta);
 	}
 	DKMemoryDefaultAllocator::Free(buff);
 	numGlyphsLoaded++;
 
 	return tex;
 }
+#endif
 
 float DKFont::Baseline(void) const
 {

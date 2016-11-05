@@ -10,8 +10,6 @@
 #include "../DKFoundation.h"
 #include "DKCamera.h"
 #include "DKColor.h"
-#include "DKSceneState.h"
-#include "DKRenderer.h"
 #include "DKModel.h"
 #include "DKCollisionObject.h"
 
@@ -29,6 +27,7 @@ namespace DKGL
 		DKWorld(void);
 		virtual ~DKWorld(void);
 
+#if 0
 		struct DrawCallback
 		{
 			using VertexArray = DKArray<DKRenderer::Vertex3DColored>;
@@ -42,7 +41,7 @@ namespace DKGL
 			virtual bool ObjectColors(const DKCollisionObject*, DKColor&, DKColor&) { return true; }
 		};
 		void Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const;
-
+#endif
 		virtual void Update(double tickDelta, DKTimeTick tick);
 
 		enum : unsigned int
@@ -75,7 +74,7 @@ namespace DKGL
 		void RemoveObject(DKModel*);
 		virtual void RemoveAllObjects(void);
 
-		virtual void SetSceneState(const DKCamera& cam, DKSceneState& state) const;
+//		virtual void SetSceneState(const DKCamera& cam, DKSceneState& state) const;
 
 		class CollisionWorldContext;
 
@@ -90,7 +89,7 @@ namespace DKGL
 		DKWorld(CollisionWorldContext* ctxt);
 
 		DKSet<DKObject<DKModel>> sceneObjects;
-		DKSet<DKMesh*> meshes;
+//		DKSet<DKMesh*> meshes;
 
 		void UpdateObjectKinematics(double tickDelta, DKTimeTick tick);
 		void UpdateObjectSceneStates(void);

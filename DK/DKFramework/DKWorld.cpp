@@ -8,11 +8,9 @@
 #include "Private/BulletUtils.h"
 #include "DKMath.h"
 #include "DKWorld.h"
-#include "DKRenderer.h"
 #include "DKModel.h"
-#include "DKMesh.h"
 
-using namespace DKGL;
+#if 0
 namespace DKGL
 {
 	namespace Private
@@ -841,6 +839,8 @@ namespace DKGL
 		};
 	}
 }
+#endif
+
 using namespace DKGL;
 using namespace DKGL::Private;
 
@@ -864,7 +864,7 @@ DKWorld::DKWorld(void)
 	DKASSERT_DEBUG(context->configuration);
 	DKASSERT_DEBUG(context->world);
 
-	context->world->setDebugDrawer(new ShapeDrawer);
+//	context->world->setDebugDrawer(new ShapeDrawer);
 	context->world->setForceUpdateAllAabbs(false);
 }
 
@@ -879,7 +879,7 @@ DKWorld::DKWorld(CollisionWorldContext* ctxt)
 	DKASSERT_DEBUG(context->world);
 	context->tick = 0;
 	context->internalTick = 0;
-	context->world->setDebugDrawer(new ShapeDrawer);
+//	context->world->setDebugDrawer(new ShapeDrawer);
 }
 
 DKWorld::~DKWorld(void)
@@ -1003,6 +1003,7 @@ void DKWorld::UpdateObjectSceneStates(void)
 	}
 }
 
+#if 0
 void DKWorld::Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const
 {
 	DKASSERT_DEBUG(context);
@@ -1198,6 +1199,7 @@ void DKWorld::Render(const DKCamera& camera, int sceneIndex, unsigned int modes,
 		drawer->sceneState.Clear();
 	}
 }
+#endif
 
 size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb)
 {
@@ -1315,6 +1317,7 @@ const DKCollisionObject* DKWorld::RayTestClosest(const DKVector3& begin, const D
 	return result;
 }
 
+#if 0
 void DKWorld::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 {
 	state.Clear();
@@ -1331,6 +1334,7 @@ void DKWorld::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 	state.cameraPosition = cam.ViewPosition();
 	state.ambientColor = this->ambientColor;
 }
+#endif
 
 bool DKWorld::AddObject(DKModel* obj)
 {
@@ -1417,10 +1421,10 @@ bool DKWorld::AddSingleObject(DKModel* obj)
 
 	if (obj->type == DKModel::TypeMesh)
 	{
-		DKASSERT_DEBUG(dynamic_cast<DKMesh*>(obj) != NULL);
-		DKMesh* mesh = static_cast<DKMesh*>(obj);
-		DKASSERT_DEBUG(meshes.Contains(mesh) == false);
-		meshes.Insert(mesh);
+//		DKASSERT_DEBUG(dynamic_cast<DKMesh*>(obj) != NULL);
+//		DKMesh* mesh = static_cast<DKMesh*>(obj);
+//		DKASSERT_DEBUG(meshes.Contains(mesh) == false);
+//		meshes.Insert(mesh);
 		return true;
 	}
 	else if (obj->type == DKModel::TypeCollision)
@@ -1443,9 +1447,9 @@ void DKWorld::RemoveSingleObject(DKModel* obj)
 
 	if (obj->type == DKModel::TypeMesh)
 	{
-		DKASSERT_DEBUG(dynamic_cast<DKMesh*>(obj) != NULL);
-		DKMesh* mesh = static_cast<DKMesh*>(obj);
-		meshes.Remove(static_cast<DKMesh*>(mesh));
+//		DKASSERT_DEBUG(dynamic_cast<DKMesh*>(obj) != NULL);
+//		DKMesh* mesh = static_cast<DKMesh*>(obj);
+//		meshes.Remove(static_cast<DKMesh*>(mesh));
 	}
 	else if (obj->type == DKModel::TypeCollision)
 	{
@@ -1478,7 +1482,7 @@ void DKWorld::RemoveAllObjects(void)
 		model->OnRemovedFromScene();
 	});
 	this->sceneObjects.Clear();
-	this->meshes.Clear();
+//	this->meshes.Clear();
 }
 
 size_t DKWorld::NumberOfSceneObjects(void) const

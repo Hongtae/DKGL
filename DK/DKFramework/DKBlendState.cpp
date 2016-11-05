@@ -5,59 +5,9 @@
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/Inc_OpenGL.h"
 #include "DKBlendState.h"
-#include "DKOpenGLContext.h"
-
-namespace DKGL
-{
-	namespace Private
-	{
-		namespace
-		{
-			inline GLenum GetGLValue(DKBlendState::BlendFunc f)
-			{
-				switch (f)
-				{
-				case DKBlendState::BlendFuncAdd:					return GL_FUNC_ADD;
-				case DKBlendState::BlendFuncSubtract:				return GL_FUNC_SUBTRACT;
-				case DKBlendState::BlendFuncReverseSubtract:		return GL_FUNC_REVERSE_SUBTRACT;
-				case DKBlendState::BlendFuncMin:					return GL_MIN;
-				case DKBlendState::BlendFuncMax:					return GL_MAX;
-				}
-				DKLog("Warning: BlendFunc (%x) invalid or not supported.\n", f);
-				return GL_FUNC_ADD;
-			}
-			inline GLenum GetGLValue(DKBlendState::BlendMode m)
-			{
-				switch (m)
-				{
-				case DKBlendState::BlendModeZero:					return GL_ZERO;
-				case DKBlendState::BlendModeOne:					return GL_ONE;
-				case DKBlendState::BlendModeSrcColor:				return GL_SRC_COLOR;
-				case DKBlendState::BlendModeOneMinusSrcColor:		return GL_ONE_MINUS_SRC_COLOR;
-				case DKBlendState::BlendModeDstColor:				return GL_DST_COLOR;
-				case DKBlendState::BlendModeOneMinusDstColor:		return GL_ONE_MINUS_DST_COLOR;
-				case DKBlendState::BlendModeSrcAlpha:				return GL_SRC_ALPHA;
-				case DKBlendState::BlendModeOneMinusSrcAlpha:		return GL_ONE_MINUS_SRC_ALPHA;
-				case DKBlendState::BlendModeDstAlpha:				return GL_DST_ALPHA;
-				case DKBlendState::BlendModeOneMinusDstAlpha:		return GL_ONE_MINUS_DST_ALPHA;
-				case DKBlendState::BlendModeConstantColor:			return GL_CONSTANT_COLOR;
-				case DKBlendState::BlendModeOneMinusConstColor:	return GL_ONE_MINUS_CONSTANT_COLOR;
-				case DKBlendState::BlendModeConstantAlpha:			return GL_CONSTANT_ALPHA;
-				case DKBlendState::BlendModeOneMinusConstAlpha:	return GL_ONE_MINUS_CONSTANT_ALPHA;
-				case DKBlendState::BlendModeSrcAlphaSaturate:		return GL_SRC_ALPHA_SATURATE;
-				}
-				DKLog("Warning: BlendMode (%x) invalid or not supported.\n", m);
-				return GL_ZERO;
-			}
-		}
-	}
-}
 
 using namespace DKGL;
-using namespace DKGL;
-
 
 const DKBlendState	DKBlendState::defaultOpaque(BlendModeOne, BlendModeZero, BlendFuncAdd);
 const DKBlendState	DKBlendState::defaultAlpha(BlendModeSrcAlpha, BlendModeOne, BlendModeOneMinusSrcAlpha, BlendModeOne, BlendFuncAdd, BlendFuncAdd);
@@ -133,23 +83,6 @@ DKBlendState::DKBlendState(void)
 
 DKBlendState::~DKBlendState(void)
 {
-}
-
-void DKBlendState::Bind(void) const
-{
-	DKRenderState&	state = DKOpenGLContext::RenderState();
-	state.ColorMask(colorWriteR, colorWriteG, colorWriteB, colorWriteA);
-	DKColor c = this->constantColor;
-	state.BlendColor(c.r, c.g, c.b, c.a);
-	state.BlendEquation(Private::GetGLValue(blendFuncRGB), Private::GetGLValue(blendFuncAlpha));
-	state.BlendFunc(Private::GetGLValue(srcBlendRGB), Private::GetGLValue(srcBlendAlpha), Private::GetGLValue(dstBlendRGB), Private::GetGLValue(dstBlendAlpha));
-
-	if (blendFuncRGB == blendFuncAlpha && blendFuncRGB == BlendFuncAdd &&
-		srcBlendRGB == srcBlendAlpha && srcBlendRGB == BlendModeOne &&
-		dstBlendRGB == dstBlendAlpha && dstBlendRGB == BlendModeZero)
-		state.Disable(DKRenderState::GLStateBlend);
-	else
-		state.Enable(DKRenderState::GLStateBlend);
 }
 
 DKString DKBlendState::FuncToString(const BlendFunc f)

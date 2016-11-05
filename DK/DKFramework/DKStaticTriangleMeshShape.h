@@ -9,6 +9,7 @@
 #include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKConcaveShape.h"
+#include "DKTriangle.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKStaticTriangleMeshShape

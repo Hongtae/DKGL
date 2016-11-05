@@ -2,7 +2,7 @@
 //  File: DKBlendState.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -72,11 +72,9 @@ namespace DKGL
 					 bool writeB = true,
 					 bool writeA = true,
 					 const DKColor& color = DKColor(0,0,0,0));
+
 		DKBlendState(void);
-
 		~DKBlendState(void);
-
-		void Bind(void) const;
 
 		bool			colorWriteR:1;
 		bool			colorWriteG:1;
