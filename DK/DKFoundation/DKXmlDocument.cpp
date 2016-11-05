@@ -1,19 +1,19 @@
 //
-//  File: DKXMLDocument.cpp
+//  File: DKXmlDocument.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
-#include "DKXMLDocument.h"
+#include "DKXmlDocument.h"
 #include "DKBuffer.h"
 #include "DKStack.h"
 #include "DKLog.h"
 
 using namespace DKGL;
 
-// DocumentBuilder : inherited from DKXMLParser, to building DKXMLDocument object.
-class DKXMLDocument::DocumentBuilder : public DKXMLParser
+// DocumentBuilder : inherited from DKXmlParser, to building DKXmlDocument object.
+class DKXmlDocument::DocumentBuilder : public DKXmlParser
 {
 public:
 	DocumentBuilder(void) : document(NULL)
@@ -26,20 +26,20 @@ public:
 	DKString									warningDesc;
 	DKString									errorDesc;
 	DKString									fatalErrorDesc;
-	DKObject<DKXMLDocument>						document; // building document.
+	DKObject<DKXmlDocument>						document; // building document.
 
 private:
-	DKStack<DKObject<DKXMLElement>>				elementsStack;
-	DKObject<DKXMLDocTypeDecl>					docTypeDecl; // DTD
+	DKStack<DKObject<DKXmlElement>>				elementsStack;
+	DKObject<DKXmlDocTypeDecl>					docTypeDecl; // DTD
 
-	DKXMLDocument::Namespace* FindNamespace(const DKString& prefix, const DKString& URI)
+	DKXmlDocument::Namespace* FindNamespace(const DKString& prefix, const DKString& URI)
 	{
 		if (prefix.Length() == 0 && URI.Length() == 0)
 			return NULL;
-		DKStack<DKObject<DKXMLElement>> clone = elementsStack;
+		DKStack<DKObject<DKXmlElement>> clone = elementsStack;
 		while (!clone.IsEmpty())
 		{
-			DKXMLElement* e = clone.Top();
+			DKXmlElement* e = clone.Top();
 			if (!e->namespaces.IsEmpty())
 			{
 				for (size_t i = 0; i < e->namespaces.Count(); i++)
@@ -53,30 +53,30 @@ private:
 		return NULL;
 	}
 	////////////////////////////////////////////////////////////////////////////////
-	// DKXMLParser overrides
+	// DKXmlParser overrides
 	void OnProcessingInstruction(const DKString& target, const DKString& data)
 	{
 		if (!document)	return;
-		DKObject<DKXMLInstruction> ins = DKObject<DKXMLInstruction>::New();
+		DKObject<DKXmlInstruction> ins = DKObject<DKXmlInstruction>::New();
 		ins->target = target;
 		ins->data = data;
 
 		if (!elementsStack.IsEmpty())
-			elementsStack.Top()->nodes.Add(ins.SafeCast<DKXMLNode>());
+			elementsStack.Top()->nodes.Add(ins.SafeCast<DKXmlNode>());
 		else if (docTypeDecl)
-			docTypeDecl->nodes.Add(ins.SafeCast<DKXMLNode>());
+			docTypeDecl->nodes.Add(ins.SafeCast<DKXmlNode>());
 		else
-			document->nodes.Add(ins.SafeCast<DKXMLNode>());
+			document->nodes.Add(ins.SafeCast<DKXmlNode>());
 	}
 	void OnInternalSubsetDeclaration(const DKString& name, const DKString& externalID, const DKString& systemID)
 	{
 		if (!document)	return;
 
-		DKObject<DKXMLDocTypeDecl> d = DKObject<DKXMLDocTypeDecl>::New();
+		DKObject<DKXmlDocTypeDecl> d = DKObject<DKXmlDocTypeDecl>::New();
 		d->name = name;
 		d->externalID = externalID;
 		d->systemID = systemID;
-		document->nodes.Add(d.SafeCast<DKXMLNode>());
+		document->nodes.Add(d.SafeCast<DKXmlNode>());
 		docTypeDecl = d;
 	}
 	void OnExternalSubsetDeclaration(const DKString& name, const DKString& externalID, const DKString& systemID)
@@ -88,25 +88,25 @@ private:
 	{
 		if (!docTypeDecl)	return;
 
-		DKObject<DKXMLAttributeDecl> a = DKObject<DKXMLAttributeDecl>::New();
+		DKObject<DKXmlAttributeDecl> a = DKObject<DKXmlAttributeDecl>::New();
 		a->decl = attr;
 		a->enumeratedValues = enumeratedValues;
-		docTypeDecl->nodes.Add(a.SafeCast<DKXMLNode>());
+		docTypeDecl->nodes.Add(a.SafeCast<DKXmlNode>());
 	}
 	void OnElementDeclaration(const ElementDecl& elem, const ElementContentDecl& content)
 	{
 		if (!docTypeDecl)	return;
 
-		DKObject<DKXMLElementDecl> e = DKObject<DKXMLElementDecl>::New();
+		DKObject<DKXmlElementDecl> e = DKObject<DKXmlElementDecl>::New();
 		e->decl = elem;
 		e->contents = content;
 
-		docTypeDecl->nodes.Add(e.SafeCast<DKXMLNode>());
+		docTypeDecl->nodes.Add(e.SafeCast<DKXmlNode>());
 	}
 	void OnStartDocument(void)
 	{
 		elementsStack.Clear();
-		document = DKObject<DKXMLDocument>::New();
+		document = DKObject<DKXmlDocument>::New();
 		docTypeDecl = NULL;
 	}
 	void OnEndDocument(void)
@@ -118,25 +118,25 @@ private:
 	{
 		docTypeDecl = NULL;
 		if (!document)	return;
-		DKObject<DKXMLElement> e = DKObject<DKXMLElement>::New();
+		DKObject<DKXmlElement> e = DKObject<DKXmlElement>::New();
 		e->name = element.name;
 		e->namespaces.Reserve(namespaces.Count());
 		for (size_t i = 0; i < namespaces.Count(); i++)
 		{
-			DKXMLNamespace ns = { namespaces[i].prefix, namespaces[i].URI };
+			DKXmlNamespace ns = { namespaces[i].prefix, namespaces[i].URI };
 			e->namespaces.Add(ns);
 		}
 		if (elementsStack.IsEmpty())
 			document->SetRootElement(e);
 		else
-			elementsStack.Top()->nodes.Add(e.SafeCast<DKXMLNode>());
+			elementsStack.Top()->nodes.Add(e.SafeCast<DKXmlNode>());
 		elementsStack.Push(e);
 
 		// add attribute
 		e->attributes.Reserve(attributes.Count());
 		for (size_t i = 0; i < attributes.Count(); i++)
 		{
-			DKXMLAttribute att;
+			DKXmlAttribute att;
 			att.name = attributes[i].name;
 			att.value = attributes[i].value;
 			att.ns = FindNamespace(attributes[i].prefix, attributes[i].URI);
@@ -155,24 +155,24 @@ private:
 	{
 		if (!document)	return;
 
-		DKObject<DKXMLComment>	c = DKObject<DKXMLComment>::New();
+		DKObject<DKXmlComment>	c = DKObject<DKXmlComment>::New();
 		c->value = comment;
 
 		if (!elementsStack.IsEmpty())
-			elementsStack.Top()->nodes.Add((DKXMLNode*)c);
+			elementsStack.Top()->nodes.Add((DKXmlNode*)c);
 		else if (docTypeDecl)
-			docTypeDecl->nodes.Add(c.SafeCast<DKXMLNode>());
+			docTypeDecl->nodes.Add(c.SafeCast<DKXmlNode>());
 		else
-			document->nodes.Add(c.SafeCast<DKXMLNode>());
+			document->nodes.Add(c.SafeCast<DKXmlNode>());
 	}
 	void OnCharacters(const char* ch, size_t len)
 	{
 		if (!document)	return;
 		if (!elementsStack.IsEmpty())
 		{
-			DKObject<DKXMLPCData> c = DKObject<DKXMLPCData>::New();
+			DKObject<DKXmlPCData> c = DKObject<DKXmlPCData>::New();
 			c->value.SetValue((const DKUniChar8*)ch, len);
-			elementsStack.Top()->nodes.Add(c.SafeCast<DKXMLNode>());
+			elementsStack.Top()->nodes.Add(c.SafeCast<DKXmlNode>());
 		}
 	}
 	void OnCharacterDataBlock(const char* ch, size_t len)
@@ -180,50 +180,50 @@ private:
 		if (!document)	return;
 		if (!elementsStack.IsEmpty())
 		{
-			DKObject<DKXMLCData> c = DKObject<DKXMLCData>::New();
+			DKObject<DKXmlCData> c = DKObject<DKXmlCData>::New();
 			c->value.SetValue((const DKUniChar8*)ch, len);
-			elementsStack.Top()->nodes.Add(c.SafeCast<DKXMLNode>());
+			elementsStack.Top()->nodes.Add(c.SafeCast<DKXmlNode>());
 		}
 	}
 	void OnWarning(const DKString& mesg)
 	{
 		this->warningDesc = mesg;
-		//	DKLog("DKXMLDocumentBuilder:Warning: %ls\n", (const wchar_t*)mesg);
+		//	DKLog("DKXmlDocumentBuilder:Warning: %ls\n", (const wchar_t*)mesg);
 	}
 	void OnError(const DKString& mesg)
 	{
 		this->errorDesc = mesg;
-		//	DKLog("DKXMLDocumentBuilder:Error: %ls\n", (const wchar_t*)mesg);
+		//	DKLog("DKXmlDocumentBuilder:Error: %ls\n", (const wchar_t*)mesg);
 		document = NULL;
 	}
 	void OnFatalError(const DKString& mesg)
 	{
 		this->fatalErrorDesc = mesg;
-		//	DKLog("DKXMLDocumentBuilder:FatalError: %ls\n", (const wchar_t*)mesg);
+		//	DKLog("DKXmlDocumentBuilder:FatalError: %ls\n", (const wchar_t*)mesg);
 		document = NULL;
 	}
 };
 
-DKXMLDocument::DKXMLDocument(void)
+DKXmlDocument::DKXmlDocument(void)
 {
 }
 
-DKXMLDocument::DKXMLDocument(DocTypeDecl* dtd, Element* root)
+DKXmlDocument::DKXmlDocument(DocTypeDecl* dtd, Element* root)
 {
 	SetDTD(dtd);
 	SetRootElement(root);
 }
 
-DKXMLDocument::DKXMLDocument(Element* root)
+DKXmlDocument::DKXmlDocument(Element* root)
 {
 	SetRootElement(root);
 }
 
-DKXMLDocument::~DKXMLDocument(void)
+DKXmlDocument::~DKXmlDocument(void)
 {
 }
 
-DKObject<DKXMLDocument> DKXMLDocument::Open(Type t, const DKString& fileOrURL, DKString* desc)
+DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, const DKString& fileOrURL, DKString* desc)
 {
 	DocumentBuilder doc;
 	bool ret = t == TypeXML ? doc.BeginXML(fileOrURL) : doc.BeginHTML(fileOrURL);
@@ -243,7 +243,7 @@ DKObject<DKXMLDocument> DKXMLDocument::Open(Type t, const DKString& fileOrURL, D
 	return NULL;
 }
 
-DKObject<DKXMLDocument> DKXMLDocument::Open(Type t, const DKData* buffer, DKString* desc)
+DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, const DKData* buffer, DKString* desc)
 {
 	DocumentBuilder doc;
 	bool ret = t == TypeXML ? doc.BeginXML(buffer) : doc.BeginHTML(buffer);
@@ -263,7 +263,7 @@ DKObject<DKXMLDocument> DKXMLDocument::Open(Type t, const DKData* buffer, DKStri
 	return NULL;
 }
 
-DKObject<DKXMLDocument> DKXMLDocument::Open(Type t, DKStream* stream, DKString* desc)
+DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, DKStream* stream, DKString* desc)
 {
 	DocumentBuilder doc;
 	bool ret = t == TypeXML ? doc.BeginXML(stream) : doc.BeginHTML(stream);
@@ -283,7 +283,7 @@ DKObject<DKXMLDocument> DKXMLDocument::Open(Type t, DKStream* stream, DKString* 
 	return NULL;
 }
 
-DKXMLElement* DKXMLDocument::RootElement(void)
+DKXmlElement* DKXmlDocument::RootElement(void)
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -293,7 +293,7 @@ DKXMLElement* DKXMLDocument::RootElement(void)
 	return NULL;
 }
 
-const DKXMLElement* DKXMLDocument::RootElement(void) const
+const DKXmlElement* DKXmlDocument::RootElement(void) const
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -303,7 +303,7 @@ const DKXMLElement* DKXMLDocument::RootElement(void) const
 	return NULL;
 }
 
-void DKXMLDocument::SetRootElement(Element* e)
+void DKXmlDocument::SetRootElement(Element* e)
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -320,7 +320,7 @@ void DKXMLDocument::SetRootElement(Element* e)
 		nodes.Add(e);
 }
 
-DKXMLDocTypeDecl* DKXMLDocument::DTD(void)
+DKXmlDocTypeDecl* DKXmlDocument::DTD(void)
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -330,7 +330,7 @@ DKXMLDocTypeDecl* DKXMLDocument::DTD(void)
 	return NULL;
 }
 
-const DKXMLDocTypeDecl* DKXMLDocument::DTD(void) const
+const DKXmlDocTypeDecl* DKXmlDocument::DTD(void) const
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -340,7 +340,7 @@ const DKXMLDocTypeDecl* DKXMLDocument::DTD(void) const
 	return NULL;
 }
 
-void DKXMLDocument::SetDTD(DocTypeDecl* d)
+void DKXmlDocument::SetDTD(DocTypeDecl* d)
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -357,7 +357,7 @@ void DKXMLDocument::SetDTD(DocTypeDecl* d)
 		nodes.Add(d);
 }
 
-DKObject<DKData> DKXMLDocument::Export(DKStringEncoding e) const
+DKObject<DKData> DKXmlDocument::Export(DKStringEncoding e) const
 {
 	if (RootElement() == NULL)
 		return NULL;
@@ -376,7 +376,7 @@ DKObject<DKData> DKXMLDocument::Export(DKStringEncoding e) const
 	return doc.Encode(e);
 }
 
-size_t DKXMLDocument::Export(DKStringEncoding e, DKStream* output) const
+size_t DKXmlDocument::Export(DKStringEncoding e, DKStream* output) const
 {
 	size_t s = 0;
 	if (output && output->IsWritable())
@@ -395,19 +395,19 @@ size_t DKXMLDocument::Export(DKStringEncoding e, DKStream* output) const
 	return s;
 }
 
-DKXMLDocument::Node::NodeType DKXMLDocument::Node::Type(void) const
+DKXmlDocument::Node::NodeType DKXmlDocument::Node::Type(void) const
 {
 	if (this)
 		return this->type;
 	return NodeTypeUnknown;
 }
 
-DKString DKXMLDocument::Instruction::Export(void) const
+DKString DKXmlDocument::Instruction::Export(void) const
 {
 	return DKString(L"<?") + target + L" " + data + L"?>";
 }
 
-DKString DKXMLDocument::DocTypeDecl::Export(void) const
+DKString DKXmlDocument::DocTypeDecl::Export(void) const
 {
 	DKString ret = DKString(L"<!DOCTYPE ") + name;
 	if (externalID.Length() > 0)
@@ -430,42 +430,42 @@ DKString DKXMLDocument::DocTypeDecl::Export(void) const
 	return ret;
 }
 
-DKString DKXMLDocument::ElementDecl::Export(void) const
+DKString DKXmlDocument::ElementDecl::Export(void) const
 {
 	DKString ret = DKString(L"<!ELEMENT ") + decl.name + L" ";
 	switch (decl.type)
 	{
-	case DKXMLParser::ElementDecl::TypeEmpty:	ret += L"EMPTY";		break;
-	case DKXMLParser::ElementDecl::TypeAny:		ret += L"ANY";			break;
+	case DKXmlParser::ElementDecl::TypeEmpty:	ret += L"EMPTY";		break;
+	case DKXmlParser::ElementDecl::TypeAny:		ret += L"ANY";			break;
 	}
-	if (contents.type != DKXMLParser::ElementContentDecl::TypeUndefined)
-		ret += DKString(L" (") + DKXMLParser::FormatElementContent(contents) + L") >";
+	if (contents.type != DKXmlParser::ElementContentDecl::TypeUndefined)
+		ret += DKString(L" (") + DKXmlParser::FormatElementContent(contents) + L") >";
 	else
 		ret += L">";
 	return ret;
 }
 
-DKString DKXMLDocument::AttributeDecl::Export(void) const
+DKString DKXmlDocument::AttributeDecl::Export(void) const
 {
 	DKString ret = DKString(L"<!ATTLIST ") + decl.element + L" " + decl.name;
 	switch (decl.type)
 	{
-	case DKXMLParser::AttributeDecl::TypeCData:				ret += L" CDATA";		break;
-	case DKXMLParser::AttributeDecl::TypeID:				ret += L" ID";			break;
-	case DKXMLParser::AttributeDecl::TypeIDRef:				ret += L" IDREF";		break;
-	case DKXMLParser::AttributeDecl::TypeIDRefs:			ret += L" IDREFS";		break;
-	case DKXMLParser::AttributeDecl::TypeEntity:			ret += L" ENTITY";		break;
-	case DKXMLParser::AttributeDecl::TypeEntities:			ret += L" ENTITIES";	break;
-	case DKXMLParser::AttributeDecl::TypeNMToken:			ret += L" NMTOKEN";		break;
-	case DKXMLParser::AttributeDecl::TypeNMTokens:			ret += L" NMTOKENS";	break;
-	case DKXMLParser::AttributeDecl::TypeEnumeration:		ret += L" ENUMERATION";	break;
-	case DKXMLParser::AttributeDecl::TypeNotation:			ret += L" NOTATION";	break;
+	case DKXmlParser::AttributeDecl::TypeCData:				ret += L" CDATA";		break;
+	case DKXmlParser::AttributeDecl::TypeID:				ret += L" ID";			break;
+	case DKXmlParser::AttributeDecl::TypeIDRef:				ret += L" IDREF";		break;
+	case DKXmlParser::AttributeDecl::TypeIDRefs:			ret += L" IDREFS";		break;
+	case DKXmlParser::AttributeDecl::TypeEntity:			ret += L" ENTITY";		break;
+	case DKXmlParser::AttributeDecl::TypeEntities:			ret += L" ENTITIES";	break;
+	case DKXmlParser::AttributeDecl::TypeNMToken:			ret += L" NMTOKEN";		break;
+	case DKXmlParser::AttributeDecl::TypeNMTokens:			ret += L" NMTOKENS";	break;
+	case DKXmlParser::AttributeDecl::TypeEnumeration:		ret += L" ENUMERATION";	break;
+	case DKXmlParser::AttributeDecl::TypeNotation:			ret += L" NOTATION";	break;
 	}
 	switch (decl.defaultValueType)
 	{
-	case DKXMLParser::AttributeDecl::ValueTypeRequired:		ret += L" #REQUIRED";	break;
-	case DKXMLParser::AttributeDecl::ValueTypeImplied:		ret += L" #IMPLIED";	break;
-	case DKXMLParser::AttributeDecl::ValueTypeFixed:		ret += L" #FIXED";		break;
+	case DKXmlParser::AttributeDecl::ValueTypeRequired:		ret += L" #REQUIRED";	break;
+	case DKXmlParser::AttributeDecl::ValueTypeImplied:		ret += L" #IMPLIED";	break;
+	case DKXmlParser::AttributeDecl::ValueTypeFixed:		ret += L" #FIXED";		break;
 	}
 	if (decl.defaultValue.Length() > 0)
 		ret += DKString(L" ") + decl.defaultValue;
@@ -474,18 +474,18 @@ DKString DKXMLDocument::AttributeDecl::Export(void) const
 	return ret;
 }
 
-DKString DKXMLDocument::Comment::Export(void) const
+DKString DKXmlDocument::Comment::Export(void) const
 {
 	return DKString(L"<!--") + value + L"-->";
 }
 
-DKString DKXMLDocument::Element::Export(void) const
+DKString DKXmlDocument::Element::Export(void) const
 {
 	DKArray<Namespace> dummy;
 	return Export(dummy);
 }
 
-DKString DKXMLDocument::Element::Export(DKArray<Namespace>& writtenNS) const
+DKString DKXmlDocument::Element::Export(DKArray<Namespace>& writtenNS) const
 {
 	if (name.Length() == 0)
 		return L"";
@@ -517,7 +517,7 @@ DKString DKXMLDocument::Element::Export(DKArray<Namespace>& writtenNS) const
 		}
 	} formatNamespace;
 
-	const DKXMLNamespace* nodeNS = NULL;
+	const DKXmlNamespace* nodeNS = NULL;
 	if (ns)
 	{
 		if (ns->prefix.Length() > 0 && ns->URI.Length() > 0)
@@ -611,14 +611,14 @@ DKString DKXMLDocument::Element::Export(DKArray<Namespace>& writtenNS) const
 	return ret;
 }
 
-DKString DKXMLDocument::CData::Export(void) const
+DKString DKXmlDocument::CData::Export(void) const
 {
 	DKString cdata(value);
 	cdata.Replace(L"]]>", L"]]]]><![CDATA[>");
 	return DKString(L"<![CDATA[") + cdata + L"]]>";
 }
 
-DKString DKXMLDocument::PCData::Export(void) const
+DKString DKXmlDocument::PCData::Export(void) const
 {
 	DKString ret = value;
 	ret.Replace(L"&", L"&amp;");

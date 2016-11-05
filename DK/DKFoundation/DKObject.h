@@ -295,6 +295,8 @@ namespace DKGL
 	template <typename T> class DKObject<T&>;
 	template <typename T> class DKObject<T&&>;
 
+	template <typename T> using DKWeakRef = typename DKObject<T>::Ref;
+
 	// To provide external linkage for internal object
 	class DKUnknown
 	{

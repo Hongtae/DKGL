@@ -10,23 +10,8 @@
       <FileRef
          location = "group:LICENSE">
       </FileRef>
-      <FileRef
-         location = "group:LICENSE-DK">
-      </FileRef>
-      <FileRef
-         location = "group:LICENSE-PyDK">
-      </FileRef>
-      <FileRef
-         location = "group:LICENSE-Python">
-      </FileRef>
    </Group>
    <FileRef
       location = "container:DK/DK.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:PyDK/PyDK.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:PyDKLauncher/PyDKLauncher.xcodeproj">
    </FileRef>
 </Workspace>

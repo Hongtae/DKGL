@@ -9,7 +9,6 @@
 #include "DKStaticTriangleMeshShape.h"
 
 using namespace DKGL;
-using namespace DKGL;
 using namespace DKGL::Private;
 
 class DKStaticTriangleMeshShape::IndexedTriangleData : public btStridingMeshInterface

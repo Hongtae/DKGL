@@ -616,10 +616,10 @@
     <ClInclude Include="DKFoundation\DKValue.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKXMLDocument.h">
+    <ClInclude Include="DKFoundation\DKXmlDocument.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKXMLParser.h">
+    <ClInclude Include="DKFoundation\DKXmlParser.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKZipArchiver.h">
@@ -640,7 +640,7 @@
     <ClInclude Include="DKFoundation\DKFloat16.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKUUID.h">
+    <ClInclude Include="DKFoundation\DKUuid.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1053,10 +1053,10 @@
     <ClCompile Include="DKFoundation\DKUtils.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
-    <ClCompile Include="DKFoundation\DKXMLDocument.cpp">
+    <ClCompile Include="DKFoundation\DKXmlDocument.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
-    <ClCompile Include="DKFoundation\DKXMLParser.cpp">
+    <ClCompile Include="DKFoundation\DKXmlParser.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
     <ClCompile Include="DKFoundation\DKZipArchiver.cpp">
@@ -1074,7 +1074,7 @@
     <ClCompile Include="DKFoundation\DKFloat16.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
-    <ClCompile Include="DKFoundation\DKUUID.cpp">
+    <ClCompile Include="DKFoundation\DKUuid.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,7 +9,6 @@
 #include "DKTriangleMeshBvh.h"
 
 using namespace DKGL;
-using namespace DKGL;
 
 DKTriangleMeshBvh::DKTriangleMeshBvh(void) : mesh(NULL)
 {

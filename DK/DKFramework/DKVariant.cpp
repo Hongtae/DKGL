@@ -7,8 +7,6 @@
 
 #include "DKVariant.h"
 
-using namespace DKGL;
-
 namespace DKGL
 {
 	namespace Private
@@ -320,7 +318,7 @@ DKVariant::DKVariant(DKVariant&& v)
 	v.valueType = TypeUndefined;
 }
 
-DKVariant::DKVariant(const DKXMLElement* e)
+DKVariant::DKVariant(const DKXmlElement* e)
 	: valueType(TypeUndefined)
 {
 	memset(vblock, 0, sizeof(vblock));
@@ -452,11 +450,11 @@ DKVariant::Type DKVariant::ValueType(void) const
 
 #define DKVARIANT_XML_ELEMENT	L"DKVariant"
 
-DKObject<DKXMLElement> DKVariant::ExportXML(void) const
+DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 {
-	DKObject<DKXMLElement> e = DKObject<DKXMLElement>::New();
+	DKObject<DKXmlElement> e = DKObject<DKXmlElement>::New();
 	e->name = DKVARIANT_XML_ELEMENT;
-	DKXMLAttribute attrType;
+	DKXmlAttribute attrType;
 	attrType.name = L"type";
 
 	switch (valueType)
@@ -486,52 +484,52 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 	{
 		for (const DKVariant& var : this->Array())
 		{
-			DKObject<DKXMLElement> node = var.ExportXML();
+			DKObject<DKXmlElement> node = var.ExportXML();
 			if (node != NULL)
-				e->nodes.Add(node.SafeCast<DKXMLNode>());
+				e->nodes.Add(node.SafeCast<DKXmlNode>());
 		}
 	}
 	else if (valueType == TypePairs)
 	{
 		this->Pairs().EnumerateForward([&](const VPairs::Pair& pair)
 		{
-			DKObject<DKXMLElement> value = pair.value.ExportXML();
+			DKObject<DKXmlElement> value = pair.value.ExportXML();
 			if (value != NULL)
 			{
-				DKObject<DKXMLElement> node = DKObject<DKXMLElement>::New();
-				DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
-				DKObject<DKXMLPCData> pcdata = DKObject<DKXMLPCData>::New();
+				DKObject<DKXmlElement> node = DKObject<DKXmlElement>::New();
+				DKObject<DKXmlElement> key = DKObject<DKXmlElement>::New();
+				DKObject<DKXmlPCData> pcdata = DKObject<DKXmlPCData>::New();
 
 				node->name = L"Node";
 				key->name = L"Key";
 				pcdata->value = pair.key;
 
-				key->nodes.Add(pcdata.SafeCast<DKXMLNode>());
-				node->nodes.Add(key.SafeCast<DKXMLNode>());
-				node->nodes.Add(value.SafeCast<DKXMLNode>());
+				key->nodes.Add(pcdata.SafeCast<DKXmlNode>());
+				node->nodes.Add(key.SafeCast<DKXmlNode>());
+				node->nodes.Add(value.SafeCast<DKXmlNode>());
 
-				e->nodes.Add(node.SafeCast<DKXMLNode>());
+				e->nodes.Add(node.SafeCast<DKXmlNode>());
 			}
 		});
 	}
 	else if (valueType == TypeData)
 	{
-		DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 		DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
 		if (compressed)
 			compressed->Base64Encode(cdata->value);
-		e->nodes.Add(cdata.SafeCast<DKXMLCData>());
+		e->nodes.Add(cdata.SafeCast<DKXmlCData>());
 	}
 	else if (valueType == TypeStructData)
 	{
 		const VStructuredData& stData = this->StructuredData();
-		DKXMLAttribute byteorder, elementSize;
+		DKXmlAttribute byteorder, elementSize;
 		byteorder.name = "byteorder";
 		byteorder.value = (DKRuntimeByteOrder() == DKByteOrder::BigEndian) ? "BE" : "LE";
 		elementSize.name = "elementSize";
 		elementSize.value = DKString::Format("%llu", stData.elementSize);
 
-		DKObject<DKXMLElement> layout = DKObject<DKXMLElement>::New();
+		DKObject<DKXmlElement> layout = DKObject<DKXmlElement>::New();
 		layout->name = "layout";
 		layout->attributes.Add(elementSize);
 		layout->attributes.Add(byteorder);
@@ -540,7 +538,7 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		{
 			if (ValidateStructElementLayout(stData))
 			{
-				DKObject<DKXMLPCData> layoutData = DKObject<DKXMLPCData>::New();
+				DKObject<DKXmlPCData> layoutData = DKObject<DKXmlPCData>::New();
 				layoutData->value = StructElementToString(stData.layout.Value(0));
 
 				size_t numElements = stData.layout.Count();
@@ -549,22 +547,22 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 					layoutData->value.Append(DKString::Format(", %ls",
 						(const wchar_t*)StructElementToString(stData.layout.Value(i))));
 				}
-				layout->nodes.Add(layoutData.SafeCast<DKXMLNode>());
+				layout->nodes.Add(layoutData.SafeCast<DKXmlNode>());
 			}
 			else
 			{
 				DKLog("Warning: DKVariant::VStructuredData.layout is invalid!\n");
 			}
 		}
-		e->nodes.Add(layout.SafeCast<DKXMLNode>());
+		e->nodes.Add(layout.SafeCast<DKXmlNode>());
 
-		DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 		DKObject<DKBuffer> compressed = stData.data.Compress(DKCompressor::Deflate);
 		if (compressed)
 		{
 			compressed->Base64Encode(cdata->value);
 		}
-		e->nodes.Add(cdata.SafeCast<DKXMLNode>());
+		e->nodes.Add(cdata.SafeCast<DKXmlNode>());
 	}
 	else
 	{
@@ -628,24 +626,24 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		}
 		if (data.Length() > 0)
 		{
-			DKObject<DKXMLPCData> pcdata = DKObject<DKXMLPCData>::New();
+			DKObject<DKXmlPCData> pcdata = DKObject<DKXmlPCData>::New();
 			pcdata->value = data;
 
-			e->nodes.Add(pcdata.SafeCast<DKXMLNode>());
+			e->nodes.Add(pcdata.SafeCast<DKXmlNode>());
 		}
 	}
 
 	return e;
 }
 
-bool DKVariant::ImportXML(const DKXMLElement* e)
+bool DKVariant::ImportXML(const DKXmlElement* e)
 {
 	if (e->name.CompareNoCase(DKVARIANT_XML_ELEMENT) == 0)
 	{
 		this->SetValueType(TypeUndefined);
 		for (int i = 0; i < e->attributes.Count(); ++i)
 		{
-			const DKXMLAttribute& attr = e->attributes.Value(i);
+			const DKXmlAttribute& attr = e->attributes.Value(i);
 			if (attr.name.CompareNoCase(L"type") == 0)
 			{
 				if (attr.value.CompareNoCase(L"integer") == 0)
@@ -689,9 +687,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			VArray va;
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 				{
-					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					const DKXmlElement* node = e->nodes.Value(i).SafeCast<DKXmlElement>();
 					if (node->name.CompareNoCase(DKVARIANT_XML_ELEMENT) == 0)
 					{
 						va.Add(DKVariant(node));
@@ -705,9 +703,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			VPairs vm;
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 				{
-					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					const DKXmlElement* node = e->nodes.Value(i).SafeCast<DKXmlElement>();
 					if (node->name.CompareNoCase(L"Node") == 0)
 					{
 						bool keyFound = false;
@@ -715,17 +713,17 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 						DKVariant value;
 						for (int k = 0; k < node->nodes.Count(); ++k)
 						{
-							if (node->nodes.Value(k)->Type() == DKXMLNode::NodeTypeElement)
+							if (node->nodes.Value(k)->Type() == DKXmlNode::NodeTypeElement)
 							{
-								const DKXMLElement* node2 = node->nodes.Value(k).SafeCast<DKXMLElement>();
+								const DKXmlElement* node2 = node->nodes.Value(k).SafeCast<DKXmlElement>();
 								if (node2->name.CompareNoCase(L"Key") == 0)
 								{
 									for (int x = 0; x < node2->nodes.Count(); ++x)
 									{
-										if (node2->nodes.Value(x)->Type() == DKXMLNode::NodeTypeCData)
-											key += node2->nodes.Value(x).SafeCast<DKXMLCData>()->value;
-										else if (node2->nodes.Value(x)->Type() == DKXMLNode::NodeTypePCData)
-											key += node2->nodes.Value(x).SafeCast<DKXMLPCData>()->value;
+										if (node2->nodes.Value(x)->Type() == DKXmlNode::NodeTypeCData)
+											key += node2->nodes.Value(x).SafeCast<DKXmlCData>()->value;
+										else if (node2->nodes.Value(x)->Type() == DKXmlNode::NodeTypePCData)
+											key += node2->nodes.Value(x).SafeCast<DKXmlPCData>()->value;
 									}
 									keyFound = true;
 								}
@@ -747,9 +745,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			DKStringU8 value;
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeCData)
 				{
-					value = e->nodes.Value(i).SafeCast<DKXMLCData>()->value;
+					value = e->nodes.Value(i).SafeCast<DKXmlCData>()->value;
 					break;
 				}
 			}
@@ -768,12 +766,12 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 				{
-					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					const DKXmlElement* node = e->nodes.Value(i).SafeCast<DKXmlElement>();
 					if (node->name.CompareNoCase(L"layout") == 0)
 					{
-						for (const DKXMLAttribute& attr : node->attributes)
+						for (const DKXmlAttribute& attr : node->attributes)
 						{
 							if (attr.name.CompareNoCase("elementSize") == 0)
 							{
@@ -791,9 +789,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 						DKString layoutData;
 						for (int j = 0; j < node->nodes.Count(); ++j)
 						{
-							if (node->nodes.Value(j)->Type() == DKXMLNode::NodeTypePCData)
+							if (node->nodes.Value(j)->Type() == DKXmlNode::NodeTypePCData)
 							{
-								const DKXMLPCData* pcData = node->nodes.Value(j).SafeCast<DKXMLPCData>();
+								const DKXmlPCData* pcData = node->nodes.Value(j).SafeCast<DKXmlPCData>();
 								if (pcData)
 								{
 									layoutData.Append(pcData->value);
@@ -820,9 +818,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			}
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeCData)
 				{
-					const DKXMLCData* cData = e->nodes.Value(i).SafeCast<DKXMLCData>();
+					const DKXmlCData* cData = e->nodes.Value(i).SafeCast<DKXmlCData>();
 					if (cData)
 					{
 						DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(cData->value);
@@ -848,9 +846,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			DKString value = L"";
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypePCData)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypePCData)
 				{
-					value.Append(e->nodes.Value(i).SafeCast<DKXMLPCData>()->value);
+					value.Append(e->nodes.Value(i).SafeCast<DKXmlPCData>()->value);
 				}
 			}
 			if (this->ValueType() == TypeString)

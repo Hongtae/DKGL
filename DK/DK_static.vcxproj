@@ -308,10 +308,10 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKTypes.h" />
     <ClInclude Include="DKFoundation\DKTypeTraits.h" />
     <ClInclude Include="DKFoundation\DKUtils.h" />
-    <ClInclude Include="DKFoundation\DKUUID.h" />
+    <ClInclude Include="DKFoundation\DKUuid.h" />
     <ClInclude Include="DKFoundation\DKValue.h" />
-    <ClInclude Include="DKFoundation\DKXMLDocument.h" />
-    <ClInclude Include="DKFoundation\DKXMLParser.h" />
+    <ClInclude Include="DKFoundation\DKXmlDocument.h" />
+    <ClInclude Include="DKFoundation\DKXmlParser.h" />
     <ClInclude Include="DKFoundation\DKZipArchiver.h" />
     <ClInclude Include="DKFoundation\DKZipUnarchiver.h" />
     <ClInclude Include="DKFramework.h" />
@@ -483,9 +483,9 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClCompile Include="DKFoundation\DKTimer.cpp" />
     <ClCompile Include="DKFoundation\DKTypeInfo.cpp" />
     <ClCompile Include="DKFoundation\DKUtils.cpp" />
-    <ClCompile Include="DKFoundation\DKUUID.cpp" />
-    <ClCompile Include="DKFoundation\DKXMLDocument.cpp" />
-    <ClCompile Include="DKFoundation\DKXMLParser.cpp" />
+    <ClCompile Include="DKFoundation\DKUuid.cpp" />
+    <ClCompile Include="DKFoundation\DKXmlDocument.cpp" />
+    <ClCompile Include="DKFoundation\DKXmlParser.cpp" />
     <ClCompile Include="DKFoundation\DKZipArchiver.cpp" />
     <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp" />
     <ClCompile Include="DKFramework\DKAabb.cpp" />

@@ -2,7 +2,7 @@
 //  File: DKBvh.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <algorithm>
@@ -12,7 +12,6 @@
 
 #define MAX_NODE_COUNT (0x7fffffff >> 1)
 
-using namespace DKGL;
 using namespace DKGL;
 
 DKBvh::DKBvh(void) : volume(NULL)

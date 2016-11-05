@@ -29,14 +29,14 @@ namespace DKGL
 
 		virtual void SetName(const DKString& name);
 		const DKString& Name(void) const;
-		virtual void SetUUID(const DKUUID& uuid);
-		const DKUUID& UUID(void) const;
+		virtual void SetUUID(const DKUuid& uuid);
+		const DKUuid& UUID(void) const;
 
 		virtual DKObject<DKSerializer> Serializer(void);
 		virtual DKObject<DKData> Serialize(DKSerializer::SerializeForm) const;
-		virtual DKObject<DKXMLElement> SerializeXML(DKSerializer::SerializeForm) const;
+		virtual DKObject<DKXmlElement> SerializeXML(DKSerializer::SerializeForm) const;
 		virtual bool Deserialize(const DKData*, DKResourceLoader*);
-		virtual bool Deserialize(const DKXMLElement*, DKResourceLoader*);
+		virtual bool Deserialize(const DKXmlElement*, DKResourceLoader*);
 
 		virtual bool Validate(void); // resource validation
 
@@ -47,7 +47,7 @@ namespace DKGL
 
 	private:
 		DKString objectName;
-		DKUUID objectUUID;
+		DKUuid objectUUID;
 		DKAllocator* allocator;
 
 		DKResource(const DKResource&);

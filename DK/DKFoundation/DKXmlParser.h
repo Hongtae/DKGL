@@ -1,5 +1,5 @@
 //
-//  File: DKXMLParser.h
+//  File: DKXmlParser.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -13,18 +13,18 @@
 #include "DKArray.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKXMLParser
+// DKXmlParser
 // a SAX parser, You need subclass to define behaviors while parsing.
 // this class provides parsing DTD.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKGL
 {
-	class DKGL_API DKXMLParser
+	class DKGL_API DKXmlParser
 	{
 	public:
-		DKXMLParser(void);
-		virtual ~DKXMLParser(void);
+		DKXmlParser(void);
+		virtual ~DKXmlParser(void);
 
 		bool BeginHTML(const DKString& url);
 		bool BeginHTML(const DKData* buffer);
@@ -116,7 +116,7 @@ namespace DKGL
 			ValueType	defaultValueType;
 		};
 	public:
-		static DKString FormatElementContent(const DKXMLParser::ElementContentDecl& content);
+		static DKString FormatElementContent(const DKXmlParser::ElementContentDecl& content);
 
 		// following virtual functions should be overridden.
 		virtual void OnProcessingInstruction(const DKString& target, const DKString& data);

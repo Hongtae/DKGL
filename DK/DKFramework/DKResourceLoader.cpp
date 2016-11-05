@@ -2,7 +2,7 @@
 //  File: DKResourceLoader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKResource.h"
@@ -26,7 +26,6 @@
 #include "DKSliderConstraint.h"
 
 
-using namespace DKGL;
 namespace DKGL
 {
 	namespace Private
@@ -167,7 +166,7 @@ void DKResourceLoader::SetResourceFileExtension(const DKString& ext, ResourceLoa
 	}
 }
 
-DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXMLElement* e)
+DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 {
 	DKObject<DKResource> res = NULL;
 	if (e)
@@ -248,8 +247,8 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 		}
 		if (res == NULL)
 		{
-			// try to open with XML (DKXMLDocument)
-			DKObject<DKXMLDocument> xmlDoc = DKXMLDocument::Open(DKXMLDocument::TypeXML, data);
+			// try to open with XML (DKXmlDocument)
+			DKObject<DKXmlDocument> xmlDoc = DKXmlDocument::Open(DKXmlDocument::TypeXML, data);
 			if (xmlDoc)
 			{
 				res = this->ResourceFromXML(xmlDoc->RootElement());
@@ -303,7 +302,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 		}
 
 		DKStream::Position pos = stream->GetPos();
-		DKObject<DKXMLDocument> xmlDoc = DKXMLDocument::Open(DKXMLDocument::TypeXML, stream);
+		DKObject<DKXmlDocument> xmlDoc = DKXmlDocument::Open(DKXmlDocument::TypeXML, stream);
 		if (xmlDoc && xmlDoc->RootElement())
 		{
 			return this->ResourceFromXML(xmlDoc->RootElement());

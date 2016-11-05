@@ -39,7 +39,7 @@ namespace DKGL
 		DKResourceLoader(void);
 		virtual ~DKResourceLoader(void);
 
-		DKObject<DKResource> ResourceFromXML(const DKXMLElement* element);
+		DKObject<DKResource> ResourceFromXML(const DKXmlElement* element);
 		DKObject<DKResource> ResourceFromData(const DKData* data, const DKString& name);
 		DKObject<DKResource> ResourceFromStream(DKStream* stream, const DKString& name);
 		DKObject<DKResource> ResourceFromFile(const DKString& path, const DKString& name);

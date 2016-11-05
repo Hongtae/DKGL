@@ -1,5 +1,5 @@
 //
-//  File: DKXMLParser.cpp
+//  File: DKXmlParser.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
@@ -8,7 +8,7 @@
 #include <string.h>
 #include <memory.h>
 #include "../lib/Inc_libxml2.h"
-#include "DKXMLParser.h"
+#include "DKXmlParser.h"
 #include "DKLog.h"
 #include "DKString.h"
 #include "DKDataStream.h"
@@ -19,49 +19,49 @@ namespace DKGL
 	{
 		namespace
 		{
-			inline DKString xmlCharToIGString(const xmlChar* c)
+			inline DKString xmlCharToDKString(const xmlChar* c)
 			{
 				return DKString((const DKUniChar8*)c);
 			}
-			inline DKString xmlCharToIGString(const xmlChar* c, size_t len)
+			inline DKString xmlCharToDKString(const xmlChar* c, size_t len)
 			{
 				return DKString((const DKUniChar8*)c, len);
 			}
 			void internalSubset(void *ctx, const xmlChar *name, const xmlChar *ExternalID, const xmlChar *SystemID)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
-				parser->OnInternalSubsetDeclaration(xmlCharToIGString(name), xmlCharToIGString(ExternalID), xmlCharToIGString(SystemID));
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
+				parser->OnInternalSubsetDeclaration(xmlCharToDKString(name), xmlCharToDKString(ExternalID), xmlCharToDKString(SystemID));
 			}
 			int isStandalone(void *ctx)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				DKLog("SAX.isStandalone()\n");
 				return 0;
 			}
 			int hasInternalSubset(void *ctx)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				DKLog("SAX.hasInternalSubset()\n");
 				return 0;
 			}
 			int hasExternalSubset(void *ctx)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				DKLog("SAX.hasExternalSubset()\n");
 				return 0;
 			}
 			xmlParserInputPtr resolveEntity(void *ctx, const xmlChar *publicId, const xmlChar *systemId)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
 				/* xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx; */
 				DKString text = DKString(L"SAX.resolveEntity(");
 				if (publicId != NULL)
-					text += DKString::Format("%ls", (const wchar_t*)xmlCharToIGString(publicId));
+					text += DKString::Format("%ls", (const wchar_t*)xmlCharToDKString(publicId));
 				else
 					text += DKString(L" ");
 				if (systemId != NULL)
-					text += DKString::Format(", %ls)\n", (const wchar_t*)xmlCharToIGString(systemId));
+					text += DKString::Format(", %ls)\n", (const wchar_t*)xmlCharToDKString(systemId));
 				else
 					text += DKString(L", )\n");
 				/*********
@@ -74,9 +74,9 @@ namespace DKGL
 			}
 			xmlEntityPtr getEntity(void *ctx, const xmlChar *name)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
-				DKLog("SAX.getEntity(%ls)\n", (const wchar_t*)xmlCharToIGString(name));
+				DKLog("SAX.getEntity(%ls)\n", (const wchar_t*)xmlCharToDKString(name));
 				//return NULL;
 				if (parser->customEntityStorage.Count() > 0)
 				{
@@ -91,7 +91,7 @@ namespace DKGL
 			}
 			void entityDecl(void *ctx, const xmlChar *name, int type, const xmlChar *publicId, const xmlChar *systemId, xmlChar *content)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
 				const xmlChar *nullstr = BAD_CAST "(null)";
 				/* not all libraries handle printing null pointers nicely */
@@ -103,11 +103,11 @@ namespace DKGL
 					content = (xmlChar *)nullstr;
 
 				DKLog("SAX.entityDecl(%ls, %d, %ls, %ls, %ls)\n",
-					(const wchar_t*)xmlCharToIGString(name),
+					(const wchar_t*)xmlCharToDKString(name),
 					type, 
-					(const wchar_t*)xmlCharToIGString(publicId),
-					(const wchar_t*)xmlCharToIGString(systemId),
-					(const wchar_t*)xmlCharToIGString(content));
+					(const wchar_t*)xmlCharToDKString(publicId),
+					(const wchar_t*)xmlCharToDKString(systemId),
+					(const wchar_t*)xmlCharToDKString(content));
 
 				xmlEntityPtr e = xmlNewEntity(NULL, name, type, publicId, systemId, content);
 				if (e)
@@ -117,93 +117,93 @@ namespace DKGL
 			}
 			void notationDecl(void *ctx, const xmlChar *name, const xmlChar *publicId, const xmlChar *systemId)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
 				DKLog("SAX.notationDecl(%ls, %ls, %ls)\n",
-					(const wchar_t*)xmlCharToIGString(name),
-					(const wchar_t*)xmlCharToIGString(publicId),
-					(const wchar_t*)xmlCharToIGString(systemId));
+					(const wchar_t*)xmlCharToDKString(name),
+					(const wchar_t*)xmlCharToDKString(publicId),
+					(const wchar_t*)xmlCharToDKString(systemId));
 			}
 			void attributeDecl(void *ctx, const xmlChar * elem, const xmlChar * name, int type, int def, const xmlChar * defaultValue, xmlEnumerationPtr tree)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
-				DKXMLParser::AttributeDecl::Type			attributeType;		// attribute type
-				DKXMLParser::AttributeDecl::ValueType		defaultValueType;	// default value type
+				DKXmlParser::AttributeDecl::Type			attributeType;		// attribute type
+				DKXmlParser::AttributeDecl::ValueType		defaultValueType;	// default value type
 				switch (type)
 				{
-				case XML_ATTRIBUTE_CDATA:			attributeType = DKXMLParser::AttributeDecl::TypeCData;			break;
-				case XML_ATTRIBUTE_ID:				attributeType = DKXMLParser::AttributeDecl::TypeID;				break;
-				case XML_ATTRIBUTE_IDREF:			attributeType = DKXMLParser::AttributeDecl::TypeIDRef;			break;
-				case XML_ATTRIBUTE_IDREFS:			attributeType = DKXMLParser::AttributeDecl::TypeIDRefs;			break;
-				case XML_ATTRIBUTE_ENTITY:			attributeType = DKXMLParser::AttributeDecl::TypeEntity;			break;
-				case XML_ATTRIBUTE_ENTITIES:		attributeType = DKXMLParser::AttributeDecl::TypeEntities;		break;
-				case XML_ATTRIBUTE_NMTOKEN:			attributeType = DKXMLParser::AttributeDecl::TypeNMToken;		break;
-				case XML_ATTRIBUTE_NMTOKENS:		attributeType = DKXMLParser::AttributeDecl::TypeNMTokens;		break;
-				case XML_ATTRIBUTE_ENUMERATION:		attributeType = DKXMLParser::AttributeDecl::TypeEnumeration;	break;
-				case XML_ATTRIBUTE_NOTATION:		attributeType = DKXMLParser::AttributeDecl::TypeNotation;		break;
+				case XML_ATTRIBUTE_CDATA:			attributeType = DKXmlParser::AttributeDecl::TypeCData;			break;
+				case XML_ATTRIBUTE_ID:				attributeType = DKXmlParser::AttributeDecl::TypeID;				break;
+				case XML_ATTRIBUTE_IDREF:			attributeType = DKXmlParser::AttributeDecl::TypeIDRef;			break;
+				case XML_ATTRIBUTE_IDREFS:			attributeType = DKXmlParser::AttributeDecl::TypeIDRefs;			break;
+				case XML_ATTRIBUTE_ENTITY:			attributeType = DKXmlParser::AttributeDecl::TypeEntity;			break;
+				case XML_ATTRIBUTE_ENTITIES:		attributeType = DKXmlParser::AttributeDecl::TypeEntities;		break;
+				case XML_ATTRIBUTE_NMTOKEN:			attributeType = DKXmlParser::AttributeDecl::TypeNMToken;		break;
+				case XML_ATTRIBUTE_NMTOKENS:		attributeType = DKXmlParser::AttributeDecl::TypeNMTokens;		break;
+				case XML_ATTRIBUTE_ENUMERATION:		attributeType = DKXmlParser::AttributeDecl::TypeEnumeration;	break;
+				case XML_ATTRIBUTE_NOTATION:		attributeType = DKXmlParser::AttributeDecl::TypeNotation;		break;
 				}
 
 				DKString defString; // type of default value.
 				switch (def)
 				{
-				case XML_ATTRIBUTE_NONE:			defaultValueType = DKXMLParser::AttributeDecl::ValueTypeNone;		break;
-				case XML_ATTRIBUTE_REQUIRED:		defaultValueType = DKXMLParser::AttributeDecl::ValueTypeRequired;	break;
-				case XML_ATTRIBUTE_IMPLIED:			defaultValueType = DKXMLParser::AttributeDecl::ValueTypeImplied;	break;
-				case XML_ATTRIBUTE_FIXED:			defaultValueType = DKXMLParser::AttributeDecl::ValueTypeFixed;		break;
+				case XML_ATTRIBUTE_NONE:			defaultValueType = DKXmlParser::AttributeDecl::ValueTypeNone;		break;
+				case XML_ATTRIBUTE_REQUIRED:		defaultValueType = DKXmlParser::AttributeDecl::ValueTypeRequired;	break;
+				case XML_ATTRIBUTE_IMPLIED:			defaultValueType = DKXmlParser::AttributeDecl::ValueTypeImplied;	break;
+				case XML_ATTRIBUTE_FIXED:			defaultValueType = DKXmlParser::AttributeDecl::ValueTypeFixed;		break;
 				}
 
 				DKArray<DKString>	enumList;
 				for (xmlEnumerationPtr p = tree; p != NULL; p = p->next)
 					enumList.Add(DKString((const DKUniChar8*)p->name));
 
-				DKXMLParser::AttributeDecl	attr;
-				attr.name = xmlCharToIGString(name);
-				attr.element = xmlCharToIGString(elem);
+				DKXmlParser::AttributeDecl	attr;
+				attr.name = xmlCharToDKString(name);
+				attr.element = xmlCharToDKString(elem);
 				attr.type = attributeType;
 				attr.defaultValueType = defaultValueType;
-				attr.defaultValue = xmlCharToIGString(defaultValue);
+				attr.defaultValue = xmlCharToDKString(defaultValue);
 
 				parser->OnAttributeDeclaration(attr, enumList);
 
 				xmlFreeEnumeration(tree);
 			}
-			void ConvertElementDeclContent(xmlElementContentPtr from, DKXMLParser::ElementContentDecl& to)
+			void ConvertElementDeclContent(xmlElementContentPtr from, DKXmlParser::ElementContentDecl& to)
 			{
 				if (from == NULL)
 				{
-					to.type = DKXMLParser::ElementContentDecl::TypeUndefined;
+					to.type = DKXmlParser::ElementContentDecl::TypeUndefined;
 					return;
 				}
 
-				to.name = xmlCharToIGString(from->name);
-				to.prefix = xmlCharToIGString(from->prefix);
+				to.name = xmlCharToDKString(from->name);
+				to.prefix = xmlCharToDKString(from->prefix);
 
 				switch (from->type)
 				{
-				case XML_ELEMENT_CONTENT_PCDATA:	to.type = DKXMLParser::ElementContentDecl::TypePCData;			break;
-				case XML_ELEMENT_CONTENT_ELEMENT:	to.type = DKXMLParser::ElementContentDecl::TypeElement;			break;
-				case XML_ELEMENT_CONTENT_SEQ:		to.type = DKXMLParser::ElementContentDecl::TypeSequence;		break;
-				case XML_ELEMENT_CONTENT_OR:		to.type = DKXMLParser::ElementContentDecl::TypeAlternative;		break;
+				case XML_ELEMENT_CONTENT_PCDATA:	to.type = DKXmlParser::ElementContentDecl::TypePCData;			break;
+				case XML_ELEMENT_CONTENT_ELEMENT:	to.type = DKXmlParser::ElementContentDecl::TypeElement;			break;
+				case XML_ELEMENT_CONTENT_SEQ:		to.type = DKXmlParser::ElementContentDecl::TypeSequence;		break;
+				case XML_ELEMENT_CONTENT_OR:		to.type = DKXmlParser::ElementContentDecl::TypeAlternative;		break;
 				default:
-					to.type = DKXMLParser::ElementContentDecl::TypeUndefined;
+					to.type = DKXmlParser::ElementContentDecl::TypeUndefined;
 					return;
 				}
 				switch (from->ocur)
 				{
-				case XML_ELEMENT_CONTENT_ONCE:		to.occurrence = DKXMLParser::ElementContentDecl::OccurrenceOnce;		break;
-				case XML_ELEMENT_CONTENT_OPT:		to.occurrence = DKXMLParser::ElementContentDecl::OccurrenceOnceOrNone;	break;
-				case XML_ELEMENT_CONTENT_MULT:		to.occurrence = DKXMLParser::ElementContentDecl::OccurrenceNoneOrMore;	break;
-				case XML_ELEMENT_CONTENT_PLUS:		to.occurrence = DKXMLParser::ElementContentDecl::OccurrenceOnceOrMore;	break;
+				case XML_ELEMENT_CONTENT_ONCE:		to.occurrence = DKXmlParser::ElementContentDecl::OccurrenceOnce;		break;
+				case XML_ELEMENT_CONTENT_OPT:		to.occurrence = DKXmlParser::ElementContentDecl::OccurrenceOnceOrNone;	break;
+				case XML_ELEMENT_CONTENT_MULT:		to.occurrence = DKXmlParser::ElementContentDecl::OccurrenceNoneOrMore;	break;
+				case XML_ELEMENT_CONTENT_PLUS:		to.occurrence = DKXmlParser::ElementContentDecl::OccurrenceOnceOrMore;	break;
 				}
 
 				if (from->c1)
 				{
-					DKXMLParser::ElementContentDecl decl;
+					DKXmlParser::ElementContentDecl decl;
 					ConvertElementDeclContent(from->c1, decl);
-					if (decl.type != DKXMLParser::ElementContentDecl::TypeUndefined)
+					if (decl.type != DKXmlParser::ElementContentDecl::TypeUndefined)
 					{
-						if (decl.type == to.type && decl.occurrence == DKXMLParser::ElementContentDecl::OccurrenceOnce)
+						if (decl.type == to.type && decl.occurrence == DKXmlParser::ElementContentDecl::OccurrenceOnce)
 							to.contents.Add(decl.contents);
 						else
 							to.contents.Add(decl);
@@ -211,11 +211,11 @@ namespace DKGL
 				}
 				if (from->c2)
 				{
-					DKXMLParser::ElementContentDecl decl;
+					DKXmlParser::ElementContentDecl decl;
 					ConvertElementDeclContent(from->c2, decl);
-					if (decl.type != DKXMLParser::ElementContentDecl::TypeUndefined)
+					if (decl.type != DKXmlParser::ElementContentDecl::TypeUndefined)
 					{
-						if (decl.type == to.type && decl.occurrence == DKXMLParser::ElementContentDecl::OccurrenceOnce)
+						if (decl.type == to.type && decl.occurrence == DKXmlParser::ElementContentDecl::OccurrenceOnce)
 							to.contents.Add(decl.contents);
 						else
 							to.contents.Add(decl);
@@ -224,7 +224,7 @@ namespace DKGL
 			}
 			void elementDecl(void *ctx, const xmlChar *name, int type, xmlElementContentPtr content)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
 				// 'content' contains the value, parsed by parser as tree-structured.
 				// the value includes conditions between element and element.
@@ -234,24 +234,24 @@ namespace DKGL
 				// For given element is '(a | b | c | d)',
 				// structured value become to 'A or (B or (C or D))'
 
-				DKXMLParser::ElementDecl		elem;
-				DKXMLParser::ElementContentDecl	ec;
+				DKXmlParser::ElementDecl		elem;
+				DKXmlParser::ElementContentDecl	ec;
 
 				elem.name = DKString((const DKUniChar8*)name);
 				switch (type)
 				{
-				case XML_ELEMENT_TYPE_EMPTY:		elem.type = DKXMLParser::ElementDecl::TypeEmpty;		break;
-				case XML_ELEMENT_TYPE_ANY:			elem.type = DKXMLParser::ElementDecl::TypeAny;			break;
-				case XML_ELEMENT_TYPE_MIXED:		elem.type = DKXMLParser::ElementDecl::TypeMixed;		break;
-				case XML_ELEMENT_TYPE_ELEMENT:		elem.type = DKXMLParser::ElementDecl::TypeElement;		break;
-				default:							elem.type = DKXMLParser::ElementDecl::TypeUndefined;	break;
+				case XML_ELEMENT_TYPE_EMPTY:		elem.type = DKXmlParser::ElementDecl::TypeEmpty;		break;
+				case XML_ELEMENT_TYPE_ANY:			elem.type = DKXmlParser::ElementDecl::TypeAny;			break;
+				case XML_ELEMENT_TYPE_MIXED:		elem.type = DKXmlParser::ElementDecl::TypeMixed;		break;
+				case XML_ELEMENT_TYPE_ELEMENT:		elem.type = DKXmlParser::ElementDecl::TypeElement;		break;
+				default:							elem.type = DKXmlParser::ElementDecl::TypeUndefined;	break;
 				}
 				ConvertElementDeclContent(content, ec);
 				parser->OnElementDeclaration(elem, ec);
 			}
 			void unparsedEntityDecl(void *ctx, const xmlChar *name, const xmlChar *publicId, const xmlChar *systemId, const xmlChar *notationName)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
 				const xmlChar *nullstr = BAD_CAST "(null)";
 
@@ -263,86 +263,86 @@ namespace DKGL
 					notationName = nullstr;
 
 				DKLog("SAX.unparsedEntityDecl(%ls, %ls, %ls, %ls)\n", 
-					(const wchar_t*)xmlCharToIGString(name),
-					(const wchar_t*)xmlCharToIGString(publicId),
-					(const wchar_t*)xmlCharToIGString(systemId),
-					(const wchar_t*)xmlCharToIGString(notationName));
+					(const wchar_t*)xmlCharToDKString(name),
+					(const wchar_t*)xmlCharToDKString(publicId),
+					(const wchar_t*)xmlCharToDKString(systemId),
+					(const wchar_t*)xmlCharToDKString(notationName));
 			}
 			void setDocumentLocator(void *ctx, xmlSAXLocatorPtr loc)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				//DKLog("SAX.setDocumentLocator()\n");
 			}
 			void startDocument(void *ctx)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				parser->OnStartDocument();
 			}
 			void endDocument(void *ctx)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				parser->OnEndDocument();
 			}
 			void startElement(void *ctx, const xmlChar *name, const xmlChar **atts)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
-				DKXMLParser::Element element;
+				DKXmlParser::Element element;
 				element.name = DKString((const DKUniChar8*)name);
 
-				DKArray<DKXMLParser::Attribute>	attr;
+				DKArray<DKXmlParser::Attribute>	attr;
 				if (atts != NULL)
 				{
 					for (int i = 0; atts[i] != NULL; i++)
 					{
-						DKXMLParser::Attribute at;
-						at.name = xmlCharToIGString(atts[i]);
+						DKXmlParser::Attribute at;
+						at.name = xmlCharToDKString(atts[i]);
 						i++;
-						at.value = xmlCharToIGString(atts[i]);
+						at.value = xmlCharToDKString(atts[i]);
 
 						attr.Add(at);
 					}					 
 				}
 
-				parser->OnStartElement(element, DKArray<DKXMLParser::Namespace>(), attr);
+				parser->OnStartElement(element, DKArray<DKXmlParser::Namespace>(), attr);
 			}
 			void endElement(void *ctx, const xmlChar *name)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
-				DKXMLParser::Element element;
-				element.name = xmlCharToIGString(name);
+				DKXmlParser::Element element;
+				element.name = xmlCharToDKString(name);
 				parser->OnEndElement(element);
 			}
 			void reference(void *ctx, const xmlChar *name)
 			{
 				// called after entity had printed as characters.
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
-				DKLog("SAX.reference(%ls)\n", (const wchar_t*)xmlCharToIGString(name));
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
+				DKLog("SAX.reference(%ls)\n", (const wchar_t*)xmlCharToDKString(name));
 			}
 			void characters(void *ctx, const xmlChar *ch, int len)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				parser->OnCharacters(reinterpret_cast<const char*>(ch), len);
 			}
 			void ignorableWhitespace(void *ctx, const xmlChar *ch, int len)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				DKLog("SAX.ignorableWhitespace: %d bytes\n", len);
 			}
 			void processingInstruction(void *ctx, const xmlChar *target, const xmlChar *data)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
-				parser->OnProcessingInstruction(xmlCharToIGString(target), xmlCharToIGString(data));
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
+				parser->OnProcessingInstruction(xmlCharToDKString(target), xmlCharToDKString(data));
 			}
 			void comment(void *ctx, const xmlChar *value)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
-				parser->OnComment(xmlCharToIGString(value));
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
+				parser->OnComment(xmlCharToDKString(value));
 			}
 			void XMLCDECL warning(void *ctx, const char *msg, ...)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				va_list ap;
 				va_start(ap, msg);
 				parser->OnWarning(DKString::FormatV(msg, ap));
@@ -350,7 +350,7 @@ namespace DKGL
 			}
 			void XMLCDECL error(void *ctx, const char *msg, ...)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				va_list ap;
 				va_start(ap, msg);
 				parser->OnError(DKString::FormatV(msg, ap));
@@ -358,7 +358,7 @@ namespace DKGL
 			}
 			void XMLCDECL fatalError(void *ctx, const char *msg, ...)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				va_list ap;
 				va_start(ap, msg);
 				parser->OnFatalError(DKString::FormatV(msg, ap));
@@ -366,19 +366,19 @@ namespace DKGL
 			}
 			xmlEntityPtr getParameterEntity(void *ctx, const xmlChar *name)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
-				DKLog("SAX.getParameterEntity(%ls)\n", (const wchar_t*)xmlCharToIGString(name));
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
+				DKLog("SAX.getParameterEntity(%ls)\n", (const wchar_t*)xmlCharToDKString(name));
 				return NULL;
 			}
 			void cdataBlock(void *ctx, const xmlChar *value, int len)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 				parser->OnCharacterDataBlock(reinterpret_cast<const char*>(value), len);
 			}
 			void externalSubset(void *ctx, const xmlChar *name, const xmlChar *ExternalID, const xmlChar *SystemID)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
-				parser->OnExternalSubsetDeclaration(xmlCharToIGString(name), xmlCharToIGString(ExternalID), xmlCharToIGString(SystemID));
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
+				parser->OnExternalSubsetDeclaration(xmlCharToDKString(name), xmlCharToDKString(ExternalID), xmlCharToDKString(SystemID));
 			}
 			void startElementNs(void *ctx,
 				const xmlChar *localname,
@@ -390,45 +390,45 @@ namespace DKGL
 				int nb_defaulted,
 				const xmlChar **attributes)		// pointer to the array of (localname/prefix/URI/value/end)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
-				DKXMLParser::Element	element;
-				element.name = xmlCharToIGString(localname);
-				element.prefix = xmlCharToIGString(prefix);
-				element.URI = xmlCharToIGString(URI);
+				DKXmlParser::Element	element;
+				element.name = xmlCharToDKString(localname);
+				element.prefix = xmlCharToDKString(prefix);
+				element.URI = xmlCharToDKString(URI);
 
-				DKArray<DKXMLParser::Namespace>	ns;
+				DKArray<DKXmlParser::Namespace>	ns;
 				if (nb_namespaces)
 				{
 					ns.Resize(nb_namespaces);
 					for (int i = 0; i < nb_namespaces; i++)
 					{
-						ns.Value(i).prefix = xmlCharToIGString(namespaces[i*2]);
-						ns.Value(i).URI = xmlCharToIGString(namespaces[i*2+1]);
+						ns.Value(i).prefix = xmlCharToDKString(namespaces[i*2]);
+						ns.Value(i).URI = xmlCharToDKString(namespaces[i*2+1]);
 					}
 				}
-				DKArray<DKXMLParser::Attribute> attrs;
+				DKArray<DKXmlParser::Attribute> attrs;
 				if (attributes)
 				{
 					attrs.Resize(nb_attributes);
 					for (int i = 0; i < nb_attributes; i++)
 					{
-						attrs.Value(i).name = xmlCharToIGString(attributes[i*5]);
-						attrs.Value(i).prefix = xmlCharToIGString(attributes[i*5+1]);
-						attrs.Value(i).URI = xmlCharToIGString(attributes[i*5+2]);
-						attrs.Value(i).value = xmlCharToIGString(attributes[i*5+3], (size_t)((const char*)attributes[i*5+4] - (const char*)attributes[i*5+3]));
+						attrs.Value(i).name = xmlCharToDKString(attributes[i*5]);
+						attrs.Value(i).prefix = xmlCharToDKString(attributes[i*5+1]);
+						attrs.Value(i).URI = xmlCharToDKString(attributes[i*5+2]);
+						attrs.Value(i).value = xmlCharToDKString(attributes[i*5+3], (size_t)((const char*)attributes[i*5+4] - (const char*)attributes[i*5+3]));
 					}
 				}
 				parser->OnStartElement(element, ns, attrs);
 			}
 			void endElementNs(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI)
 			{
-				DKXMLParser* parser = reinterpret_cast<DKXMLParser*>(ctx);
+				DKXmlParser* parser = reinterpret_cast<DKXmlParser*>(ctx);
 
-				DKXMLParser::Element	element;
-				element.name = xmlCharToIGString(localname);
-				element.prefix = xmlCharToIGString(prefix);
-				element.URI = xmlCharToIGString(URI);
+				DKXmlParser::Element	element;
+				element.name = xmlCharToDKString(localname);
+				element.prefix = xmlCharToDKString(prefix);
+				element.URI = xmlCharToDKString(URI);
 
 				parser->OnEndElement(element);
 			}
@@ -508,17 +508,17 @@ namespace DKGL
 
 using namespace DKGL;
 
-DKXMLParser::DKXMLParser(void)
+DKXmlParser::DKXmlParser(void)
 {
 
 }
 
-DKXMLParser::~DKXMLParser(void)
+DKXmlParser::~DKXmlParser(void)
 {
 	ClearCustomEntityStorage();
 }
 
-bool DKXMLParser::BeginHTML(const DKString& url)
+bool DKXmlParser::BeginHTML(const DKString& url)
 {
 	if (url.Length() == 0)
 		return false;
@@ -542,7 +542,7 @@ bool DKXMLParser::BeginHTML(const DKString& url)
 	return false;
 }
 
-bool DKXMLParser::BeginHTML(const DKData* data)
+bool DKXmlParser::BeginHTML(const DKData* data)
 {
 	bool result = false;
 	if (data)
@@ -596,7 +596,7 @@ bool DKXMLParser::BeginHTML(const DKData* data)
 	return result;
 }
 
-bool DKXMLParser::BeginHTML(DKStream* stream)
+bool DKXmlParser::BeginHTML(DKStream* stream)
 {
 	if (stream && stream->IsReadable())
 	{
@@ -608,7 +608,7 @@ bool DKXMLParser::BeginHTML(DKStream* stream)
 	return false;
 }
 
-bool DKXMLParser::BeginXML(const DKString& url)
+bool DKXmlParser::BeginXML(const DKString& url)
 {
 	if (url.Length() == 0)
 		return false;
@@ -628,7 +628,7 @@ bool DKXMLParser::BeginXML(const DKString& url)
 	return false;
 }
 
-bool DKXMLParser::BeginXML(const DKData* data)
+bool DKXmlParser::BeginXML(const DKData* data)
 {
 	if (data)
 	{
@@ -657,7 +657,7 @@ bool DKXMLParser::BeginXML(const DKData* data)
 	return false;
 }
 
-bool DKXMLParser::BeginXML(DKStream* stream)
+bool DKXmlParser::BeginXML(DKStream* stream)
 {
 	if (stream && stream->IsReadable())
 	{
@@ -669,18 +669,18 @@ bool DKXMLParser::BeginXML(DKStream* stream)
 	return false;
 }
 
-void DKXMLParser::OnProcessingInstruction(const DKString& target, const DKString& data)
+void DKXmlParser::OnProcessingInstruction(const DKString& target, const DKString& data)
 {
-	DKString txt(L"[DKXMLParser::OnProcessingInstruction]");
+	DKString txt(L"[DKXmlParser::OnProcessingInstruction]");
 	txt += DKString(L" Target:") + target;
 	txt += DKString(L" Data:") + data;
 	txt += L"\n";
 	DKLog(txt);
 }
 
-void DKXMLParser::OnInternalSubsetDeclaration(const DKString& name, const DKString& externalID, const DKString& systemID)
+void DKXmlParser::OnInternalSubsetDeclaration(const DKString& name, const DKString& externalID, const DKString& systemID)
 {
-	DKString txt(L"[DKXMLParser::OnInternalSubset]");
+	DKString txt(L"[DKXmlParser::OnInternalSubset]");
 	txt += DKString(L" Name:") + name;
 	txt += DKString(L" ExternalID:") + externalID;
 	txt += DKString(L" SystemID:") + systemID;
@@ -688,21 +688,21 @@ void DKXMLParser::OnInternalSubsetDeclaration(const DKString& name, const DKStri
 	DKLog(txt);
 }
 
-void DKXMLParser::OnExternalSubsetDeclaration(const DKString& name, const DKString& externalID, const DKString& systemID)
+void DKXmlParser::OnExternalSubsetDeclaration(const DKString& name, const DKString& externalID, const DKString& systemID)
 {
-	DKString txt(L"[DKXMLParser::OnExternalSubset]");
+	DKString txt(L"[DKXmlParser::OnExternalSubset]");
 	txt += DKString(L" Name:") + name;
 	txt += DKString(L" ExternalID:") + externalID;
 	txt += DKString(L" SystemID:") + systemID;
 	txt += L"\n";
 	DKLog(txt);
 }
-void DKXMLParser::OnEntityDeclaration(const DKString& name, int type, const DKString& publicID, const DKString& systemID, const DKString& content)
+void DKXmlParser::OnEntityDeclaration(const DKString& name, int type, const DKString& publicID, const DKString& systemID, const DKString& content)
 {
 
 }
 
-void DKXMLParser::OnAttributeDeclaration(const AttributeDecl& attr, const DKArray<DKString>& enumeratedValues)
+void DKXmlParser::OnAttributeDeclaration(const AttributeDecl& attr, const DKArray<DKString>& enumeratedValues)
 {
 	DKString attType;
 	DKString defType;
@@ -727,7 +727,7 @@ void DKXMLParser::OnAttributeDeclaration(const AttributeDecl& attr, const DKArra
 	case AttributeDecl::ValueTypeFixed:			defType = L"Fixed";			break;
 	}
 
-	DKString txt(L"[DKXMLParser::OnAttributeDeclaration]");
+	DKString txt(L"[DKXmlParser::OnAttributeDeclaration]");
 	txt += DKString(L" name:") + attr.name;
 	txt += DKString(L" element:") + attr.element;
 	txt += DKString(L" type:") + attType;
@@ -737,9 +737,9 @@ void DKXMLParser::OnAttributeDeclaration(const AttributeDecl& attr, const DKArra
 	DKLog(txt);
 }
 
-DKString DKXMLParser::FormatElementContent(const DKXMLParser::ElementContentDecl& content)
+DKString DKXmlParser::FormatElementContent(const DKXmlParser::ElementContentDecl& content)
 {
-	if (content.type == DKXMLParser::ElementContentDecl::TypeUndefined)
+	if (content.type == DKXmlParser::ElementContentDecl::TypeUndefined)
 		return L"";
 
 	DKString ret = L"";
@@ -749,22 +749,22 @@ DKString DKXMLParser::FormatElementContent(const DKXMLParser::ElementContentDecl
 
 	switch (content.type)
 	{
-	case DKXMLParser::ElementContentDecl::TypePCData:			ret += L"#PCDATA";		break;
-	case DKXMLParser::ElementContentDecl::TypeElement:			ret += content.name;	break;
-	case DKXMLParser::ElementContentDecl::TypeSequence:			// (A,B,..)
-	case DKXMLParser::ElementContentDecl::TypeAlternative:		// (A|B|..)
+	case DKXmlParser::ElementContentDecl::TypePCData:			ret += L"#PCDATA";		break;
+	case DKXmlParser::ElementContentDecl::TypeElement:			ret += content.name;	break;
+	case DKXmlParser::ElementContentDecl::TypeSequence:			// (A,B,..)
+	case DKXmlParser::ElementContentDecl::TypeAlternative:		// (A|B|..)
 		break;
 	}
 
-	if (content.type == DKXMLParser::ElementContentDecl::TypeSequence ||
-		content.type == DKXMLParser::ElementContentDecl::TypeAlternative)
+	if (content.type == DKXmlParser::ElementContentDecl::TypeSequence ||
+		content.type == DKXmlParser::ElementContentDecl::TypeAlternative)
 	{
 		ret += L"(";
 		for (int i = 0; i < content.contents.Count(); i++)
 		{
 			if ( i > 0)
 			{
-				if (content.type == DKXMLParser::ElementContentDecl::TypeSequence)
+				if (content.type == DKXmlParser::ElementContentDecl::TypeSequence)
 					ret += L",";
 				else
 					ret += L"|";
@@ -775,18 +775,18 @@ DKString DKXMLParser::FormatElementContent(const DKXMLParser::ElementContentDecl
 	}
 	switch (content.occurrence)
 	{
-	case DKXMLParser::ElementContentDecl::OccurrenceNoneOrMore:		ret += L"*";	break;		// *
-	case DKXMLParser::ElementContentDecl::OccurrenceOnceOrMore:		ret += L"+";	break;		// +
-	case DKXMLParser::ElementContentDecl::OccurrenceOnceOrNone:		ret += L"?";	break;		// ?
-	case DKXMLParser::ElementContentDecl::OccurrenceOnce:
+	case DKXmlParser::ElementContentDecl::OccurrenceNoneOrMore:		ret += L"*";	break;		// *
+	case DKXmlParser::ElementContentDecl::OccurrenceOnceOrMore:		ret += L"+";	break;		// +
+	case DKXmlParser::ElementContentDecl::OccurrenceOnceOrNone:		ret += L"?";	break;		// ?
+	case DKXmlParser::ElementContentDecl::OccurrenceOnce:
 		break;
 	}
 	return ret;
 }
 
-void DKXMLParser::OnElementDeclaration(const ElementDecl& elem, const ElementContentDecl& content)
+void DKXmlParser::OnElementDeclaration(const ElementDecl& elem, const ElementContentDecl& content)
 {
-	DKString txt(L"[DKXMLParser::OnElementDeclaration]");
+	DKString txt(L"[DKXmlParser::OnElementDeclaration]");
 	txt += DKString(L" name:") + elem.name;
 	txt += DKString(L" type:");
 	switch (elem.type)
@@ -806,19 +806,19 @@ void DKXMLParser::OnElementDeclaration(const ElementDecl& elem, const ElementCon
 	DKLog(txt);
 }
 
-void DKXMLParser::OnStartDocument(void)
+void DKXmlParser::OnStartDocument(void)
 {
-	DKLog("[DKXMLParser::OnStartDocument]\n");
+	DKLog("[DKXmlParser::OnStartDocument]\n");
 }
 
-void DKXMLParser::OnEndDocument(void)
+void DKXmlParser::OnEndDocument(void)
 {
-	DKLog("[DKXMLParser::OnEndDocument]\n");
+	DKLog("[DKXmlParser::OnEndDocument]\n");
 }
 
-void DKXMLParser::OnStartElement(const Element& element, const DKArray<Namespace>& namespaces, const DKArray<Attribute>& attributes)
+void DKXmlParser::OnStartElement(const Element& element, const DKArray<Namespace>& namespaces, const DKArray<Attribute>& attributes)
 {
-	DKString txt(L"[DKXMLParser::OnStartElement]");
+	DKString txt(L"[DKXmlParser::OnStartElement]");
 	txt += DKString(L" Name:") + element.name;
 	txt += DKString(L" Prefix:") + element.prefix;
 	txt += DKString(L" URI:") + element.URI;
@@ -832,9 +832,9 @@ void DKXMLParser::OnStartElement(const Element& element, const DKArray<Namespace
 	DKLog(txt);
 }
 
-void DKXMLParser::OnEndElement(const Element& element)
+void DKXmlParser::OnEndElement(const Element& element)
 {
-	DKString txt(L"[DKXMLParser::OnEndElement]");
+	DKString txt(L"[DKXmlParser::OnEndElement]");
 	txt += DKString(L" Name:") + element.name;
 	txt += DKString(L" Prefix:") + element.prefix;
 	txt += DKString(L" URI:") + element.URI;
@@ -842,37 +842,37 @@ void DKXMLParser::OnEndElement(const Element& element)
 	DKLog(txt);
 }
 
-void DKXMLParser::OnComment(const DKString& comment)
+void DKXmlParser::OnComment(const DKString& comment)
 {
-	DKLog("[DKXMLParser::OnComment] Comment: %ls\n", (const wchar_t*)comment);
+	DKLog("[DKXmlParser::OnComment] Comment: %ls\n", (const wchar_t*)comment);
 }
 
-void DKXMLParser::OnCharacters(const char* ch, size_t len)
+void DKXmlParser::OnCharacters(const char* ch, size_t len)
 {
-	DKLog("[DKXMLParser::OnCharacters] %llu bytes\n", len);
+	DKLog("[DKXmlParser::OnCharacters] %llu bytes\n", len);
 }
 
-void DKXMLParser::OnCharacterDataBlock(const char* ch, size_t len)
+void DKXmlParser::OnCharacterDataBlock(const char* ch, size_t len)
 {
-	DKLog("[DKXMLParser::OnCDataBlock] %llu bytes\n", len);
+	DKLog("[DKXmlParser::OnCDataBlock] %llu bytes\n", len);
 }
 
-void DKXMLParser::OnWarning(const DKString& mesg)
+void DKXmlParser::OnWarning(const DKString& mesg)
 {
-	DKLog("[DKXMLParser::OnWarning] Warning: %ls\n", (const wchar_t*)mesg);
+	DKLog("[DKXmlParser::OnWarning] Warning: %ls\n", (const wchar_t*)mesg);
 }
 
-void DKXMLParser::OnError(const DKString& mesg)
+void DKXmlParser::OnError(const DKString& mesg)
 {
-	DKLog("[DKXMLParser::OnError] Error: %ls\n", (const wchar_t*)mesg);
+	DKLog("[DKXmlParser::OnError] Error: %ls\n", (const wchar_t*)mesg);
 }
 
-void DKXMLParser::OnFatalError(const DKString& mesg)
+void DKXmlParser::OnFatalError(const DKString& mesg)
 {
-	DKLog("[DKXMLParser::OnFatalError] FatalError: %ls\n", (const wchar_t*)mesg);
+	DKLog("[DKXmlParser::OnFatalError] FatalError: %ls\n", (const wchar_t*)mesg);
 }
 
-void DKXMLParser::ClearCustomEntityStorage(void)
+void DKXmlParser::ClearCustomEntityStorage(void)
 {
 	if (customEntityStorage.Count() > 0)
 	{

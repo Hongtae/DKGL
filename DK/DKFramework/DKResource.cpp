@@ -2,20 +2,18 @@
 //  File: DKResource.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKResource.h"
 #include "DKSerializer.h"
 
-
-using namespace DKGL;
 using namespace DKGL;
 
 DKResource::DKResource(void)
 : allocator(NULL)
 , objectName("")
-, objectUUID(DKUUID::Create())
+, objectUUID(DKUuid::Create())
 {
 }
 
@@ -33,13 +31,13 @@ const DKString& DKResource::Name(void) const
 	return objectName;
 }
 
-void DKResource::SetUUID(const DKUUID& uuid)
+void DKResource::SetUUID(const DKUuid& uuid)
 {
 	DKASSERT_DEBUG(uuid.IsValid());
 	this->objectUUID = uuid;
 }
 
-const DKUUID& DKResource::UUID(void) const
+const DKUuid& DKResource::UUID(void) const
 {
 	return objectUUID;
 }
@@ -106,12 +104,12 @@ DKObject<DKSerializer> DKResource::Serializer(void)
 		bool CheckUUID(const DKVariant& v) const
 		{
 			if (v.ValueType() == DKVariant::TypeString)
-				return DKUUID(v.String()).IsValid();
+				return DKUuid(v.String()).IsValid();
 			return false;
 		}
 		void ResetUUID(void)
 		{
-			target->objectUUID = DKUUID::Create();
+			target->objectUUID = DKUuid::Create();
 		}
 		void GetMetadata(DKVariant& v) const
 		{
@@ -148,16 +146,16 @@ DKObject<DKData> DKResource::Serialize(DKSerializer::SerializeForm sf) const
 	}
 	else if (sf == DKSerializer::SerializeFormXML || sf == DKSerializer::SerializeFormBinXML)
 	{
-		DKObject<DKXMLElement> e = this->SerializeXML(sf);
+		DKObject<DKXmlElement> e = this->SerializeXML(sf);
 		if (e)
 		{
-			return DKXMLDocument(e).Export(DKStringEncoding::UTF8);
+			return DKXmlDocument(e).Export(DKStringEncoding::UTF8);
 		}
 	}
 	return NULL;
 }
 
-DKObject<DKXMLElement> DKResource::SerializeXML(DKSerializer::SerializeForm sf) const
+DKObject<DKXmlElement> DKResource::SerializeXML(DKSerializer::SerializeForm sf) const
 {
 	DKObject<DKSerializer> s = const_cast<DKResource*>(this)->Serializer();
 	if (s && s->ResourceClass().Compare(L"DKResource") != 0)
@@ -172,14 +170,14 @@ bool DKResource::Deserialize(const DKData* d, DKResourceLoader* p)
 		return s->Deserialize(d, p);
 	else
 	{
-		DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, d);
+		DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, d);
 		if (doc)
 			return Deserialize(doc->RootElement(), p);
 	}
 	return false;
 }
 
-bool DKResource::Deserialize(const DKXMLElement* e, DKResourceLoader* p)
+bool DKResource::Deserialize(const DKXmlElement* e, DKResourceLoader* p)
 {
 	DKObject<DKSerializer> s = this->Serializer();
 	if (s && s->ResourceClass().Compare(L"DKResource") != 0)

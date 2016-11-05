@@ -1,5 +1,5 @@
 //
-//  File: DKXMLDocument.h
+//  File: DKXmlDocument.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
@@ -10,18 +10,18 @@
 #include "DKObject.h"
 #include "DKString.h"
 #include "DKData.h"
-#include "DKXMLParser.h"
+#include "DKXmlParser.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// DKXMLDocument
+// DKXmlDocument
 // XML DOM class, provides parse and generate DOM of XML, HTML.
-// this class uses DKXMLParser internally. (see DKXMLParser.h)
+// this class uses DKXmlParser internally. (see DKXmlParser.h)
 // this class provides DOM includes DTD.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace DKGL
 {
-	class DKGL_API DKXMLDocument
+	class DKGL_API DKXmlDocument
 	{
 	public:
 		enum Type
@@ -102,14 +102,14 @@ namespace DKGL
 		struct ElementDecl : public Node		// DTD Element
 		{
 			ElementDecl(void) : Node(NodeTypeElementDecl) {}
-			DKXMLParser::ElementDecl		decl;
-			DKXMLParser::ElementContentDecl	contents;
+			DKXmlParser::ElementDecl		decl;
+			DKXmlParser::ElementContentDecl	contents;
 			DKString Export(void) const;
 		};
 		struct AttributeDecl : public Node	// DTD
 		{
 			AttributeDecl(void) : Node(NodeTypeAttributeDecl) {}
-			DKXMLParser::AttributeDecl		decl;
+			DKXmlParser::AttributeDecl		decl;
 			DKArray<DKString>				enumeratedValues;
 			DKString Export(void) const;
 		};
@@ -122,18 +122,18 @@ namespace DKGL
 			DKArray<DKObject<Node>>		nodes;
 			DKString Export(void) const;
 		};
-		DKXMLDocument(void);
-		DKXMLDocument(DocTypeDecl* dtd, Element* root);
-		DKXMLDocument(Element* root);
-		~DKXMLDocument(void);
+		DKXmlDocument(void);
+		DKXmlDocument(DocTypeDecl* dtd, Element* root);
+		DKXmlDocument(Element* root);
+		~DKXmlDocument(void);
 
 		// open and create object with URL or file.
-		static DKObject<DKXMLDocument> Open(Type t, const DKString& fileOrURL, DKString* desc = NULL);
+		static DKObject<DKXmlDocument> Open(Type t, const DKString& fileOrURL, DKString* desc = NULL);
 
 		// When reading HTML from buffer, they should be encoded with UTF-8.
 		// becouse XML has encoding information, but HTML does not.
-		static DKObject<DKXMLDocument> Open(Type t, const DKData* buffer, DKString* desc = NULL);
-		static DKObject<DKXMLDocument> Open(Type t, DKStream* stream, DKString* desc = NULL);
+		static DKObject<DKXmlDocument> Open(Type t, const DKData* buffer, DKString* desc = NULL);
+		static DKObject<DKXmlDocument> Open(Type t, DKStream* stream, DKString* desc = NULL);
 
 		DKObject<DKData> Export(DKStringEncoding e) const;
 		size_t Export(DKStringEncoding e, DKStream* output) const;
@@ -152,15 +152,15 @@ namespace DKGL
 		class DocumentBuilder;
 	};
 
-	typedef DKXMLDocument::Namespace		DKXMLNamespace;
-	typedef DKXMLDocument::Attribute		DKXMLAttribute;
-	typedef DKXMLDocument::Node				DKXMLNode;
-	typedef DKXMLDocument::CData			DKXMLCData;
-	typedef DKXMLDocument::PCData			DKXMLPCData;
-	typedef DKXMLDocument::Comment			DKXMLComment;
-	typedef DKXMLDocument::Element			DKXMLElement;
-	typedef DKXMLDocument::Instruction		DKXMLInstruction;
-	typedef DKXMLDocument::ElementDecl		DKXMLElementDecl;
-	typedef DKXMLDocument::AttributeDecl	DKXMLAttributeDecl;
-	typedef DKXMLDocument::DocTypeDecl		DKXMLDocTypeDecl;
+	typedef DKXmlDocument::Namespace		DKXmlNamespace;
+	typedef DKXmlDocument::Attribute		DKXmlAttribute;
+	typedef DKXmlDocument::Node				DKXmlNode;
+	typedef DKXmlDocument::CData			DKXmlCData;
+	typedef DKXmlDocument::PCData			DKXmlPCData;
+	typedef DKXmlDocument::Comment			DKXmlComment;
+	typedef DKXmlDocument::Element			DKXmlElement;
+	typedef DKXmlDocument::Instruction		DKXmlInstruction;
+	typedef DKXmlDocument::ElementDecl		DKXmlElementDecl;
+	typedef DKXmlDocument::AttributeDecl	DKXmlAttributeDecl;
+	typedef DKXmlDocument::DocTypeDecl		DKXmlDocTypeDecl;
 }

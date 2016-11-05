@@ -8,7 +8,6 @@
 #include "DKPropertySet.h"
 
 using namespace DKGL;
-using namespace DKGL;
 
 DKPropertySet::DKPropertySet(void)
 {
@@ -20,7 +19,7 @@ DKPropertySet::~DKPropertySet(void)
 
 int DKPropertySet::Import(const DKString& url, bool overwrite)
 {
-	DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, url);
+	DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, url);
 	if (doc)
 	{
 		return Import(doc->RootElement(), overwrite);
@@ -48,16 +47,16 @@ int DKPropertySet::Import(const DKPropertySet& prop, bool overwrite)
 	return imported;
 }
 
-int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
+int DKPropertySet::Import(const DKXmlElement* e, bool overwrite)
 {
 	if (e && e->name.CompareNoCase(L"DKPropertySet") == 0)
 	{
 		int imported = 0;
 		for (int i = 0; i < e->nodes.Count(); i++)
 		{
-			if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+			if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 			{
-				const DKXMLElement* pnode = e->nodes.Value(i).SafeCast<DKXMLElement>();
+				const DKXmlElement* pnode = e->nodes.Value(i).SafeCast<DKXmlElement>();
 				if (pnode->name.CompareNoCase(L"Property") == 0)
 				{			
 					bool keyFound = false;
@@ -65,17 +64,17 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 					DKVariant value;
 					for (int k = 0; k < pnode->nodes.Count(); ++k)
 					{
-						if (pnode->nodes.Value(k)->Type() == DKXMLNode::NodeTypeElement)
+						if (pnode->nodes.Value(k)->Type() == DKXmlNode::NodeTypeElement)
 						{
-							const DKXMLElement* node = pnode->nodes.Value(k).SafeCast<DKXMLElement>();
+							const DKXmlElement* node = pnode->nodes.Value(k).SafeCast<DKXmlElement>();
 							if (node->name.CompareNoCase(L"Key") == 0)
 							{
 								for (int x = 0; x < node->nodes.Count(); ++x)
 								{
-									if (node->nodes.Value(x)->Type() == DKXMLNode::NodeTypeCData)
-										key += node->nodes.Value(x).SafeCast<DKXMLCData>()->value;
-									else if (node->nodes.Value(x)->Type() == DKXMLNode::NodeTypePCData)
-										key += node->nodes.Value(x).SafeCast<DKXMLPCData>()->value;
+									if (node->nodes.Value(x)->Type() == DKXmlNode::NodeTypeCData)
+										key += node->nodes.Value(x).SafeCast<DKXmlCData>()->value;
+									else if (node->nodes.Value(x)->Type() == DKXmlNode::NodeTypePCData)
+										key += node->nodes.Value(x).SafeCast<DKXmlPCData>()->value;
 								}
 								keyFound = true;
 							}
@@ -84,9 +83,9 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 								value.ImportXML(node);
 							}
 						}
-						else if (pnode->nodes.Value(k)->Type() == DKXMLNode::NodeTypeCData)		// DKVariant-binary
+						else if (pnode->nodes.Value(k)->Type() == DKXmlNode::NodeTypeCData)		// DKVariant-binary
 						{
-							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(pnode->nodes.Value(k).SafeCast<DKXMLCData>()->value);
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(pnode->nodes.Value(k).SafeCast<DKXmlCData>()->value);
 							if (compressed)
 							{
 								DKObject<DKBuffer> data = compressed->Decompress();
@@ -120,7 +119,7 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 
 int DKPropertySet::Import(DKStream* stream, bool overwrite)
 {
-	DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, stream);
+	DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, stream);
 	if (doc)
 	{
 		return Import(doc->RootElement(), overwrite);
@@ -131,10 +130,10 @@ int DKPropertySet::Import(DKStream* stream, bool overwrite)
 int DKPropertySet::Export(const DKString& file, bool exportXML) const
 {
 	int exported = 0;
-	DKObject<DKXMLElement> e = Export(exportXML, &exported);
+	DKObject<DKXmlElement> e = Export(exportXML, &exported);
 	if (e)
 	{
-		DKObject<DKData> buffer = DKXMLDocument(NULL, e).Export(DKStringEncoding::UTF8);
+		DKObject<DKData> buffer = DKXmlDocument(NULL, e).Export(DKStringEncoding::UTF8);
 		if (buffer && buffer->Length() > 0)
 		{
 			DKObject<DKFile> f = DKFile::Create(file, DKFile::ModeOpenNew, DKFile::ModeShareExclusive);
@@ -153,10 +152,10 @@ int DKPropertySet::Export(DKStream* stream, bool exportXML) const
 	if (stream && stream->IsWritable())
 	{
 		int exported = 0;
-		DKObject<DKXMLElement> e = Export(exportXML, &exported);
+		DKObject<DKXmlElement> e = Export(exportXML, &exported);
 		if (e)
 		{
-			DKObject<DKData> buffer = DKXMLDocument(NULL, e).Export(DKStringEncoding::UTF8);
+			DKObject<DKData> buffer = DKXmlDocument(NULL, e).Export(DKStringEncoding::UTF8);
 			if (buffer && buffer->Length() > 0)
 			{
 				stream->Write(buffer->LockShared(), buffer->Length());
@@ -168,35 +167,35 @@ int DKPropertySet::Export(DKStream* stream, bool exportXML) const
 	return -1;
 }
 
-DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) const
+DKObject<DKXmlElement> DKPropertySet::Export(bool exportXML, int* numExported) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 
 	int exported = 0;
-	DKObject<DKXMLElement> e = DKObject<DKXMLElement>::New();
+	DKObject<DKXmlElement> e = DKObject<DKXmlElement>::New();
 	e->name = L"DKPropertySet";
 
 	bool exportFailed = false;
 
 	this->properties.EnumerateForward([&](const PropertyMap::Pair& pair, bool* stop)
 	{
-		DKObject<DKXMLElement> pnode = NULL;
+		DKObject<DKXmlElement> pnode = NULL;
 		if (exportXML)
 		{
-			DKObject<DKXMLElement> value = pair.value.ExportXML();
+			DKObject<DKXmlElement> value = pair.value.ExportXML();
 			if (value != NULL)
 			{
-				pnode = DKObject<DKXMLElement>::New();
+				pnode = DKObject<DKXmlElement>::New();
 				pnode->name = L"Property";
 
-				DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
+				DKObject<DKXmlElement> key = DKObject<DKXmlElement>::New();
 				key->name = L"Key";
-				DKObject<DKXMLPCData> keyPCData = DKObject<DKXMLPCData>::New();
+				DKObject<DKXmlPCData> keyPCData = DKObject<DKXmlPCData>::New();
 				keyPCData->value = pair.key;
-				key->nodes.Add(keyPCData.SafeCast<DKXMLNode>());
+				key->nodes.Add(keyPCData.SafeCast<DKXmlNode>());
 
-				pnode->nodes.Add(key.SafeCast<DKXMLNode>());
-				pnode->nodes.Add(value.SafeCast<DKXMLNode>());
+				pnode->nodes.Add(key.SafeCast<DKXmlNode>());
+				pnode->nodes.Add(value.SafeCast<DKXmlNode>());
 			}
 		}
 		else
@@ -210,20 +209,20 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 					DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
 					if (compressed)
 					{
-						DKObject<DKXMLCData> value = DKObject<DKXMLCData>::New();
+						DKObject<DKXmlCData> value = DKObject<DKXmlCData>::New();
 						if (compressed->Base64Encode(value->value))
 						{
-							pnode = DKObject<DKXMLElement>::New();
+							pnode = DKObject<DKXmlElement>::New();
 							pnode->name = L"Property";
 
-							DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
+							DKObject<DKXmlElement> key = DKObject<DKXmlElement>::New();
 							key->name = L"Key";
-							DKObject<DKXMLPCData> keyPCData = DKObject<DKXMLPCData>::New();
+							DKObject<DKXmlPCData> keyPCData = DKObject<DKXmlPCData>::New();
 							keyPCData->value = pair.key;
-							key->nodes.Add(keyPCData.SafeCast<DKXMLNode>());
+							key->nodes.Add(keyPCData.SafeCast<DKXmlNode>());
 
-							pnode->nodes.Add(key.SafeCast<DKXMLNode>());
-							pnode->nodes.Add(value.SafeCast<DKXMLNode>());
+							pnode->nodes.Add(key.SafeCast<DKXmlNode>());
+							pnode->nodes.Add(value.SafeCast<DKXmlNode>());
 						}
 					}
 				}
@@ -231,7 +230,7 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 		}
 		if (pnode != NULL)
 		{
-			e->nodes.Add(pnode.SafeCast<DKXMLNode>());
+			e->nodes.Add(pnode.SafeCast<DKXmlNode>());
 			exported++;
 		}
 		else

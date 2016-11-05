@@ -43,7 +43,7 @@ namespace DKGL
 			TypeAction,
 		};
 		using NamedObjectMap = DKMap<DKString, DKModel*>;
-		using UUIDObjectMap = DKMap<DKUUID, DKModel*>;
+		using UUIDObjectMap = DKMap<DKUuid, DKModel*>;
 
 		using Enumerator = DKFunctionSignature<bool(DKModel*)>;
 		using EnumeratorLoop = DKFunctionSignature<void(DKModel*)>;

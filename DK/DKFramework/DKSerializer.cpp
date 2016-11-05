@@ -2,14 +2,13 @@
 //  File: DKSerializer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKSerializer.h"
 #include "DKResource.h"
 #include "DKResourceLoader.h"
 
-using namespace DKGL;
 using namespace DKGL;
 
 
@@ -288,7 +287,7 @@ void DKSerializer::Unbind(const DKString& key)
 	}
 }
 
-DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
+DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 {
 	auto EntityFailCheck = [](const EntityMap& map, const DKString& key) -> bool
 	{
@@ -302,16 +301,16 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 	{
 		DKString key;
 		DKObject<DKSerializer> serializer;
-		DKObject<DKXMLElement> Serialize(SerializeForm sf) const
+		DKObject<DKXmlElement> Serialize(SerializeForm sf) const
 		{
-			DKObject<DKXMLElement> e = this->serializer->SerializeXML(sf);
+			DKObject<DKXmlElement> e = this->serializer->SerializeXML(sf);
 			if (e)
 			{
-				DKObject<DKXMLElement> incNode = DKObject<DKXMLElement>::New();
+				DKObject<DKXmlElement> incNode = DKObject<DKXmlElement>::New();
 				incNode->name = L"Include";
-				DKXMLAttribute attrKey = {0, L"key", this->key};
+				DKXmlAttribute attrKey = {0, L"key", this->key};
 				incNode->attributes.Add(attrKey);
-				incNode->nodes.Add(e.SafeCast<DKXMLNode>());
+				incNode->nodes.Add(e.SafeCast<DKXmlNode>());
 				return incNode;
 			}
 			return NULL;
@@ -322,15 +321,15 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 		DKObject<DKResource> res;
 		DKString referenceFile;
 		bool reference;
-		DKObject<DKXMLElement> Serialize(SerializeForm sf) const
+		DKObject<DKXmlElement> Serialize(SerializeForm sf) const
 		{
 			if (this->reference)  // add reference name. (usually, a filename)
 			{
 				if (this->referenceFile.Length() > 0)
 				{
-					DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
+					DKObject<DKXmlElement> extNode = DKObject<DKXmlElement>::New();
 					extNode->name = L"External";
-					DKXMLAttribute attrFile = {0, L"file", this->referenceFile};
+					DKXmlAttribute attrFile = {0, L"file", this->referenceFile};
 					extNode->attributes.Add(attrFile);
 					return extNode;
 				}
@@ -338,12 +337,12 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 			else        // embed reference
 			{
 				// check reference object whether it can be serialized with XML. (XMLElement)
-				DKObject<DKXMLElement> node = this->res->SerializeXML(sf);
+				DKObject<DKXmlElement> node = this->res->SerializeXML(sf);
 				if (node) 
 				{ 
-					DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
+					DKObject<DKXmlElement> extNode = DKObject<DKXmlElement>::New();
 					extNode->name = L"External"; 
-					extNode->nodes.Add(node.SafeCast<DKXMLNode>());
+					extNode->nodes.Add(node.SafeCast<DKXmlNode>());
 					return extNode; 
 				}
 				else    // embed as data (encode to be XMLCData)
@@ -360,12 +359,12 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 						DKObject<DKBuffer> compressed = buff->Compress(DKCompressor::Deflate);
 						if (compressed)
 						{
-							DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+							DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 							if (compressed->Base64Encode(cdata->value))
 							{
-								DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
+								DKObject<DKXmlElement> extNode = DKObject<DKXmlElement>::New();
 								extNode->name = L"External";
-								extNode->nodes.Add(cdata.SafeCast<DKXMLNode>());
+								extNode->nodes.Add(cdata.SafeCast<DKXmlNode>());
 								return extNode;
 							}
 						}
@@ -374,12 +373,12 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 			}
 			return NULL;
 		}
-		DKObject<DKXMLElement> Serialize(const DKString& key, SerializeForm sf) const
+		DKObject<DKXmlElement> Serialize(const DKString& key, SerializeForm sf) const
 		{
-			DKObject<DKXMLElement> e = Serialize(sf);
+			DKObject<DKXmlElement> e = Serialize(sf);
 			if (e)
 			{
-				DKXMLAttribute attrKey = {0, L"key", key};
+				DKXmlAttribute attrKey = {0, L"key", key};
 				e->attributes.Add(attrKey);
 			}
 			return e;
@@ -515,7 +514,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 		}
 	} queryEntities;
 
-	DKObject<DKXMLElement> result = NULL;
+	DKObject<DKXmlElement> result = NULL;
 
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 
@@ -526,9 +525,9 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 	{
 		if (queryEntities(this->entityMap))
 		{
-			result = DKObject<DKXMLElement>::New();
+			result = DKObject<DKXmlElement>::New();
 			result->name = L"DKSerializer";
-			DKXMLAttribute attrCID = {NULL, L"class", this->resourceClass};
+			DKXmlAttribute attrCID = {NULL, L"class", this->resourceClass};
 			result->attributes.Add(attrCID);
 
 			// add local data (target object owned)
@@ -536,15 +535,15 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 			{
 				if (sf == SerializeFormXML)
 				{
-					DKObject<DKXMLElement> node = queryEntities.variant.ExportXML();
+					DKObject<DKXmlElement> node = queryEntities.variant.ExportXML();
 					if (node)
 					{
-						DKObject<DKXMLElement> variantNode = DKObject<DKXMLElement>::New();
+						DKObject<DKXmlElement> variantNode = DKObject<DKXmlElement>::New();
 						variantNode->name = L"Local";
-						DKXMLAttribute attrType = {0, L"type", L"xml"};
+						DKXmlAttribute attrType = {0, L"type", L"xml"};
 						variantNode->attributes.Add(attrType);
-						variantNode->nodes.Add(node.SafeCast<DKXMLNode>());
-						result->nodes.Add(variantNode.SafeCast<DKXMLNode>());
+						variantNode->nodes.Add(node.SafeCast<DKXmlNode>());
+						result->nodes.Add(variantNode.SafeCast<DKXmlNode>());
 					}
 					else
 					{
@@ -555,7 +554,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 				else if (sf == SerializeFormBinXML)
 				{
 					DKBufferStream stream;
-					DKObject<DKXMLElement> variantNode = NULL;
+					DKObject<DKXmlElement> variantNode = NULL;
 
 					if (queryEntities.variant.ExportStream(&stream))
 					{
@@ -565,21 +564,21 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 							DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
 							if (compressed)
 							{
-								DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
+								DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 								if (compressed->Base64Encode(cdata->value))
 								{
-									variantNode = DKObject<DKXMLElement>::New();
+									variantNode = DKObject<DKXmlElement>::New();
 									variantNode->name = L"Local";
-									DKXMLAttribute attrType = {0, L"type", L"binary"};
+									DKXmlAttribute attrType = {0, L"type", L"binary"};
 									variantNode->attributes.Add(attrType);
-									variantNode->nodes.Add(cdata.SafeCast<DKXMLNode>());
+									variantNode->nodes.Add(cdata.SafeCast<DKXmlNode>());
 								}
 							}
 						}
 					}					
 					if (variantNode)
 					{
-						result->nodes.Add(variantNode.SafeCast<DKXMLNode>());								
+						result->nodes.Add(variantNode.SafeCast<DKXmlNode>());								
 					}
 					else
 					{
@@ -600,10 +599,10 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 				for (size_t i = 0; i < queryEntities.serializers.Count(); ++i)
 				{
 					SerializerElementWithKey& sek = queryEntities.serializers.Value(i);
-					DKObject<DKXMLElement> e = sek.Serialize(sf);
+					DKObject<DKXmlElement> e = sek.Serialize(sf);
 					if (e)
 					{
-						result->nodes.Add(e.SafeCast<DKXMLNode>());
+						result->nodes.Add(e.SafeCast<DKXmlNode>());
 					}
 					else if (EntityFailCheck(this->entityMap, sek.key) == false)
 					{
@@ -621,10 +620,10 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 				{
 					ExternalEntityInfoWithKey& ek = queryEntities.externals.Value(i);
 
-					DKObject<DKXMLElement> node = ek.info.Serialize(ek.key, sf);
+					DKObject<DKXmlElement> node = ek.info.Serialize(ek.key, sf);
 					if (node)
 					{
-						result->nodes.Add(node.SafeCast<DKXMLNode>());
+						result->nodes.Add(node.SafeCast<DKXmlNode>());
 					}
 					else if (EntityFailCheck(this->entityMap, ek.key) == false)
 					{
@@ -640,9 +639,9 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 				for (size_t i = 0; i < queryEntities.externalArrays.Count(); ++i)
 				{
 					ExternalEntityInfoArrayWithKey& eak = queryEntities.externalArrays.Value(i);
-					DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
+					DKObject<DKXmlElement> extNode = DKObject<DKXmlElement>::New();
 					extNode->name = L"ExternalArray";
-					DKXMLAttribute attrKey = {0, L"key", eak.key};
+					DKXmlAttribute attrKey = {0, L"key", eak.key};
 					extNode->attributes.Add(attrKey);
 
 					bool entityError = false;
@@ -650,10 +649,10 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					{
 						ExternalEntityInfo& info = eak.infoArray.Value(j);
 
-						DKObject<DKXMLElement> node = info.Serialize(sf);
+						DKObject<DKXmlElement> node = info.Serialize(sf);
 						if (node)
 						{
-							extNode->nodes.Add(node.SafeCast<DKXMLNode>());
+							extNode->nodes.Add(node.SafeCast<DKXmlNode>());
 						}
 						else
 						{
@@ -672,7 +671,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					}
 					else
 					{
-						result->nodes.Add(extNode.SafeCast<DKXMLNode>());
+						result->nodes.Add(extNode.SafeCast<DKXmlNode>());
 					}
 				}
 			}
@@ -682,9 +681,9 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 				for (size_t i = 0; i < queryEntities.externalMaps.Count(); ++i)
 				{
 					ExternalEntityInfoMapWithKey& emk = queryEntities.externalMaps.Value(i);
-					DKObject<DKXMLElement> extNode = DKObject<DKXMLElement>::New();
+					DKObject<DKXmlElement> extNode = DKObject<DKXmlElement>::New();
 					extNode->name = L"ExternalMap";
-					DKXMLAttribute attrKey = {0, L"key", emk.key};
+					DKXmlAttribute attrKey = {0, L"key", emk.key};
 					extNode->attributes.Add(attrKey);
 
 					bool entityError = false;
@@ -692,10 +691,10 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					{
 						ExternalEntityInfo& info = pair.value;
 
-						DKObject<DKXMLElement> node = info.Serialize(pair.key, sf);
+						DKObject<DKXmlElement> node = info.Serialize(pair.key, sf);
 						if (node != NULL)
 						{
-							extNode->nodes.Add(node.SafeCast<DKXMLNode>());
+							extNode->nodes.Add(node.SafeCast<DKXmlNode>());
 						}
 						else
 						{
@@ -714,7 +713,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					}
 					else
 					{
-						result->nodes.Add(extNode.SafeCast<DKXMLNode>());
+						result->nodes.Add(extNode.SafeCast<DKXmlNode>());
 					}
 				}
 			}
@@ -739,7 +738,7 @@ DKObject<DKXMLElement> DKSerializer::SerializeXML(SerializeForm sf) const
 	return result;
 }
 
-bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObject<DeserializerEntity>>& entities, DKResourceLoader* loader) const
+bool DKSerializer::DeserializeXMLOperations(const DKXmlElement* e, DKArray<DKObject<DeserializerEntity>>& entities, DKResourceLoader* loader) const
 {
 	if (e == NULL || e->name.CompareNoCase(L"DKSerializer") != 0)
 		return false;
@@ -750,7 +749,7 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 	{
 		DKString key;
 		DKObject<DKResource> res;
-		bool LoadFromElement(const DKXMLElement* e, DKResourceLoader* loader)
+		bool LoadFromElement(const DKXmlElement* e, DKResourceLoader* loader)
 		{
 			key = L"";
 			res = NULL;
@@ -775,14 +774,14 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 				{
 					for (size_t i = 0; i < e->nodes.Count(); ++i)
 					{
-						if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+						if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 						{
-							res = loader->ResourceFromXML(e->nodes.Value(i).SafeCast<DKXMLElement>());
+							res = loader->ResourceFromXML(e->nodes.Value(i).SafeCast<DKXmlElement>());
 							break;
 						}
-						else if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+						else if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeCData)
 						{
-							const DKXMLCData* cdata = e->nodes.Value(i).SafeCast<DKXMLCData>();
+							const DKXmlCData* cdata = e->nodes.Value(i).SafeCast<DKXmlCData>();
 							DKASSERT_DEBUG(cdata != NULL);
 
 							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(cdata->value);
@@ -831,9 +830,9 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 	// parse XML and extract data.
 	for (size_t i = 0; i < e->nodes.Count(); ++i)
 	{
-		if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+		if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 		{
-			const DKXMLElement* node1 = e->nodes.Value(i).SafeCast<DKXMLElement>();
+			const DKXmlElement* node1 = e->nodes.Value(i).SafeCast<DKXmlElement>();
 			if (node1->name.CompareNoCase(L"Local") == 0)
 			{
 				DKString type = L"";
@@ -849,9 +848,9 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 				{
 					for (size_t j = 0; j < node1->nodes.Count(); ++j)
 					{
-						if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeElement)
+						if (node1->nodes.Value(j)->Type() == DKXmlNode::NodeTypeElement)
 						{
-							if (restoreEntities.deserializer->rootValue.ImportXML(node1->nodes.Value(j).SafeCast<DKXMLElement>()))
+							if (restoreEntities.deserializer->rootValue.ImportXML(node1->nodes.Value(j).SafeCast<DKXmlElement>()))
 								break;
 						}
 					}
@@ -860,9 +859,9 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 				{
 					for (size_t j = 0; j < node1->nodes.Count(); ++j)
 					{
-						if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeCData)
+						if (node1->nodes.Value(j)->Type() == DKXmlNode::NodeTypeCData)
 						{
-							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(node1->nodes.Value(j).SafeCast<DKXMLCData>()->value);
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(node1->nodes.Value(j).SafeCast<DKXmlCData>()->value);
 							if (compressed)
 							{
 								DKObject<DKBuffer> d = compressed->Decompress();
@@ -881,7 +880,7 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 			{
 				// include node
 				DKString objectKey = L"";
-				const DKXMLElement* incNode = NULL;
+				const DKXmlElement* incNode = NULL;
 				for (size_t j = 0; j < node1->attributes.Count(); ++j)
 				{
 					if (node1->attributes.Value(j).name.CompareNoCase(L"key") == 0)
@@ -889,9 +888,9 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 				}
 				for (size_t j = 0; j < node1->nodes.Count(); ++j)
 				{
-					if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeElement)
+					if (node1->nodes.Value(j)->Type() == DKXmlNode::NodeTypeElement)
 					{
-						incNode = node1->nodes.Value(j).SafeCast<DKXMLElement>();
+						incNode = node1->nodes.Value(j).SafeCast<DKXmlElement>();
 						break;
 					}
 				}
@@ -936,9 +935,9 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 					ExternalArrayType eat;
 					for (size_t j = 0; j < node1->nodes.Count(); ++j)
 					{
-						if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeElement)
+						if (node1->nodes.Value(j)->Type() == DKXmlNode::NodeTypeElement)
 						{
-							const DKXMLElement* node2 = node1->nodes.Value(j).SafeCast<DKXMLElement>();
+							const DKXmlElement* node2 = node1->nodes.Value(j).SafeCast<DKXmlElement>();
 							if (node2->name.CompareNoCase(L"External") == 0)
 							{
 								ExternalResource ex;
@@ -972,9 +971,9 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 					ExternalMapType emt;
 					for (size_t j = 0; j < node1->nodes.Count(); ++j)
 					{
-						if (node1->nodes.Value(j)->Type() == DKXMLNode::NodeTypeElement)
+						if (node1->nodes.Value(j)->Type() == DKXmlNode::NodeTypeElement)
 						{
-							const DKXMLElement* node2 = node1->nodes.Value(j).SafeCast<DKXMLElement>();
+							const DKXmlElement* node2 = node1->nodes.Value(j).SafeCast<DKXmlElement>();
 							if (node2->name.CompareNoCase(L"External") == 0)
 							{
 								ExternalResource ex;
@@ -1001,7 +1000,7 @@ bool DKSerializer::DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObj
 	return EntityRestore().ExtractOperations(this, restoreEntities, entities);
 }
 
-bool DKSerializer::Deserialize(const DKXMLElement* e, DKResourceLoader* loader) const
+bool DKSerializer::Deserialize(const DKXmlElement* e, DKResourceLoader* loader) const
 {
 	// To determine, object can be restored, generate restore operation in advance.
 	// embedded serializer should be restorable also.
@@ -1899,7 +1898,7 @@ bool DKSerializer::Deserialize(DKStream* s, DKResourceLoader* p) const
 		}
 		else // try to open with XMLParser.
 		{
-			DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, s);
+			DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, s);
 			if (doc)
 				return Deserialize(doc->RootElement(), p);
 		}
@@ -1936,7 +1935,7 @@ bool DKSerializer::Deserialize(const DKData* d, DKResourceLoader* p) const
 		}
 		else // try to open with XMLParser.
 		{
-			DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, d);
+			DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, d);
 			if (doc)
 				return Deserialize(doc->RootElement(), p);
 		}
@@ -2027,7 +2026,7 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 	return false;
 }
 
-bool DKSerializer::RestoreObject(const DKXMLElement* e, DKResourceLoader* p, Selector* sel)
+bool DKSerializer::RestoreObject(const DKXmlElement* e, DKResourceLoader* p, Selector* sel)
 {
 	if (e && sel && e->name.CompareNoCase(L"DKSerializer") == 0)
 	{
@@ -2067,7 +2066,7 @@ bool DKSerializer::RestoreObject(DKStream* s, DKResourceLoader* p, Selector* sel
 		}
 		else
 		{
-			DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, s);
+			DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, s);
 			if (doc)
 				return RestoreObject(doc->RootElement(), p, sel);
 		}
@@ -2104,7 +2103,7 @@ bool DKSerializer::RestoreObject(const DKData* d, DKResourceLoader* p, Selector*
 		}
 		else
 		{
-			DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, d);
+			DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, d);
 			if (doc)
 				return RestoreObject(doc->RootElement(), p, sel);
 		}
@@ -2119,7 +2118,7 @@ size_t DKSerializer::Serialize(SerializeForm sf, DKStream* output) const
 	{
 	case SerializeFormXML:
 	case SerializeFormBinXML:
-		s = DKXMLDocument(this->SerializeXML(sf)).Export(DKStringEncoding::UTF8, output);
+		s = DKXmlDocument(this->SerializeXML(sf)).Export(DKStringEncoding::UTF8, output);
 		break;
 	case SerializeFormBinary:
 	case SerializeFormCompressedBinary:
@@ -2138,10 +2137,10 @@ DKObject<DKData> DKSerializer::Serialize(SerializeForm sf) const
 	case SerializeFormBinXML:
 		if (true)
 		{
-			DKObject<DKXMLElement> e = this->SerializeXML(sf);
+			DKObject<DKXmlElement> e = this->SerializeXML(sf);
 			if (e)
 			{
-				data = DKXMLDocument(e).Export(DKStringEncoding::UTF8);
+				data = DKXmlDocument(e).Export(DKStringEncoding::UTF8);
 			}
 		}
 		break;

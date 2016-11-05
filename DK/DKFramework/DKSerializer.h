@@ -163,13 +163,13 @@ namespace DKGL
 
 		DKObject<DKData> Serialize(SerializeForm sf) const;
 		size_t Serialize(SerializeForm sf, DKStream* output) const;
-		DKObject<DKXMLElement> SerializeXML(SerializeForm sf) const;
-		bool Deserialize(const DKXMLElement* e, DKResourceLoader* p) const;
+		DKObject<DKXmlElement> SerializeXML(SerializeForm sf) const;
+		bool Deserialize(const DKXmlElement* e, DKResourceLoader* p) const;
 		bool Deserialize(DKStream* s, DKResourceLoader* p) const;
 		bool Deserialize(const DKData* d, DKResourceLoader* p) const;
 
 		typedef DKFunctionSignature<DKObject<DKSerializer> (const DKString&)> Selector;
-		static bool RestoreObject(const DKXMLElement* e, DKResourceLoader* p, Selector* sel);
+		static bool RestoreObject(const DKXmlElement* e, DKResourceLoader* p, Selector* sel);
 		static bool RestoreObject(DKStream* s, DKResourceLoader* p, Selector* sel);
 		static bool RestoreObject(const DKData* d, DKResourceLoader* p, Selector* sel);
 
@@ -244,7 +244,7 @@ namespace DKGL
 			DKObject<Callback> callback;
 		};
 
-		bool DeserializeXMLOperations(const DKXMLElement* e, DKArray<DKObject<DeserializerEntity>>& entities, DKResourceLoader* pool) const;
+		bool DeserializeXMLOperations(const DKXmlElement* e, DKArray<DKObject<DeserializerEntity>>& entities, DKResourceLoader* pool) const;
 		bool DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<DeserializerEntity>>& entities, DKResourceLoader* pool) const;
 		size_t SerializeBinary(SerializeForm sf, DKStream* output) const;
 		bool DeserializeBinary(DKStream* s, DKResourceLoader* p) const;

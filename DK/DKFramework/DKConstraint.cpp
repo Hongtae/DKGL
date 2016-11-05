@@ -2,7 +2,7 @@
 //  File: DKConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletUtils.h"
@@ -10,7 +10,6 @@
 #include "DKRigidBody.h"
 #include "DKWorld.h"
 
-using namespace DKGL;
 using namespace DKGL;
 using namespace DKGL::Private;
 
@@ -210,7 +209,7 @@ void DKConstraint::UpdateCopiedReferenceUUIDs(UUIDObjectMap& uuids)
 
 void DKConstraint::RestoreTargets(UUIDObjectMap& uuids)
 {
-	auto find = [&uuids](const DKUUID& uuid) -> DKRigidBody*
+	auto find = [&uuids](const DKUuid& uuid) -> DKRigidBody*
 	{
 		auto p = uuids.Find(uuid);
 		if (p)
@@ -399,8 +398,8 @@ DKObject<DKSerializer> DKConstraint::Serializer(void)
 			return this;
 		}
 		DKObject<DKConstraint> target;
-		DKUUID bodyA;
-		DKUUID bodyB;
+		DKUuid bodyA;
+		DKUuid bodyB;
 	};
 	return DKObject<LocalSerializer>::New()->Init(this);
 }

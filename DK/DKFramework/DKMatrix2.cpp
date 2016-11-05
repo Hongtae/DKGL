@@ -2,14 +2,13 @@
 //  File: DKMatrix2.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKMatrix2.h"
 #include "DKVector2.h"
 
-using namespace DKGL;
 using namespace DKGL;
 
 const DKMatrix2 DKMatrix2::identity = DKMatrix2().Identity();

@@ -42,13 +42,13 @@ namespace DKGL
 		// returns number of pairs imported or -1 if import failed.
 		int Import(const DKString& url, bool overwrite);
 		int Import(const DKPropertySet& prop, bool overwrite);
-		int Import(const DKXMLElement* e, bool overwrite);
+		int Import(const DKXmlElement* e, bool overwrite);
 		int Import(DKStream* stream, bool overwrite);
 		// Export to file, returns number of pairs exported or -1 if export filed.
 		// You can export with XML or binary format
 		int Export(const DKString& file, bool exportXML) const;
 		int Export(DKStream* stream, bool exportXML) const;
-		DKObject<DKXMLElement> Export(bool exportXML, int* numExported) const;
+		DKObject<DKXmlElement> Export(bool exportXML, int* numExported) const;
 
 		// SetInitialValue, add new value for key, or fail if key is exits already.
 		bool SetInitialValue(const DKString& key, const DKVariant& value);

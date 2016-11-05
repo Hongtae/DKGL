@@ -143,8 +143,8 @@ namespace DKGL
 
 		struct TargetRestoreInfo
 		{
-			DKUUID bodyA;
-			DKUUID bodyB;
+			DKUuid bodyA;
+			DKUuid bodyB;
 		};
 		DKObject<TargetRestoreInfo> restoreInfo; // restore-info
 		void RestoreTargets(UUIDObjectMap&);

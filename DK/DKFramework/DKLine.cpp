@@ -2,15 +2,13 @@
 //  File: DKLine.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKLine.h"
 
 using namespace DKGL;
-using namespace DKGL;
-
 
 DKLine::DKLine(void)
 	: begin(DKVector3(-FLT_MAX, -FLT_MAX, -FLT_MAX))

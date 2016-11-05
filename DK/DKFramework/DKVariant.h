@@ -131,15 +131,15 @@ namespace DKGL
 		DKVariant(const DKVariant& v);
 		DKVariant(DKVariant&& v);
 
-		explicit DKVariant(const DKXMLElement* e);
+		explicit DKVariant(const DKXmlElement* e);
 		~DKVariant(void);
 
 		DKVariant& SetValueType(Type t);
 		Type ValueType(void) const;
 
 		// XML input/output
-		DKObject<DKXMLElement> ExportXML(void) const;
-		bool ImportXML(const DKXMLElement* e);
+		DKObject<DKXmlElement> ExportXML(void) const;
+		bool ImportXML(const DKXmlElement* e);
 
 		// Binary-stream input/output
 		bool ExportStream(DKStream* stream) const;
