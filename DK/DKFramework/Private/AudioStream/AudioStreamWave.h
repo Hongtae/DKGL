@@ -1,37 +1,37 @@
 ﻿//
-//  File: DKAudioStreamVorbis.h
+//  File: AudioStreamWave.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKAudioStream.h"
+#include "../../DKAudioStream.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// DKAudioStreamVorbis
-// Audio stream class inherited from DKAudioStream.
-// This class supports audio stream for OGG-Vorbis format.
+// AudioStreamWave
+// Audio stream class inherited from AudioStream.
+// This class supports audio stream for Wave format.
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace DKGL
 {
 	namespace Private
 	{
-		struct VorbisFileContext;
-		class DKAudioStreamVorbis : public DKAudioStream
+		struct WaveFileContext;
+		class AudioStreamWave : public DKAudioStream
 		{
 		public:
-			DKAudioStreamVorbis(void);
-			~DKAudioStreamVorbis(void);
+			AudioStreamWave(void);
+			~AudioStreamWave(void);
 
 			bool Open(const DKString& file);
 			bool Open(DKStream* stream);
 
-			size_t Read(void* buffer, size_t size);
+			size_t Read(void* pBuffer, size_t nSize);
 
-			Position SeekRaw(Position pos);
-			Position SeekPcm(Position pos);
+			Position SeekRaw(Position nPos);
+			Position SeekPcm(Position nPos);
 			double SeekTime(double s);
 
 			Position RawPos(void) const;
@@ -42,7 +42,7 @@ namespace DKGL
 			Position PcmTotal(void) const;
 			double TimeTotal(void) const;
 		private:
-			VorbisFileContext* context;
+			WaveFileContext* context;
 		};
 	}
 }

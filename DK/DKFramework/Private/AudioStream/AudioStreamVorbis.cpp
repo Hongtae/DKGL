@@ -1,5 +1,5 @@
 //
-//  File: DKAudioStreamVorbis.cpp
+//  File: AudioStreamVorbis.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
@@ -9,7 +9,7 @@
 #include "../../../lib/Inc_libogg.h"
 #include "../../../lib/Inc_libvorbis.h"
 
-#include "DKAudioStreamVorbis.h"
+#include "AudioStreamVorbis.h"
 
 #define SWAP_CHANNEL16(x, y)		{short t = x; x = y ; y = t;}
 
@@ -71,14 +71,14 @@ using namespace DKGL;
 using namespace DKGL::Private;
 
 
-DKAudioStreamVorbis::DKAudioStreamVorbis(void)
+AudioStreamVorbis::AudioStreamVorbis(void)
 	: DKAudioStream(DKAudioStream::FileTypeOggVorbis)
 	, context(new VorbisFileContext)
 {
 	memset(context, 0, sizeof(VorbisFileContext));
 }
 
-DKAudioStreamVorbis::~DKAudioStreamVorbis(void)
+AudioStreamVorbis::~AudioStreamVorbis(void)
 {
 	if (context->vorbis.datasource)
 		ov_clear(&context->vorbis);
@@ -87,7 +87,7 @@ DKAudioStreamVorbis::~DKAudioStreamVorbis(void)
 	delete context;
 }
 
-bool DKAudioStreamVorbis::Open(const DKString& file)
+bool AudioStreamVorbis::Open(const DKString& file)
 {
 	if (context->vorbis.datasource)
 		ov_clear(&context->vorbis);
@@ -114,7 +114,7 @@ bool DKAudioStreamVorbis::Open(const DKString& file)
 	return false;
 }
 
-bool DKAudioStreamVorbis::Open(DKStream* stream)
+bool AudioStreamVorbis::Open(DKStream* stream)
 {
 	if (stream == NULL || !stream->IsReadable())
 		return false;
@@ -153,7 +153,7 @@ bool DKAudioStreamVorbis::Open(DKStream* stream)
 	return false;
 }
 
-size_t DKAudioStreamVorbis::Read(void* buffer, size_t size)
+size_t AudioStreamVorbis::Read(void* buffer, size_t size)
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -186,7 +186,7 @@ size_t DKAudioStreamVorbis::Read(void* buffer, size_t size)
 	return nDecoded;
 }
 
-DKAudioStream::Position DKAudioStreamVorbis::SeekRaw(Position pos)
+DKAudioStream::Position AudioStreamVorbis::SeekRaw(Position pos)
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -195,7 +195,7 @@ DKAudioStream::Position DKAudioStreamVorbis::SeekRaw(Position pos)
 	return ov_raw_tell(&context->vorbis);
 }
 
-DKAudioStream::Position DKAudioStreamVorbis::SeekPcm(Position pos)
+DKAudioStream::Position AudioStreamVorbis::SeekPcm(Position pos)
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -204,7 +204,7 @@ DKAudioStream::Position DKAudioStreamVorbis::SeekPcm(Position pos)
 	return ov_pcm_tell(&context->vorbis);
 }
 
-double DKAudioStreamVorbis::SeekTime(double s)
+double AudioStreamVorbis::SeekTime(double s)
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -213,7 +213,7 @@ double DKAudioStreamVorbis::SeekTime(double s)
 	return ov_time_tell(&context->vorbis);
 }
 
-DKAudioStream::Position DKAudioStreamVorbis::RawPos(void) const
+DKAudioStream::Position AudioStreamVorbis::RawPos(void) const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -221,7 +221,7 @@ DKAudioStream::Position DKAudioStreamVorbis::RawPos(void) const
 	return ov_raw_tell(&context->vorbis);
 }
 
-DKAudioStream::Position DKAudioStreamVorbis::PcmPos(void) const
+DKAudioStream::Position AudioStreamVorbis::PcmPos(void) const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -229,7 +229,7 @@ DKAudioStream::Position DKAudioStreamVorbis::PcmPos(void) const
 	return ov_pcm_tell(&context->vorbis);
 }
 
-double DKAudioStreamVorbis::TimePos(void) const
+double AudioStreamVorbis::TimePos(void) const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -237,7 +237,7 @@ double DKAudioStreamVorbis::TimePos(void) const
 	return ov_time_tell(&context->vorbis);
 }
 
-DKAudioStream::Position DKAudioStreamVorbis::RawTotal(void) const
+DKAudioStream::Position AudioStreamVorbis::RawTotal(void) const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -245,7 +245,7 @@ DKAudioStream::Position DKAudioStreamVorbis::RawTotal(void) const
 	return ov_raw_total(&context->vorbis, -1);
 }
 
-DKAudioStream::Position DKAudioStreamVorbis::PcmTotal(void) const
+DKAudioStream::Position AudioStreamVorbis::PcmTotal(void) const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -253,7 +253,7 @@ DKAudioStream::Position DKAudioStreamVorbis::PcmTotal(void) const
 	return ov_pcm_total(&context->vorbis, -1);
 }
 
-double DKAudioStreamVorbis::TimeTotal(void) const
+double AudioStreamVorbis::TimeTotal(void) const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;

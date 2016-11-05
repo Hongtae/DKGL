@@ -1,12 +1,12 @@
 //
-//  File: DKAudioStreamWave.cpp
+//  File: AudioStreamWave.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
-#include "DKAudioStreamWave.h"
+#include "AudioStreamWave.h"
 
 
 #ifdef _WIN32
@@ -118,19 +118,19 @@ static_assert(sizeof(WaveFormatEX) == 20, "sizeof(WaveFormatEX) == 20");
 static_assert(sizeof(WaveFormatExt) == 44, "sizeof(WaveFormatEX) == 44");
 
 
-DKAudioStreamWave::DKAudioStreamWave(void)
+AudioStreamWave::AudioStreamWave(void)
 	: DKAudioStream(DKAudioStream::FileTypeWave)
 	, context(new WaveFileContext)
 {
 }
 
-DKAudioStreamWave::~DKAudioStreamWave(void)
+AudioStreamWave::~AudioStreamWave(void)
 {
 	context->stream = NULL;
 	delete context;
 }
 
-bool DKAudioStreamWave::Open(const DKString& file)
+bool AudioStreamWave::Open(const DKString& file)
 {
 	DKObject<DKFile> f = DKFile::Create(file, DKFile::ModeOpenReadOnly, DKFile::ModeShareAll);
 	if (f)
@@ -140,7 +140,7 @@ bool DKAudioStreamWave::Open(const DKString& file)
 	return false;
 }
 
-bool DKAudioStreamWave::Open(DKStream* stream)
+bool AudioStreamWave::Open(DKStream* stream)
 {
 	if (stream == NULL || !stream->IsReadable() || !stream->IsSeekable())
 		return false;
@@ -196,12 +196,12 @@ bool DKAudioStreamWave::Open(DKStream* stream)
 							}
 							else
 							{
-							//	DKLog("DKAudioStreamWave: Unknown format! (0x%x)", format.formatTag);
+							//	DKLog("AudioStreamWave: Unknown format! (0x%x)", format.formatTag);
 							}
 						}
 						else
 						{
-							DKLog("DKAudioStreamWave: Read error!\n");
+							DKLog("AudioStreamWave: Read error!\n");
 							return false;
 						}
 					}
@@ -225,9 +225,9 @@ bool DKAudioStreamWave::Open(DKStream* stream)
 					stream->SetPos(stream->GetPos() + 1);
 			}
 
-			//DKLog("DKAudioStreamWave: dataSize:%d", (int)context->dataSize);
-			//DKLog("DKAudioStreamWave: dataOffset:%d", (int)context->dataOffset);
-			//DKLog("DKAudioStreamWave: formatType:%d", (int)context->formatType);
+			//DKLog("AudioStreamWave: dataSize:%d", (int)context->dataSize);
+			//DKLog("AudioStreamWave: dataOffset:%d", (int)context->dataOffset);
+			//DKLog("AudioStreamWave: formatType:%d", (int)context->formatType);
 
 			if (context->dataSize && context->dataOffset &&
 				(context->formatType == WaveFormatTypePCM || context->formatType == WaveFormatTypeEXT))
@@ -249,7 +249,7 @@ bool DKAudioStreamWave::Open(DKStream* stream)
 	return false;
 }
 
-size_t DKAudioStreamWave::Read(void* buffer, size_t size)
+size_t AudioStreamWave::Read(void* buffer, size_t size)
 {
 	if (context->stream)
 	{
@@ -270,7 +270,7 @@ size_t DKAudioStreamWave::Read(void* buffer, size_t size)
 	return 0;
 }
 
-DKAudioStream::Position DKAudioStreamWave::SeekRaw(Position pos)
+DKAudioStream::Position AudioStreamWave::SeekRaw(Position pos)
 {
 	if (context->stream)
 	{
@@ -284,12 +284,12 @@ DKAudioStream::Position DKAudioStreamWave::SeekRaw(Position pos)
 	return 0;
 }
 
-DKAudioStream::Position DKAudioStreamWave::SeekPcm(Position pos)
+DKAudioStream::Position AudioStreamWave::SeekPcm(Position pos)
 {
 	return SeekRaw(pos);
 }
 
-double DKAudioStreamWave::SeekTime(double s)
+double AudioStreamWave::SeekTime(double s)
 {
 	if (context->stream)
 	{
@@ -299,7 +299,7 @@ double DKAudioStreamWave::SeekTime(double s)
 	return 0;
 }
 
-DKAudioStream::Position DKAudioStreamWave::RawPos(void) const
+DKAudioStream::Position AudioStreamWave::RawPos(void) const
 {
 	if (context->stream)
 	{
@@ -308,12 +308,12 @@ DKAudioStream::Position DKAudioStreamWave::RawPos(void) const
 	return 0;
 }
 
-DKAudioStream::Position DKAudioStreamWave::PcmPos(void) const
+DKAudioStream::Position AudioStreamWave::PcmPos(void) const
 {
 	return RawPos();
 }
 
-double DKAudioStreamWave::TimePos(void) const
+double AudioStreamWave::TimePos(void) const
 {
 	if (context->stream)
 	{
@@ -323,7 +323,7 @@ double DKAudioStreamWave::TimePos(void) const
 	return 0;
 }
 
-DKAudioStream::Position DKAudioStreamWave::RawTotal(void) const
+DKAudioStream::Position AudioStreamWave::RawTotal(void) const
 {
 	if (context->stream)
 	{
@@ -332,12 +332,12 @@ DKAudioStream::Position DKAudioStreamWave::RawTotal(void) const
 	return 0;
 }
 
-DKAudioStream::Position DKAudioStreamWave::PcmTotal(void) const
+DKAudioStream::Position AudioStreamWave::PcmTotal(void) const
 {
 	return RawTotal();
 }
 
-double DKAudioStreamWave::TimeTotal(void) const
+double AudioStreamWave::TimeTotal(void) const
 {
 	if (context->stream)
 	{

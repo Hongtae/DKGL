@@ -417,9 +417,6 @@
 		840CA6451928953500689BB6 /* DKApplicationInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688917C6145D000DE61A /* DKApplicationInterface.h */; };
 		840CA6461928953500689BB6 /* DKOpenGLInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688A17C6145D000DE61A /* DKOpenGLInterface.h */; };
 		840CA6471928953500689BB6 /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
-		840CA6481928954600689BB6 /* DKAudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E681665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp */; };
-		840CA6491928954600689BB6 /* DKAudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6A1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp */; };
-		840CA64A1928954600689BB6 /* DKAudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6C1665EB8F00B9B9A2 /* DKAudioStreamWave.cpp */; };
 		840CA64C1928956600689BB6 /* DKOpenGLImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84211E5A1665EB8F00B9B9A2 /* DKOpenGLImpl.mm */; };
 		840CA6501928956800689BB6 /* DKOpenGLImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84211E5A1665EB8F00B9B9A2 /* DKOpenGLImpl.mm */; };
 		840CA6531928957500689BB6 /* DKFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 846B29681921FE6300918B1B /* DKFoundation.h */; };
@@ -440,17 +437,8 @@
 		840CA66D19289A4D00689BB6 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 840CA66C19289A4D00689BB6 /* IOKit.framework */; };
 		840CA66E19289A6200689BB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 840CA4F21928946800689BB6 /* Foundation.framework */; };
 		840CA66F1928A2D600689BB6 /* BulletUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E551665EB8F00B9B9A2 /* BulletUtils.h */; };
-		840CA6701928A2D600689BB6 /* DKAudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E691665EB8F00B9B9A2 /* DKAudioStreamFLAC.h */; };
-		840CA6711928A2D600689BB6 /* DKAudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6B1665EB8F00B9B9A2 /* DKAudioStreamVorbis.h */; };
-		840CA6721928A2D600689BB6 /* DKAudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6D1665EB8F00B9B9A2 /* DKAudioStreamWave.h */; };
 		840CA6731928A2D700689BB6 /* BulletUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E551665EB8F00B9B9A2 /* BulletUtils.h */; };
-		840CA6741928A2D700689BB6 /* DKAudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E691665EB8F00B9B9A2 /* DKAudioStreamFLAC.h */; };
-		840CA6751928A2D700689BB6 /* DKAudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6B1665EB8F00B9B9A2 /* DKAudioStreamVorbis.h */; };
-		840CA6761928A2D700689BB6 /* DKAudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6D1665EB8F00B9B9A2 /* DKAudioStreamWave.h */; };
 		840CA6771928A2D800689BB6 /* BulletUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E551665EB8F00B9B9A2 /* BulletUtils.h */; };
-		840CA6781928A2D800689BB6 /* DKAudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E691665EB8F00B9B9A2 /* DKAudioStreamFLAC.h */; };
-		840CA6791928A2D800689BB6 /* DKAudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6B1665EB8F00B9B9A2 /* DKAudioStreamVorbis.h */; };
-		840CA67A1928A2D800689BB6 /* DKAudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6D1665EB8F00B9B9A2 /* DKAudioStreamWave.h */; };
 		840CA67C1928A2EC00689BB6 /* DKOpenGLImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E591665EB8F00B9B9A2 /* DKOpenGLImpl.h */; };
 		840CA6801928A2ED00689BB6 /* DKOpenGLImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E591665EB8F00B9B9A2 /* DKOpenGLImpl.h */; };
 		840DD9A918EF04A50040D1D5 /* DKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 840DD9A818EF04A50040D1D5 /* DKUtils.h */; };
@@ -936,12 +924,6 @@
 		84211E141665EB4400B9B9A2 /* DKStaticMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211DE31665EB4400B9B9A2 /* DKStaticMesh.cpp */; };
 		84211E151665EB4400B9B9A2 /* DKStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211DE41665EB4400B9B9A2 /* DKStaticMesh.h */; };
 		84211E161665EB4400B9B9A2 /* DKStaticMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211DE41665EB4400B9B9A2 /* DKStaticMesh.h */; };
-		84211E981665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E681665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp */; };
-		84211E991665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E681665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp */; };
-		84211E9C1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6A1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp */; };
-		84211E9D1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6A1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp */; };
-		84211EA01665EB8F00B9B9A2 /* DKAudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6C1665EB8F00B9B9A2 /* DKAudioStreamWave.cpp */; };
-		84211EA11665EB8F00B9B9A2 /* DKAudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6C1665EB8F00B9B9A2 /* DKAudioStreamWave.cpp */; };
 		842F125D17C24B0F004E66FB /* DKAtomicNumber64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 842F125B17C24B0F004E66FB /* DKAtomicNumber64.cpp */; };
 		842F125E17C24B0F004E66FB /* DKAtomicNumber64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 842F125B17C24B0F004E66FB /* DKAtomicNumber64.cpp */; };
 		842F125F17C24B0F004E66FB /* DKAtomicNumber64.h in Headers */ = {isa = PBXBuildFile; fileRef = 842F125C17C24B0F004E66FB /* DKAtomicNumber64.h */; };
@@ -1222,12 +1204,6 @@
 		84798C1419E51E58009378A6 /* DKOpenGLInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688A17C6145D000DE61A /* DKOpenGLInterface.h */; };
 		84798C1519E51E58009378A6 /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
 		84798C1619E51E5F009378A6 /* BulletUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E551665EB8F00B9B9A2 /* BulletUtils.h */; };
-		84798C1719E51E5F009378A6 /* DKAudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E681665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp */; };
-		84798C1819E51E5F009378A6 /* DKAudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E691665EB8F00B9B9A2 /* DKAudioStreamFLAC.h */; };
-		84798C1919E51E5F009378A6 /* DKAudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6A1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp */; };
-		84798C1A19E51E5F009378A6 /* DKAudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6B1665EB8F00B9B9A2 /* DKAudioStreamVorbis.h */; };
-		84798C1B19E51E5F009378A6 /* DKAudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211E6C1665EB8F00B9B9A2 /* DKAudioStreamWave.cpp */; };
-		84798C1C19E51E5F009378A6 /* DKAudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211E6D1665EB8F00B9B9A2 /* DKAudioStreamWave.h */; };
 		84798C2519E51E7F009378A6 /* DKAabb.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4EF141DD4B70091D2C0 /* DKAabb.h */; };
 		84798C2619E51E7F009378A6 /* DKActionController.h in Headers */ = {isa = PBXBuildFile; fileRef = 84FA82F2166F64150014115F /* DKActionController.h */; };
 		84798C2719E51E7F009378A6 /* DKAffineTransform2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4F1141DD4B70091D2C0 /* DKAffineTransform2.h */; };
@@ -1396,6 +1372,30 @@
 		84798CCD19E51E96009378A6 /* DKXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E0141DD4B70091D2C0 /* DKXMLParser.h */; };
 		84798CCE19E51E96009378A6 /* DKZipArchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E2141DD4B70091D2C0 /* DKZipArchiver.h */; };
 		84798CCF19E51E96009378A6 /* DKZipUnarchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E4141DD4B70091D2C0 /* DKZipUnarchiver.h */; };
+		8482B7371DCE27230079FD84 /* AudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7311DCE27230079FD84 /* AudioStreamFLAC.cpp */; };
+		8482B7381DCE27230079FD84 /* AudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7321DCE27230079FD84 /* AudioStreamFLAC.h */; };
+		8482B7391DCE27230079FD84 /* AudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7331DCE27230079FD84 /* AudioStreamVorbis.cpp */; };
+		8482B73A1DCE27230079FD84 /* AudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7341DCE27230079FD84 /* AudioStreamVorbis.h */; };
+		8482B73B1DCE27230079FD84 /* AudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7351DCE27230079FD84 /* AudioStreamWave.cpp */; };
+		8482B73C1DCE27230079FD84 /* AudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7361DCE27230079FD84 /* AudioStreamWave.h */; };
+		8482B73D1DCE272B0079FD84 /* AudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7311DCE27230079FD84 /* AudioStreamFLAC.cpp */; };
+		8482B73E1DCE272B0079FD84 /* AudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7321DCE27230079FD84 /* AudioStreamFLAC.h */; };
+		8482B73F1DCE272B0079FD84 /* AudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7331DCE27230079FD84 /* AudioStreamVorbis.cpp */; };
+		8482B7401DCE272B0079FD84 /* AudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7341DCE27230079FD84 /* AudioStreamVorbis.h */; };
+		8482B7411DCE272B0079FD84 /* AudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7351DCE27230079FD84 /* AudioStreamWave.cpp */; };
+		8482B7421DCE272B0079FD84 /* AudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7361DCE27230079FD84 /* AudioStreamWave.h */; };
+		8482B7431DCE272C0079FD84 /* AudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7311DCE27230079FD84 /* AudioStreamFLAC.cpp */; };
+		8482B7441DCE272C0079FD84 /* AudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7321DCE27230079FD84 /* AudioStreamFLAC.h */; };
+		8482B7451DCE272C0079FD84 /* AudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7331DCE27230079FD84 /* AudioStreamVorbis.cpp */; };
+		8482B7461DCE272C0079FD84 /* AudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7341DCE27230079FD84 /* AudioStreamVorbis.h */; };
+		8482B7471DCE272C0079FD84 /* AudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7351DCE27230079FD84 /* AudioStreamWave.cpp */; };
+		8482B7481DCE272C0079FD84 /* AudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7361DCE27230079FD84 /* AudioStreamWave.h */; };
+		8482B7491DCE272D0079FD84 /* AudioStreamFLAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7311DCE27230079FD84 /* AudioStreamFLAC.cpp */; };
+		8482B74A1DCE272D0079FD84 /* AudioStreamFLAC.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7321DCE27230079FD84 /* AudioStreamFLAC.h */; };
+		8482B74B1DCE272D0079FD84 /* AudioStreamVorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7331DCE27230079FD84 /* AudioStreamVorbis.cpp */; };
+		8482B74C1DCE272D0079FD84 /* AudioStreamVorbis.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7341DCE27230079FD84 /* AudioStreamVorbis.h */; };
+		8482B74D1DCE272D0079FD84 /* AudioStreamWave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8482B7351DCE27230079FD84 /* AudioStreamWave.cpp */; };
+		8482B74E1DCE272D0079FD84 /* AudioStreamWave.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482B7361DCE27230079FD84 /* AudioStreamWave.h */; };
 		8489263A18D155BD00CFF0E3 /* DKTextureSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8489263818D155BD00CFF0E3 /* DKTextureSampler.h */; };
 		8489263B18D155BD00CFF0E3 /* DKTextureSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8489263818D155BD00CFF0E3 /* DKTextureSampler.h */; };
 		8489263C18D155BD00CFF0E3 /* DKTextureSampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */; };
@@ -2096,12 +2096,6 @@
 		84211E551665EB8F00B9B9A2 /* BulletUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BulletUtils.h; sourceTree = "<group>"; };
 		84211E591665EB8F00B9B9A2 /* DKOpenGLImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKOpenGLImpl.h; sourceTree = "<group>"; };
 		84211E5A1665EB8F00B9B9A2 /* DKOpenGLImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = DKOpenGLImpl.mm; sourceTree = "<group>"; };
-		84211E681665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAudioStreamFLAC.cpp; sourceTree = "<group>"; };
-		84211E691665EB8F00B9B9A2 /* DKAudioStreamFLAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAudioStreamFLAC.h; sourceTree = "<group>"; };
-		84211E6A1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAudioStreamVorbis.cpp; sourceTree = "<group>"; };
-		84211E6B1665EB8F00B9B9A2 /* DKAudioStreamVorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAudioStreamVorbis.h; sourceTree = "<group>"; };
-		84211E6C1665EB8F00B9B9A2 /* DKAudioStreamWave.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAudioStreamWave.cpp; sourceTree = "<group>"; };
-		84211E6D1665EB8F00B9B9A2 /* DKAudioStreamWave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAudioStreamWave.h; sourceTree = "<group>"; };
 		84211E711665EB8F00B9B9A2 /* DKOpenGLImpl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 2; path = DKOpenGLImpl.cpp; sourceTree = "<group>"; };
 		84211E721665EB8F00B9B9A2 /* DKOpenGLImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 2; path = DKOpenGLImpl.h; sourceTree = "<group>"; };
 		84211E731665EB8F00B9B9A2 /* DKOpenGLExtensions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 2; path = DKOpenGLExtensions.cpp; sourceTree = "<group>"; };
@@ -2138,6 +2132,12 @@
 		84798B8719E51CFA009378A6 /* DK_iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DK_iOS-Info.plist"; sourceTree = "<group>"; };
 		84826365164D52800038BB06 /* DKGeneric6DofSpringConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKGeneric6DofSpringConstraint.cpp; sourceTree = "<group>"; };
 		84826366164D52800038BB06 /* DKGeneric6DofSpringConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKGeneric6DofSpringConstraint.h; sourceTree = "<group>"; };
+		8482B7311DCE27230079FD84 /* AudioStreamFLAC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioStreamFLAC.cpp; sourceTree = "<group>"; };
+		8482B7321DCE27230079FD84 /* AudioStreamFLAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamFLAC.h; sourceTree = "<group>"; };
+		8482B7331DCE27230079FD84 /* AudioStreamVorbis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioStreamVorbis.cpp; sourceTree = "<group>"; };
+		8482B7341DCE27230079FD84 /* AudioStreamVorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamVorbis.h; sourceTree = "<group>"; };
+		8482B7351DCE27230079FD84 /* AudioStreamWave.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioStreamWave.cpp; sourceTree = "<group>"; };
+		8482B7361DCE27230079FD84 /* AudioStreamWave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamWave.h; sourceTree = "<group>"; };
 		8489263818D155BD00CFF0E3 /* DKTextureSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKTextureSampler.h; sourceTree = "<group>"; };
 		8489263918D155BD00CFF0E3 /* DKTextureSampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKTextureSampler.cpp; sourceTree = "<group>"; };
 		848E9D911558CACD00833B52 /* DKFileMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFileMap.cpp; sourceTree = "<group>"; };
@@ -2740,15 +2740,10 @@
 		84211E541665EB8F00B9B9A2 /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				8482B7301DCE27230079FD84 /* AudioStream */,
 				84211E551665EB8F00B9B9A2 /* BulletUtils.h */,
 				84211E561665EB8F00B9B9A2 /* Cocoa */,
 				666ECADF1DB172A700354463 /* CocoaTouch */,
-				84211E681665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp */,
-				84211E691665EB8F00B9B9A2 /* DKAudioStreamFLAC.h */,
-				84211E6A1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp */,
-				84211E6B1665EB8F00B9B9A2 /* DKAudioStreamVorbis.h */,
-				84211E6C1665EB8F00B9B9A2 /* DKAudioStreamWave.cpp */,
-				84211E6D1665EB8F00B9B9A2 /* DKAudioStreamWave.h */,
 				666ECA6E1DB1721F00354463 /* Metal */,
 				84211E6E1665EB8F00B9B9A2 /* Win32 */,
 			);
@@ -2806,6 +2801,19 @@
 				846B296B1921FE6300918B1B /* DK.h */,
 			);
 			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		8482B7301DCE27230079FD84 /* AudioStream */ = {
+			isa = PBXGroup;
+			children = (
+				8482B7311DCE27230079FD84 /* AudioStreamFLAC.cpp */,
+				8482B7321DCE27230079FD84 /* AudioStreamFLAC.h */,
+				8482B7331DCE27230079FD84 /* AudioStreamVorbis.cpp */,
+				8482B7341DCE27230079FD84 /* AudioStreamVorbis.h */,
+				8482B7351DCE27230079FD84 /* AudioStreamWave.cpp */,
+				8482B7361DCE27230079FD84 /* AudioStreamWave.h */,
+			);
+			path = AudioStream;
 			sourceTree = "<group>";
 		};
 		84A1E492141DD4B70091D2C0 /* DKFoundation */ = {
@@ -3182,6 +3190,7 @@
 				840CA6471928953500689BB6 /* DKWindowInterface.h in Headers */,
 				8436CDCA1928A78900F18892 /* DKCriticalSection.h in Headers */,
 				840CA63D1928952800689BB6 /* DKVoxel32Storage.h in Headers */,
+				8482B7461DCE272C0079FD84 /* AudioStreamVorbis.h in Headers */,
 				8436CDF51928A78900F18892 /* DKRational.h in Headers */,
 				840CA5A31928952800689BB6 /* DKCollisionShape.h in Headers */,
 				840CA5821928952800689BB6 /* DKAabb.h in Headers */,
@@ -3190,6 +3199,7 @@
 				666ECB1C1DB180E900354463 /* DKGpuBlitCommandEncoder.h in Headers */,
 				840CA63F1928952800689BB6 /* DKVoxelIsosurfacePolygonizer.h in Headers */,
 				8436CDFA1928A78900F18892 /* DKSet.h in Headers */,
+				8482B7441DCE272C0079FD84 /* AudioStreamFLAC.h in Headers */,
 				840CA6241928952800689BB6 /* DKTexture3D.h in Headers */,
 				840CA6121928952800689BB6 /* DKSoftBody.h in Headers */,
 				8436CE191928A78900F18892 /* DKUuid.h in Headers */,
@@ -3199,8 +3209,8 @@
 				840CA5991928952800689BB6 /* DKBox.h in Headers */,
 				84A6A3AE1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				840CA6161928952800689BB6 /* DKSphereShape.h in Headers */,
+				8482B7481DCE272C0079FD84 /* AudioStreamWave.h in Headers */,
 				840CA5D81928952800689BB6 /* DKMatrix4.h in Headers */,
-				840CA6711928A2D600689BB6 /* DKAudioStreamVorbis.h in Headers */,
 				840CA65E1928957700689BB6 /* DK.h in Headers */,
 				8436CDF21928A78900F18892 /* DKOrderedArray.h in Headers */,
 				840CA5A41928952800689BB6 /* DKColor.h in Headers */,
@@ -3226,7 +3236,6 @@
 				8436CDEB1928A78900F18892 /* DKMutex.h in Headers */,
 				84F970061B4C26C400BA24E4 /* DKTriangleMesh.h in Headers */,
 				840CA5DA1928952800689BB6 /* DKMesh.h in Headers */,
-				840CA6721928A2D600689BB6 /* DKAudioStreamWave.h in Headers */,
 				8436CE011928A78900F18892 /* DKStack.h in Headers */,
 				840CA59B1928952800689BB6 /* DKBoxShape.h in Headers */,
 				840CA5BE1928952800689BB6 /* DKGearConstraint.h in Headers */,
@@ -3320,7 +3329,6 @@
 				840CA6371928952800689BB6 /* DKVertexStream.h in Headers */,
 				8436CDFE1928A78900F18892 /* DKSingleton.h in Headers */,
 				8436CDC51928A78900F18892 /* DKBufferStream.h in Headers */,
-				840CA6701928A2D600689BB6 /* DKAudioStreamFLAC.h in Headers */,
 				8436CDD21928A78900F18892 /* DKDirectory.h in Headers */,
 				840CA63A1928952800689BB6 /* DKVoxel32FileStorage.h in Headers */,
 				840CA5891928952800689BB6 /* DKAnimation.h in Headers */,
@@ -3387,6 +3395,7 @@
 				84798C9719E51E96009378A6 /* DKCriticalSection.h in Headers */,
 				84798C7919E51E80009378A6 /* DKTexture2D.h in Headers */,
 				84798CB219E51E96009378A6 /* DKRational.h in Headers */,
+				8482B7401DCE272B0079FD84 /* AudioStreamVorbis.h in Headers */,
 				84798C6319E51E7F009378A6 /* DKResource.h in Headers */,
 				84798C7319E51E80009378A6 /* DKSphereShape.h in Headers */,
 				84798CC619E51E96009378A6 /* DKTypes.h in Headers */,
@@ -3395,6 +3404,7 @@
 				666ECB251DB180EA00354463 /* DKGpuBlitCommandEncoder.h in Headers */,
 				84798CB519E51E96009378A6 /* DKSet.h in Headers */,
 				84798C5119E51E7F009378A6 /* DKMatrix3.h in Headers */,
+				8482B73E1DCE272B0079FD84 /* AudioStreamFLAC.h in Headers */,
 				84798C7619E51E80009378A6 /* DKStaticPlaneShape.h in Headers */,
 				84798C6719E51E7F009378A6 /* DKWorld.h in Headers */,
 				84798CCA19E51E96009378A6 /* DKUuid.h in Headers */,
@@ -3404,11 +3414,11 @@
 				84798C8919E51E80009378A6 /* DKVoxelIsosurfacePolygonizer.h in Headers */,
 				84A6A3AF1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84798C6219E51E7F009378A6 /* DKRenderTarget.h in Headers */,
+				8482B7421DCE272B0079FD84 /* AudioStreamWave.h in Headers */,
 				84798C4C19E51E7F009378A6 /* DKLinearTransform2.h in Headers */,
 				84798C4319E51E7F009378A6 /* DKFrame.h in Headers */,
 				84798BB519E51E33009378A6 /* DK.h in Headers */,
 				84798CB019E51E96009378A6 /* DKOrderedArray.h in Headers */,
-				84798C1A19E51E5F009378A6 /* DKAudioStreamVorbis.h in Headers */,
 				84798C2C19E51E7F009378A6 /* DKAudioListener.h in Headers */,
 				84798CA819E51E96009378A6 /* DKMap.h in Headers */,
 				84798C5A19E51E7F009378A6 /* DKPoint2PointConstraint.h in Headers */,
@@ -3440,7 +3450,6 @@
 				84798CC419E51E96009378A6 /* DKTypeInfo.h in Headers */,
 				84798CA019E51E96009378A6 /* DKFile.h in Headers */,
 				84798C4619E51E7F009378A6 /* DKGeneric6DofSpringConstraint.h in Headers */,
-				84798C1819E51E5F009378A6 /* DKAudioStreamFLAC.h in Headers */,
 				84798C9019E51E96009378A6 /* DKAtomicNumber64.h in Headers */,
 				84798C3A19E51E7F009378A6 /* DKConeShape.h in Headers */,
 				666ECAFB1DB172A700354463 /* DKWindow_iOS.h in Headers */,
@@ -3545,7 +3554,6 @@
 				84798C7D19E51E80009378A6 /* DKTransform.h in Headers */,
 				84798C7219E51E80009378A6 /* DKSphere.h in Headers */,
 				84798C2A19E51E7F009378A6 /* DKAnimationController.h in Headers */,
-				84798C1C19E51E5F009378A6 /* DKAudioStreamWave.h in Headers */,
 				84798CB119E51E96009378A6 /* DKQueue.h in Headers */,
 				84798C8E19E51E96009378A6 /* DKArray.h in Headers */,
 				666ECB291DB180EA00354463 /* DKGpuResource.h in Headers */,
@@ -3592,6 +3600,7 @@
 				84211C781665E86400B9B9A2 /* DKInvocation.h in Headers */,
 				84211C7D1665E86400B9B9A2 /* DKList.h in Headers */,
 				84211C7E1665E86400B9B9A2 /* DKLock.h in Headers */,
+				8482B74C1DCE272D0079FD84 /* AudioStreamVorbis.h in Headers */,
 				84211C7F1665E86400B9B9A2 /* DKLog.h in Headers */,
 				84211C801665E86400B9B9A2 /* DKMap.h in Headers */,
 				84211C811665E86400B9B9A2 /* DKMemory.h in Headers */,
@@ -3600,6 +3609,7 @@
 				666ECB131DB180E800354463 /* DKGpuBlitCommandEncoder.h in Headers */,
 				84211C851665E86400B9B9A2 /* DKOperation.h in Headers */,
 				84211C861665E86400B9B9A2 /* DKOperationQueue.h in Headers */,
+				8482B74A1DCE272D0079FD84 /* AudioStreamFLAC.h in Headers */,
 				84211C871665E86400B9B9A2 /* DKOrderedArray.h in Headers */,
 				84211C891665E86400B9B9A2 /* DKQueue.h in Headers */,
 				84211C8A1665E86400B9B9A2 /* DKRational.h in Headers */,
@@ -3609,6 +3619,7 @@
 				84211C8D1665E86400B9B9A2 /* DKSet.h in Headers */,
 				84A6A3AD1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84211C8E1665E86400B9B9A2 /* DKSharedInstance.h in Headers */,
+				8482B74E1DCE272D0079FD84 /* AudioStreamWave.h in Headers */,
 				84211C8F1665E86400B9B9A2 /* DKSharedLock.h in Headers */,
 				84211C901665E86400B9B9A2 /* DKSingleton.h in Headers */,
 				84211C911665E86400B9B9A2 /* DKSpinLock.h in Headers */,
@@ -3625,7 +3636,6 @@
 				84211C9A1665E86400B9B9A2 /* DKTimer.h in Headers */,
 				84211C9B1665E86400B9B9A2 /* DKTuple.h in Headers */,
 				84211C9C1665E86400B9B9A2 /* DKTypeInfo.h in Headers */,
-				840CA6761928A2D700689BB6 /* DKAudioStreamWave.h in Headers */,
 				84211C9D1665E86400B9B9A2 /* DKTypeList.h in Headers */,
 				84211C9E1665E86400B9B9A2 /* DKTypes.h in Headers */,
 				840CA6571928957600689BB6 /* DKFoundation.h in Headers */,
@@ -3656,9 +3666,7 @@
 				84211D151665E89700B9B9A2 /* DKCapsuleShape.h in Headers */,
 				84211D171665E89700B9B9A2 /* DKCollisionShape.h in Headers */,
 				84211D181665E89700B9B9A2 /* DKColor.h in Headers */,
-				840CA6741928A2D700689BB6 /* DKAudioStreamFLAC.h in Headers */,
 				84211D191665E89700B9B9A2 /* DKCompoundShape.h in Headers */,
-				840CA6751928A2D700689BB6 /* DKAudioStreamVorbis.h in Headers */,
 				84211D1A1665E89700B9B9A2 /* DKConeShape.h in Headers */,
 				666ECAE91DB172A700354463 /* DKApplication_iOS.h in Headers */,
 				84211D1B1665E89700B9B9A2 /* DKConeTwistConstraint.h in Headers */,
@@ -3786,6 +3794,7 @@
 				84211C2A1665E86300B9B9A2 /* DKEndianness.h in Headers */,
 				84768FD61B1D981D0006DD7C /* DKBitArray.h in Headers */,
 				84211C2B1665E86300B9B9A2 /* DKError.h in Headers */,
+				8482B73A1DCE27230079FD84 /* AudioStreamVorbis.h in Headers */,
 				84211C2C1665E86300B9B9A2 /* DKFence.h in Headers */,
 				84211C2D1665E86300B9B9A2 /* DKFile.h in Headers */,
 				84211C2E1665E86300B9B9A2 /* DKFileMap.h in Headers */,
@@ -3793,6 +3802,7 @@
 				84211C311665E86300B9B9A2 /* DKHash.h in Headers */,
 				84211C321665E86300B9B9A2 /* DKInvocation.h in Headers */,
 				84211C371665E86300B9B9A2 /* DKList.h in Headers */,
+				8482B7381DCE27230079FD84 /* AudioStreamFLAC.h in Headers */,
 				84211C381665E86300B9B9A2 /* DKLock.h in Headers */,
 				84211C391665E86300B9B9A2 /* DKLog.h in Headers */,
 				84211C3A1665E86300B9B9A2 /* DKMap.h in Headers */,
@@ -3814,7 +3824,6 @@
 				84211C4A1665E86300B9B9A2 /* DKSingleton.h in Headers */,
 				666ECA691DB1703600354463 /* DKGpuComputeCommandEncoder.h in Headers */,
 				66DA125D1DAC7D2600B3056E /* Inc_libxml2.h in Headers */,
-				840CA6791928A2D800689BB6 /* DKAudioStreamVorbis.h in Headers */,
 				66DA125A1DAC7D2600B3056E /* Inc_libFLAC.h in Headers */,
 				840CA6561928957500689BB6 /* DK.h in Headers */,
 				84211C4B1665E86300B9B9A2 /* DKSpinLock.h in Headers */,
@@ -3842,7 +3851,6 @@
 				84211C5E1665E86300B9B9A2 /* DKZipArchiver.h in Headers */,
 				84F970001B4C26C200BA24E4 /* DKTriangleMesh.h in Headers */,
 				84211C5F1665E86300B9B9A2 /* DKZipUnarchiver.h in Headers */,
-				840CA67A1928A2D800689BB6 /* DKAudioStreamWave.h in Headers */,
 				84211CA61665E88E00B9B9A2 /* DKAabb.h in Headers */,
 				84211CA71665E88E00B9B9A2 /* DKAffineTransform2.h in Headers */,
 				84211CA81665E88E00B9B9A2 /* DKAffineTransform3.h in Headers */,
@@ -3897,6 +3905,7 @@
 				84211CD01665E88E00B9B9A2 /* DKMatrix4.h in Headers */,
 				840CA6541928957500689BB6 /* DKFramework.h in Headers */,
 				84211CD11665E88E00B9B9A2 /* DKMesh.h in Headers */,
+				8482B73C1DCE27230079FD84 /* AudioStreamWave.h in Headers */,
 				84211CD21665E88E00B9B9A2 /* DKModel.h in Headers */,
 				84211CD31665E88E00B9B9A2 /* DKMultiSphereShape.h in Headers */,
 				84211CD51665E88E00B9B9A2 /* DKOpenGLContext.h in Headers */,
@@ -3935,7 +3944,6 @@
 				84211CF31665E88E00B9B9A2 /* DKSpline.h in Headers */,
 				840CA6801928A2ED00689BB6 /* DKOpenGLImpl.h in Headers */,
 				84211CF41665E88E00B9B9A2 /* DKStaticPlaneShape.h in Headers */,
-				840CA6781928A2D800689BB6 /* DKAudioStreamFLAC.h in Headers */,
 				84211CF51665E88E00B9B9A2 /* DKStaticTriangleMeshShape.h in Headers */,
 				66DA125C1DAC7D2600B3056E /* Inc_libvorbis.h in Headers */,
 				84211CF61665E88E00B9B9A2 /* DKTexture.h in Headers */,
@@ -4484,11 +4492,11 @@
 				840CA62B1928952800689BB6 /* DKTriangle.cpp in Sources */,
 				840CA6291928952800689BB6 /* DKTransform.cpp in Sources */,
 				8436CE211928A78900F18892 /* DKZipUnarchiver.cpp in Sources */,
+				8482B7471DCE272C0079FD84 /* AudioStreamWave.cpp in Sources */,
 				844C64DC1C08BC7800FB97B6 /* DKFloat16.cpp in Sources */,
 				840CA5AF1928952800689BB6 /* DKConvexHullShape.cpp in Sources */,
 				84F970151B4D711B00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
 				840CA5BF1928952800689BB6 /* DKGeneric6DofConstraint.cpp in Sources */,
-				840CA6491928954600689BB6 /* DKAudioStreamVorbis.cpp in Sources */,
 				840CA5CA1928952800689BB6 /* DKLine.cpp in Sources */,
 				840CA5811928952800689BB6 /* DKAabb.cpp in Sources */,
 				840CA5EA1928952800689BB6 /* DKPrimitiveIndex.cpp in Sources */,
@@ -4502,6 +4510,7 @@
 				840CA6071928952800689BB6 /* DKShader.cpp in Sources */,
 				8436CE101928A78900F18892 /* DKTypeInfo.cpp in Sources */,
 				840CA5F41928952800689BB6 /* DKRenderState.cpp in Sources */,
+				8482B7451DCE272C0079FD84 /* AudioStreamVorbis.cpp in Sources */,
 				840CA5CE1928952800689BB6 /* DKLinearTransform3.cpp in Sources */,
 				840CA5AB1928952800689BB6 /* DKConeTwistConstraint.cpp in Sources */,
 				840CA5A21928952800689BB6 /* DKCollisionShape.cpp in Sources */,
@@ -4524,7 +4533,6 @@
 				8436CDE21928A78900F18892 /* DKLock.cpp in Sources */,
 				840CA5F21928952800689BB6 /* DKRenderer.cpp in Sources */,
 				8436CDCD1928A78900F18892 /* DKDataStream.cpp in Sources */,
-				840CA64A1928954600689BB6 /* DKAudioStreamWave.cpp in Sources */,
 				8436CDD11928A78900F18892 /* DKDirectory.cpp in Sources */,
 				8436CDF61928A78900F18892 /* DKEventLoop.cpp in Sources */,
 				840CA61F1928952800689BB6 /* DKTexture.cpp in Sources */,
@@ -4533,6 +4541,7 @@
 				840CA5E81928952800689BB6 /* DKPolyhedralConvexShape.cpp in Sources */,
 				840CA5B51928952800689BB6 /* DKDynamicsWorld.cpp in Sources */,
 				840CA5BD1928952800689BB6 /* DKGearConstraint.cpp in Sources */,
+				8482B7431DCE272C0079FD84 /* AudioStreamFLAC.cpp in Sources */,
 				8436CE091928A78900F18892 /* DKStringW.cpp in Sources */,
 				840CA5921928952800689BB6 /* DKAudioSource.cpp in Sources */,
 				840CA5B91928952800689BB6 /* DKFont.cpp in Sources */,
@@ -4558,7 +4567,6 @@
 				8436CDF41928A78900F18892 /* DKRational.cpp in Sources */,
 				840CA6331928952800689BB6 /* DKVector4.cpp in Sources */,
 				840CA63E1928952800689BB6 /* DKVoxelIsosurfacePolygonizer.cpp in Sources */,
-				840CA6481928954600689BB6 /* DKAudioStreamFLAC.cpp in Sources */,
 				840CA6031928952800689BB6 /* DKScreen.cpp in Sources */,
 				666ECB211DB180E900354463 /* DKGraphicsDevice.cpp in Sources */,
 				840CA5981928952800689BB6 /* DKBox.cpp in Sources */,
@@ -4637,6 +4645,7 @@
 				84798BD719E51E48009378A6 /* DKHingeConstraint.cpp in Sources */,
 				84798BDC19E51E48009378A6 /* DKMaterial.cpp in Sources */,
 				84798B9E19E51DFB009378A6 /* DKMutex.cpp in Sources */,
+				8482B7411DCE272B0079FD84 /* AudioStreamWave.cpp in Sources */,
 				84798BB019E51DFB009378A6 /* DKZipArchiver.cpp in Sources */,
 				84798BFC19E51E48009378A6 /* DKSphere.cpp in Sources */,
 				84798BC919E51E48009378A6 /* DKConeShape.cpp in Sources */,
@@ -4654,7 +4663,7 @@
 				84798B9519E51DFB009378A6 /* DKDirectory.cpp in Sources */,
 				84F970071B4C26C500BA24E4 /* DKBvh.cpp in Sources */,
 				84798BB819E51E48009378A6 /* DKAffineTransform3.cpp in Sources */,
-				84798C1919E51E5F009378A6 /* DKAudioStreamVorbis.cpp in Sources */,
+				8482B73F1DCE272B0079FD84 /* AudioStreamVorbis.cpp in Sources */,
 				84798BC119E51E48009378A6 /* DKBox.cpp in Sources */,
 				84798BA319E51DFB009378A6 /* DKEventLoopTimer.cpp in Sources */,
 				84798BC319E51E48009378A6 /* DKCamera.cpp in Sources */,
@@ -4685,8 +4694,8 @@
 				84798BCD19E51E48009378A6 /* DKConvexShape.cpp in Sources */,
 				84798BF219E51E48009378A6 /* DKRigidBody.cpp in Sources */,
 				84798BEE19E51E48009378A6 /* DKRenderTarget.cpp in Sources */,
+				8482B73D1DCE272B0079FD84 /* AudioStreamFLAC.cpp in Sources */,
 				84798CC919E51E96009378A6 /* DKUtils.mm in Sources */,
-				84798C1B19E51E5F009378A6 /* DKAudioStreamWave.cpp in Sources */,
 				666ECAEF1DB172A700354463 /* DKApplication_iOS.mm in Sources */,
 				84798C0219E51E48009378A6 /* DKTexture.cpp in Sources */,
 				84798C0A19E51E48009378A6 /* DKVector2.cpp in Sources */,
@@ -4717,7 +4726,6 @@
 				84798BE219E51E48009378A6 /* DKMultiSphereShape.cpp in Sources */,
 				84798C1019E51E48009378A6 /* DKVoxelIsosurfacePolygonizer.cpp in Sources */,
 				84798BAB19E51DFB009378A6 /* DKTypeInfo.cpp in Sources */,
-				84798C1719E51E5F009378A6 /* DKAudioStreamFLAC.cpp in Sources */,
 				84798BF519E51E48009378A6 /* DKScreen.cpp in Sources */,
 				84798BDE19E51E48009378A6 /* DKMatrix3.cpp in Sources */,
 				84798B9319E51DFB009378A6 /* DKDataStream.cpp in Sources */,
@@ -4790,6 +4798,7 @@
 				84211BA71665E7FD00B9B9A2 /* DKLinearTransform2.cpp in Sources */,
 				84211BA91665E7FD00B9B9A2 /* DKLinearTransform3.cpp in Sources */,
 				84211BAB1665E7FD00B9B9A2 /* DKMaterial.cpp in Sources */,
+				8482B74D1DCE272D0079FD84 /* AudioStreamWave.cpp in Sources */,
 				84211BAE1665E7FD00B9B9A2 /* DKMatrix2.cpp in Sources */,
 				840C3E2B178D396E00F57A8D /* DKHash.cpp in Sources */,
 				84211BB01665E7FD00B9B9A2 /* DKMatrix3.cpp in Sources */,
@@ -4807,6 +4816,7 @@
 				84211BC31665E7FD00B9B9A2 /* DKPrimitiveIndex.cpp in Sources */,
 				84F970011B4C26C300BA24E4 /* DKBvh.cpp in Sources */,
 				840C3E26178D396E00F57A8D /* DKDirectory.cpp in Sources */,
+				8482B74B1DCE272D0079FD84 /* AudioStreamVorbis.cpp in Sources */,
 				840C3E2E178D396E00F57A8D /* DKMemory.cpp in Sources */,
 				84211BC51665E7FD00B9B9A2 /* DKPropertySet.cpp in Sources */,
 				84211BC71665E7FD00B9B9A2 /* DKQuaternion.cpp in Sources */,
@@ -4837,6 +4847,7 @@
 				840C3E3A178D396E00F57A8D /* DKThread.cpp in Sources */,
 				840C3E3F178D396E00F57A8D /* DKXMLParser.cpp in Sources */,
 				840EE96917C7800700AC2675 /* DKUtils.cpp in Sources */,
+				8482B7491DCE272D0079FD84 /* AudioStreamFLAC.cpp in Sources */,
 				84211BF01665E7FD00B9B9A2 /* DKSphere.cpp in Sources */,
 				84211BF21665E7FD00B9B9A2 /* DKSphereShape.cpp in Sources */,
 				84211BF41665E7FD00B9B9A2 /* DKSpline.cpp in Sources */,
@@ -4864,10 +4875,7 @@
 				84211E101665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp in Sources */,
 				84211E141665EB4400B9B9A2 /* DKStaticMesh.cpp in Sources */,
 				840C3E33178D396E00F57A8D /* DKEventLoop.cpp in Sources */,
-				84211E991665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp in Sources */,
-				84211E9D1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp in Sources */,
 				666ECB181DB180E800354463 /* DKGraphicsDevice.cpp in Sources */,
-				84211EA11665EB8F00B9B9A2 /* DKAudioStreamWave.cpp in Sources */,
 				840C3E2F178D396E00F57A8D /* DKMutex.cpp in Sources */,
 				840C3E30178D396E00F57A8D /* DKObjectRefCounter.cpp in Sources */,
 				8406AE0A1706CD1D00F8963C /* DKCollisionObject.cpp in Sources */,
@@ -4943,6 +4951,7 @@
 				84211AF01665E7FC00B9B9A2 /* DKLinearTransform3.cpp in Sources */,
 				84211AF21665E7FC00B9B9A2 /* DKMaterial.cpp in Sources */,
 				84211AF51665E7FC00B9B9A2 /* DKMatrix2.cpp in Sources */,
+				8482B73B1DCE27230079FD84 /* AudioStreamWave.cpp in Sources */,
 				840C3E07178D396D00F57A8D /* DKHash.cpp in Sources */,
 				84211AF71665E7FC00B9B9A2 /* DKMatrix3.cpp in Sources */,
 				84211AF91665E7FC00B9B9A2 /* DKMatrix4.cpp in Sources */,
@@ -4960,6 +4969,7 @@
 				84211B0A1665E7FC00B9B9A2 /* DKPrimitiveIndex.cpp in Sources */,
 				840C3E02178D396D00F57A8D /* DKDirectory.cpp in Sources */,
 				840C3E0A178D396D00F57A8D /* DKMemory.cpp in Sources */,
+				8482B7391DCE27230079FD84 /* AudioStreamVorbis.cpp in Sources */,
 				84211B0C1665E7FC00B9B9A2 /* DKPropertySet.cpp in Sources */,
 				84211B0E1665E7FC00B9B9A2 /* DKQuaternion.cpp in Sources */,
 				842F125D17C24B0F004E66FB /* DKAtomicNumber64.cpp in Sources */,
@@ -4990,6 +5000,7 @@
 				840C3E16178D396D00F57A8D /* DKThread.cpp in Sources */,
 				840C3E1B178D396D00F57A8D /* DKXMLParser.cpp in Sources */,
 				840EE96817C7800700AC2675 /* DKUtils.cpp in Sources */,
+				8482B7371DCE27230079FD84 /* AudioStreamFLAC.cpp in Sources */,
 				84211B371665E7FD00B9B9A2 /* DKSphere.cpp in Sources */,
 				84211B391665E7FD00B9B9A2 /* DKSphereShape.cpp in Sources */,
 				84211B3B1665E7FD00B9B9A2 /* DKSpline.cpp in Sources */,
@@ -5016,9 +5027,6 @@
 				84211E0F1665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp in Sources */,
 				84211E131665EB4400B9B9A2 /* DKStaticMesh.cpp in Sources */,
 				840C3E0F178D396D00F57A8D /* DKEventLoop.cpp in Sources */,
-				84211E981665EB8F00B9B9A2 /* DKAudioStreamFLAC.cpp in Sources */,
-				84211E9C1665EB8F00B9B9A2 /* DKAudioStreamVorbis.cpp in Sources */,
-				84211EA01665EB8F00B9B9A2 /* DKAudioStreamWave.cpp in Sources */,
 				666ECA8B1DB1725900354463 /* DKWindow_macOS.mm in Sources */,
 				666ECA6C1DB1703600354463 /* DKGraphicsDevice.cpp in Sources */,
 				840C3E0B178D396D00F57A8D /* DKMutex.cpp in Sources */,

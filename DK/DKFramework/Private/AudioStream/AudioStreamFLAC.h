@@ -1,16 +1,16 @@
 ﻿//
-//  File: DKAudioStreamFLAC.h
+//  File: AudioStreamFLAC.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2010-2015 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKAudioStream.h"
+#include "../../DKAudioStream.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// DKAudioStreamFLAC
-// Audio stream class inherited from DKAudioStream.
+// AudioStreamFLAC
+// Audio stream class inherited from AudioStream.
 // This class supports audio stream for FLAC format.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -19,11 +19,11 @@ namespace DKGL
 	namespace Private
 	{
 		struct FLAC_Context;
-		class DKAudioStreamFLAC : public DKAudioStream
+		class AudioStreamFLAC : public DKAudioStream
 		{
 		public:
-			DKAudioStreamFLAC(void);
-			virtual ~DKAudioStreamFLAC(void);
+			AudioStreamFLAC(void);
+			virtual ~AudioStreamFLAC(void);
 
 			virtual bool Open(const DKString& file);
 			virtual bool Open(DKStream* stream);
@@ -42,16 +42,16 @@ namespace DKGL
 			Position PcmTotal(void) const;
 			double TimeTotal(void) const;
 		protected:
-			DKAudioStreamFLAC(bool isOGG);
+			AudioStreamFLAC(bool isOGG);
 			bool InitMetadata(void);
 			FLAC_Context* context;
 		};
 
-		class DKAudioStreamOggFLAC : public DKAudioStreamFLAC
+		class AudioStreamOggFLAC : public AudioStreamFLAC
 		{
 		public:
-			DKAudioStreamOggFLAC(void);
-			~DKAudioStreamOggFLAC(void);
+			AudioStreamOggFLAC(void);
+			~AudioStreamOggFLAC(void);
 			bool Open(const DKString& file);
 			bool Open(DKStream* stream);
 		};

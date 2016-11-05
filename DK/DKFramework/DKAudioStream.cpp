@@ -12,9 +12,9 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include "Private/DKAudioStreamVorbis.h"
-#include "Private/DKAudioStreamFLAC.h"
-#include "Private/DKAudioStreamWave.h"
+#include "Private/AudioStream/AudioStreamVorbis.h"
+#include "Private/AudioStream/AudioStreamFLAC.h"
+#include "Private/AudioStream/AudioStreamWave.h"
 
 #define AUDIO_FORMAT_HEADER_LENGTH		35
 
@@ -72,7 +72,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(DKStream* stream)
 
 		if (type == FileTypeOggVorbis)
 		{
-			DKObject<Private::DKAudioStreamVorbis> audioStream = DKObject<Private::DKAudioStreamVorbis>::New();
+			DKObject<Private::AudioStreamVorbis> audioStream = DKObject<Private::AudioStreamVorbis>::New();
 			if (audioStream->Open(stream))
 				return audioStream.SafeCast<DKAudioStream>();
 
@@ -80,7 +80,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(DKStream* stream)
 		}
 		else if (type == FileTypeOggFLAC)
 		{
-			DKObject<Private::DKAudioStreamOggFLAC> audioStream = DKObject<Private::DKAudioStreamOggFLAC>::New();
+			DKObject<Private::AudioStreamOggFLAC> audioStream = DKObject<Private::AudioStreamOggFLAC>::New();
 			if (audioStream->Open(stream))
 				return audioStream.SafeCast<DKAudioStream>();
 
@@ -88,7 +88,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(DKStream* stream)
 		}
 		else if (type == FileTypeFLAC)
 		{
-			DKObject<Private::DKAudioStreamFLAC> audioStream = DKObject<Private::DKAudioStreamFLAC>::New();
+			DKObject<Private::AudioStreamFLAC> audioStream = DKObject<Private::AudioStreamFLAC>::New();
 			if (audioStream->Open(stream))
 				return audioStream.SafeCast<DKAudioStream>();
 
@@ -96,7 +96,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(DKStream* stream)
 		}
 		else if (type == FileTypeWave)
 		{
-			DKObject<Private::DKAudioStreamWave> audioStream = DKObject<Private::DKAudioStreamWave>::New();
+			DKObject<Private::AudioStreamWave> audioStream = DKObject<Private::AudioStreamWave>::New();
 			if (audioStream->Open(stream))
 				return audioStream.SafeCast<DKAudioStream>();
 
@@ -123,13 +123,13 @@ DKObject<DKAudioStream> DKAudioStream::Create(const DKString& file)
 
 	if (type == FileTypeOggVorbis)
 	{
-		DKObject<Private::DKAudioStreamVorbis> audioStream = DKObject<Private::DKAudioStreamVorbis>::New();
+		DKObject<Private::AudioStreamVorbis> audioStream = DKObject<Private::AudioStreamVorbis>::New();
 		if (audioStream->Open(file))
 			return audioStream.SafeCast<DKAudioStream>();
 	}
 	else if (type == FileTypeOggFLAC)
 	{
-		DKObject<Private::DKAudioStreamOggFLAC> audioStream = DKObject<Private::DKAudioStreamOggFLAC>::New();
+		DKObject<Private::AudioStreamOggFLAC> audioStream = DKObject<Private::AudioStreamOggFLAC>::New();
 		if (audioStream->Open(file))
 			return audioStream.SafeCast<DKAudioStream>();
 
@@ -137,7 +137,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(const DKString& file)
 	}
 	else if (type == FileTypeFLAC)
 	{
-		DKObject<Private::DKAudioStreamFLAC> audioStream = DKObject<Private::DKAudioStreamFLAC>::New();
+		DKObject<Private::AudioStreamFLAC> audioStream = DKObject<Private::AudioStreamFLAC>::New();
 		if (audioStream->Open(file))
 			return audioStream.SafeCast<DKAudioStream>();
 
@@ -145,7 +145,7 @@ DKObject<DKAudioStream> DKAudioStream::Create(const DKString& file)
 	}
 	else if (type == FileTypeWave)
 	{
-		DKObject<Private::DKAudioStreamWave> audioStream = DKObject<Private::DKAudioStreamWave>::New();
+		DKObject<Private::AudioStreamWave> audioStream = DKObject<Private::AudioStreamWave>::New();
 		if (audioStream->Open(file))
 			return audioStream.SafeCast<DKAudioStream>();
 
