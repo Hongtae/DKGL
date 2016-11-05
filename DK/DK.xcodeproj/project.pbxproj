@@ -1847,6 +1847,7 @@
 		844C64D81C08B93600FB97B6 /* DKFloat16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKFloat16.h; sourceTree = "<group>"; };
 		844F15641DCE501600FE309A /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		844F15661DCE502C00FE309A /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		844F159D1DCE5FED00FE309A /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		844FA8EA155DBF0700344694 /* DKData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKData.cpp; sourceTree = "<group>"; };
 		844FA8EB155DBF0700344694 /* DKDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKDataStream.cpp; sourceTree = "<group>"; };
 		844FA8EC155DBF0700344694 /* DKDataStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKDataStream.h; sourceTree = "<group>"; };
@@ -2200,6 +2201,7 @@
 		08FB7794FE84155DC02AAC07 /* DK */ = {
 			isa = PBXGroup;
 			children = (
+				844F159D1DCE5FED00FE309A /* LICENSE */,
 				84798B8719E51CFA009378A6 /* DK_iOS-Info.plist */,
 				840CA4F71928946800689BB6 /* DK_OSX-Info.plist */,
 				84A1E492141DD4B70091D2C0 /* DKFoundation */,

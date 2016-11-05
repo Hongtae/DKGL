@@ -1,7 +1,5 @@
 # Project DKGL
-Cross-platform 3D Game Library for C\++ and Python.  
-This project contains two frameworks, DK and PyDK.  
-DK is core library for C\++ and PyDK is Python bindings for DK.
+Cross-platform 3D Game Library for C\++.
 
 # DK (Core Library)
 A Lightweighted cross-platform Game Library.  
@@ -73,47 +71,7 @@ DK interfaces to use DK library with other GUI OSes.
 - Xcode7 for Mac, iOS
 - C\++11 compiler
 
-# PyDK
-Python bindings for DK. (Python 3.5 or later).   
-You can build PyDK with or without python interpreter embedded.
-
-### DK Scripts
-- Deferred Rendering System.
-- Game Physics & Collision Library
-- Useful Game Libraries
-- Extensible UI
-- Scene Editor
-
-
-### Build PyDK
-###### You need python library to build PyDK with python interpreter embedded.
-1. Download prebuilt library for your platform.
-    - Win32 i386
-        - [python3.5.0_Win32.zip](https://github.com/Hongtae/Python/releases/download/v3.5.0/python3.5.0_Win32.zip)
-    - Win32 x64
-        - [python3.5.0_Win32_x64.zip](https://github.com/Hongtae/Python/releases/download/v3.5.0/python3.5.0_Win32_x64.zip)
-    - Mac OS X (Universal)
-        - [python3.5.0_OSX.zip](https://github.com/Hongtae/Python/releases/download/v3.5.0/python3.5.0_OSX.zip)
-    - Apple iOS (Universal)
-        - [python3.5.0_iOS.zip](https://github.com/Hongtae/Python/releases/download/v3.5.0/python3.5.0_iOS.zip)
-2. Extract into PyDK/Python/  
-    `example for OSX: PyDK/Python/OSX/libpython3.5.a`
-3. Build!
-
-- Or you can build from sources on GitHub
-    - https://github.com/Hongtae/Python
-
-
-##### Pre-built module for python3.4 download:
-With this python module, you can write your codes with your favorite editors and system installed python.
-
-Extract file into your Python site-packages dir.
-- [Mac OS X](https://bitbucket.org/Hongtae/dkdemo/downloads/dk_core_python34_module_osx.zip) **(outdated)**
-- [Windows i386](https://bitbucket.org/Hongtae/dkdemo/downloads/dk_core_python34_module_win32.zip) **(outdated)**
-- [Windows x64](https://bitbucket.org/Hongtae/dkdemo/downloads/dk_core_python34_module_win32_x64.zip) **(outdated)**
-- It is strongly recommend to use dk module together. You can download dk module in this project. `Scripts/dk`
-
-## Required Libraries (Included in this project)
+## Included External Libraries
 - OpenAL-soft-1.15.1
     - This is LGPL licensed, configured to build **dynamic-library**.
     - Win32, Android only.
