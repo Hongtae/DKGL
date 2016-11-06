@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "../../../lib/Inc_BulletPhysics.h"
+#include "../../Libs/Inc_BulletPhysics.h"
 #include "../../DKFoundation.h"
 #include "../DKVector3.h"
 #include "../DKQuaternion.h"

@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/Inc_FreeType.h"
+#include "../Libs/Inc_FreeType.h"
 #include "DKMath.h"
 #include "DKFont.h"
 

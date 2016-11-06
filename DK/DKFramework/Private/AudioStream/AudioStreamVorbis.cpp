@@ -6,8 +6,8 @@
 //
 
 #include <memory.h>
-#include "../../../lib/Inc_libogg.h"
-#include "../../../lib/Inc_libvorbis.h"
+#include "../../../Libs/Inc_libogg.h"
+#include "../../../Libs/Inc_libvorbis.h"
 
 #include "AudioStreamVorbis.h"
 

@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include <memory.h>
-#include "../lib/Inc_libxml2.h"
+#include "../Libs/Inc_libxml2.h"
 #include "DKXmlParser.h"
 #include "DKLog.h"
 #include "DKString.h"

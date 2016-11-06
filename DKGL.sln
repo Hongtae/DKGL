@@ -9,11 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DK_static", "DK\DK_static.v
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Prerequisites", "Prerequisites", "{B56916AC-69AC-41AE-86D6-28CFAD180F07}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletPhysics", "DK\lib\BulletPhysics\BulletPhysics.vcxproj", "{E4C03A61-856A-4285-A734-EDE229C617F3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletPhysics", "DK\Libs\BulletPhysics\BulletPhysics.vcxproj", "{E4C03A61-856A-4285-A734-EDE229C617F3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAL", "DK\lib\OpenAL\OpenAL.vcxproj", "{5A9D1EB1-C8D8-4EB8-A60E-7BC6009CD709}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAL", "DK\Libs\OpenAL\OpenAL.vcxproj", "{5A9D1EB1-C8D8-4EB8-A60E-7BC6009CD709}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAL_static", "DK\lib\OpenAL\OpenAL_static.vcxproj", "{7DBF836B-4AD8-4D89-84CC-ADAD79B8BB55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAL_static", "DK\Libs\OpenAL\OpenAL_static.vcxproj", "{7DBF836B-4AD8-4D89-84CC-ADAD79B8BB55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PyDK", "PyDK\PyDK.vcxproj", "{9244B7CE-3AA1-4B36-B0B6-A5E4E42979FB}"
 EndProject
@@ -33,29 +33,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bzip2", "DK\lib\bzip2\bzip2.vcxproj", "{9EA18F12-E46F-47BA-9CCB-3516FC120E51}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bzip2", "DK\Libs\bzip2\bzip2.vcxproj", "{9EA18F12-E46F-47BA-9CCB-3516FC120E51}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CxImage", "DK\lib\CxImage\CxImage.vcxproj", "{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CxImage", "DK\Libs\CxImage\CxImage.vcxproj", "{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeType", "DK\lib\FreeType\FreeType.vcxproj", "{468DB90F-BB39-4513-9DB4-4A02AEB204CF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeType", "DK\Libs\FreeType\FreeType.vcxproj", "{468DB90F-BB39-4513-9DB4-4A02AEB204CF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "DK\lib\jpeg\jpeg.vcxproj", "{122901E4-0A34-424D-ACB6-2A35F0533946}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "DK\Libs\jpeg\jpeg.vcxproj", "{122901E4-0A34-424D-ACB6-2A35F0533946}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libFLAC", "DK\lib\libFLAC\libFLAC.vcxproj", "{B2919CE0-792E-4477-8663-153B3B0D7F9F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libFLAC", "DK\Libs\libFLAC\libFLAC.vcxproj", "{B2919CE0-792E-4477-8663-153B3B0D7F9F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg", "DK\lib\libogg\libogg.vcxproj", "{1721C237-7B3B-4B64-8F66-E7579DA0A02D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg", "DK\Libs\libogg\libogg.vcxproj", "{1721C237-7B3B-4B64-8F66-E7579DA0A02D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "DK\lib\libpng\libpng.vcxproj", "{816915C1-9AB2-4CFA-8D11-4192D927E248}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "DK\Libs\libpng\libpng.vcxproj", "{816915C1-9AB2-4CFA-8D11-4192D927E248}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtiff", "DK\lib\libtiff\libtiff.vcxproj", "{72062708-2398-42A9-B935-AED90F9EE6B9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtiff", "DK\Libs\libtiff\libtiff.vcxproj", "{72062708-2398-42A9-B935-AED90F9EE6B9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "DK\lib\libvorbis\libvorbis.vcxproj", "{EFA8A22D-C9E7-4CE7-BEBA-B476DE7CD09B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "DK\Libs\libvorbis\libvorbis.vcxproj", "{EFA8A22D-C9E7-4CE7-BEBA-B476DE7CD09B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "DK\lib\libxml2\libxml2.vcxproj", "{66454320-29AB-4E59-BE3F-D3C3A4B9F6F7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "DK\Libs\libxml2\libxml2.vcxproj", "{66454320-29AB-4E59-BE3F-D3C3A4B9F6F7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "DK\lib\lz4\lz4.vcxproj", "{0FF4DA8E-3C93-43B0-B6CE-358864F69062}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "DK\Libs\lz4\lz4.vcxproj", "{0FF4DA8E-3C93-43B0-B6CE-358864F69062}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "DK\lib\zlib\zlib.vcxproj", "{B79870DD-49D1-41C0-835E-E38024AE9455}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "DK\Libs\zlib\zlib.vcxproj", "{B79870DD-49D1-41C0-835E-E38024AE9455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
