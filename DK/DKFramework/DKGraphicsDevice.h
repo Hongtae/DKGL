@@ -28,6 +28,7 @@ namespace DKGL
 	class DKGraphicsDeviceInterface;
 	class DKGL_API DKGraphicsDevice : public DKSharedInstance<DKGraphicsDevice>
 	{
+	public:
 		DKGraphicsDevice(void);
 		~DKGraphicsDevice(void);
 

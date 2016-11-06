@@ -1,435 +1,400 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="DKFoundation">
-      <UniqueIdentifier>{812fc557-09e2-4b64-aa64-4d8e379af783}</UniqueIdentifier>
+      <UniqueIdentifier>{ba1e1d66-b03e-4489-89a2-053a047d7a21}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework">
-      <UniqueIdentifier>{e041b4e8-ece8-4fc2-8a53-0979125c17fb}</UniqueIdentifier>
+      <UniqueIdentifier>{ea7b72e4-2038-46e5-9e16-f8c1a7676dea}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private">
-      <UniqueIdentifier>{874ff862-e658-4de6-925e-d66c0dae6f0b}</UniqueIdentifier>
+      <UniqueIdentifier>{b8ff1bb7-7272-45f1-8f9e-0ab6cf230965}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Win32">
-      <UniqueIdentifier>{071b4a40-0ee0-4c19-8ca7-4437743d009c}</UniqueIdentifier>
+      <UniqueIdentifier>{7a7826bd-f378-416c-ba71-a5ceca6c99cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Cocoa">
-      <UniqueIdentifier>{deb8258c-5029-430e-bd96-484134b0497b}</UniqueIdentifier>
+      <UniqueIdentifier>{99944331-effb-427c-8fca-7c2f4c18b12d}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\CocoaTouch">
-      <UniqueIdentifier>{e92adba3-7135-43bf-a9ba-c8d83977c2c1}</UniqueIdentifier>
+      <UniqueIdentifier>{85393c89-e51d-433d-aeed-d37dab0e60f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs">
-      <UniqueIdentifier>{2c2b688b-2238-4666-9f2e-2ab76301d8ca}</UniqueIdentifier>
+    <Filter Include="DKFramework\Private\AudioStream">
+      <UniqueIdentifier>{11823cf4-c086-406c-8950-1a6e9cf4d2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\Metal">
+      <UniqueIdentifier>{d928ed9b-517a-4b0d-9eaa-06647770187b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\Vulkan">
+      <UniqueIdentifier>{c2307c54-b5eb-4d28-86a1-2f81ca702396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\D3D12">
+      <UniqueIdentifier>{85dd42aa-1f9d-4bd8-a7a7-4fe3a036a166}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Interface">
-      <UniqueIdentifier>{b82092f7-b3e0-452c-96ab-7e50d875f7f0}</UniqueIdentifier>
+      <UniqueIdentifier>{f40e8874-216b-435f-8651-bb4a5bd2402a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DKFramework\Private\Android">
-      <UniqueIdentifier>{f2f71ed3-5ee5-4c58-bfbd-c5f3764ba809}</UniqueIdentifier>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1f170825-68c8-47f3-861a-01197b997e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs">
+      <UniqueIdentifier>{66f90770-5dfa-4d6f-b9c2-1994eceb427a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib\BulletPhysics.h">
-      <Filter>libs</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\ExtDeps.h">
-      <Filter>libs</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\OpenAL.h">
-      <Filter>libs</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\OpenGL.h">
-      <Filter>libs</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h">
-      <Filter>DKFramework\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Interface\DKOpenGLInterface.h">
-      <Filter>DKFramework\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Interface\DKWindowInterface.h">
-      <Filter>DKFramework\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\BulletUtils.h">
-      <Filter>DKFramework\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\DKAudioStreamFLAC.h">
-      <Filter>DKFramework\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\DKAudioStreamVorbis.h">
-      <Filter>DKFramework\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\DKAudioStreamWave.h">
-      <Filter>DKFramework\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Cocoa\DKApplicationImpl.h">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Cocoa\DKOpenGLImpl.h">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Cocoa\DKWindowImpl.h">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Cocoa\DKWindowView.h">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKApplicationImpl.h">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKOpenGLImpl.h">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKWindowImpl.h">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKWindowView.h">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Win32\DKApplicationImpl.h">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Win32\DKLoggerImpl.h">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Win32\DKOpenGLImpl.h">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Win32\DKWindowImpl.h">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKActionController.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAffineTransform2.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAffineTransform3.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAnimation.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAnimationController.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKApplication.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAudioListener.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAudioPlayer.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAudioSource.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAudioStream.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKBlendState.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKBox.h">
+    <ClCompile Include="DKFoundation\DKAllocator.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKAllocatorChain.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKAtomicNumber32.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKAtomicNumber64.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKBuffer.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKBufferStream.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKCondition.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKData.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKDataStream.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKDateTime.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKDirectory.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKError.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKEventLoop.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKEventLoopTimer.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKFence.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKFile.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKFileMap.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKFloat16.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKHash.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKLock.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKLog.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKMemory.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKMutex.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKObjectRefCounter.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKOperationQueue.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKRational.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKSharedLock.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKSpinLock.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKStringU8.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKStringUE.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKStringW.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKThread.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKTimer.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKTypeInfo.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKUtils.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKUuid.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKXmlDocument.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKXmlParser.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKZipArchiver.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAabb.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKBoxShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAffineTransform2.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCamera.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAffineTransform3.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCapsuleShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAnimation.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCollisionObject.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAnimationController.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCollisionShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKApplication.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKColor.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAudioDevice.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCompoundShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAudioListener.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKConcaveShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAudioPlayer.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKConeShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAudioSource.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKConeTwistConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKAudioStream.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBlendState.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKConvexHullShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBox.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKConvexShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBoxShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCylinderShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBvh.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKDynamicsScene.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCamera.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKFixedConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCapsuleShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKFont.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCollisionObject.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKFrame.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCollisionShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKGearConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCompoundShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKGeneric6DofConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKConcaveShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKGeneric6DofSpringConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKConeShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKGeometryBuffer.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKConeTwistConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKHingeConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKIndexBuffer.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKConvexHullShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKLine.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKConvexShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKLinearTransform2.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCylinderShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKLinearTransform3.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKDynamicsWorld.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMaterial.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKFixedConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMath.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKFont.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMatrix2.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKFrame.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMatrix3.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKGearConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMatrix4.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKGeneric6DofConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMesh.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKModel.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKGraphicsDevice.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKMultiSphereShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKHingeConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKOpenALContext.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKLine.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKOpenGLContext.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKLinearTransform2.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPlane.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKLinearTransform3.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPoint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKMatrix2.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPoint2PointConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKMatrix3.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPolyhedralConvexShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKMatrix4.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPrimitiveIndex.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKModel.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPropertySet.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKMultiSphereShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKQuaternion.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKPlane.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRect.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKPoint2PointConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderer.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKPolyhedralConvexShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderState.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKPropertySet.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderTarget.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKQuaternion.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKResource.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKRect.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKResourceLoader.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKResource.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKResourcePool.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKResourceLoader.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRigidBody.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKResourcePool.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKScene.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKRigidBody.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSceneState.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKScreen.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKScreen.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSerializer.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSerializer.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSliderConstraint.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKShader.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSoftBody.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKShaderConstant.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSphere.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKShaderProgram.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSphereShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSize.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSpline.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSkinMesh.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKStaticPlaneShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSliderConstraint.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKStaticTriangleMeshShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSoftBody.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTextureSampler.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSphere.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTransform.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSphereShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTriangle.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSpline.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKStaticMesh.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKStaticPlaneShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKVariant.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKStaticTriangleMeshShape.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKVector2.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTexture.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKVector3.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTexture2D.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKVector4.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTexture3D.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKWindow.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTextureCube.h">
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKWorld.cpp">
       <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTextureSampler.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTransform.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTriangle.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVariant.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVector2.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVector3.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVector4.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVertexBuffer.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVertexStream.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVKey.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVoxel32FileStorage.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVoxel32SparseVolume.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVoxel32Storage.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVoxelIsosurfacePolygonizer.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVoxelPolygonizer.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKVoxelVolume.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKWindow.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DKInclude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKAabb.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKBvh.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTriangleMesh.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTriangleMeshBvh.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp">
+      <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp">
+      <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp">
+      <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
@@ -455,9 +420,6 @@
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKBufferStream.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKCallback.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKCircularQueue.h">
@@ -490,6 +452,12 @@
     <ClInclude Include="DKFoundation\DKError.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
+    <ClInclude Include="DKFoundation\DKEventLoop.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKEventLoopTimer.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
     <ClInclude Include="DKFoundation\DKFence.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
@@ -500,6 +468,9 @@
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKFixedSizeAllocator.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKFloat16.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKFunction.h">
@@ -548,12 +519,6 @@
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKRational.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKRunLoop.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKRunLoopTimer.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKSet.h">
@@ -616,6 +581,9 @@
     <ClInclude Include="DKFoundation\DKUtils.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
+    <ClInclude Include="DKFoundation\DKUuid.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
     <ClInclude Include="DKFoundation\DKValue.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
@@ -631,480 +599,342 @@
     <ClInclude Include="DKFoundation\DKZipUnarchiver.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DK.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DKFramework\DKAabb.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKActionController.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAffineTransform2.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAffineTransform3.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAnimation.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAnimationController.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKApplication.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAudioDevice.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAudioListener.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAudioPlayer.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAudioSource.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKAudioStream.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBlendState.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBox.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBoxShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBvh.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCamera.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCapsuleShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCollisionObject.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCollisionShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKColor.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCompoundShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKConcaveShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKConeShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKConeTwistConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKConvexHullShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKConvexShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCylinderShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKDynamicsWorld.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKFixedConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKFont.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKFrame.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGearConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGeneric6DofConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGeneric6DofSpringConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuBlitCommandEncoder.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuCommandBuffer.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuComputeCommandEncoder.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuRenderCommandEncoder.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuResource.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGraphicsDevice.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKHingeConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKLine.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKLinearTransform2.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKLinearTransform3.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMath.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMatrix2.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMatrix3.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMatrix4.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKModel.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMultiSphereShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPlane.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPoint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPoint2PointConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPolyhedralConvexShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPropertySet.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKQuaternion.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRect.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKResource.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKResourceLoader.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKResourcePool.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRigidBody.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKScreen.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSerializer.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKShaderConstant.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSize.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSliderConstraint.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSoftBody.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSphere.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSphereShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSpline.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKStaticPlaneShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKStaticTriangleMeshShape.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTextureSampler.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTransform.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTriangle.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTriangleMesh.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTriangleMeshBvh.h">
+      <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKTriangleMeshProxyShape.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKFloat16.h">
-      <Filter>DKFoundation</Filter>
+    <ClInclude Include="DKFramework\DKVariant.h">
+      <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKUuid.h">
-      <Filter>DKFoundation</Filter>
+    <ClInclude Include="DKFramework\DKVector2.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKVector3.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKVector4.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKVertexStream.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKVKey.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKWindow.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKWorld.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\BulletUtils.h">
+      <Filter>DKFramework\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamFLAC.h">
+      <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h">
+      <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h">
+      <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h">
+      <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h">
+      <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Interface\DKWindowInterface.h">
+      <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DKInclude.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_BulletPhysics.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_CxImage.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_FreeType.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_libFLAC.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_libogg.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_libvorbis.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_libxml2.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_lz4.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_OpenAL.h">
+      <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\Inc_zlib.h">
+      <Filter>Libs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DKFramework\Private\DKAudioStreamFLAC.cpp">
-      <Filter>DKFramework\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\DKAudioStreamVorbis.cpp">
-      <Filter>DKFramework\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\DKAudioStreamWave.cpp">
-      <Filter>DKFramework\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\Win32\DKApplicationImpl.cpp">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\Win32\DKLoggerImpl.cpp">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\Win32\DKOpenGLExtensions.cpp">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\Win32\DKOpenGLImpl.cpp">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\Private\Win32\DKWindowImpl.cpp">
-      <Filter>DKFramework\Private\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAffineTransform2.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAffineTransform3.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAnimation.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAnimationController.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKApplication.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAudioListener.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAudioPlayer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAudioSource.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAudioStream.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKBlendState.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKBox.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKBoxShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKCamera.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKCapsuleShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKCollisionObject.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKCollisionShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKCompoundShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKConcaveShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKConeShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKConeTwistConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKConvexHullShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKConvexShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKCylinderShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKDynamicsScene.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKFixedConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKFont.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKFrame.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKGearConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKGeneric6DofConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKGeometryBuffer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKHingeConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKIndexBuffer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKLine.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKLinearTransform2.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKLinearTransform3.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKMaterial.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKMatrix2.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKMatrix3.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKMatrix4.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKMesh.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKModel.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKMultiSphereShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKOpenALContext.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKOpenGLContext.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKPlane.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKPoint2PointConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKPolyhedralConvexShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKPrimitiveIndex.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKPropertySet.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKQuaternion.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKRect.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKRenderer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKRenderState.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKRenderTarget.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKResource.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKResourceLoader.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKResourcePool.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKRigidBody.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKScene.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKScreen.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSerializer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKShader.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKShaderProgram.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSkinMesh.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSliderConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSoftBody.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSphere.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSphereShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSpline.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKStaticMesh.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKStaticPlaneShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKStaticTriangleMeshShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTexture.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTexture2D.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTexture3D.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTextureCube.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTextureSampler.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTransform.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTriangle.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVariant.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVector2.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVector3.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVector4.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVertexBuffer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVoxel32FileStorage.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVoxel32SparseVolume.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVoxelIsosurfacePolygonizer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKVoxelPolygonizer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKWindow.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSceneState.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKAabb.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKBvh.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKAllocator.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKAllocatorChain.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKAtomicNumber32.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKAtomicNumber64.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKBuffer.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKBufferStream.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKCondition.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKData.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKDataStream.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKDateTime.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKDirectory.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKError.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKFence.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKFile.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKFileMap.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKHash.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKLock.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKLog.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKMemory.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKMutex.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKObjectRefCounter.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKOperationQueue.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKRational.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKRunLoop.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKRunLoopTimer.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKSharedLock.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKSpinLock.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKStringU8.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKStringUE.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKStringW.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKThread.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKTimer.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKTypeInfo.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKUtils.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKXmlDocument.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKXmlParser.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKZipArchiver.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKFloat16.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKUuid.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DKFramework\Private\Cocoa\DKApplicationImpl.mm">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </None>
-    <None Include="DKFramework\Private\Cocoa\DKOpenGLImpl.mm">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </None>
-    <None Include="DKFramework\Private\Cocoa\DKWindowImpl.mm">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </None>
-    <None Include="DKFramework\Private\Cocoa\DKWindowView.mm">
-      <Filter>DKFramework\Private\Cocoa</Filter>
-    </None>
-    <None Include="DKFramework\Private\CocoaTouch\DKApplicationImpl.mm">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </None>
-    <None Include="DKFramework\Private\CocoaTouch\DKOpenGLImpl.mm">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </None>
-    <None Include="DKFramework\Private\CocoaTouch\DKWindowImpl.mm">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </None>
-    <None Include="DKFramework\Private\CocoaTouch\DKWindowView.mm">
-      <Filter>DKFramework\Private\CocoaTouch</Filter>
-    </None>
     <None Include="DKFoundation\DKUtils.mm">
       <Filter>DKFoundation</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Libs\VERSION.TXT">
+      <Filter>Libs</Filter>
+    </Text>
   </ItemGroup>
 </Project>
