@@ -931,6 +931,7 @@
     <None Include="DKFoundation\DKUtils.mm">
       <Filter>DKFoundation</Filter>
     </None>
+    <None Include="Libs.props" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT">

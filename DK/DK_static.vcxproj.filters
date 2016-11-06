@@ -1,44 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <None Include="Libs.props" />
+    <None Include="DKFoundation\DKUtils.mm">
+      <Filter>DKFoundation</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Filter Include="DKFoundation">
-      <UniqueIdentifier>{583e5428-c73e-48d9-b717-e1bc288319e3}</UniqueIdentifier>
+      <UniqueIdentifier>{a53f0f61-bbd4-4f08-92bf-d50038c65bec}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework">
-      <UniqueIdentifier>{18fafd3c-6d3a-4b31-9d01-36f41c7649fe}</UniqueIdentifier>
+      <UniqueIdentifier>{c5c4bc8b-81eb-4de8-807b-e5c62aa498cd}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private">
-      <UniqueIdentifier>{306f5644-e98d-4bad-8687-bb1fccbc980a}</UniqueIdentifier>
+      <UniqueIdentifier>{d3f5c72b-b52c-4f23-b19b-e2b298e0247a}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Win32">
-      <UniqueIdentifier>{7e751682-86d4-44df-8d56-1b9a7437060c}</UniqueIdentifier>
+      <UniqueIdentifier>{fc27efeb-0ac1-42a6-9973-73b30bb847df}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Cocoa">
-      <UniqueIdentifier>{460f3769-01d7-4d86-9ae7-00bf633ffe04}</UniqueIdentifier>
+      <UniqueIdentifier>{061cbacc-8286-4471-8c87-9eeaed2c0b66}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\CocoaTouch">
-      <UniqueIdentifier>{5f3f8945-6765-41a9-a231-3bf64a7fcc3e}</UniqueIdentifier>
+      <UniqueIdentifier>{048996d8-5f39-4a32-b7f2-8fd680b49642}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\AudioStream">
-      <UniqueIdentifier>{8bac954b-4b20-44e5-b556-39c78150defd}</UniqueIdentifier>
+      <UniqueIdentifier>{a58b0617-d834-4844-9cb7-f115d330f265}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Metal">
-      <UniqueIdentifier>{d3c1879e-fea4-4b13-a267-8660c9d49dd0}</UniqueIdentifier>
+      <UniqueIdentifier>{58026c98-1f81-47bc-a9cd-3c369c4f8fd1}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Vulkan">
-      <UniqueIdentifier>{7624c5ba-c796-44b9-96ef-3ff24bbd2008}</UniqueIdentifier>
+      <UniqueIdentifier>{5583f188-bc0f-45f8-bf4e-2421f0d9131f}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\D3D12">
-      <UniqueIdentifier>{4bedce60-e0cf-45b6-8646-d34c3f0a19d7}</UniqueIdentifier>
+      <UniqueIdentifier>{77f89409-ad6e-4733-bfca-93cea7b48cb9}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Interface">
-      <UniqueIdentifier>{d2b6ccc3-26d0-4c6c-924d-b50401cc804e}</UniqueIdentifier>
+      <UniqueIdentifier>{d471d8a9-17e4-421d-9693-24735743a3ab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{385f8220-c8db-46d5-92e0-c9995265d121}</UniqueIdentifier>
+      <UniqueIdentifier>{50436f89-2e01-4d67-b353-cdf4acf409a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Libs">
-      <UniqueIdentifier>{ea945a13-b6c2-4cd2-a015-69826d71bb06}</UniqueIdentifier>
+      <UniqueIdentifier>{ed828aa4-a0d0-4a15-95b0-921fdf9bd42e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -926,11 +932,6 @@
     <ClInclude Include="Libs\Inc_zlib.h">
       <Filter>Libs</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DKFoundation\DKUtils.mm">
-      <Filter>DKFoundation</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT">

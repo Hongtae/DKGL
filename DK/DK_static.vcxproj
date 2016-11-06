@@ -22,6 +22,7 @@
     <ProjectGuid>{C7312831-A3F6-4E7D-962B-6786972F0A6A}</ProjectGuid>
     <RootNamespace>DK</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -51,27 +52,23 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -91,17 +88,12 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -113,15 +105,7 @@
     </Lib>
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <BuildLog>
@@ -132,17 +116,12 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -154,15 +133,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     </Lib>
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog>
@@ -170,14 +142,9 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
@@ -192,15 +159,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     </Lib>
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BuildLog>
@@ -211,13 +170,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
@@ -232,16 +186,12 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     </Lib>
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="DKFoundation\DKUtils.mm" />
+    <None Include="Libs.props" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFoundation\DKAllocator.cpp" />
     <ClCompile Include="DKFoundation\DKAllocatorChain.cpp" />
@@ -539,9 +489,6 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="Libs\Inc_lz4.h" />
     <ClInclude Include="Libs\Inc_OpenAL.h" />
     <ClInclude Include="Libs\Inc_zlib.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DKFoundation\DKUtils.mm" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT" />
