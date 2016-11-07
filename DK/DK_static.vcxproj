@@ -126,11 +126,7 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
     <PostBuildEvent />
@@ -179,17 +175,14 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm" />
+    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="Libs.props" />
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +303,7 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DK.h" />
@@ -478,6 +472,8 @@
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h" />
     <ClInclude Include="DKFramework\Private\BulletUtils.h" />
+    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKInclude.h" />
     <ClInclude Include="Libs\Inc_BulletPhysics.h" />
     <ClInclude Include="Libs\Inc_CxImage.h" />

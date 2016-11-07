@@ -43,4 +43,5 @@
 #include "DKFoundation.h"
 #include "DKFramework.h"
 
+using namespace DKGL;
 #endif

@@ -150,7 +150,6 @@
     <ProjectReference />
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
     <PreBuildEvent />
@@ -219,7 +218,6 @@
     <ProjectReference />
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -341,6 +339,7 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DK.h" />
@@ -509,6 +508,8 @@
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h" />
     <ClInclude Include="DKFramework\Private\BulletUtils.h" />
+    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKInclude.h" />
     <ClInclude Include="Libs\Inc_BulletPhysics.h" />
     <ClInclude Include="Libs\Inc_CxImage.h" />
@@ -523,6 +524,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm" />
+    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="Libs.props" />
   </ItemGroup>
   <ItemGroup>

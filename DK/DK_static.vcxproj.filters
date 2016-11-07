@@ -5,6 +5,9 @@
     <None Include="DKFoundation\DKUtils.mm">
       <Filter>DKFoundation</Filter>
     </None>
+    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
@@ -19,17 +22,8 @@
     <Filter Include="DKFramework\Private\Win32">
       <UniqueIdentifier>{fc27efeb-0ac1-42a6-9973-73b30bb847df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DKFramework\Private\Cocoa">
-      <UniqueIdentifier>{061cbacc-8286-4471-8c87-9eeaed2c0b66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DKFramework\Private\CocoaTouch">
-      <UniqueIdentifier>{048996d8-5f39-4a32-b7f2-8fd680b49642}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DKFramework\Private\AudioStream">
       <UniqueIdentifier>{a58b0617-d834-4844-9cb7-f115d330f265}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DKFramework\Private\Metal">
-      <UniqueIdentifier>{58026c98-1f81-47bc-a9cd-3c369c4f8fd1}</UniqueIdentifier>
     </Filter>
     <Filter Include="DKFramework\Private\Vulkan">
       <UniqueIdentifier>{5583f188-bc0f-45f8-bf4e-2421f0d9131f}</UniqueIdentifier>
@@ -45,6 +39,15 @@
     </Filter>
     <Filter Include="Libs">
       <UniqueIdentifier>{ed828aa4-a0d0-4a15-95b0-921fdf9bd42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\Metal">
+      <UniqueIdentifier>{2f87ddb4-7f45-4c4a-b764-99fe9817a29d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\Cocoa">
+      <UniqueIdentifier>{5bcbef9e-a777-43dd-ba41-4574e7cbb042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\CocoaTouch">
+      <UniqueIdentifier>{a389e311-ec1f-4fbe-b6b1-d39a8c70866a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -398,6 +401,9 @@
     </ClCompile>
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp">
       <Filter>DKFramework\Private\AudioStream</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -931,6 +937,12 @@
     </ClInclude>
     <ClInclude Include="Libs\Inc_zlib.h">
       <Filter>Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
+      <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

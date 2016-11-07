@@ -25,18 +25,18 @@ namespace DKGL
 		union RGBA32  // 32bit int format (RGBA order).
 		{
 			struct {
-				unsigned char r, g, b, a;
+				uint8_t r, g, b, a;
 			};
-			unsigned char bytes[4];
-			unsigned int value;
+			uint8_t bytes[4];
+			uint32_t value;
 		};
 		union ARGB32  // 32bit int format (ARGB order).
 		{
 			struct {
-				unsigned char a, r, g, b;
+				uint8_t a, r, g, b;
 			};
-			unsigned char bytes[4];
-			unsigned int value;
+			uint8_t bytes[4];
+			uint32_t value;
 		};
 
 		DKColor(void)
@@ -77,10 +77,10 @@ namespace DKGL
 		RGBA32 RGBA32Value(void) const
 		{
 			RGBA32 val = {
-				static_cast<unsigned char>(Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(Clamp<int>(b * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(Clamp<int>(a * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(r * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(g * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(b * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(a * 255.0f, 0, 0xff)),
 			};
 			return val;
 		}
@@ -88,10 +88,10 @@ namespace DKGL
 		ARGB32 ARGB32Value(void) const
 		{
 			ARGB32 val = {
-				static_cast<unsigned char>(Clamp<int>(a * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(Clamp<int>(b * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(a * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(r * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(g * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(b * 255.0f, 0, 0xff)),
 			};
 			return val;
 		}

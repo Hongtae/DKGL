@@ -393,6 +393,9 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp">
       <Filter>DKFramework\Private\AudioStream</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -926,12 +929,21 @@
     <ClInclude Include="Libs\Inc_zlib.h">
       <Filter>Libs</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm">
       <Filter>DKFoundation</Filter>
     </None>
     <None Include="Libs.props" />
+    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT">
