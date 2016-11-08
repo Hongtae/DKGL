@@ -326,6 +326,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = PALCUBE.COM;
 				TargetAttributes = {
 					66DA0FFA1DA3AEBF00B3056E = {
 						CreatedOnToolsVersion = 8.0;
