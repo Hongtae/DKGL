@@ -2,7 +2,7 @@
 //  File: DKApplication.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -44,6 +44,12 @@
 //   On iOS, calling Terminate() will terminate current process and will not
 //   escape into entry function(main). But other desktop OSes does not.
 //
+//   You can set iOS/OSX application delegate by setting SystemConfig.
+//   For iOS:
+//    DKPropertySet::DefaultConfig().SetValue("UIApplicationDelegate", "MyAppDelegate");
+//   For OS X:
+//    DKPropertySet::DefaultConfig().SetValue("NSApplicationDelegate", "MyAppDelegate");
+//   these properties must be set before calling DKApplication::Run().
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifdef GetUserName
@@ -71,29 +77,37 @@ namespace DKGL
 			SystemPathUserCache,       // user's cache directory.
 			SystemPathUserTemp,        // temporary directory for current user.
 		};
-
+		enum EnvironmentVariable
+		{
+			EnvHostName,
+			EnvOsName,
+			EnvUserName,
+			EnvModulePath,	// retrieve current module (or executable) path.
+		};
 
 		DKApplication(void);
 		DKApplication(int argc, char* argv[]);
 		virtual ~DKApplication(void);
 
 		void SetArgs(int argc, char* argv[]);
+		const DKArray<DKString>& Args(void) const { return args; }
 
-		// running application's main loop.
+		// create and running application's main event loop.
 		// only one instance can enter main loop.
 		int Run();
-
-		// get DKApplication instance which is running.
-		static DKApplication* Instance(void);
 
 		// Terminate main loop.
 		void Terminate(int exitCode);
 
+		// get DKApplication instance which is running.
+		static DKApplication* Instance(void);
+
+		// get application main event loop.
+		DKEventLoop* EventLoop(void);
+
 		// retrieve pre-defined paths
 		DKString EnvironmentPath(SystemPath);
-
-		// retrieve current module (or executable) path.
-		DKString ModulePath(void);
+		DKString EnvironmentString(EnvironmentVariable);
 
 		// LoadResource loads application resource into read,writable buffer.
 		DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc = DKAllocator::DefaultAllocator());
@@ -105,11 +119,6 @@ namespace DKGL
 		// get displayable content bounds. (avaialbe for window frame)
 		// On iOS, android, you can create window with this rect for full-screen app.
 		DKRect ScreenContentBounds(int displayId) const;
-
-		// misc (user name, host name, os name)
-		DKString HostName(void) const;
-		DKString OSName(void) const;
-		DKString UserName(void) const;
 
 	protected:
 		virtual void OnHidden(void);        // application become hidden. (not minimized)
@@ -123,8 +132,9 @@ namespace DKGL
 		void Initialize();
 		void Finalize();
 		DKDateTime			initializedAt;
-		DKArray<char*>		args;
+		DKArray<DKString>	args;
 		DKMutex				mutex;
-		DKApplicationInterface*				impl;
+		int					exitCode;
+		DKApplicationInterface*	impl;
 	};
 }

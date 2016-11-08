@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "../../DKFoundation.h"
 #include "../DKApplication.h"
+#include "DKBackendInterface.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // DKApplicationInterface
@@ -18,29 +18,23 @@
 
 namespace DKGL
 {
-	class DKApplicationInterface
+	class DKApplicationInterface : public DKBackendInterface
 	{
 	public:
 		using SystemPath = DKApplication::SystemPath;
+		using EnvironmentVariable = DKApplication::EnvironmentVariable;
 
-		virtual ~DKApplicationInterface(void) {}
-
-		virtual int Run(DKArray<char*>& args) = 0;
-		virtual void Terminate(int exitCode) = 0;
+		virtual DKEventLoop* EventLoop(void) = 0;
 
 		virtual DKLogger& DefaultLogger(void) = 0;
 		virtual DKString EnvironmentPath(SystemPath) = 0;
-		virtual DKString ModulePath(void) = 0;
+		virtual DKString EnvironmentString(EnvironmentVariable) = 0;
 
 		virtual DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) = 0;		// read-writable
 		virtual DKObject<DKData> LoadStaticResource(const DKString& res) = 0;	// read-only
 
 		virtual DKRect DisplayBounds(int displayId) const = 0;
 		virtual DKRect ScreenContentBounds(int displayId) const = 0;
-
-		virtual DKString HostName(void) const = 0;
-		virtual DKString OSName(void) const = 0;
-		virtual DKString UserName(void) const = 0;
 
 		static DKApplicationInterface* CreateInterface(DKApplication*);
 
@@ -53,7 +47,7 @@ namespace DKGL
 		}
 
 	protected:
-		static void AppInitialize(DKApplication* app)	{app->Initialize();}
-		static void AppFinalize(DKApplication* app)		{app->Finalize();}
+		static void AppInitialize(DKApplication* app)	{ app->Initialize(); }
+		static void AppFinalize(DKApplication* app)		{ app->Finalize(); }
 	};
 }

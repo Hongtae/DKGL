@@ -74,6 +74,6 @@ namespace DKGL
 		DKSpinLock spinLock;
 
 		DKFileMap(const DKFileMap&);
-		DKFileMap& operator = (const DKFileMap&);
+		DKFileMap& operator = (const DKFileMap&) = delete;
 	};
 }

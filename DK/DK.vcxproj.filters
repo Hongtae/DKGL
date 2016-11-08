@@ -935,6 +935,9 @@
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Interface\DKBackendInterface.h">
+      <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm">

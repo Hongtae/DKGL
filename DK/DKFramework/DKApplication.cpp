@@ -12,7 +12,6 @@ namespace DKGL
 {
 	namespace Private
 	{
-		void TerminateAllEventLoops(void);
 		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
 
 		static DKCondition appCond;
@@ -22,8 +21,10 @@ namespace DKGL
 using namespace DKGL;
 
 DKApplication::DKApplication(int argc, char* argv[])
-	: args(argv, argc)
+	: exitCode(0)
 {
+	SetArgs(argc, argv);
+
 	DKCriticalSection<DKCondition> guard(Private::appCond);
 	while (Private::application != NULL)
 	{
@@ -45,9 +46,10 @@ DKApplication::~DKApplication(void)
 {
 	DKLoggerCompareAndReplace(&impl->DefaultLogger(), NULL);
 
+	DKCriticalSection<DKCondition> guard(Private::appCond);
+
 	delete impl;
 
-	DKCriticalSection<DKCondition> guard(Private::appCond);
 	Private::application = NULL;
 	Private::appCond.Broadcast();
 }
@@ -55,32 +57,40 @@ DKApplication::~DKApplication(void)
 void DKApplication::SetArgs(int argc, char* argv[])
 {
 	args.Clear();
-	args.Add(argv, argc);
+	args.Reserve(argc);
+	for (int i = 0; i < argc; ++i)
+		args.Add(argv[i]);
 }
 
 int DKApplication::Run(void)
 {
+	// Only one thread can have running instance!
 	DKCriticalSection<DKMutex> section(mutex);
 
-	struct ContextRun : public DKOperation
+	struct MainLoopRunner : public DKOperation
 	{
-		ContextRun(DKApplication& a) : app(a) {}
-		DKApplication& app;
-		mutable int result;
+		DKEventLoop* eventLoop;
 		void Perform(void) const override
 		{
-			result = app.impl->Run(app.args);
+			eventLoop->Run();
 		}
 	};
-	ContextRun run(*this);
-	Private::PerformOperationWithErrorHandler( &run, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
-	return run.result;
+	MainLoopRunner runner;
+	runner.eventLoop = impl->EventLoop();
+	Private::PerformOperationWithErrorHandler(&runner, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
+
+	return exitCode;
 }
 
 DKApplication* DKApplication::Instance(void)
 {
-	//DKCriticalSection<DKCondition> guard(Private::appCond);
+	DKCriticalSection<DKCondition> guard(Private::appCond);
 	return Private::application;
+}
+
+DKEventLoop* DKApplication::EventLoop(void)
+{
+	return impl->EventLoop();
 }
 
 void DKApplication::Initialize()
@@ -103,20 +113,19 @@ void DKApplication::Finalize()
 {
 	OnTerminate();
 	
-	DKLog("Waiting for event-loop being terminated...\n");
-	Private::TerminateAllEventLoops();
-
 	DKDateTime current = DKDateTime::Now();
-	DKLog("DKApplication terminated at %04d-%02d-%02d %02d:%02d:%02d.%06d.(MainThread:0x%x)\n",
-		  current.Year(), current.Month(), current.Day(), current.Hour(), current.Minute(), current.Second(), current.Microsecond(),
-		  DKThread::CurrentThreadId());
+	DKLog("DKApplication terminated at %04d-%02d-%02d %02d:%02d:%02d.%06d.(MainThread:0x%x, exitCode:%d)\n",
+		current.Year(), current.Month(), current.Day(),
+		current.Hour(), current.Minute(), current.Second(), current.Microsecond(),
+		DKThread::CurrentThreadId(), exitCode);
 	double elapsed = current.Interval(initializedAt);
 	DKLog("DKApplication runs %f seconds.\n", elapsed);
 }
 
 void DKApplication::Terminate(int exitCode)
 {
-	impl->Terminate(exitCode);
+	this->exitCode = exitCode;
+	impl->EventLoop()->Stop();
 }
 
 DKString DKApplication::EnvironmentPath(SystemPath env)
@@ -124,9 +133,9 @@ DKString DKApplication::EnvironmentPath(SystemPath env)
 	return impl->EnvironmentPath(env);
 }
 
-DKString DKApplication::ModulePath(void)
+DKString DKApplication::EnvironmentString(EnvironmentVariable env)
 {
-	return impl->ModulePath();
+	return impl->EnvironmentString(env);
 }
 
 void DKApplication::OnHidden(void)
@@ -177,19 +186,4 @@ DKRect DKApplication::DisplayBounds(int displayId) const
 DKRect DKApplication::ScreenContentBounds(int displayId) const
 {
 	return impl->ScreenContentBounds(displayId);
-}
-
-DKString DKApplication::HostName(void) const
-{
-	return impl->HostName();
-}
-
-DKString DKApplication::OSName(void) const
-{
-	return impl->OSName();
-}
-
-DKString DKApplication::UserName(void) const
-{
-	return impl->UserName();
 }

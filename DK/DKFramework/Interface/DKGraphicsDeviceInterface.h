@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../../DKFoundation.h"
+#include "DKBackendInterface.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // DKGraphicsDeviceInterface
@@ -15,10 +15,8 @@
 
 namespace DKGL
 {
-	class DKGraphicsDeviceInterface
+	class DKGraphicsDeviceInterface : public DKBackendInterface
 	{
 	public:
-		virtual ~DKGraphicsDeviceInterface(void) {}
-
 	};
 }

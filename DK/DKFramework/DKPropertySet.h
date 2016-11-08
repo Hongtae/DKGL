@@ -23,7 +23,10 @@ namespace DKGL
 	class DKGL_API DKPropertySet
 	{
 	public:
+		// DefaultSet: user preferences. You can export, import from file.
 		static DKPropertySet& DefaultSet(void);
+		// SystemConfig: default system config. do not save or export this.
+		static DKPropertySet& SystemConfig(void);
 
 		using InsertionFunc = void (DKString, DKVariant);				// key, new-value
 		using ModificationFunc = void (DKString, DKVariant, DKVariant);	// key, old-value, new-value

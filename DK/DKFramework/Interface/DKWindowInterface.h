@@ -6,9 +6,9 @@
 //
 
 #pragma once
-#include "../../DKFoundation.h"
 #include "../DKRect.h"
 #include "../DKVKey.h"
+#include "DKBackendInterface.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKWindowInterface
@@ -20,11 +20,9 @@
 namespace DKGL
 {
 	class DKWindow;
-	class DKWindowInterface
+	class DKWindowInterface : public DKBackendInterface
 	{
 	public:
-		virtual ~DKWindowInterface(void) {}
-
 		virtual bool Create(const DKString& title, const DKSize& size, const DKPoint& origin, int style) = 0;
 		virtual bool CreateProxy(void* systemHandle) = 0;
 		virtual bool IsProxy(void) const = 0;

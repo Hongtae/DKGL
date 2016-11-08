@@ -75,30 +75,6 @@ namespace DKGL
 			return found;
 		}
 
-		void TerminateAllEventLoops(void)
-		{
-			GetEventLoopMapLock().Lock();
-
-			DKArray<DKThread::ThreadId> runloopThreadIds;
-			runloopThreadIds.Reserve(GetEventLoopMap().Count());
-			// Terminate all EventLoops
-			GetEventLoopMap().EnumerateForward([&runloopThreadIds](EventLoopMap::Pair& pair)
-			{
-				runloopThreadIds.Add(pair.key);
-				pair.value->Stop();
-
-			});
-			GetEventLoopMapLock().Unlock();
-
-			// Wait until all runloops being terminated.
-			for (DKThread::ThreadId tid : runloopThreadIds)
-			{
-				DKObject<DKThread> thread = DKThread::FindThread(tid);
-				if (thread)
-					thread->WaitTerminate();
-			}
-		}
-
 		static DKCondition resultCond;
 		struct EventLoopResultCallback : public DKEventLoop::OperationResult
 		{

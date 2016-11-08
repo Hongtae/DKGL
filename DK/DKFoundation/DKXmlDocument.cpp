@@ -226,7 +226,7 @@ DKXmlDocument::~DKXmlDocument(void)
 DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, const DKString& fileOrURL, DKString* desc)
 {
 	DocumentBuilder doc;
-	bool ret = t == TypeXML ? doc.BeginXML(fileOrURL) : doc.BeginHTML(fileOrURL);
+	bool ret = t == TypeXML ? doc.BeginXml(fileOrURL) : doc.BeginHtml(fileOrURL);
 	if (ret)
 	{
 		if (desc)
@@ -246,7 +246,7 @@ DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, const DKString& fileOrURL, D
 DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, const DKData* buffer, DKString* desc)
 {
 	DocumentBuilder doc;
-	bool ret = t == TypeXML ? doc.BeginXML(buffer) : doc.BeginHTML(buffer);
+	bool ret = t == TypeXML ? doc.BeginXml(buffer) : doc.BeginHtml(buffer);
 	if (ret)
 	{
 		if (desc)
@@ -266,7 +266,7 @@ DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, const DKData* buffer, DKStri
 DKObject<DKXmlDocument> DKXmlDocument::Open(Type t, DKStream* stream, DKString* desc)
 {
 	DocumentBuilder doc;
-	bool ret = t == TypeXML ? doc.BeginXML(stream) : doc.BeginHTML(stream);
+	bool ret = t == TypeXML ? doc.BeginXml(stream) : doc.BeginHtml(stream);
 	if (ret)
 	{
 		if (desc)

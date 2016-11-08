@@ -24,7 +24,6 @@
 
 namespace DKGL
 {
-	class DKTexture2D;
 	class DKGL_API DKFont
 	{
 	public:

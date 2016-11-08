@@ -89,6 +89,6 @@ namespace DKGL
 		void OperationProc(void);
 
 		DKOperationQueue(const DKOperationQueue&);
-		DKOperationQueue& operator = (const DKOperationQueue&);
+		DKOperationQueue& operator = (const DKOperationQueue&) = delete;
 	};
 }

@@ -944,6 +944,9 @@
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Interface\DKBackendInterface.h">
+      <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT">

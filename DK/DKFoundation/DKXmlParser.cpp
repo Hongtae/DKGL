@@ -518,7 +518,7 @@ DKXmlParser::~DKXmlParser(void)
 	ClearCustomEntityStorage();
 }
 
-bool DKXmlParser::BeginHTML(const DKString& url)
+bool DKXmlParser::BeginHtml(const DKString& url)
 {
 	if (url.Length() == 0)
 		return false;
@@ -542,7 +542,7 @@ bool DKXmlParser::BeginHTML(const DKString& url)
 	return false;
 }
 
-bool DKXmlParser::BeginHTML(const DKData* data)
+bool DKXmlParser::BeginHtml(const DKData* data)
 {
 	bool result = false;
 	if (data)
@@ -596,19 +596,19 @@ bool DKXmlParser::BeginHTML(const DKData* data)
 	return result;
 }
 
-bool DKXmlParser::BeginHTML(DKStream* stream)
+bool DKXmlParser::BeginHtml(DKStream* stream)
 {
 	if (stream && stream->IsReadable())
 	{
 		DKObject<DKDataStream> ds = DKObject<DKStream>(stream).SafeCast<DKDataStream>();
 		if (ds)
-			return BeginHTML(ds->DataSource());
-		return BeginHTML(DKBuffer::Create(stream));
+			return BeginHtml(ds->DataSource());
+		return BeginHtml(DKBuffer::Create(stream));
 	}
 	return false;
 }
 
-bool DKXmlParser::BeginXML(const DKString& url)
+bool DKXmlParser::BeginXml(const DKString& url)
 {
 	if (url.Length() == 0)
 		return false;
@@ -628,7 +628,7 @@ bool DKXmlParser::BeginXML(const DKString& url)
 	return false;
 }
 
-bool DKXmlParser::BeginXML(const DKData* data)
+bool DKXmlParser::BeginXml(const DKData* data)
 {
 	if (data)
 	{
@@ -657,14 +657,14 @@ bool DKXmlParser::BeginXML(const DKData* data)
 	return false;
 }
 
-bool DKXmlParser::BeginXML(DKStream* stream)
+bool DKXmlParser::BeginXml(DKStream* stream)
 {
 	if (stream && stream->IsReadable())
 	{
 		DKObject<DKDataStream> ds = DKObject<DKStream>(stream).SafeCast<DKDataStream>();
 		if (ds)
-			return BeginXML(ds->DataSource());
-		return BeginXML(DKBuffer::Create(stream));
+			return BeginXml(ds->DataSource());
+		return BeginXml(DKBuffer::Create(stream));
 	}
 	return false;
 }

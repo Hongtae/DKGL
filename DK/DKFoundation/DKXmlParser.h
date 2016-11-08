@@ -2,7 +2,7 @@
 //  File: DKXmlParser.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -26,12 +26,12 @@ namespace DKGL
 		DKXmlParser(void);
 		virtual ~DKXmlParser(void);
 
-		bool BeginHTML(const DKString& url);
-		bool BeginHTML(const DKData* buffer);
-		bool BeginHTML(DKStream* stream);
-		bool BeginXML(const DKString& url);
-		bool BeginXML(const DKData* buffer);
-		bool BeginXML(DKStream* stream);
+		bool BeginHtml(const DKString& url);
+		bool BeginHtml(const DKData* buffer);
+		bool BeginHtml(DKStream* stream);
+		bool BeginXml(const DKString& url);
+		bool BeginXml(const DKData* buffer);
+		bool BeginXml(DKStream* stream);
 
 		struct Namespace
 		{

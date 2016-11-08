@@ -21,16 +21,8 @@ namespace DKGL
 	class DKOperation
 	{
 	public:
+		DKOperation(void) {}
 		virtual ~DKOperation(void) {}
 		virtual void Perform(void) const = 0;
-
-	protected:
-		DKOperation(void) {}
-
-	private:
-		DKOperation(DKOperation&&);
-		DKOperation(const DKOperation&);
-		DKOperation& operator = (DKOperation&&);
-		DKOperation& operator = (const DKOperation&);
 	};
 }

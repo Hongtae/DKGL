@@ -98,6 +98,6 @@ namespace DKGL
 
 		// not allow copy constructor.
 		DKFile(const DKFile&);
-		DKFile& operator = (const DKFile&);
+		DKFile& operator = (const DKFile&) = delete;
 	};
 }

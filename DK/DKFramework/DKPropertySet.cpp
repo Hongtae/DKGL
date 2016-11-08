@@ -343,8 +343,14 @@ size_t DKPropertySet::NumberOfEntries(void) const
 
 DKPropertySet& DKPropertySet::DefaultSet(void)
 {
-	static DKPropertySet	p;
-	return p;
+	static DKPropertySet ps;
+	return ps;
+}
+
+DKPropertySet& DKPropertySet::SystemConfig(void)
+{
+	static DKPropertySet ps;
+	return ps;
 }
 
 void DKPropertySet::AddObserver(ObserverContext context,

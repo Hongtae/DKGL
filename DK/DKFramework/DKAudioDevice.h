@@ -44,7 +44,7 @@ namespace DKGL
 		friend class DKSharedInstance<DKAudioDevice>;
 		DKAudioDevice(void);
 		DKAudioDevice(const DKAudioDevice&);
-		DKAudioDevice& operator = (const DKAudioDevice&);
+		DKAudioDevice& operator = (const DKAudioDevice&) = delete;
 
 		DeviceList deviceList;
 		void *device;		// OpenAL device

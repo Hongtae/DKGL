@@ -58,7 +58,7 @@ namespace DKGL
 		~DKThread(void);
 
 		DKThread(const DKThread&);
-		DKThread& operator = (const DKThread&);
+		DKThread& operator = (const DKThread&) = delete;
 
 		mutable ThreadId threadId;
 		friend class DKObject<DKThread>;
