@@ -66,18 +66,18 @@
 #		define DKGL_APPLE_IOS 1
 #		ifdef DKGL_DYNAMIC		// dylib or Framework
 #			define DKGL_API	__attribute__((visibility ("default")))
-#			if TARGET_IPHONE_SIMULATOR
+#			if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Dynamic Library for iOS Simulator.
-#			else	//if TARGET_IPHONE_SIMULATOR
+#			else	//if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Dynamic Library for iOS Device.
-#			endif	//if TARGET_IPHONE_SIMULATOR
+#			endif	//if TARGET_OS_SIMULATOR
 #		else
 #			define DKGL_API
-#			if TARGET_IPHONE_SIMULATOR
+#			if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Static Library for iOS Simulator.
-#			else	//if TARGET_IPHONE_SIMULATOR
+#			else	//if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Static Library for iOS Device.
-#			endif	//if TARGET_IPHONE_SIMULATOR
+#			endif	//if TARGET_OS_SIMULATOR
 #		endif
 #	else	//if TARGET_OS_IPHONE
 #		define DKGL_APPLE_OSX 1
