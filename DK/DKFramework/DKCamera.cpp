@@ -9,7 +9,7 @@
 #include "DKCamera.h"
 #include "DKAffineTransform3.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKCamera::DKCamera(void)
 	: viewMatrix(DKMatrix4::identity)

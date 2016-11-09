@@ -2,11 +2,10 @@
 //  File: DKFont.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKPoint.h"
 #include "DKSize.h"
@@ -22,7 +21,7 @@
 //   the data object must not be modified after object created.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGL_API DKFont
 	{

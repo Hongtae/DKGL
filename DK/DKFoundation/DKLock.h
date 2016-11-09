@@ -13,7 +13,7 @@
 // provide recursive-lock feature.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	class DKGL_API DKLock
 	{

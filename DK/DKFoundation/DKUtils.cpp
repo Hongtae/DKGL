@@ -3,7 +3,7 @@
 //  Platform: Win32, Linux
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -23,10 +23,10 @@ extern "C" DKGL_API const char* DKVersion(void)
 }
 extern "C" DKGL_API const char* DKCopyright(void)
 {
-	return "Copyright (c) 2004-2015 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
+	return "Copyright (c) 2004-2016 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
 }
 
-namespace DKGL
+namespace DKFoundation
 {
 #ifdef _WIN32
 	DKGL_API uint32_t DKRandom(void)

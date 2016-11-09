@@ -9,7 +9,7 @@
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{

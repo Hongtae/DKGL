@@ -9,7 +9,7 @@
 #include "DKConvexHullShape.h"
 #include "DKTriangle.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	// convex decomposition calculated by using HACD
 	// https://github.com/kmammou/v-hacd
@@ -74,8 +74,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 static_assert( sizeof(DKVector3) == sizeof(float)*3, "DKVector3 must be float[3]");
 

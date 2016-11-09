@@ -15,7 +15,7 @@
 #define copysign _copysign
 #endif
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKLinearTransform3::DKLinearTransform3(void)
 	: matrix3(DKMatrix3::identity)

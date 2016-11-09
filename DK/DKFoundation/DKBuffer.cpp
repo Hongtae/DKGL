@@ -25,7 +25,7 @@
 #include "DKOrderedArray.h"
 #include "DKLog.h"
 
-namespace DKGL
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -248,7 +248,7 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
+using namespace DKFoundation;
 
 DKBuffer::DKBuffer(DKAllocator& alloc)
 	: contentPtr(NULL)

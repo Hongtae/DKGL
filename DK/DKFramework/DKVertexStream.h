@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,7 +14,7 @@
 // you can retrieve stream types from shader program. (see DKShaderProgram.h)
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	struct DKVertexStream
 	{

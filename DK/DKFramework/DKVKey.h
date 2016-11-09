@@ -2,7 +2,7 @@
 //  File: DKVKey.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -14,7 +14,7 @@
 // this Virtual-Key make easy to build cross-platform.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	enum DKVirtualKey
 	{

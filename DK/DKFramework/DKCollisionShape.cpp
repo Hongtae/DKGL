@@ -21,8 +21,8 @@
 #include "DKStaticPlaneShape.h"
 #include "DKStaticTriangleMeshShape.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKCollisionShape::DKCollisionShape(ShapeType t, btCollisionShape* c)
 	: impl(c)

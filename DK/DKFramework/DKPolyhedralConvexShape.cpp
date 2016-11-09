@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKPolyhedralConvexShape.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKPolyhedralConvexShape::DKPolyhedralConvexShape(ShapeType t, btPolyhedralConvexShape* impl)
 	: DKConvexShape(t, impl)

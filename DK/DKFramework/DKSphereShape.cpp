@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKSphereShape.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKSphereShape::DKSphereShape(float radius)
 	: DKConvexShape(ShapeType::Sphere, new btSphereShape(radius))

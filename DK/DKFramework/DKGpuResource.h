@@ -6,10 +6,9 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGpuBuffer
 	{

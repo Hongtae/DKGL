@@ -13,7 +13,7 @@
 // An abstract class, interface for graphics device (GPU).
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGraphicsDeviceInterface : public DKBackendInterface
 	{

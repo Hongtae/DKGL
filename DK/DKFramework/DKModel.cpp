@@ -8,7 +8,7 @@
 #include "DKModel.h"
 #include "DKWorld.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKModel::DKModel(Type t)
 : type(t), parent(NULL), scene(NULL), hideDescendants(false), needResolveTree(true)

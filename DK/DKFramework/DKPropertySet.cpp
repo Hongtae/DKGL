@@ -7,7 +7,7 @@
 
 #include "DKPropertySet.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKPropertySet::DKPropertySet(void)
 {

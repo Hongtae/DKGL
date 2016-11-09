@@ -2,7 +2,7 @@
 //  File: DKStringU8.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <stdlib.h>
@@ -12,7 +12,7 @@
 #include "DKString.h"
 #include "DKBuffer.h"
 
-namespace DKGL
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -72,7 +72,7 @@ namespace DKGL
 		size_t NumberOfCharactersInUTF8(const DKUniChar8* input, size_t length);
 	}
 }
-using namespace DKGL;
+using namespace DKFoundation;
 
 const DKStringU8 DKStringU8::empty = "";
 

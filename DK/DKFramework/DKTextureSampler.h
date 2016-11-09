@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKResource.h"
 #include "DKColor.h"
@@ -17,7 +16,7 @@
 // sampler object can be shared between textures, materials.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGL_API DKTextureSampler : public DKResource
 	{

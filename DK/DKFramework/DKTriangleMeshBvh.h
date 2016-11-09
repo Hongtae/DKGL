@@ -6,7 +6,6 @@
 
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKBvh.h"
 #include "DKLine.h"
@@ -20,7 +19,7 @@
 // a triangle mesh class, using BVH tree internally
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGL_API DKTriangleMeshBvh
 	{

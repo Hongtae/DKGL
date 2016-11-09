@@ -2,7 +2,7 @@
 //  File: DKBufferStream.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -18,7 +18,7 @@
 // using memory like stream object.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	class DKGL_API DKBufferStream : public DKDataStream
 	{

@@ -9,7 +9,7 @@
 #include "DKAffineTransform3.h"
 #include "DKLinearTransform3.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 const DKTransformUnit DKTransformUnit::identity = DKTransformUnit().Identity();
 const DKUSTransform DKUSTransform::identity = DKUSTransform().Identity();

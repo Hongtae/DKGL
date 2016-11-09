@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKTriangleMeshProxyShape.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -78,8 +78,8 @@ namespace DKGL
 		};
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKTriangleMeshProxyShape::DKTriangleMeshProxyShape(void)
 : DKConcaveShape(ShapeType::Custom, new TriangleMeshProxyShape(this))

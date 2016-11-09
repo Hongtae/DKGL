@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKStaticTriangleMeshShape.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 class DKStaticTriangleMeshShape::IndexedTriangleData : public btStridingMeshInterface
 {

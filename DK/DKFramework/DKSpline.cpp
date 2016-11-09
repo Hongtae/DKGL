@@ -8,7 +8,7 @@
 #include "DKMath.h"
 #include "DKSpline.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -46,7 +46,7 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
+using namespace DKFramework;
 
 DKSpline::DKSpline(void) : DKSpline(0.0f, 0.0f, 0.0f, 0.0f)
 {

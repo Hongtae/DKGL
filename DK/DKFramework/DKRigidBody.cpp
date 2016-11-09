@@ -9,7 +9,7 @@
 #include "DKRigidBody.h"
 #include "DKConstraint.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -30,8 +30,8 @@ namespace DKGL
 		};
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKRigidBody::ObjectData::ObjectData(float m, const DKVector3& inertia)
 : mass(m)

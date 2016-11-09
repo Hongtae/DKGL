@@ -8,7 +8,7 @@
 #include "DKMath.h"
 #include "DKRect.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 const DKPoint DKPoint::zero = DKPoint(0,0);
 const DKSize DKSize::zero = DKSize(0,0);

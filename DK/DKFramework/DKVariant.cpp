@@ -7,7 +7,7 @@
 
 #include "DKVariant.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -165,8 +165,8 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 
 DKVariant::DKVariant(Type t)

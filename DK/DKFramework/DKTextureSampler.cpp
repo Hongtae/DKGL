@@ -7,14 +7,14 @@
 
 #include "DKTextureSampler.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKTextureSampler::DKTextureSampler(void)
 : minFilter(MinFilterUndefined)

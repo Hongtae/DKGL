@@ -8,7 +8,7 @@
 #include "DKMath.h"
 #include "DKLine.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKLine::DKLine(void)
 	: begin(DKVector3(-FLT_MAX, -FLT_MAX, -FLT_MAX))

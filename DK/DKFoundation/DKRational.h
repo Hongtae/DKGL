@@ -2,7 +2,7 @@
 //  File: DKRational.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -16,7 +16,7 @@
 // to convert real-number: numerator / denominator. (call RealNumber())
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	class DKGL_API DKRational
 	{

@@ -25,7 +25,7 @@
 #include "DKUtils.h"
 #include "DKUuid.h"
 
-namespace DKGL
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -48,7 +48,7 @@ namespace DKGL
 
 #define DKFILE_INVALID_FILE_HANDLE		(-1)
 
-using namespace DKGL;
+using namespace DKFoundation;
 
 DKFile::DKFile(void)
 	: file(DKFILE_INVALID_FILE_HANDLE)

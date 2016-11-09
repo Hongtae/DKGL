@@ -8,7 +8,7 @@
 #pragma once
 #include "../../DKFoundation.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKBackendInterface
 	{

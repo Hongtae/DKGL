@@ -7,7 +7,7 @@
 
 #include "DKBlendState.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 const DKBlendState	DKBlendState::defaultOpaque(BlendModeOne, BlendModeZero, BlendFuncAdd);
 const DKBlendState	DKBlendState::defaultAlpha(BlendModeSrcAlpha, BlendModeOne, BlendModeOneMinusSrcAlpha, BlendModeOne, BlendFuncAdd, BlendFuncAdd);

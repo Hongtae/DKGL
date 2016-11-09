@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKMultiSphereShape.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -35,8 +35,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKMultiSphereShape::DKMultiSphereShape(const DKSphere* spheres, size_t numSpheres)
 	: DKConvexShape(ShapeType::MultiSphere, CreateMultiSphereShape(spheres, numSpheres))

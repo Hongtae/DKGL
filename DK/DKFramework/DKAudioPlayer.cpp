@@ -12,7 +12,7 @@
 #include "DKAudioSource.h"
 #include "DKAudioDevice.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -55,8 +55,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 class DKAudioPlayer::AudioQueue : public DKSharedInstance<AudioQueue>
 {

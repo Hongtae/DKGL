@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKConeShape.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -23,8 +23,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKConeShape::DKConeShape(float radius, float height, UpAxis up)
 	: DKConvexShape(ShapeType::Cone, CreateConeShape(radius, height, up))

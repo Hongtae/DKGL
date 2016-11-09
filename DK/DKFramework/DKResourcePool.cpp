@@ -8,7 +8,7 @@
 #include "DKResourcePool.h"
 #include "DKResource.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKResourcePool::DKResourcePool(void)
 	: allocator(NULL)

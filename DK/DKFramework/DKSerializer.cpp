@@ -9,7 +9,7 @@
 #include "DKResource.h"
 #include "DKResourceLoader.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 
 // generate operations which can restore data from DKVariant

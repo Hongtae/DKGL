@@ -2,13 +2,13 @@
 //  File: DKSpinLock.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKSpinLock.h"
 #include "DKThread.h"
 
-namespace DKGL
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -20,8 +20,8 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFoundation;
+using namespace DKFoundation::Private;
 
 DKSpinLock::DKSpinLock(void)
 	: state(SpinLockStateFree)

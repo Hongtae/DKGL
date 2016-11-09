@@ -11,7 +11,7 @@
 #include "DKModel.h"
 
 #if 0
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -841,8 +841,8 @@ namespace DKGL
 }
 #endif
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 
 DKWorld::DKWorld(void)

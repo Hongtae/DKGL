@@ -8,7 +8,8 @@
 #include "DKApplication.h"
 #include "Interface/DKApplicationInterface.h"
 
-namespace DKGL
+using namespace DKFramework;
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -18,7 +19,6 @@ namespace DKGL
 		static DKApplication *application = NULL;
 	}
 }
-using namespace DKGL;
 
 DKApplication::DKApplication(int argc, char* argv[])
 	: exitCode(0)

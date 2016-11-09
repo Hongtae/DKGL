@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKConcaveShape.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKConcaveShape::DKConcaveShape(ShapeType t, btConcaveShape* impl)
 	: DKCollisionShape(t, impl)

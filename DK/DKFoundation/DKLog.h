@@ -2,7 +2,7 @@
 //  File: DKLog.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -16,7 +16,7 @@
 // you can sublcass DKLogger to handle log text.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	typedef void(*DKLogCallbackProc)(const DKString &);
 

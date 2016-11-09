@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKGpuResource.h"
 #include "DKGpuCommandBuffer.h"
@@ -16,7 +15,7 @@
 // Graphics Device
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGpuCommandQueue
 	{

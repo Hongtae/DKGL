@@ -10,7 +10,7 @@
 #include "DKVector3.h"
 #include "DKLinearTransform2.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKLinearTransform2::DKLinearTransform2(void)
 	: matrix2(DKMatrix2::identity)

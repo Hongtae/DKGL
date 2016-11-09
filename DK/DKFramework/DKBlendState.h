@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKColor.h"
 
@@ -15,7 +14,7 @@
 // class for OpenGL blend functions.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGL_API DKBlendState
 	{

@@ -26,7 +26,7 @@
 #include "DKSliderConstraint.h"
 
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -131,8 +131,8 @@ namespace DKGL
 		static bool init = InitBuiltinResourceTypes();
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKResourceLoader::DKResourceLoader(void)
 {

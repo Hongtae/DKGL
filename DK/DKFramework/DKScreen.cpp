@@ -7,7 +7,7 @@
 
 #include "DKScreen.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKScreen::DKScreen(void)
 {

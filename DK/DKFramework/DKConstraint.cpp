@@ -10,8 +10,8 @@
 #include "DKRigidBody.h"
 #include "DKWorld.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 
 DKConstraint::DKConstraint(LinkType t, DKRigidBody* rbA, DKRigidBody* rbB, class btTypedConstraint* p)

@@ -9,7 +9,7 @@
 #include "DKAnimationController.h"
 #include "DKAffineTransform3.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKAnimationController::DKAnimationController(void)
 	: lastUpdatedTick(0)

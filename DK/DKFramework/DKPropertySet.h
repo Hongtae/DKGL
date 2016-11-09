@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKVariant.h"
 
@@ -18,7 +17,7 @@
 // created, deleted. You can register your callback functions.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKGL_API DKPropertySet
 	{

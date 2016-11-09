@@ -8,7 +8,7 @@
 #include <memory.h>
 #include "DKBufferStream.h"
 
-using namespace DKGL;
+using namespace DKFoundation;
 
 DKBufferStream::DKBufferStream(void)
 	: offset(0)

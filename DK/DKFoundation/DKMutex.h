@@ -14,7 +14,7 @@
 // recursive locking operation not supported.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	class DKGL_API DKMutex
 	{

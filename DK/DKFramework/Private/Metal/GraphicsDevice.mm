@@ -9,8 +9,8 @@
 
 #include "GraphicsDevice.h"
 
-using namespace DKGL;
-using namespace DKGL::Private::Metal;
+using namespace DKFramework;
+using namespace DKFramework::Private::Metal;
 
 GraphicsDevice::~GraphicsDevice(void)
 {

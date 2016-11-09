@@ -8,7 +8,7 @@
 #include "DKMath.h"
 #include "DKTriangle.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 static_assert( sizeof(DKTriangle) == sizeof(DKVector3) * 3, "size mismatch?");
 

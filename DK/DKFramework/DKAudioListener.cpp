@@ -9,7 +9,7 @@
 #include "DKAudioListener.h"
 #include "DKAudioDevice.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKAudioListener::DKAudioListener(void)
 	: context(DKAudioDevice::SharedInstance())

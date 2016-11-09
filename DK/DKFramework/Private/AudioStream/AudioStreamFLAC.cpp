@@ -10,9 +10,9 @@
 #include "../../../Libs/Inc_libFLAC.h"
 #include "AudioStreamFLAC.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -160,8 +160,8 @@ namespace DKGL
 }
 
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 
 AudioStreamFLAC::AudioStreamFLAC(void)

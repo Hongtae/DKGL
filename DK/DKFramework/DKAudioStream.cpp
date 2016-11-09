@@ -18,7 +18,7 @@
 
 #define AUDIO_FORMAT_HEADER_LENGTH		35
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKAudioStream::DKAudioStream(FileType t)
 	: type(t)

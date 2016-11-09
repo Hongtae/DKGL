@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKGearConstraint.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -20,8 +20,8 @@ namespace DKGL
 		};
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKGearConstraint::DKGearConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKVector3& axisA, const DKVector3& axisB, float ratio)
 : DKConstraint(LinkType::Gear, rbA, rbB, NewConstraintImpl<btGearConstraint>::Create(rbA, rbB, axisA,axisB,ratio))

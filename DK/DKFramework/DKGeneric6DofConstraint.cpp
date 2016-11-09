@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKGeneric6DofConstraint.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -18,8 +18,8 @@ namespace DKGL
 		};
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKGeneric6DofConstraint::DKGeneric6DofConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKNSTransform& ta, const DKNSTransform& tb)
 : DKConstraint(LinkType::Generic6Dof, rbA, rbB, NewConstraintImpl<btGeneric6DofConstraint>::Create(rbA, rbB, ta, tb, true))

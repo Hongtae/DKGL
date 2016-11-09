@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKRect.h"
 
@@ -56,7 +55,7 @@
 #undef GetUserName
 #endif
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKApplicationInterface;
 	class DKGL_API DKApplication

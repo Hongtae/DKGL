@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKCapsuleShape.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -23,8 +23,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKCapsuleShape::DKCapsuleShape(float radius, float height, UpAxis up)
 	: DKConvexShape(ShapeType::Capsule, CreateCapsuleShape(radius, height, up))

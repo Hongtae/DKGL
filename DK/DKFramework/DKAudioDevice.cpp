@@ -8,7 +8,7 @@
 #include "../Libs/Inc_OpenAL.h"
 #include "DKAudioDevice.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKAudioDevice::DKAudioDevice(void)
 	: device(NULL)

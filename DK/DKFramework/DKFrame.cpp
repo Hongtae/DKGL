@@ -9,7 +9,7 @@
 #include "DKFrame.h"
 #include "DKScreen.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKFrame::DKFrame(void)
 {

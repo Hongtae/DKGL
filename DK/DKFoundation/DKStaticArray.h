@@ -2,7 +2,7 @@
 //  File: DKStaticArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -36,7 +36,7 @@
 // This class using external array (by pointer), of course, not thread safe.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	// iterator class for range-based for loop
 	template <typename CONTAINER, typename ITEMREF>

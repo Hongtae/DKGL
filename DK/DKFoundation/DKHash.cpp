@@ -2,7 +2,7 @@
 //  File: DKHash.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -10,7 +10,7 @@
 #include "DKHash.h"
 #include "DKEndianness.h"
 
-using namespace DKGL;
+using namespace DKFoundation;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -55,7 +55,7 @@ struct DKHash::Context
 	uint32_t len; // message hash length (bytes)
 };
 
-namespace DKGL
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -596,7 +596,7 @@ namespace DKGL
 }
 
 
-namespace DKGL
+namespace DKFoundation
 {
 #define DEBUG_CHECK_RUNTIME_ENDIANNESS	DKASSERT_DESC_DEBUG(DKVerifyByteOrder(), "System Byte-Order Mismatch!")
 
@@ -691,7 +691,7 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
+using namespace DKFoundation;
 
 DKHash::DKHash(Type t)
 	: type(t)

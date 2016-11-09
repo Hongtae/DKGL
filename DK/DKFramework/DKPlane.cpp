@@ -10,7 +10,7 @@
 #include "DKVector4.h"
 #include "DKLine.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKPlane::DKPlane(void)
 	: a(0)

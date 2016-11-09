@@ -9,7 +9,7 @@
 #include "DKMath.h"
 #include "DKDynamicsWorld.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -82,8 +82,8 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKDynamicsWorld::DKDynamicsWorld(void)
 	: DKWorld(CreateDynamicsWorldContext())

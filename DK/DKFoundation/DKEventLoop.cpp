@@ -14,7 +14,7 @@
 #include "DKLog.h"
 #include "DKCondition.h"
 
-namespace DKGL
+namespace DKFoundation
 {
 	namespace Private
 	{
@@ -144,8 +144,8 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFoundation;
+using namespace DKFoundation::Private;
 
 bool DKEventLoop::InternalCommandCompareOrder(const InternalCommandTick& lhs, const InternalCommandTick& rhs)
 {

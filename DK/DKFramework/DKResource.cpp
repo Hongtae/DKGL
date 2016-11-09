@@ -8,7 +8,7 @@
 #include "DKResource.h"
 #include "DKSerializer.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKResource::DKResource(void)
 : allocator(NULL)

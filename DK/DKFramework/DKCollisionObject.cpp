@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKCollisionObject.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKCollisionObject::DKCollisionObject(void)
 : DKModel(TypeCollision)

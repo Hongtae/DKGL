@@ -11,7 +11,7 @@
 #include "DKVector4.h"
 #include "DKQuaternion.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 const DKMatrix3 DKMatrix3::identity = DKMatrix3().Identity();
 

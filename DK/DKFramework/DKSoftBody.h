@@ -2,11 +2,10 @@
 //  File: DKSoftBody.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKCollisionObject.h"
 
@@ -17,7 +16,7 @@
 // This class is not implemented yet. DON'T USE.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	// NOT IMPLEMENTED.
 	class DKGL_API DKSoftBody : public DKCollisionObject

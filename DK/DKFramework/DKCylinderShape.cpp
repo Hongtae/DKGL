@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKCylinderShape.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -23,8 +23,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKCylinderShape::DKCylinderShape(float u, float v, float w, UpAxis up)
 	: DKConvexShape(ShapeType::Cylinder, CreateCylinderShape(btVector3(u,v,w), up))

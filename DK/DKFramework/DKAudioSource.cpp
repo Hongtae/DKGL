@@ -10,7 +10,7 @@
 #include "DKAudioSource.h"
 #include "DKAudioDevice.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKAudioSource::DKAudioSource(void)
 	: sourceId(0)

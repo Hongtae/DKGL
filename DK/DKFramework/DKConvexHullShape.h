@@ -2,11 +2,11 @@
 //  File: DKConvexHullShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector3.h"
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
@@ -19,7 +19,7 @@
 //  convex decomposition from triangle mesh.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKTriangle;
 	class DKGL_API DKConvexHullShape : public DKPolyhedralConvexShape

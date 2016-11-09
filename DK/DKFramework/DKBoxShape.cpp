@@ -8,8 +8,8 @@
 #include "Private/BulletUtils.h"
 #include "DKBoxShape.h"
 
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKBoxShape::DKBoxShape(float u, float v, float w)
 	: DKPolyhedralConvexShape(ShapeType::Box, new btBoxShape(btVector3(u,v,w)))

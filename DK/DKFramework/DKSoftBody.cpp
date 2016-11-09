@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKSoftBody.h"
 
-using namespace DKGL;
+using namespace DKFramework;
 
 
 DKSoftBody::DKSoftBody(void)

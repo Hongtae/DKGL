@@ -9,7 +9,7 @@
 #include "DKMath.h"
 #include "DKFont.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -39,7 +39,7 @@ namespace DKGL
 	}
 }
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKFont::DKFont(void)
 	: ftFace(NULL)

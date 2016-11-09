@@ -9,7 +9,7 @@
 #include "DKWindow.h"
 #include "Interface/DKWindowInterface.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -30,8 +30,8 @@ namespace DKGL
 		}
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 const DKPoint DKWindow::undefinedOrigin = DKPoint(-3.402823466e+38F, -3.402823466e+38F);
 

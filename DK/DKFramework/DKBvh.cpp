@@ -12,7 +12,7 @@
 
 #define MAX_NODE_COUNT (0x7fffffff >> 1)
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKBvh::DKBvh(void) : volume(NULL)
 {

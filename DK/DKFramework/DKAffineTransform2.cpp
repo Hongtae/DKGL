@@ -15,7 +15,7 @@
 #define copysign _copysign
 #endif
 
-using namespace DKGL;
+using namespace DKFramework;
 
 DKAffineTransform2::DKAffineTransform2(const DKVector2& trans)
 	: matrix2(DKMatrix2::identity)

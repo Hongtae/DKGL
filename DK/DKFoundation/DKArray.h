@@ -2,7 +2,7 @@
 //  File: DKArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -37,7 +37,7 @@
 //  CopyValue() function is always thread-safe.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFoundation
 {
 	template <typename T>
 	bool DKArraySortAscending(const T& lhs, const T& rhs) // ascending, smaller first

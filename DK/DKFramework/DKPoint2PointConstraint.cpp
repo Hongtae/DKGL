@@ -8,7 +8,7 @@
 #include "Private/BulletUtils.h"
 #include "DKPoint2PointConstraint.h"
 
-namespace DKGL
+namespace DKFramework
 {
 	namespace Private
 	{
@@ -18,8 +18,8 @@ namespace DKGL
 		};
 	}
 }
-using namespace DKGL;
-using namespace DKGL::Private;
+using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKPoint2PointConstraint::DKPoint2PointConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKVector3& pivotInA, const DKVector3& pivotInB)
 : DKConstraint(LinkType::Point2Point, rbA, rbB, NewConstraintImpl<btPoint2PointConstraint>::Create(rbA, rbB, pivotInA, pivotInB))

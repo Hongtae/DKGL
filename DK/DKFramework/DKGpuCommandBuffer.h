@@ -6,9 +6,7 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
-
 #include "DKGpuRenderCommandEncoder.h"
 #include "DKGpuComputeCommandEncoder.h"
 #include "DKGpuBlitCommandEncoder.h"
@@ -17,7 +15,7 @@
 // DKGpuCommandBuffer
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace DKGL
+namespace DKFramework
 {
 	class DKRenderPassDescriptor;
 
