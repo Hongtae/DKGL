@@ -53,39 +53,73 @@ namespace DKFramework
 			StyleGeneralWindow = 0xff,	// all above without StyleAcceptFileDrop
 		};
 
-		enum EventMouse // mouse event
+		struct MouseEvent
 		{
-			EventMouseNothing = 0,
-			EventMouseDown,
-			EventMouseUp,
-			EventMouseMove,
-			EventMouseWheel,
+			enum Type
+			{
+				Nothing = 0,
+				ButtonDown,
+				ButtonUp,
+				Move,
+				Wheel,
+			};
+			enum Device
+			{
+				GenericMouse = 0,
+				StylusPen,
+				MultiTouch,
+			};
+			Type type;
+			Device device;
+			int deviceId;
+			int buttonId;
+			DKPoint location;	// location in window
+			DKVector2 locationDelta;
+			float force;		// for stylus-pen			
+			float altitudeAngle;// radian value of stylus-pen and screen angle. 0 is parallel, PI/2 is perpendicular to the surface.
+			bool verticalFlip;	// true if lower-left is origin
 		};
-		enum EventKeyboard  // keyboard event
+
+		struct KeyboardEvent
 		{
-			EventKeyboardNothing = 0,
-			EventKeyboardDown,
-			EventKeyboardUp,
-			EventKeyboardTextInput,
-			EventKeyboardTextInputCandidate, // text composition in progress
+			enum Type
+			{
+				Nothing = 0,
+				KeyDown,
+				KeyUp,
+				TextInput,
+				TextInputCandidate, // text composition in progress
+			};
+			Type type;
+			int deviceId;
+			DKVirtualKey key;
+			DKString text;
 		};
-		enum EventWindow // window event
+
+		struct WindowEvent
 		{
-			EventWindowCreated = 0,
-			EventWindowClosed,
-			EventWindowHidden,
-			EventWindowShown,
-			EventWindowActivated,
-			EventWindowInactivated,
-			EventWindowMinimized,
-			EventWindowMoved,				
-			EventWindowResized,			
-			EventWindowUpdate,
+			enum Type
+			{
+				WindowCreated = 0,
+				WindowClosed,
+				WindowHidden,
+				WindowShown,
+				WindowActivated,
+				WindowInactivated,
+				WindowMinimized,
+				WindowMoved,
+				WindowResized,
+				WindowUpdate,
+			};
+			Type type;
+			DKRect windowRect; // in screen-space including border, system coordinates.
+			DKSize contentSize;
 		};
+
 		// function or function object type for event handlers.
-		typedef void WindowProc(EventWindow, DKSize, DKPoint);
-		typedef void KeyboardProc(EventKeyboard, int, DKVirtualKey, DKString);
-		typedef void MouseProc(EventMouse, int, int, DKPoint, DKVector2);
+		typedef void WindowProc(const WindowEvent&);
+		typedef void KeyboardProc(const KeyboardEvent&);
+		typedef void MouseProc(const MouseEvent&);
 
 		typedef DKFunctionSignature<WindowProc> WindowEventHandler;
 		typedef DKFunctionSignature<KeyboardProc> KeyboardEventHandler;
@@ -157,12 +191,12 @@ namespace DKFramework
 		void SetMousePosition(int deviceId, const DKPoint& pt);
 
 		// window state
-		DKPoint Origin(void) const;				// window's origin (OS coords unit)
+		DKRect WindowRect(void) const;			// window's origin (OS coords unit)
 		DKSize ContentSize(void) const;			// content size (OS coords unit)
 		double ContentScaleFactor(void) const;	// content unit, pixel ratio
 
-		bool IsVisible(void) const					{return visible;}
-		bool IsActive(void) const					{return activated;}
+		bool IsVisible(void) const	{ return visible; }
+		bool IsActive(void) const	{ return activated; }
 		bool IsValid(void) const;
 
 		// platform handle:
@@ -170,9 +204,9 @@ namespace DKFramework
 		void* PlatformHandle(void) const;
 
 		// call event handler manually.
-		void PostMouseEvent(EventMouse type, int deviceId, int buttonId, const DKPoint& pos, const DKVector2& delta, bool sync = false);
-		void PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey key, const DKString& textInput, bool sync = false);
-		void PostWindowEvent(EventWindow type, const DKSize& contentSize, const DKPoint& windowOrigin, bool sync = false);
+		void PostMouseEvent(const MouseEvent&);
+		void PostKeyboardEvent(const KeyboardEvent&);
+		void PostWindowEvent(const WindowEvent&);
 
 	private:
 		DKSpinLock handlerLock;
@@ -189,7 +223,7 @@ namespace DKFramework
 		KeyboardState& GetKeyboardState(int deviceId) const;	// Get key states without lock
 		DKSpinLock keyboardLock;
 
-		DKPoint origin;			// window's origin (including border, system coordinates)
+		DKRect windowRect;		// window's origin, size (including border, system coordinates)
 		DKSize contentSize;		// content size
 		bool activated;			// true if window is activated
 		bool visible;

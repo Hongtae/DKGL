@@ -202,7 +202,7 @@ DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
 	return keyboardStateMap.Value(deviceId);
 }
 
-void DKWindow::PostMouseEvent(EventMouse type, int deviceId, int buttonId, const DKPoint& pos, const DKVector2& delta, bool sync)
+void DKWindow::PostMouseEvent(const MouseEvent& event)
 {
 	handlerLock.Lock();
 	DKArray<DKObject<MouseEventHandler>> callbacks;
@@ -214,32 +214,33 @@ void DKWindow::PostMouseEvent(EventMouse type, int deviceId, int buttonId, const
 	handlerLock.Unlock();
 
 	for (MouseEventHandler* handler : callbacks)
-		handler->Invoke(type, deviceId, buttonId, pos, delta);
+		handler->Invoke(event);
 }
 
-void DKWindow::PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey key, const DKString& textInput, bool sync)
+void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 {
 	if (true)
 	{
 		DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
-		KeyboardState& keyboard = GetKeyboardState(deviceId);
+		KeyboardState& keyboard = GetKeyboardState(event.deviceId);
 
-		if (type == EventKeyboardDown)
+		if (event.type == KeyboardEvent::KeyDown)
 		{
-			if (_GetUCArrayBit(keyboard.keyStateBits, key))
+			if (_GetUCArrayBit(keyboard.keyStateBits, event.key))
 				return;
 			else
-				_SetUCArrayBit(keyboard.keyStateBits, key, true);
+				_SetUCArrayBit(keyboard.keyStateBits, event.key, true);
 		}
-		if (type == EventKeyboardUp)
+		if (event.type == KeyboardEvent::KeyUp)
 		{
-			if (_GetUCArrayBit(keyboard.keyStateBits, key))
-				_SetUCArrayBit(keyboard.keyStateBits, key, false);
+			if (_GetUCArrayBit(keyboard.keyStateBits, event.key))
+				_SetUCArrayBit(keyboard.keyStateBits, event.key, false);
 			else
 				return;
 		}
 
-		if (!keyboard.textInputEnabled && (type == EventKeyboardTextInput || type == EventKeyboardTextInputCandidate))
+		if (!keyboard.textInputEnabled &&
+			(event.type == KeyboardEvent::TextInput || event.type == KeyboardEvent::TextInputCandidate))
 			return;
 	}
 
@@ -253,58 +254,58 @@ void DKWindow::PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey 
 	handlerLock.Unlock();
 
 	for (KeyboardEventHandler* handler : callbacks)
-		handler->Invoke(type, deviceId, key, textInput);
+		handler->Invoke(event);
 }
 
-void DKWindow::PostWindowEvent(EventWindow type, const DKSize& contentSize, const DKPoint& windowOrigin, bool sync)
+void DKWindow::PostWindowEvent(const WindowEvent& event)
 {
-	switch (type)
+	switch (event.type)
 	{
-	case EventWindowCreated:
-		this->contentSize = contentSize;
-		this->origin = windowOrigin;
+	case WindowEvent::WindowCreated:
+		this->contentSize = event.contentSize;
+		this->windowRect = event.windowRect;
 		DKLog("EventWindowCreated (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowClosed:
+	case WindowEvent::WindowClosed:
 		this->activated = false;
 		this->visible = false;
 		this->ResetKeyStateForAllDevices();
 		DKLog("EventWindowDestroy (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowHidden:
+	case WindowEvent::WindowHidden:
 		this->activated = false;
 		this->visible = false;
 		this->ResetKeyStateForAllDevices();
 		DKLog("EventWindowHidden (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowShown:
+	case WindowEvent::WindowShown:
 		this->visible = true;
 		DKLog("EventWindowShown (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowActivated:
+	case WindowEvent::WindowActivated:
 		this->activated = true;
 		this->visible = true;
 		DKLog("EventWindowActivated (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowInactivated:
+	case WindowEvent::WindowInactivated:
 		this->activated = false;
 		this->ResetKeyStateForAllDevices();
 		DKLog("EventWindowInactivated (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowMinimized:
+	case WindowEvent::WindowMinimized:
 		this->visible = false;
 		this->ResetKeyStateForAllDevices();
 		DKLog("EventWindowMinimized (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowMoved:
+	case WindowEvent::WindowMoved:
 	//	DKLog("EventWindowMoved (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowResized:
-		this->contentSize = contentSize;
-		this->origin = windowOrigin;
+	case WindowEvent::WindowResized:
+		this->contentSize = event.contentSize;
+		this->windowRect = event.windowRect;
 		DKLog("EventWindowResized (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
-	case EventWindowUpdate:
+	case WindowEvent::WindowUpdate:
 	//	DKLog("EventWindowUpdate (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
 	}
@@ -319,7 +320,7 @@ void DKWindow::PostWindowEvent(EventWindow type, const DKSize& contentSize, cons
 	handlerLock.Unlock();
 
 	for (WindowEventHandler* handler : callbacks)
-		handler->Invoke(type, contentSize, windowOrigin);
+		handler->Invoke(event);
 }
 
 void DKWindow::ShowMouse(int deviceId, bool bShow)
@@ -403,9 +404,9 @@ void DKWindow::SetOrigin(const DKPoint& pt)
 		impl->SetOrigin(pt);
 }
 
-DKPoint DKWindow::Origin(void) const
+DKRect DKWindow::WindowRect(void) const
 {
-	return origin;
+	return windowRect;
 }
 
 DKSize DKWindow::ContentSize(void) const
