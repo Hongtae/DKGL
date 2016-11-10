@@ -116,9 +116,9 @@ namespace DKFoundation
 		struct DocTypeDecl : public Node
 		{
 			DocTypeDecl(void) : Node(NodeTypeDocTypeDecl) {}
-			DKString						name;
-			DKString						externalID;
-			DKString						systemID;
+			DKString					name;
+			DKString					externalID;
+			DKString					systemID;
 			DKArray<DKObject<Node>>		nodes;
 			DKString Export(void) const;
 		};
@@ -143,12 +143,12 @@ namespace DKFoundation
 		const Element*		RootElement(void) const;
 		void				SetRootElement(Element* e);				
 		// DTD subset
-		void				SetDTD(DocTypeDecl* d);				
-		DocTypeDecl*		DTD(void);
-		const DocTypeDecl*	DTD(void) const;
+		void				SetDtd(DocTypeDecl* d);				
+		DocTypeDecl*		Dtd(void);
+		const DocTypeDecl*	Dtd(void) const;
 
 	private:
-		DKArray<DKObject<Node>>		nodes; // all nodes of DOM.
+		DKArray<DKObject<Node>> nodes; // all nodes of DOM.
 		class DocumentBuilder;
 	};
 

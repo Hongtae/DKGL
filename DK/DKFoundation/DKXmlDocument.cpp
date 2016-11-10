@@ -210,7 +210,7 @@ DKXmlDocument::DKXmlDocument(void)
 
 DKXmlDocument::DKXmlDocument(DocTypeDecl* dtd, Element* root)
 {
-	SetDTD(dtd);
+	SetDtd(dtd);
 	SetRootElement(root);
 }
 
@@ -320,7 +320,7 @@ void DKXmlDocument::SetRootElement(Element* e)
 		nodes.Add(e);
 }
 
-DKXmlDocTypeDecl* DKXmlDocument::DTD(void)
+DKXmlDocTypeDecl* DKXmlDocument::Dtd(void)
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -330,7 +330,7 @@ DKXmlDocTypeDecl* DKXmlDocument::DTD(void)
 	return NULL;
 }
 
-const DKXmlDocTypeDecl* DKXmlDocument::DTD(void) const
+const DKXmlDocTypeDecl* DKXmlDocument::Dtd(void) const
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{
@@ -340,7 +340,7 @@ const DKXmlDocTypeDecl* DKXmlDocument::DTD(void) const
 	return NULL;
 }
 
-void DKXmlDocument::SetDTD(DocTypeDecl* d)
+void DKXmlDocument::SetDtd(DocTypeDecl* d)
 {
 	for (int i = 0; i < nodes.Count(); i++)
 	{

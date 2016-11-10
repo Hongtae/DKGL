@@ -158,7 +158,7 @@ bool DKEventLoop::InternalCommandCompareOrder(const InternalCommandTime& lhs, co
 }
 
 DKEventLoop::DKEventLoop(void)
-: run(false)
+: running(false)
 , threadId(DKThread::invalidId)
 , commandQueueTick(&DKEventLoop::InternalCommandCompareOrder)
 , commandQueueTime(&DKEventLoop::InternalCommandCompareOrder)
@@ -184,7 +184,7 @@ bool DKEventLoop::Run(void)
 		while (loop)
 		{
 			next = this->Dispatch();
-			loop = this->run;
+			loop = this->running;
 			if (!next && loop)
 				OnIdle();
 		}
@@ -227,12 +227,11 @@ bool DKEventLoop::BindThread(void)
 		if (RegisterEventLoop(tid, this))
 		{
 			this->threadId = tid;
-			run = true;
+			running = true;
 			return true;
 		}
 		else
 		{
-
 			DKLog("BindThread failed!\n");
 		}
 	}
@@ -255,7 +254,7 @@ void DKEventLoop::Stop(void)
 		DKASSERT_DEBUG(IsEventLoopExist(this));
 
 		this->Post(DKFunction([this]() {
-			this->run = false;
+			this->running = false;
 		})->Invocation());
 	}
 }
@@ -501,7 +500,7 @@ DKEventLoop* DKEventLoop::CurrentEventLoop(void)
 	return GetEventLoop(DKThread::CurrentThreadId());
 }
 
-DKEventLoop* DKEventLoop::EventLoopForThreadID(DKThread::ThreadId id)
+DKEventLoop* DKEventLoop::EventLoopForThreadId(DKThread::ThreadId id)
 {
 	return GetEventLoop(id);
 }

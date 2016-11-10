@@ -96,7 +96,7 @@ namespace DKFoundation
 		// returns EventLoop object which runs on current thread as worker-thread.
 		static DKEventLoop* CurrentEventLoop(void);
 		// returns EventLoop for specified thread-id.
-		static DKEventLoop* EventLoopForThreadID(DKThread::ThreadId id);
+		static DKEventLoop* EventLoopForThreadId(DKThread::ThreadId id);
 		static bool IsRunning(DKEventLoop* runloop);
 
 	protected:
@@ -133,7 +133,7 @@ namespace DKFoundation
 		DKOrderedArray<InternalCommandTime>		commandQueueTime;
 
 		DKThread::ThreadId	threadId;
-		bool				run;
+		bool				running;
 
 		static bool InternalCommandCompareOrder(const InternalCommandTick&, const InternalCommandTick&);
 		static bool InternalCommandCompareOrder(const InternalCommandTime&, const InternalCommandTime&);
