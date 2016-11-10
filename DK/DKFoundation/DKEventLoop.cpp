@@ -76,7 +76,7 @@ namespace DKFoundation
 		}
 
 		static DKCondition resultCond;
-		struct EventLoopResultCallback : public DKEventLoop::OperationResult
+		struct EventLoopPendingState : public DKEventLoop::PendingState
 		{
 			enum State
 			{
@@ -87,7 +87,7 @@ namespace DKFoundation
 			};
 			mutable State state;
 
-			EventLoopResultCallback(void) : state(StatePending)
+			EventLoopPendingState(void) : state(StatePending)
 			{
 			}
 			bool EnterOperation(void) const
@@ -107,7 +107,7 @@ namespace DKFoundation
 				state = StateProcessed;
 				resultCond.Broadcast();
 			}
-			bool Revoke(void) const
+			bool Revoke(void) const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				if (state == StatePending)
@@ -117,7 +117,7 @@ namespace DKFoundation
 				}
 				return state == StateRevoked;
 			}
-			bool Result(void) const
+			bool Result(void) const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				while (state != StateProcessed && state != StateRevoked)
@@ -125,17 +125,17 @@ namespace DKFoundation
 
 				return state == StateProcessed;
 			}
-			bool IsDone(void) const
+			bool IsDone(void) const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				return state == StateProcessed;
 			}
-			bool IsRevoked(void) const
+			bool IsRevoked(void) const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				return state == StateRevoked;
 			}
-			bool IsPending(void) const
+			bool IsPending(void) const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				return state == StatePending;
@@ -260,32 +260,32 @@ void DKEventLoop::Stop(void)
 	}
 }
 
-DKObject<DKEventLoop::OperationResult> DKEventLoop::Post(const DKOperation* operation, double delay)
+DKObject<DKEventLoop::PendingState> DKEventLoop::Post(const DKOperation* operation, double delay)
 {
 	if (operation)
 	{
 		InternalCommandTick cmd;
 		cmd.operation = const_cast<DKOperation*>(operation);
-		cmd.result = DKOBJECT_NEW EventLoopResultCallback();
+		cmd.state = DKOBJECT_NEW EventLoopPendingState();
 		cmd.fire = DKTimer::SystemTick() + static_cast<DKTimer::Tick>(DKTimer::SystemTickFrequency() * Max(delay, 0.0));
 		InternalPostCommand(cmd);
 
-		return cmd.result;
+		return cmd.state;
 	}
 	return NULL;
 }
 
-DKObject<DKEventLoop::OperationResult> DKEventLoop::Post(const DKOperation* operation, const DKDateTime& runAfter)
+DKObject<DKEventLoop::PendingState> DKEventLoop::Post(const DKOperation* operation, const DKDateTime& runAfter)
 {
 	if (operation)
 	{
 		InternalCommandTime cmd;
 		cmd.operation = const_cast<DKOperation*>(operation);
-		cmd.result = DKOBJECT_NEW EventLoopResultCallback();
+		cmd.state = DKOBJECT_NEW EventLoopPendingState();
 		cmd.fire = runAfter;
 		InternalPostCommand(cmd);
 
-		return cmd.result;
+		return cmd.state;
 	}
 	return NULL;
 }
@@ -319,9 +319,9 @@ size_t DKEventLoop::RevokeAll(void)
 
 	auto revoke = [](const InternalCommand& ic)
 	{
-		const EventLoopResultCallback* callback = ic.result.StaticCast<EventLoopResultCallback>();
-		if (callback)
-			callback->Revoke();
+		const EventLoopPendingState* state = ic.state.StaticCast<EventLoopPendingState>();
+		if (state)
+			state->Revoke();
 	};
 
 	for (const InternalCommand& ic : this->commandQueueTick)
@@ -429,7 +429,7 @@ bool DKEventLoop::Dispatch(void)
 	DKASSERT_DEBUG(this->threadId == DKThread::CurrentThreadId());
 
 	DKObject<DKOperation> operation = NULL;
-	DKObject<OperationResult> result = NULL;
+	DKObject<PendingState> state = NULL;
 
 	commandQueueCond.Lock();
 
@@ -442,7 +442,7 @@ bool DKEventLoop::Dispatch(void)
 		if (cmd.fire <= currentTick)
 		{
 			operation = cmd.operation;
-			result = cmd.result;
+			state = cmd.state;
 			this->commandQueueTick.Remove(0);
 		}
 	}
@@ -452,7 +452,7 @@ bool DKEventLoop::Dispatch(void)
 		if (cmd.fire <= currentTime)
 		{
 			operation = cmd.operation;
-			result = cmd.result;
+			state = cmd.state;
 			this->commandQueueTime.Remove(0);
 		}
 	}
@@ -472,13 +472,13 @@ bool DKEventLoop::Dispatch(void)
 			}
 		};
 		OpWrapper op(this, operation);
-		EventLoopResultCallback* resultCallback = result.StaticCast<EventLoopResultCallback>();
-		if (resultCallback)
+		EventLoopPendingState* stateCallback = state.StaticCast<EventLoopPendingState>();
+		if (stateCallback)
 		{
-			if (resultCallback->EnterOperation())
+			if (stateCallback->EnterOperation())
 			{
 				Private::PerformOperationInsidePool(&op);
-				resultCallback->LeaveOperation();
+				stateCallback->LeaveOperation();
 			}
 		}
 		else

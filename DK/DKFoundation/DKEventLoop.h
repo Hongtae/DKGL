@@ -64,9 +64,9 @@ namespace DKFoundation
 	class DKGL_API DKEventLoop
 	{
 	public:
-		struct OperationResult
+		struct PendingState
 		{
-			virtual ~OperationResult(void) {}
+			virtual ~PendingState(void) {}
 			virtual bool Result(void) const = 0;	// wait until done
 			virtual bool Revoke(void) const = 0;
 			virtual bool IsDone(void) const = 0;
@@ -87,8 +87,8 @@ namespace DKFoundation
 		bool WaitNextLoopTimeout(double t);
 
 		// Post: insert operation and return immediately.
-		virtual DKObject<OperationResult> Post(const DKOperation* operation, double delay = 0);			// tick base
-		virtual DKObject<OperationResult> Post(const DKOperation* operation, const DKDateTime& runAfter);	// time base
+		virtual DKObject<PendingState> Post(const DKOperation* operation, double delay = 0);			// tick base
+		virtual DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter);	// time base
 
 		// Process: insert operation and wait until done.
 		bool Process(const DKOperation* operation);
@@ -118,8 +118,8 @@ namespace DKFoundation
 
 		struct InternalCommand
 		{
-			DKObject<DKOperation>		operation;
-			DKObject<OperationResult>	result;
+			DKObject<DKOperation>	operation;
+			DKObject<PendingState>	state;
 
 			virtual ~InternalCommand(void) {}
 		};
@@ -138,5 +138,4 @@ namespace DKFoundation
 		static bool InternalCommandCompareOrder(const InternalCommandTick&, const InternalCommandTick&);
 		static bool InternalCommandCompareOrder(const InternalCommandTime&, const InternalCommandTime&);
 	};
-	typedef DKEventLoop::OperationResult DKEventLoopOperationResult;
 }

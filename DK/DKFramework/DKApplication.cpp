@@ -124,7 +124,10 @@ void DKApplication::Finalize()
 
 void DKApplication::Terminate(int exitCode)
 {
-	this->exitCode = exitCode;
+	impl->EventLoop()->Post(DKFunction([=]()
+	{
+		this->exitCode = exitCode;
+	})->Invocation());
 	impl->EventLoop()->Stop();
 }
 
