@@ -37,12 +37,12 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 		volatile size_t			count;
 		DKTimer::Tick			interval;
 		DKTimer::Tick			start;
-		DKEventLoop*				runloop; // DKEventLoop
+		DKEventLoop*			eventLoop; // DKEventLoop
 
 		void Invalidate(void) override				{ invalidated = true; }
 		size_t Count(void) const override			{ return count; }
-		DKEventLoop* EventLoop(void) const override		{ return runloop; }
-		bool IsRunning(void) const override			{ return !invalidated && runloop != NULL; }
+		DKEventLoop* EventLoop(void) const override	{ return eventLoop; }
+		bool IsRunning(void) const override			{ return !invalidated && eventLoop != NULL; }
 		double Interval(void) const override
 		{
 			return static_cast<double>(interval) / static_cast<double>(DKTimer::SystemTickFrequency());
@@ -60,7 +60,7 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 		bool Install(void)
 		{
 			// Install next operation into EventLoop.
-			if (DKEventLoop::IsRunning(this->runloop) && this->invalidated == false)
+			if (DKEventLoop::IsRunning(this->eventLoop) && this->invalidated == false)
 			{
 				// calculate multiple of interval with invoker->next.
 				// cannot depend on calling time accuracy.
@@ -78,7 +78,7 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 				this->start = nextTick - interval; // save result. minus interval to make high accuracy.
 
 				double d = static_cast<double>(nextTick - currentTick) / static_cast<double>(DKTimer::SystemTickFrequency());
-				return runloop->Post(this, d) != NULL;
+				return eventLoop->Post(this, d) != NULL;
 			}
 			return false;
 		}
@@ -93,7 +93,7 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 	invoker->count = 0;
 	invoker->interval = static_cast<DKTimer::Tick>(DKTimer::SystemTickFrequency() * interval);
 	invoker->start = DKTimer::SystemTick();
-	invoker->runloop = eventLoop;
+	invoker->eventLoop = eventLoop;
 
 	// Use invoker(EventLoopInvoker) to install operation into DKEventLoop.
 	// once operation has called, it installs next operation repeatedly.

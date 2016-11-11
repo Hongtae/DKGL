@@ -42,11 +42,11 @@ namespace DKFramework
 		virtual void Minimize(void) = 0;
 
 		// Window's origin, size is based on system GUI coordinates.
-		DKPoint Origin(void) const;
+		//DKPoint Origin(void) const;
 		virtual void SetOrigin(const DKPoint&) = 0;
 		virtual void Resize(const DKSize&, const DKPoint* optionalOrigin) = 0;
 
-		DKSize ContentSize(void) const;  // pixel based coords
+		//DKSize ContentSize(void) const;  // pixel based coords
 
 		virtual double ContentScaleFactor(void) const = 0;  // logical coords by pixel ratio.
 

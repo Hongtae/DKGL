@@ -97,7 +97,7 @@ namespace DKFoundation
 		static DKEventLoop* CurrentEventLoop(void);
 		// returns EventLoop for specified thread-id.
 		static DKEventLoop* EventLoopForThreadId(DKThread::ThreadId id);
-		static bool IsRunning(DKEventLoop* runloop);
+		static bool IsRunning(DKEventLoop* eventLoop);
 
 	protected:
 		virtual void PerformOperation(const DKOperation* operation);

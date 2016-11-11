@@ -27,8 +27,8 @@ namespace DKFoundation
 		typedef DKMap<DKThread::ThreadId, DKObject<DKEventLoop>, DKDummyLock> EventLoopMap;
 		static EventLoopMap& GetEventLoopMap(void)
 		{
-			static EventLoopMap runloopMap;
-			return runloopMap;
+			static EventLoopMap eventLoopMap;
+			return eventLoopMap;
 		}
 		static DKSpinLock& GetEventLoopMapLock(void)
 		{
@@ -59,13 +59,13 @@ namespace DKFoundation
 			GetEventLoopMapLock().Unlock();
 			return ret;
 		}
-		static bool IsEventLoopExist(const DKEventLoop* runloop)
+		static bool IsEventLoopExist(const DKEventLoop* eventLoop)
 		{
 			bool found = false;
 			GetEventLoopMapLock().Lock();
 			GetEventLoopMap().EnumerateForward([&](EventLoopMap::Pair& pair, bool* stop)
 			{
-				if (pair.value == runloop)
+				if (pair.value == eventLoop)
 				{
 					*stop = true;
 					found = true;
@@ -505,7 +505,7 @@ DKEventLoop* DKEventLoop::EventLoopForThreadId(DKThread::ThreadId id)
 	return GetEventLoop(id);
 }
 
-bool DKEventLoop::IsRunning(DKEventLoop* runloop)
+bool DKEventLoop::IsRunning(DKEventLoop* eventLoop)
 {
-	return IsEventLoopExist(runloop);
+	return IsEventLoopExist(eventLoop);
 }
