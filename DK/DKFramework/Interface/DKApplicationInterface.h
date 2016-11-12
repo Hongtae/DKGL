@@ -25,9 +25,9 @@ namespace DKFramework
 		using EnvironmentVariable = DKApplication::EnvironmentVariable;
 
 		virtual DKEventLoop* EventLoop(void) = 0;
+		virtual DKLogger* DefaultLogger(void) = 0;
 
-		virtual DKLogger& DefaultLogger(void) = 0;
-		virtual DKString EnvironmentPath(SystemPath) = 0;
+		virtual DKString DefaultPath(SystemPath) = 0;
 		virtual DKString EnvironmentString(EnvironmentVariable) = 0;
 
 		virtual DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) = 0;		// read-writable
@@ -46,7 +46,6 @@ namespace DKFramework
 			return NULL;
 		}
 
-	protected:
 		static void AppInitialize(DKApplication* app)	{ app->Initialize(); }
 		static void AppFinalize(DKApplication* app)		{ app->Finalize(); }
 	};

@@ -576,7 +576,7 @@ namespace DKFoundation
 		}
 	}	// namespace Private
 
-	bool DKGL_API IsDebuggerPresent(void)
+	bool DKGL_API DKIsDebuggerPresent(void)
 	{
 #ifdef _WIN32
 		return ::IsDebuggerPresent() != FALSE;
@@ -599,7 +599,7 @@ namespace DKFoundation
 		return false;
 #endif
 	}
-	bool DKGL_API IsDebugBuild(void)
+	bool DKGL_API DKIsDebugBuild(void)
 	{
 #ifdef DKGL_DEBUG_ENABLED
 		return true;
@@ -608,7 +608,7 @@ namespace DKFoundation
 #endif
 	}
 
-	void DKGL_API SetCriticalErrorHandler(DKCriticalErrorHandler* h)
+	void DKGL_API DKSetCriticalErrorHandler(DKCriticalErrorHandler* h)
 	{
 #if DKERROR_HANDLE_CRITICAL_ERROR
 		DKCriticalSection<DKSpinLock> guard(Private::critFuncLock);
@@ -950,8 +950,8 @@ void DKError::PrintDescription(const StringOutput* pfn) const
 		return;
 
 	pfn->Invoke(DKString::Format("DKError(%p) Printing Description.\n", this));
-	pfn->Invoke(DKString::Format("Debug Build: %s\n", IsDebugBuild() ? "yes" : "no"));
-	pfn->Invoke(DKString::Format("Debugger Present: %s\n", IsDebuggerPresent() ? "yes" : "no"));
+	pfn->Invoke(DKString::Format("Debug Build: %s\n", DKIsDebugBuild() ? "yes" : "no"));
+	pfn->Invoke(DKString::Format("Debugger Present: %s\n", DKIsDebuggerPresent() ? "yes" : "no"));
 	pfn->Invoke(DKString::Format("Thread-Id: %lu\n", threadId));
 	pfn->Invoke(DKString::Format("Error-Code:%d(0x%x)\n", errorCode, errorCode));
 	if (functionName.Length() > 0)

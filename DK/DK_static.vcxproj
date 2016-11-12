@@ -304,6 +304,9 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DK.h" />
@@ -475,6 +478,9 @@
     <ClInclude Include="DKFramework\Private\BulletUtils.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Win32\Application.h" />
+    <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />
     <ClInclude Include="DKInclude.h" />
     <ClInclude Include="Libs\Inc_BulletPhysics.h" />
     <ClInclude Include="Libs\Inc_CxImage.h" />

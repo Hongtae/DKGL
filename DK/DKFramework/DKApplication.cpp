@@ -33,7 +33,7 @@ DKApplication::DKApplication(int argc, char* argv[])
 	}
 
 	impl = DKApplicationInterface::CreateInterface(this);
-	DKLoggerCompareAndReplace(NULL, &impl->DefaultLogger());
+	DKLoggerCompareAndReplace(NULL, impl->DefaultLogger());
 
 	Private::application = this;
 }
@@ -44,7 +44,7 @@ DKApplication::DKApplication(void) : DKApplication(0, 0)
 
 DKApplication::~DKApplication(void)
 {
-	DKLoggerCompareAndReplace(&impl->DefaultLogger(), NULL);
+	DKLoggerCompareAndReplace(impl->DefaultLogger(), NULL);
 
 	DKCriticalSection<DKCondition> guard(Private::appCond);
 
@@ -131,9 +131,9 @@ void DKApplication::Terminate(int exitCode)
 	impl->EventLoop()->Stop();
 }
 
-DKString DKApplication::EnvironmentPath(SystemPath env)
+DKString DKApplication::DefaultPath(SystemPath env)
 {
-	return impl->EnvironmentPath(env);
+	return impl->DefaultPath(env);
 }
 
 DKString DKApplication::EnvironmentString(EnvironmentVariable env)

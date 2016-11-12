@@ -47,13 +47,13 @@ namespace DKFoundation
 	typedef DKFunctionSignature<void (class DKError&)> DKCriticalErrorHandler;
 
 	// test debugger attached or not. (may not works on some platforms)
-	DKGL_API bool IsDebuggerPresent(void);
+	DKGL_API bool DKIsDebuggerPresent(void);
 
 	// test build configuration
-	DKGL_API bool IsDebugBuild(void);
+	DKGL_API bool DKIsDebugBuild(void);
 
 	// set critical error handler. (may not works on some platforms)
-	DKGL_API void SetCriticalErrorHandler(DKCriticalErrorHandler*);
+	DKGL_API void DKSetCriticalErrorHandler(DKCriticalErrorHandler*);
 
 	// raise exception manually. use DKERROR_THROW() macro instead.
 	DKGL_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);

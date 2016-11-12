@@ -105,7 +105,7 @@ namespace DKFramework
 		DKEventLoop* EventLoop(void);
 
 		// retrieve pre-defined paths
-		DKString EnvironmentPath(SystemPath);
+		DKString DefaultPath(SystemPath);
 		DKString EnvironmentString(EnvironmentVariable);
 
 		// LoadResource loads application resource into read,writable buffer.

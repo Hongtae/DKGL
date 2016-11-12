@@ -21,7 +21,7 @@ namespace DKFoundation
 #if defined(__APPLE__) && defined(__MACH__)
 		void PerformOperationInsidePool(DKOperation* op);
 #else
-		static inline void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
+		FORCEINLINE void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
 #endif
 
 		typedef DKMap<DKThread::ThreadId, DKObject<DKEventLoop>, DKDummyLock> EventLoopMap;
@@ -249,10 +249,8 @@ void DKEventLoop::UnbindThread(void)
 
 void DKEventLoop::Stop(void)
 {
-	if (threadId != DKThread::invalidId)
+	if (IsRunning())
 	{
-		DKASSERT_DEBUG(IsEventLoopExist(this));
-
 		this->Post(DKFunction([this]() {
 			this->running = false;
 		})->Invocation());
@@ -271,6 +269,12 @@ DKObject<DKEventLoop::PendingState> DKEventLoop::Post(const DKOperation* operati
 
 		return cmd.state;
 	}
+	else
+	{
+		// Just wake up the dispatch thread
+		DKCriticalSection<DKCondition> guard(commandQueueCond);
+		commandQueueCond.Signal();
+	}
 	return NULL;
 }
 
@@ -285,6 +289,12 @@ DKObject<DKEventLoop::PendingState> DKEventLoop::Post(const DKOperation* operati
 		InternalPostCommand(cmd);
 
 		return cmd.state;
+	}
+	else
+	{
+		// Just wake up the dispatch thread
+		DKCriticalSection<DKCondition> guard(commandQueueCond);
+		commandQueueCond.Signal();
 	}
 	return NULL;
 }
@@ -418,6 +428,18 @@ bool DKEventLoop::WaitNextLoopTimeout(double t)
 	return false;
 }
 
+double DKEventLoop::PendingEventInterval(void) const
+{
+	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
+
+	double d = 0.0;
+	if (GetNextLoopIntervalNL(&d))
+	{
+		return Max(d, 0.0);
+	}
+	return -1.0;
+}
+
 void DKEventLoop::PerformOperation(const DKOperation* operation)
 {
 	operation->Perform();
@@ -493,6 +515,11 @@ bool DKEventLoop::Dispatch(void)
 bool DKEventLoop::IsWrokingThread(void) const
 {
 	return DKThread::CurrentThreadId() == this->threadId;
+}
+
+DKThread::ThreadId DKEventLoop::RunningThreadId(void) const
+{
+	return this->threadId;
 }
 
 DKEventLoop* DKEventLoop::CurrentEventLoop(void)

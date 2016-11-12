@@ -24,7 +24,7 @@
 // Operations can be scheduled by specifed date or delayed by specified delay value.
 //
 // If you call 'Run()', the EventLoop enter infinite loop and dispatch messages.
-// You can post termination message with DKEventLoop::Terminate() to terminate loop.
+// You can post termination message with DKEventLoop::Stop() to terminate loop.
 //
 // On main thread, application should waits EventLoop's beging terminated by
 // calling 'Terminate()' on application exits.
@@ -32,7 +32,7 @@
 // You can control individual operation would be process or not by overrides in
 // subclass. You can call 'DKEventLoop::Process()' for process one operation,
 //
-// PostOperation has two version with overloaded.
+// Post() has two version with overloaded.
 //   tick-based: system-tick based, calling operation with delayed time.
 //   time-based: system time based, calling operation at specified system time.
 //               if system time has changed, calling operations will adjusted.
@@ -79,12 +79,14 @@ namespace DKFoundation
 
 		bool IsRunning(void) const;
 		bool IsWrokingThread(void) const;
+		DKThread::ThreadId RunningThreadId(void) const;
 
 		virtual bool Run(void);
 		virtual void Stop(void);
 
         void WaitNextLoop(void);
 		bool WaitNextLoopTimeout(double t);
+		double PendingEventInterval(void) const; // negative value means no pending events in queue.
 
 		// Post: insert operation and return immediately.
 		virtual DKObject<PendingState> Post(const DKOperation* operation, double delay = 0);			// tick base

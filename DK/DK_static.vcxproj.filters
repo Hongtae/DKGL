@@ -405,6 +405,15 @@
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\Application.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -946,6 +955,15 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Interface\DKBackendInterface.h">
       <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\Application.h">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\AppLogger.h">
+      <Filter>DKFramework\Private\Win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

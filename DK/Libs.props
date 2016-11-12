@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
+      <Command>echo Copying Header Files...
 xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
 xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
 xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
