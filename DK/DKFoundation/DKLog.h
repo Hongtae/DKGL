@@ -24,6 +24,9 @@ namespace DKFoundation
 	{
 		virtual ~DKLogger(void) {}
 		virtual void Log(const DKString&) = 0;
+
+		virtual void OnBind(void) {}
+		virtual void OnUnbind(void) {}
 	};
 
 	DKGL_API void DKLoggerSet(DKLogger*);

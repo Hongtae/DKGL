@@ -25,6 +25,9 @@ namespace DKFramework
 				bool Run(void) override;
 				void Stop(void) override;
 
+				DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
+				DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
+
 			private:
 				DKApplication* appInstance;
 				DWORD threadId;

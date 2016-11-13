@@ -28,7 +28,7 @@ namespace DKFramework
 				DKLogger* DefaultLogger(void) override;
 
 				DKString DefaultPath(SystemPath) override;
-				DKString EnvironmentString(EnvironmentVariable) override;
+				DKString ProcessInfoString(ProcessInfo) override;
 
 				DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) override;		// read-writable
 				DKObject<DKData> LoadStaticResource(const DKString& res) override;	// read-only

@@ -21,7 +21,22 @@ using namespace DKFramework::Private::Win32;
 AppLogger::AppLogger(void)
 	: console(NULL)
 {
-	if (AllocConsole())
+
+}
+
+AppLogger::~AppLogger(void)
+{
+	if (console)
+	{
+		system("pause");
+		//FreeConsole();
+	}
+}
+
+void AppLogger::OnBind(void)
+{
+	if (console == NULL &&
+		AllocConsole())
 	{
 		HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
 		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -43,18 +58,18 @@ AppLogger::AppLogger(void)
 	}
 }
 
-AppLogger::~AppLogger(void)
+void AppLogger::OnUnbind(void)
 {
-	if (console)
-	{
-		//system("pause");
-		//FreeConsole();
-	}
+	//if (console)
+	//{
+	//	FreeConsole();
+	//	console = NULL;
+	//}
 }
 
 void AppLogger::Log(const DKString& msg)
 {
-	DKString msg2 = DKString::Format("[PID:%u][Thread:%u] %ls",
+	DKString msg2 = DKString::Format("[PID:%u TID:%u] %ls",
 		(uint32_t)GetCurrentProcessId(),
 		(uint32_t)GetCurrentThreadId(),
 		(const wchar_t*)msg);

@@ -63,25 +63,25 @@ namespace DKFramework
 		friend class DKApplicationInterface;
 
 	public:
-		enum SystemPath
+		enum class SystemPath // environment variable path
 		{
-			SystemPathSystemRoot = 0,  // system root. (boot volume on Windows)
-			SystemPathAppRoot,         // root directory of executable.
-			SystemPathAppResource,     // application resource directory.
-			SystemPathAppExecutable,   // directory path where executable is.
-			SystemPathAppData,         // application's data directory.
-			SystemPathUserHome,        // home directory path for current user.
-			SystemPathUserDocuments,   // user's document directory.
-			SystemPathUserPreferences, // user's preferences(config) directory.
-			SystemPathUserCache,       // user's cache directory.
-			SystemPathUserTemp,        // temporary directory for current user.
+			SystemRoot,			// system root. (boot volume on Windows)
+			AppRoot,			// root directory of executable.
+			AppResource,		// application resource directory.
+			AppExecutable,		// directory path where executable is.
+			AppData,			// application's data directory.
+			UserHome,			// home directory path for current user.
+			UserDocuments,		// user's document directory.
+			UserPreferences,	// user's preferences(config) directory.
+			UserCache,			// user's cache directory.
+			UserTemp,			// temporary directory for current user.
 		};
-		enum EnvironmentVariable
+		enum class ProcessInfo
 		{
-			EnvHostName,
-			EnvOsName,
-			EnvUserName,
-			EnvModulePath,	// retrieve current module (or executable) path.
+			HostName,
+			OsName,
+			UserName,
+			ModulePath,	// retrieve current module (or executable) path.
 		};
 
 		DKApplication(void);
@@ -106,7 +106,7 @@ namespace DKFramework
 
 		// retrieve pre-defined paths
 		DKString DefaultPath(SystemPath);
-		DKString EnvironmentString(EnvironmentVariable);
+		DKString ProcessInfoString(ProcessInfo);
 
 		// LoadResource loads application resource into read,writable buffer.
 		DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc = DKAllocator::DefaultAllocator());

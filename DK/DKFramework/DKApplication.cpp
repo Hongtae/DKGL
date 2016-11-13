@@ -131,14 +131,14 @@ void DKApplication::Terminate(int exitCode)
 	impl->EventLoop()->Stop();
 }
 
-DKString DKApplication::DefaultPath(SystemPath env)
+DKString DKApplication::DefaultPath(SystemPath sp)
 {
-	return impl->DefaultPath(env);
+	return impl->DefaultPath(sp);
 }
 
-DKString DKApplication::EnvironmentString(EnvironmentVariable env)
+DKString DKApplication::ProcessInfoString(ProcessInfo pi)
 {
-	return impl->EnvironmentString(env);
+	return impl->ProcessInfoString(pi);
 }
 
 void DKApplication::OnHidden(void)

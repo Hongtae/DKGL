@@ -22,13 +22,13 @@ namespace DKFramework
 	{
 	public:
 		using SystemPath = DKApplication::SystemPath;
-		using EnvironmentVariable = DKApplication::EnvironmentVariable;
+		using ProcessInfo = DKApplication::ProcessInfo;
 
 		virtual DKEventLoop* EventLoop(void) = 0;
 		virtual DKLogger* DefaultLogger(void) = 0;
 
 		virtual DKString DefaultPath(SystemPath) = 0;
-		virtual DKString EnvironmentString(EnvironmentVariable) = 0;
+		virtual DKString ProcessInfoString(ProcessInfo) = 0;
 
 		virtual DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) = 0;		// read-writable
 		virtual DKObject<DKData> LoadStaticResource(const DKString& res) = 0;	// read-only

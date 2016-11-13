@@ -32,7 +32,11 @@ namespace DKFoundation
 	DKGL_API void DKLoggerSet(DKLogger* logger)
 	{
 		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
+		if (Private::defaultLogger)
+			Private::defaultLogger->OnUnbind();
 		Private::defaultLogger = logger;
+		if (Private::defaultLogger)
+			Private::defaultLogger->OnBind();
 	}
 	DKGL_API DKLogger* DKLoggerCurrent(void)
 	{
@@ -44,7 +48,11 @@ namespace DKFoundation
 		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
 		if (Private::defaultLogger == cmp)
 		{
+			if (Private::defaultLogger)
+				Private::defaultLogger->OnUnbind();
 			Private::defaultLogger = repl;
+			if (Private::defaultLogger)
+				Private::defaultLogger->OnBind();
 			return true;
 		}
 		return false;

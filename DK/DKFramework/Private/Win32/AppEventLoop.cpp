@@ -87,9 +87,25 @@ void AppEventLoop::Stop(void)
 	{
 		this->Post(DKFunction([this]() {
 			this->running = false;
-		})->Invocation());
+		})->Invocation(), 0);
 		PostThreadMessageW(threadId, WM_NULL, 0, 0);
 	}
+}
+
+DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operation, double delay)
+{
+	DKObject<PendingState> ps = DKEventLoop::Post(operation, delay);
+	if (this->threadId)
+		PostThreadMessageW(this->threadId, WM_NULL, 0, 0);
+	return ps;
+}
+
+DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operation, const DKDateTime& runAfter)
+{
+	DKObject<PendingState> ps = DKEventLoop::Post(operation, runAfter);
+	if (this->threadId)
+		PostThreadMessageW(this->threadId, WM_NULL, 0, 0);
+	return ps;
 }
 
 #endif // _WIN32

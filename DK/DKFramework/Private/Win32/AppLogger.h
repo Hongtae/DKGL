@@ -21,6 +21,10 @@ namespace DKFramework
 			public:
 				AppLogger(void);
 				~AppLogger(void);
+
+				void OnBind(void) override;
+				void OnUnbind(void) override;
+
 				void Log(const DKString&) override;
 
 				void WriteLog(const char* str); // MBCS, not UTF-8
