@@ -11,7 +11,10 @@
 #include <tchar.h>
 #include <Sddl.h>
 #include <shlobj.h>
+
 #include "Application.h"
+
+#pragma comment(lib, "version.lib")
 
 namespace DKFramework
 {
@@ -47,6 +50,42 @@ namespace DKFramework
 					}
 				}
 				return NULL;
+			}
+			static bool GetOSVersionFromKernel32DLL(DKString& name, DKString& version)
+			{
+				bool result = false;
+				DWORD bufferSize = GetFileVersionInfoSizeW(L"kernel32.dll", 0);
+				if (bufferSize > 0)
+				{
+					// 1033-1200 / English-UTF16 / Hex: 409-4b0 
+					LPCWSTR subBlockPName = L"\\StringFileInfo\\040904b0\\ProductName";
+					LPCWSTR subBlockPVer = L"\\StringFileInfo\\040904b0\\ProductVersion";
+					DKString prdName, prdVersion;
+
+					void* buffer = DKMemoryDefaultAllocator::Alloc(bufferSize);
+					do
+					{
+						if (!GetFileVersionInfoW(L"kernel32.dll", NULL, bufferSize, buffer))
+							break;
+
+						UINT len = 0; // for string value, number of characters (not bytes)
+						void* ptr = 0;
+						if (!VerQueryValueW(buffer, subBlockPName, &ptr, &len))
+							break;
+
+						prdName = DKString(ptr, len * sizeof(wchar_t), DKStringEncoding::UTF16);
+						if (!VerQueryValueW(buffer, subBlockPVer, &ptr, &len))
+							break;
+
+						prdVersion = DKString(ptr, len * sizeof(wchar_t), DKStringEncoding::UTF16);
+
+						name = std::move(prdName);
+						version = std::move(prdVersion);
+						result = true;
+					} while (0);
+					DKMemoryDefaultAllocator::Free(buffer);
+				}
+				return result;
 			}
 		}
 	}
@@ -161,22 +200,30 @@ DKString Application::ProcessInfoString(ProcessInfo pi)
 		}();
 		break;
 	case ProcessInfo::OsName:
-		return []()->DKString
+		if (1)
 		{
-			DKString ret("Microsoft Windows");
-
-			OSVERSIONINFOEXW ver;
-			memset(&ver, 0, sizeof(OSVERSIONINFOEXW));
-			ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
-			if (GetVersionExW((LPOSVERSIONINFOW)&ver))
+			DKString ret, name, version;
+			if (GetOSVersionFromKernel32DLL(name, version))
 			{
-				ret += DKString::Format(" %d.%d", ver.dwMajorVersion, ver.dwMinorVersion);
-				if (ver.szCSDVersion[0])
-					ret += DKString::Format(" %s", ver.szCSDVersion);
-				ret += DKString::Format(" (build:%d)", ver.dwBuildNumber);
+				ret = name + L" " + version;
+			}
+			else
+			{
+				ret = DKString("Microsoft Windows");
+
+				OSVERSIONINFOEXW ver;
+				memset(&ver, 0, sizeof(OSVERSIONINFOEXW));
+				ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
+				if (GetVersionExW((LPOSVERSIONINFOW)&ver))
+				{
+					ret += DKString::Format(" %d.%d", ver.dwMajorVersion, ver.dwMinorVersion);
+					if (ver.szCSDVersion[0])
+						ret += DKString::Format(" %s", ver.szCSDVersion);
+					ret += DKString::Format(" (build:%d)", ver.dwBuildNumber);
+				}
 			}
 			return ret;
-		}();
+		}
 		break;
 	case ProcessInfo::UserName:
 		return []()->DKString
