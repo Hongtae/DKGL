@@ -62,6 +62,11 @@ bool AppEventLoop::Run(void)
 					UINT elapse = static_cast<UINT>(intv * 1000);
 					timerId = SetTimer(NULL, timerId, elapse, NULL);
 				}
+				else if (timerId)
+				{
+					KillTimer(NULL, timerId);
+					timerId = 0;
+				}
 			}
 			else
 				break;
