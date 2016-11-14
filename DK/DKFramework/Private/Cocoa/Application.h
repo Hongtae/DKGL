@@ -1,15 +1,20 @@
 //
 //  File: Application.h
-//  Platform: Win32
+//  Platform: macOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#ifdef _WIN32
-#include <Windows.h>
-#include "AppLogger.h"
+#if defined(__APPLE__) && defined(__MACH__)
+#include <TargetConditionals.h>
+
+#if !TARGET_OS_IPHONE
+#ifdef __OBJC__
+#import <AppKit/AppKit.h>
+#endif	//ifdef __OBJC__
+
 #include "AppEventLoop.h"
 #include "../../Interface/DKApplicationInterface.h"
 
@@ -17,7 +22,7 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Win32
+		namespace macOS
 		{
 			class Application : public DKApplicationInterface
 			{
@@ -43,4 +48,5 @@ namespace DKFramework
 		}
 	}
 }
-#endif // _WIN32
+#endif //if !TARGET_OS_IPHONE
+#endif //if defined(__APPLE__) && defined(__MACH__)

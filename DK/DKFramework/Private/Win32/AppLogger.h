@@ -6,6 +6,7 @@
 //  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
 //
 
+#pragma once
 #ifdef _WIN32
 #include <Windows.h>
 #include "../../Interface/DKApplicationInterface.h"

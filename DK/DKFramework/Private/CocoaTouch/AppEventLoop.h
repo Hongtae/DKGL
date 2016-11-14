@@ -1,21 +1,27 @@
 //
-//  File: AppEventLoop.h
-//  Platform: Win32
+//  File: Application.h
+//  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#ifdef _WIN32
-#include <Windows.h>
+#if defined(__APPLE__) && defined(__MACH__)
+#include <TargetConditionals.h>
+
+#if TARGET_OS_IPHONE
+#ifdef __OBJC__
+#import <UIKit/UIKit.h> 
+#endif	//ifdef __OBJC__
+
 #include "../../Interface/DKApplicationInterface.h"
 
 namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Win32
+		namespace iOS
 		{
 			class AppEventLoop : public DKEventLoop
 			{
@@ -31,10 +37,9 @@ namespace DKFramework
 
 			private:
 				DKApplication* appInstance;
-				DWORD threadId;
-				bool running;
 			};
 		}
 	}
 }
-#endif // _WIN32
+#endif //if TARGET_OS_IPHONE
+#endif //if defined(__APPLE__) && defined(__MACH__)

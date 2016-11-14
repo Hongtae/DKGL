@@ -156,12 +156,28 @@ namespace DKFoundation
 	
 	DKGL_API DKArray<DKString> DKProcessArguments(void)
 	{
+		// TODO: read content from file: /proc/self/cmdline
 		return DKArray<DKString>();
 	}
 	
 	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
 	{
-		return DKMap<DKString, DKString>();
+		extern char **environ;
+
+		DKMap<DKString, DKString> env;
+		for (int i = 0; environ[i]; ++i)
+		{
+			DKString tmp(environ[i]);
+			long x = tmp.Find(L'=');
+			if (x > 0)
+			{
+				DKString key = tmp.Left(x);
+				DKString value = tmp.Right(x+1);
+
+				env.Update(key, value);
+			}
+		}
+		return env;
 	}
 
 	DKGL_API uint32_t DKNumberOfProcessors(void)
