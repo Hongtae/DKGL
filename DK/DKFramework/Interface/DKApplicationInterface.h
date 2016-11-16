@@ -36,7 +36,7 @@ namespace DKFramework
 		virtual DKRect DisplayBounds(int displayId) const = 0;
 		virtual DKRect ScreenContentBounds(int displayId) const = 0;
 
-		static DKApplicationInterface* CreateInterface(DKApplication*);
+		static DKApplicationInterface* CreateInterface(DKApplication*, int argc, char* argv[]);
 
 		static DKApplicationInterface* SharedInstance(void)
 		{

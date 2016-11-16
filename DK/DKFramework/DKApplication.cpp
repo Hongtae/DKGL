@@ -23,8 +23,6 @@ namespace DKFoundation
 DKApplication::DKApplication(int argc, char* argv[])
 	: exitCode(0)
 {
-	SetArgs(argc, argv);
-
 	DKCriticalSection<DKCondition> guard(Private::appCond);
 	while (Private::application != NULL)
 	{
@@ -32,7 +30,7 @@ DKApplication::DKApplication(int argc, char* argv[])
 		Private::appCond.Wait();
 	}
 
-	impl = DKApplicationInterface::CreateInterface(this);
+	impl = DKApplicationInterface::CreateInterface(this, argc, argv);
 	DKLoggerCompareAndReplace(NULL, impl->DefaultLogger());
 
 	Private::application = this;
@@ -52,14 +50,6 @@ DKApplication::~DKApplication(void)
 
 	Private::application = NULL;
 	Private::appCond.Broadcast();
-}
-
-void DKApplication::SetArgs(int argc, char* argv[])
-{
-	args.Clear();
-	args.Reserve(argc);
-	for (int i = 0; i < argc; ++i)
-		args.Add(argv[i]);
 }
 
 int DKApplication::Run(void)

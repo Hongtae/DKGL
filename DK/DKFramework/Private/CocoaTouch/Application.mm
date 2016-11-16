@@ -16,7 +16,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::iOS;
 
-DKApplicationInterface* DKApplicationInterface::CreateInterface(DKApplication* app)
+DKApplicationInterface* DKApplicationInterface::CreateInterface(DKApplication* app, int argc, char* argv[])
 {
 	return new Application(app);
 }

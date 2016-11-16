@@ -16,6 +16,8 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::macOS;
 
+#define PSKEY_APP_DELEGATE				"NSApplicationDelegate"
+
 AppEventLoop::AppEventLoop(DKApplication* app)
 : appInstance(app)
 , running(false)
@@ -36,6 +38,13 @@ bool AppEventLoop::Run(void)
 
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
+		// initialize multi-threading mode
+		if ([NSThread isMultiThreaded] == NO)
+		{
+			NSThread *thread = [[[NSThread alloc] init] autorelease];
+			[thread start];
+		}
+
 		lock.Lock();
 		runLoop = CFRunLoopGetCurrent();
 		CFRetain(runLoop);
@@ -43,18 +52,49 @@ bool AppEventLoop::Run(void)
 
 		NSApplication* app = [NSApplication sharedApplication];
 
+		id appDelegate = nil;
+
+		@autoreleasepool {
+			DKPropertySet& config = DKPropertySet::SystemConfig();
+			Class appDelegateClass = nil;
+			for (const char* key : {PSKEY_APP_DELEGATE, "AppDelegate"})
+			{
+				if (config.HasValue(key))
+				{
+					const DKVariant& var = config.Value(key);
+					if (var.ValueType() == DKVariant::TypeString)
+					{
+						DKStringU8 className = DKStringU8(var.String());
+						appDelegateClass = NSClassFromString([NSString stringWithUTF8String:(const char*)className]);
+						if (appDelegateClass)
+							break;
+					}
+				}
+			}
+			if (appDelegateClass)
+				appDelegate = [[appDelegateClass alloc] init];
+		}
+
+		if (appDelegate)
+			app.delegate = appDelegate;
+
 		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-		// install observer for system-time change notification
-		id<NSObject> timeChangeObserver = [center addObserverForName:NSSystemClockDidChangeNotification
-															  object:nil
-															   queue:nil
-														  usingBlock:^(NSNotification *note) {
-															  this->DispatchAndInstallTimer();
-														  }];
 
+		// install notification observers.
+		NSArray* observers =
+		@[
+		  [center addObserverForName:NSSystemClockDidChangeNotification
+							  object:nil
+							   queue:nil
+						  usingBlock:^(NSNotification *note) {
+							  this->DispatchAndInstallTimer();
+						  }]
+		  ];
 
-		DKApplicationInterface::AppInitialize(appInstance);
-
+		// initialize DKApplication instance.
+		@autoreleasepool {
+			DKApplicationInterface::AppInitialize(appInstance);
+		}
 		if (running)
 		{
 			CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
@@ -62,11 +102,14 @@ bool AppEventLoop::Run(void)
 			});
 			[app run];
 		}
-
-		DKApplicationInterface::AppFinalize(appInstance);
+		// finalize DKApplication instance.
+		@autoreleasepool {
+			DKApplicationInterface::AppFinalize(appInstance);
+		}
 
 		// uninstall observer
-		[center removeObserver:timeChangeObserver];
+		for (id ob in observers)
+			[center removeObserver:ob];
 
 		lock.Lock();
 		CFRelease(runLoop);
@@ -80,6 +123,7 @@ bool AppEventLoop::Run(void)
 			timer = nil;
 		}
 
+		[appDelegate release];
 		[pool release];
 
 		running = false;
@@ -99,6 +143,9 @@ void AppEventLoop::Stop(void)
 			NSApplication* app = [NSApplication sharedApplication];
 			if (app.running)
 			{
+				[[NSNotificationCenter defaultCenter] postNotificationName:NSApplicationWillTerminateNotification
+																	object:app];
+
 				// To stop run-loop immediately, call 'stop:' during process some NSEvent object.
 				// Generate dummy NSEvent object.
 				NSEvent* event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined

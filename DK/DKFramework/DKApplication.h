@@ -8,6 +8,7 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKRect.h"
+#include "DKPropertySet.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // DKApplication
@@ -44,10 +45,12 @@
 //   escape into entry function(main). But other desktop OSes does not.
 //
 //   You can set iOS/OSX application delegate by setting SystemConfig.
-//   For iOS:
-//    DKPropertySet::DefaultConfig().SetValue("UIApplicationDelegate", "MyAppDelegate");
-//   For OS X:
-//    DKPropertySet::DefaultConfig().SetValue("NSApplicationDelegate", "MyAppDelegate");
+//   For iOS only:
+//     DKPropertySet::SystemConfig().SetValue("UIApplicationDelegate", "MyAppDelegate");
+//   For OS X only:
+//     DKPropertySet::SystemConfig().SetValue("NSApplicationDelegate", "MyAppDelegate");
+//   Or both OSes:
+//     DKPropertySet::SystemConfig().SetValue("AppDelegate", "MyAppDelegate");
 //   these properties must be set before calling DKApplication::Run().
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -87,9 +90,6 @@ namespace DKFramework
 		DKApplication(void);
 		DKApplication(int argc, char* argv[]);
 		virtual ~DKApplication(void);
-
-		void SetArgs(int argc, char* argv[]);
-		const DKArray<DKString>& Args(void) const { return args; }
 
 		// create and running application's main event loop.
 		// only one instance can enter main loop.
@@ -131,7 +131,6 @@ namespace DKFramework
 		void Initialize();
 		void Finalize();
 		DKDateTime			initializedAt;
-		DKArray<DKString>	args;
 		DKMutex				mutex;
 		int					exitCode;
 		DKApplicationInterface*	impl;

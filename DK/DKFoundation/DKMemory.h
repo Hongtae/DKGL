@@ -18,6 +18,10 @@
 // they should be aligned with DKMemoryVMPageSize value.
 //
 // If you want allocate memory with backing-store with file, use DKFileMap.
+//
+// Note:
+//   If you run out of memory, call DKAllocatorChain::Cleanup()
+//   instead of calling DKMemoryPoolPurge(), which purges memory pool only.
 ////////////////////////////////////////////////////////////////////////////////
 
 

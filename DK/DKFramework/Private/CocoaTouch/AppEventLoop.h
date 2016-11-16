@@ -11,9 +11,7 @@
 #include <TargetConditionals.h>
 
 #if TARGET_OS_IPHONE
-#ifdef __OBJC__
-#import <UIKit/UIKit.h> 
-#endif	//ifdef __OBJC__
+#import <UIKit/UIKit.h>
 
 #include "../../Interface/DKApplicationInterface.h"
 
@@ -36,7 +34,13 @@ namespace DKFramework
 				DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
 
 			private:
+				void DispatchAndInstallTimer(void);
+
 				DKApplication* appInstance;
+				NSTimer* timer;
+
+				DKSpinLock lock;	// lock for runLoop pointer.
+				CFRunLoopRef runLoop;
 			};
 		}
 	}

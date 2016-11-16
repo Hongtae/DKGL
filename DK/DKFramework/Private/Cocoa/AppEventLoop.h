@@ -38,10 +38,10 @@ namespace DKFramework
 				
 				DKApplication* appInstance;
 				bool running;
-				
-				DKSpinLock lock;	// lock for member variables (pointers)
-				CFRunLoopRef runLoop;
 				NSTimer* timer;
+
+				DKSpinLock lock;	// lock for runLoop pointer.
+				CFRunLoopRef runLoop;
 			};
 		}
 	}
