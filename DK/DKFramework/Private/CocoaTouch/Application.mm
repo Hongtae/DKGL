@@ -48,34 +48,148 @@ DKLogger* Application::DefaultLogger(void)
 	return &logger;
 }
 
-DKString Application::DefaultPath(SystemPath)
+DKString Application::DefaultPath(SystemPath sp)
 {
-	return "";
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+	auto searchPath = [](NSSearchPathDirectory path) -> DKString
+	{
+		NSFileManager* fileManager = [[[NSFileManager alloc] init] autorelease];
+		NSURL* url = [fileManager URLForDirectory:path inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+		return [url.path UTF8String];
+	};
+
+	DKString path;
+	switch (sp)
+	{
+		case SystemPath::SystemRoot:
+			path = L"/";
+			break;
+		case SystemPath::AppRoot:
+			path = [[[NSBundle mainBundle] bundlePath] UTF8String];
+			break;
+		case SystemPath::AppResource:
+			path = [[[NSBundle mainBundle] resourcePath] UTF8String];
+			break;
+		case SystemPath::AppExecutable:
+			path = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] UTF8String];
+			break;
+		case SystemPath::AppData:
+			path = searchPath(NSApplicationSupportDirectory);
+			break;
+		case SystemPath::UserHome:
+			path = [NSHomeDirectory() UTF8String];
+			break;
+		case SystemPath::UserDocuments:
+			path = searchPath(NSDocumentDirectory);
+			break;
+		case SystemPath::UserPreferences:
+			path = []()-> DKString {
+				NSFileManager* fileManager = [[[NSFileManager alloc] init] autorelease];
+				NSURL* url = [fileManager URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+				NSString* path = [url URLByAppendingPathComponent:@"Preferences"].path;
+				BOOL isDir = NO;
+				if ([fileManager fileExistsAtPath:path isDirectory:&isDir] == NO) // file not exists
+				{
+					if ([fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil] == NO)
+					{
+						NSString* errDesc = [NSString stringWithFormat:@"Cannot create directory:%@", path];
+						DKERROR_THROW((const char*)[errDesc UTF8String]);
+						NSLog(@"%@\n", errDesc);
+					}
+				}
+				else if (!isDir)	// file exists but not dir.
+				{
+					NSString* errDesc = [NSString stringWithFormat:@"Destination path:%@ is not a directory!", path];
+					DKERROR_THROW((const char*)[errDesc UTF8String]);
+					NSLog(@"%@\n", errDesc);
+				}
+				return [path UTF8String];
+			}();
+			break;
+		case SystemPath::UserCache:
+			path = searchPath(NSCachesDirectory);
+			break;
+		case SystemPath::UserTemp:
+			path = [NSTemporaryDirectory() UTF8String];
+			break;
+	}
+	[pool release];
+	return path;
 }
 
-DKString Application::ProcessInfoString(ProcessInfo)
+DKString Application::ProcessInfoString(ProcessInfo pi)
 {
-	return "";
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	DKString value;
+	switch (pi)
+	{
+		case ProcessInfo::HostName:
+			value = [[[NSProcessInfo processInfo] hostName] UTF8String];
+			break;
+		case ProcessInfo::OsName:
+			value = [[NSString stringWithFormat:@"Apple macOS %@",
+					  [[NSProcessInfo processInfo] operatingSystemVersionString]] UTF8String];
+			break;
+		case ProcessInfo::UserName:
+			value = [NSUserName() UTF8String];
+			break;
+		case ProcessInfo::ModulePath:
+			value = [[[NSBundle mainBundle] executablePath] UTF8String];
+			break;
+	}
+	[pool release];
+	return value;
 }
 
 DKObject<DKData> Application::LoadResource(const DKString& res, DKAllocator& alloc)
 {
-	return NULL;
+	DKObject<DKData> ret = NULL;
+	DKObject<DKDirectory> dir = DKDirectory::OpenDir(DefaultPath(SystemPath::AppResource));
+	if (dir)
+	{
+		DKObject<DKFile> file = dir->OpenFile(res, DKFile::ModeOpenReadOnly, DKFile::ModeShareAll);
+		if (file)
+		{
+			DKFile::FileInfo info;
+			if (file->GetInfo(info))
+				ret = file->Read(info.size, alloc);
+		}
+	}
+	return ret;
 }
 
 DKObject<DKData> Application::LoadStaticResource(const DKString& res)
 {
-	return NULL;
+	DKObject<DKData> ret = NULL;
+	DKObject<DKDirectory> dir = DKDirectory::OpenDir(DefaultPath(SystemPath::AppResource));
+	if (dir)
+	{
+		ret = dir->MapFile(res, 0, false);
+	}
+	return ret;
 }
 
 DKRect Application::DisplayBounds(int displayId) const
 {
-	return DKRect();
+	return ScreenContentBounds(displayId);
 }
 
 DKRect Application::ScreenContentBounds(int displayId) const
 {
-	return DKRect();
+	DKRect bounds(0,0,0,0);
+	if (displayId >= 0)
+	{
+		@autoreleasepool {
+			NSArray<UIScreen*>* screens = UIScreen.screens;
+			if (displayId < screens.count)
+			{
+				CGRect b = screens[displayId].bounds;	// display bounds, measured in points
+				bounds = DKRect(b.origin.x, b.origin.y, b.size.width, b.size.height);
+			}
+		}
+	}
+	return bounds;
 }
 
 #endif	//if TARGET_OS_IPHONE
