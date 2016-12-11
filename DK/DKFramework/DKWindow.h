@@ -42,7 +42,7 @@ namespace DKFramework
 		DKWindow(void);
 		~DKWindow(void);
 
-		enum Style : int // Window style
+		enum Style : uint32_t // Window style
 		{
 			StyleTitle = 1,
 			StyleCloseButton = 1 << 1,
@@ -57,35 +57,34 @@ namespace DKFramework
 		{
 			enum Type
 			{
-				Nothing = 0,
-				ButtonDown,
+				ButtonDown = 0,
 				ButtonUp,
 				Move,
 				Wheel,
+				Pointing,
 			};
 			enum Device
 			{
 				GenericMouse = 0,
 				StylusPen,
-				MultiTouch,
+				Touch,
+				Unknown,
 			};
 			Type type;
 			Device device;
 			int deviceId;
 			int buttonId;
 			DKPoint location;	// location in window
-			DKVector2 locationDelta;
-			float force;		// for stylus-pen			
-			float altitudeAngle;// radian value of stylus-pen and screen angle. 0 is parallel, PI/2 is perpendicular to the surface.
-			bool verticalFlip;	// true if lower-left is origin
+			DKVector2 delta;
+			float pressure;		// for stylus-pen
+			float tilt;// radian value of stylus-pen and screen angle. 0 is parallel, PI/2 is perpendicular to the surface.
 		};
 
 		struct KeyboardEvent
 		{
 			enum Type
 			{
-				Nothing = 0,
-				KeyDown,
+				KeyDown = 0,
 				KeyUp,
 				TextInput,
 				TextInputCandidate, // text composition in progress
@@ -100,7 +99,7 @@ namespace DKFramework
 		{
 			enum Type
 			{
-				WindowCreated = 0,
+				WindowCreated = 0,	// this event will not be distributed automatically.
 				WindowClosed,
 				WindowHidden,
 				WindowShown,
@@ -112,8 +111,9 @@ namespace DKFramework
 				WindowUpdate,
 			};
 			Type type;
-			DKRect windowRect; // in screen-space including border, system coordinates.
-			DKSize contentSize;
+			DKRect windowRect;	// on parent space coords (can be screen space)
+			DKRect contentRect;	// on parent space coords (can be screen space)
+			double contentScaleFactor;
 		};
 
 		// function or function object type for event handlers.
@@ -139,13 +139,8 @@ namespace DKFramework
 			Function<bool (DKWindow*)> closeRequest;
 		};
 
-		// Create window.
-		// if origin is undefinedOrigin, then using OS default value.
-		// if contentSize is smaller than 1, then using OS default value.
-		static const DKPoint undefinedOrigin;
-		static DKObject<DKWindow> Create(const DKString& title,		// window title
-										 const DKSize& contentSize,				// content size (system coordinates)
-										 const DKPoint& origin = undefinedOrigin,	// window origin (system coordinates)
+		// Create window with system default size, position and hidden state.
+		static DKObject<DKWindow> Create(const DKString& name,		// window title
 										 int style = StyleGeneralWindow,			// window style
 										 const WindowCallback& cb = WindowCallback());
 		// Create proxy window. (can be used to interface of existing window)
@@ -192,7 +187,7 @@ namespace DKFramework
 
 		// window state
 		DKRect WindowRect(void) const;			// window's origin (OS coords unit)
-		DKSize ContentSize(void) const;			// content size (OS coords unit)
+		DKRect ContentRect(void) const;			// content size (OS coords unit)
 		double ContentScaleFactor(void) const;	// content unit, pixel ratio
 
 		bool IsVisible(void) const	{ return visible; }
@@ -200,7 +195,9 @@ namespace DKFramework
 		bool IsValid(void) const;
 
 		// platform handle:
-		// HWD for Win32, NSView/NSWindow for Cocoa, UIView for CocoaTouch.
+		// HWD for Win32, NSView for Cocoa, UIView for CocoaTouch.
+		// On macOS/iOS, You can reuse view (NSView/UIView).
+		// You can detach from window (NSWindow/UIWindow) and attach to other window.
 		void* PlatformHandle(void) const;
 
 		// call event handler manually.
@@ -216,7 +213,6 @@ namespace DKFramework
 
 		struct KeyboardState
 		{
-			bool textInputEnabled;  // keyboard input state (key input or text input)
 			unsigned char keyStateBits[DKVK_MAXVALUE / 8 + 1]; // save raw-key state (1:down, 0:up)
 		};
 		mutable DKMap<int, KeyboardState>		keyboardStateMap;
@@ -224,7 +220,7 @@ namespace DKFramework
 		DKSpinLock keyboardLock;
 
 		DKRect windowRect;		// window's origin, size (including border, system coordinates)
-		DKSize contentSize;		// content size
+		DKRect contentRect;		// content origin, size in window space (or parent view space)
 		bool activated;			// true if window is activated
 		bool visible;
 

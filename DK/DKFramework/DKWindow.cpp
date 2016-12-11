@@ -30,10 +30,9 @@ namespace DKFramework
 		}
 	}
 }
+
 using namespace DKFramework;
 using namespace DKFramework::Private;
-
-const DKPoint DKWindow::undefinedOrigin = DKPoint(-3.402823466e+38F, -3.402823466e+38F);
 
 DKWindow::DKWindow(void)
 : activated(false)
@@ -51,16 +50,14 @@ DKWindow::~DKWindow(void)
 	}
 }
 
-DKObject<DKWindow> DKWindow::Create(const DKString& title,
-									const DKSize& size,		// size of window.
-									const DKPoint& origin,	// origin of window.
+DKObject<DKWindow> DKWindow::Create(const DKString& name,
 									int style,
 									const WindowCallback& cb)
 {
 	DKObject<DKWindow> window = DKObject<DKWindow>::New();
 	window->impl = DKWindowInterface::CreateInterface(window);
 	window->callback = cb;
-	if (window->impl->Create(title, size, origin, style))
+	if (window->impl->Create(name, style))
 	{
 		return window;
 	}
@@ -114,24 +111,15 @@ void DKWindow::Close(void)
 
 bool DKWindow::IsTextInputEnabled(int deviceId) const
 {
-	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
-	auto p = this->keyboardStateMap.Find(deviceId);
-	if (p)
-		return p->value.textInputEnabled;
+	if (impl)
+		return impl->IsTextInputEnabled(deviceId);
 	return false;
 }
 
 void DKWindow::SetTextInputEnabled(int deviceId, bool enabled)
 {
-	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
-	KeyboardState& state = GetKeyboardState(deviceId);
-
-	if (state.textInputEnabled != enabled)
-	{
-		if (impl)
-			impl->EnableTextInput(deviceId, enabled);
-		state.textInputEnabled = enabled;
-	}
+	if (impl)
+		impl->EnableTextInput(deviceId, enabled);
 }
 
 bool DKWindow::KeyState(int deviceId, const DKVirtualKey& k) const
@@ -169,24 +157,7 @@ void DKWindow::ResetKeyState(int deviceId)
 void DKWindow::ResetKeyStateForAllDevices(void)
 {
 	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
-	DKArray<int> deviceIdsToRemove;
-	deviceIdsToRemove.Reserve(this->keyboardStateMap.Count());
-	this->keyboardStateMap.EnumerateForward([&](DKMap<int, KeyboardState>::Pair& pair)
-	{
-		KeyboardState& state = pair.value;
-		if (state.textInputEnabled)
-		{
-			// text-input mode enabled, just clear key states.
-			memset(state.keyStateBits, 0, sizeof(state.keyStateBits));
-		}
-		else
-		{
-			// text-input mode is not enabled, just remove device key.
-			deviceIdsToRemove.Add(pair.key);
-		}
-	});
-	for (int deviceId : deviceIdsToRemove)
-		this->keyboardStateMap.Remove(deviceId);
+	this->keyboardStateMap.Clear();
 }
 
 DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
@@ -195,11 +166,9 @@ DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
 	if (p)
 		return p->value;
 
-	KeyboardState newState;
+	KeyboardState& newState = keyboardStateMap.Value(deviceId);
 	memset(&newState, 0, sizeof(KeyboardState));
-	newState.textInputEnabled = false;
-	keyboardStateMap.Update(deviceId, newState);
-	return keyboardStateMap.Value(deviceId);
+	return newState;
 }
 
 void DKWindow::PostMouseEvent(const MouseEvent& event)
@@ -238,10 +207,6 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 			else
 				return;
 		}
-
-		if (!keyboard.textInputEnabled &&
-			(event.type == KeyboardEvent::TextInput || event.type == KeyboardEvent::TextInputCandidate))
-			return;
 	}
 
 	handlerLock.Lock();
@@ -262,48 +227,50 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 	switch (event.type)
 	{
 	case WindowEvent::WindowCreated:
-		this->contentSize = event.contentSize;
 		this->windowRect = event.windowRect;
-		DKLog("EventWindowCreated (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		this->contentRect = event.contentRect;
+		this->activated = false;
+		this->visible = false;
+		DKLog("EventWindowCreated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowClosed:
 		this->activated = false;
 		this->visible = false;
 		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowDestroy (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		DKLog("EventWindowDestroy (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowHidden:
 		this->activated = false;
 		this->visible = false;
 		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowHidden (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		DKLog("EventWindowHidden (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowShown:
 		this->visible = true;
-		DKLog("EventWindowShown (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		DKLog("EventWindowShown (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowActivated:
 		this->activated = true;
 		this->visible = true;
-		DKLog("EventWindowActivated (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		DKLog("EventWindowActivated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowInactivated:
 		this->activated = false;
 		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowInactivated (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		DKLog("EventWindowInactivated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowMinimized:
 		this->visible = false;
 		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowMinimized (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		DKLog("EventWindowMinimized (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowMoved:
 	//	DKLog("EventWindowMoved (%.0f x %.0f)\n", contentSize.width, contentSize.height);
 		break;
 	case WindowEvent::WindowResized:
-		this->contentSize = event.contentSize;
 		this->windowRect = event.windowRect;
-		DKLog("EventWindowResized (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+		this->contentRect = event.contentRect;
+		DKLog("EventWindowResized (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
 		break;
 	case WindowEvent::WindowUpdate:
 	//	DKLog("EventWindowUpdate (%.0f x %.0f)\n", contentSize.width, contentSize.height);
@@ -409,9 +376,9 @@ DKRect DKWindow::WindowRect(void) const
 	return windowRect;
 }
 
-DKSize DKWindow::ContentSize(void) const
+DKRect DKWindow::ContentRect(void) const
 {
-	return contentSize;
+	return contentRect;
 }
 
 double DKWindow::ContentScaleFactor(void) const
