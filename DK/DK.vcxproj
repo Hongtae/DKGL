@@ -118,6 +118,9 @@
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <BuildLog>
@@ -155,6 +158,9 @@
     <PreBuildEvent />
     <CustomBuildStep />
     <CustomBuildStep />
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog>
@@ -187,6 +193,9 @@
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BuildLog>
@@ -220,6 +229,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent />
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DKFoundation\DKAllocator.cpp" />
@@ -340,6 +352,10 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DK.h" />
@@ -509,8 +525,19 @@
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h" />
     <ClInclude Include="DKFramework\Private\BulletUtils.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Application.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Window.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\View.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\Win32\Application.h" />
+    <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />
+    <ClInclude Include="DKFramework\Private\Win32\Window.h" />
     <ClInclude Include="DKInclude.h" />
     <ClInclude Include="Libs\Inc_BulletPhysics.h" />
     <ClInclude Include="Libs\Inc_CxImage.h" />
@@ -525,6 +552,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\AppEventLoop.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\Application.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\Window.mm" />
+    <None Include="DKFramework\Private\Cocoa\AppEventLoop.mm" />
+    <None Include="DKFramework\Private\Cocoa\Application.mm" />
+    <None Include="DKFramework\Private\Cocoa\View.mm" />
+    <None Include="DKFramework\Private\Cocoa\Window.mm" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="Libs.props" />
   </ItemGroup>

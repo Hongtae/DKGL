@@ -396,6 +396,18 @@
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\Application.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\Window.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -938,6 +950,39 @@
     <ClInclude Include="DKFramework\Interface\DKBackendInterface.h">
       <Filter>DKFramework\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\Cocoa\AppEventLoop.h">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Cocoa\Application.h">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Cocoa\View.h">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Cocoa\Window.h">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\CocoaTouch\AppEventLoop.h">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Application.h">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Window.h">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\Application.h">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\AppLogger.h">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\Window.h">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm">
@@ -946,6 +991,27 @@
     <None Include="Libs.props" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm">
       <Filter>DKFramework\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Cocoa\AppEventLoop.mm">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </None>
+    <None Include="DKFramework\Private\Cocoa\Application.mm">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </None>
+    <None Include="DKFramework\Private\Cocoa\View.mm">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </None>
+    <None Include="DKFramework\Private\Cocoa\Window.mm">
+      <Filter>DKFramework\Private\Cocoa</Filter>
+    </None>
+    <None Include="DKFramework\Private\CocoaTouch\AppEventLoop.mm">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </None>
+    <None Include="DKFramework\Private\CocoaTouch\Application.mm">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </None>
+    <None Include="DKFramework\Private\CocoaTouch\Window.mm">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

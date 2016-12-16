@@ -28,7 +28,8 @@ AppLogger::~AppLogger(void)
 {
 	if (console)
 	{
-		system("pause");
+		if (!::IsDebuggerPresent())
+			system("pause");
 		//FreeConsole();
 	}
 }

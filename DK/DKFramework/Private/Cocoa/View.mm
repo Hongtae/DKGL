@@ -319,7 +319,7 @@ using MouseEvent = DKWindow::MouseEvent;
 - (void)postTextCompositingEvent:(NSString*)text
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({KeyboardEvent::TextInputCandidate, 0, DKVK_NONE, text.UTF8String});
+		userInstance->PostKeyboardEvent({KeyboardEvent::TextComposition, 0, DKVK_NONE, text.UTF8String});
 }
 
 - (void)postMouseEvent:(NSEvent*)event

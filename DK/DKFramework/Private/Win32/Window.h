@@ -1,25 +1,21 @@
 //
 //  File: Window.h
-//  Platform: iOS
+//  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#if defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-
+#ifdef _WIN32
+#include <Windows.h>
 #include "../../Interface/DKWindowInterface.h"
 
 namespace DKFramework
 {
 	namespace Private
 	{
-		namespace iOS
+		namespace Win32
 		{
 			class Window : public DKWindowInterface
 			{
@@ -59,12 +55,48 @@ namespace DKFramework
 				bool IsTextInputEnabled(int deviceId);
 
 			private:
+				static LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+				static DKVirtualKey ConvertVKey(int key);
+				void UpdateKeyboard(void);
+				void UpdateMouse(void);
+				void ResetKeyboard(void);
+				void ResetMouse(void);
+
 				DKWindow* instance;
-				UIWindow* window;	// view holder. use view.window instead.
-				UIView* view;
+				HWND hWnd;
+
+				BYTE keyboardStates[256];
+				DKRect windowRect;
+				DKRect contentRect;
+				double contentScaleFactor;
+
+				DKPoint mousePosition;
+				DKPoint holdingMousePosition;
+
+				bool textCompositionMode;
+				bool proxyWindow;
+				bool activated;
+				bool visible;
+				bool minimized;
+				bool holdMouse;
+				bool resizing;
+				bool autoResize;
+
+				union {
+					uint8_t buttons;
+					struct {
+						uint8_t button1 : 1;
+						uint8_t button2 : 1;
+						uint8_t button3 : 1;
+						uint8_t button4 : 1;
+						uint8_t button5 : 1;
+						uint8_t button6 : 1;
+						uint8_t button7 : 1;
+						uint8_t button8 : 1;
+					};
+				} mouseButtonDown;
 			};
 		}
 	}
 }
-#endif //if TARGET_OS_IPHONE
-#endif //if defined(__APPLE__) && defined(__MACH__)
+#endif // _WIN32

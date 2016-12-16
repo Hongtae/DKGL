@@ -49,8 +49,9 @@ namespace DKFramework
 			StyleMinimizeButton = 1 << 2,
 			StyleMaximizeButton = 1 << 3,
 			StyleResizableBorder = 1 << 4,
+			StyleAutoResize = 1 << 5,	// resize on rotate or DPI change, etc.
+			StyleGeneralWindow = 0xff,	// includes all but StyleAcceptFileDrop
 			StyleAcceptFileDrop = 1 << 8,
-			StyleGeneralWindow = 0xff,	// all above without StyleAcceptFileDrop
 		};
 
 		struct MouseEvent
@@ -87,7 +88,7 @@ namespace DKFramework
 				KeyDown = 0,
 				KeyUp,
 				TextInput,
-				TextInputCandidate, // text composition in progress
+				TextComposition, // text composition in progress
 			};
 			Type type;
 			int deviceId;

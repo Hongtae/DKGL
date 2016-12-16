@@ -182,6 +182,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\AppEventLoop.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\Application.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\Window.mm" />
+    <None Include="DKFramework\Private\Cocoa\AppEventLoop.mm" />
+    <None Include="DKFramework\Private\Cocoa\Application.mm" />
+    <None Include="DKFramework\Private\Cocoa\View.mm" />
+    <None Include="DKFramework\Private\Cocoa\Window.mm" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="Libs.props" />
   </ItemGroup>
@@ -307,6 +314,7 @@
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DK.h" />
@@ -476,11 +484,19 @@
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h" />
     <ClInclude Include="DKFramework\Private\BulletUtils.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Application.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Window.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\View.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />
+    <ClInclude Include="DKFramework\Private\Win32\Window.h" />
     <ClInclude Include="DKInclude.h" />
     <ClInclude Include="Libs\Inc_BulletPhysics.h" />
     <ClInclude Include="Libs\Inc_CxImage.h" />
