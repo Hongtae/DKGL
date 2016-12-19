@@ -27,6 +27,10 @@ namespace DKFramework
 				Window(DKWindow*);
 				~Window(void);
 
+				DKRect ContentRect(void);
+				DKRect WindowRect(void);
+				
+				// DKWindowInterface override
 				bool Create(const DKString& title, uint32_t style);
 				bool CreateProxy(void* systemHandle);
 				bool IsProxy(void) const;

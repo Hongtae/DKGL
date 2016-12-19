@@ -12,40 +12,62 @@
 #if !TARGET_OS_IPHONE
 #import "View.h"
 
-using WindowEvent = DKWindow::WindowEvent;
-using KeyboardEvent = DKWindow::KeyboardEvent;
-using MouseEvent = DKWindow::MouseEvent;
+@interface _DKView ()
+@property (nonatomic, strong) NSString* markedText;
+@end
 
 @implementation _DKView
 @synthesize markedText;
 @synthesize userInstance;
 @synthesize textInput;
 
+using WindowEvent = DKWindow::WindowEvent;
+using KeyboardEvent = DKWindow::KeyboardEvent;
+using MouseEvent = DKWindow::MouseEvent;
+
+- (void)setup
+{
+	modifierKeyFlags = 0;
+	holdMouse = NO;
+
+	self.textInput = 0;
+	self.userInstance = NULL;
+	self.markedText = nil;
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResizeNotification:) name:NSWindowDidResizeNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillMiniaturizeNotification:) name:NSWindowWillMiniaturizeNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMiniaturizeNotification:) name:NSWindowDidMiniaturizeNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidDeminiaturizeNotification:) name:NSWindowDidDeminiaturizeNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKeyNotification:) name:NSWindowDidBecomeKeyNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKeyNotification:) name:NSWindowDidResignKeyNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMoveNotification:) name:NSWindowDidMoveNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidHideNotification:) name:NSApplicationDidHideNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidUnhideNotification:) name:NSApplicationDidUnhideNotification object:nil];
+}
+
 - (instancetype)initWithFrame:(NSRect)frame
 {
 	self = [super initWithFrame:frame];
 	if (self)
-	{
-		modifierKeyFlags = 0;
-		holdMouse = NO;
+		[self setup];
+	return self;
+}
 
-		self.textInput = 0;
-		self.userInstance = NULL;
-		self.markedText = nil;
+- (instancetype)initWithCoder:(NSCoder*)coder
+{
+	self = [super initWithCoder:coder];
+	if (self)
+		[self setup];
+	return self;
+}
 
-
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResizeNotification:) name:NSWindowDidResizeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillMiniaturizeNotification:) name:NSWindowWillMiniaturizeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMiniaturizeNotification:) name:NSWindowDidMiniaturizeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidDeminiaturizeNotification:) name:NSWindowDidDeminiaturizeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKeyNotification:) name:NSWindowDidBecomeKeyNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKeyNotification:) name:NSWindowDidResignKeyNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMoveNotification:) name:NSWindowDidMoveNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
-
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidHideNotification:) name:NSApplicationDidHideNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidUnhideNotification:) name:NSApplicationDidUnhideNotification object:nil];
-	}
+- (instancetype)init
+{
+	self = [super init];
+	if (self)
+		[self setup];
 	return self;
 }
 

@@ -12,7 +12,6 @@
 #if !TARGET_OS_IPHONE
 #import <AppKit/AppKit.h>
 #import "View.h"
-
 #include "Window.h"
 
 using namespace DKFramework;
@@ -322,7 +321,6 @@ void Window::Minimize(void)
 		}
 	});
 }
-
 
 void Window::SetOrigin(const DKPoint& pt)
 {

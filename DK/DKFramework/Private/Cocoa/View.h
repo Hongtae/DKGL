@@ -26,7 +26,6 @@ using namespace DKFramework;
 	NSString* markedText;
 }
 
-@property (nonatomic, strong) NSString* markedText;
 @property (nonatomic, assign) DKWindow* userInstance;
 @property (nonatomic) BOOL textInput;
 @property (nonatomic) DKPoint mousePosition;

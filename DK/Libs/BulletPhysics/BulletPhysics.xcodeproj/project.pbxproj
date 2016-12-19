@@ -888,7 +888,6 @@
 		844921F4183F519700AD77B2 /* btWheelInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = btWheelInfo.cpp; sourceTree = "<group>"; };
 		844921F5183F519700AD77B2 /* btWheelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btWheelInfo.h; sourceTree = "<group>"; };
 		84492296183F51B300AD77B2 /* btMatrixX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btMatrixX.h; sourceTree = "<group>"; };
-		8485EC8F17C9A59100F63BE8 /* Android.mk */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Android.mk; sourceTree = "<group>"; };
 		84AEE909163922A900E9C01E /* btPolarDecomposition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = btPolarDecomposition.cpp; sourceTree = "<group>"; };
 		84AEE90A163922A900E9C01E /* btPolarDecomposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btPolarDecomposition.h; sourceTree = "<group>"; };
 		84C45DCA15A90E3F000A0982 /* btCollisionObjectWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = btCollisionObjectWrapper.h; sourceTree = "<group>"; };
@@ -1207,7 +1206,6 @@
 			isa = PBXGroup;
 			children = (
 				84427FE317CDB93300095E62 /* svn.txt */,
-				8485EC8F17C9A59100F63BE8 /* Android.mk */,
 				84C991AA13C8958D00B28333 /* src */,
 				84211EB21665ED6500B9B9A2 /* Extras */,
 				84C45F2D15A91A08000A0982 /* Products */,

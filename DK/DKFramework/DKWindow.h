@@ -67,7 +67,7 @@ namespace DKFramework
 			enum Device
 			{
 				GenericMouse = 0,
-				StylusPen,
+				Stylus,
 				Touch,
 				Unknown,
 			};
