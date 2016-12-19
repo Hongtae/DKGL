@@ -54,8 +54,8 @@ __pycache__/
 .idea/workspace.xml
 .idea/dictionaries/
 
-# Sphinx documentation
-docs/_build/
+# auto generated documents
+docs/*/
 
 # project settings
 Build/**
