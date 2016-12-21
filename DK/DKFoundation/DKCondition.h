@@ -8,71 +8,69 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCondition
-// condition object (pthread_cond)
-// can be used in multi-threaded,
-// threads can communicate with this object by generating signal.
-//
-// You should call Lock() before using, Unlock() when done.
-// Wait(), WaitTimeout() invocation will unlock temporary, re-lock when returns.
-//
-// Example:
-//  // thread #1
-//  cond.Lock();    // lock before access value directly.
-//  value = false;  // modify value which is shared between multiple-threads.
-//  cond.Signal();  // nodify value has been changed to other thread.
-//  cond.Unlock();  // done
-//
-//  // thread#2 using Wait() function.
-//  cond.Lock();
-//  while ( value )
-//      cond.Wait();  // wait until value become to 'true'.
-//  // do-something.. value is true.
-//  cond.Unlock();  // done!
-//
-//  // thread#3 using WaitTimeOut() function.
-//  cond.Lock();
-//  if (cond.WaitTimeout(3.0))  // wait for 3 secs
-//  {
-//      // signal-state, check value
-//  }
-//  else
-//  {
-//      // time-out! do something.. thread still locked.
-//  }
-//  cond.Unlock();  // done!
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief Condition object (pthread_cond)
+	/// This class can be used in multi-threaded,
+	/// threads can communicate with this object by generating signal.
+	///
+	/// You should call Lock() before using, Unlock() when done.
+	/// Wait(), WaitTimeout() invocation will unlock temporary, re-lock when returns.
+	///
+	/// @code
+	///  // thread #1
+	///  cond.Lock();    // lock before access value directly.
+	///  value = false;  // modify value which is shared between multiple-threads.
+	///  cond.Signal();  // nodify value has been changed to other thread.
+	///  cond.Unlock();  // done
+	/// @endcode
+	/// @code
+	///  // thread#2 using Wait() function.
+	///  cond.Lock();
+	///  while ( value )
+	///      cond.Wait();  // wait until value become to 'true'.
+	///  // do-something.. value is true.
+	///  cond.Unlock();  // done!
+	/// @endcode
+	/// @code
+	///  // thread#3 using WaitTimeOut() function.
+	///  cond.Lock();
+	///  if (cond.WaitTimeout(3.0))  // wait for 3 secs
+	///  {
+	///      // signal-state, check value
+	///  }
+	///  else
+	///  {
+	///      // time-out! do something.. thread still locked.
+	///  }
+	///  cond.Unlock();  // done!
+	/// @endcode
 	class DKGL_API DKCondition
 	{
 	public:
 		DKCondition(void);
 		~DKCondition(void);
 
-		// wait until signal
+		/// wait until signal
 		void Wait(void) const;
 
-		// wait until signal or timed-out
-		// return true if signal state else return false (timed-out)
+		/// wait until signal or timed-out
+		/// return true if signal state else return false (timed-out)
 		bool WaitTimeout(double t) const;
 
-		// generate signal, wake other thread.
+		/// Signals the condition, waking up one thread waiting on it.
 		void Signal(void) const;
-		// broadcasting signal, wake all threads in order.
+		/// Signals the condition, waking up all threads waiting on it.
 		void Broadcast(void) const;
 
-		// lock context
+		/// lock context
 		void Lock(void) const;
-		// try lock context, return true if lock succeeded.
+		/// try lock context, return true if lock succeeded.
 		bool TryLock(void) const;
 		void Unlock(void) const;
 
 	private:
-		// copy constructor not allowed.
-		DKCondition(const DKCondition&);
+		DKCondition(const DKCondition&) = delete;
 		DKCondition& operator = (const DKCondition&) = delete;
 		void* impl;
 	};

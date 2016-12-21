@@ -14,18 +14,14 @@
 #include "DKMemory.h"
 #include "DKFunction.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKQueue
-// queue class, items can be added or removed from both sides (head, tail).
-//
-// Note:
-//   PushFront() with multiple items: returns first item's pointer. (temporal)
-//   PushBack() with multiple items: returns last item's pointer. (temporal)
-//   Do not store pointer address returned by above functions!
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief queue class, items can be added or removed from both sides (head, tail).
+	///
+	/// @note
+	///   PushFront() with multiple items: returns first item's pointer. (temporal)
+	///   PushBack() with multiple items: returns last item's pointer. (temporal)
+	///   Do not store pointer address returned by above functions!
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKQueue
 	{
@@ -37,8 +33,8 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
-		// lock is public. enables object could be locked from outside.
-		// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
+		/// lock is public. enables object could be locked from outside.
+		/// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
 		Lock	lock;
 
 		DKQueue(void)
@@ -311,7 +307,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		// copy value. thread-safe.
+		/// copy value. thread-safe.
 		bool CopyValue(VALUE& value, unsigned long index) const
 		{
 			CriticalSection guard(lock);
@@ -322,9 +318,9 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		// since Value() returns reference,
-		// be aware of items modifications by other threads.
-		// Use CopyValue() for multi-threaded.
+		/// since Value() returns reference,
+		/// be aware of items modifications by other threads.
+		/// Use CopyValue() for multi-threaded.
 		VALUE& Value(unsigned long index)
 		{
 			CriticalSection guard(lock);
@@ -337,14 +333,14 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count > index);
 			return data[begin+index];
 		}
-		// type-casting, object should be locked before calling this operator.
+		/// type-casting, object should be locked before calling this operator.
 		operator VALUE* (void)
 		{
 			if (count > 0)
 				return &data[begin];
 			return NULL;
 		}
-		// type-casting, object should be locked before calling this operator.
+		/// type-casting, object should be locked before calling this operator.
 		operator const VALUE* (void) const
 		{
 			if (count > 0)
@@ -356,8 +352,8 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return count;
 		}
-		// CountNoLock: counting objects without locking.
-		// Usable when objects has been locked.
+		/// counting objects without locking.
+		/// Usable when objects has been locked.
 		size_t CountNoLock(void) const
 		{
 			return count;
@@ -458,10 +454,10 @@ namespace DKFoundation
 			PushBack(il);
 			return *this;
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -480,7 +476,7 @@ namespace DKFoundation
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

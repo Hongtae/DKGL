@@ -10,13 +10,9 @@
 #include "DKMemory.h"
 #include "DKAllocatorChain.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAllocator
-// interface class for memory allocation, deallocation.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// Interface class for memory allocation, deallocation.
 	class DKGL_API DKAllocator : public DKAllocatorChain
 	{
 	public:
@@ -36,12 +32,8 @@ namespace DKFoundation
 	};
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// operator new, delete
-//
-// allocate memory and tracking reference-count by DKAllocator object.
-// You need DKAllocator or inherited object.
-////////////////////////////////////////////////////////////////////////////////
-
-DKGL_API void* operator new (size_t, DKFoundation::DKAllocator&);	// to generation internal ref-count.
-DKGL_API void operator delete (void*, DKFoundation::DKAllocator&);	// invoked when allocation failed.
+/// allocate memory and tracking reference count by DKAllocator object.
+/// You have to provide your allocator (DKAllocator subclass) object.
+DKGL_API void* operator new (size_t, DKFoundation::DKAllocator&);
+/// Invoked when allocation failed.
+DKGL_API void operator delete (void*, DKFoundation::DKAllocator&);

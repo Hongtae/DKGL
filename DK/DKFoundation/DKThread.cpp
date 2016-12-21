@@ -27,8 +27,8 @@
 #include "DKLog.h"
 
 #ifndef POSIX_USE_SELECT_SLEEP
-// Set POSIX_USE_SELECT_SLEEP to 1 if you want use 'select' instead of 'nanosleep'.
-// ignored on Win32.
+/// Set POSIX_USE_SELECT_SLEEP to 1 if you want use 'select' instead of 'nanosleep'.
+/// ignored on Win32.
 #define POSIX_USE_SELECT_SLEEP	1
 #endif
 

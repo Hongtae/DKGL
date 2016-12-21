@@ -11,25 +11,23 @@
 #include "DKTransform.h"
 #include "DKAnimationController.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKModel
-// a skeletal node object for scene (DKWorld).
-// this object can be structured hierarchical. (parent-children relationship)
-// this is basic entry for scene.
-// this object can be animated with DKAnimationController.
-//
-// Note:
-//    On serialize, world-transform will not saved, calculated with local
-//    transform after restored.
-//    If you subclass, you should override Clone() with your inherited type.
-//    In case of constraint (DKConstraint), not all objects can be accepted as
-//    parent which is DKConstraint's reference bodies. You can overrides this
-//    behavior.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
 	class DKWorld;
+	/// @brief
+	/// a skeletal node object for scene (DKWorld).
+	/// @details
+	/// this object can be structured hierarchical. (parent-children relationship)
+	/// this is basic entry for scene.
+	/// this object can be animated with DKAnimationController.
+	///
+	/// @note
+	///    On serialize, world-transform will not saved, calculated with local
+	///    transform after restored.
+	///    If you subclass, you should override Clone() with your inherited type.
+	///    In case of constraint (DKConstraint), not all objects can be accepted as
+	///    parent which is DKConstraint's reference bodies. You can overrides this
+	///    behavior.
 	class DKGL_API DKModel : public DKResource
 	{
 	public:
@@ -77,7 +75,7 @@ namespace DKFramework
 		const DKModel* ChildAtIndex(unsigned int i) const		{ return children.Value(i); }
 		size_t NumberOfChildren(void) const						{ return children.Count(); }
 
-		// show/hide all descendants (not self)
+		/// show/hide all descendants (not self)
 		void SetDescendantsHidden(bool hidden)			{ hideDescendants = hidden; }
 		bool AreDescendantsHidden(void) const			{ return hideDescendants; }
 		bool DidAncestorHideDescendants(void) const;
@@ -96,20 +94,18 @@ namespace DKFramework
 		const DKNSTransform& WorldTransform(void) const		{ return worldTransform; }
 		const DKNSTransform& LocalTransform(void) const		{ return localTransform; }
 
-		void CreateNamedObjectMap(NamedObjectMap&); // building object map for search by name.
-		void CreateUUIDObjectMap(UUIDObjectMap&);   // building object map for search by UUID.
+		void CreateNamedObjectMap(NamedObjectMap&); ///< building object map for search by name.
+		void CreateUUIDObjectMap(UUIDObjectMap&);   ///< building object map for search by UUID.
 
-		// UpdateKinematic : before simulate
-		// UpdateSceneState : after simulate, before rendering
-		void UpdateKinematic(double timeDelta, DKTimeTick tick);
-		void UpdateSceneState(const DKNSTransform&);
+		void UpdateKinematic(double timeDelta, DKTimeTick tick); ///< update before simulate begin
+		void UpdateSceneState(const DKNSTransform&);			 ///< update after simulate, before render begin
 
 		void UpdateLocalTransform(bool recursive = true);
 		void UpdateWorldTransform(bool recursive = true);
 
-		// clone object. (internal resources are shared)
+		/// clone object. (internal resources are shared)
 		DKObject<DKModel> Clone(void) const;
-		// serializer
+		/// serializer
 		DKObject<DKSerializer> Serializer(void) override;
 
 	protected:

@@ -10,18 +10,14 @@
 #include "DKTypes.h"
 #include "DKTypeList.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKTypeTraits
-// a template type traits class.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
-	// type traits of global function pointer.
+	/// type traits of global function pointer.
 	template <typename> struct DKFunctionPointerTraits
 	{
 		enum {IsFunctionPointer = false};
 	};
+	/// type traits of global function pointer.
 	template <typename R, typename... Args> struct DKFunctionPointerTraits<R(*)(Args...)>
 	{
 		enum {IsFunctionPointer = true};
@@ -31,6 +27,7 @@ namespace DKFoundation
 		using GenericType = R (Args...);
 		using PointerType = R (*)(Args...);
 	};
+	/// type traits of global function pointer.
 	template <typename R, typename... Args> struct DKFunctionPointerTraits<R(*)(Args..., ...)>
 	{
 		enum {IsFunctionPointer = true};
@@ -40,11 +37,12 @@ namespace DKFoundation
 		using GenericType = R (Args..., ...);
 		using PointerType = R (*)(Args..., ...);
 	};
-	// type traits of class member functions.
+	/// type traits of class member functions.
 	template <typename> struct DKMemberFunctionPointerTraits
 	{
 		enum {IsFunctionPointer = false};
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args...)>
 	{
 		enum {IsFunctionPointer = true};
@@ -57,6 +55,7 @@ namespace DKFoundation
 		using GenericType = R (Args...);
 		using PointerType = R (ClassType::*)(Args...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args..., ...)>
 	{
 		enum {IsFunctionPointer = true};
@@ -69,6 +68,7 @@ namespace DKFoundation
 		using GenericType = R (Args..., ...);
 		using PointerType = R (ClassType::*)(Args..., ...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args...) const>
 	{
 		enum {IsFunctionPointer = true};
@@ -81,6 +81,7 @@ namespace DKFoundation
 		using GenericType = R (Args...);
 		using PointerType = R (ClassType::*)(Args...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args..., ...) const>
 	{
 		enum {IsFunctionPointer = true};
@@ -93,6 +94,7 @@ namespace DKFoundation
 		using GenericType = R (Args..., ...);
 		using PointerType = R (ClassType::*)(Args..., ...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args...) volatile>
 	{
 		enum {IsFunctionPointer = true};
@@ -105,6 +107,7 @@ namespace DKFoundation
 		using GenericType = R (Args...);
 		using PointerType = R (ClassType::*)(Args...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args..., ...) volatile>
 	{
 		enum {IsFunctionPointer = true};
@@ -117,6 +120,7 @@ namespace DKFoundation
 		using GenericType = R (Args..., ...);
 		using PointerType = R (ClassType::*)(Args..., ...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args...) const volatile>
 	{
 		enum {IsFunctionPointer = true};
@@ -129,6 +133,7 @@ namespace DKFoundation
 		using GenericType = R (Args...);
 		using PointerType = R (ClassType::*)(Args...);
 	};
+	/// type traits of class member functions.
 	template <typename R, class C, typename... Args> struct DKMemberFunctionPointerTraits<R(C::*)(Args..., ...) const volatile>
 	{
 		enum {IsFunctionPointer = true};
@@ -141,7 +146,7 @@ namespace DKFoundation
 		using GenericType = R (Args..., ...);
 		using PointerType = R (ClassType::*)(Args..., ...);
 	};
-
+	/// basic type traits
 	template <typename T> class DKTypeTraits : public DKTypeTraitsCppExt<T>
 	{
 		template <typename U> struct ReferenceTraits

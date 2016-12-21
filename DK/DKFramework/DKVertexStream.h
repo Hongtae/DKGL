@@ -8,19 +8,17 @@
 #pragma once
 #include "../DKFoundation.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKVertexStream
-// predefined stream type. stream type should be matched with defined in shader.
-// you can retrieve stream types from shader program. (see DKShaderProgram.h)
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief predefined stream type.
+	///
+	/// stream type should be matched with defined in shader.
+	/// you can retrieve stream types from shader program. (see DKShaderProgram.h)
 	struct DKVertexStream
 	{
 		enum Stream : unsigned char
 		{
-			StreamUnknown = 0,		// regard to error
+			StreamUnknown = 0,		///< regard to error
 			StreamPosition,
 			StreamNormal,
 			StreamColor,
@@ -29,7 +27,7 @@ namespace DKFramework
 			StreamBitangent,
 			StreamBlendIndices,
 			StreamBlendWeights,
-			StreamUserDefine,		// user-define (you can access by name, at shader)
+			StreamUserDefine,		///< user-define (you can access by name, at shader)
 			StreamMax,
 		};
 		enum Type : unsigned char
@@ -67,7 +65,7 @@ namespace DKFramework
 		size_t					components;
 		int						location;
 
-		// utils
+		/// calculate type size
 		static size_t TypeSize(Type t)
 		{
 			switch (t)

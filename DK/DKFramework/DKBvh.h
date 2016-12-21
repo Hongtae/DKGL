@@ -11,14 +11,11 @@
 #include "DKLine.h"
 #include "DKAabb.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKBvh
-// implementation of BVH (Bounding volume hierarchy) to perform ray-test fast.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief
+	/// implementation of BVH (Bounding volume hierarchy) to perform ray-test faster.
 	class DKGL_API DKBvh
 	{
 	public:
@@ -44,21 +41,21 @@ namespace DKFramework
 
 		DKAabb Aabb(void) const;
 
-		// RayCastResultCallback : filter-callback function,
-		//   return false if ray-test no longer necessary.
-		//   return true if callback needs next ray hit object continuously.
-		// All filter callback returns false, this function returns false even if one or more
-		// ray hits detected. In this case, you need to get ray-test result from the callback.
-		// parameter: (object-index, line)
+		/// RayCastResultCallback : filter-callback function,
+		///   return false if ray-test no longer necessary.
+		///   return true if callback needs next ray hit object continuously.
+		/// All filter callback returns false, this function returns false even if one or more
+		/// ray hits detected. In this case, you need to get ray-test result from the callback.
+		/// parameter: (object-index, line)
 		using RayCastResultCallback = DKFunctionSignature<bool (int, const DKLine&)>;
 		bool RayTest(const DKLine& ray, RayCastResultCallback*) const;
 
-		// AabbCastResultCallback : filter-callback function.
-		//   return false if aabb-overlap test no longer necessary.
-		//   return true if callback needs next overlapped object continously.
-		// All filter callback returns false, this function returns false even if one or more
-		// overlap detected. In this case, you need to get ray-test result from the callback.
-		// parameter: (object-index, aabb)
+		/// AabbCastResultCallback : filter-callback function.
+		///   return false if aabb-overlap test no longer necessary.
+		///   return true if callback needs next overlapped object continously.
+		/// All filter callback returns false, this function returns false even if one or more
+		/// overlap detected. In this case, you need to get ray-test result from the callback.
+		/// parameter: (object-index, aabb)
 		using AabbOverlapResultCallback = DKFunctionSignature<bool (int, const DKAabb&)>;
 		bool AabbOverlapTest(const DKAabb& aabb, AabbOverlapResultCallback*) const;
 

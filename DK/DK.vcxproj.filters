@@ -983,6 +983,12 @@
     <ClInclude Include="DKFramework\Private\Win32\Window.h">
       <Filter>DKFramework\Private\Win32</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\CocoaTouch\View.h">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\CocoaTouch\ViewController.h">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm">
@@ -1011,6 +1017,12 @@
       <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
     <None Include="DKFramework\Private\CocoaTouch\Window.mm">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </None>
+    <None Include="DKFramework\Private\CocoaTouch\View.mm">
+      <Filter>DKFramework\Private\CocoaTouch</Filter>
+    </None>
+    <None Include="DKFramework\Private\CocoaTouch\ViewController.mm">
       <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
   </ItemGroup>

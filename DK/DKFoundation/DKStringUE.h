@@ -9,22 +9,18 @@
 #include "../DKInclude.h"
 #include <stdarg.h>		// for va_list
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStringUE.h
-// a unicode string conversion utility.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// DKString encoder / decoder list
 	enum class DKStringEncoding
 	{
-		UTF8,
-		UTF16,		// system byteorder
-		UTF32,		// system byteorder
-		UTF16BE,
-		UTF16LE,
-		UTF32BE,
-		UTF32LE,
+		UTF8,		///< UTF-8 without BOM
+		UTF16,		///< UTF-16 with system byteorder without BOM
+		UTF32,		///< UTF-32 with system byteorder without BOM
+		UTF16BE,	///< UTF-16 BigEndian without BOM
+		UTF16LE,	///< UTF-16 LittleEndian without BOM
+		UTF32BE,	///< UTF-32 BigEndian without BOM
+		UTF32LE,	///< UTF-32 LittleEndian without BOM
 	};
 
 #if defined(DKUNICODE_NATIVE)
@@ -49,7 +45,7 @@ namespace DKFoundation
 	class DKStringW;
 
 	DKGL_API DKStringEncoding DKStringWEncoding(void);
-	DKGL_API DKStringEncoding DKStringU8Encoding(void);	// always return DKStringEncodingUTF8
+	DKGL_API DKStringEncoding DKStringU8Encoding(void);	///< always return DKStringEncodingUTF8
 	DKGL_API const char* DKStringEncodingCanonicalName(DKStringEncoding e);
 
 	DKGL_API void DKStringEncode(DKBuffer* output, const DKStringU8& input, DKStringEncoding e);

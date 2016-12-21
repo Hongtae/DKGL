@@ -10,13 +10,9 @@
 #include "DKVector3.h"
 #include "DKConvexShape.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKSphereShape
-// an implicit sphere class. centered local origin with radius.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief an implicit sphere class. centered local origin with radius.
 	class DKGL_API DKSphereShape : public DKConvexShape
 	{
 	public:

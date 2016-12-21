@@ -11,14 +11,9 @@
 #include "DKData.h"
 #include "DKObject.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKDataStream
-// using DKData as a stream (DKStream)
-// provide stream interface.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief Stream object for data (DKData)
 	class DKGL_API DKDataStream : public DKStream
 	{
 	public:
@@ -44,7 +39,7 @@ namespace DKFoundation
 	private:
 		size_t offset;
 		DKObject<DKData> data;
-		DKDataStream(const DKDataStream& ds);
-		DKDataStream& operator = (const DKDataStream& ds);
+		DKDataStream(const DKDataStream& ds) = delete;
+		DKDataStream& operator = (const DKDataStream& ds) = delete;
 	};
 }

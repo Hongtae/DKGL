@@ -12,22 +12,18 @@
 #include "DKString.h"
 
 
-////////////////////////////////////////////////////////////////////////////////
-// DKHash
-// following hash digest algorithms are supported.
-// CRC32, MD5, SHA1, SHA2, SHA-224, SHA-256, SHA-384, SHA-512
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief Hash context, returned by DKHash
+	///
+	/// You can access digest result or represent as a string.
 	template <typename BASE, int BIT> struct DKHashResult
 	{
 		enum {
 			UnitSize = sizeof(BASE),
 			Length = BIT / (sizeof(BASE) * 8),
 		};
-		BASE digest[Length];
+		BASE digest[Length]; ///< hash digest in unit size (usually uint32_t)
 
 		bool operator == (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) == 0;}
 		bool operator != (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) != 0;}
@@ -36,7 +32,7 @@ namespace DKFoundation
 		bool operator >= (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) >= 0;}
 		bool operator <= (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) <= 0;}
 
-		DKString String(void) const
+		DKString String(void) const ///< represent hash digest as a string
 		{
 			char buff[Length * 8];
 			char* tmp = buff;
@@ -57,23 +53,33 @@ namespace DKFoundation
 		}
 	};
 	
-	typedef DKHashResult<uint32_t, 32>	DKHashResult32;			// CRC32
-	typedef DKHashResult<uint32_t, 128>	DKHashResult128;		// MD5
-	typedef DKHashResult<uint32_t, 160>	DKHashResult160;		// SHA1
-	typedef DKHashResult<uint32_t, 224>	DKHashResult224;		// SHA2 (SHA-224)
-	typedef DKHashResult<uint32_t, 256>	DKHashResult256;		// SHA2 (SHA-256)
-	typedef DKHashResult<uint32_t, 384>	DKHashResult384;		// SHA2 (SHA-384)
-	typedef DKHashResult<uint32_t, 512>	DKHashResult512;		// SHA2 (SHA-512)
+	/// Hash context for CRC32
+	typedef DKHashResult<uint32_t, 32>	DKHashResult32;
+	/// Hash context for MD5
+	typedef DKHashResult<uint32_t, 128>	DKHashResult128;
+	/// Hash context for SHA1
+	typedef DKHashResult<uint32_t, 160>	DKHashResult160;
+	/// Hash context for SHA2 (SHA-224)
+	typedef DKHashResult<uint32_t, 224>	DKHashResult224;
+	/// Hash context for SHA2 (SHA-256)
+	typedef DKHashResult<uint32_t, 256>	DKHashResult256;
+	/// Hash context for SHA2 (SHA-384)
+	typedef DKHashResult<uint32_t, 384>	DKHashResult384;
+	/// Hash context for SHA2 (SHA-512)
+	typedef DKHashResult<uint32_t, 512>	DKHashResult512;
 	
-	DKGL_API DKHashResult32  DKHashCRC32(const void* p, size_t len);	// CRC32
-	DKGL_API DKHashResult128 DKHashMD5(const void* p, size_t len);		// MD5
-	DKGL_API DKHashResult160 DKHashSHA1(const void* p, size_t len);		// SHA1
-	DKGL_API DKHashResult224 DKHashSHA224(const void* p, size_t len);	// SHA2 (SHA-224)
-	DKGL_API DKHashResult256 DKHashSHA256(const void* p, size_t len);	// SHA2 (SHA-256)
-	DKGL_API DKHashResult384 DKHashSHA384(const void* p, size_t len);	// SHA2 (SHA-384)
-	DKGL_API DKHashResult512 DKHashSHA512(const void* p, size_t len);	// SHA2 (SHA-512)
+	DKGL_API DKHashResult32  DKHashCRC32(const void* p, size_t len);	///< CRC32
+	DKGL_API DKHashResult128 DKHashMD5(const void* p, size_t len);		///< MD5
+	DKGL_API DKHashResult160 DKHashSHA1(const void* p, size_t len);		///< SHA1
+	DKGL_API DKHashResult224 DKHashSHA224(const void* p, size_t len);	///< SHA2 (SHA-224)
+	DKGL_API DKHashResult256 DKHashSHA256(const void* p, size_t len);	///< SHA2 (SHA-256)
+	DKGL_API DKHashResult384 DKHashSHA384(const void* p, size_t len);	///< SHA2 (SHA-384)
+	DKGL_API DKHashResult512 DKHashSHA512(const void* p, size_t len);	///< SHA2 (SHA-512)
 
-
+	/// @brief Hash calculation class
+	///
+	/// Following hash digest algorithms are supported.\n
+	/// CRC32, MD5, SHA1, SHA2, SHA-224, SHA-256, SHA-384, SHA-512
 	class DKGL_API DKHash
 	{
 	public:
@@ -87,13 +93,13 @@ namespace DKFoundation
 	protected:
 		enum Type
 		{
-			Type32,		// CRC32
-			Type128,	// MD5
-			Type160,	// SHA1
-			Type224,	// SHA2 (SHA-224)
-			Type256,	// SHA2 (SHA-256)
-			Type384,	// SHA2 (SHA-384)
-			Type512,	// SHA2 (SHA-512)
+			Type32,		///< CRC32
+			Type128,	///< MD5
+			Type160,	///< SHA1
+			Type224,	///< SHA2 (SHA-224)
+			Type256,	///< SHA2 (SHA-256)
+			Type384,	///< SHA2 (SHA-384)
+			Type512,	///< SHA2 (SHA-512)
 		};
 		enum Name
 		{

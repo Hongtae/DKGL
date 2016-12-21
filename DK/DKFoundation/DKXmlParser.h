@@ -12,14 +12,11 @@
 #include "DKStream.h"
 #include "DKArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKXmlParser
-// a SAX parser, You need subclass to define behaviors while parsing.
-// this class provides parsing DTD.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// a SAX parser, You need subclass to define behaviors while parsing.
+	/// this class provides parsing DTD.
+	/// @see DKXmlDocument
 	class DKGL_API DKXmlParser
 	{
 	public:

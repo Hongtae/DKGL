@@ -12,70 +12,72 @@
 #include "DKAllocator.h"
 #include "DKObjectRefCounter.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKObject
-// a simple smart pointer object.
-// you can use this class without using ref-counted object.
-// this class provide 'weak-reference' feature also.
-//
-// an object which allocated by DKAllocator is ref-counted automatically.
-// you can use ref-counted state with your own class/struct which is not
-// allocated by DKAllocator, you should provide your allocator in this case.
-// even POD types are supported. if you don't provide your allocator,
-// object becomes not-ref-counted state and you must delete manually.
-//
-// You can share ownership between multiple DKObject by assign or copy constructor.
-// You can even share ownership with raw pointer or weak reference.
-//
-// Example:
-//   DKObject<OBJECT> obj1 = DKOBJECT_NEW Object();  // create new instance.
-//   DKObject<OBJECT> obj2 = obj1;          // share ownership with copy constructor.
-//   OBJECT* raw_ptr = obj2;                // cast to raw-pointer.
-//   DKObject<OBJECT> obj3 = raw_ptr;       // share ownership with raw-pointer.
-//   DKObject<OBJECT>::Ref weak_ref = obj1; // cast to weak-reference.
-//   DKObject<OBJECT> obj4 = weak_ref;      // share ownership with weak-reference.
-//
-//
-// How to create object by using DKObject:
-// 1. DKObject::New() function
-//     DKObject<OBJECT> p1 = DKObject<OBJECT>::New();
-//     DKObject<OBJECT> p2 = DKObject<OBJECT>::New( arg1, arg2 ...);
-//
-// 2. DKOBJECT_NEW macro
-//     DKObject<OBJECT> p1 = DKOBJECT_NEW OBJECT();
-//     DKObject<OBJECT> p2 = DKOBJECT_NEW OBJECT( arg1, arg2, ...);
-//
-// 2. DKObject::Alloc() with custom allocator
-//     DKObject<OBJECT> p1 = DKObject<OBJECT>::Alloc( myAllocator );
-//     DKObject<OBJECT> p1 = DKObject<OBJECT>::Alloc( myAllocator, ...);
-//
-//
-// About DKObject::New() parameters:
-// 1. no-arguments (default constructor)
-//     DKObject<OBJECT> p = DKObject<OBJECT>::New();
-// 2. using copy constructor
-//     DKObject<OBJECT> p = DKObject<OBJECT>::New(obj);
-// 3. multiple arguments for constructor
-//     DKObject<OBJECT> p = DKObject<OBJECT>::New(p1,p2,..);
-// 4. using DKOBJECT_NEW macro
-//	   DKObject<OBJECT> p = DKOBJECT_NEW OBJECT(p1,p2,..);
-//
-// Using weak-reference:
-//     DKObject<OBJECT> p = DKObject<OBJECT>::New();
-//     DKObject<OBJECT>::Ref ref = p; // get weak-ref from p
-//     p = NULL; // destory p
-//     DKObject<OBJECT> p2 = ref;  // p2 = NULL (ref invalidated)
-//
-// Note:
-//   1. You cannot use DKObject<void>
-//   2. if you have multiple-inheritanced class which does not polymorphic type,
-//      then you will lost object if you cast your object to other types.
-////////////////////////////////////////////////////////////////////////////////
-
 #define DKOBJECT_NEW			new(DKAllocator::DefaultAllocator())
 
 namespace DKFoundation
 {
+	/// @brief a simple smart pointer object.
+	/// you can use this class without using ref-counted object.
+	/// this class provide 'weak-reference' feature also.
+	///
+	/// an object which allocated by DKAllocator is ref-counted automatically.
+	/// you can use ref-counted state with your own class/struct which is not
+	/// allocated by DKAllocator, you should provide your allocator in this case.
+	/// even POD types are supported. if you don't provide your allocator,
+	/// object becomes not-ref-counted state and you must delete manually.
+	///
+	/// You can share ownership between multiple DKObject by assign or copy constructor.
+	/// You can even share ownership with raw pointer or weak reference.
+	///
+	/// Example:
+	/// @code
+	///   DKObject<OBJECT> obj1 = DKOBJECT_NEW Object();  // create new instance.
+	///   DKObject<OBJECT> obj2 = obj1;          // share ownership with copy constructor.
+	///   OBJECT* raw_ptr = obj2;                // cast to raw-pointer.
+	///   DKObject<OBJECT> obj3 = raw_ptr;       // share ownership with raw-pointer.
+	///   DKObject<OBJECT>::Ref weak_ref = obj1; // cast to weak-reference.
+	///   DKObject<OBJECT> obj4 = weak_ref;      // share ownership with weak-reference.
+	/// @endcode
+	///
+	/// How to create object by using DKObject:
+	/// @code
+	/// 1. DKObject::New() function
+	///     DKObject<OBJECT> p1 = DKObject<OBJECT>::New();
+	///     DKObject<OBJECT> p2 = DKObject<OBJECT>::New( arg1, arg2 ...);
+	///
+	/// 2. DKOBJECT_NEW macro
+	///     DKObject<OBJECT> p1 = DKOBJECT_NEW OBJECT();
+	///     DKObject<OBJECT> p2 = DKOBJECT_NEW OBJECT( arg1, arg2, ...);
+	///
+	/// 2. DKObject::Alloc() with custom allocator
+	///     DKObject<OBJECT> p1 = DKObject<OBJECT>::Alloc( myAllocator );
+	///     DKObject<OBJECT> p1 = DKObject<OBJECT>::Alloc( myAllocator, ...);
+	/// @endcode
+	///
+	/// About DKObject::New() parameters:
+	/// @code
+	/// 1. no-arguments (default constructor)
+	///     DKObject<OBJECT> p = DKObject<OBJECT>::New();
+	/// 2. using copy constructor
+	///     DKObject<OBJECT> p = DKObject<OBJECT>::New(obj);
+	/// 3. multiple arguments for constructor
+	///     DKObject<OBJECT> p = DKObject<OBJECT>::New(p1,p2,..);
+	/// 4. using DKOBJECT_NEW macro
+	///	   DKObject<OBJECT> p = DKOBJECT_NEW OBJECT(p1,p2,..);
+	/// @endcode
+	///
+	/// Using weak-reference:
+	/// @code
+	///     DKObject<OBJECT> p = DKObject<OBJECT>::New();
+	///     DKObject<OBJECT>::Ref ref = p; // get weak-ref from p
+	///     p = NULL; // destory p
+	///     DKObject<OBJECT> p2 = ref;  // p2 = NULL (ref invalidated)
+	/// @endcode
+	///
+	/// @note
+	///   1. You cannot use DKObject<void>
+	///   2. if you have multiple-inheritanced class which does not polymorphic type,
+	///      then you will lost object if you cast your object to other types.
 	template <typename T> class DKObject
 	{
 	public:
@@ -198,7 +200,7 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		// casting Ref (weak-ref)
+		/// casting Ref (weak-ref)
 		operator Ref (void) const
 		{
 			Ref ref;
@@ -245,7 +247,8 @@ namespace DKFoundation
 				return ref;
 			return 0;
 		}
-		// determine base address of polymorphic type
+		/// determine base address of polymorphic type.
+		/// For an object have multiple inheritance, it returns starting address.
 		void* BaseAddress(void) const
 		{
 			return BaseAddress(_target);
@@ -297,7 +300,7 @@ namespace DKFoundation
 
 	template <typename T> using DKWeakRef = typename DKObject<T>::Ref;
 
-	// To provide external linkage for internal object
+	/// To provide external linkage for internal object
 	class DKUnknown
 	{
 	public:

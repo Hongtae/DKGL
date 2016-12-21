@@ -9,15 +9,12 @@
 #include "../DKFoundation.h"
 #include "DKVector2.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKSize
-// a size object, which has width, height. It can be used measured unit size
-// of 2 dimensional logical coordinates.
-///////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief
+	/// a size object, which has width, height. It can be used measured unit size
+	/// of 2 dimensional logical coordinates.
 	class DKGL_API DKSize
 	{
 	public:

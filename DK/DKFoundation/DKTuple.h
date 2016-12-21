@@ -11,44 +11,9 @@
 #include "DKTypeList.h"
 #include "DKTypeTraits.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKTuple
-// A tuple template class.
-// Tuple can contains various types and values.
-//
-// Example:
-//  - create object and set values.
-//     DKTuple<int, float, const char*> myTuple;
-//     myTuple.SetValue<0>(2, 3.14f, "tuple");
-//
-//  - set values individually.
-//     DKTuple<int, float, const char*> myTuple;
-//     myTuple.SetValue<0>(2);
-//     myTuple.SetValue<1>(3.14f);
-//     myTuple.SetValue<2>("tuple");
-//
-//  - using DKTupleMake helper function.
-//     auto myTuple = DKTupleMake(2, 3.14f, "tuple");
-//
-//  - use tuple class constructor.
-//     DKTuple<int, float, const char*> myTuple(DKTupleValueSet(), 2, 3.14f, "tuple");
-//
-//     (You must specify DKTupleValueSet() as first argument,
-//      it is dummy object but required for overloaded constructor
-//      which makes compiler able to distinguish constructer
-//      with variadic-initial-values from other constructors.)
-//
-//  - retrieve value from tuple.
-//   int n = myTuple.Value<0>();
-//   float f = myTuple.Value<1>();
-//   const char* str = myTuple.Value<2>();
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
-	// DKTupleUnit: a class which can store value for specified template type.
-	// Note: References are stored as pointers.
+	/// A class which can store value for specified template type.
 	template <typename T> struct DKTupleUnit
 	{
 		using ValueType = typename DKTypeTraits<T>::UnqualifiedType;
@@ -89,6 +54,9 @@ namespace DKFoundation
 			return *this;
 		}
 	};
+	/// A class which can store value for specified template type.
+	/// @note
+	///  References are stored as a pointer.
 	template <typename T> struct DKTupleUnit<T&>
 	{
 		using ValueType = typename DKTypeTraits<T>::UnqualifiedType*;
@@ -123,6 +91,9 @@ namespace DKFoundation
 			return *this;
 		}
 	};
+	/// A class which can store value for specified template type.
+	/// @note
+	///  References are stored as a pointer.
 	template <typename T> struct DKTupleUnit<T&&>
 	{
 		using ValueType = typename DKTypeTraits<T>::UnqualifiedType;
@@ -157,9 +128,48 @@ namespace DKFoundation
 		}
 	};
 
-	// DKTupleValueSet: a dummy type for overloaded constructor.
-	// Required for overloaded function with variadic templates.
+	/// A dummy marker type for overloaded constructor.
+	/// Required for overloaded function with variadic templates.
 	struct DKTupleValueSet {};
+
+	/// @brief A tuple template class.
+	/// Tuple can contains various types and values.
+	///
+	/// Example:
+	///  - create object and set values.
+	/// @code
+	///     DKTuple<int, float, const char*> myTuple;
+	///     myTuple.SetValue<0>(2, 3.14f, "tuple");
+	/// @endcode
+	///  - set values individually.
+	/// @code
+	///     DKTuple<int, float, const char*> myTuple;
+	///     myTuple.SetValue<0>(2);
+	///     myTuple.SetValue<1>(3.14f);
+	///     myTuple.SetValue<2>("tuple");
+	/// @endcode
+	///
+	///  - using DKTupleMake helper function.
+	/// @code
+	///     auto myTuple = DKTupleMake(2, 3.14f, "tuple");
+	/// @endcode
+	///
+	///  - use tuple class constructor.
+	/// @code
+	///     DKTuple<int, float, const char*> myTuple(DKTupleValueSet(), 2, 3.14f, "tuple");
+	/// @endcode
+	/// @note
+	///     (You must specify DKTupleValueSet() as first argument,
+	///      it is dummy object but required for overloaded constructor
+	///      which makes compiler able to distinguish constructer
+	///      with variadic-initial-values from other constructors.)
+	///
+	///  - retrieve value from tuple.
+	/// @code
+	///   int n = myTuple.Value<0>();
+	///   float f = myTuple.Value<1>();
+	///   const char* str = myTuple.Value<2>();
+	/// @endcode
 	template <typename... Types> class DKTuple
 	{
 		// a data unit object that includes single DKTupleUnit.
@@ -259,10 +269,10 @@ namespace DKFoundation
 		DKTuple(const DKTuple& t) : dataUnits(t.dataUnits) {}
 		DKTuple(DKTuple&& t) : dataUnits(static_cast<DataUnitType&&>(t.dataUnits)) {}
 
-		// You should pass DKTupleValueSet object as first argument to use
-		// initial values in constructor.
-		// It makes compiler can distinguish overloaded constructor with
-		// variadic-templates from other constructors.
+		/// You should pass DKTupleValueSet object as first argument to use
+		/// initial values in constructor.
+		/// It makes compiler can distinguish overloaded constructor with
+		/// variadic-templates from other constructors.
 		template <typename... Ts> DKTuple(const DKTupleValueSet& tv, Ts&&... vs) : dataUnits(tv, std::forward<Ts>(vs)...)
 		{
 			static_assert(sizeof...(Ts) <= Length, "Invalid arguments");
@@ -281,6 +291,7 @@ namespace DKFoundation
 		}
 	};
 
+	/// DKTuple helper function. Make tuple with given variadic arguments
 	template <typename... Types> auto DKTupleMake(Types&&... vs)-> DKTuple<Types...>
 	{
 		return DKTuple<Types...>(DKTupleValueSet(), std::forward<Types>(vs)...);

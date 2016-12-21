@@ -12,13 +12,9 @@
 #include "DKQuaternion.h"
 #include "DKPolyhedralConvexShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKBoxShape
-// box shape for detecting collision.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief box shape for detecting collision.
 	class DKGL_API DKBoxShape : public DKPolyhedralConvexShape
 	{
 	public:

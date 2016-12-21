@@ -8,18 +8,15 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKGpuRenderCommandEncoder
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Command encoder for GPU render operation.
 	class DKGpuRenderCommandEncoder
 	{
 	public:
 		virtual ~DKGpuRenderCommandEncoder(void) {}
 	};
-
+	/// @brief Multi-threaded command encoder for GPU render operation.
 	class DKParallelGpuRenderCommandEncoder
 	{
 	public:

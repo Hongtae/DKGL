@@ -9,16 +9,9 @@
 #include "../DKFoundation.h"
 #include "DKCollisionObject.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSoftBody
-// soft body is used to simulate cloth and volumetric soft bodies.
-//
-// This class is not implemented yet. DON'T USE.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
-	// NOT IMPLEMENTED.
+	/// NOT IMPLEMENTED.
 	class DKGL_API DKSoftBody : public DKCollisionObject
 	{
 	public:

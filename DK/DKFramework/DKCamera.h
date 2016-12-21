@@ -14,31 +14,29 @@
 #include "DKPlane.h"
 #include "DKSphere.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCamera
-// A camera class.
-//
-// Note:
-//    +z is inner direction of actual frustum, (-1:front, +1:back)
-//    but this class set up -z is inner. (right handed)
-//    coordinate system will be converted as right-handed after
-//    transform applied. CCW (counter-clock-wise) is front-face.
-//
-//    coordinates transformed as below:
-//
-//          +Y
-//           |
-//           |
-//           |_______ +X
-//           /
-//          /
-//         /
-//        +Z 
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief A 3D camera class.
+	///
+	/// @note
+	///    +z is inner direction of actual frustum, (-1:front, +1:back)
+	///    but this class set up -z is inner. (right handed)
+	///    coordinate system will be converted as right-handed after
+	///    transform applied. CCW (counter-clock-wise) is front-face.
+	///
+	/// @verbatim
+	///    coordinates transformed as below:
+	///
+	///          +Y
+	///           |
+	///           |
+	///           |_______ +X
+	///           /
+	///          /
+	///         /
+	///        +Z 
+	///
+	/// @endverbatim
 	class DKGL_API DKCamera
 	{
 	public:

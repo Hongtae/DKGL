@@ -9,14 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSliderConstraint
-// slider constraint allows the body to rotate around one axis
-// and translate along this axis.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief slider constraint allows the body to rotate around one axis
+	/// and translate along this axis.
 	class DKGL_API DKSliderConstraint : public DKConstraint
 	{
 	public:

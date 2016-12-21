@@ -13,23 +13,9 @@
 #include "DKCriticalSection.h"
 #include "DKTypeTraits.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSet
-// a set container class. using AVLTree (see DKAVLTree.h) internally.
-//
-// VALUE: value type
-// LOCK: thread-lock type
-// COMPARE: value comparison function
-//
-// Note:
-//   if two set objects has same VALUE but different LOCK, COMPARE,
-//   Union(), Intersect() are available only.
-////////////////////////////////////////////////////////////////////////////////
-
-
 namespace DKFoundation
 {
-	// compare Value, Value
+	/// DKSet value comparator
 	template <typename Value> struct DKSetComparator
 	{
 		int operator () (const Value& lhs, const Value& rhs) const
@@ -42,6 +28,12 @@ namespace DKFoundation
 		}
 	};
 
+	/// @brief A set container class. using AVLTree (see DKAVLTree.h) internally.
+	///
+	/// @tparam Value		value type
+	/// @tparam Lock		thread-lock type
+	/// @tparam Comparator	element comparison function
+	/// @tparam Allocator	element allocator
 	template <
 		typename Value,
 		typename Lock = DKDummyLock,
@@ -59,8 +51,8 @@ namespace DKFoundation
 
 		Comparator& comparator;
 
-		// lock is public. allow object being locked manually.
-		// ContainsNoLock(), CountNoLock() is available when object has been locked.
+		/// lock is public. allow object being locked manually.
+		/// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
 
 		DKSet(void)
@@ -72,8 +64,7 @@ namespace DKFoundation
 			, comparator(container.comparator)
 		{
 		}
-		// copy constructor. same type of DKSet object are allowed only.
-		// template constructor not works on MSVC
+		/// copy constructor. same type of DKSet object are allowed only.
 		DKSet(const DKSet& s)
 			: comparator(container.comparator)
 		{
@@ -112,12 +103,16 @@ namespace DKFoundation
 			for (const Value& v : il)
 				container.Insert(v);
 		}
+		/// import other set.
+		/// The other set can have different template parameters except Value.
 		template <typename ...Args> DKSet& Union(const DKSet<Value, Args...>& s)
 		{
 			CriticalSection guard(lock);
 			s.EnumerateForward([this](const Value& val) { container.Insert(val); });
 			return *this;
 		}
+		/// exclude elements in other set 
+		/// The other set can have different template parameters except Value
 		template <typename ...Args> DKSet& Intersect(const DKSet<Value, Args...>& s)
 		{
 			CriticalSection guard(lock);
@@ -190,8 +185,8 @@ namespace DKFoundation
 				container.Insert(v);
 			return *this;
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) are allowed.
-		// enumerating objects are READ-ONLY. values cannot be modified.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) are allowed.
+		/// enumerating objects are READ-ONLY. values cannot be modified.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

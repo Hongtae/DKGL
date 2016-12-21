@@ -14,13 +14,9 @@
 #include "DKTriangleMesh.h"
 #include "DKTriangle.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKTriangleMeshBvh
-// a triangle mesh class, using BVH tree internally
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief A triangle mesh bvh. using BVH tree internally for ray testing
 	class DKGL_API DKTriangleMeshBvh
 	{
 	public:

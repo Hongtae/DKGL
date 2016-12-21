@@ -9,13 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKConeTwistConstraint
-// cone-twist constraint, useful for simulate ragdoll joints.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// cone-twist constraint, useful for simulate ragdoll joints.
 	class DKGL_API DKConeTwistConstraint : public DKConstraint
 	{
 	public:
@@ -24,9 +21,9 @@ namespace DKFramework
 		DKConeTwistConstraint(void);
 		~DKConeTwistConstraint(void);
 
-		// softness : value in 0.0~1.0 (0.8~1.0 is recommended)
-		// biasFactor : value in 0.0~1.0 (0.3 is recommended)
-		// relaxationFactor : value in 0.0~1.0
+		/// softness : value in 0.0~1.0 (0.8~1.0 is recommended)
+		/// biasFactor : value in 0.0~1.0 (0.3 is recommended)
+		/// relaxationFactor : value in 0.0~1.0
 		void SetLimit(float swingSpan1, float swingSpan2, float twistSpan, float softness = 1.0f, float biasFactor = 0.3f, float relaxationFactor = 1.0f);
 
 		float SwingSpan1(void) const;

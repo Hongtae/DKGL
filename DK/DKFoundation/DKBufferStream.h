@@ -12,14 +12,10 @@
 #include "DKObject.h"
 #include "DKDataStream.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKBufferStream
-// memory stream object using DKBuffer internally.
-// using memory like stream object.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief Memory stream object using DKBuffer internally.
+	/// using memory like stream object.
 	class DKGL_API DKBufferStream : public DKDataStream
 	{
 	public:
@@ -43,10 +39,10 @@ namespace DKFoundation
 		void ResetStream(const void* p, size_t s);
 		void ResetStream(DKBuffer*);
 
-		// internal storage object. (DKData type)
+		/// internal storage object. (DKData type)
 		DKData* DataSource(void);
 		const DKData* DataSource(void) const;
-		// internal storage object. (DKBuffer type)
+		/// internal storage object. (DKBuffer type)
 		DKBuffer* BufferObject(void);
 		const DKBuffer* BufferObject(void) const;
 

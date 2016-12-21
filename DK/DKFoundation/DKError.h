@@ -11,69 +11,68 @@
 #include "DKFunction.h"
 #include "DKStream.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKError
-// an exception object.
-// you can review call-stack info with this object.
-// you can write error description to file also.
-//
-//
-// Usage:
-//	try
-//	{
-//      .. exception occurred in somewhere ..
-//	}
-//	catch (DKError& e)
-//	{
-//      // print call stack
-//		e.PrintDescriptionWithStackFrames();
-//      // descript error info with default descriptor (may be console)
-//		e.WriteToDefaultDescriptor();
-//      // write error info into myLogFile
-//		e.WriteToFile(myLogFile);
-//
-//      .. try to recover or do something useful.
-//
-//	}
-//
-// Note:
-//   tracing call stack not works on some platforms.
-////////////////////////////////////////////////////////////////////////////////
-
 #define DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH	1024
 
 namespace DKFoundation
 {
 	typedef DKFunctionSignature<void (class DKError&)> DKCriticalErrorHandler;
 
-	// test debugger attached or not. (may not works on some platforms)
+	/// test debugger attached or not. (may not works on some platforms)
 	DKGL_API bool DKIsDebuggerPresent(void);
 
-	// test build configuration
+	/// test build configuration
 	DKGL_API bool DKIsDebugBuild(void);
 
-	// set critical error handler. (may not works on some platforms)
+	/// set critical error handler. (may not works on some platforms)
 	DKGL_API void DKSetCriticalErrorHandler(DKCriticalErrorHandler*);
 
-	// raise exception manually. use DKERROR_THROW() macro instead.
+	/// raise exception manually. use DKERROR_THROW() macro instead.
 	DKGL_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
 
 	namespace Private { struct UnexpectedError; }
 
+
+	/// @brief an exception object.
+	/// you can review call-stack info with this object.
+	/// you can write error description to file also.
+	///
+	///
+	/// Usage:
+	/// @code
+	///	try
+	///	{
+	///      .. exception occurred in somewhere ..
+	///	}
+	///	catch (DKError& e)
+	///	{
+	///      // print call stack
+	///		e.PrintDescriptionWithStackFrames();
+	///      // descript error info with default descriptor (may be console)
+	///		e.WriteToDefaultDescriptor();
+	///      // write error info into myLogFile
+	///		e.WriteToFile(myLogFile);
+	///
+	///      .. try to recover or do something useful.
+	///
+	///	}
+	/// @endcode
+	///
+	/// @note
+	///  On some platforms, the trace call stack may not work..
 	class DKGL_API DKError
 	{
 	public:
-		constexpr static int DefaultCallstackTraceDepth(void) {return 1024;}
+		constexpr static int DefaultCallstackTraceDepth(void) {return 1024;} ///< call stack trace depth
 
 		struct StackFrame
 		{
-			DKString	module;				// module file
-			void*		baseAddress;		// module base address
-			DKString	function;			// function name
-			void*		address;			// frame address
-			size_t		offset;				// function offset
-			DKString	filename;			// source-file
-			size_t		line;				// source-file line
+			DKString	module;				///< module file
+			void*		baseAddress;		///< module base address
+			DKString	function;			///< function name
+			void*		address;			///< frame address
+			size_t		offset;				///< function offset
+			DKString	filename;			///< source-file
+			size_t		line;				///< source-file line
 		};
 		typedef DKFunctionSignature<void (const void*, size_t)> Descriptor;
 		typedef DKFunctionSignature<void (const DKString&)> StringOutput;
@@ -88,9 +87,13 @@ namespace DKFoundation
 		DKError& operator = (DKError&&);
 		DKError& operator = (const DKError&);
 
+		/// Raises an exception with the specified description.
 		static void RaiseException(const DKString& func, const DKString& file, unsigned int line, const DKString& desc);
+		/// Raises an exception with the error object.
 		static void RaiseException(const DKError& e);
+		/// Raises an exception with the specified description.
 		static void RaiseException(int errorCode, const DKString& desc);
+		/// Raises an exception with the specified description.
 		static void RaiseException(const DKString& desc);
 
 		int Code(void) const;
@@ -103,10 +106,10 @@ namespace DKFoundation
 		const StackFrame* StackFrameAtIndex(unsigned int index) const;
 		size_t CopyStackFrames(StackFrame* s, size_t maxCount) const;
 
-		// retrace call stack frame info.
+		/// retrace call stack frame info.
 		size_t RetraceStackFrames(int skip = 0, int maxDepth = DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
 
-		// writing error info
+		/// writing error info
 		void PrintDescription(void) const;
 		void PrintDescription(const StringOutput*) const;
 		void PrintStackFrames(void) const;
@@ -114,15 +117,15 @@ namespace DKFoundation
 		void PrintDescriptionWithStackFrames(void) const;
 		void PrintDescriptionWithStackFrames(const StringOutput*) const;
 
-		// writing error info into file or stream
+		/// writing error info into file or stream
 		void WriteToDescriptor(const Descriptor*) const;
 		void WriteToDefaultDescriptor(void) const;
 		bool WriteToFile(const DKString& file) const;
 		bool WriteToStream(DKStream* stream) const;
 
-		// set default descriptor.
-		// descriptor is function or function object. (lambda is ok)
-		// see 'Descriptor' typedef above.
+		/// set default descriptor.
+		/// descriptor is function or function object. (lambda is ok)
+		/// see 'Descriptor' typedef above.
 		static void SetDefaultDescriptor(const Descriptor* output);
 
 	private:

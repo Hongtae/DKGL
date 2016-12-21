@@ -10,6 +10,7 @@
 
 namespace DKFramework
 {
+	/// @brief Base class for platform dependent interface classes.
 	class DKBackendInterface
 	{
 	protected:

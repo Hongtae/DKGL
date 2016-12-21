@@ -14,30 +14,28 @@
 #include "DKFunction.h"
 #include "DKArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCircularQueue
-// circulate limited size of queue.
-// queue object never overflow.
-//
-// items can be added at head, tail only
-// if item count have reached to limited size when adding new item,
-// the item at opposite side will be overwritten.
-//
-// Example:
-//   DKCircularQueue<int> queue(3);		// set maximum length to 3
-//   queue.Append(1);		// [1]
-//   queue.Append(2);		// [1, 2]
-//   queue.Append(3);		// [1, 2, 3]
-//   queue.Append(4);		// [2, 3, 4] item(1) has been truncated. (append)
-//   queue.Prepend(5);		// [5, 2, 3] item(4) has been truncated. (prepend)
-//   queue.Prepend(6);		// [6, 5, 2] item(3) has been truncated. (prepend)
-//
-// Note:
-//  using CopyValue() to retrieve item for thread-safe.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief
+	/// circulate limited size of queue.
+	/// queue object never overflow.
+	///
+	/// items can be added at head, tail only
+	/// if item count have reached to limited size when adding new item,
+	/// the item at opposite side will be overwritten.
+	///
+	/// @code
+	///   DKCircularQueue<int> queue(3);  // set maximum length to 3
+	///   queue.Append(1);   // [1]
+	///   queue.Append(2);   // [1, 2]
+	///   queue.Append(3);   // [1, 2, 3]
+	///   queue.Append(4);   // [2, 3, 4] item(1) has been truncated. (append)
+	///   queue.Prepend(5);  // [5, 2, 3] item(4) has been truncated. (prepend)
+	///   queue.Prepend(6);  // [6, 5, 2] item(3) has been truncated. (prepend)
+	/// @endcode
+	///
+	/// @note
+	///  using CopyValue() to retrieve item for thread-safe.
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKCircularQueue
 	{
@@ -185,14 +183,14 @@ namespace DKFoundation
 			capacity = Max<size_t>(cap, MinimumCapacity);
 			container.Reserve(capacity);			
 		}
-		// append item. if length exceed to limit, front item will be truncated.
+		/// append item. if length exceed to limit, front item will be truncated.
 		void Append(const VALUE& value)
 		{
 			CriticalSection guard(lock);
 			AppendNL(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-		// prepend item, if length exceed to limit, last item will be truncated.
+		/// prepend item, if length exceed to limit, last item will be truncated.
 		void Prepend(const VALUE& value)
 		{
 			CriticalSection guard(lock);
@@ -284,10 +282,10 @@ namespace DKFoundation
 			return ValueNL(container.Count() - 1);
 		}
 
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -306,7 +304,7 @@ namespace DKFoundation
 			
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

@@ -10,15 +10,16 @@
 #include "DKModel.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCollisionObject
-// collision object for scene (DKWorld, DKDynamicsWorld)
-// this is basic collision object not for dynamics.
-// for dynamics use DKRigidBody instead.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// collision object for scene (DKWorld, DKDynamicsWorld)
+	/// @details
+	/// this is basic collision object not for dynamics.
+	/// for dynamics use DKRigidBody instead.
+	///
+	/// @note
+	///  This is wrapper for bullet-physics
 	class DKGL_API DKCollisionObject : public DKModel
 	{
 	public:

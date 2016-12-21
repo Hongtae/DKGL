@@ -184,6 +184,8 @@
     <None Include="DKFoundation\DKUtils.mm" />
     <None Include="DKFramework\Private\CocoaTouch\AppEventLoop.mm" />
     <None Include="DKFramework\Private\CocoaTouch\Application.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\View.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\ViewController.mm" />
     <None Include="DKFramework\Private\CocoaTouch\Window.mm" />
     <None Include="DKFramework\Private\Cocoa\AppEventLoop.mm" />
     <None Include="DKFramework\Private\Cocoa\Application.mm" />
@@ -486,6 +488,8 @@
     <ClInclude Include="DKFramework\Private\BulletUtils.h" />
     <ClInclude Include="DKFramework\Private\CocoaTouch\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\CocoaTouch\Application.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\View.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\ViewController.h" />
     <ClInclude Include="DKFramework\Private\CocoaTouch\Window.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />

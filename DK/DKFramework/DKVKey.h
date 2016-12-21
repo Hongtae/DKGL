@@ -7,15 +7,12 @@
 
 #pragma once
 
-////////////////////////////////////////////////////////////////////////////////
-// DKVirtualKey
-// virtual key map.
-// keyboard event can contains key-info mapped with Virtual-Key.
-// this Virtual-Key make easy to build cross-platform.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief virtual key map.
+	///
+	/// keyboard event can contains key-info mapped with Virtual-Key.
+	/// this Virtual-Key make easy to build cross-platform.
 	enum DKVirtualKey
 	{
 		DKVK_NONE = 0,
@@ -140,6 +137,6 @@ namespace DKFramework
 		DKVK_PAD_EQUAL,
 		DKVK_PAD_PERIOD,
 
-		DKVK_MAXVALUE,
+		DKVK_MAXVALUE, ///< for counting number of items in enum
 	};
 }

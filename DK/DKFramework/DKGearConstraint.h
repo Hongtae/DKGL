@@ -9,14 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKGearConstraint
-// gear constraint, joint will couple the angular velocity for two rigid bodies
-// around given local axis and ratio.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief gear constraint, joint will couple the angular velocity for two rigid bodies
+	/// around given local axis and ratio.
 	class DKGL_API DKGearConstraint : public DKConstraint
 	{
 	public:

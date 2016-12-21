@@ -10,13 +10,9 @@
 #include "DKConvexShape.h"
 #include "DKSphere.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKMultiSphereShape
-// a collision shape, convex hull of a collection of spheres.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief a collision shape, convex hull of a collection of spheres.
 	class DKGL_API DKMultiSphereShape : public DKConvexShape
 	{
 	public:

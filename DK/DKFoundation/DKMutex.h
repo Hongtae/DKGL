@@ -8,14 +8,10 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKMutex
-// a mutex object.
-// recursive locking operation not supported.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief a mutex object.
+	/// recursive locking operation not supported.
 	class DKGL_API DKMutex
 	{
 	public:
@@ -26,7 +22,7 @@ namespace DKFoundation
 		void Unlock(void) const;
 
 	private:
-		DKMutex(const DKMutex&);
+		DKMutex(const DKMutex&) = delete;
 		DKMutex& operator = (const DKMutex&) = delete;
 		void* impl;
 	};

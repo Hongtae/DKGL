@@ -10,13 +10,9 @@
 #include "DKVector3.h"
 #include "DKTriangle.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKTriangleMesh
-// an abstract class, defines triangle-mesh.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief triangle mesh interface
 	struct DKTriangleMesh
 	{
 		virtual ~DKTriangleMesh(void) {}

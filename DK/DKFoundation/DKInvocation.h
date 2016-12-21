@@ -10,15 +10,12 @@
 #include "DKTypes.h"
 #include "DKOperation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKInvocation<T>
-// You can use this class as DKOperation type.
-// and you can query result (type T) with this Invocation object.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief Interface class for encapsulating an action and collecting result
+	/// You can use this class as DKOperation type.
+	/// and you can query result (type T) with this Invocation object.
+	/// @tparam T result type
 	template <typename T> struct DKInvocation : public DKOperation
 	{
 		virtual ~DKInvocation(void) {}
@@ -26,7 +23,7 @@ namespace DKFoundation
 		void Perform(void) const {Invoke();}		
 		virtual T Invoke(void) const = 0;
 
-		// test type T is convertible to U
+		/// test type T is convertible to U
 		template <typename U> constexpr static bool CanAcceptResultTypeAs(void)
 		{
 			return DKTypeConversionTest<T, U>();

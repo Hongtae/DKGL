@@ -8,20 +8,15 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKMatrix3
-// 3x3 matrix
-//
-// Note:
-//   This matrix order is Row-major.
-//   transform of Vector3 V is V' = V * Matrix
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector3;
-
+	/// @brief 3x3 matrix
+	///
+	/// @note
+	///   This matrix order is Row-major.
+	///   transform of Vector3 V is V' = V * Matrix
 	class DKGL_API DKMatrix3
 	{
 	public:

@@ -9,13 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCompoundShape
-// a compound shape with one or more collision shapes with transform.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// a compound shape with one or more collision shapes with transform.
 	class DKGL_API DKCompoundShape : public DKCollisionShape
 	{
 	public:

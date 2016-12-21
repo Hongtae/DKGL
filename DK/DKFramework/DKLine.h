@@ -11,14 +11,10 @@
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKLine
-// line segment object.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief Line segment object.
 	class DKGL_API DKLine
 	{
 	public:
@@ -35,8 +31,8 @@ namespace DKFramework
 
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, float epsilon = 0.000001f) const;
 
-		// compute shortest line segment between two line segments.
-		// result line's begin-point located on line1, end-point located on line2.
+		/// compute shortest line segment between two line segments.
+		/// result line's begin-point located on line1, end-point located on line2.
 		static DKLine LineBetween(const DKLine& line1, const DKLine& line2, float epsilon = 0.000001f);
 
 		DKVector3	begin;

@@ -13,14 +13,10 @@
 #include "DKArray.h"
 #include "DKStream.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKZipUnarchiver
-// a zip file reader.
-// read and decompress from zip-archive file.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// A zip file reader.
+	/// read and decompress from zip-archive file.
 	class DKGL_API DKZipUnarchiver
 	{
 	public:

@@ -9,13 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKConcaveShape
-// a concave shape, for collision object or static rigid body.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// a concave shape, for collision object or static rigid body.
 	class DKGL_API DKConcaveShape : public DKCollisionShape
 	{
 	public:

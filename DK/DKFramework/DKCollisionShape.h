@@ -17,19 +17,20 @@
 #include "DKAabb.h"
 #include "DKSphere.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCollisionShape
-// collision shape class.
-// object has no position. calculates with origin as local object.
-//
-// Note:
-//    Using SerializeHelper nested class for serialize, deserialize.
-//    because of this class is not modifiable once it has been created.
-//    This applied for all subclasses.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// collision shape class.
+	/// @details
+	/// object has no position. calculates with origin as local object.
+	///
+	/// @note
+	///    Using SerializeHelper nested class for serialize, deserialize.
+	///    because of this class is not modifiable once it has been created.
+	///    This applied for all subclasses.
+	///
+	/// @note
+	///    This is wrapper of bullet-physics
 	class DKGL_API DKCollisionShape
 	{
 	public:
@@ -69,7 +70,7 @@ namespace DKFramework
 		void Aabb(const DKNSTransform& transform, DKVector3& aabbMin, DKVector3& aabbMax) const;
 		DKSphere BoundingSphere(void) const;
 
-		void SetMargin(float m);  // collision margin.
+		void SetMargin(float m);  ///< collision margin.
 		float Margin(void) const;
 
 		void SetLocalScale(const DKVector3& s);
@@ -87,7 +88,7 @@ namespace DKFramework
 		DKCollisionShape(ShapeType t, class btCollisionShape* context);
 		
 	private:
-		DKCollisionShape(const DKCollisionShape&);
-		DKCollisionShape& operator = (const DKCollisionShape&);
+		DKCollisionShape(const DKCollisionShape&) = delete;
+		DKCollisionShape& operator = (const DKCollisionShape&) = delete;
 	};
 }

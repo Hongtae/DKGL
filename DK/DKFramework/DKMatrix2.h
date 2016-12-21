@@ -8,20 +8,15 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKMatrix2
-// 2x2 matrix
-//
-// Note:
-//   This matrix order is Row-major.
-//   transform of Vector2 V is V' = V * Matrix
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector2;
-
+	/// @brief 2x2 matrix
+	///
+	/// @note
+	///   This matrix order is Row-major.
+	///   transform of Vector2 V is V' = V * Matrix
 	class DKGL_API DKMatrix2
 	{
 	public:

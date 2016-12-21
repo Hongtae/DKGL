@@ -9,14 +9,10 @@
 #include "../DKInclude.h"
 #include "DKString.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKUuid
-// UUID generate and represent as string.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFoundation
 {
+	/// UUID generate and represent as a string.
 	class DKGL_API DKUuid
 	{
 	public:

@@ -15,34 +15,31 @@
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKVariant
-// a variant class.
-// an object can have following types.
-//   - Integer (int64)
-//   - Float (double)
-//   - Vector2 (DKVector2)
-//   - Vector3 (DKVector3)
-//   - Vector4 (DKVector4)
-//   - Matrix2 (DKMatrix2)
-//   - Matrix3 (DKMatrix3)
-//   - Matrix4 (DKMatrix4)
-//   - Quaternion (DKQuaternion)
-//   - Rational (DKRational)
-//   - String (DKString)
-//   - DateTime (DKDateTime)
-//   - Data (DKBuffer)
-//   - StructuredData (Data with structure layout)
-//   - Array (DKArray<DKVariant>)
-//   - Pairs (DKMap<DKString, DKVariant>)
-//   - Undefined (no value, initial type)
-//
-// DKVariant object can be serialized with XML or binary.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief a variant (value) class.
+	/// @details
+	/// an object can have following types.
+	///   - Integer (int64)
+	///   - Float (double)
+	///   - Vector2 (DKVector2)
+	///   - Vector3 (DKVector3)
+	///   - Vector4 (DKVector4)
+	///   - Matrix2 (DKMatrix2)
+	///   - Matrix3 (DKMatrix3)
+	///   - Matrix4 (DKMatrix4)
+	///   - Quaternion (DKQuaternion)
+	///   - Rational (DKRational)
+	///   - String (DKString)
+	///   - DateTime (DKDateTime)
+	///   - Data (DKBuffer)
+	///   - StructuredData (Data with structure layout)
+	///   - Array (DKArray<DKVariant>)
+	///   - Pairs (DKMap<DKString, DKVariant>)
+	///   - Undefined (no value, initial type)
+	///
+	/// DKVariant object can be serialized with XML or binary.
 	class DKGL_API DKVariant
 	{
 	public:
@@ -83,28 +80,28 @@ namespace DKFramework
 		typedef DKArray<DKVariant> VArray;
 		typedef DKMap<VString, DKVariant> VPairs;
 
-		// structured data layout.
+		/// structured data layout.
+		/// Arithmetic types are byte-ordered automatically.
+		/// Bypass (Raw) types are not byte-ordered. (treat as 'char*' buffer)
 		enum class StructElem : uint8_t
 		{
-			// Arithmetic types are byte-ordered automatically.
-			Arithmetic1 = 0x01,	// int8_t, uint8_t
-			Arithmetic2 = 0x02,	// int16_t, uint16_t
-			Arithmetic4 = 0x04,	// int32_t, uint32_t, float
-			Arithmetic8 = 0x08,	// int64_t, uint64_t, double
+			Arithmetic1 = 0x01,	///< int8_t, uint8_t
+			Arithmetic2 = 0x02,	///< int16_t, uint16_t
+			Arithmetic4 = 0x04,	///< int32_t, uint32_t, float
+			Arithmetic8 = 0x08,	///< int64_t, uint64_t, double
 
-			// Bypass (Raw) types are not byte-ordered. (treat as 'char*' buffer)
-			Bypass1 = 0xff,		// 1 byte item, (same as Arithmetic1)
-			Bypass2 = 0xfe,		// 2 bytes item
-			Bypass4 = 0xfc,		// 4 bytes item
-			Bypass8 = 0xf8,		// 8 bytes item
+			Bypass1 = 0xff,		///< 1 byte item, (same as Arithmetic1)
+			Bypass2 = 0xfe,		///< 2 bytes item
+			Bypass4 = 0xfc,		///< 4 bytes item
+			Bypass8 = 0xf8,		///< 8 bytes item
 		};
-		// VStructuredData: automatic-byte-order matching data.
-		// layout should be set properly. (describe item layout without padding)
+		/// automatic-byte-order matching data.
+		/// layout should be set properly. (describe item layout without padding)
 		struct VStructuredData
 		{
-			DKBuffer data;	// buffer object
-			size_t elementSize;				// element size (include alignment padding)
-			DKArray<StructElem> layout; // structured-element layout
+			DKBuffer data;	///< buffer object
+			size_t elementSize;			///< element size (include alignment padding)
+			DKArray<StructElem> layout; ///< structured-element layout
 		};
 
 		DKVariant(Type t = TypeUndefined);
@@ -136,13 +133,11 @@ namespace DKFramework
 		DKVariant& SetValueType(Type t);
 		Type ValueType(void) const;
 
-		// XML input/output
-		DKObject<DKXmlElement> ExportXML(void) const;
-		bool ImportXML(const DKXmlElement* e);
+		DKObject<DKXmlElement> ExportXML(void) const; ///< generate XML
+		bool ImportXML(const DKXmlElement* e); ///< import from XML
 
-		// Binary-stream input/output
-		bool ExportStream(DKStream* stream) const;
-		bool ImportStream(DKStream* stream);
+		bool ExportStream(DKStream* stream) const; ///< generate binary data
+		bool ImportStream(DKStream* stream); ///< import from binary data
 
 		DKVariant& SetInteger(const VInteger& v);
 		DKVariant& SetFloat(const VFloat& v);

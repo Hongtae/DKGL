@@ -13,14 +13,9 @@
 #include "DKDateTime.h"
 #include "DKTimer.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKEventLoopTimer
-// Installs scheduled repetition of operation with interval into DKEventLoop.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief Installs scheduled repetition of operation with interval into DKEventLoop.
 	class DKGL_API DKEventLoopTimer
 	{
 	public:
@@ -28,8 +23,8 @@ namespace DKFoundation
 
 		static DKObject<DKEventLoopTimer> Create(const DKOperation* operation, double interval, DKEventLoop* eventLoop = NULL);
 
-		size_t Count(void) const;		
-		DKEventLoop* EventLoop(void) const;
+		size_t Count(void) const;		   ///< number of timer did fired
+		DKEventLoop* EventLoop(void) const;	///< return event-loop that the timer installed on
 		double Interval(void) const;
 		bool IsRunning(void) const;
 

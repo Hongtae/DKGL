@@ -10,19 +10,17 @@
 #include "DKVector3.h"
 #include "DKVector4.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKColor
-// color object contains a, r, g, b floats. (transferred to GPU directly)
-// object can create with 32bit integer also.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief
+	/// color object contains a, r, g, b floats. (transferred to GPU directly)
+	/// @details
+	/// object can create with 32bit integer also.
 	class DKColor
 	{
 	public:
-		union RGBA32  // 32bit int format (RGBA order).
+		union RGBA32  ///< 32bit int format (RGBA order).
 		{
 			struct {
 				uint8_t r, g, b, a;
@@ -30,7 +28,7 @@ namespace DKFramework
 			uint8_t bytes[4];
 			uint32_t value;
 		};
-		union ARGB32  // 32bit int format (ARGB order).
+		union ARGB32  ///< 32bit int format (ARGB order).
 		{
 			struct {
 				uint8_t a, r, g, b;

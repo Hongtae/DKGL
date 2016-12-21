@@ -13,16 +13,12 @@
 #include "DKArray.h"
 #include "DKStringUE.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStringW
-// a unicode string class with wchar_t character string.
-// UTF-8, CP367 (ISO-8859, ASCII) are available also.
-// (but convert and store with wchar_t string internally.)
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
 	class DKData;
+	/// a unicode string class with wchar_t character string.
+	/// UTF-8, CP367 (ISO-8859, ASCII) are available also.
+	/// (but convert and store with wchar_t string internally.)
 	class DKGL_API DKStringW
 	{
 	public:
@@ -35,7 +31,7 @@ namespace DKFoundation
 		typedef DKArray<DKStringW, DKDummyLock> StringArray;
 
 		static const DKStringW empty;
-		// DKUniCharW encoding with endianness.
+		/// DKUniCharW encoding with endianness.
 		static DKStringEncoding SystemEncoding(void);
 
 		// DKStringW class
@@ -50,11 +46,11 @@ namespace DKFoundation
 		~DKStringW(void);
 
 		DKObject<DKData> Encode(DKStringEncoding e) const;
-		// formatting string.
-		// for wchar_t format string, there is some restriction described below.
-		// '%s' is utf-8, cp367, iso-8859 only. For DKStringU8, should be cast of 'const char*'.
-		// '%ls' is wchar_t only. For DKStringW, should be cast of 'const wchar_t*).
-		// Don't use '%S' (Uppercase S), gcc, msvc does not produces same result.
+		/// formatting string.
+		/// for wchar_t format string, there is some restriction described below.\n
+		/// '%s' is utf-8, cp367, iso-8859 only. For DKStringU8, should be cast of 'const char*'.
+		/// '%ls' is wchar_t only. For DKStringW, should be cast of 'const wchar_t*).
+		/// Don't use '%S' (Uppercase S), gcc, msvc does not produces same result.
 		static DKStringW Format(const DKUniChar8* fmt, ...);
 		static DKStringW Format(const DKUniCharW* fmt, ...);
 		static DKStringW FormatV(const DKUniChar8* fmt, va_list v);
@@ -69,9 +65,9 @@ namespace DKFoundation
 		long FindWhitespaceCharacter(long begin = 0) const;
 		long FindAnyCharactersInSet(const CharacterSet& cs, long begin = 0) const;
 
-		DKStringW Right(long index) const;  // copy right-side from index.
-		DKStringW Left(size_t count) const; // copy 'count' length characters from beginning.
-		DKStringW Mid(long index, size_t count) const; // copy 'count' length characters from index.
+		DKStringW Right(long index) const;  ///< copy right-side from index.
+		DKStringW Left(size_t count) const; ///< copy 'count' length characters from beginning.
+		DKStringW Mid(long index, size_t count) const; ///< copy 'count' length characters from index.
 
 		DKStringW LowercaseString(void) const;
 		DKStringW UppercaseString(void) const;
@@ -92,8 +88,8 @@ namespace DKFoundation
 		DKStringW& RemovePrefix(const DKStringW& str);
 		DKStringW& RemoveSuffix(const DKStringW& str);
 
-		// file system path string.
-		// convert path separator charactor ('\\' on win32, '/' on Unix)
+		/// file system path string.
+		/// convert path separator charactor ('\\' on win32, '/' on Unix)
 		DKStringW FilePathString(void) const;
 		DKStringW FilePathStringByAppendingPath(const DKStringW& path) const;
 		DKStringW LastPathComponent(void) const;
@@ -101,9 +97,9 @@ namespace DKFoundation
 
 		// whitespaces
 		bool IsWhitespaceCharacterAtIndex(long index) const;
-		// trim whitespaces (with escape sequences) both side of beginning, ending.
+		/// trim whitespaces (with escape sequences) both side of beginning, ending.
 		DKStringW& TrimWhitespaces(void);
-		// remove whitespaces (with escape sequences) for all sequences in range.
+		/// remove whitespaces (with escape sequences) for all sequences in range.
 		DKStringW& RemoveWhitespaces(long begin = 0, long count = -1);
 
 		// append, set

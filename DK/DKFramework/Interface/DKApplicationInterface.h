@@ -9,15 +9,13 @@
 #include "../DKApplication.h"
 #include "DKBackendInterface.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKApplicationInterface
-// An abstract class, interface for application environment controls.
-// You may need to subclass for your platform, If you have plan to use
-// DKApplication.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Interface for platform dependent application environment control.
+	///
+	/// Microsoft Windows, Apple macOS/iOS is builtin supported at this time.
+	/// You may need to your own subclass for your platform if you have plan
+	/// to use DKApplication.
 	class DKApplicationInterface : public DKBackendInterface
 	{
 	public:
@@ -30,7 +28,9 @@ namespace DKFramework
 		virtual DKString DefaultPath(SystemPath) = 0;
 		virtual DKString ProcessInfoString(ProcessInfo) = 0;
 
+		/// Load dll/exe resource as writable copy.
 		virtual DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) = 0;		// read-writable
+		/// Load dll/exe resource (read-only)
 		virtual DKObject<DKData> LoadStaticResource(const DKString& res) = 0;	// read-only
 
 		virtual DKRect DisplayBounds(int displayId) const = 0;

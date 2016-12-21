@@ -9,14 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKConvexShape
-// abstract class, convex shape for detecting collision.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
 	class DKLine;
+	/// @brief convex shape for detecting collision.
 	class DKGL_API DKConvexShape : public DKCollisionShape
 	{
 	public:

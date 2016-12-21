@@ -13,36 +13,33 @@
 #include "DKCriticalSection.h"
 #include "DKMemory.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKList
-// a simple linked list.
-//
-// Note:
-//  When using range-based-for-loop, object does not locked by default.
-//  You should lock list from outside of loop.
-//
-// Range based for loop example:
-//  DKList<MyObject> myList;
-//  // lock within current scope for range-based-for-loop
-//  DKList<MyObject>::CriticalSection(myList.lock);
-//  for (MyObject& obj : myList)
-//     // do something with obj..
-//
-// Iterator iteration example:
-//  DKList<MyObject> myList;
-//  for (auto it = myList.LockHead(); it.IsValid(); ++it)
-//  {
-//       MyObject& obj = it.Value();
-//       // do something with obj..
-//  }
-//  myList.Unlock();
-//
-// Note:
-//  This class does not tested fully. (may have bugs?)
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief a simple linked list.
+	///
+	/// @note
+	///  When using range-based-for-loop, object does not locked by default.
+	///  You should lock list from outside of loop.
+	///
+	/// @code
+	/// Range based for loop example:
+	///  DKList<MyObject> myList;
+	///  // lock within current scope for range-based-for-loop
+	///  DKList<MyObject>::CriticalSection(myList.lock);
+	///  for (MyObject& obj : myList)
+	///     // do something with obj..
+	/// 
+	/// Iterator iteration example:
+	///  DKList<MyObject> myList;
+	///  for (auto it = myList.LockHead(); it.IsValid(); ++it)
+	///  {
+	///       MyObject& obj = it.Value();
+	///       // do something with obj..
+	///  }
+	///  myList.Unlock();
+	/// @encode
+	/// @note
+	///  This class does not tested fully. (may have bugs?)
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator> class DKList
 	{
 	private:
@@ -60,6 +57,7 @@ namespace DKFoundation
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 		typedef ALLOC					Allocator;
 
+		/// defined for range-based loop
 		template <typename NodeT, typename ValueT> class IteratorT
 		{
 		public:
@@ -69,7 +67,7 @@ namespace DKFoundation
 			IteratorT Next(void)			{return IteratorT(node->next);}
 			IteratorT Prev(void)			{return IteratorT(node->prev);}
 
-			// member functions for RB-loop
+			/// member functions for RB-loop
 			IteratorT& operator ++ (void)					{node = node->next; return *this;}	// prefix++
 			ValueT operator * (void)						{return node->value;};
 			bool operator != (const IteratorT& it) const	{return node != it.node;}
@@ -83,7 +81,7 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
 
-		// lock is public. to provde lock object from outside!
+		/// lock is public. to provde lock object from outside!
 		Lock lock;
 
 		DKList(void) : firstNode(NULL), lastNode(NULL), count(0)
@@ -211,11 +209,10 @@ namespace DKFoundation
 			return AddTailNL(v);
 		}
 
-		// Iterator class for range-based for loop.
-		Iterator begin(void)				{return firstNode;}
-		ConstIterator begin(void) const		{return firstNode;}
-		Iterator end(void)					{return NULL;}
-		ConstIterator end(void) const		{return NULL;}
+		Iterator begin(void)				{return firstNode;}	///< implemented for range-based for loop
+		ConstIterator begin(void) const		{return firstNode;}	///< implemented for range-based for loop
+		Iterator end(void)					{return NULL;}	///< implemented for range-based for loop
+		ConstIterator end(void) const		{return NULL;}	///< implemented for range-based for loop
 
 		bool CheckIterator(const Iterator& it) const
 		{
@@ -319,10 +316,10 @@ namespace DKFoundation
 				AddTailNL(v);
 			return *this;
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -341,7 +338,7 @@ namespace DKFoundation
 			
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

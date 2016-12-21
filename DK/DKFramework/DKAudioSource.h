@@ -9,13 +9,12 @@
 #include "../DKFoundation.h"
 #include "DKVector3.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAudioSource
-// audio source class. interface for OpenAL source control.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief 
+	/// audio source class. interface for DKAudioDevice source control.
+	/// @details
+	/// Audio-Source can play audio with input buffer
 	class DKGL_API DKAudioSource
 	{
 	public:
@@ -34,6 +33,7 @@ namespace DKFramework
 		bool Stop(void);
 		bool Pause(void);
 
+		/// enqueue audio stream buffer
 		bool EnqueueBuffer(int frequency, int bits, int channels, const void* data, size_t bytes, double timeStamp);
 		void UnqueueBuffers(void) const;
 		size_t QueuedBuffers(void) const;

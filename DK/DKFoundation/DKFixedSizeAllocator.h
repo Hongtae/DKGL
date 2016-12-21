@@ -13,15 +13,17 @@
 #include "DKSpinLock.h"
 #include "DKCriticalSection.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// DKFixedSizeAllocator
-// an allocator which can allocate memory of fixed length.
-// it is useful to template collection classes like DKMap, DKSet.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief An allocator which can allocate memory of fixed length.
+	/// it is useful to template collection classes like DKMap, DKSet.
+	///
+	/// @tparam UnitSize       allocation size (fixed size)
+	/// @tparam Alignment      byte alignment (default:1)
+	/// @tparam MaxUnits       max units per chunk (default:1024)
+	/// @tparam Lock           locking class
+	/// @tparam BaseAllocator  internal allocator (for internal-table, small size)
+	/// @tparam UnitAllocator  unit chunk allocator. (large size)
 	template <
 		unsigned int UnitSize,				// allocation size (fixed size)
 		unsigned int Alignment = 1,			// byte alignment
@@ -85,7 +87,7 @@ namespace DKFoundation
 			virtual void* AlignedChunkAddress(void*) const = 0;
 		};
 
-		// DKAllocator instance (shared), with alignment
+		/// DKAllocator instance (shared), with alignment
 		static DKAllocator& AllocatorInstance(void)
 		{
 			// shared instance located in RebindAlignment<BaseAlignment>
@@ -225,7 +227,7 @@ namespace DKFoundation
 			return false;
 		}
 
-		// returns Chunk starting address if ptr was allocated from this object.
+		/// returns Chunk starting address if ptr was allocated from this object.
 		void* AlignedChunkAddress(void* ptr) const
 		{
 			if (ptr)
@@ -241,7 +243,7 @@ namespace DKFoundation
 			return NULL;
 		}
 
-		void Reserve(size_t n)		// preallocate
+		void Reserve(size_t n)		///< preallocate
 		{
 			if (n > 0)
 			{
@@ -294,7 +296,7 @@ namespace DKFoundation
 			return 0;
 		}
 
-		size_t Purge(void)	// delete unoccupied chunks
+		size_t Purge(void)	///< delete unoccupied chunks
 		{
 			CriticalSection guard(lock);
 			return PurgeInternal();

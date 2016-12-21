@@ -1085,7 +1085,7 @@ namespace DKFoundation
 		DKASSERT_MEM_DEBUG((s % pageSize) == 0);
 #ifdef _WIN32
 		ptr = ::VirtualAlloc(p, s, MEM_RESERVE, PAGE_READWRITE);
-		if (ptr == NULL)
+		if (ptr == NULL && GetLastError() == ERROR_INVALID_ADDRESS)
 			ptr = ::VirtualAlloc(0, s, MEM_RESERVE, PAGE_READWRITE);
 
 		if (ptr)
@@ -1095,7 +1095,9 @@ namespace DKFoundation
 
 #else
 		// mmap
-		ptr = ::mmap(0, s, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		ptr = ::mmap(p, s, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (ptr == MAP_FAILED && errno == EINVAL)
+			ptr = ::mmap(0, s, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
 		if (ptr == MAP_FAILED)
 		{
 			DKLog("mmap failed: %s\n", strerror(errno));

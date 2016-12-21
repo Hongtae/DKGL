@@ -9,18 +9,14 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKHingeConstraint
-// a hinge constraint between two rigid bodies each with local axis as
-// orientation of the hinge axis.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief a hinge constraint between two rigid bodies each with local axis as
+	/// orientation of the hinge axis.
 	class DKGL_API DKHingeConstraint : public DKConstraint
 	{
 	public:
-		// Using DKNSTransform, z-axis is orientation of hinge axis.
+		/// Using DKNSTransform, z-axis is orientation of hinge axis.
 		DKHingeConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKHingeConstraint(DKRigidBody* bodyA, const DKNSTransform& frameA);
 

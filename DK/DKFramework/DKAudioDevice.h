@@ -8,14 +8,10 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAudioDevice
-// Audio Device (OpenAL) context object.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// Audio device context.
+	/// Currently, OpenAL backend implemented.
 	class DKGL_API DKAudioDevice : public DKSharedInstance<DKAudioDevice>
 	{
 	public:

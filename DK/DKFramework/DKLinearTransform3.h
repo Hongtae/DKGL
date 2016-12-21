@@ -12,14 +12,10 @@
 #include "DKMatrix3.h"
 #include "DKMatrix4.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKLinearTransform3
-// 3x3 matrix for linear transform on 3 dimensional coordinates.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief 3x3 matrix for linear transform on 3 dimensional coordinates.
 	class DKGL_API DKLinearTransform3
 	{
 	public:

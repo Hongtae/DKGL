@@ -8,23 +8,19 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKFloat16
-// Half precision floating point type.
-//
-// binary16 layout (IEEE 754-2008)
-//  +-------+----------+---------------------+
-//  | sign  | exponent | fraction (mantissa) |
-//  +-------+----------+---------------------+
-//  | 1 bit | 5 bit    | 10 bit              |
-//  +-------+----------+---------------------+
-//
-////////////////////////////////////////////////////////////////////////////////
-
-
 #pragma pack(push, 2)
 namespace DKFoundation
 {
+	/// @brief Half precision floating point type.
+	///
+	/// @verbatim
+	/// binary16 layout (IEEE 754-2008)
+	///  +-------+----------+---------------------+
+	///  | sign  | exponent | fraction (mantissa) |
+	///  +-------+----------+---------------------+
+	///  | 1 bit | 5 bit    | 10 bit              |
+	///  +-------+----------+---------------------+
+	/// @endverbatim
 	class DKGL_API DKFloat16
 	{
 	public:
@@ -39,21 +35,22 @@ namespace DKFoundation
 		bool IsInfinity(void) const;
 		bool IsPositiveInfinity(void) const;
 		bool IsNegativeInfinity(void) const;
-		bool IsNumeric(void) const;	// false if NaN
+		bool IsNumeric(void) const;	///< false if NaN
 		bool IsSubnormalNumber(void) const;
 		bool IsPositive(void) const;
 		bool IsZero(void) const;
 
-		// Warning: Compare function does not check Inf,NaN
+		/// @warning
+		/// Compare function does not check Inf,NaN
 		int Compare(const DKFloat16&) const;
 
-		static const DKFloat16 zero;			// 0.0 (0 for positive, 0x8000 for negative)
-		static const DKFloat16 max;				// maximum positive value (65504.0)
-		static const DKFloat16 min;				// minimum positive normal (2^-14)
-		static const DKFloat16 maxSubnormal;	// minimum positive subnormal (2^-14 - 2^-24)
-		static const DKFloat16 minSubnormal;	// minimum positive subnormal (2^-24)
-		static const DKFloat16 posInfinity;		// +Inf (0x7c00)
-		static const DKFloat16 negInfinity;		// -Inf (0xfc00)
+		static const DKFloat16 zero;			///< 0.0 (0 for positive, 0x8000 for negative)
+		static const DKFloat16 max;				///< maximum positive value (65504.0)
+		static const DKFloat16 min;				///< minimum positive normal (2^-14)
+		static const DKFloat16 maxSubnormal;	///< minimum positive subnormal (2^-14 - 2^-24)
+		static const DKFloat16 minSubnormal;	///< minimum positive subnormal (2^-24)
+		static const DKFloat16 posInfinity;		///< +Inf (0x7c00)
+		static const DKFloat16 negInfinity;		///< -Inf (0xfc00)
 
 	private:
 		uint16_t binary16;	// packed 16bit float

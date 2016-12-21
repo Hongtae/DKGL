@@ -8,18 +8,14 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKDummyLock
-// this is dummy lock object. have no locking feature.
-// use this object for single-threaded app or context not shared by threads.
-//
-// Note:
-//  You can create your own locking object which can be used in template container classes.
-//  to create your own locking class, you need provide Lock, TryLock, Unlock functions
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief this is dummy lock object. have no locking feature.
+	/// use this object for single-threaded app or context not shared by threads.
+	///
+	/// @note
+	///  You can create your own locking object which can be used in template container classes.
+	///  to create your own locking class, you need provide Lock, TryLock, Unlock functions
 	class DKDummyLock
 	{
 	public:
@@ -30,7 +26,7 @@ namespace DKFoundation
 		void Unlock(void) const {}
 
 	private:
-		DKDummyLock(const DKDummyLock&);
-		DKDummyLock& operator = (const DKDummyLock&);
+		DKDummyLock(const DKDummyLock&) = delete;
+		DKDummyLock& operator = (const DKDummyLock&) = delete;
 	};
 }

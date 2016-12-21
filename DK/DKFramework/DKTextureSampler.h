@@ -10,14 +10,12 @@
 #include "DKResource.h"
 #include "DKColor.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKTextureSampler
-// texture sampler class. sampler object can define how texture being sampled.
-// sampler object can be shared between textures, materials.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief 
+	///  texture sampler class. sampler object can define how texture being sampled.
+	/// @details
+	///  sampler object can be shared between textures, materials.
 	class DKGL_API DKTextureSampler : public DKResource
 	{
 	public:

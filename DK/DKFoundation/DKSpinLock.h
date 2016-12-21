@@ -9,16 +9,12 @@
 #include "../DKInclude.h"
 #include "DKAtomicNumber32.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSpinLock
-// a busy-waiting locking class.
-// atomic variable used internally.
-// use this class for short period locking.
-// (such as small computation, without I/O.)
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// a busy-waiting locking class.
+	/// atomic variable used internally.
+	/// use this class for short period locking.
+	/// (such as small computation, without I/O.)
 	class DKGL_API DKSpinLock
 	{
 	public:
@@ -29,8 +25,8 @@ namespace DKFoundation
 		void Unlock(void) const;
 
 	private:
-		DKSpinLock(const DKSpinLock&);
-		DKSpinLock& operator = (const DKSpinLock&);
+		DKSpinLock(const DKSpinLock&) = delete;
+		DKSpinLock& operator = (const DKSpinLock&) = delete;
 		mutable DKAtomicNumber32 state;
 	};
 }

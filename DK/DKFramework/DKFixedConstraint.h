@@ -9,13 +9,9 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKFixedConstraint
-// a constraint fixes reference bodis.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief a constraint fixes reference bodis.
 	class DKGL_API DKFixedConstraint : public DKConstraint
 	{
 	public:

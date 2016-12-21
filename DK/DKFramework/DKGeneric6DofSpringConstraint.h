@@ -9,18 +9,14 @@
 #include "../DKFoundation.h"
 #include "DKGeneric6DofConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKGeneric6DofSpringConstraint
-// generic 6 dof constraint with spring motors for any axis.
-// (see DKGeneric6DofConstraint.h)
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief generic 6 dof constraint with spring motors for any axis.
+	/// (see DKGeneric6DofConstraint.h)
 	class DKGL_API DKGeneric6DofSpringConstraint : public DKGeneric6DofConstraint
 	{
 	public:
-		// DKNSTransform is rigid body's local transform.
+		/// DKNSTransform is rigid body's local transform.
 		DKGeneric6DofSpringConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKGeneric6DofSpringConstraint(DKRigidBody* bodyB, const DKNSTransform& frameB);
 		DKGeneric6DofSpringConstraint(void);
@@ -35,9 +31,9 @@ namespace DKFramework
 		void SetDamping(ParamAxis axis, float damping);
 		float Damping(ParamAxis axis) const;
 
-		// set the current constraint position/orientation as an equilibrium point for all DOF
+		/// set the current constraint position/orientation as an equilibrium point for all DOF
 		void SetEquilibriumPoint(void);
-		// set the current constraint position/orientation as an equilibrium point for given DOF
+		/// set the current constraint position/orientation as an equilibrium point for given DOF
 		void SetEquilibriumPoint(ParamAxis axis);
 		void SetEquilibriumPoint(ParamAxis axis, float val);
 		float EquilibriumPoint(ParamAxis axis) const;

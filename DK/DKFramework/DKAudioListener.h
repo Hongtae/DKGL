@@ -13,16 +13,12 @@
 #include "DKMatrix3.h"
 #include "DKMatrix4.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAudioListener
-// controls audio listener environment.
-//
-// To get shared instance, call DKAudioListener::SharedInstance().
-// You can create one or more instances, but they share same environment.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Controls audio listener environment.
+	///
+	/// To get shared instance, call DKAudioListener::SharedInstance().
+	/// You can create one or more instances, but they share same environment.
 	class DKGL_API DKAudioListener : public DKSharedInstance<DKAudioListener>
 	{
 	public:
@@ -53,8 +49,8 @@ namespace DKFramework
 		friend class DKObject<DKAudioListener>;
 		friend class DKSharedInstance<DKAudioListener>;		
 		DKAudioListener(void);
-		DKAudioListener(const DKAudioListener&);
-		DKAudioListener& operator = (const DKAudioListener&);		
+		DKAudioListener(const DKAudioListener&) = delete;
+		DKAudioListener& operator = (const DKAudioListener&) = delete;		
 
 		DKObject<DKAudioDevice> context;
 	};

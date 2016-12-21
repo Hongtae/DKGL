@@ -8,34 +8,30 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKFence
-// a simple locking object. can not be used with DKCriticalSection together.
-//
-// Usage:
-//  if (...)
-//  {
-//       DKFence fence(this);  // locking with key(this)
-//       .. mutually exclusive below scope ..
-//       .. do something thread sensitive ..
-//
-//  } // unlock automatically while fence object being destructed.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief a simple locking object. can not be used with DKCriticalSection together.
+	///
+	/// Usage:
+	/// @code
+	///  if (...)
+	///  {
+	///       DKFence fence(this);  // locking with key(this)
+	///       .. mutually exclusive below scope ..
+	///       .. do something thread sensitive ..
+	///
+	///  } // unlock automatically while fence object being destructed.
+	/// @endcode
 	class DKGL_API DKFence
 	{
 	public:
-		// anything can be a key, but should be unique.
+		/// anything can be a key, but should be unique.
 		DKFence(const void* key, bool exclusive = false);
 		~DKFence(void);
 		
 	private:
-		// copy constructor not allowed.
-		DKFence(const DKFence&);
-		DKFence& operator = (const DKFence&);
+		DKFence(const DKFence&) = delete;
+		DKFence& operator = (const DKFence&) = delete;
 		const void* key;
 	};
 }

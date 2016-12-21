@@ -9,13 +9,9 @@
 #include "../DKFoundation.h"
 #include "DKConcaveShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStaticPlaneShape
-// a collision shape for static plane
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief a collision shape for static plane
 	class DKGL_API DKStaticPlaneShape : public DKConcaveShape
 	{
 	public:

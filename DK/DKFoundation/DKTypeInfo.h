@@ -10,14 +10,10 @@
 #include <typeinfo>
 #include "DKString.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKTypeInfo
-// a wrapper class for std::type_info
-// You can use std::type_info directly.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// a wrapper class for std::type_info
+	/// You can use std::type_info directly.
 	class DKGL_API DKTypeInfo
 	{
 	public:

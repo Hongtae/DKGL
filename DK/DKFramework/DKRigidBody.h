@@ -10,19 +10,19 @@
 #include "DKCollisionObject.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKRigidBody
-// a rigid body. a node object which can be used by DKWorld.
-// object should have CollisionShape to interact.
-// this class not designed for subclassing.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// a rigid body. a node object which can be used by DKWorld.
+	/// @details
+	/// object should have CollisionShape to interact.
+	/// @note
+	/// this class not designed for subclassing.
 	class DKGL_API DKRigidBody : public DKCollisionObject
 	{
 		friend class DKConstraint;
 	public:
+		/// internal object properties
 		struct DKGL_API ObjectData
 		{
 			ObjectData(float mass = 0.0f, const DKVector3& localInertia = DKVector3::zero);
@@ -53,12 +53,12 @@ namespace DKFramework
 		DKNSTransform CenterOfMassTransform(void) const;
 		DKVector3 CenterOfMassPosition(void) const;
 
-		// mass (0 for static object)
+		/// mass (0 for static object)
 		void SetMass(float mass);
 		float Mass(void) const;
 		float InverseMass(void) const;
 
-		// local inertia, can be calculated by CollisionShape
+		/// local inertia, can be calculated by CollisionShape
 		void SetLocalInertia(const DKVector3& inertia);
 		DKVector3 LocalInertia(void) const;
 		DKVector3 InverseDiagLocalInertia(void) const;

@@ -8,15 +8,11 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAtomicNumber32
-// a number object which can be increased or decreased atomically.
-//
-// This class does not provide any numeric operators. (except assign)
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief A number object which can be increased or decreased atomically.
+	///
+	/// This class does not provide any numeric operators. (except assign)
 	class DKGL_API DKAtomicNumber32
 	{
 	public:
@@ -24,12 +20,12 @@ namespace DKFoundation
 		DKAtomicNumber32(Value initialValue = 0);
 		~DKAtomicNumber32(void);
 
-		Value Increment(void);			// +1, returns previous value.
-		Value Decrement(void);			// -1, returns previous value.
-		Value Add(Value addend);		// +addend, returns previous value.
-		Value Exchange(Value value);	// set value, returns previous value.
+		Value Increment(void);			///< +1, returns previous value.
+		Value Decrement(void);			///< -1, returns previous value.
+		Value Add(Value addend);		///< +addend, returns previous value.
+		Value Exchange(Value value);	///< set value, returns previous value.
 
-		// compare and set when equal. return true when operation succeeded.
+		/// compare and set when equal. return true when operation succeeded.
 		bool CompareAndSet(Value comparand, Value value);
 
 		DKAtomicNumber32& operator = (Value value);

@@ -10,13 +10,9 @@
 #include "DKGpuResource.h"
 #include "DKGpuCommandBuffer.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKGraphicsDevice
-// Graphics Device
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief GPU command queue
 	class DKGpuCommandQueue
 	{
 	public:
@@ -25,6 +21,7 @@ namespace DKFramework
 	};
 
 	class DKGraphicsDeviceInterface;
+	/// @brief Graphics device context
 	class DKGL_API DKGraphicsDevice : public DKSharedInstance<DKGraphicsDevice>
 	{
 	public:

@@ -11,21 +11,17 @@
 #include "DKObject.h"
 #include "DKStringUE.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStringU8
-// a string class with UTF-8 encoded character string.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
 	class DKData;
+	/// a string class with UTF-8 encoded character string.
 	class DKGL_API DKStringU8
 	{
 	public:
 		using CharT = DKUniChar8;
 
 		static const DKStringU8 empty;
-		// SystemEncoding returns 'DKStringEncoding::UTF8' always!
+		/// SystemEncoding returns 'DKStringEncoding::UTF8' always!
 		static DKStringEncoding SystemEncoding(void);
 
 		DKStringU8(void);
@@ -55,7 +51,7 @@ namespace DKFoundation
 
 		DKObject<DKData> Encode(DKStringEncoding e) const;
 
-		size_t Length(void) const;		// number of characters. (not bytes!)
+		size_t Length(void) const;		///< number of characters. (not bytes!)
 		size_t Bytes(void) const;
 
 		int Compare(const DKUniChar8* str) const;

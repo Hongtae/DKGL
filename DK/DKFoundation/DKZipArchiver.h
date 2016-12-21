@@ -14,13 +14,9 @@
 #include "DKStream.h"
 #include "DKLock.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKZipArchiver
-// a zip file writer.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// A zip file writer.
 	class DKGL_API DKZipArchiver
 	{
 	public:
@@ -29,9 +25,9 @@ namespace DKFoundation
 
 		static DKObject<DKZipArchiver> Create(const DKString& file, bool append);
 
-		// add file into zip-archive.
-		// compressionLevel is integer value from 0 to 9. (default is 6)
-		// (0: no-compression, 9: maximum compression)
+		/// add file into zip-archive.
+		/// compressionLevel is integer value from 0 to 9. (default is 6)
+		/// (0: no-compression, 9: maximum compression)
 		bool Write(const DKString& file, DKStream* stream, int compressionLevel, const char* password = NULL);
 		bool Write(const DKString& file, const void* data, size_t len, int compressionLevel, const char* password = NULL);
 

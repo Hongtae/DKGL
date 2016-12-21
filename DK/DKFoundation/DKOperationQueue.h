@@ -13,42 +13,41 @@
 #include "DKCondition.h"
 #include "DKSpinLock.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKOperationQueue
-// processing operations with multi-threaded.
-// this class manages thread pool automatically.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// Processing operations with multi-threaded.
+	/// This class manages thread pool automatically.
 	class DKGL_API DKOperationQueue
 	{
 	public:
+		/// retrieve operation state which is enqueued by DKOperationQueue::Post
 		struct OperationSync
 		{
 			enum State
 			{
                 StateUnknown = 0,
-				StatePending,
-				StateProcessed,
-				StateCancelled,
+				StatePending,	///< operation is pending and not processed yet.
+				StateProcessed,	///< operation has been processed.
+				StateCancelled,	///< operation was cancelled by system or user
 			};
 
 			virtual ~OperationSync(void) {}
-			virtual bool Sync(void) = 0;
-			virtual bool Cancel(void) = 0;
-			virtual State OperationState(void) = 0;
+			virtual bool Sync(void) = 0;	///< Wait until operation finished
+			virtual bool Cancel(void) = 0;	///< Cancellation request
+			virtual State OperationState(void) = 0; ///< Query state
 		};
 
+		/// threading filter.
+		/// Use this class to override behavior of background thread.
 		class ThreadFilter
 		{
 			friend class DKOperationQueue;
 		public:
 			virtual ~ThreadFilter(void) {}
 		protected:
-			virtual void OnThreadInitialized(void) {}
-			virtual void OnThreadTerminate(void) {}
-			virtual void PerformOperation(DKOperation* op)
+			virtual void OnThreadInitialized(void) {}	///< invoked on initialize thread
+			virtual void OnThreadTerminate(void) {}		///< invoked on finialize thread
+			virtual void PerformOperation(DKOperation* op) ///< invoked on processing operation
 			{
 				op->Perform();
 			}
@@ -62,13 +61,13 @@ namespace DKFoundation
 
 		void Post(DKOperation* operation);
 		DKObject<OperationSync> ProcessAsync(DKOperation* operation);
-		bool Process(DKOperation* operation);	// wait until done.
-		void CancelAllOperations(void);			// cancel all operations.
-		void WaitForCompletion(void) const;		// wait until all operations are done.
+		bool Process(DKOperation* operation);	///< wait until done.
+		void CancelAllOperations(void);			///< cancel all operations.
+		void WaitForCompletion(void) const;		///< wait until all operations are done.
 
-		size_t QueueLength(void) const;
-		size_t RunningOperations(void) const;
-		size_t RunningThreads(void) const;
+		size_t QueueLength(void) const;			///< Number of operations in queue.
+		size_t RunningOperations(void) const;	///< Number of operations currently in process.
+		size_t RunningThreads(void) const;		///< Number of active threads.
 
 	private:
 		struct Operation

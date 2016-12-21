@@ -9,13 +9,9 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKPoint2PointConstraint
-// point to point constraint between two rigid bodies each with a pivot.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief point to point constraint between two rigid bodies each with a pivot.
 	class DKGL_API DKPoint2PointConstraint : public DKConstraint
 	{
 	public:

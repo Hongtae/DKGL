@@ -12,15 +12,11 @@
 #include "DKData.h"
 #include "DKXmlParser.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKXmlDocument
-// XML DOM class, provides parse and generate DOM of XML, HTML.
-// this class uses DKXmlParser internally. (see DKXmlParser.h)
-// this class provides DOM includes DTD.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// XML DOM class, provides parse and generate DOM of XML, HTML.
+	/// this class uses DKXmlParser internally. (see DKXmlParser.h)
+	/// this class provides DOM includes DTD.
 	class DKGL_API DKXmlDocument
 	{
 	public:
@@ -53,8 +49,8 @@ namespace DKFoundation
 				NodeTypeAttributeDecl,
 				NodeTypeComment,
 				NodeTypeElement,
-				NodeTypeCData,  // CDATA section strings ignored by parser.
-				NodeTypePCData, // Parsed Character Data. (some symbols will be translated.)
+				NodeTypeCData,  ///< CDATA section strings ignored by parser.
+				NodeTypePCData, ///< Parsed Character Data. (some symbols will be translated.)
 			};
 			NodeType			Type(void) const;
 			virtual DKString	Export(void) const = 0;
@@ -66,7 +62,7 @@ namespace DKFoundation
 		struct CData : public Node
 		{
 			CData(void) : Node(NodeTypeCData) {}
-			DKStringU8 value;		// UTF-8 string
+			DKStringU8 value;		///< UTF-8 string
 			DKString Export(void) const;
 		};
 		struct PCData : public Node
@@ -99,14 +95,14 @@ namespace DKFoundation
 			DKString						data;
 			DKString Export(void) const;
 		};
-		struct ElementDecl : public Node		// DTD Element
+		struct ElementDecl : public Node		///< DTD Element
 		{
 			ElementDecl(void) : Node(NodeTypeElementDecl) {}
 			DKXmlParser::ElementDecl		decl;
 			DKXmlParser::ElementContentDecl	contents;
 			DKString Export(void) const;
 		};
-		struct AttributeDecl : public Node	// DTD
+		struct AttributeDecl : public Node	///< DTD
 		{
 			AttributeDecl(void) : Node(NodeTypeAttributeDecl) {}
 			DKXmlParser::AttributeDecl		decl;
@@ -127,11 +123,11 @@ namespace DKFoundation
 		DKXmlDocument(Element* root);
 		~DKXmlDocument(void);
 
-		// open and create object with URL or file.
+		/// open and create object with URL or file.
 		static DKObject<DKXmlDocument> Open(Type t, const DKString& fileOrURL, DKString* desc = NULL);
 
-		// When reading HTML from buffer, they should be encoded with UTF-8.
-		// becouse XML has encoding information, but HTML does not.
+		/// When reading HTML from buffer, they should be encoded with UTF-8.
+		/// becouse XML has encoding information, but HTML does not.
 		static DKObject<DKXmlDocument> Open(Type t, const DKData* buffer, DKString* desc = NULL);
 		static DKObject<DKXmlDocument> Open(Type t, DKStream* stream, DKString* desc = NULL);
 

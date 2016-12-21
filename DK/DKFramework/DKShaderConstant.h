@@ -8,43 +8,39 @@
 #pragma once
 #include "../DKFoundation.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// DKSahderConstant
-// predefined shader constant (uniform)
-// predefined value will be applied to entire scene. each model or material
-// can be overriden.
-// You can use UniformUserDefined type for your custom value.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief predefined shader constant (uniform)
+	///
+	/// predefined value will be applied to entire scene. each model or material
+	/// can be overriden.
+	/// You can use UniformUserDefined type for your custom value.
 	struct DKShaderConstant
 	{
 		enum Uniform : unsigned char
 		{
-			UniformUnknown = 0,								// error
-			UniformModelMatrix,								// float4x4	
-			UniformModelMatrixInverse,						// float4x4	
-			UniformViewMatrix,								// float4x4	
-			UniformViewMatrixInverse,						// float4x4	
-			UniformProjectionMatrix,						// float4x4	
-			UniformProjectionMatrixInverse,					// float4x4	
-			UniformViewProjectionMatrix,					// float4x4	
-			UniformViewProjectionMatrixInverse,				// float4x4	
-			UniformModelViewMatrix,							// float4x4	
-			UniformModelViewMatrixInverse,					// float4x4	
-			UniformModelViewProjectionMatrix,				// float4x4	
-			UniformModelViewProjectionMatrixInverse,		// float4x4	
-			UniformLinearTransformArray,					// float3x3	
-			UniformAffineTransformArray,					// float4x4	
-			UniformPositionArray,							// float3	
-			UniformTexture2D,								// uint1	
-			UniformTexture3D,								// uint1	
-			UniformTextureCube,								// uint1	
-			UniformAmbientColor,							// float3
-			UniformCameraPosition,							// float3
-			UniformUserDefine,								// user define
+			UniformUnknown = 0,							///< error
+			UniformModelMatrix,							///< float4x4	
+			UniformModelMatrixInverse,					///< float4x4	
+			UniformViewMatrix,							///< float4x4	
+			UniformViewMatrixInverse,					///< float4x4	
+			UniformProjectionMatrix,					///< float4x4	
+			UniformProjectionMatrixInverse,				///< float4x4	
+			UniformViewProjectionMatrix,				///< float4x4	
+			UniformViewProjectionMatrixInverse,			///< float4x4	
+			UniformModelViewMatrix,						///< float4x4	
+			UniformModelViewMatrixInverse,				///< float4x4	
+			UniformModelViewProjectionMatrix,			///< float4x4	
+			UniformModelViewProjectionMatrixInverse,	///< float4x4	
+			UniformLinearTransformArray,				///< float3x3	
+			UniformAffineTransformArray,				///< float4x4	
+			UniformPositionArray,						///< float3	
+			UniformTexture2D,							///< uint1	
+			UniformTexture3D,							///< uint1	
+			UniformTextureCube,							///< uint1	
+			UniformAmbientColor,						///< float3
+			UniformCameraPosition,						///< float3
+			UniformUserDefine,							///< user define
 			UniformMax,
 		};
 		enum Type : unsigned char
@@ -78,11 +74,11 @@ namespace DKFramework
 			BaseTypeSampler,
 		};
 
-		DKString	name;			// value name (should be matched with defined on code)
-		Uniform 				id;				// Uniform id
-		Type					type;			// value type
-		size_t					components;		// value components
-		int						location;		// binding location of program module
+		DKString	name;			///< value name (should be matched with defined on code)
+		Uniform 				id;				///< Uniform id
+		Type					type;			///< value type
+		size_t					components;		///< value components
+		int						location;		///< binding location of program module
 
 		static inline BaseType GetBaseType(Type t)
 		{

@@ -8,15 +8,9 @@
 #pragma once
 #include "../DKinclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStream
-// an abstract class.
-// provide stream interface.
-// set/get position and read/write data at position of stream.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// a simple stream interface.
 	class DKStream
 	{
 	public:

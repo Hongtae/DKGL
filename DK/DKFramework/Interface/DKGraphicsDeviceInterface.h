@@ -9,13 +9,9 @@
 #include "../DKGraphicsDevice.h"
 #include "DKBackendInterface.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKGraphicsDeviceInterface
-// An abstract class, interface for graphics device (GPU).
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Interface for graphics device (GPU) control.
 	class DKGraphicsDeviceInterface : public DKBackendInterface
 	{
 	public:

@@ -10,13 +10,10 @@
 #include "DKVector3.h"
 #include "DKConvexShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKConeShape
-// a cone shape for detecting collision.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// a cone shape for detecting collision.
 	class DKGL_API DKConeShape : public DKConvexShape
 	{
 	public:

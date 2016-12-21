@@ -12,14 +12,10 @@
 #include "DKMatrix4.h"
 #include "DKLinearTransform3.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAffineTransform3
-// 4x3 matrix for affine transform on 3 dimensional coordinates.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// 4x3 matrix for affine transform on 3 dimensional coordinates.
 	class DKGL_API DKAffineTransform3
 	{
 	public:

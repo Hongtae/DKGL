@@ -11,13 +11,6 @@
 #include "DKObject.h"
 #include "DKInvocation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKValue
-//
-// Binds variable or constant to DKInvocation object. (see DKInvocation.h)
-// a variable or constant bounds, will become result of invocation.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
 	template <typename T> class DKInvocationValue : public DKInvocation<T>
@@ -49,6 +42,8 @@ namespace DKFoundation
 		DKObject<T> value;
 	};
 
+	/// Binds variable or constant to DKInvocation object. (see DKInvocation.h)
+	/// a variable or constant bounds, will become result of invocation.
 	template <typename T> DKObject<DKInvocation<T>> DKValue(T value)
 	{
 		DKObject<DKInvocationValue<T>> invocation = DKOBJECT_NEW DKInvocationValue<T>(value);

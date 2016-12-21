@@ -9,17 +9,13 @@
 #include "../DKFoundation.h"
 #include "DKModel.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKActionController
-// Abstract class, Action control node class inherited from DKModel.
-// Useful for dynamics control of DKDynamicsWorld. (called by DKDynamicsWorld)
-//
-// Note:
-//    Use DKAnimationController for individual node animation.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Action control node class inherited from DKModel.
+	/// @details 
+	/// Useful for dynamics control of DKDynamicsWorld. (called by DKDynamicsWorld)
+	/// @note
+	///    Use DKAnimationController for individual node animation.
 	class DKActionController : public DKModel
 	{
 	public:

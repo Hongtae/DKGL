@@ -10,37 +10,33 @@
 #include "DKVector2.h"
 #include "DKVector3.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSpline
-// spline class, calculates spline curve.
-// used to get smooth interpolated curve between points.
-//
-// CatmullRom: curve of intersecting two connecting points. this spline
-//     guaranteeing that each point will be hit exactly.
-//     with given 4 points (p0,p1,p2,p3), curve between p1,p2
-//
-// UniformCubic: basis spline (B-spline), this is not interpolation curve.
-//     this curve does not pass through the points.
-//     the curve is completely contained in the convex hull of its control
-//     points.
-//     with given 4 points (p0,p1,p2,p3), curve between p1,p2
-//
-// Hermite: calculate curve with tangent vectors.
-//     with given 4 points (p0,p1,p2,p3), curve between p0,p1
-//     and p2 is tangent vector or p0, p3 is tangent vector of p1.
-//     a tangent vector (p2, p3) can control curve direction and speed.
-//
-// Bezier: 3 degree bezier curve.
-//     the curve is completely contained in the convex hull of its control
-//     points.
-//     with given 4 points (p0,p1,p2,p3), curve between p0,p1,p2,p3.
-//     p1,p2 is control points. (curve not pass this points)
-//
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief spline class, calculates spline curve.
+	///
+	/// used to get smooth interpolated curve between points.
+	///
+	/// - CatmullRom: curve of intersecting two connecting points. this spline
+	///     guaranteeing that each point will be hit exactly.
+	///     with given 4 points (p0,p1,p2,p3), curve between p1,p2
+	///
+	/// - UniformCubic: basis spline (B-spline), this is not interpolation curve.
+	///     this curve does not pass through the points.
+	///     the curve is completely contained in the convex hull of its control
+	///     points.
+	///     with given 4 points (p0,p1,p2,p3), curve between p1,p2
+	///
+	/// - Hermite: calculate curve with tangent vectors.
+	///     with given 4 points (p0,p1,p2,p3), curve between p0,p1
+	///     and p2 is tangent vector or p0, p3 is tangent vector of p1.
+	///     a tangent vector (p2, p3) can control curve direction and speed.
+	///
+	/// - Bezier: 3 degree bezier curve.
+	///     the curve is completely contained in the convex hull of its control
+	///     points.
+	///     with given 4 points (p0,p1,p2,p3), curve between p0,p1,p2,p3.
+	///     p1,p2 is control points. (curve not pass this points)
 	class DKGL_API DKSpline
 	{
 	public:

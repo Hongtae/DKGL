@@ -8,13 +8,9 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKLock
-// provide recursive-lock feature.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief recursive-lock.
 	class DKGL_API DKLock
 	{
 	public:
@@ -25,8 +21,8 @@ namespace DKFoundation
 		void Unlock(void) const;
 
 	private:
-		DKLock(const DKLock&);
+		DKLock(const DKLock&) = delete;
 		DKLock& operator = (const DKLock&) = delete;
 		void* impl;
 	};
-}
+}	

@@ -8,11 +8,6 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKQuaternion
-// quaternion class.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
@@ -20,20 +15,20 @@ namespace DKFramework
 	class DKMatrix4;
 	class DKVector3;
 	class DKVector4;
-
+	/// @brief a quaternion utility class
 	class DKGL_API DKQuaternion
 	{
 	public:
 		DKQuaternion(void);
 		DKQuaternion(const DKQuaternion& q);
-		DKQuaternion(const DKVector3& axis, float angle); // angle is radian
-		DKQuaternion(float pitch, float yaw, float roll); // radian
-		DKQuaternion(const DKVector3& from, const DKVector3& to, float t = 1.0); // t > 1 for over-rotate, < 0 for inverse
+		DKQuaternion(const DKVector3& axis, float angle); ///< angle is radian
+		DKQuaternion(float pitch, float yaw, float roll); ///< radian
+		DKQuaternion(const DKVector3& from, const DKVector3& to, float t = 1.0); ///< t > 1 for over-rotate, < 0 for inverse
 
 		DKQuaternion(float _x, float _y, float _z, float _w);
 		~DKQuaternion(void);
 
-		// spherical linear interpolation
+		/// spherical linear interpolation
 		static DKQuaternion Slerp(const DKQuaternion& q1, const DKQuaternion& q2, float t);
 		static float Dot(const DKQuaternion& q1, const DKQuaternion& q2);
 

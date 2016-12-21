@@ -8,24 +8,19 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKVector4
-// a Euclidean vector for four-dimensional space.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKMatrix4;
-	
+	/// @brief a Euclidean vector for four-dimensional space.
 	class DKGL_API DKVector4
 	{
 	public:
 		DKVector4(void);
 		DKVector4(float x_, float y_, float z_, float w_);
 
-		static DKVector4 Cross(const DKVector4&v1, const DKVector4& v2, const DKVector4& v3);// cross product
-		static float Dot(const DKVector4& v1, const DKVector4& v2); // dot product
+		static DKVector4 Cross(const DKVector4&v1, const DKVector4& v2, const DKVector4& v3);///< cross product
+		static float Dot(const DKVector4& v1, const DKVector4& v2); ///< dot product
 
 		bool operator == (const DKVector4& v) const;
 		bool operator != (const DKVector4& v) const;
@@ -48,7 +43,7 @@ namespace DKFramework
 		DKVector4& operator /= (const DKVector4& v);
 
 		float Length(void) const;
-		float LengthSq(void) const; // length^2
+		float LengthSq(void) const; ///< length^2
 
 		DKVector4& Transform(const DKMatrix4& m);
 		DKVector4& Normalize(void);

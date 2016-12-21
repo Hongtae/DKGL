@@ -12,33 +12,20 @@
 #include "DKMatrix3.h"
 #include "DKMatrix4.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// DKTransformUnit
-// components for affine transform.
-// make matrix to use.
-// You can use DKAffineTransform3 for Non-uniform scale.
-//
-// DKUSTransform
-// transform class for uniform-scale transform.
-//
-// DKNSTransform
-// transform class for non-scale transform.
-// this class has position, rotation only.
-// this object used by collision object usually.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief components for affine transform.
+	///
+	/// build a matrix to use.
+	/// You can use DKAffineTransform3 for Non-uniform scale.
 	struct DKGL_API DKTransformUnit
 	{
 		DKTransformUnit(void);
 		DKTransformUnit(const DKVector3& s, const DKQuaternion& r, const DKVector3& t);
 
-		DKMatrix3			Matrix3(void) const;	// scale * rotation
-		DKMatrix4			Matrix4(void) const;	// scale * rotation * translation
+		DKMatrix3			Matrix3(void) const;	///< scale * rotation
+		DKMatrix4			Matrix4(void) const;	///< scale * rotation * translation
 
 		DKTransformUnit			Interpolate(const DKTransformUnit& target, float t) const;
 		DKTransformUnit&		Identity(void);
@@ -61,7 +48,8 @@ namespace DKFramework
 		return v;
 	}
 
-	// Uniform-Scale Affine Transform
+	/// @brief Uniform-Scale Affine Transform
+	/// @details transform class for uniform-scale transform.
 	struct DKGL_API DKUSTransform
 	{
 		DKUSTransform(void);
@@ -95,7 +83,11 @@ namespace DKFramework
 		return v;
 	}
 
-	// Non-Scale Affine Transform (4x3 matrix)
+	/// @brief Non-Scale Affine Transform (4x3 matrix)
+	/// @details
+	/// transform class for non-scale transform.
+	/// this class has position, rotation only.
+	/// this object used by collision object usually.
 	struct DKGL_API DKNSTransform
 	{
 		DKNSTransform(const DKQuaternion& r, const DKVector3& t = DKVector3::zero);

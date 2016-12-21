@@ -9,15 +9,11 @@
 #include "../DKFoundation.h"
 #include "DKTransform.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAnimationController
-// Animation control interface, abstract class.
-// sublcass to customize your action behaviors how object being animated.
-// Used for DKModel node animation.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Animated-Transform interface.
+	///
+	/// Encapsulate any kind of animation that can produce DKTransformUnit
 	class DKGL_API DKAnimatedTransform
 	{
 	public:
@@ -27,6 +23,10 @@ namespace DKFramework
 		virtual bool GetTransform(const NodeId& key, DKTransformUnit& out) = 0;
 	};
 
+	/// @brief Animation control interface.
+	///
+	/// Sublcass to customize your action behaviors how object being animated.
+	/// Used for DKModel node animation.
 	class DKGL_API DKAnimationController : public DKAnimatedTransform
 	{
 	public:
@@ -43,8 +43,8 @@ namespace DKFramework
 		virtual void Play(void) = 0;
 		virtual void Stop(void) = 0;
 
-		void SetFrame(float frame);	 // set animation frame (in time unit)
-		void SetSpeed(float speed);  // animation speed
+		void SetFrame(float frame);	 ///< set animation frame (in time unit)
+		void SetSpeed(float speed);  ///< animation speed
 		float Frame(void) const				{return frame;}
 		float Speed(void) const				{return speed;}
 

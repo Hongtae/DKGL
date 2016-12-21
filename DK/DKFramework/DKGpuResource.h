@@ -10,12 +10,13 @@
 
 namespace DKFramework
 {
+	/// @brief GPU buffer object
 	class DKGpuBuffer
 	{
 	public:
 		virtual ~DKGpuBuffer(void) {}
 	};
-
+	/// @brief GPU texture object
 	class DKGpuTexture
 	{
 	public:

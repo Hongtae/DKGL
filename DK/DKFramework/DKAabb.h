@@ -10,16 +10,12 @@
 #include "DKVector3.h"
 #include "DKQuaternion.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAabb
-// a simple AABB (Axis Aligned Bounding Box) utility class.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKLine;
 	class DKBox;
+	/// A simple AABB(Axis Aligned Bounding Box) utility class.
 	class DKGL_API DKAabb
 	{
 	public:

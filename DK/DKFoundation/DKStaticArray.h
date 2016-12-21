@@ -11,14 +11,14 @@
 #include "DKFunction.h"
 
 #ifndef DKSTATICARRAY_USE_STL_SORT
-// Set 1 if you want to use stl sort (std::sort) as your default sort function.
-// std::sort could be faster.
+/// Set 1 if you want to use stl sort (std::sort) as your default sort function.
+/// std::sort could be faster.
 #define DKSTATICARRAY_USE_STL_SORT	0
 #endif
 
 #ifndef DKSTATICARRAY_USE_STATIC_ROTATE
-// Set 1 if you don't want additional memory allocation for item rotation.
-// For lots of elements, memory allocated rotation is faster normally.
+/// Set 1 if you don't want additional memory allocation for item rotation.
+/// For lots of elements, memory allocated rotation is faster normally.
 #define DKSTATICARRAY_USE_STATIC_ROTATE	0
 #endif
 
@@ -26,19 +26,9 @@
 #include <algorithm>
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStaticArray
-// A simple array with fixed length (non-allocationg).
-// This class provides sorting algorithm.
-// You can use std::sort for default sorting algorithm
-// by defining DKSTATICARRAY_USE_STL_SORT=1
-//
-// This class using external array (by pointer), of course, not thread safe.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
-	// iterator class for range-based for loop
+	/// DKStaticArray iterator class for range-based for loop
 	template <typename CONTAINER, typename ITEMREF>
 	struct DKArrayRBIterator
 	{
@@ -68,6 +58,12 @@ namespace DKFoundation
 		}
 	};
 
+	/// A simple array with fixed length (non-allocationg).
+	/// This class provides sorting algorithm.
+	/// You can use std::sort for default sorting algorithm
+	/// by defining DKSTATICARRAY_USE_STL_SORT=1
+	///
+	/// This class using external array (by pointer), not thread safe.
 	template <typename VALUE> class DKStaticArray
 	{
 	public:
@@ -78,7 +74,7 @@ namespace DKFoundation
 
 		enum : Index { IndexNotFound = (Index)-1 };
 
-		// Iterator class for range-based for loop
+		/// Iterator class for range-based for loop
 		typedef DKArrayRBIterator<DKStaticArray, VALUE&>				RBIterator;
 		typedef DKArrayRBIterator<const DKStaticArray, const VALUE&>	ConstRBIterator;
 		RBIterator begin(void)				{return RBIterator(*this, 0);}
@@ -279,9 +275,9 @@ namespace DKFoundation
 #endif
 			}
 		}
-		// enumerate all items.
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// enumerate all items.
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -300,7 +296,7 @@ namespace DKFoundation
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

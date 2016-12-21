@@ -10,16 +10,14 @@
 #include "DKSerializer.h"
 #include "DKVariant.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKResource
-// Resource for system, you can transfer resource data via file of network.
-// You can use DKResourceLoader, DKSerializer to serialize object.
-// A lots of serializable objects inherited from DKResource.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
 	class DKResourceLoader;
+	/// @brief
+	/// Resource for system, you can transfer resource data via file of network
+	/// @details
+	/// You can use DKResourceLoader, DKSerializer to serialize object.
+	/// A lots of serializable objects inherited from DKResource.
 	class DKGL_API DKResource
 	{
 	public:
@@ -37,7 +35,7 @@ namespace DKFramework
 		virtual bool Deserialize(const DKData*, DKResourceLoader*);
 		virtual bool Deserialize(const DKXmlElement*, DKResourceLoader*);
 
-		virtual bool Validate(void); // resource validation
+		virtual bool Validate(void); ///< resource validation
 
 		DKVariant::VPairs metadata;
 

@@ -12,19 +12,19 @@
 #include "DKCondition.h"
 #include "DKCriticalSection.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSharedInstance
-// a shared instance interface.
-// Object can be shared like singleton, but deleted automatically if no objects has references.
-// You can re-create instance by calling SharedInstance() after previous object deleted.
-//
-// You can define your type by 'typedef' with DKSharedInstance or
-// You can subclass inheritanced from DKSharedInstance.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief a shared instance interface.
+	/// Object can be shared like singleton, but deleted automatically if no objects has references.
+	/// You can re-create instance by calling SharedInstance() after previous object deleted.
+	///
+	/// You can define your type by 'typedef' with DKSharedInstance or
+	/// You can subclass inheritanced from DKSharedInstance.
+	///
+	/// @warning
+	///  This is not singleton type.
+	///  Instance will be destroyed automatically if no one refers to this instance.
+	/// @see DKSingleton
 	template <class TYPE> class DKSharedInstance
 	{
 	public:

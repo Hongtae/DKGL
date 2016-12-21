@@ -14,18 +14,14 @@
 #include "DKMemory.h"
 #include "DKArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKOrderedArray
-// simple array class, items be ordered always.
-// provides fast bisectional search operation.
-//
-// You must provide compare-function of your items
-// You can use DKArraySortAscending, DKArraySortDescending for your items
-// comparison function, if your item(VALUE) has comparison operators.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// simple array class, items be ordered always.
+	/// provides fast bisectional search operation.
+	///
+	/// You must provide compare-function of your items
+	/// You can use DKArraySortAscending, DKArraySortDescending for your items
+	/// comparison function, if your item(VALUE) has comparison operators.
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKOrderedArray
 	{
@@ -39,24 +35,24 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
-		// OrderFunc, comparison function returns boolean,
-		// for ascending array, return lhs < rhs,
-		// for descending array, return lhs > rhs.
+		/// OrderFunc, comparison function returns boolean,
+		/// for ascending array, return lhs < rhs,
+		/// for descending array, return lhs > rhs.
 		typedef bool (*OrderFunc)(const VALUE& lhs, const VALUE& rhs);
 
-		// EqualFunc, test items are equal. return true if both items are equal.
+		/// EqualFunc, test items are equal. return true if both items are equal.
 		typedef bool (*EqualFunc)(const VALUE& lhs, const VALUE& rhs);
 
 		enum : Index { IndexNotFound = (Index)-1 };
 
-		// lock is public. lock object from outside!
-		// You can call type-casting operator and CountNoLock() only while object is locked.
+		/// lock is public. lock object from outside!
+		/// You can call type-casting operator and CountNoLock() only while object is locked.
 		LOCK	lock;
 
-		// iterator class for range-based for loop
-		// Note:
-		//  while iterating by range-based-iterator, object is not locked state.
-		//  And you can retrieve item as const VALUE& type (READ-ONLY) while iterating.
+		/// iterator class for range-based for loop
+		/// @note
+		///  while iterating by range-based-iterator, object is not locked state.
+		///  And you can retrieve item as const VALUE& type (READ-ONLY) while iterating.
 		typedef DKArrayRBIterator<DKOrderedArray, const VALUE&>			RBIterator;
 		typedef DKArrayRBIterator<const DKOrderedArray, const VALUE&>	ConstRBIterator;
 		RBIterator begin(void)				{return RBIterator(*this, 0);}
@@ -191,7 +187,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Count();
 		}
-		// CountNoLock: call this function when object has been locked already.
+		/// call this function when object has been locked already.
 		size_t CountNoLock(void) const
 		{
 			return container.Count();
@@ -216,15 +212,15 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Value(index);
 		}
-		// to access items directly, when object has been locked already.
+		/// to access items directly, when object has been locked already.
 		operator const VALUE* (void) const
 		{
 			return (const VALUE*)container;
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -245,7 +241,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.EnumerateBackward(std::forward<T>(enumerator));
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -299,8 +295,8 @@ namespace DKFoundation
 			}
 			return IndexNotFound;
 		}
-		// Find approximal value. (returns Index of value found.)
-		// if greater is true, the result will be index of value or least greater value.
+		/// Find approximal value. (returns Index of value found.)
+		/// if greater is true, the result will be index of value or least greater value.
 		Index FindApprox(const VALUE& value, bool greater) const
 		{
 			CriticalSection guard(lock);

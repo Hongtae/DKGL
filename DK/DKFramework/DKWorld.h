@@ -12,14 +12,13 @@
 #include "DKModel.h"
 #include "DKCollisionObject.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKWorld
-// compose scene with DKModel tree.
-// you can detect collision with DKModel nodes.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief compose scene with DKModel tree.
+	///
+	/// you can detect collision with DKModel nodes.
+	/// @note
+	/// collision detection is performed in Bullet-Physics.
 	class DKGL_API DKWorld
 	{
 	public:
@@ -61,11 +60,11 @@ namespace DKFramework
 		typedef DKFunctionSignature<float (DKCollisionObject*, float, const DKVector3&)> RayResultCallback;
 		typedef DKFunctionSignature<float (const DKCollisionObject*, float, const DKVector3&)> ConstRayResultCallback;
 
-		// ray-test to query all hit objects.
+		/// ray-test to query all hit objects.
 		size_t RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb);
 		size_t RayTest(const DKVector3& begin, const DKVector3& end, ConstRayResultCallback* cb) const;
 
-		// ray-test to query closest hit.
+		/// ray-test to query closest hit.
 		DKCollisionObject* RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint = NULL, DKVector3* hitNormal = NULL);
 		const DKCollisionObject* RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint = NULL, DKVector3* hitNormal = NULL) const;
 
@@ -96,7 +95,7 @@ namespace DKFramework
 		virtual bool AddSingleObject(DKModel* obj);
 		virtual void RemoveSingleObject(DKModel* obj);
 
-		// picking out nodes to protect between update sequence.
+		/// picking out nodes to protect between update sequence.
 		void PrepareUpdateNode(void);
 		void CleanupUpdateNode(void);
 

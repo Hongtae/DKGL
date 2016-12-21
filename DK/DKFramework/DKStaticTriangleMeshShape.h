@@ -10,18 +10,16 @@
 #include "DKConcaveShape.h"
 #include "DKTriangle.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStaticTriangleMeshShape
-// Collision shape for concave triangle mesh. it can only be used for fixed
-// objects. If you want to use mesh to movable object, it is recommended to
-// perform convex decomposition with DKConvexHullShape.
-// (see DKConvexHullShape.h)
-// If you need collision shape for dynamic triangle mesh,
-// use DKTriangleMeshProxyShape class.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Collision shape for concave triangle mesh.
+	///
+	/// It can only be used for fixed objects.
+	/// If you want to use mesh to movable object, it is recommended to
+	/// perform convex decomposition with DKConvexHullShape.
+	/// (see DKConvexHullShape.h)
+	/// If you need collision shape for dynamic triangle mesh,
+	/// use DKTriangleMeshProxyShape class.
 	class DKGL_API DKStaticTriangleMeshShape : public DKConcaveShape
 	{
 	public:
@@ -41,7 +39,7 @@ namespace DKFramework
 
 		size_t NumberOfVertices(void) const;
 		size_t NumberOfIndices(void) const;
-		size_t IndexSize(void) const;	// In Byte
+		size_t IndexSize(void) const;	///< Index size in bytes
 		size_t NumberOfTriangles(void) const;
 
 		const DKVector3& VertexAtIndex(int index) const;

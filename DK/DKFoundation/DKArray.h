@@ -15,46 +15,52 @@
 #include "DKFunction.h"
 #include "DKStaticArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// DKArray
-// basic array class.
-//
-// thread-safe for element insertion or deletion.
-// but you may need to lock from outside to modify element directly,
-//
-// ex:
-//	{
-//		typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
-//		array[x] = .... // do something with array[]
-//	}	// auto-unlock by critical-section end
-//
-// NOTE:
-//  When two objects has same VALUE type and different LOCK type,
-//  ONLY Add(), Insert() can be used.
-//
-//  If you have to obtain element's pointer or reference, beware of thread-safety.
-//  CopyValue() function is always thread-safe.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// sort function for ascending order
 	template <typename T>
 	bool DKArraySortAscending(const T& lhs, const T& rhs) // ascending, smaller first
 	{
 		return lhs < rhs;
 	}
+	/// sort function for descending order
 	template <typename T>
 	bool DKArraySortDescending(const T& lhs, const T& rhs) // descending, bigger first
 	{
 		return lhs > rhs;
 	}
+	/// DKArray element comparision function
 	template <typename T>
 	bool DKArrayCompareEqual(const T& lhs, const T& rhs) // equal (comparision)
 	{
 		return lhs == rhs;
 	}
 
+	/// @brief basic array class.
+	/// If you put a lock into template parameter LOCK, It provides thread-safe
+	/// insertion, deletion.
+	/// @note
+	///  following types are locking class:
+	///  DKSpinLock, DKLock, DKMutex, DKCondition, DKSharedLock \n
+	///  You can implement your own locking class, see DKDummyLock.
+	///
+	/// You can also lock array object from outside to modify element directly.
+	///
+	/// @code
+	///	{
+	///		typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
+	///		array[x] = .... // do something with array[]
+	///	}	// auto-unlock by critical-section end
+	/// @endcode
+	///
+	/// @note
+	///  When two objects has same VALUE type and different LOCK type,
+	///  ONLY Add(), Insert() can be used.
+	///
+	/// @note
+	///  If you have to obtain element's pointer or reference, beware of thread-safety.
+	///  CopyValue() function is always thread-safe. 
+	///  (assume that template parameter LOCK is not DKDummyLock)
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKArray
 	{
@@ -70,17 +76,16 @@ namespace DKFoundation
 
 		enum : Index { IndexNotFound = (Index)-1 };
 
-		// lock is public. (object can be locked from outside, to use modify element directly.)
-		// in this case, You can use VALUE* casting-operator and CountNoLock() only.
+		/// lock is public. (object can be locked from outside, to use modify element directly.)
+		/// in this case, You can use VALUE* casting-operator and CountNoLock() only.
 		Lock	lock;
 
-		// implementation for range-based-for-loop.
-		typedef DKArrayRBIterator<DKArray, VALUE&>				RBIterator;
-		typedef DKArrayRBIterator<const DKArray, const VALUE&>	ConstRBIterator;
-		RBIterator begin(void)				{return RBIterator(*this, 0);}
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}
+		typedef DKArrayRBIterator<DKArray, VALUE&>				RBIterator;					///< implemented for range-based loop
+		typedef DKArrayRBIterator<const DKArray, const VALUE&>	ConstRBIterator;			///< implemented for range-based loop
+		RBIterator begin(void)				{return RBIterator(*this, 0);}					///< implemented for range-based loop
+		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}				///< implemented for range-based loop
+		RBIterator end(void)				{return RBIterator(*this, this->Count());}		///< implemented for range-based loop
+		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}	///< implemented for range-based loop
 
 		DKArray(void)
 			: data(NULL), count(0), capacity(0)
@@ -136,14 +141,14 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return count == 0;
 		}
-		// append other array's elements to tail.
+		/// append other array's elements to tail.
 		template <typename ...Args>
 		Index Add(const DKArray<VALUE, Args...>& value)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
 			return Add((const VALUE*)value, value.Count());
 		}
-		// append one item to tail.
+		/// append one item to tail.
 		Index Add(const VALUE& value)
 		{
 			CriticalSection guard(lock);
@@ -151,7 +156,7 @@ namespace DKFoundation
 			new(&data[count]) VALUE(value);
 			return count++;
 		}
-		// append 's' length of value to tail.
+		/// append 's' length of value to tail.
 		Index Add(const VALUE* value, size_t s)
 		{
 			CriticalSection guard(lock);
@@ -161,7 +166,7 @@ namespace DKFoundation
 			count += s;
 			return count - s;
 		}
-		// append value to tail 's' times. (value x s)
+		/// append value to tail 's' times. (value x s)
 		Index Add(const VALUE& value, size_t s)
 		{
 			CriticalSection guard(lock);
@@ -171,7 +176,7 @@ namespace DKFoundation
 			count += s;
 			return count - s;
 		}
-		// append initializer-list items to tail.
+		/// append initializer-list items to tail.
 		Index Add(std::initializer_list<VALUE> il)
 		{
 			size_t s = il.size();
@@ -184,14 +189,14 @@ namespace DKFoundation
 			}
 			return count - s;
 		}
-		// insert array's elements into position 'pos'.
+		/// insert array's elements into position 'pos'.
 		template <typename ...Args>
 		Index Insert(const DKArray<VALUE, Args...>& value, Index pos)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
 			return Insert((const VALUE*)value, pos);
 		}
-		// insert one value into position 'pos'.
+		/// insert one value into position 'pos'.
 		Index Insert(const VALUE& value, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -204,7 +209,7 @@ namespace DKFoundation
 			count++;
 			return pos;
 		}
-		// insert 's' length of value into position 'pos'.
+		/// insert 's' length of value into position 'pos'.
 		Index Insert(const VALUE* value, size_t s, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -218,7 +223,7 @@ namespace DKFoundation
 			count += s;
 			return pos;
 		}
-		// insert value 's' times into position 'pos'.
+		/// insert value 's' times into position 'pos'.
 		Index Insert(const VALUE& value, size_t s, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -232,7 +237,7 @@ namespace DKFoundation
 			count += s;
 			return pos;
 		}
-		// insert initializer-list into position 'pos'.
+		/// insert initializer-list into position 'pos'.
 		Index Insert(std::initializer_list<VALUE> il, Index pos)
 		{
 			size_t s = il.size();
@@ -250,7 +255,7 @@ namespace DKFoundation
 			count += s;
 			return pos - s;
 		}
-		// remove one element at pos.
+		/// remove one element at pos.
 		size_t Remove(Index pos)
 		{
 			CriticalSection guard(lock);
@@ -263,7 +268,7 @@ namespace DKFoundation
 			}
 			return count;
 		}
-		// remove 'c' items at pos. (c = count)
+		/// remove 'c' items at pos. (c = count)
 		size_t Remove(Index pos, size_t c)
 		{
 			CriticalSection guard(lock);
@@ -381,7 +386,7 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count > index);
 			return data[index];
 		}
-		// To use items directly (You may need lock array.)
+		/// To use items directly (You may need lock array.)
 		operator VALUE* (void)
 		{
 			if (count > 0)
@@ -547,10 +552,10 @@ namespace DKFoundation
 				DKStaticArray<VALUE>(&data[start], count).template Sort<CompareFunc>(cmp);
 			}
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -569,7 +574,7 @@ namespace DKFoundation
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

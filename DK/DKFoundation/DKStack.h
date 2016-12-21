@@ -13,14 +13,11 @@
 #include "DKQueue.h"
 #include "DKMemory.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStack
-// a stack implemented template class.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator> class DKStack
+	/// a stack implemented template class.
+	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
+	class DKStack
 	{
 	public:
 		typedef ALLOC					Allocator;
@@ -43,10 +40,10 @@ namespace DKFoundation
 		
 		size_t Count(void)				{return container.Count();}
 
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;
@@ -65,7 +62,7 @@ namespace DKFoundation
 
 			container.EnumerateBackward(static_cast<T&&>(enumerator));
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
 			using Func = typename DKFunctionType<T&&>::Signature;

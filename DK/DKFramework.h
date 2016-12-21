@@ -1,6 +1,13 @@
 #pragma once
 #include "DKInclude.h"
 
+/// @brief 
+///  Classes for linear math, 3D graphics, animation, physics and collision
+///  detection, 3D audio, font and glyphs and application utilities.
+///
+/// @note
+///  This namespace includes (using) DKFoundation.
+namespace DKFramework {}
 
 #include "DKFramework/DKAabb.h"
 #include "DKFramework/DKActionController.h"

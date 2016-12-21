@@ -8,16 +8,12 @@
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKRational
-// a rational class.
-// Use this class if you need something calculated with high-precision.
-//
-// to convert real-number: numerator / denominator. (call RealNumber())
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief A rational class.
+	/// Use this class if you need something calculated with high-precision.
+	///
+	/// To convert real-number: numerator / denominator. (call RealNumber())
 	class DKGL_API DKRational
 	{
 	public:

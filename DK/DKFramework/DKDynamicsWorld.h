@@ -13,15 +13,13 @@
 #include "DKConstraint.h"
 #include "DKActionController.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKDynamicsWorld
-// a scene with dynamics.
-// You can extend physical behavior with DKActionController.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief a scene with dynamics.
+	/// @details
+	/// You can extend physical behavior with DKActionController.
+	/// @note
+	/// dynamics simulation is performed in Bullet-Physics.
 	class DKGL_API DKDynamicsWorld : public DKWorld
 	{
 	public:
@@ -33,10 +31,10 @@ namespace DKFramework
 
 		void Update(double tickDelta, DKTimeTick tick) override;
 
-		// if FixedFrameRate is greater than 0,
-		// it works as fixed-frame rate in physics. (determinism)
-		// You need to use fixed frame rate when sharing scene with
-		// other simulator. (ex: connected via network or subprocesses)
+		/// if FixedFrameRate is greater than 0,
+		/// it works as fixed-frame rate in physics. (determinism)
+		/// You need to use fixed frame rate when sharing scene with
+		/// other simulator. (ex: connected via network or subprocesses)
 		void SetFixedFrameRate(double fps);
 		double FixedFrameRate(void) const;
 

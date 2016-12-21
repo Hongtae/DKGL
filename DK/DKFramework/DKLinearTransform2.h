@@ -11,14 +11,10 @@
 #include "DKMatrix2.h"
 #include "DKMatrix3.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKLinearTransform2
-// 2x2 matrix for linear transform on 2 dimensional coordinates.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief 2x2 matrix for linear transform on 2 dimensional coordinates.
 	class DKGL_API DKLinearTransform2
 	{
 	public:

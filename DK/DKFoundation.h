@@ -1,6 +1,28 @@
 #pragma once
 #include "DKInclude.h"
 
+/// @brief
+///  Classes for supporting common platform features like file-system,
+///  threading, date and time, etc.\n
+///  Template data collection and abstration for generic data models are also
+///  supported.
+/// 
+///  Supports following features:
+///  - Object & Memory management
+///  - Unicode string (UTF-8,16,32)
+///  - Data Collection
+///  - Hash, UUID
+///  - Thread and Synchronization Objects. (Mutex, Cond, etc.)
+///  - Stream, File, Buffer, File-system directory
+///  - XML reader / writer
+///  - Date Time (ISO-8601 support)
+///  - Float16(half), Rational math type
+///  - Event-Loop, Loop Timer, Scheduler
+///  - Operation Queue, Thread Pool
+///  - Error handler
+///  - Process and environments info
+namespace DKFoundation {}
+
 // basic object templates and memory management.
 #include "DKFoundation/DKMemory.h"
 #include "DKFoundation/DKObject.h"

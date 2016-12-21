@@ -9,15 +9,13 @@
 #include "../DKWindow.h"
 #include "DKBackendInterface.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKWindowInterface
-// An abstract class, interface for GUI window.
-// You may need to subclass for your platform, If you have plan to use
-// DKWindow.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Interface for platform dependent UI window control.
+	///
+	/// Microsoft Windows, Apple macOS/iOS is builtin supported at this time.
+	/// You may need to your own subclass for your platform if you have plan
+	/// to use DKWindow.
 	class DKWindowInterface : public DKBackendInterface
 	{
 	public:
@@ -44,11 +42,11 @@ namespace DKFramework
 		virtual void Activate(void) = 0;
 		virtual void Minimize(void) = 0;
 
-		// Window's origin, size is based on system GUI coordinates.
+		/// Window's origin, size is based on system GUI coordinates.
 		virtual void SetOrigin(const DKPoint&) = 0;
 		virtual void Resize(const DKSize&, const DKPoint* optionalOrigin) = 0;
 
-		virtual double ContentScaleFactor(void) const = 0;  // logical coords by pixel ratio.
+		virtual double ContentScaleFactor(void) const = 0;  ///< logical coords by pixel ratio.
 
 		virtual void SetTitle(const DKString& title) = 0;
 		virtual DKString Title(void) const = 0;

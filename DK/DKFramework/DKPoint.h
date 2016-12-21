@@ -9,14 +9,10 @@
 #include "../DKFoundation.h"
 #include "DKVector2.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKPoint
-// a point unit. used by 2d graphics to represent a point.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief a point unit. used by 2d graphics to represent a point.
 	class DKGL_API DKPoint
 	{
 	public:

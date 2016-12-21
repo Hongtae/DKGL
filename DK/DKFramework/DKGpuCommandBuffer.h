@@ -11,14 +11,10 @@
 #include "DKGpuComputeCommandEncoder.h"
 #include "DKGpuBlitCommandEncoder.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKGpuCommandBuffer
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
 	class DKRenderPassDescriptor;
-
+	/// @brief GPU command buffer
 	class DKGpuCommandBuffer
 	{
 	public:

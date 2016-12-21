@@ -11,13 +11,9 @@
 #include "DKPlane.h"
 #include "DKLine.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKPolyhedralConvexShape
-// interface class for polyhedral convex shapes.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief interface class for polyhedral convex shapes.
 	class DKGL_API DKPolyhedralConvexShape : public DKConvexShape
 	{
 	public:

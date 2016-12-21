@@ -10,16 +10,13 @@
 #include "DKPoint.h"
 #include "DKSize.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKRect
-// represents rectangle on 2D graphics.
-// origin of rect is left-bottom corner and origin is DKPoint object.
-// size of rect is DKSize object and can not be negative.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief represents rectangle on 2D graphics.
+	///
+	/// origin of rect is top-left corner and origin is DKPoint object.
+	/// size of rect is DKSize object and can not be negative.
 	class DKGL_API DKRect
 	{
 	public:

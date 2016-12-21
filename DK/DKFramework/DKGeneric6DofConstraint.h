@@ -9,33 +9,30 @@
 #include "../DKFoundation.h"
 #include "DKConstraint.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKGeneric6DofConstraint
-// generic 6 dof constraint. a joint can control 6 degree of freedom limits.
-// (3 linear axis limits, 3 angular axis limits.)
-// (see DKConstraint.h for axis 'ParamAxis')
-//
-// Note:
-//    angular limits have following ranges.
-//     AngularX: -pi ~ pi
-//     AngularY: -pi/2 ~ pi/2
-//     AngularZ: -pi ~ pi
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// generic 6 dof constraint. a joint can control 6 degree of freedom limits.
+	/// (3 linear axis limits, 3 angular axis limits.)
+	/// (see DKConstraint.h for axis 'ParamAxis')
+	///
+	/// @note
+	///    angular limits have following ranges.\n
+	///     AngularX: -pi ~ pi					\n
+	///     AngularY: -pi/2 ~ pi/2				\n
+	///     AngularZ: -pi ~ pi					\n
+	///
 	class DKGL_API DKGeneric6DofConstraint : public DKConstraint
 	{
 	public:
 		enum AxisState
 		{
-			StateLocked = 0,		// axis locked.
-			StateFree,				// axis free.
-			StateRanged,			// axis limited free (free within range)
+			StateLocked = 0,		///< axis locked.
+			StateFree,				///< axis free.
+			StateRanged,			///< axis limited free (free within range)
 		};
 
-		// DKNSTransform is rigid body's local transform.
+		/// DKNSTransform is rigid body's local transform.
 		DKGeneric6DofConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKGeneric6DofConstraint(DKRigidBody* bodyB, const DKNSTransform& frameB);
 		DKGeneric6DofConstraint(void);

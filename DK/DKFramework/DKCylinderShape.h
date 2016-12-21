@@ -12,13 +12,9 @@
 #include "DKQuaternion.h"
 #include "DKConvexShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCylinderShape
-//  cylinder shape for detecting collision.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief cylinder shape for detecting collision.
 	class DKGL_API DKCylinderShape : public DKConvexShape
 	{
 	public:

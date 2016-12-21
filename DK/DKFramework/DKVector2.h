@@ -8,24 +8,19 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKVector2
-// a Euclidean vector for two-dimensional space.
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKMatrix2;
 	class DKMatrix3;
-
+	/// @brief a Euclidean vector for two-dimensional space.
 	class DKGL_API DKVector2
 	{
 	public:
 		DKVector2(void);
 		DKVector2(float x_, float y_);
 
-		static float Dot(const DKVector2& v1, const DKVector2& v2); // dot product
+		static float Dot(const DKVector2& v1, const DKVector2& v2); ///< dot product
 
 		bool operator == (const DKVector2& v) const;
 		bool operator != (const DKVector2& v) const;
@@ -50,10 +45,10 @@ namespace DKFramework
 		DKVector2& operator /= (const DKVector2& v);
 
 		float Length(void) const;
-		float LengthSq(void) const;			// length^2
+		float LengthSq(void) const;			///< length^2
 
-		DKVector2& Transform(const DKMatrix2& m);	// Linear Transform
-		DKVector2& Transform(const DKMatrix3& m);	// Homogeneous Transform
+		DKVector2& Transform(const DKMatrix2& m);	///< Linear Transform
+		DKVector2& Transform(const DKMatrix3& m);	///< Homogeneous Transform
 		DKVector2& Normalize(void);
 
 		operator float* (void)				{return val;}

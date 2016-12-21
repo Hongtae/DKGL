@@ -8,20 +8,15 @@
 #pragma once
 #include "../DKFoundation.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKMatrix4
-// 4x4 matrix
-//
-// Note:
-//   This matrix order is Row-major.
-//   transform of Vector4 V is V' = V * Matrix
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector4;
-
+	/// @brief 4x4 matrix
+	///
+	/// @note
+	///   This matrix order is Row-major.
+	///   transform of Vector4 V is V' = V * Matrix
 	class DKGL_API DKMatrix4
 	{
 	public:
