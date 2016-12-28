@@ -160,7 +160,8 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		CGRect old = self.frame;
 		[super setFrame:frame];
-		if (!CGRectEqualToRect(frame, old))
+		// if (!CGRectEqualToRect(frame, old)) // CGRectEqualToRect requires CoreAnimation.framework
+		if (!CGPointEqualToPoint(frame.origin, old.origin) || !CGSizeEqualToSize(frame.size, old.size))
 		{
 			if (CGSizeEqualToSize(frame.size, old.size))
 				self.userInstance->PostWindowEvent({ WindowEvent::WindowMoved, self.windowRect, self.contentRect, self.contentScaleFactor });
