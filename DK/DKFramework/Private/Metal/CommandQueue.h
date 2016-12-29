@@ -1,5 +1,5 @@
 //
-//  File: GraphicsDevice.h
+//  File: CommandQueue.h
 //  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -11,7 +11,7 @@
 #if DKGL_USE_METAL
 #import <Metal/Metal.h>
 
-#include "../../Interface/DKGraphicsDeviceInterface.h"
+#include "../../DKCommandQueue.h"
 
 namespace DKFramework
 {
@@ -19,18 +19,14 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void);
-
-			class GraphicsDevice : public DKGraphicsDeviceInterface
+			class CommandQueue : public DKCommandQueue
 			{
 			public:
-				GraphicsDevice(void);
-				~GraphicsDevice(void);
+				~CommandQueue(void);
 
-				DKObject<DKCommandQueue> CreateCommandQueue(void) override;
+				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
 
-			private:
-				id<MTLDevice> device;
+				id<MTLCommandQueue> queue;
 			};
 		}
 	}

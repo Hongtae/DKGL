@@ -2,24 +2,15 @@
 //  File: DKGraphicsDevice.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../DKFoundation.h"
-#include "DKGpuResource.h"
-#include "DKGpuCommandBuffer.h"
+#include "DKCommandQueue.h"
 
 namespace DKFramework
 {
-	/// @brief GPU command queue
-	class DKGpuCommandQueue
-	{
-	public:
-		virtual ~DKGpuCommandQueue(void) {}
-		virtual DKObject<DKGpuCommandBuffer> CreateCommandBuffer(void) = 0;
-	};
-
 	class DKGraphicsDeviceInterface;
 	/// @brief Graphics device context
 	class DKGL_API DKGraphicsDevice : public DKSharedInstance<DKGraphicsDevice>
@@ -29,7 +20,7 @@ namespace DKFramework
 		~DKGraphicsDevice(void);
 
 
-		DKObject<DKGpuCommandQueue> CreateCommandQueue(void);
+		DKObject<DKCommandQueue> CreateCommandQueue(void);
 
 	private:
 		DKGraphicsDeviceInterface* impl;

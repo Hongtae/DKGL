@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "../DKGraphicsDevice.h"
 #include "DKBackendInterface.h"
+#include "../DKGraphicsDevice.h"
 
 namespace DKFramework
 {
@@ -15,5 +15,10 @@ namespace DKFramework
 	class DKGraphicsDeviceInterface : public DKBackendInterface
 	{
 	public:
+
+		virtual DKObject<DKCommandQueue> CreateCommandQueue(void) = 0;
+
+
+		static DKGraphicsDeviceInterface* CreateInterface(void);
 	};
 }

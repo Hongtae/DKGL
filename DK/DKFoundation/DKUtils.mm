@@ -7,8 +7,8 @@
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
-
 #import <TargetConditionals.h>
+
 #if TARGET_OS_IPHONE
 #warning Compiling DKUtils for iOS
 #import <UIKit/UIKit.h>

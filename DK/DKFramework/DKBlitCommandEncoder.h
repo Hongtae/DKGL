@@ -1,8 +1,8 @@
 //
-//  File: DKGpuBlitCommandEncoder.h
+//  File: DKBlitCommandEncoder.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,10 +11,10 @@
 namespace DKFramework
 {
 	/// @brief CommandEncoder for GPU blit operation
-	class DKGpuBlitCommandEncoder
+	class DKBlitCommandEncoder
 	{
 	public:
-		virtual ~DKGpuBlitCommandEncoder(void) {}
+		virtual ~DKBlitCommandEncoder(void) {}
 		
 	};
 }

@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "../DKApplication.h"
 #include "DKBackendInterface.h"
+#include "../DKApplication.h"
 
 namespace DKFramework
 {
