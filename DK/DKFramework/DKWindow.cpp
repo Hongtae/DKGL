@@ -35,9 +35,10 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKWindow::DKWindow(void)
-: activated(false)
-, visible(false)
-, impl(NULL)
+	: activated(false)
+	, visible(false)
+	, eventLoop(NULL)
+	, impl(NULL)
 {
 }
 
@@ -52,10 +53,12 @@ DKWindow::~DKWindow(void)
 
 DKObject<DKWindow> DKWindow::Create(const DKString& name,
 									int style,
+									DKEventLoop* eventLoop,
 									const WindowCallback& cb)
 {
 	DKObject<DKWindow> window = DKObject<DKWindow>::New();
 	window->impl = DKWindowInterface::CreateInterface(window);
+	window->eventLoop = eventLoop;
 	window->callback = cb;
 	if (window->impl->Create(name, style))
 	{
@@ -173,17 +176,42 @@ DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
 
 void DKWindow::PostMouseEvent(const MouseEvent& event)
 {
-	handlerLock.Lock();
-	DKArray<DKObject<MouseEventHandler>> callbacks;
-	callbacks.Reserve(mouseEventHandlers.Count());
-	mouseEventHandlers.EnumerateForward([&callbacks](decltype(mouseEventHandlers)::Pair& pair){
-		if (pair.value)
-			callbacks.Add(pair.value);
-	});
-	handlerLock.Unlock();
+	if (this->eventLoop)
+	{
+		MouseEvent* eventCopy = ::new(DKMemoryDefaultAllocator::Alloc(sizeof(MouseEvent))) MouseEvent(event);	
 
-	for (MouseEventHandler* handler : callbacks)
-		handler->Invoke(event);
+		DKArray<DKObject<DKOperation>> operations;
+		handlerLock.Lock();
+		operations.Reserve(mouseEventHandlers.Count());
+		mouseEventHandlers.EnumerateForward([&](decltype(mouseEventHandlers)::Pair& pair) {
+			if (pair.value)
+				operations.Add(pair.value->Invocation(*eventCopy).SafeCast<DKOperation>());
+		});
+		handlerLock.Unlock();
+
+		for (DKOperation* op : operations)
+			this->eventLoop->Post(op);
+		// delete eventCopy
+		this->eventLoop->Post(DKFunction([eventCopy]()
+		{
+			eventCopy->~MouseEvent();
+			DKMemoryDefaultAllocator::Free(eventCopy);
+		})->Invocation());
+	}
+	else
+	{
+		DKArray<DKObject<MouseEventHandler>> callbacks;
+		handlerLock.Lock();
+		callbacks.Reserve(mouseEventHandlers.Count());
+		mouseEventHandlers.EnumerateForward([&callbacks](decltype(mouseEventHandlers)::Pair& pair) {
+			if (pair.value)
+				callbacks.Add(pair.value);
+		});
+		handlerLock.Unlock();
+
+		for (MouseEventHandler* handler : callbacks)
+			handler->Invoke(event);
+	}
 }
 
 void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
@@ -209,17 +237,42 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		}
 	}
 
-	handlerLock.Lock();
-	DKArray<DKObject<KeyboardEventHandler>> callbacks;
-	callbacks.Reserve(keyboardEventHandlers.Count());
-	keyboardEventHandlers.EnumerateForward([&callbacks](decltype(keyboardEventHandlers)::Pair& pair){
-		if (pair.value)
-			callbacks.Add(pair.value);
-	});
-	handlerLock.Unlock();
+	if (this->eventLoop)
+	{
+		KeyboardEvent* eventCopy = ::new(DKMemoryDefaultAllocator::Alloc(sizeof(KeyboardEvent))) KeyboardEvent(event);
 
-	for (KeyboardEventHandler* handler : callbacks)
-		handler->Invoke(event);
+		DKArray<DKObject<DKOperation>> operations;
+		handlerLock.Lock();
+		operations.Reserve(keyboardEventHandlers.Count());
+		keyboardEventHandlers.EnumerateForward([&](decltype(keyboardEventHandlers)::Pair& pair) {
+			if (pair.value)
+				operations.Add(pair.value->Invocation(*eventCopy).SafeCast<DKOperation>());
+		});
+		handlerLock.Unlock();
+
+		for (DKOperation* op : operations)
+			this->eventLoop->Post(op);
+		// delete eventCopy
+		this->eventLoop->Post(DKFunction([eventCopy]()
+		{
+			eventCopy->~KeyboardEvent();
+			DKMemoryDefaultAllocator::Free(eventCopy);
+		})->Invocation());
+	}
+	else
+	{
+		handlerLock.Lock();
+		DKArray<DKObject<KeyboardEventHandler>> callbacks;
+		callbacks.Reserve(keyboardEventHandlers.Count());
+		keyboardEventHandlers.EnumerateForward([&callbacks](decltype(keyboardEventHandlers)::Pair& pair) {
+			if (pair.value)
+				callbacks.Add(pair.value);
+		});
+		handlerLock.Unlock();
+
+		for (KeyboardEventHandler* handler : callbacks)
+			handler->Invoke(event);
+	}
 }
 
 void DKWindow::PostWindowEvent(const WindowEvent& event)
@@ -277,17 +330,42 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 		break;
 	}
 
-	handlerLock.Lock();
-	DKArray<DKObject<WindowEventHandler>> callbacks;
-	callbacks.Reserve(windowEventHandlers.Count());
-	windowEventHandlers.EnumerateForward([&callbacks](decltype(windowEventHandlers)::Pair& pair){
-		if (pair.value)
-			callbacks.Add(pair.value);
-	});
-	handlerLock.Unlock();
+	if (this->eventLoop)
+	{
+		WindowEvent* eventCopy = ::new(DKMemoryDefaultAllocator::Alloc(sizeof(WindowEvent))) WindowEvent(event);
 
-	for (WindowEventHandler* handler : callbacks)
-		handler->Invoke(event);
+		DKArray<DKObject<DKOperation>> operations;
+		handlerLock.Lock();
+		operations.Reserve(windowEventHandlers.Count());
+		windowEventHandlers.EnumerateForward([&](decltype(windowEventHandlers)::Pair& pair) {
+			if (pair.value)
+				operations.Add(pair.value->Invocation(*eventCopy).SafeCast<DKOperation>());
+		});
+		handlerLock.Unlock();
+
+		for (DKOperation* op : operations)
+			this->eventLoop->Post(op);
+		// delete eventCopy
+		this->eventLoop->Post(DKFunction([eventCopy]()
+		{
+			eventCopy->~WindowEvent();
+			DKMemoryDefaultAllocator::Free(eventCopy);
+		})->Invocation());
+	}
+	else
+	{
+		handlerLock.Lock();
+		DKArray<DKObject<WindowEventHandler>> callbacks;
+		callbacks.Reserve(windowEventHandlers.Count());
+		windowEventHandlers.EnumerateForward([&callbacks](decltype(windowEventHandlers)::Pair& pair) {
+			if (pair.value)
+				callbacks.Add(pair.value);
+		});
+		handlerLock.Unlock();
+
+		for (WindowEventHandler* handler : callbacks)
+			handler->Invoke(event);
+	}
 }
 
 void DKWindow::ShowMouse(int deviceId, bool bShow)

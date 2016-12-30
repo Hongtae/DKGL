@@ -23,6 +23,18 @@
 #define WM_DKWINDOW_SHOWCURSOR				(WM_USER + 0x1175)
 #define WM_DKWINDOW_UPDATEMOUSECAPTURE		(WM_USER + 0x1180)
 
+namespace DKFramework
+{
+	namespace Private 
+	{
+		namespace Win32
+		{
+			// declared in AppEventLoop.cpp
+			extern DKAtomicNumber32 numActiveWindows;
+		}
+	}
+}
+
 using namespace DKFramework;
 using namespace DKFramework::Private::Win32;
 
@@ -615,6 +627,7 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					if (!window->activated)
 					{
+						numActiveWindows.Increment();
 						window->activated = true;
 						window->instance->PostWindowEvent({ WindowEvent::WindowActivated, window->windowRect, window->contentRect, window->contentScaleFactor });
 						window->ResetKeyboard();
@@ -625,6 +638,7 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					if (window->activated)
 					{
+						numActiveWindows.Decrement();
 						window->ResetKeyboard();	// release all keys
 						window->ResetMouse();
 						window->activated = false;

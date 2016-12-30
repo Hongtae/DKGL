@@ -24,11 +24,16 @@ namespace DKFramework
 			static HHOOK keyboardHook = NULL;
 			static bool disableWindowKey = true;
 
+			// number of active windows.
+			// disable Window-Key only if numActiveWindows > 0.
+			DKAtomicNumber32 numActiveWindows = 0;
+
 			// Hook window-key for prevent a window being disabled when window-key pressed.
 			// To use window-key, save key-state with SetKeyboardState().
 			static LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 			{
-				if (nCode == HC_ACTION && disableWindowKey)
+				bool hook = disableWindowKey && numActiveWindows > 0;
+				if (nCode == HC_ACTION && hook)
 				{
 					KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *)lParam;
 					if (pkbhs->vkCode == VK_LWIN || pkbhs->vkCode == VK_RWIN)

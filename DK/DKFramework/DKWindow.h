@@ -48,7 +48,7 @@ namespace DKFramework
 			StyleMaximizeButton = 1 << 3,
 			StyleResizableBorder = 1 << 4,
 			StyleAutoResize = 1 << 5,	///< resize on rotate or DPI change, etc.
-			StyleGeneralWindow = 0xff,	///< includes all but StyleAcceptFileDrop
+			StyleGenericWindow = 0xff,	///< includes all but StyleAcceptFileDrop
 			StyleAcceptFileDrop = 1 << 8, ///< enables file drag & drop
 		};
 
@@ -101,7 +101,7 @@ namespace DKFramework
 		{
 			enum Type
 			{
-				WindowCreated = 0,	///< this event will not be distributed automatically.
+				WindowCreated = 0,	///< To receive this event, you must start the window event system asynchronously using 'DKEventLoop'.
 				WindowClosed,
 				WindowHidden,
 				WindowShown,
@@ -142,8 +142,14 @@ namespace DKFramework
 		};
 
 		/// Create window with system default size, position and hidden state.
-		static DKObject<DKWindow> Create(const DKString& name,		// window title
-										 int style = StyleGeneralWindow,			// window style
+		/// @param name Window title
+		/// @param style Window style, see DKWindow::Style
+		/// @param eventLoop Event-loop to notify window events asynchronously.
+		///                  If you specify NULL, all event handlers are invoked directly.
+		/// @param cb Window callback
+		static DKObject<DKWindow> Create(const DKString& name,
+										 int style = StyleGenericWindow,
+										 DKEventLoop* eventLoop = NULL,
 										 const WindowCallback& cb = WindowCallback());
 		/// Create proxy window. (can be used to interface of existing window)
 		/// You have to post all events manually.
@@ -231,6 +237,7 @@ namespace DKFramework
 		bool activated;			// true if window is activated
 		bool visible;
 
+		DKObject<DKEventLoop> eventLoop;
 		WindowCallback callback;
 		DKWindowInterface*	impl;
 	};
