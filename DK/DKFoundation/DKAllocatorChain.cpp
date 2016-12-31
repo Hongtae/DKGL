@@ -2,7 +2,7 @@
 //  File: DKAllocatorChain.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include <new>
@@ -38,17 +38,22 @@ namespace DKFoundation
 			}
 			~Chain(void)
 			{
-				DestroyAllocationTable();
-				while (true)
+				while (true) // delete allocators in reverse order.
 				{
 					lock.Lock();
 					DKAllocatorChain* p = first;
 					lock.Unlock();
+
 					if (p)
+					{
+						while (p->NextAllocator())
+							p = p->NextAllocator();
 						delete p;
+					}
 					else
 						break;
 				}
+				DestroyAllocationTable();
 
 				lock.Lock();
 				instance = NULL;

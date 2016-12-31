@@ -2,7 +2,7 @@
 //  File: DKMemory.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include <stdio.h>
@@ -89,7 +89,7 @@ namespace DKFoundation
 		// BackendAllocator : allocates all front-end allocators chunks.
 		struct BackendAllocator
 		{
-			enum { UnitSize = (1 << 16) };
+			enum { UnitSize = (1 << 18) }; // 256 KB
 			enum { IndexTableAlignment = 64 };
 			static_assert((IndexTableAlignment & (IndexTableAlignment-1)) == 0, "Alignment should be power of two.");
 			using Allocator = DKFixedSizeAllocator<UnitSize, 1, 64, DKDummyLock, SystemHeapAllocator, SystemLargeHeapAllocator>;
@@ -350,9 +350,11 @@ namespace DKFoundation
 
 			static int Init(AllocatorUnit* units)
 			{
+#ifdef DKGL_MEMORY_DEBUG
 				DKLog("Allocator[%d]: (size:%d, alignment:%d, units:%d, chunkSize:%d/%d usage:%.2f%%)\n",
 					  Index, UnitSize, Alignment, NumUnits, Wrapper::Allocator::AlignedChunkSize, MaxChunkSize,
 					  ((double)Wrapper::Allocator::AlignedChunkSize / (double)MaxChunkSize) * 100.0);
+#endif
 				units[Index].unitSize = UnitSize;
 				units[Index].allocator = ::new (SystemHeapAllocator::Alloc(sizeof(Wrapper))) Wrapper();
 				return 1 + Initializer<UnitSize + SizeOffset, SizeOffset, Alignment, Index+1, Count-1>::Init(units);
@@ -366,28 +368,36 @@ namespace DKFoundation
 
 		struct AllocatorPool : public DKAllocator
 		{
-			enum { NumAllocators = 136 };
+			enum { NumAllocators = 128 };
 
 			AllocatorPool(void) : backend(NULL)
 			{
 #ifdef _WIN32
-				// reserve 16MB heap
-				SystemHeapAllocator::heap = ::HeapCreate(0, (1<<24), 0);
+				// reserve 64 MB heap
+				SystemHeapAllocator::heap = ::HeapCreate(0, (1<<26), 0);
 #endif
 				backend = ::new (SystemHeapAllocator::Alloc(sizeof(BackendAllocator))) BackendAllocator();
 
 				// Initializer < Size, SizeOffset, Alignment, Index, Count>
 
 				int count = 0;
-				// 16 ~ 1024 (16 bytes offsets)
-				count += Initializer< (1 << 4), 16, 1, 0, 64>::Init(allocators);
-				// 1088 ~ 4096 (64 bytes offsets)
-				count += Initializer< (1 << 10) + 64, 64, 1, 64, 48>::Init(allocators);
-				// 4532 ~ 8192 (256 bytes offsets)
-				count += Initializer< (1 << 12) + 256, 256, 1, 112, 16>::Init(allocators);
-				// 9216 ~ 16384 (1024 bytes offset)
-				count += Initializer< (1 << 13) + 1024, 1024, 1, 128, 8>::Init(allocators);
-
+				// 16 ~ 256 (16 bytes offset, 16 units)
+				count += Initializer<16, 16, 1, 0, 16>::Init(allocators);
+				// 256+16 ~ 512 (16 bytes offset, 16 units)
+				count += Initializer<256 + 16, 16, 1, 16, 16>::Init(allocators);
+				// 512+32 ~ 1024 (32 bytes offset, 16 units)
+				count += Initializer<512 + 32, 32, 1, 32, 16>::Init(allocators);
+				// 1024+64 ~ 2048 (64 bytes offset, 16 units)
+				count += Initializer<1024 + 64, 64, 1, 48, 16>::Init(allocators);
+				// 2048+128 ~ 4096 (128 bytes offset, 16 units)
+				count += Initializer<2048 + 128, 128, 1, 64, 16>::Init(allocators);
+				// 4096+256 ~ 8192 (256 bytes offset, 16 units)
+				count += Initializer<4096 + 256, 256, 1, 80, 16>::Init(allocators);
+				// 8192+512 ~ 16384 (512 bytes offset, 16 units)
+				count += Initializer<8192 + 512, 512, 1, 96, 16>::Init(allocators);
+				// 16384+1024 ~ 32768 (1024 bytes offset, 16 units)
+				count += Initializer<16384 + 1024, 1024, 1, 112, 16>::Init(allocators);
+				
 				DKASSERT_MEM_DEBUG(count == NumAllocators);
 
 				size_t chunkSize = 0;

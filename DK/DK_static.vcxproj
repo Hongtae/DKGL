@@ -98,11 +98,7 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
     <PostBuildEvent />
@@ -148,11 +144,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
     <PostBuildEvent />

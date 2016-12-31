@@ -2,7 +2,7 @@
 //  File: DKMemory.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -91,5 +91,9 @@ namespace DKFoundation
 		static void Free(void* p)				{ DKMemoryPoolFree(p); }
 	};
 
+#ifdef DKGL_HEAP_ALLOCATOR_IS_DEFAULT
 	using DKMemoryDefaultAllocator = DKMemoryHeapAllocator;
+#else
+	using DKMemoryDefaultAllocator = DKMemoryPoolAllocator;
+#endif
 }
