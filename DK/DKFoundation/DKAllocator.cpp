@@ -17,7 +17,7 @@ DKAllocator::DKAllocator(void)
 {
 }
 
-DKAllocator::~DKAllocator(void)
+DKAllocator::~DKAllocator(void) noexcept(!DKGL_MEMORY_DEBUG)
 {
 }
 

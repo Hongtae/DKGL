@@ -31,34 +31,35 @@ namespace DKFoundation
 
 	namespace Private { struct UnexpectedError; }
 
+	/**
+	 @brief an exception object.
+	 you can review call-stack info with this object.
+	 you can write error description to file also.
 
-	/// @brief an exception object.
-	/// you can review call-stack info with this object.
-	/// you can write error description to file also.
-	///
-	///
-	/// Usage:
-	/// @code
-	///	try
-	///	{
-	///      .. exception occurred in somewhere ..
-	///	}
-	///	catch (DKError& e)
-	///	{
-	///      // print call stack
-	///		e.PrintDescriptionWithStackFrames();
-	///      // descript error info with default descriptor (may be console)
-	///		e.WriteToDefaultDescriptor();
-	///      // write error info into myLogFile
-	///		e.WriteToFile(myLogFile);
-	///
-	///      .. try to recover or do something useful.
-	///
-	///	}
-	/// @endcode
-	///
-	/// @note
-	///  On some platforms, the trace call stack may not work..
+
+	 Usage:
+	 @code
+		try
+		{
+		  .. exception occurred in somewhere ..
+		}
+		catch (DKError& e)
+		{
+		  // print call stack
+			e.PrintDescriptionWithStackFrames();
+		  // descript error info with default descriptor (may be console)
+			e.WriteToDefaultDescriptor();
+		  // write error info into myLogFile
+			e.WriteToFile(myLogFile);
+
+		  .. try to recover or do something useful.
+
+		}
+	 @endcode
+
+	 @note
+	  On some platforms, the trace call stack may not work.
+	 */
 	class DKGL_API DKError
 	{
 	public:

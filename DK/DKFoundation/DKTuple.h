@@ -2,7 +2,7 @@
 //  File: DKTuple.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -132,44 +132,46 @@ namespace DKFoundation
 	/// Required for overloaded function with variadic templates.
 	struct DKTupleValueSet {};
 
-	/// @brief A tuple template class.
-	/// Tuple can contains various types and values.
-	///
-	/// Example:
-	///  - create object and set values.
-	/// @code
-	///     DKTuple<int, float, const char*> myTuple;
-	///     myTuple.SetValue<0>(2, 3.14f, "tuple");
-	/// @endcode
-	///  - set values individually.
-	/// @code
-	///     DKTuple<int, float, const char*> myTuple;
-	///     myTuple.SetValue<0>(2);
-	///     myTuple.SetValue<1>(3.14f);
-	///     myTuple.SetValue<2>("tuple");
-	/// @endcode
-	///
-	///  - using DKTupleMake helper function.
-	/// @code
-	///     auto myTuple = DKTupleMake(2, 3.14f, "tuple");
-	/// @endcode
-	///
-	///  - use tuple class constructor.
-	/// @code
-	///     DKTuple<int, float, const char*> myTuple(DKTupleValueSet(), 2, 3.14f, "tuple");
-	/// @endcode
-	/// @note
-	///     (You must specify DKTupleValueSet() as first argument,
-	///      it is dummy object but required for overloaded constructor
-	///      which makes compiler able to distinguish constructer
-	///      with variadic-initial-values from other constructors.)
-	///
-	///  - retrieve value from tuple.
-	/// @code
-	///   int n = myTuple.Value<0>();
-	///   float f = myTuple.Value<1>();
-	///   const char* str = myTuple.Value<2>();
-	/// @endcode
+	/**
+	 @brief A tuple template class.
+	 Tuple can contains various types and values.
+
+	 Example:
+	  - create object and set values.
+	 @code
+		 DKTuple<int, float, const char*> myTuple;
+		 myTuple.SetValue<0>(2, 3.14f, "tuple");
+	 @endcode
+	  - set values individually.
+	 @code
+		 DKTuple<int, float, const char*> myTuple;
+		 myTuple.SetValue<0>(2);
+		 myTuple.SetValue<1>(3.14f);
+		 myTuple.SetValue<2>("tuple");
+	 @endcode
+
+	  - using DKTupleMake helper function.
+	 @code
+		 auto myTuple = DKTupleMake(2, 3.14f, "tuple");
+	 @endcode
+
+	  - use tuple class constructor.
+	 @code
+		 DKTuple<int, float, const char*> myTuple(DKTupleValueSet(), 2, 3.14f, "tuple");
+	 @endcode
+	 @note
+		 (You must specify DKTupleValueSet() as first argument,
+		  it is dummy object but required for overloaded constructor
+		  which makes compiler able to distinguish constructer
+		  with variadic-initial-values from other constructors.)
+
+	  - retrieve value from tuple.
+	 @code
+	   int n = myTuple.Value<0>();
+	   float f = myTuple.Value<1>();
+	   const char* str = myTuple.Value<2>();
+	 @endcode
+	 */
 	template <typename... Types> class DKTuple
 	{
 		// a data unit object that includes single DKTupleUnit.

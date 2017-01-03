@@ -2,7 +2,7 @@
 //  File: DKEventLoop.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -18,45 +18,48 @@
 
 namespace DKFoundation
 {
-	/// @brief Installs Event-Loop system into current thread which called DKEventLoop::Run(),
-	/// and provides control interfaces.
-	/// The Event-Loop is running loops and invoke operations.
-	/// Operations can be scheduled by specifed date or delayed by specified delay value.
-	///
-	/// If you call 'Run()', the EventLoop enter infinite loop and dispatch messages.
-	/// You can post termination message with DKEventLoop::Stop() to terminate loop.
-	///
-	/// On main thread, application should waits EventLoop's beging terminated by
-	/// calling 'Terminate()' on application exits.
-	///
-	/// You can control individual operation would be process or not by overrides in
-	/// subclass. You can call 'DKEventLoop::Process()' for process one operation,
-	///
-	/// Post() has two version with overloaded.
-	///   tick-based: system-tick based, calling operation with delayed time.
-	///   time-based: system time based, calling operation at specified system time.
-	///               if system time has changed, calling operations will adjusted.
-	///
-	/// @note
-	///  To make Event-Loop working on a new thread, create a DKThread object and call
-	///  'DKEventLoop::Run()' inside new working thread.
-	///
-	/// @code
-	///     DKEventLoop* myLoop;
-	///     // detach new thread with EventLoop.
-	///     DKObject<DKThread> workerThread = DKThread::Create([myLoop]() {
-	///                                     // your initialize code here.
-	///                                     myLoop->Run();  // run dispatch
-	///                                     // your finalize code here.
-	///                                     // thread is about to be terminated.
-	///                                     })->Invocation());
-	///      // do something with Event-Loop from outside of worker thread.
-	///      myLoop->PostOperation(...);
-	///
-	///      // terminate Event-Loop
-	///      myLoop->Stop();
-	///      workerThread->WaitTerminate();  // wait for termination.
-	/// @endcode
+	/**
+	 @brief
+	 Installs Event-Loop system into current thread which called DKEventLoop::Run(),
+	 and provides control interfaces.
+	 The Event-Loop is running loops and invoke operations.
+	 Operations can be scheduled by specifed date or delayed by specified delay value.
+
+	 If you call 'Run()', the EventLoop enter infinite loop and dispatch messages.
+	 You can post termination message with DKEventLoop::Stop() to terminate loop.
+
+	 On main thread, application should waits EventLoop's beging terminated by
+	 calling 'Terminate()' on application exits.
+
+	 You can control individual operation would be process or not by overrides in
+	 subclass. You can call 'DKEventLoop::Process()' for process one operation,
+
+	 Post() has two version with overloaded.
+	   tick-based: system-tick based, calling operation with delayed time.
+	   time-based: system time based, calling operation at specified system time.
+				   if system time has changed, calling operations will adjusted.
+
+	 @note
+	  To make Event-Loop working on a new thread, create a DKThread object and call
+	  'DKEventLoop::Run()' inside new working thread.
+
+	 @code
+		 DKEventLoop* myLoop;
+		 // detach new thread with EventLoop.
+		 DKObject<DKThread> workerThread = DKThread::Create([myLoop]() {
+										 // your initialize code here.
+										 myLoop->Run();  // run dispatch
+										 // your finalize code here.
+										 // thread is about to be terminated.
+										 })->Invocation());
+		  // do something with Event-Loop from outside of worker thread.
+		  myLoop->PostOperation(...);
+
+		  // terminate Event-Loop
+		  myLoop->Stop();
+		  workerThread->WaitTerminate();  // wait for termination.
+	 @endcode
+	 */
 	class DKGL_API DKEventLoop
 	{
 	public:

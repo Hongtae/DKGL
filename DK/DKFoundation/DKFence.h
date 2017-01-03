@@ -2,7 +2,7 @@
 //  File: DKFence.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -10,18 +10,21 @@
 
 namespace DKFoundation
 {
-	/// @brief a simple locking object. can not be used with DKCriticalSection together.
-	///
-	/// Usage:
-	/// @code
-	///  if (...)
-	///  {
-	///       DKFence fence(this);  // locking with key(this)
-	///       .. mutually exclusive below scope ..
-	///       .. do something thread sensitive ..
-	///
-	///  } // unlock automatically while fence object being destructed.
-	/// @endcode
+	/**
+	 @brief
+	 A simple locking object. can not be used with DKCriticalSection together.
+
+	 Usage:
+	 @code
+	  if (...)
+	  {
+		   DKFence fence(this);  // locking with key(this)
+		   .. mutually exclusive below scope ..
+		   .. do something thread sensitive ..
+
+	  } // unlock automatically while fence object being destructed.
+	 @endcode
+	 */
 	class DKGL_API DKFence
 	{
 	public:

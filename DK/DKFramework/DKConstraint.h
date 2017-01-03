@@ -2,7 +2,7 @@
 //  File: DKConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -12,44 +12,46 @@
 
 namespace DKFramework
 {
-	/// @brief
-	/// joint constraint for dynamics of rigid bodies.
-	/// 
-	/// @details
-	/// ERP : error reduction parameter
-	/// CFM : constraint force mixing
-	///
-	/// @verbatim
-	/// if CFM = 0 (default), constraint become hard.
-	/// if CFM > 0, constraint become soft. (bigger value makes softer)
-	/// if CFM < 0, become unstable. don't use.
-	///
-	/// if ERP = 0, no correction for join error occurred.
-	///             object slipping could happen.
-	/// if ERP = 1, all errors will be corrected while simulation process.
-	///             but not all objects could be corrected actually,
-	///             use ERP=1 is not recommended.
-	///             (0.1 ~ 0.8 is recommended, 0.2 is default)
-	/// @endverbatim
-	///
-	/// @note
-	///    deserialize using DKSerializer, bodyA, bodyB is restored from UUIDs.
-	///    If reference bodies are not in same Node-tree (DKModel tree), reference
-	///    bodies will not be restored. (non seekable with UUIDs if not in group)
-	///    If constraint failed to recover reference bodies, recover-info still
-	///    remains in object until Retarget() has called. this makes object able to
-	///    restore references later (when UUIDs is available.),
-	///    reference bodies recovered by OnUpdateTreeReferences().
-	///
-	/// @note
-	///    cloning object by Clone(), reference bodies (bodyA, bodyB) will not be
-	///    cloned directly. object will try to recover references by UUIDs after
-	///    clone completed if bodyA, bodyB has been cloned.
-	///    reference bodies recovered by UpdateCopiedReferenceUUIDs().
-	///
-	/// @note
-	///    reference bodies (bodyA, bodyB) must not be parent of constraint object.
-	///    constraint object has reference as DKObject, which has ownership.
+	/**
+	 @brief
+	 joint constraint for dynamics of rigid bodies.
+	 
+	 @details
+	 ERP : error reduction parameter
+	 CFM : constraint force mixing
+	
+	 @verbatim
+	 if CFM = 0 (default), constraint become hard.
+	 if CFM > 0, constraint become soft. (bigger value makes softer)
+	 if CFM < 0, become unstable. don't use.
+	
+	 if ERP = 0, no correction for join error occurred.
+	             object slipping could happen.
+	 if ERP = 1, all errors will be corrected while simulation process.
+	             but not all objects could be corrected actually,
+	             use ERP=1 is not recommended.
+	             (0.1 ~ 0.8 is recommended, 0.2 is default)
+	 @endverbatim
+	
+	 @note
+	    deserialize using DKSerializer, bodyA, bodyB is restored from UUIDs.
+	    If reference bodies are not in same Node-tree (DKModel tree), reference
+	    bodies will not be restored. (non seekable with UUIDs if not in group)
+	    If constraint failed to recover reference bodies, recover-info still
+	    remains in object until Retarget() has called. this makes object able to
+	    restore references later (when UUIDs is available.),
+	    reference bodies recovered by OnUpdateTreeReferences().
+	
+	 @note
+	    cloning object by Clone(), reference bodies (bodyA, bodyB) will not be
+	    cloned directly. object will try to recover references by UUIDs after
+	    clone completed if bodyA, bodyB has been cloned.
+	    reference bodies recovered by UpdateCopiedReferenceUUIDs().
+	
+	 @note
+	    reference bodies (bodyA, bodyB) must not be parent of constraint object.
+	    constraint object has reference as DKObject, which has ownership.
+	 */
 	class DKGL_API DKConstraint : public DKModel
 	{
 	public:

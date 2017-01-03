@@ -2,7 +2,7 @@
 //  File: DKFunction.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -16,53 +16,54 @@
 namespace DKFoundation
 {
 	template <typename Function> struct DKFunctionSignature;
-	/// @brief
-	/// A prototype of function object. template parameter must be function type.
-	///  (ex: DKFunctionSignature<void (int)> for 'void func(int)' )
-	/// This class is able to generate DKOperation, DKInvocation object.
-	/// It is very useful to implement script system or reflection features.
-	///
-	/// The purpose of this class is to provide common type of Function-object.
-	///
-	/// You can create DKFunctionSignature object with following ways.
-	///  - DKFunction( with function pointer )
-	///  - DKFunction( with function object or lambda )
-	///  - DKFunction( an object reference or pointer, member function pointer )
-	///
-	/// Example:
-	/// @code
-	///   void func(int) {..}
-	///
-	///   // generate DKFunctionSignature object from function.
-	///   auto sig = DKFunction(&func);
-	///   sig->Invoke(3);  // direct call
-	///
-	///   // generate operation object.
-	///   auto op = sig->Invocation(3);
-	///   sig = NULL;  // delete sig object. but 'op' is still alive.
-	///   op->Perform();  // call func.
-	///
-	///   // you can generate from lambda also.
-	///   auto sig = DKFunction( [](int) { ... } );
-	///   sig->Invoke(3);
-	///
-	///   // generate from class object.
-	///   auto sig = DKFunction(MyObject, &MyClass::Function);
-	///
-	///   // create object on the fly
-	///   auto sig = DKFunction(AClass(), &AClass::Function);
-	/// @endcode
-	///
-	/// @note
-	///  You can create DKOperation object from DKFunctionSignature
-	///  and you can store that into array or list for later use.
-	///
-	/// @note
-	///  DKFunctionSignature< function-type > template parameters affects only
-	///  function parameters. function and member function are same type.\n
-	///   - void func(int) ==> DKFunctionSignature<void (int)>			\n
-	///   - void AClass::Func(int) ==> DKFunctionSignature<void (int)>
-	///
+	/**
+	 @brief
+	 A prototype of function object. template parameter must be function type.
+	  (ex: DKFunctionSignature<void (int)> for 'void func(int)' )
+	 This class is able to generate DKOperation, DKInvocation object.
+	 It is very useful to implement script system or reflection features.
+
+	 The purpose of this class is to provide common type of Function-object.
+
+	 You can create DKFunctionSignature object with following ways.
+	  - DKFunction( with function pointer )
+	  - DKFunction( with function object or lambda )
+	  - DKFunction( an object reference or pointer, member function pointer )
+
+	 Example:
+	 @code
+	   void func(int) {..}
+
+	   // generate DKFunctionSignature object from function.
+	   auto sig = DKFunction(&func);
+	   sig->Invoke(3);  // direct call
+
+	   // generate operation object.
+	   auto op = sig->Invocation(3);
+	   sig = NULL;  // delete sig object. but 'op' is still alive.
+	   op->Perform();  // call func.
+
+	   // you can generate from lambda also.
+	   auto sig = DKFunction( [](int) { ... } );
+	   sig->Invoke(3);
+
+	   // generate from class object.
+	   auto sig = DKFunction(MyObject, &MyClass::Function);
+
+	   // create object on the fly
+	   auto sig = DKFunction(AClass(), &AClass::Function);
+	 @endcode
+
+	 @note
+	  You can create DKOperation object from DKFunctionSignature
+	  and you can store that into array or list for later use.
+
+	 @note
+	  DKFunctionSignature< function-type > template parameters affects only
+	  function parameters. function and member function are same type.\n
+	   - void func(int) ==> DKFunctionSignature<void (int)>			\n
+	   - void AClass::Func(int) ==> DKFunctionSignature<void (int)>
+	 */
 	template <typename R, typename... Ps> struct DKFunctionSignature<R (Ps...)>
 	{
 		using ParameterNumber = DKNumber<sizeof...(Ps)>;

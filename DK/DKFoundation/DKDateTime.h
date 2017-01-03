@@ -2,7 +2,7 @@
 //  File: DKDateTime.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,38 +11,40 @@
 
 namespace DKFoundation
 {
-	/// @brief Calculate date and time based on UTC timezone.
-	/// You can create object from ISO-8601 formatted string.
-	///
-	/// @verbatim
-	/// ISO-8601 formats
-	/// date format (calendar dates):
-	///            YYYY-MM-DD, YYYYMMDD, YYYY-MM (not YYYYMM)
-	///            MM is from 01 to 12, DD is from 01 to 31
-	/// date format (week dates):
-	///            YYYY-Www, YYYYWww, YYYY-Www-D, YYYYWwwD (Www is W + week-no.)
-	///            Www is from W01 to W53, D is from 1 to 7
-	///            ex: 2012-W14-7, 7days from 14th weeks of 2012
-	/// date format (ordinal dates):
-	///            YYYY-DDD, YYYYDDD
-	///            DDD is from 001 to 365
-	///            ex: 1981-04-05 = 1981-095
-	/// time format:
-	///            hh:mm:ss, hhmmss, hh:mm, hhmm, hh
-	///            hh is from 00 to 24, mm is from 00 to 59, ss is from 00 to 60
-	///            (60 is a leap second by Caesium atomic clocks.)
-	/// time with timezone format:
-	///            appended Z, ±hh:mm, ±hhmm, ±hh to time format. (Z for UTC)
-	///
-	/// for date and time combined:
-	///            described as <date>T<time>
-	///            ex: 2007-04-05T14:30
-	/// @endverbatim
-	///
-	/// @note
-	///   - Unix Epoch is 1970-01-01 00:00:00 UTC (1970-01-01T00:00:00Z ISO 8601)
-	///   - You should specify date with ISO-8601 format.
-	///   - This implementation will not handles BC. (Year >= 0)
+	/**
+	 @brief Calculate date and time based on UTC timezone.
+	 You can create object from ISO-8601 formatted string.
+
+	 @verbatim
+	 ISO-8601 formats
+	 date format (calendar dates):
+				YYYY-MM-DD, YYYYMMDD, YYYY-MM (not YYYYMM)
+				MM is from 01 to 12, DD is from 01 to 31
+	 date format (week dates):
+				YYYY-Www, YYYYWww, YYYY-Www-D, YYYYWwwD (Www is W + week-no.)
+				Www is from W01 to W53, D is from 1 to 7
+				ex: 2012-W14-7, 7days from 14th weeks of 2012
+	 date format (ordinal dates):
+				YYYY-DDD, YYYYDDD
+				DDD is from 001 to 365
+				ex: 1981-04-05 = 1981-095
+	 time format:
+				hh:mm:ss, hhmmss, hh:mm, hhmm, hh
+				hh is from 00 to 24, mm is from 00 to 59, ss is from 00 to 60
+				(60 is a leap second by Caesium atomic clocks.)
+	 time with timezone format:
+				appended Z, ±hh:mm, ±hhmm, ±hh to time format. (Z for UTC)
+
+	 for date and time combined:
+				described as <date>T<time>
+				ex: 2007-04-05T14:30
+	 @endverbatim
+
+	 @note
+	   - Unix Epoch is 1970-01-01 00:00:00 UTC (1970-01-01T00:00:00Z ISO 8601)
+	   - You should specify date with ISO-8601 format.
+	   - This implementation will not handles BC. (Year >= 0)
+	 */
 	class DKGL_API DKDateTime
 	{
 	public:

@@ -2,7 +2,7 @@
 //  File: DKMap.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -47,41 +47,44 @@ namespace DKFoundation
 		}
 	};
 
-	/// @brief balancing tree class (using AVLTree internally, see DKAVLTree.h).
-	/// this is simple wrapper of DKAVLTree.
-	///
-	/// Insert: insert value if key is not exists.
-	/// Update: set value for key whether key is exists or not.
-	///
-	/// insertion, deletion, lookup is thread-safe.
-	/// If you need to modify value directly, you should have lock object.
-	///
-	/// Example:
-	/// @code
-	///	{
-	///		typename MyMapType::CriticalSection section(map.lock);	// lock with critical-section
-	///		MyMapType::Pair* p = map.Find(something);
-	///		.... // do something with p
-	///	}	// auto-unlock by critical-section end
-	/// @endcode
-	///
-	/// To enumerate items:
-	/// @code
-	///  typedef DKMap<Key,Value> MyMap;
-	///  MyMap map;
-	///  auto enumerator1 = [](const MyMap::Pair& pair) {...}
-	///  auto enumerator2 = [](const MyMap::Pair& pair, bool* stop) {...}
-	///  map.EnumerateForward(enumerator1);
-	///  map.EnumerateForward(enumerator2);	// cancellable by set bool to true.
-	/// @endcode
-	///
-	/// @tparam Key            key type
-	/// @tparam ValueT         value type
-	/// @tparam Lock           locking class
-	/// @tparam KeyComparator  key comparison function
-	/// @tparam ValueReplacer  value copy/swap function
-	///
-	/// @see DKAVLTree
+	/**
+	 @brief
+	 balancing tree class (using AVLTree internally, see DKAVLTree.h).
+	 this is simple wrapper of DKAVLTree.
+
+	 Insert: insert value if key is not exists.
+	 Update: set value for key whether key is exists or not.
+
+	 insertion, deletion, lookup is thread-safe.
+	 If you need to modify value directly, you should have lock object.
+
+	 Example:
+	 @code
+		{
+			typename MyMapType::CriticalSection section(map.lock);	// lock with critical-section
+			MyMapType::Pair* p = map.Find(something);
+			.... // do something with p
+		}	// auto-unlock by critical-section end
+	 @endcode
+
+	 To enumerate items:
+	 @code
+	  typedef DKMap<Key,Value> MyMap;
+	  MyMap map;
+	  auto enumerator1 = [](const MyMap::Pair& pair) {...}
+	  auto enumerator2 = [](const MyMap::Pair& pair, bool* stop) {...}
+	  map.EnumerateForward(enumerator1);
+	  map.EnumerateForward(enumerator2);	// cancellable by set bool to true.
+	 @endcode
+
+	 @tparam Key            key type
+	 @tparam ValueT         value type
+	 @tparam Lock           locking class
+	 @tparam KeyComparator  key comparison function
+	 @tparam ValueReplacer  value copy/swap function
+
+	 @see DKAVLTree
+	 */
 	template <
 		typename Key,											// key type
 		typename ValueT,										// value type

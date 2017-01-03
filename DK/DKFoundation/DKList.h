@@ -2,7 +2,7 @@
 //  File: DKList.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -15,31 +15,33 @@
 
 namespace DKFoundation
 {
-	/// @brief a simple linked list.
-	///
-	/// @note
-	///  When using range-based-for-loop, object does not locked by default.
-	///  You should lock list from outside of loop.
-	///
-	/// @code
-	/// Range based for loop example:
-	///  DKList<MyObject> myList;
-	///  // lock within current scope for range-based-for-loop
-	///  DKList<MyObject>::CriticalSection(myList.lock);
-	///  for (MyObject& obj : myList)
-	///     // do something with obj..
-	/// 
-	/// Iterator iteration example:
-	///  DKList<MyObject> myList;
-	///  for (auto it = myList.LockHead(); it.IsValid(); ++it)
-	///  {
-	///       MyObject& obj = it.Value();
-	///       // do something with obj..
-	///  }
-	///  myList.Unlock();
-	/// @encode
-	/// @note
-	///  This class does not tested fully. (may have bugs?)
+	/**
+	 @brief A simple linked list.
+
+	 @note
+	  When using range-based-for-loop, object does not locked by default.
+	  You should lock list from outside of loop.
+
+	 @code
+	 Range based for loop example:
+	  DKList<MyObject> myList;
+	  // lock within current scope for range-based-for-loop
+	  DKList<MyObject>::CriticalSection(myList.lock);
+	  for (MyObject& obj : myList)
+		 // do something with obj..
+
+	 Iterator iteration example:
+	  DKList<MyObject> myList;
+	  for (auto it = myList.LockHead(); it.IsValid(); ++it)
+	  {
+		   MyObject& obj = it.Value();
+		   // do something with obj..
+	  }
+	  myList.Unlock();
+	 @encode
+	 @note
+	  This class does not tested fully. (may have bugs?)
+	 */
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator> class DKList
 	{
 	private:

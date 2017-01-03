@@ -2,7 +2,7 @@
 //  File: DKDirectory.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -14,42 +14,48 @@
 
 namespace DKFoundation
 {
-	/// @brief provide file-system directory access.
-	///
-	/// @note
-	///  - OpenDir(const DKString&) argument must be absolute-path.
-	///  - real time monitoring not supported.
-	///
-	/// @note
-	///  - On win32
-	///    - root('/') is virtual path. that is parent path for all drive letters.
-	///      - (ie, '/C:\' means 'C:\')														
-	///    - '/' is always read-only in Win32.												
-	///    - You can ignore '/' character for root path. (using 'C:', 'C:\', is ok)			
-	///
-	/// @verbatim
-	///
-	///  on Mac OS X
-	///  '/' (root, mounted as root)
-	///   +---- 'Applications'
-	///   |      +--- 'Any Applications...'
-	///   +---- 'Users'
-	///   |      +--- 'Users Home Dirs...'
-	///   +---- 'Library'
-	///   ...
-	///
-	/// on Windows
-	///  '/' (root, virtual-path)
-	///   +---- 'C:'
-	///   |      +--- 'Program Files'
-	///   |      +--- 'Windows'
-	///   |      \--- 'Any Sub Dirs in C:...'
-	///   +---- 'D:'
-	///   |      \--- 'Some Dirs in D:...'
-	///   +---- 'E:'
-	///   \---- 'F:'
-	///
-	/// @endverbatim
+	/**
+	 @brief provide file-system directory access.
+	 @note
+	  - OpenDir(const DKString&) argument must be absolute-path.
+	  - real time monitoring not supported.
+
+	 @note
+	  - On win32
+		- root('/') is virtual path. that is parent path for all drive letters.
+		  - (ie, '/C:\' means 'C:\')
+		- '/' is always read-only in Win32.
+		- You can ignore '/' character for root path. (using 'C:', 'C:\', is ok)
+
+	 @verbatim
+
+	  on Mac OS X
+	  '/' (root, mounted as root)
+	   +---- 'Applications'
+	   |      +--- 'Any Applications...'
+	   +---- 'Users'
+	   |      +--- 'Users Home Dirs...'
+	   +---- 'Library'
+	   ...
+
+	 on Windows
+	  '/' (root, virtual-path)
+	   +---- 'C:'
+	   |      +--- 'Program Files'
+	   |      +--- 'Windows'
+	   |      \--- 'Any Sub Dirs in C:...'
+	   +---- 'D:'
+	   |      \--- 'Some Dirs in D:...'
+	   +---- 'E:'
+	   \---- 'F:'
+
+	 @endverbatim
+
+	 @note
+	  On windows
+	   - universal naming convention (UNC) not supported!
+	   - long path prefix (\\\\?\\) not supported.
+	 */
 	class DKGL_API DKDirectory
 	{
 	public:

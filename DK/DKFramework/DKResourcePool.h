@@ -2,7 +2,7 @@
 //  File: DKResourcePool.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -16,33 +16,35 @@
 
 namespace DKFramework
 {
-	/// @brief 
-	/// Loads resources which used by DKFramework.
-	/// @details
-	/// You set your paths for file located, you can also set path as zip file's
-	/// content by calling AddSearchPath().
-	/// A locator that can find destination file from system directory or specified
-	/// zip file content. You can use your custom locator to locating your data also.
-	/// Subclass DKResourcePool::Locator and call DKResourcePool::AddLocator().
-	///
-	/// You can open file content without restore object. this can be useful to
-	/// handling raw-data. To load data into memory, call LoadResourceData().
-	/// To open file(or anything locator can locating) call OpenResourceStream().
-	///
-	/// You can control how object allocated by setting Allocator with
-	/// DKResourcePool::SetAllocator() function. you can use default allocator or
-	/// your own custom allocator.
-	///
-	/// example:
-	/// @code
-	///  DKResourcePool pool;
-	///  pool.AddSearchPath("/data/dir");                 // add search path of '/data/dir'
-	///  pool.AddSearchPath("/data/dir/file.zip");        // add search path of 'file.zip'
-	///  pool.AddSearchPath("/data/dir/file.zip/prefix"); // add search path of 'file.zip/prefix*'
-	///
-	///  pool.LoadResource("MyFile.dat");   // load 'MyFile.data' and restore object.
-	///  pool.LoadResourceData("MyFile.dat"); // load 'MyFile.data' data only.
-	/// @endcode
+	/**
+	 @brief
+	 Loads resources which used by DKFramework.
+	 @details
+	 You set your paths for file located, you can also set path as zip file's
+	 content by calling AddSearchPath().
+	 A locator that can find destination file from system directory or specified
+	 zip file content. You can use your custom locator to locating your data also.
+	 Subclass DKResourcePool::Locator and call DKResourcePool::AddLocator().
+
+	 You can open file content without restore object. this can be useful to
+	 handling raw-data. To load data into memory, call LoadResourceData().
+	 To open file(or anything locator can locating) call OpenResourceStream().
+
+	 You can control how object allocated by setting Allocator with
+	 DKResourcePool::SetAllocator() function. you can use default allocator or
+	 your own custom allocator.
+
+	 example:
+	 @code
+	  DKResourcePool pool;
+	  pool.AddSearchPath("/data/dir");                 // add search path of '/data/dir'
+	  pool.AddSearchPath("/data/dir/file.zip");        // add search path of 'file.zip'
+	  pool.AddSearchPath("/data/dir/file.zip/prefix"); // add search path of 'file.zip/prefix*'
+
+	  pool.LoadResource("MyFile.dat");   // load 'MyFile.data' and restore object.
+	  pool.LoadResourceData("MyFile.dat"); // load 'MyFile.data' data only.
+	 @endcode
+	 */
 	class DKGL_API DKResourcePool : public DKResourceLoader
 	{
 	public:

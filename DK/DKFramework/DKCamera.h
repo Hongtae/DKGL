@@ -2,7 +2,7 @@
 //  File: DKCamera.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -16,27 +16,29 @@
 
 namespace DKFramework
 {
-	/// @brief A 3D camera class.
-	///
-	/// @note
-	///    +z is inner direction of actual frustum, (-1:front, +1:back)
-	///    but this class set up -z is inner. (right handed)
-	///    coordinate system will be converted as right-handed after
-	///    transform applied. CCW (counter-clock-wise) is front-face.
-	///
-	/// @verbatim
-	///    coordinates transformed as below:
-	///
-	///          +Y
-	///           |
-	///           |
-	///           |_______ +X
-	///           /
-	///          /
-	///         /
-	///        +Z 
-	///
-	/// @endverbatim
+	/**
+	 @brief A 3D camera class.
+	
+	 @note
+	    +z is inner direction of actual frustum, (-1:front, +1:back)
+	    but this class set up -z is inner. (right handed)
+	    coordinate system will be converted as right-handed after
+	    transform applied. CCW (counter-clock-wise) is front-face.
+	
+	 @verbatim
+	    coordinates transformed as below:
+	
+	          +Y
+	           |
+	           |
+	           |_______ +X
+	           /
+	          /
+	         /
+	        +Z 
+	
+	 @endverbatim
+	 */
 	class DKGL_API DKCamera
 	{
 	public:

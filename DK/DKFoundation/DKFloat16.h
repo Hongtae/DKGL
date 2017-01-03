@@ -2,7 +2,7 @@
 //  File: DKFloat16.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 
 
 #pragma once
@@ -11,16 +11,18 @@
 #pragma pack(push, 2)
 namespace DKFoundation
 {
-	/// @brief Half precision floating point type.
-	///
-	/// @verbatim
-	/// binary16 layout (IEEE 754-2008)
-	///  +-------+----------+---------------------+
-	///  | sign  | exponent | fraction (mantissa) |
-	///  +-------+----------+---------------------+
-	///  | 1 bit | 5 bit    | 10 bit              |
-	///  +-------+----------+---------------------+
-	/// @endverbatim
+	/**
+	 @brief Half precision floating point type.
+
+	 @verbatim
+	 binary16 layout (IEEE 754-2008)
+	  +-------+----------+---------------------+
+	  | sign  | exponent | fraction (mantissa) |
+	  +-------+----------+---------------------+
+	  | 1 bit | 5 bit    | 10 bit              |
+	  +-------+----------+---------------------+
+	 @endverbatim
+	 */
 	class DKGL_API DKFloat16
 	{
 	public:

@@ -2,7 +2,7 @@
 //  File: DKArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -36,31 +36,33 @@ namespace DKFoundation
 		return lhs == rhs;
 	}
 
-	/// @brief basic array class.
-	/// If you put a lock into template parameter LOCK, It provides thread-safe
-	/// insertion, deletion.
-	/// @note
-	///  following types are locking class:
-	///  DKSpinLock, DKLock, DKMutex, DKCondition, DKSharedLock \n
-	///  You can implement your own locking class, see DKDummyLock.
-	///
-	/// You can also lock array object from outside to modify element directly.
-	///
-	/// @code
-	///	{
-	///		typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
-	///		array[x] = .... // do something with array[]
-	///	}	// auto-unlock by critical-section end
-	/// @endcode
-	///
-	/// @note
-	///  When two objects has same VALUE type and different LOCK type,
-	///  ONLY Add(), Insert() can be used.
-	///
-	/// @note
-	///  If you have to obtain element's pointer or reference, beware of thread-safety.
-	///  CopyValue() function is always thread-safe. 
-	///  (assume that template parameter LOCK is not DKDummyLock)
+	/**
+	 @brief basic array class.
+	 If you put a lock into template parameter LOCK, It provides thread-safe
+	 insertion, deletion.
+	 @note
+	  following types are locking class:
+	  DKSpinLock, DKLock, DKMutex, DKCondition, DKSharedLock \n
+	  You can implement your own locking class, see DKDummyLock.
+	
+	 You can also lock array object from outside to modify element directly.
+	
+	 @code
+		{
+			typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
+			array[x] = .... // do something with array[]
+		}	// auto-unlock by critical-section end
+	 @endcode
+	
+	 @note
+	  When two objects has same VALUE type and different LOCK type,
+	  ONLY Add(), Insert() can be used.
+	
+	 @note
+	  If you have to obtain element's pointer or reference, beware of thread-safety.
+	  CopyValue() function is always thread-safe. 
+	  (assume that template parameter LOCK is not DKDummyLock)
+	 */
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKArray
 	{

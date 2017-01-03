@@ -2,7 +2,7 @@
 //  File: DKCircularQueue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -16,26 +16,28 @@
 
 namespace DKFoundation
 {
-	/// @brief
-	/// circulate limited size of queue.
-	/// queue object never overflow.
-	///
-	/// items can be added at head, tail only
-	/// if item count have reached to limited size when adding new item,
-	/// the item at opposite side will be overwritten.
-	///
-	/// @code
-	///   DKCircularQueue<int> queue(3);  // set maximum length to 3
-	///   queue.Append(1);   // [1]
-	///   queue.Append(2);   // [1, 2]
-	///   queue.Append(3);   // [1, 2, 3]
-	///   queue.Append(4);   // [2, 3, 4] item(1) has been truncated. (append)
-	///   queue.Prepend(5);  // [5, 2, 3] item(4) has been truncated. (prepend)
-	///   queue.Prepend(6);  // [6, 5, 2] item(3) has been truncated. (prepend)
-	/// @endcode
-	///
-	/// @note
-	///  using CopyValue() to retrieve item for thread-safe.
+	/**
+	 @brief
+	 circulate limited size of queue.
+	 queue object never overflow.
+
+	 items can be added at head, tail only
+	 if item count have reached to limited size when adding new item,
+	 the item at opposite side will be overwritten.
+
+	 @code
+	   DKCircularQueue<int> queue(3);  // set maximum length to 3
+	   queue.Append(1);   // [1]
+	   queue.Append(2);   // [1, 2]
+	   queue.Append(3);   // [1, 2, 3]
+	   queue.Append(4);   // [2, 3, 4] item(1) has been truncated. (append)
+	   queue.Prepend(5);  // [5, 2, 3] item(4) has been truncated. (prepend)
+	   queue.Prepend(6);  // [6, 5, 2] item(3) has been truncated. (prepend)
+	 @endcode
+
+	 @note
+	  using CopyValue() to retrieve item for thread-safe.
+	 */
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKCircularQueue
 	{
