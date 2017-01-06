@@ -13,7 +13,6 @@
 
 namespace DKFramework
 {
-	class DKRenderPassDescriptor;
 	/// @brief GPU command buffer
 	class DKCommandBuffer
 	{

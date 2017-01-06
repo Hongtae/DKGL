@@ -14,6 +14,13 @@ namespace DKFramework
 	class DKBlitCommandEncoder
 	{
 	public:
+		enum Option
+		{
+			OptionNone                       = 0,
+			OptionDepthFromDepthStencil      = 1 << 0,
+			OptionStencilFromDepthStencil    = 1 << 1,
+		};
+
 		virtual ~DKBlitCommandEncoder(void) {}
 		
 	};
