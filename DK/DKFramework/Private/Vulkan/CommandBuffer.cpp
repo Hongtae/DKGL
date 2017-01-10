@@ -22,11 +22,6 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(DKRen
 	return NULL;
 }
 
-DKObject<DKParallelRenderCommandEncoder> CommandBuffer::CreateParallelRenderCommandEncoder(DKRenderPassDescriptor*)
-{
-	return NULL;
-}
-
 DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(void)
 {
 	return NULL;

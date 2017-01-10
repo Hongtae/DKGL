@@ -1,6 +1,5 @@
 //
 //  File: CommandQueue.h
-//  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -8,8 +7,11 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
-#import <Metal/Metal.h>
+#if DKGL_USE_DIRECT3D
+#include <wrl.h>
+#include <D3D12.h>
+#include <dxgi1_5.h>
+using Microsoft::WRL::ComPtr;
 
 #include "../../DKCommandQueue.h"
 #include "../../DKGraphicsDevice.h"
@@ -18,7 +20,7 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Metal
+		namespace Direct3D
 		{
 			class CommandQueue : public DKCommandQueue
 			{
@@ -28,10 +30,9 @@ namespace DKFramework
 				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
 
 				DKObject<DKGraphicsDevice> device;
-				id<MTLCommandQueue> queue;
+				ComPtr<ID3D12CommandQueue> queue;
 			};
 		}
 	}
 }
-
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_USE_DIRECT3D

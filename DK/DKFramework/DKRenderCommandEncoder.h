@@ -58,20 +58,10 @@ namespace DKFramework
 		Lines,
 	};
 
-
 	/// @brief Command encoder for GPU render operation.
 	class DKRenderCommandEncoder
 	{
 	public:
 		virtual ~DKRenderCommandEncoder(void) {}
-	};
-
-	/// @brief Multi-threaded command encoder for GPU render operation.
-	class DKParallelRenderCommandEncoder
-	{
-	public:
-		virtual ~DKParallelRenderCommandEncoder(void) {}
-		/// Create DKRenderCommandEncoder for each threads.
-		virtual DKObject<DKRenderCommandEncoder> CreateEncoder(void) = 0;
 	};
 }

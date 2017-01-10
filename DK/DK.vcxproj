@@ -22,7 +22,7 @@
     <ProjectGuid>{0CE28749-43B7-473E-B463-49EC2EF8B43B}</ProjectGuid>
     <RootNamespace>DK</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -349,6 +349,9 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\CommandBuffer.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
@@ -535,6 +538,9 @@
     <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\View.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />

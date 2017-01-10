@@ -40,11 +40,11 @@ GraphicsDevice::~GraphicsDevice(void)
 	[device autorelease];
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(void)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* ctxt)
 {
 	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue();
 	queue->queue = [device newCommandQueue];
-
+	queue->device = ctxt;
 	return queue.SafeCast<DKCommandQueue>();
 }
 

@@ -1,6 +1,5 @@
 //
 //  File: CommandBuffer.h
-//  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -8,8 +7,11 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
-#import <Metal/Metal.h>
+#if DKGL_USE_DIRECT3D
+#include <wrl.h>
+#include <D3D12.h>
+#include <dxgi1_5.h>
+using Microsoft::WRL::ComPtr;
 
 #include "../../DKCommandBuffer.h"
 #include "../../DKCommandQueue.h"
@@ -18,7 +20,7 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Metal
+		namespace Direct3D
 		{
 			class CommandBuffer : public DKCommandBuffer
 			{
@@ -29,11 +31,16 @@ namespace DKFramework
 				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
+				void Commit(void) override;
+
 				DKObject<DKCommandQueue> queue;
-				id<MTLCommandBuffer> buffer;
+
+				DKArray<ID3D12CommandList*> closedCommandLists;	// finished encoded, not executed yet.
+				ComPtr<ID3D12CommandAllocator> commandAllocator;
+				D3D12_COMMAND_LIST_TYPE type;
 			};
 		}
 	}
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_USE_DIRECT3D

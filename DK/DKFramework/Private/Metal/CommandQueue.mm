@@ -24,7 +24,7 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
 	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer();
 	buffer->buffer = [[queue commandBuffer] retain];
-
+	buffer->queue = this;
 	return buffer.SafeCast<DKCommandBuffer>();
 }
 

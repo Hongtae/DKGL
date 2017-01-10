@@ -27,7 +27,7 @@ namespace DKFramework
 				GraphicsDevice(void);
 				~GraphicsDevice(void);
 
-				DKObject<DKCommandQueue> CreateCommandQueue(void) override;
+				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
 			private:
 				id<MTLDevice> device;

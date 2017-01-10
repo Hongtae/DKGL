@@ -22,5 +22,5 @@ DKGraphicsDevice::~DKGraphicsDevice(void)
 
 DKObject<DKCommandQueue> DKGraphicsDevice::CreateCommandQueue(void)
 {
-	return impl->CreateCommandQueue();
+	return impl->CreateCommandQueue(this);
 }

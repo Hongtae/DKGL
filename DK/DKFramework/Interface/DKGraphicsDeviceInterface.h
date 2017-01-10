@@ -16,9 +16,10 @@ namespace DKFramework
 	{
 	public:
 
-		virtual DKObject<DKCommandQueue> CreateCommandQueue(void) = 0;
+		virtual DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) = 0;
 
 
 		static DKGraphicsDeviceInterface* CreateInterface(void);
+		static DKGraphicsDeviceInterface* Instance(DKGraphicsDevice* p) { return p->impl; }
 	};
 }

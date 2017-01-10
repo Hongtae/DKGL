@@ -25,9 +25,6 @@
     <Filter Include="DKFramework\Private\Vulkan">
       <UniqueIdentifier>{ab919701-c5f2-402a-8db3-b5e8b7fb4c19}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DKFramework\Private\D3D12">
-      <UniqueIdentifier>{54801944-12bd-4e47-987b-394545ed0615}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DKFramework\Private\Metal">
       <UniqueIdentifier>{7b2922fa-0d53-4b35-bb92-2a7a4bcc67c0}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="DKFramework\Interface">
       <UniqueIdentifier>{871b002c-692e-4c42-8389-61a31c2dd199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework\Private\Direct3D12">
+      <UniqueIdentifier>{54801944-12bd-4e47-987b-394545ed0615}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -416,6 +416,15 @@
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\CommandBuffer.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1012,6 +1021,15 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h">
       <Filter>DKFramework\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,5 @@ namespace DKFramework
 		};
 
 		virtual ~DKBlitCommandEncoder(void) {}
-		
 	};
 }

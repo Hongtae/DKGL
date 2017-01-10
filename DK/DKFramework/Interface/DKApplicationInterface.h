@@ -37,14 +37,7 @@ namespace DKFramework
 		virtual DKRect ScreenContentBounds(int displayId) const = 0;
 
 		static DKApplicationInterface* CreateInterface(DKApplication*, int argc, char* argv[]);
-
-		static DKApplicationInterface* SharedInstance(void)
-		{
-			DKApplication* app = DKApplication::Instance();
-			if (app)
-				return app->impl;
-			return NULL;
-		}
+		static DKApplicationInterface* Instance(DKApplication* app) { return app->impl; }
 
 		static void AppInitialize(DKApplication* app)	{ app->Initialize(); }
 		static void AppFinalize(DKApplication* app)		{ app->Finalize(); }

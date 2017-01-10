@@ -7,7 +7,11 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_USE_DIRECT3D
+#include <wrl.h>
+#include <D3D12.h>
+#include <dxgi1_5.h>
+using Microsoft::WRL::ComPtr;
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
 
@@ -15,7 +19,7 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Vulkan
+		namespace Direct3D
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 
@@ -26,8 +30,11 @@ namespace DKFramework
 				~GraphicsDevice(void);
 
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
+
+			private:
+				ComPtr<ID3D12Device1> device;
 			};
 		}
 	}
 }
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_USE_DIRECT3D

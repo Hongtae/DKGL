@@ -61,8 +61,6 @@ namespace DKFramework
 	///   these properties must be set before calling DKApplication::Run().
 	class DKGL_API DKApplication
 	{
-		friend class DKApplicationInterface;
-
 	public:
 		/// environment variable path
 		enum class SystemPath 
@@ -133,5 +131,6 @@ namespace DKFramework
 		DKMutex				mutex;
 		int					exitCode;
 		DKApplicationInterface*	impl;
+		friend class DKApplicationInterface;
 	};
 }

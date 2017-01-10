@@ -240,5 +240,6 @@ namespace DKFramework
 		DKObject<DKEventLoop> eventLoop;
 		WindowCallback callback;
 		DKWindowInterface*	impl;
+		friend class DKWindowInterface;
 	};
 }

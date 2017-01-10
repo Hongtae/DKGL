@@ -15,6 +15,5 @@ namespace DKFramework
 	{
 	public:
 		virtual ~DKComputeCommandEncoder(void) {}
-
 	};
 }

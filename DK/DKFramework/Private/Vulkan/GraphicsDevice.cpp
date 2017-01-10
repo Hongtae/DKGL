@@ -36,7 +36,7 @@ GraphicsDevice::~GraphicsDevice(void)
 {
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(void)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice*)
 {
 	return NULL;
 }

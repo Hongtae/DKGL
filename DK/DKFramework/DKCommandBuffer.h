@@ -30,9 +30,9 @@ namespace DKFramework
 		virtual ~DKCommandBuffer(void) {}
 
 		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
-		virtual DKObject<DKParallelRenderCommandEncoder> CreateParallelRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
-
 		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
 		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
+
+		virtual void Commit(void) = 0; ///< commit and unusable until call Reset.
 	};
 }

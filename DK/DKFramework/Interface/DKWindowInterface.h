@@ -58,5 +58,6 @@ namespace DKFramework
 		virtual bool IsTextInputEnabled(int deviceId) = 0;
 
 		static DKWindowInterface* CreateInterface(DKWindow*);
+		static DKWindowInterface* Instance(DKWindow* p) { return p->impl; }
 	};
 }

@@ -1,22 +1,20 @@
 //
-//  File: CommandBuffer.mm
-//  Platform: OS X, iOS
+//  File: CommandBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_USE_DIRECT3D
 
 #include "CommandBuffer.h"
 
 using namespace DKFramework;
-using namespace DKFramework::Private::Metal;
+using namespace DKFramework::Private::Direct3D;
 
 CommandBuffer::~CommandBuffer(void)
 {
-	[buffer autorelease];
 }
 
 DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(DKRenderPassDescriptor*)
@@ -34,5 +32,8 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 	return NULL;
 }
 
+void CommandBuffer::Commit(void)
+{
+}
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_USE_DIRECT3D

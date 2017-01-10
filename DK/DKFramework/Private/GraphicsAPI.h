@@ -7,13 +7,6 @@
 
 #pragma once
 
-#undef DKGL_USE_OPENGL
-#define DKGL_USE_OPENGL 0  // under development
-
-#undef DKGL_USE_DIRECT3D
-#define DKGL_USE_DIRECT3D 0 // under development
-
-
 #if defined(__APPLE__) && defined(__MACH__)
 #  ifndef DKGL_USE_METAL
 #    define DKGL_USE_METAL 1
@@ -22,7 +15,7 @@
 #    define DKGL_USE_VULKAN 0
 #  endif
 #  ifndef DKGL_USE_OPENGL
-#    define DKGL_USE_OPENGL 1
+#    define DKGL_USE_OPENGL 0
 #  endif
 #ifndef DKGL_USE_DIRECT3D
 #    define DKGL_USE_DIRECT3D 0
@@ -40,7 +33,7 @@
 #    define DKGL_USE_METAL 0
 #  endif
 #  ifndef DKGL_USE_OPENGL
-#    define DKGL_USE_OPENGL 1
+#    define DKGL_USE_OPENGL 0
 #  endif
 #endif
 

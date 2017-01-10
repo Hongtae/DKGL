@@ -24,5 +24,6 @@ namespace DKFramework
 
 	private:
 		DKGraphicsDeviceInterface* impl;
+		friend class DKGraphicsDeviceInterface;
 	};
 }

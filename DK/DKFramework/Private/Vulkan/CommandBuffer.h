@@ -23,8 +23,6 @@ namespace DKFramework
 				~CommandBuffer(void);
 
 				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) override;
-				DKObject<DKParallelRenderCommandEncoder> CreateParallelRenderCommandEncoder(DKRenderPassDescriptor*) override;
-
 				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 			};
