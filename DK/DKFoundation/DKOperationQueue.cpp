@@ -11,6 +11,7 @@
 #include "DKLog.h"
 #include "DKTimer.h"
 #include "DKCondition.h"
+#include "DKUtils.h"
 
 namespace DKFoundation
 {
@@ -66,6 +67,7 @@ DKOperationQueue::DKOperationQueue(ThreadFilter* f)
 	, activeThreads(0)
 	, filter(f)
 {
+	maxConcurrentOperations = Max(2, static_cast<int>(DKNumberOfProcessors()) - 1);
 }
 
 DKOperationQueue::~DKOperationQueue(void)

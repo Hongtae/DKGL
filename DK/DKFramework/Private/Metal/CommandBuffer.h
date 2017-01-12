@@ -29,6 +29,9 @@ namespace DKFramework
 				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
+				void Commit(void) override;
+				DKCommandQueue* Queue(void) override { return queue; };
+				
 				DKObject<DKCommandQueue> queue;
 				id<MTLCommandBuffer> buffer;
 			};

@@ -15,6 +15,7 @@ using Microsoft::WRL::ComPtr;
 
 #include "../../DKCommandBuffer.h"
 #include "../../DKCommandQueue.h"
+#include "CommandAllocator.h"
 
 namespace DKFramework
 {
@@ -25,19 +26,22 @@ namespace DKFramework
 			class CommandBuffer : public DKCommandBuffer
 			{
 			public:
+				CommandBuffer(CommandAllocator*, DKCommandQueue*);
 				~CommandBuffer(void);
 
 				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) override;
 				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
-				void Commit(void) override;
+				bool Commit(void) override;
+				void WaitUntilCompleted(void) override;
 
+				DKCommandQueue* Queue(void) override { return queue; };
+				
 				DKObject<DKCommandQueue> queue;
+				CommandAllocator* commandAllocator;
 
-				DKArray<ID3D12CommandList*> closedCommandLists;	// finished encoded, not executed yet.
-				ComPtr<ID3D12CommandAllocator> commandAllocator;
-				D3D12_COMMAND_LIST_TYPE type;
+				DKArray<ID3D12CommandList*> commandLists;
 			};
 		}
 	}

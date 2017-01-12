@@ -14,6 +14,8 @@
 using Microsoft::WRL::ComPtr;
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
+#include "CommandAllocator.h"
+#include "CommandBuffer.h"
 
 namespace DKFramework
 {
@@ -31,8 +33,21 @@ namespace DKFramework
 
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
+				void EnqueueReusableCommandAllocator(CommandAllocator* allocator);
+				CommandAllocator* DequeueReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE);
+				void ClearReusableCommandAllocators(void);
+
+				void EnqueueReusableCommandList(ID3D12CommandList* list);
+				ComPtr<ID3D12CommandList> DequeueReusableCommandList(D3D12_COMMAND_LIST_TYPE);
+				void ClearReusableCommandLists(void);
+
 			private:
 				ComPtr<ID3D12Device1> device;
+				ComPtr<ID3D12CommandAllocator> dummyAllocator;
+
+				DKSpinLock					reusableItemsLock;
+				DKArray<CommandAllocator*>	reusableCommandAllocators;				
+				DKArray<ID3D12CommandList*>	reusableCommandLists;
 			};
 		}
 	}

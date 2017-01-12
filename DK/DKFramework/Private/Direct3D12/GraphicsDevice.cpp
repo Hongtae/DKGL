@@ -58,6 +58,7 @@ GraphicsDevice::GraphicsDevice(void)
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
 		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0
 	};
 
 	if (true)
@@ -103,8 +104,8 @@ GraphicsDevice::GraphicsDevice(void)
 
 			if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
 			{
-				DKLog("D3D12CreateDevice created with \"%ls\" (featureLevel:%x)",
-					desc.Description, featureLevel);
+				DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
+					desc.Description, this->device->GetNodeCount(), featureLevel);
 				break;
 			}
 		}
@@ -122,20 +123,29 @@ GraphicsDevice::GraphicsDevice(void)
 		D3D_FEATURE_LEVEL featureLevel = *featureLevels.begin();
 		if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
 		{
-			DKLog("D3D12CreateDevice created WARP device with \"%ls\" (featureLevel:%x)",
-				desc.Description, featureLevel);
+			DKLog("D3D12CreateDevice created WARP device with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
+				desc.Description, this->device->GetNodeCount(), featureLevel);
 		}
 		else
 			throw std::exception("D3D12CreateDevice failed");
+	}
+	DKASSERT_DEBUG(this->device != nullptr);
+
+	if (FAILED(this->device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->dummyAllocator))))
+	{
+		throw std::exception("ID3D12Device::CreateCommandAllocator failed");
 	}
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
-
+	ClearReusableCommandLists();
+	ClearReusableCommandAllocators();
+	this->dummyAllocator = nullptr;
+	this->device = nullptr;
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* ctxt)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
 {
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
@@ -144,14 +154,113 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* ct
 	ComPtr<ID3D12CommandQueue> commandQueue;
 	if (FAILED(device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue))))
 	{
-		DKLog("ERROR: ID3D12Device1::CreateCommandQueue() failed");
+		DKLog("ERROR: ID3D12Device::CreateCommandQueue() failed");
+		return NULL;
+	}
+	ComPtr<ID3D12Fence> fence;
+	if (FAILED(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence))))
+	{
+		DKLog("ERROR: ID3D12Device::CreateFence() failed");
 		return NULL;
 	}
 
-	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue();
-	queue->queue = commandQueue;
-	queue->device = ctxt;
+	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue(commandQueue.Get(), fence.Get(), dev);
 	return queue.SafeCast<DKCommandQueue>();
+}
+
+void GraphicsDevice::EnqueueReusableCommandAllocator(CommandAllocator* allocator)
+{
+	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+	this->reusableCommandAllocators.Add(allocator);
+}
+
+CommandAllocator* GraphicsDevice::DequeueReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE type)
+{
+	if (true)
+	{
+		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+		for (size_t i = 0, numItems = this->reusableCommandAllocators.Count(); i < numItems; ++i)
+		{
+			CommandAllocator* cm = this->reusableCommandAllocators.Value(i);
+			if (cm->type == type && cm->IsCompleted())
+			{
+				cm->Reset();
+				this->reusableCommandAllocators.Remove(i);
+				return cm;
+			}
+		}
+	}
+	ComPtr<ID3D12CommandAllocator> commandAllocator;
+	if (FAILED(this->device->CreateCommandAllocator(type, IID_PPV_ARGS(&commandAllocator))))
+	{
+		DKLog("ERROR: ID3D12Device::CreateCommandAllocator() failed");
+		return NULL;
+	}
+
+	return (CommandAllocator*)new(DKAllocator::DefaultAllocator().Alloc(sizeof(CommandAllocator))) CommandAllocator(commandAllocator.Get(), type);
+}
+
+void GraphicsDevice::ClearReusableCommandAllocators(void)
+{
+	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
+	{
+		void* ptr = static_cast<void*>(allocator);
+		allocator->~CommandAllocator();
+		DKAllocator::DefaultAllocator().Dealloc(ptr);
+	});
+	this->reusableCommandAllocators.Clear();
+}
+
+void GraphicsDevice::EnqueueReusableCommandList(ID3D12CommandList* list)
+{
+	ComPtr<ID3D12GraphicsCommandList> graphicsCommandList;
+	if (SUCCEEDED(list->QueryInterface(IID_PPV_ARGS(&graphicsCommandList))))
+	{
+		graphicsCommandList->Reset(this->dummyAllocator.Get(), nullptr);
+		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+		this->reusableCommandLists.Add( list );
+		list->AddRef();
+	}
+	else
+	{
+		DKLog("ERROR: ID3D12CommandList::QueryInterface(ID3D12GraphicsCommandList) failed");
+	}
+}
+
+ComPtr<ID3D12CommandList> GraphicsDevice::DequeueReusableCommandList(D3D12_COMMAND_LIST_TYPE type)
+{
+	if (true)
+	{
+		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+		for (size_t i = 0, numItems = this->reusableCommandLists.Count(); i < numItems; ++i)
+		{
+			ID3D12CommandList* list = this->reusableCommandLists.Value(i);
+			if (list->GetType() == type)
+			{
+				ComPtr<ID3D12CommandList> commandList = list;
+				list->Release();
+				this->reusableCommandLists.Remove(i);
+				return commandList;
+			}
+		}
+	}
+	ComPtr<ID3D12CommandList> commandList;
+	if (FAILED(this->device->CreateCommandList(0, type, this->dummyAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList))))
+	{
+		DKLog("ERROR: ID3D12Device::CreateCommandList() failed");
+		return NULL;
+	}
+	return commandList;
+}
+
+void GraphicsDevice::ClearReusableCommandLists(void)
+{
+	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+	this->reusableCommandLists.EnumerateForward([](ID3D12CommandList* list) {
+		list->Release();
+	});
+	this->reusableCommandLists.Clear();
 }
 
 #endif //#if DKGL_USE_DIRECT3D

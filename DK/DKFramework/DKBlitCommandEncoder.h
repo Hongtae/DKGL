@@ -7,11 +7,12 @@
 
 #pragma once
 #include "../DKFoundation.h"
+#include "DKCommandEncoder.h"
 
 namespace DKFramework
 {
 	/// @brief CommandEncoder for GPU blit operation
-	class DKBlitCommandEncoder
+	class DKBlitCommandEncoder : public DKCommandEncoder
 	{
 	public:
 		enum Option

@@ -34,5 +34,8 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 	return NULL;
 }
 
+void CommandBuffer::Commit(void)
+{
+}
 
 #endif //#if DKGL_USE_METAL

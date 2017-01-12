@@ -26,6 +26,7 @@ namespace DKFramework
 				~CommandQueue(void);
 
 				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
+				DKGraphicsDevice* Device(void) override { return device; }
 
 				DKObject<DKGraphicsDevice> device;
 				id<MTLCommandQueue> queue;

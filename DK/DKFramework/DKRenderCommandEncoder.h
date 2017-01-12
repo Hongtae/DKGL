@@ -8,6 +8,7 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKRenderPass.h"
+#include "DKCommandEncoder.h"
 
 namespace DKFramework
 {
@@ -59,7 +60,7 @@ namespace DKFramework
 	};
 
 	/// @brief Command encoder for GPU render operation.
-	class DKRenderCommandEncoder
+	class DKRenderCommandEncoder : public DKCommandEncoder
 	{
 	public:
 		virtual ~DKRenderCommandEncoder(void) {}

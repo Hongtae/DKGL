@@ -13,8 +13,10 @@
 
 namespace DKFramework
 {
+	class DKGraphicsDevice;
+	class DKCommandQueue;
 	/// @brief GPU command buffer
-	class DKCommandBuffer
+	class DKGL_API DKCommandBuffer
 	{
 	public:
 		enum class Status
@@ -27,12 +29,17 @@ namespace DKFramework
 			Error,
 		};
 
-		virtual ~DKCommandBuffer(void) {}
+		virtual ~DKCommandBuffer(void);
 
 		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
 		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
 		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
 
-		virtual void Commit(void) = 0; ///< commit and unusable until call Reset.
+		virtual bool Commit(void) = 0;
+		virtual void WaitUntilCompleted(void) = 0;
+
+		virtual DKCommandQueue* Queue(void) = 0;
+
+		DKGraphicsDevice* Device(void);
 	};
 }

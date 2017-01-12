@@ -10,37 +10,77 @@
 
 #include "CommandQueue.h"
 #include "CommandBuffer.h"
+#include "CommandAllocator.h"
+#include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
+CommandQueue::CommandQueue(ID3D12CommandQueue* q, ID3D12Fence* f, DKGraphicsDevice* d)
+	: device(d)
+	, queue(q)
+	, fence(f)
+{
+	fenceEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+}
+
 CommandQueue::~CommandQueue(void)
 {
+	CloseHandle(fenceEvent);
 }
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
-	ComPtr<ID3D12Device1> dev;
-	if (FAILED(this->queue->GetDevice(IID_PPV_ARGS(&dev))))
+	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+	CommandAllocator* commandAllocator = dc->DequeueReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	if (commandAllocator)
 	{
-		DKLog("ERROR: ID3D12Device1::GetDevice() failed");
-		return NULL;
+		DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer(commandAllocator, this);
+		return buffer.SafeCast<DKCommandBuffer>();
 	}
+	return NULL;
+}
 
-	D3D12_COMMAND_LIST_TYPE type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+UINT64 CommandQueue::Enqueue(ID3D12CommandList* const* commandLists, UINT numLists, UINT64 proceedAfter)
+{
+	DKCriticalSection<DKSpinLock> guard(queueLock);
+	fenceCounter++;
+	if (fence->GetCompletedValue() < proceedAfter && proceedAfter < fenceCounter)
+		queue->Wait(fence.Get(), proceedAfter);
+	queue->ExecuteCommandLists(numLists, commandLists);
+	queue->Signal(fence.Get(), fenceCounter);
+	return fenceCounter;
+}
 
-	ComPtr<ID3D12CommandAllocator> commandAllocator;
-	if (FAILED(dev->CreateCommandAllocator(type, IID_PPV_ARGS(&commandAllocator))))
+UINT64 CommandQueue::Enqueue(ID3D12CommandList* const* commandLists, UINT numLists, ID3D12Fence* waitFence, UINT64 waitFenceValue)
+{
+	DKCriticalSection<DKSpinLock> guard(queueLock);
+	fenceCounter++;
+	if (waitFence->GetCompletedValue() < waitFenceValue)
+		queue->Wait(waitFence, waitFenceValue);
+	queue->ExecuteCommandLists(numLists, commandLists);
+	queue->Signal(fence.Get(), fenceCounter);
+	return fenceCounter;
+}
+
+UINT64 CommandQueue::CompletedFenceValue(void)
+{
+	return fence->GetCompletedValue();
+}
+
+ID3D12Fence* CommandQueue::Fence(void)
+{
+	return fence.Get();
+}
+
+bool CommandQueue::WaitFence(UINT64 value, DWORD timeout)
+{
+	if (fence->GetCompletedValue() < value)
 	{
-		DKLog("ERROR: ID3D12Device1::CreateCommandAllocator() failed");
-		return NULL;
+		fence->SetEventOnCompletion(value, fenceEvent);
+		return WaitForSingleObject(fenceEvent, timeout) == WAIT_OBJECT_0;
 	}
-
-	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer();
-	buffer->commandAllocator = commandAllocator;
-	buffer->type = type;
-	buffer->queue = this;
-	return buffer.SafeCast<DKCommandBuffer>();
+	return true;
 }
 
 #endif //#if DKGL_USE_DIRECT3D

@@ -248,6 +248,7 @@
     <ClCompile Include="DKFramework\DKCapsuleShape.cpp" />
     <ClCompile Include="DKFramework\DKCollisionObject.cpp" />
     <ClCompile Include="DKFramework\DKCollisionShape.cpp" />
+    <ClCompile Include="DKFramework\DKCommandBuffer.cpp" />
     <ClCompile Include="DKFramework\DKCompoundShape.cpp" />
     <ClCompile Include="DKFramework\DKConcaveShape.cpp" />
     <ClCompile Include="DKFramework\DKConeShape.cpp" />
@@ -306,7 +307,9 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\CommandAllocator.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandBuffer.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
@@ -413,6 +416,7 @@
     <ClInclude Include="DKFramework\DKCollisionShape.h" />
     <ClInclude Include="DKFramework\DKColor.h" />
     <ClInclude Include="DKFramework\DKCommandBuffer.h" />
+    <ClInclude Include="DKFramework\DKCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKCommandQueue.h" />
     <ClInclude Include="DKFramework\DKCompoundShape.h" />
     <ClInclude Include="DKFramework\DKComputeCommandEncoder.h" />
@@ -495,7 +499,9 @@
     <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\View.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\CommandAllocator.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
