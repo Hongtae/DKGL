@@ -40,6 +40,7 @@ namespace DKFoundation
 	DKGL_API void DKMemoryPageDecommit(void*, size_t);
 
 	/// allocate memory from memory pool
+	/// If the request exceeds 32KB, the system allocates using VM.
 	DKGL_API void* DKMemoryPoolAlloc(size_t);
 	/// resize memory allocated by DKMemoryPoolAlloc
 	DKGL_API void* DKMemoryPoolRealloc(void*, size_t);
@@ -52,6 +53,42 @@ namespace DKFoundation
 	DKGL_API size_t DKMemoryPoolPurge(void);
 	/// query memory pool size
 	DKGL_API size_t DKMemoryPoolSize(void);
+
+	/**
+	 @brief
+		Memory pool allocation status info (for statistics)
+		There are many sub-allocators in the memory pool.
+		This is a single sub-allocator state for the pool.			
+	 @code
+		// getting allocation status!
+		size_t numBuckets = DKMemoryPoolNumberOfBuckets();
+		DKMemoryPoolBucketStatus* buckets = new DKMemoryPoolBucketStatus[numBuckets];
+		DKMemoryPoolQueryAllocationStatus(buckets, numBuckets);
+		for (int i = 0; i < numBuckets; ++i)
+			printf("unit-size:%lu, allocated:%lu, reserved:%lu (usage:%.1f%%)\n",
+				buckets[i].chunkSize,
+				buckets[i].chunkSize * buckets[i].usedChunks, 
+				buckets[i].chunkSize * (buckets[i].totalChunks - buckets[i].usedChunks),
+				double(buckets[i].usedChunks) / double(buckets[i].totalChunks) * 100.0);
+		printf("MemoryPool Usage: %.1fMB / %.1fMB\n", double(usedBytes) / (1024 * 1024), double(DKMemoryPoolSize()) / (1024 * 1024));
+		delete[] buckets;
+	 @endcode
+	 @note
+		This structure may contain a memory pool allocation range (that is, less than 32KB).
+	 */
+	struct DKMemoryPoolBucketStatus
+	{
+		size_t chunkSize;		///< allocation unit size of the allocator
+		size_t totalChunks;		///< total chunks in the allocator
+		size_t usedChunks;		///< allocated units
+	};
+	/// Get number of buckets, a bucket is a unit of sub-allocator in memory pool.
+	/// this value does not change during run-time.
+	DKGL_API size_t DKMemoryPoolNumberOfBuckets(void);
+	/// Query allocation status of Memory-Pool.
+	/// Do not call this function at exiting.
+	/// @see DKMemoryPoolBucketStatus
+	DKGL_API void DKMemoryPoolQueryAllocationStatus(DKMemoryPoolBucketStatus* status, size_t numBuckets);
 
 	/// @brief track allocator location for debugging purpose
 	/// you can provide your own allocator.
@@ -91,7 +128,7 @@ namespace DKFoundation
 		static void Free(void* p)				{ DKMemoryPoolFree(p); }
 	};
 
-#ifdef DKGL_HEAP_ALLOCATOR_IS_DEFAULT
+#ifdef DKGL_HEAP_ALLOCATOR_IS_DEFAULT	// define if you don't want to use memory-pool
 	using DKMemoryDefaultAllocator = DKMemoryHeapAllocator;
 #else
 	using DKMemoryDefaultAllocator = DKMemoryPoolAllocator;

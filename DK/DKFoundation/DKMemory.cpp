@@ -43,6 +43,8 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+		static DKAllocator::Maintainer maintainer;
+
 		struct SystemHeapAllocator
 		{
 #ifdef _WIN32
@@ -300,6 +302,7 @@ namespace DKFoundation
 			virtual bool ConditionalDeallocAndPurge(void*, size_t, size_t*) = 0;
 
 			virtual size_t NumberOfAllocatedUnits(void) const = 0;
+			virtual size_t NumberOfUnits(void) const = 0;
 		};
 
 		struct AllocatorUnit
@@ -342,6 +345,7 @@ namespace DKFoundation
 				}
 
 				size_t NumberOfAllocatedUnits(void) const override	{ return allocator.NumberOfAllocatedUnits(); }
+				size_t NumberOfUnits(void) const override			{ return allocator.NumberOfUnits(); }
 
 				using Allocator = DKFixedSizeAllocator<UnitSize, Alignment, NumUnits, DKSpinLock, SystemHeapAllocator, UnitAllocator>;
 				Allocator allocator;
@@ -368,7 +372,7 @@ namespace DKFoundation
 
 		struct AllocatorPool : public DKAllocator
 		{
-			enum { NumAllocators = 128 };
+			enum { NumAllocators = 128 };	// allocator buckets
 
 			AllocatorPool(void) : backend(NULL)
 			{
@@ -561,6 +565,11 @@ namespace DKFoundation
 			FORCEINLINE BackendAllocator* Backend(void)
 			{
 				return backend;
+			}
+
+			const AllocatorUnit& GetAllocatorUnit(size_t index) const
+			{
+				return allocators[index];
 			}
 
 		private:
@@ -1293,5 +1302,22 @@ namespace DKFoundation
 	DKGL_API size_t DKMemoryPoolSize(void)
 	{
 		return GetAllocatorPool()->Size();
+	}
+
+	DKGL_API size_t DKMemoryPoolNumberOfBuckets(void)
+	{
+		return AllocatorPool::NumAllocators;
+	}
+
+	DKGL_API void DKMemoryPoolQueryAllocationStatus(DKMemoryPoolBucketStatus* status, size_t numBuckets)
+	{
+		size_t count = Min(numBuckets, (size_t)AllocatorPool::NumAllocators);
+		for (size_t i = 0; i < count; ++i)
+		{
+			const AllocatorUnit& unit = GetAllocatorPool()->GetAllocatorUnit(i);
+			status[i].chunkSize = unit.unitSize;
+			status[i].totalChunks = unit.allocator->NumberOfUnits();
+			status[i].usedChunks = unit.allocator->NumberOfAllocatedUnits();
+		}
 	}
 }

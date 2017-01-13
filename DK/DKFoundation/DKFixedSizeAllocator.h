@@ -62,7 +62,7 @@ namespace DKFoundation
 			uint16_t occupied;
 		};
 
-		// size of all units per chunk.
+		// size of all units per chunk. (in bytes)
 		enum : size_t { MaxUnitsPerChunkSize = sizeof(Unit) * MaxUnitsPerChunk };
 
 		using CriticalSection = DKCriticalSection < Lock > ;
@@ -296,12 +296,14 @@ namespace DKFoundation
 			return 0;
 		}
 
-		size_t Purge(void)	///< delete unoccupied chunks
+		/// delete unoccupied chunks
+		size_t Purge(void)	
 		{
 			CriticalSection guard(lock);
 			return PurgeInternal();
 		}
 
+		/// Total allocation size, including reserved space, in bytes
 		size_t Size(void) const
 		{
 			CriticalSection guard(lock);
@@ -312,6 +314,14 @@ namespace DKFoundation
 		{
 			CriticalSection guard(lock);
 			return numAllocated;
+		}
+
+		/// total units in this container.
+		/// reserved = num_units - allocated_units(NumberOfAllocatedUnits)
+		size_t NumberOfUnits(void) const
+		{
+			CriticalSection guard(lock);
+			return numChunks * MaxUnitsPerChunk;
 		}
 
 		DKFixedSizeAllocator(void)

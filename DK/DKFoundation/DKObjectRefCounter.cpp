@@ -17,7 +17,7 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKAllocator::Maintainer init;
+		static DKAllocator::Maintainer maintainer;
 
 		enum {AllocatorTableLength = 977}; // should be prime-number.
 		struct AllocationNode

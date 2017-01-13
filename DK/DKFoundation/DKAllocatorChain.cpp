@@ -14,6 +14,9 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+		// default Chain-Holder
+		static DKAllocatorChain::Maintainer maintainer;
+
 		void CreateAllocationTable(void);
 		void DestroyAllocationTable(void);
 
@@ -79,9 +82,6 @@ namespace DKFoundation
 			}
 		};
 		Chain* Chain::instance;
-
-		// default Chain-Holder
-		static DKAllocatorChain::Maintainer init;
 	}
 }
 
