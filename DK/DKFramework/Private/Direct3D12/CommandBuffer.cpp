@@ -28,10 +28,9 @@ CommandBuffer::~CommandBuffer(void)
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	dc->EnqueueReusableCommandAllocator(this->commandAllocator);
 
-	for (ID3D12CommandList* list : commandLists)
+	for (ComPtr<ID3D12CommandList>& list : commandLists)
 	{
-		dc->EnqueueReusableCommandList(list);
-		list->Release();
+		dc->EnqueueReusableCommandList(list.Get());
 	}
 }
 
@@ -59,7 +58,12 @@ bool CommandBuffer::Commit(void)
 	if (commandLists.Count() > 0 && commandAllocator->IsCompleted())
 	{
 		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
-		UINT64 enqueued = commandQueue->Enqueue(commandLists, commandLists.Count());
+		ComPtr<ID3D12CommandList>* lists = this->commandLists;
+		UINT numLists = this->commandLists.Count();
+
+		static_assert(sizeof(ComPtr<ID3D12CommandList>) == sizeof(ID3D12CommandList*), "");
+
+		UINT64 enqueued = commandQueue->Enqueue(reinterpret_cast<ID3D12CommandList * const *>(lists), numLists);
 		this->commandAllocator->SetPendingState(commandQueue->Fence(), enqueued);
 		return true;
 	}
@@ -68,11 +72,12 @@ bool CommandBuffer::Commit(void)
 
 void CommandBuffer::WaitUntilCompleted(void)
 {
-	if (!commandAllocator->IsCompleted())
-	{
-		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
-		commandQueue->WaitFence(commandAllocator->PendingCounter());
-	}
+	commandAllocator->WaitUntilCompleted(INFINITE);
+}
+
+bool CommandBuffer::WaitUntilCompleted(double timeout)
+{
+	return commandAllocator->WaitUntilCompleted(timeout * 1000);
 }
 
 #endif //#if DKGL_USE_DIRECT3D

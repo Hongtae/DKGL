@@ -35,10 +35,9 @@ namespace DKFramework
 				UINT64 Enqueue(ID3D12CommandList* const* commandLists, UINT numLists, UINT64 proceedAfter = 0);
 				// enqueue command lists and waiting for fence before execution.
 				UINT64 Enqueue(ID3D12CommandList* const* commandLists, UINT numLists, ID3D12Fence* waitFence, UINT64 waitFenceValue);
-				// wait until done, value should be returned from Enqueue()
-				bool WaitFence(UINT64 value, DWORD timeout = INFINITE);
 
-				UINT64 CompletedFenceValue(void);
+				UINT64 EnqueuedCounterValue(void);
+
 				ID3D12Fence* Fence(void);
 
 			private:
@@ -46,7 +45,6 @@ namespace DKFramework
 				ComPtr<ID3D12CommandQueue> queue;
 
 				ComPtr<ID3D12Fence> fence;
-				HANDLE fenceEvent;
 				UINT64 fenceCounter;
 				DKSpinLock queueLock;
 			};

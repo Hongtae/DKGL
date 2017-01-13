@@ -126,7 +126,7 @@ namespace DKFoundation
 				ReserveItemCapsNL(il.size());
 				for (const VALUE& v : il)
 				{
-					new(&data[count]) VALUE(v);
+					new(std::addressof(data[count])) VALUE(v);
 					count++;
 				}
 			}
@@ -155,7 +155,7 @@ namespace DKFoundation
 		{
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(1);
-			new(&data[count]) VALUE(value);
+			new(std::addressof(data[count])) VALUE(value);
 			return count++;
 		}
 		/// append 's' length of value to tail.
@@ -164,7 +164,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(s);
 			for (Index i = 0; i < s; i++)
-				new(&data[count+i]) VALUE(value[i]);
+				new(std::addressof(data[count+i])) VALUE(value[i]);
 			count += s;
 			return count - s;
 		}
@@ -174,7 +174,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(s);
 			for (Index i = 0; i < s; i++)
-				new(&data[count+i]) VALUE(value);
+				new(std::addressof(data[count+i])) VALUE(value);
 			count += s;
 			return count - s;
 		}
@@ -186,7 +186,7 @@ namespace DKFoundation
 			ReserveItemCapsNL(s);
 			for (const VALUE& v : il)
 			{
-				new(&data[count]) VALUE(v);
+				new(std::addressof(data[count])) VALUE(v);
 				count++;
 			}
 			return count - s;
@@ -206,8 +206,8 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+1], (void*)&data[pos], sizeof(VALUE) * (count - pos));
-			new(&data[pos]) VALUE(value);
+				memmove(std::addressof(data[pos+1]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
+			new(std::addressof(data[pos])) VALUE(value);
 			count++;
 			return pos;
 		}
@@ -219,9 +219,9 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
+				memmove(std::addressof(data[pos+s]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			for (Index i = 0; i < s; i++)
-				new(&data[pos+i]) VALUE(value[i]);
+				new(std::addressof(data[pos+i])) VALUE(value[i]);
 			count += s;
 			return pos;
 		}
@@ -233,9 +233,9 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
+				memmove(std::addressof(data[pos+s]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			for (Index i = 0; i < s; i++)
-				new(&data[pos+i]) VALUE(value);
+				new(std::addressof(data[pos+i])) VALUE(value);
 			count += s;
 			return pos;
 		}
@@ -248,10 +248,10 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
+				memmove(std::addressof(data[pos+s]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			for (const VALUE& v : il)
 			{
-				new(&data[pos]) VALUE(v);
+				new(std::addressof(data[pos])) VALUE(v);
 				pos++;
 			}
 			count += s;
@@ -265,7 +265,7 @@ namespace DKFoundation
 			{
 				data[pos].~VALUE();
 				if (count - pos > 1)
-					memmove((void*)&data[pos], (void*)&data[pos+1], sizeof(VALUE) * (count-pos-1));
+					memmove(std::addressof(data[pos]), std::addressof(data[pos+1]), sizeof(VALUE) * (count-pos-1));
 				count--;
 			}
 			return count;
@@ -280,7 +280,7 @@ namespace DKFoundation
 				for (; i < count - pos && i < c; i++)
 					data[pos+i].~VALUE();
 				if (i > 0)
-					memmove((void*)&data[pos], &data[pos+i], sizeof(VALUE) * (count-pos-i));
+					memmove(std::addressof(data[pos]), std::addressof(data[pos+i]), sizeof(VALUE) * (count-pos-i));
 				count -= i;
 			}
 			return count;
@@ -339,7 +339,7 @@ namespace DKFoundation
 			{
 				ReserveNL(s);
 				for (Index i = count; i < s; i++)
-					new(&data[i]) VALUE();
+					new(std::addressof(data[i])) VALUE();
 			}
 			count = s;
 		}
@@ -355,7 +355,7 @@ namespace DKFoundation
 			{
 				ReserveNL(s);
 				for (Index i = count; i < s; i++)
-					new(&data[i]) VALUE(val);
+					new(std::addressof(data[i])) VALUE(val);
 			}
 			count = s;
 		}
@@ -431,7 +431,7 @@ namespace DKFoundation
 
 				ReserveNL(value.count);
 				for (Index i = 0; i < value.count; i++)
-					new(&data[i]) VALUE(value.data[i]);
+					new(std::addressof(data[i])) VALUE(value.data[i]);
 				count = value.count;
 			}
 			return *this;
@@ -446,7 +446,7 @@ namespace DKFoundation
 			ReserveNL(s);
 			for (const VALUE& v : il)
 			{
-				new(&data[count]) VALUE(v);
+				new(std::addressof(data[count])) VALUE(v);
 			}
 			count = s;
 			return *this;

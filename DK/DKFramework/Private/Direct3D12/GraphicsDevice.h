@@ -47,7 +47,7 @@ namespace DKFramework
 
 				DKSpinLock					reusableItemsLock;
 				DKArray<CommandAllocator*>	reusableCommandAllocators;				
-				DKArray<ID3D12CommandList*>	reusableCommandLists;
+				DKArray<ComPtr<ID3D12CommandList>>	reusableCommandLists;
 			};
 		}
 	}

@@ -18,11 +18,14 @@ CommandAllocator::CommandAllocator(ID3D12CommandAllocator* a, D3D12_COMMAND_LIST
 	: allocator(a)
 	, type(t)
 	, enqueuedCounter(0)
+	, fenceEvent(NULL)
 {
 }
 
 CommandAllocator::~CommandAllocator(void)
 {
+	if (fenceEvent)
+		CloseHandle(fenceEvent);
 }
 
 void CommandAllocator::SetPendingState(ID3D12Fence* f, UINT64 v)
@@ -52,6 +55,20 @@ bool CommandAllocator::IsCompleted(void)
 	if (this->fence)
 	{
 		return this->fence->GetCompletedValue() >= enqueuedCounter;
+	}
+	return true;
+}
+
+bool CommandAllocator::WaitUntilCompleted(DWORD timeout)
+{
+	if (this->fence && this->fence->GetCompletedValue() < enqueuedCounter)
+	{
+		if (fenceEvent == nullptr)
+			fenceEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+		DKASSERT(fenceEvent != nullptr);
+
+		fence->SetEventOnCompletion(enqueuedCounter, fenceEvent);
+		return WaitForSingleObject(fenceEvent, timeout) == WAIT_OBJECT_0;
 	}
 	return true;
 }

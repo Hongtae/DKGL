@@ -37,6 +37,7 @@ namespace DKFramework
 
 		virtual bool Commit(void) = 0;
 		virtual void WaitUntilCompleted(void) = 0;
+		virtual bool WaitUntilCompleted(double timeout) = 0;
 
 		virtual DKCommandQueue* Queue(void) = 0;
 

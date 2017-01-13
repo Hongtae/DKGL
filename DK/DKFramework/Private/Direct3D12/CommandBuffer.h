@@ -35,13 +35,14 @@ namespace DKFramework
 
 				bool Commit(void) override;
 				void WaitUntilCompleted(void) override;
+				bool WaitUntilCompleted(double timeout) override;
 
 				DKCommandQueue* Queue(void) override { return queue; };
 				
 				DKObject<DKCommandQueue> queue;
 				CommandAllocator* commandAllocator;
 
-				DKArray<ID3D12CommandList*> commandLists;
+				DKArray<ComPtr<ID3D12CommandList>> commandLists;
 			};
 		}
 	}

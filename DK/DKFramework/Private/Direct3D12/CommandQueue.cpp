@@ -21,12 +21,10 @@ CommandQueue::CommandQueue(ID3D12CommandQueue* q, ID3D12Fence* f, DKGraphicsDevi
 	, queue(q)
 	, fence(f)
 {
-	fenceEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
 }
 
 CommandQueue::~CommandQueue(void)
 {
-	CloseHandle(fenceEvent);
 }
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
@@ -63,24 +61,15 @@ UINT64 CommandQueue::Enqueue(ID3D12CommandList* const* commandLists, UINT numLis
 	return fenceCounter;
 }
 
-UINT64 CommandQueue::CompletedFenceValue(void)
+UINT64 CommandQueue::EnqueuedCounterValue(void)
 {
-	return fence->GetCompletedValue();
+	DKCriticalSection<DKSpinLock> guard(queueLock);
+	return fenceCounter;
 }
 
 ID3D12Fence* CommandQueue::Fence(void)
 {
 	return fence.Get();
-}
-
-bool CommandQueue::WaitFence(UINT64 value, DWORD timeout)
-{
-	if (fence->GetCompletedValue() < value)
-	{
-		fence->SetEventOnCompletion(value, fenceEvent);
-		return WaitForSingleObject(fenceEvent, timeout) == WAIT_OBJECT_0;
-	}
-	return true;
 }
 
 #endif //#if DKGL_USE_DIRECT3D

@@ -95,11 +95,10 @@ GraphicsDevice::GraphicsDevice(void)
 			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 				continue;
 
-			IDXGIAdapter3 * dxgiAdapter3;
+			ComPtr<IDXGIAdapter3> dxgiAdapter3;
 			adapter->QueryInterface(IID_PPV_ARGS(&dxgiAdapter3));
 			if (dxgiAdapter3)
 			{
-				dxgiAdapter3->Release();
 			}
 
 			if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
@@ -235,11 +234,10 @@ ComPtr<ID3D12CommandList> GraphicsDevice::DequeueReusableCommandList(D3D12_COMMA
 		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 		for (size_t i = 0, numItems = this->reusableCommandLists.Count(); i < numItems; ++i)
 		{
-			ID3D12CommandList* list = this->reusableCommandLists.Value(i);
+			ComPtr<ID3D12CommandList>& list = this->reusableCommandLists.Value(i);
 			if (list->GetType() == type)
 			{
 				ComPtr<ID3D12CommandList> commandList = list;
-				list->Release();
 				this->reusableCommandLists.Remove(i);
 				return commandList;
 			}
@@ -257,9 +255,6 @@ ComPtr<ID3D12CommandList> GraphicsDevice::DequeueReusableCommandList(D3D12_COMMA
 void GraphicsDevice::ClearReusableCommandLists(void)
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
-	this->reusableCommandLists.EnumerateForward([](ID3D12CommandList* list) {
-		list->Release();
-	});
 	this->reusableCommandLists.Clear();
 }
 
