@@ -20,7 +20,9 @@ CommandQueue::CommandQueue(ID3D12CommandQueue* q, ID3D12Fence* f, DKGraphicsDevi
 	: device(d)
 	, queue(q)
 	, fence(f)
+	, fenceCounter(0)
 {
+	fence->Signal(fenceCounter);
 }
 
 CommandQueue::~CommandQueue(void)

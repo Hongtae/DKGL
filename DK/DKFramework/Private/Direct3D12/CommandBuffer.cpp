@@ -70,14 +70,9 @@ bool CommandBuffer::Commit(void)
 	return false;
 }
 
-void CommandBuffer::WaitUntilCompleted(void)
+bool CommandBuffer::WaitUntilCompleted(void)
 {
-	commandAllocator->WaitUntilCompleted(INFINITE);
-}
-
-bool CommandBuffer::WaitUntilCompleted(double timeout)
-{
-	return commandAllocator->WaitUntilCompleted(timeout * 1000);
+	return commandAllocator->WaitUntilCompleted(INFINITE);
 }
 
 #endif //#if DKGL_USE_DIRECT3D

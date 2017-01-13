@@ -34,8 +34,7 @@ namespace DKFramework
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
 				bool Commit(void) override;
-				void WaitUntilCompleted(void) override;
-				bool WaitUntilCompleted(double timeout) override;
+				bool WaitUntilCompleted(void) override;
 
 				DKCommandQueue* Queue(void) override { return queue; };
 				
