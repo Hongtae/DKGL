@@ -142,6 +142,7 @@ GraphicsDevice::~GraphicsDevice(void)
 	ClearReusableCommandAllocators();
 	this->dummyAllocator = nullptr;
 	this->device = nullptr;
+	DKLog("Direct3D12 Device destroyed.");
 }
 
 DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)

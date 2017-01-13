@@ -25,6 +25,15 @@ CommandQueue::CommandQueue(ID3D12CommandQueue* q, ID3D12Fence* f, DKGraphicsDevi
 
 CommandQueue::~CommandQueue(void)
 {
+	// wait until queue completed
+	DKCriticalSection<DKSpinLock> guard(queueLock);
+	if (fence->GetCompletedValue() < fenceCounter)
+	{
+		HANDLE fenceEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+		fence->SetEventOnCompletion(fenceCounter, fenceEvent);
+		WaitForSingleObject(fenceEvent, INFINITE);
+		CloseHandle(fenceEvent);
+	}
 }
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
