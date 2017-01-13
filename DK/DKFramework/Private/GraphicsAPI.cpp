@@ -14,22 +14,30 @@ namespace DKFramework
 {
 	namespace Private
 	{
+#if DKGL_USE_METAL
 		namespace Metal
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
+#endif
+#if DKGL_USE_VULKAN
 		namespace Vulkan
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
+#endif
+#if DKGL_USE_DIRECT3D
 		namespace Direct3D
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
+#endif
+#if DKGL_USE_OPENGL
 		namespace OpenGL
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
+#endif
 	}
 
 	DKGraphicsDeviceInterface* DKGraphicsDeviceInterface::CreateInterface(void)
