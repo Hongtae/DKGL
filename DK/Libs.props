@@ -21,18 +21,22 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
 MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(Configuration);Platform=$(Platform) /m:$(NUMBER_OF_PROCESSORS) /t:Build Libs\Libs.sln</Command>
     </PreBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src;Libs/Vulkan/include</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;CxImage.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libtiff.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;zlib.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;CxImage.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libtiff.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;zlib.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;CxImage.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libtiff.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;zlib.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;CxImage.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libtiff.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;zlib.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup />
   <Target Name="CleanLibs" BeforeTargets="Clean;BeforeClean">

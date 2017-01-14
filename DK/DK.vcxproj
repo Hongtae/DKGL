@@ -94,7 +94,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -130,7 +130,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -167,7 +167,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -204,7 +204,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_DYNAMIC;DKGL_EXPORTS;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>

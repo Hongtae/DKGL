@@ -8,6 +8,7 @@
 #pragma once
 #include "../GraphicsAPI.h"
 #if DKGL_USE_VULKAN
+#include <vulkan/vulkan.h>
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
 
@@ -26,6 +27,10 @@ namespace DKFramework
 				~GraphicsDevice(void);
 
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
+
+				VkInstance instance;
+
+				static const char* ErrorString(VkResult);
 			};
 		}
 	}

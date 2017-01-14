@@ -42,7 +42,7 @@ namespace DKFramework
 
 	DKGraphicsDeviceInterface* DKGraphicsDeviceInterface::CreateInterface(void)
 	{
-		const char* defaultAPI =
+		DKString defaultAPI =
 #if DKGL_USE_METAL
 		"Metal";
 #elif DKGL_USE_DIRECT3D
@@ -60,7 +60,7 @@ namespace DKFramework
 			DKGraphicsDeviceInterface* (*fn)(void);
 		};
 
-		std::initializer_list<APISet> apis = {
+		DKArray<APISet> apis = {
 #if DKGL_USE_METAL
 			{ "Metal", Private::Metal::CreateInterface },
 #endif
@@ -75,7 +75,52 @@ namespace DKFramework
 #endif
 		};
 
-		if (true)
+		for (size_t i = 0; i < apis.Count(); ++i)
+		{
+			if (defaultAPI.CompareNoCase(apis.Value(i).name) == 0)
+			{
+				if (i > 0)
+				{
+					APISet api = apis.Value(i);
+					apis.Remove(i);
+					apis.Insert(api, 0);
+				}
+				break;
+			}
+		}
+
+		// get user preferred API name.
+		bool tryPreferredApiFirst = true;
+		if (tryPreferredApiFirst)
+		{
+			const char* key = "GraphicsAPI";
+			DKPropertySet& config = DKPropertySet::SystemConfig();
+			if (config.HasValue(key))
+			{
+				const DKVariant& var = config.Value(key);
+				if (var.ValueType() == DKVariant::TypeString)
+				{
+					DKString selectAPI = DKStringU8(var.String());
+
+					for (size_t i = 0; i < apis.Count(); ++i)
+					{
+						if (selectAPI.CompareNoCase(apis.Value(i).name) == 0)
+						{
+							if (i > 0)
+							{
+								APISet api = apis.Value(i);
+								apis.Remove(i);
+								apis.Insert(api, 0);
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		bool printApiSet = true;
+		if (printApiSet)
 		{
 			int index = 0;
 			for (const APISet& as : apis)
@@ -87,48 +132,31 @@ namespace DKFramework
 				DKLog(" No Graphics API available.");
 		}
 
-		DKStringU8 selectAPI = "";
-
-		// get user preferred API name.
-		if (true)
+		for (const APISet& as : apis)
 		{
-			const char* key = "GraphicsAPI";
-			DKPropertySet& config = DKPropertySet::SystemConfig();
-			if (config.HasValue(key))
-			{
-				const DKVariant& var = config.Value(key);
-				if (var.ValueType() == DKVariant::TypeString)
+			try {
+				DKGraphicsDeviceInterface* device = as.fn();
+				if (device)
 				{
-					selectAPI = DKStringU8(var.String());
+					DKLog("Graphics API \"%s\" selected.", as.name);
+					return device;
 				}
+				else
+				{
+					DKLog("Graphics API \"%s\" not supported.", as.name);
+				}
+			}
+			catch (DKError& e)
+			{
+				DKLog("Graphics API \"%s\" Failed: %ls", as.name, (const wchar_t*)e.Description());
+			}
+			catch (std::exception& e)
+			{
+				DKLog("Graphics API \"%s\" Failed: %s", as.name, e.what());
 			}
 		}
 
-		auto getInterface = [](const APISet& as) -> DKGraphicsDeviceInterface*
-		{
-			DKLog("Graphics API '%s' selected.", as.name);
-			return as.fn();
-		};
-
-		// find user preferred API first.
-		for (const APISet& as : apis)
-		{
-			if (selectAPI.CompareNoCase(as.name) == 0)
-				return getInterface(as);
-		}
-		// find default API.
-		selectAPI = defaultAPI;
-		for (const APISet& as : apis)
-		{
-			if (selectAPI.CompareNoCase(as.name) == 0)
-				return getInterface(as);
-		}
-		// get first available API in list.
-		for (const APISet& as : apis)
-		{
-			return getInterface(as);
-		}
-
+		DKLog("ERROR: No Graphics device found.");
 		return NULL;
 	}
 }
