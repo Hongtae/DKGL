@@ -181,8 +181,8 @@ namespace DKFoundation
 					if (right < left)
 					{
 						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * right);
-						memcpy(tmp, &data[left], sizeof(VALUE) * right);
-						memmove(&data[right], data, sizeof(VALUE) * left);
+						memcpy(tmp, std::addressof(data[left]), sizeof(VALUE) * right);
+						memmove(std::addressof(data[right]), data, sizeof(VALUE) * left);
 						memcpy(data, tmp, sizeof(VALUE) * right);
 						DKMemoryDefaultAllocator::Free(tmp);
 					}
@@ -190,8 +190,8 @@ namespace DKFoundation
 					{
 						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * left);
 						memcpy(tmp, data, sizeof(VALUE) * left);
-						memmove(data, &data[left], sizeof(VALUE) * right);
-						memcpy(&data[right], tmp, sizeof(VALUE) * left);
+						memmove(data, std::addressof(data[left]), sizeof(VALUE) * right);
+						memcpy(std::addressof(data[right]), tmp, sizeof(VALUE) * left);
 						DKMemoryDefaultAllocator::Free(tmp);
 					}
 #endif
@@ -250,8 +250,8 @@ namespace DKFoundation
 
 			if (v1 != v2)
 			{
-				unsigned char* p1 = reinterpret_cast<unsigned char*>(&data[v1]);
-				unsigned char* p2 = reinterpret_cast<unsigned char*>(&data[v2]);
+				unsigned char* p1 = reinterpret_cast<unsigned char*>(std::addressof(data[v1]));
+				unsigned char* p2 = reinterpret_cast<unsigned char*>(std::addressof(data[v2]));
 				for (int i = 0; i < sizeof(VALUE); ++i)
 				{
 					unsigned char tmp = p1[i];
@@ -269,7 +269,7 @@ namespace DKFoundation
 			if (count > 1)
 			{
 #if DKSTATICARRAY_USE_STL_SORT
-			std::sort(&data[0], &data[0] + count, cmp);
+			std::sort(std::addressof(data[0]), std::addressof(data[count]), cmp);
 #else
 			SortLoop<CompareFunc>(0, count, cmp);
 #endif

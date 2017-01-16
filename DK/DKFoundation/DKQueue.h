@@ -114,12 +114,12 @@ namespace DKFoundation
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[--begin]) VALUE(values[n - i - 1]);
+				new(std::addressof(data[--begin])) VALUE(values[n - i - 1]);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		VALUE* PushFront(const VALUE& value, size_t n)
@@ -128,12 +128,12 @@ namespace DKFoundation
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[--begin]) VALUE(value);
+				new(std::addressof(data[--begin])) VALUE(value);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		VALUE* PushFront(const VALUE& value)
@@ -147,12 +147,12 @@ namespace DKFoundation
 
 			for (const VALUE& v : il)
 			{
-				new(&data[--begin]) VALUE(v);
+				new(std::addressof(data[--begin])) VALUE(v);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		VALUE* PushBack(const DKQueue& queue)
@@ -166,12 +166,12 @@ namespace DKFoundation
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[begin+count]) VALUE(values[i]);
+				new(std::addressof(data[begin+count])) VALUE(values[i]);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin+count-1];
+				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
 		VALUE* PushBack(const VALUE& value, size_t n)
@@ -180,12 +180,12 @@ namespace DKFoundation
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[begin+count]) VALUE(value);
+				new(std::addressof(data[begin+count])) VALUE(value);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin+count-1];
+				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
 		VALUE* PushBack(const VALUE& value)
@@ -198,12 +198,12 @@ namespace DKFoundation
 			ReserveBack(il.size());
 			for (const VALUE& v : il)
 			{
-				new(&data[begin+count]) VALUE(v);
+				new(std::addressof(data[begin+count])) VALUE(v);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin+count-1];
+				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
 		bool IsEmpty(void) const
@@ -337,14 +337,14 @@ namespace DKFoundation
 		operator VALUE* (void)
 		{
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		/// type-casting, object should be locked before calling this operator.
 		operator const VALUE* (void) const
 		{
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		size_t Count(void) const
@@ -372,7 +372,7 @@ namespace DKFoundation
 						DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
 						if (tmp == NULL)
 							return;
-						memcpy(tmp, &data[begin], sizeof(VALUE) * count);
+						memcpy(tmp, std::addressof(data[begin]), sizeof(VALUE) * count);
 						Allocator::Free(data);
 					}
 					else
@@ -442,7 +442,7 @@ namespace DKFoundation
 				ReserveBack(queue.count);
 				for (size_t i = 0; i < queue.count; i++)
 				{
-					new(&data[i]) VALUE(p[i]);
+					new(std::addressof(data[i])) VALUE(p[i]);
 				}
 				count = queue.count;
 			}
@@ -567,7 +567,7 @@ namespace DKFoundation
 			if (data)
 			{
 				if (count)
-					memcpy(&dataNew[begin+offset], &data[begin], sizeof(VALUE) * count);
+					memcpy(std::addressof(dataNew[begin+offset]), std::addressof(data[begin]), sizeof(VALUE) * count);
 				Allocator::Free(data);
 			}
 			maxSize += offset;
@@ -588,7 +588,7 @@ namespace DKFoundation
 			if (data)
 			{
 				if (count)
-					memcpy(&dataNew[begin], &data[begin], sizeof(VALUE) * count);
+					memcpy(std::addressof(dataNew[begin]), std::addressof(data[begin]), sizeof(VALUE) * count);
 				Allocator::Free(data);
 			}
 			maxSize = newSize;
@@ -606,7 +606,7 @@ namespace DKFoundation
 			if (begin2 != begin)
 			{
 				if (count > 0)
-					memmove(&data[begin2], &data[begin], sizeof(VALUE) * count);
+					memmove(std::addressof(data[begin2]), std::addressof(data[begin]), sizeof(VALUE) * count);
 				begin = begin2;
 			}
 		}

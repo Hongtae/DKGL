@@ -539,7 +539,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			if (count > 1 && (start + count) <= this->count)
 			{
-				DKStaticArray<VALUE>(&data[start], count).Sort(cmp);
+				DKStaticArray<VALUE>(std::addressof(data[start]), count).Sort(cmp);
 			}			
 		}
 		template <typename CompareFunc> void Sort(CompareFunc cmp)
@@ -551,7 +551,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			if (count > 1 && (start + count) <= this->count)
 			{
-				DKStaticArray<VALUE>(&data[start], count).template Sort<CompareFunc>(cmp);
+				DKStaticArray<VALUE>(std::addressof(data[start]), count).template Sort<CompareFunc>(cmp);
 			}
 		}
 		/// EnumerateForward / EnumerateBackward: enumerate all items.
