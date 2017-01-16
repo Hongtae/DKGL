@@ -100,7 +100,7 @@ namespace DKFramework
 				const DKVariant& var = config.Value(key);
 				if (var.ValueType() == DKVariant::TypeString)
 				{
-					DKString selectAPI = DKStringU8(var.String());
+					DKString selectAPI = (DKString)DKStringU8(var.String());
 
 					for (size_t i = 0; i < apis.Count(); ++i)
 					{
