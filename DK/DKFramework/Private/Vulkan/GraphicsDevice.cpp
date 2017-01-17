@@ -21,6 +21,62 @@ namespace DKFramework
 			{
 				return new GraphicsDevice();
 			}
+
+			const char *validationLayerNames[] =
+			{
+				"VK_LAYER_LUNARG_standard_validation"
+			};
+
+			VkBool32 DebugMessageCallback(
+				VkDebugReportFlagsEXT flags,
+				VkDebugReportObjectTypeEXT objType,
+				uint64_t srcObject,
+				size_t location,
+				int32_t msgCode,
+				const char* pLayerPrefix,
+				const char* pMsg,
+				void* pUserData)
+			{
+				DKStringU8 prefix = "";
+
+				// Error that may result in undefined behaviour
+				if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+				{
+					prefix += "ERROR:";
+				};
+				// Warnings may hint at unexpected / non-spec API usage
+				if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+				{
+					prefix += "WARNING:";
+				};
+				// May indicate sub-optimal usage of the API
+				if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
+				{
+					prefix += "PERFORMANCE:";
+				};
+				// Informal messages that may become handy during debugging
+				if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
+				{
+					prefix += "INFO:";
+				}
+				// Diagnostic info from the Vulkan loader and layers
+				// Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
+				if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
+				{
+					prefix += "DEBUG:";
+				}
+
+				// Display message to default output (console if activated)
+				DKLog("[VulkanDebug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
+
+				// The return value of this callback controls wether the Vulkan call that caused
+				// the validation message will be aborted or not
+				// We return VK_FALSE as we DON'T want Vulkan calls that cause a validation message 
+				// (and return a VkResult) to abort
+				// If you instead want to have calls abort, pass in VK_TRUE and the function will 
+				// return VK_ERROR_VALIDATION_FAILED_EXT 
+				return VK_FALSE;
+			}
 		}
 	}
 }
@@ -28,7 +84,14 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
+
 GraphicsDevice::GraphicsDevice(void)
+	: instance(NULL)
+	, CreateDebugReportCallback(NULL)
+	, DestroyDebugReportCallback(NULL)
+	, DebugReportMessage(NULL)
+	, msgCallback(NULL)
+	, enableValidation(true)
 {
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -47,8 +110,6 @@ GraphicsDevice::GraphicsDevice(void)
 	enabledExtensions.Add(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
 #endif
 
-	bool enableValidation = true;
-
 	VkInstanceCreateInfo instanceCreateInfo = {};
 	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	instanceCreateInfo.pNext = NULL;
@@ -64,18 +125,129 @@ GraphicsDevice::GraphicsDevice(void)
 	}
 	if (enableValidation)
 	{
+		instanceCreateInfo.enabledLayerCount = 1;
+		instanceCreateInfo.ppEnabledLayerNames = validationLayerNames;
 	}
 	
 	VkResult err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 	if (err != VK_SUCCESS)
 	{
-		const char* mesg = ErrorString(err);
-		throw std::exception(mesg);
+		throw std::exception((const char*)DKStringU8::Format("vkCreateInstance failed: %s", ErrorString(err)));
 	}
+
+	if (enableValidation)
+	{
+		CreateDebugReportCallback = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT"));
+		DestroyDebugReportCallback = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT"));
+		DebugReportMessage = reinterpret_cast<PFN_vkDebugReportMessageEXT>(vkGetInstanceProcAddr(instance, "vkDebugReportMessageEXT"));
+
+		VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = {};
+		dbgCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
+		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
+		
+		err = CreateDebugReportCallback(instance, &dbgCreateInfo, nullptr, &msgCallback);
+		if (err != VK_SUCCESS)
+		{
+			throw std::exception((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", ErrorString(err)));
+		}
+	}
+
+	// Physical device
+	uint32_t gpuCount = 0;
+	// Get number of available physical devices
+	err = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
+	if (err != VK_SUCCESS)
+	{
+		throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+	}
+	if (gpuCount == 0)
+	{
+		throw std::exception("No vulkan gpu found.");
+	}
+
+	// Enumerate devices
+	DKArray<VkPhysicalDevice> physicalDevices(VkPhysicalDevice(), gpuCount);
+	err = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices);
+	if (err)
+	{
+		throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+	}
+
+	for (size_t i = 0; i < physicalDevices.Count(); ++i)
+	{
+		VkPhysicalDevice physicalDevice = physicalDevices.Value(i);
+		VkPhysicalDeviceProperties properties;
+		VkPhysicalDeviceFeatures features;
+		VkPhysicalDeviceMemoryProperties memoryProperties;
+		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
+		DKArray<DKString> supportedExtensions;
+
+		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+		vkGetPhysicalDeviceFeatures(physicalDevice, &features);
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+		uint32_t queueFamilyCount;
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+		queueFamilyProperties.Resize(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties);
+
+		// Get list of supported extensions
+		uint32_t extCount = 0;
+		vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, nullptr);
+		if (extCount > 0)
+		{
+			DKArray<VkExtensionProperties> extensions(VkExtensionProperties(), extCount);
+			if (vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, extensions) == VK_SUCCESS)
+			{
+				for (auto ext : extensions)
+				{
+					supportedExtensions.Add(ext.extensionName);
+				}
+			}
+		}
+
+		const char* deviceType = "Unknown";
+		switch (properties.deviceType)
+		{
+		case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+			deviceType = "INTEGRATED_GPU";
+			break;
+		case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+			deviceType = "DISCRETE_GPU";
+			break;
+		case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+			deviceType = "VIRTUAL_GPU";
+			break;
+		case VK_PHYSICAL_DEVICE_TYPE_CPU:
+			deviceType = "CPU";
+			break;
+		default:
+			deviceType = "UNKNOWN";
+			break;
+		}
+
+		DKLog(" VkPhysicalDevice[%lu]: \"%s\" Type:%s (QueueFamilies:%u)", i, properties.deviceName, deviceType, queueFamilyCount);
+		for (size_t j = 0; j < queueFamilyProperties.Count(); ++j)
+		{
+			VkQueueFamilyProperties& prop = queueFamilyProperties.Value(j);
+			DKLog(" -- Queue-Family[%llu] flag-bits:%c%c%c%c count:%d",
+				j, 
+				prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? '1' : '0',
+				prop.queueFlags & VK_QUEUE_TRANSFER_BIT ? '1' : '0',
+				prop.queueFlags & VK_QUEUE_COMPUTE_BIT ? '1' : '0',
+				prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ? '1' : '0',
+				prop.queueCount);
+		}
+	}
+
+	DKERROR_THROW("Not implemented yet!");
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
+	if (msgCallback)
+		DestroyDebugReportCallback(instance, msgCallback, nullptr);
 }
 
 DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice*)

@@ -648,6 +648,9 @@
     <ClInclude Include="DKFoundation\DKZipUnarchiver.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Libs.props" />
@@ -1086,6 +1089,9 @@
     </ClCompile>
     <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp">
       <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

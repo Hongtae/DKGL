@@ -29,7 +29,15 @@ namespace DKFramework
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
 				VkInstance instance;
+				VkDevice device;
 
+				PFN_vkCreateDebugReportCallbackEXT CreateDebugReportCallback;
+				PFN_vkDestroyDebugReportCallbackEXT DestroyDebugReportCallback;
+				PFN_vkDebugReportMessageEXT DebugReportMessage;
+
+
+				bool enableValidation;
+				VkDebugReportCallbackEXT msgCallback;
 				static const char* ErrorString(VkResult);
 			};
 		}
