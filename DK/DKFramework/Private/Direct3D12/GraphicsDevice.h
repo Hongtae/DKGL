@@ -33,13 +33,13 @@ namespace DKFramework
 
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
-				void EnqueueReusableCommandAllocator(CommandAllocator* allocator);
-				CommandAllocator* DequeueReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE);
-				void ClearReusableCommandAllocators(void);
-
-				void EnqueueReusableCommandList(ID3D12CommandList* list);
-				ComPtr<ID3D12CommandList> DequeueReusableCommandList(D3D12_COMMAND_LIST_TYPE);
-				void ClearReusableCommandLists(void);
+				void PushReusableCommandAllocator(CommandAllocator* allocator);
+				CommandAllocator* RetrieveReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE);
+				void PurgeAllReusableCommandAllocators(void);
+				
+				void PushReusableCommandList(ID3D12CommandList* list);
+				ComPtr<ID3D12CommandList> RetrieveReusableCommandList(D3D12_COMMAND_LIST_TYPE);
+				void PurgeAllReusableCommandLists(void);
 
 			private:
 				ComPtr<ID3D12Device1> device;

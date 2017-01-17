@@ -41,7 +41,7 @@ CommandQueue::~CommandQueue(void)
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	CommandAllocator* commandAllocator = dc->DequeueReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	CommandAllocator* commandAllocator = dc->RetrieveReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT);
 	if (commandAllocator)
 	{
 		DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer(commandAllocator, this);

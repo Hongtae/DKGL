@@ -138,8 +138,8 @@ GraphicsDevice::GraphicsDevice(void)
 
 GraphicsDevice::~GraphicsDevice(void)
 {
-	ClearReusableCommandLists();
-	ClearReusableCommandAllocators();
+	PurgeAllReusableCommandLists();
+	PurgeAllReusableCommandAllocators();
 	this->dummyAllocator = nullptr;
 	this->device = nullptr;
 	DKLog("Direct3D12 Device destroyed.");
@@ -168,13 +168,13 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 	return queue.SafeCast<DKCommandQueue>();
 }
 
-void GraphicsDevice::EnqueueReusableCommandAllocator(CommandAllocator* allocator)
+void GraphicsDevice::PushReusableCommandAllocator(CommandAllocator* allocator)
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.Add(allocator);
 }
 
-CommandAllocator* GraphicsDevice::DequeueReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE type)
+CommandAllocator* GraphicsDevice::RetrieveReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE type)
 {
 	if (true)
 	{
@@ -200,7 +200,7 @@ CommandAllocator* GraphicsDevice::DequeueReusableCommandAllocator(D3D12_COMMAND_
 	return (CommandAllocator*)new(DKAllocator::DefaultAllocator().Alloc(sizeof(CommandAllocator))) CommandAllocator(commandAllocator.Get(), type);
 }
 
-void GraphicsDevice::ClearReusableCommandAllocators(void)
+void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
@@ -212,7 +212,7 @@ void GraphicsDevice::ClearReusableCommandAllocators(void)
 	this->reusableCommandAllocators.Clear();
 }
 
-void GraphicsDevice::EnqueueReusableCommandList(ID3D12CommandList* list)
+void GraphicsDevice::PushReusableCommandList(ID3D12CommandList* list)
 {
 	ComPtr<ID3D12GraphicsCommandList> graphicsCommandList;
 	if (SUCCEEDED(list->QueryInterface(IID_PPV_ARGS(&graphicsCommandList))))
@@ -228,7 +228,7 @@ void GraphicsDevice::EnqueueReusableCommandList(ID3D12CommandList* list)
 	}
 }
 
-ComPtr<ID3D12CommandList> GraphicsDevice::DequeueReusableCommandList(D3D12_COMMAND_LIST_TYPE type)
+ComPtr<ID3D12CommandList> GraphicsDevice::RetrieveReusableCommandList(D3D12_COMMAND_LIST_TYPE type)
 {
 	if (true)
 	{
@@ -253,7 +253,7 @@ ComPtr<ID3D12CommandList> GraphicsDevice::DequeueReusableCommandList(D3D12_COMMA
 	return commandList;
 }
 
-void GraphicsDevice::ClearReusableCommandLists(void)
+void GraphicsDevice::PurgeAllReusableCommandLists(void)
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandLists.Clear();
