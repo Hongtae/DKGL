@@ -2,7 +2,7 @@
 //  File: CommandBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -32,5 +32,14 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 	return NULL;
 }
 
+bool CommandBuffer::Commit(void)
+{
+	return false;
+}
+
+bool CommandBuffer::WaitUntilCompleted(void)
+{
+	return false;
+}
 
 #endif //#if DKGL_USE_VULKAN

@@ -316,6 +316,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
@@ -511,6 +512,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />

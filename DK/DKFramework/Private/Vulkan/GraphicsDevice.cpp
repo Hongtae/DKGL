@@ -2,7 +2,7 @@
 //  File: GraphicsDevice.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -92,8 +92,12 @@ GraphicsDevice::GraphicsDevice(void)
 	, DestroyDebugReportCallback(NULL)
 	, DebugReportMessage(NULL)
 	, msgCallback(NULL)
-	, enableValidation(true)
+	, enableValidation(false)
 {
+#ifdef DKGL_DEBUG_ENABLED
+	this->enableValidation = true;
+#endif
+
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "DKGL";
@@ -164,6 +168,7 @@ GraphicsDevice::GraphicsDevice(void)
 	};
 	DKArray<PhysicalDeviceDesc> physicalDeviceList;
 
+	// Extract physical devices that can create graphics & compute queues.
 	if (true)
 	{
 		// Physical device
@@ -198,7 +203,7 @@ GraphicsDevice::GraphicsDevice(void)
 			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties);
 
 			size_t numGCQueues = 0; // graphics | compute queue
-			// calculate num available queues.
+			// calculate num available queues. (Graphics & Compute)
 			for (VkQueueFamilyProperties& qfp : queueFamilyProperties)
 			{
 				if (qfp.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT))
@@ -404,18 +409,13 @@ GraphicsDevice::GraphicsDevice(void)
 			this->deviceName = desc.deviceName;
 
 			// get queues
-			this->deviceQueues.Reserve(desc.numQueues);
+			this->queueFamilies.Reserve(desc.numQueues);
+
 			for (VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
 			{
-				for (uint32_t queueIndex = 0; queueIndex < queueInfo.queueCount; ++queueIndex)
-				{
-					DeviceQueue dq;
-					dq.queueFamilyIndex = queueInfo.queueFamilyIndex;
-					dq.queueIndex = queueIndex;
-					dq.queue = nullptr;
-					vkGetDeviceQueue(logicalDevice, dq.queueFamilyIndex, dq.queueIndex, &dq.queue);
-					deviceQueues.Add(dq);
-				}
+				//new(DKAllocator::DefaultAllocator().Alloc(sizeof(CommandAllocator))) 
+				QueueFamily* qf = new(DKAllocator::DefaultAllocator().Alloc(sizeof(QueueFamily))) QueueFamily(logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount);
+				this->queueFamilies.Add(qf);
 			}
 			DKLog("Vulkan device created with \"%s\"", desc.deviceName);
 			break;
@@ -425,11 +425,19 @@ GraphicsDevice::GraphicsDevice(void)
 	if (this->device == nullptr)
 		throw std::exception("Failed to create device!");
 
-	deviceQueues.ShrinkToFit();
+	queueFamilies.ShrinkToFit();
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
+	for (QueueFamily* family : queueFamilies)
+	{
+		void* ptr = static_cast<void*>(family);
+		family->~QueueFamily();
+		DKAllocator::DefaultAllocator().Dealloc(ptr);
+	}
+	queueFamilies.Clear();
+
 	vkDeviceWaitIdle(device);
 	vkDestroyDevice(device, nullptr);
 	if (msgCallback)
@@ -441,8 +449,14 @@ DKString GraphicsDevice::DeviceName(void) const
 	return deviceName;
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice*)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
 {
+	for (QueueFamily* family : queueFamilies)
+	{
+		DKObject<DKCommandQueue> queue = family->CreateCommandQueue(dev);
+		if (queue)
+			return queue;
+	}
 	return NULL;
 }
 

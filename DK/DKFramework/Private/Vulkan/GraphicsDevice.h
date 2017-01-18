@@ -2,7 +2,7 @@
 //  File: GraphicsDevice.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.h>
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
+#include "QueueFamily.h"
 
 namespace DKFramework
 {
@@ -38,13 +39,9 @@ namespace DKFramework
 				PFN_vkDebugReportMessageEXT DebugReportMessage;
 
 				DKString deviceName;
-				struct DeviceQueue
-				{
-					uint32_t queueFamilyIndex;
-					uint32_t queueIndex;
-					VkQueue queue;
-				};
-				DKArray<DeviceQueue> deviceQueues;
+
+				DKArray<QueueFamily*> queueFamilies;
+				
 
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
