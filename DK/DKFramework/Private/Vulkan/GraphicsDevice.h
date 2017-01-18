@@ -26,18 +26,29 @@ namespace DKFramework
 				GraphicsDevice(void);
 				~GraphicsDevice(void);
 
+				DKString DeviceName(void) const override;
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
 				VkInstance instance;
 				VkDevice device;
+				VkPhysicalDevice physicalDevice;
 
 				PFN_vkCreateDebugReportCallbackEXT CreateDebugReportCallback;
 				PFN_vkDestroyDebugReportCallbackEXT DestroyDebugReportCallback;
 				PFN_vkDebugReportMessageEXT DebugReportMessage;
 
+				DKString deviceName;
+				struct DeviceQueue
+				{
+					uint32_t queueFamilyIndex;
+					uint32_t queueIndex;
+					VkQueue queue;
+				};
+				DKArray<DeviceQueue> deviceQueues;
 
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
+
 				static const char* ErrorString(VkResult);
 			};
 		}

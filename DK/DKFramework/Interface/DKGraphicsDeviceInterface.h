@@ -15,10 +15,9 @@ namespace DKFramework
 	class DKGraphicsDeviceInterface : public DKBackendInterface
 	{
 	public:
-
+		virtual DKString DeviceName(void) const = 0;
 		virtual DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) = 0;
-
-
+		
 		static DKGraphicsDeviceInterface* CreateInterface(void);
 		static DKGraphicsDeviceInterface* Instance(DKGraphicsDevice* p) { return p->impl; }
 	};

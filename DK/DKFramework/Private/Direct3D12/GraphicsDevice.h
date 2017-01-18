@@ -31,6 +31,7 @@ namespace DKFramework
 				GraphicsDevice(void);
 				~GraphicsDevice(void);
 
+				DKString DeviceName(void) const override;
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
 				void PushReusableCommandAllocator(CommandAllocator* allocator);
@@ -42,6 +43,7 @@ namespace DKFramework
 				void PurgeAllReusableCommandLists(void);
 
 			private:
+				DKString deviceName;
 				ComPtr<ID3D12Device1> device;
 				ComPtr<ID3D12CommandAllocator> dummyAllocator;
 

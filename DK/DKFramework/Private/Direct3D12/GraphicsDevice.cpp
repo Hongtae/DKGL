@@ -9,6 +9,7 @@
 #if DKGL_USE_DIRECT3D
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
+#include "../../DKPropertySet.h"
 
 #pragma comment(lib, "D3d12.lib")
 #pragma comment(lib, "DXGI.lib")
@@ -63,21 +64,63 @@ GraphicsDevice::GraphicsDevice(void)
 
 	if (true)
 	{
+		DKVariant deviceList = DKVariant::TypeArray;
+
 		ComPtr<IDXGIAdapter1> adapter = nullptr;
 		for (UINT index = 0; factory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND; ++index)
 		{
 			DXGI_ADAPTER_DESC1 desc;
 			adapter->GetDesc1(&desc);
 
-			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-				continue;
+			//if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+			//	continue;
 
 			DKLog("D3D12 Adapter[%d]: \"%ls\" (VideoMemory:%.1fMB, SystemMemory:%.1fMB, SharedMemory:%.1fMB)",
 				index, desc.Description,
 				double(desc.DedicatedVideoMemory) / (1024.0 * 1024.0),
 				double(desc.DedicatedSystemMemory) / (1024.0 * 1024.0),
 				double(desc.SharedSystemMemory) / (1024.0 * 1024.0));
+			
+			deviceList.Array().Add(desc.Description);
+		}
+		DKPropertySet::SystemConfig().SetValue("GraphicsDeviceList", deviceList);
+	}
 
+	// select preferred device first.
+	const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
+	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
+	{
+		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
+		{
+			DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
+
+			if (prefDevName.Length() > 0)
+			{
+				ComPtr<IDXGIAdapter1> adapter = nullptr;
+				for (UINT index = 0; factory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND; ++index)
+				{
+					DXGI_ADAPTER_DESC1 desc;
+					adapter->GetDesc1(&desc);
+					if (prefDevName.CompareNoCase(desc.Description) == 0)
+					{
+						for (D3D_FEATURE_LEVEL featureLevel : featureLevels)
+						{
+							if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
+							{
+								this->deviceName = desc.Description;
+								DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
+									desc.Description, this->device->GetNodeCount(), featureLevel);
+								break;
+							}
+						}
+						if (this->device == nullptr)
+						{
+							DKLog("Cannot create device with preferred-device (%ls)", (const wchar_t*)prefDevName);
+						}
+						break;
+					}
+				}
+			}
 		}
 	}
 
@@ -103,6 +146,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 			if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
 			{
+				this->deviceName = desc.Description;
 				DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
 					desc.Description, this->device->GetNodeCount(), featureLevel);
 				break;
@@ -122,6 +166,7 @@ GraphicsDevice::GraphicsDevice(void)
 		D3D_FEATURE_LEVEL featureLevel = *featureLevels.begin();
 		if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
 		{
+			this->deviceName = desc.Description;
 			DKLog("D3D12CreateDevice created WARP device with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
 				desc.Description, this->device->GetNodeCount(), featureLevel);
 		}
@@ -143,6 +188,11 @@ GraphicsDevice::~GraphicsDevice(void)
 	this->dummyAllocator = nullptr;
 	this->device = nullptr;
 	DKLog("Direct3D12 Device destroyed.");
+}
+
+DKString GraphicsDevice::DeviceName(void) const
+{
+	return deviceName;
 }
 
 DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)

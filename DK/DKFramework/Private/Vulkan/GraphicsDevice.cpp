@@ -10,6 +10,7 @@
 
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
+#include "../../DKPropertySet.h"
 
 namespace DKFramework
 {
@@ -153,101 +154,291 @@ GraphicsDevice::GraphicsDevice(void)
 		}
 	}
 
-	// Physical device
-	uint32_t gpuCount = 0;
-	// Get number of available physical devices
-	err = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
-	if (err != VK_SUCCESS)
+	struct PhysicalDeviceDesc
 	{
-		throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
-	}
-	if (gpuCount == 0)
+		VkPhysicalDevice physicalDevice;
+		int deviceTypePriority;
+		size_t deviceMemory;
+		size_t numQueues;	// graphics | compute queue count.
+		DKString deviceName;
+	};
+	DKArray<PhysicalDeviceDesc> physicalDeviceList;
+
+	if (true)
 	{
-		throw std::exception("No vulkan gpu found.");
+		// Physical device
+		uint32_t gpuCount = 0;
+		// Get number of available physical devices
+		err = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
+		if (err != VK_SUCCESS)
+		{
+			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+		}
+		if (gpuCount == 0)
+		{
+			throw std::exception("No vulkan gpu found.");
+		}
+		// Enumerate devices
+		DKArray<VkPhysicalDevice> physicalDevices(VkPhysicalDevice(), gpuCount);
+		err = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices);
+		if (err)
+		{
+			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+		}
+		physicalDeviceList.Reserve(gpuCount);
+
+		for (size_t i = 0; i < physicalDevices.Count(); ++i)
+		{
+			VkPhysicalDevice physicalDevice = physicalDevices.Value(i);
+			DKArray<VkQueueFamilyProperties> queueFamilyProperties;
+
+			uint32_t queueFamilyCount;
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+			queueFamilyProperties.Resize(queueFamilyCount);
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties);
+
+			size_t numGCQueues = 0; // graphics | compute queue
+			// calculate num available queues.
+			for (VkQueueFamilyProperties& qfp : queueFamilyProperties)
+			{
+				if (qfp.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT))
+				{
+					numGCQueues += qfp.queueCount;
+				}
+			}
+
+			if (numGCQueues > 0)
+			{
+				VkPhysicalDeviceProperties properties;
+				VkPhysicalDeviceMemoryProperties memoryProperties;
+
+				vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+				vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+				PhysicalDeviceDesc desc;
+				desc.physicalDevice = physicalDevice;
+				desc.deviceTypePriority = 0;
+				desc.numQueues = numGCQueues;
+				desc.deviceMemory = 0;
+				desc.deviceName = properties.deviceName;
+
+				switch (properties.deviceType)
+				{
+				case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:		desc.deviceTypePriority++;
+				case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:	desc.deviceTypePriority++;
+				case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:		desc.deviceTypePriority++;
+				case VK_PHYSICAL_DEVICE_TYPE_CPU:				desc.deviceTypePriority++;
+				}
+
+				// calcualte device memory.
+				for (uint32_t k = 0; k < memoryProperties.memoryHeapCount; ++k)
+				{
+					VkMemoryHeap& heap = memoryProperties.memoryHeaps[k];
+					if (heap.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+					{
+						desc.deviceMemory += heap.size;
+					}
+				}
+
+				physicalDeviceList.Add(desc);
+			}
+		}
+		// sort deviceList order by Type/NumQueues/Memory
+		physicalDeviceList.Sort([](const PhysicalDeviceDesc& lhs, const PhysicalDeviceDesc& rhs)->bool
+		{
+			if (lhs.deviceTypePriority == rhs.deviceTypePriority)
+			{
+				if (lhs.numQueues == rhs.numQueues)
+				{
+					return lhs.deviceMemory > rhs.deviceMemory;
+				}
+				return lhs.numQueues > rhs.numQueues;
+			}
+			return lhs.deviceTypePriority > rhs.deviceTypePriority;
+		});
 	}
 
-	// Enumerate devices
-	DKArray<VkPhysicalDevice> physicalDevices(VkPhysicalDevice(), gpuCount);
-	err = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices);
-	if (err)
+	if (1)	// write device list to DKPropertySet::SystemConfig
 	{
-		throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+		DKVariant deviceList = DKVariant::TypeArray;
+
+		for (size_t i = 0; i < physicalDeviceList.Count(); ++i)
+		{
+			PhysicalDeviceDesc& desc = physicalDeviceList.Value(i);
+
+			VkPhysicalDevice physicalDevice = desc.physicalDevice;
+			VkPhysicalDeviceProperties properties;
+			VkPhysicalDeviceFeatures features;
+			VkPhysicalDeviceMemoryProperties memoryProperties;
+			DKArray<VkQueueFamilyProperties> queueFamilyProperties;
+			DKArray<DKString> supportedExtensions;
+
+			vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+			vkGetPhysicalDeviceFeatures(physicalDevice, &features);
+			vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+			uint32_t queueFamilyCount;
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+			queueFamilyProperties.Resize(queueFamilyCount);
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties);
+
+			// Get list of supported extensions
+			uint32_t extCount = 0;
+			vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, nullptr);
+			if (extCount > 0)
+			{
+				DKArray<VkExtensionProperties> extensions(VkExtensionProperties(), extCount);
+				if (vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, extensions) == VK_SUCCESS)
+				{
+					for (auto ext : extensions)
+					{
+						supportedExtensions.Add(ext.extensionName);
+					}
+				}
+			}
+
+			const char* deviceType = "Unknown";
+			switch (properties.deviceType)
+			{
+			case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+				deviceType = "INTEGRATED_GPU";
+				break;
+			case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+				deviceType = "DISCRETE_GPU";
+				break;
+			case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+				deviceType = "VIRTUAL_GPU";
+				break;
+			case VK_PHYSICAL_DEVICE_TYPE_CPU:
+				deviceType = "CPU";
+				break;
+			default:
+				deviceType = "UNKNOWN";
+				break;
+			}
+
+			DKLog(" VkPhysicalDevice[%lu]: \"%s\" Type:%s (QueueFamilies:%u)", i, properties.deviceName, deviceType, queueFamilyCount);
+			for (size_t j = 0; j < queueFamilyProperties.Count(); ++j)
+			{
+				VkQueueFamilyProperties& prop = queueFamilyProperties.Value(j);
+				DKLog(" -- Queue-Family[%llu] flag-bits:%c%c%c%c count:%d",
+					j,
+					prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? '1' : '0',
+					prop.queueFlags & VK_QUEUE_TRANSFER_BIT ? '1' : '0',
+					prop.queueFlags & VK_QUEUE_COMPUTE_BIT ? '1' : '0',
+					prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ? '1' : '0',
+					prop.queueCount);
+			}
+
+			deviceList.Array().Add(properties.deviceName);
+		}
+		DKPropertySet::SystemConfig().SetValue("GraphicsDeviceList", deviceList);
 	}
 
-	for (size_t i = 0; i < physicalDevices.Count(); ++i)
+	// make preferred device first.
+	const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
+	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
 	{
-		VkPhysicalDevice physicalDevice = physicalDevices.Value(i);
-		VkPhysicalDeviceProperties properties;
-		VkPhysicalDeviceFeatures features;
-		VkPhysicalDeviceMemoryProperties memoryProperties;
+		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
+		{
+			DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
+
+			if (prefDevName.Length() > 0)
+			{
+				for (size_t i = 0; i < physicalDeviceList.Count(); ++i)
+				{
+					if (prefDevName.CompareNoCase(physicalDeviceList.Value(i).deviceName) == 0)
+					{
+						PhysicalDeviceDesc desc = physicalDeviceList.Value(i);
+						physicalDeviceList.Remove(i);
+						physicalDeviceList.Insert(desc, 0);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// create logical device
+	const float defaultQueuePriority(0.0f);
+	for (PhysicalDeviceDesc& desc : physicalDeviceList)
+	{
+		VkPhysicalDevice pdevice = desc.physicalDevice;
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
-		DKArray<DKString> supportedExtensions;
-
-		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-		vkGetPhysicalDeviceFeatures(physicalDevice, &features);
-		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
 
 		uint32_t queueFamilyCount;
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 		queueFamilyProperties.Resize(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties);
 
-		// Get list of supported extensions
-		uint32_t extCount = 0;
-		vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, nullptr);
-		if (extCount > 0)
+		DKArray<VkDeviceQueueCreateInfo> queueCreateInfos;
+		queueCreateInfos.Reserve(queueFamilyCount);
+		for (uint32_t queueFamilyIndex = 0; queueFamilyIndex < queueFamilyCount; ++queueFamilyIndex)
 		{
-			DKArray<VkExtensionProperties> extensions(VkExtensionProperties(), extCount);
-			if (vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, extensions) == VK_SUCCESS)
+			VkQueueFamilyProperties& queueFamily = queueFamilyProperties.Value(queueFamilyIndex);
+			if (queueFamily.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT))
 			{
-				for (auto ext : extensions)
-				{
-					supportedExtensions.Add(ext.extensionName);
-				}
+				VkDeviceQueueCreateInfo queueInfo{};
+				queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+				queueInfo.queueFamilyIndex = queueFamilyIndex;
+				queueInfo.queueCount = queueFamily.queueCount;
+				queueInfo.pQueuePriorities = &defaultQueuePriority;
+				queueCreateInfos.Add(queueInfo);
 			}
 		}
+		DKASSERT_DEBUG(queueCreateInfos.Count() > 0);
 
-		const char* deviceType = "Unknown";
-		switch (properties.deviceType)
-		{
-		case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-			deviceType = "INTEGRATED_GPU";
-			break;
-		case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-			deviceType = "DISCRETE_GPU";
-			break;
-		case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-			deviceType = "VIRTUAL_GPU";
-			break;
-		case VK_PHYSICAL_DEVICE_TYPE_CPU:
-			deviceType = "CPU";
-			break;
-		default:
-			deviceType = "UNKNOWN";
-			break;
-		}
+		VkPhysicalDeviceFeatures enabledFeatures{};
+		VkDeviceCreateInfo deviceCreateInfo = {};
+		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.Count());;
+		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos;
+		deviceCreateInfo.pEnabledFeatures = &enabledFeatures;
+		VkDevice logicalDevice;
 
-		DKLog(" VkPhysicalDevice[%lu]: \"%s\" Type:%s (QueueFamilies:%u)", i, properties.deviceName, deviceType, queueFamilyCount);
-		for (size_t j = 0; j < queueFamilyProperties.Count(); ++j)
+		err = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice);
+		if (err == VK_SUCCESS)
 		{
-			VkQueueFamilyProperties& prop = queueFamilyProperties.Value(j);
-			DKLog(" -- Queue-Family[%llu] flag-bits:%c%c%c%c count:%d",
-				j, 
-				prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? '1' : '0',
-				prop.queueFlags & VK_QUEUE_TRANSFER_BIT ? '1' : '0',
-				prop.queueFlags & VK_QUEUE_COMPUTE_BIT ? '1' : '0',
-				prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ? '1' : '0',
-				prop.queueCount);
+			this->device = logicalDevice;
+			this->physicalDevice = physicalDevice;
+			this->deviceName = desc.deviceName;
+
+			// get queues
+			this->deviceQueues.Reserve(desc.numQueues);
+			for (VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
+			{
+				for (uint32_t queueIndex = 0; queueIndex < queueInfo.queueCount; ++queueIndex)
+				{
+					DeviceQueue dq;
+					dq.queueFamilyIndex = queueInfo.queueFamilyIndex;
+					dq.queueIndex = queueIndex;
+					dq.queue = nullptr;
+					vkGetDeviceQueue(logicalDevice, dq.queueFamilyIndex, dq.queueIndex, &dq.queue);
+					deviceQueues.Add(dq);
+				}
+			}
+			DKLog("Vulkan device created with \"%s\"", desc.deviceName);
+			break;
 		}
 	}
 
-	DKERROR_THROW("Not implemented yet!");
+	if (this->device == nullptr)
+		throw std::exception("Failed to create device!");
+
+	deviceQueues.ShrinkToFit();
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
+	vkDeviceWaitIdle(device);
+	vkDestroyDevice(device, nullptr);
 	if (msgCallback)
 		DestroyDebugReportCallback(instance, msgCallback, nullptr);
+}
+
+DKString GraphicsDevice::DeviceName(void) const
+{
+	return deviceName;
 }
 
 DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice*)
