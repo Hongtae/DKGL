@@ -104,6 +104,7 @@ namespace DKFoundation
 	};
 
 	/// simple heap allocator type for template classes.
+	/// if you need an allocator instance, use DKAllocator
 	struct DKMemoryHeapAllocator
 	{
 		enum { Location = DKMemoryLocationHeap };
@@ -112,6 +113,7 @@ namespace DKFoundation
 		static void Free(void* p)				{ DKMemoryHeapFree(p); }
 	};
 	/// simple vm allocator type for template classes.
+	/// if you need an allocator instance, use DKAllocator
 	struct DKMemoryVirtualAllocator
 	{
 		enum { Location = DKMemoryLocationVirtual };
@@ -120,6 +122,7 @@ namespace DKFoundation
 		static void Free(void* p)				{ DKMemoryVirtualFree(p); }
 	};
 	/// simple memory pool allocator type for template class
+	/// if you need an allocator instance, use DKAllocator
 	struct DKMemoryPoolAllocator
 	{
 		enum { Location = DKMemoryLocationPool };
@@ -130,7 +133,25 @@ namespace DKFoundation
 
 #ifdef DKGL_HEAP_ALLOCATOR_IS_DEFAULT	// define if you don't want to use memory-pool
 	using DKMemoryDefaultAllocator = DKMemoryHeapAllocator;
+	constexpr DKMemoryLocation DKMemoryLocationDefault = DKMemoryLocationHeap;
 #else
 	using DKMemoryDefaultAllocator = DKMemoryPoolAllocator;
+	constexpr DKMemoryLocation DKMemoryLocationDefault = DKMemoryLocationPool;
 #endif
+
+	/// Allocate memory using the default allocator (DKMemoryDefaultAllocator)
+	FORCEINLINE void* DKMalloc(size_t s)
+	{
+		return DKMemoryDefaultAllocator::Alloc(s);
+	}
+	/// Reallocate memory using the default allocator (DKMemoryDefaultAllocator)
+	FORCEINLINE void* DKRealloc(void* p, size_t s)
+	{
+		return DKMemoryDefaultAllocator::Realloc(p, s);
+	}
+	/// Release memory using the default allocator (DKMemoryDefaultAllocator)
+	FORCEINLINE void DKFree(void* p)
+	{
+		DKMemoryDefaultAllocator::Free(p);
+	}
 }

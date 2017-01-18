@@ -21,7 +21,8 @@ namespace DKFoundation
 		virtual void Dealloc(void*) = 0;
 		virtual DKMemoryLocation Location(void) const = 0;
 
-		static DKAllocator& DefaultAllocator(DKMemoryLocation loc = DKMemoryLocationHeap);
+		/// Default allocator instance for given location
+		static DKAllocator& DefaultAllocator(DKMemoryLocation loc = DKMemoryLocationDefault);
 
 	protected:
 		DKAllocator(void);

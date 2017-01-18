@@ -19,13 +19,7 @@ namespace DKFramework
 	public:
 		virtual ~DKBackendInterface(void) {}
 
-		static void* operator new (size_t s)
-		{
-			return DKAllocator::DefaultAllocator().Alloc(s);
-		}
-		static void operator delete (void* p)
-		{
-			DKAllocator::DefaultAllocator().Dealloc(p);
-		}
+		static void* operator new (size_t s) { return DKMalloc(s); }
+		static void operator delete (void* p) { DKFree(p); }
 	};
 }

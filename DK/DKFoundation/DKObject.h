@@ -221,7 +221,7 @@ namespace DKFoundation
 		}
 		template <typename... Args> static DKObject New(Args&&... args)
 		{
-			return new(DKAllocator::DefaultAllocator(DKMemoryLocationHeap)) T(std::forward<Args>(args)...);
+			return new(DKAllocator::DefaultAllocator()) T(std::forward<Args>(args)...);
 		}
 		DKAllocator* Allocator(void) const
 		{

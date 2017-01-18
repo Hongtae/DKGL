@@ -247,7 +247,7 @@ CommandAllocator* GraphicsDevice::RetrieveReusableCommandAllocator(D3D12_COMMAND
 		return NULL;
 	}
 
-	return (CommandAllocator*)new(DKAllocator::DefaultAllocator().Alloc(sizeof(CommandAllocator))) CommandAllocator(commandAllocator.Get(), type);
+	return new CommandAllocator(commandAllocator.Get(), type);
 }
 
 void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
@@ -255,9 +255,7 @@ void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
 	{
-		void* ptr = static_cast<void*>(allocator);
-		allocator->~CommandAllocator();
-		DKAllocator::DefaultAllocator().Dealloc(ptr);
+		delete allocator;
 	});
 	this->reusableCommandAllocators.Clear();
 }

@@ -413,8 +413,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 			for (VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
 			{
-				//new(DKAllocator::DefaultAllocator().Alloc(sizeof(CommandAllocator))) 
-				QueueFamily* qf = new(DKAllocator::DefaultAllocator().Alloc(sizeof(QueueFamily))) QueueFamily(logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount);
+				QueueFamily* qf = new QueueFamily(logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount);
 				this->queueFamilies.Add(qf);
 			}
 			DKLog("Vulkan device created with \"%s\"", desc.deviceName);
@@ -432,9 +431,7 @@ GraphicsDevice::~GraphicsDevice(void)
 {
 	for (QueueFamily* family : queueFamilies)
 	{
-		void* ptr = static_cast<void*>(family);
-		family->~QueueFamily();
-		DKAllocator::DefaultAllocator().Dealloc(ptr);
+		delete family;
 	}
 	queueFamilies.Clear();
 
