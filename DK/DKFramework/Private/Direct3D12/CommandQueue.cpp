@@ -50,6 +50,11 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 	return NULL;
 }
 
+DKObject<DKDrawable> CommandQueue::CreateDrawable(DKWindow* window)
+{
+	return NULL;
+}
+
 UINT64 CommandQueue::Enqueue(ID3D12CommandList* const* commandLists, UINT numLists, UINT64 proceedAfter)
 {
 	DKCriticalSection<DKSpinLock> guard(queueLock);

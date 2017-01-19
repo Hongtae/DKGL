@@ -28,6 +28,10 @@ namespace DKFramework
 				"VK_LAYER_LUNARG_standard_validation"
 			};
 
+			// extensions
+			InstanceProc iproc;
+			DeviceProc dproc;
+
 			VkBool32 DebugMessageCallback(
 				VkDebugReportFlagsEXT flags,
 				VkDebugReportObjectTypeEXT objType,
@@ -147,8 +151,8 @@ GraphicsDevice::GraphicsDevice(void)
 	{
 		throw std::exception((const char*)DKStringU8::Format("vkCreateInstance failed: %s", VkResultCStr(err)));
 	}
-	// initialize instance extensions
-	instanceProc.Init(instance);
+	// load instance extensions
+	iproc.Load(instance);
 
 	if (enableValidation)
 	{
@@ -157,7 +161,7 @@ GraphicsDevice::GraphicsDevice(void)
 		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
 		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
 		
-		err = instanceProc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, nullptr, &msgCallback);
+		err = iproc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, nullptr, &msgCallback);
 		if (err != VK_SUCCESS)
 		{
 			throw std::exception((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", VkResultCStr(err)));
@@ -331,11 +335,10 @@ GraphicsDevice::GraphicsDevice(void)
 
 			deviceList.Array().Add(desc.properties.deviceName);
 		}
-		DKPropertySet::SystemConfig().SetValue("GraphicsDeviceList", deviceList);
+		DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
 	}
 
 	// make preferred device first.
-	const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
 	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
 	{
 		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
@@ -417,7 +420,7 @@ GraphicsDevice::GraphicsDevice(void)
 		if (err == VK_SUCCESS)
 		{
 			// initialize device extensions
-			deviceProc.Init(logicalDevice);
+			dproc.Load(logicalDevice);
 
 			this->device = logicalDevice;
 			this->physicalDevice = physicalDevice;
@@ -428,9 +431,9 @@ GraphicsDevice::GraphicsDevice(void)
 			// get queues
 			this->queueFamilies.Reserve(desc.numQueues);
 
-			for (VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
+			for (const VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
 			{
-				QueueFamily* qf = new QueueFamily(logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount);
+				QueueFamily* qf = new QueueFamily(physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueCount));
 				this->queueFamilies.Add(qf);
 			}
 			DKLog("Vulkan device created with \"%s\"", desc.properties.deviceName);
@@ -441,6 +444,18 @@ GraphicsDevice::GraphicsDevice(void)
 	if (this->device == nullptr)
 		throw std::exception("Failed to create device!");
 
+	// sort queue family order by presentationSupport, index
+	queueFamilies.Sort([](QueueFamily* lhs, QueueFamily* rhs)->bool
+	{
+		int lhs_ps = lhs->IsSupportPresentation() ? 1 : 0;
+		int rhs_ps = rhs->IsSupportPresentation() ? 1 : 0;
+
+		if (lhs_ps == rhs_ps)
+		{
+			return lhs->FamilyIndex() > rhs->FamilyIndex();
+		}
+		return lhs_ps > rhs_ps;
+	});
 	queueFamilies.ShrinkToFit();
 }
 
@@ -455,7 +470,7 @@ GraphicsDevice::~GraphicsDevice(void)
 	vkDeviceWaitIdle(device);
 	vkDestroyDevice(device, nullptr);
 	if (msgCallback)
-		instanceProc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, nullptr);
+		iproc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, nullptr);
 }
 
 DKString GraphicsDevice::DeviceName(void) const

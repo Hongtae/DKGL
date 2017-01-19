@@ -22,13 +22,19 @@ namespace DKFramework
 			class QueueFamily : public DKBackendInterface
 			{
 			public:
-				QueueFamily(VkDevice, uint32_t familyIndex, uint32_t count);
+				QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop);
 				~QueueFamily(void);
 
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*);
 				void RecycleQueue(VkQueue);
+				
+				// if presentation not supported, should check on the fly!
+				bool IsSupportPresentation(void) const { return supportPresentation; }
+				uint32_t FamilyIndex(void) const { return familyIndex; }
 
 			private:
+				bool supportPresentation;
+				VkQueueFamilyProperties properties;
 				DKSpinLock lock;
 				uint32_t familyIndex;
 				DKArray<VkQueue> freeQueues;

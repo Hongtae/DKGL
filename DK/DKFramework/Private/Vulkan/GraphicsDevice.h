@@ -38,10 +38,6 @@ namespace DKFramework
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
 
-				// extensions
-				InstanceProc instanceProc;
-				DeviceProc deviceProc;
-
 				// device properties
 				VkPhysicalDeviceProperties properties;
 				VkPhysicalDeviceFeatures features;

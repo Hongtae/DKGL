@@ -59,7 +59,7 @@ bool CommandBuffer::Commit(void)
 	{
 		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
 		ComPtr<ID3D12CommandList>* lists = this->commandLists;
-		UINT numLists = this->commandLists.Count();
+		UINT numLists = static_cast<UINT>(this->commandLists.Count());
 
 		static_assert(sizeof(ComPtr<ID3D12CommandList>) == sizeof(ID3D12CommandList*), "");
 

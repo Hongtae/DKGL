@@ -480,6 +480,9 @@
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\Swapchain.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1098,6 +1101,9 @@
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\Swapchain.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

@@ -83,11 +83,10 @@ GraphicsDevice::GraphicsDevice(void)
 			
 			deviceList.Array().Add(desc.Description);
 		}
-		DKPropertySet::SystemConfig().SetValue("GraphicsDeviceList", deviceList);
+		DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
 	}
 
 	// select preferred device first.
-	const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
 	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
 	{
 		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)

@@ -58,20 +58,21 @@ namespace DKFramework
 		{
 			const char* name;
 			DKGraphicsDeviceInterface* (*fn)(void);
+			bool preferred;
 		};
 
 		DKArray<APISet> apis = {
 #if DKGL_USE_METAL
-			{ "Metal", Private::Metal::CreateInterface },
+			{ "Metal", Private::Metal::CreateInterface, false },
 #endif
 #if DKGL_USE_DIRECT3D
-			{ "Direct3D", Private::Direct3D::CreateInterface },
+			{ "Direct3D", Private::Direct3D::CreateInterface, false},
 #endif
 #if DKGL_USE_VULKAN
-			{ "Vulkan", Private::Vulkan::CreateInterface },
+			{ "Vulkan", Private::Vulkan::CreateInterface, false },
 #endif
 #if DKGL_USE_OPENGL
-			{ "OpenGL", Private::OpenGL::CreateInterface },
+			{ "OpenGL", Private::OpenGL::CreateInterface, false },
 #endif
 		};
 
@@ -93,11 +94,10 @@ namespace DKFramework
 		bool tryPreferredApiFirst = true;
 		if (tryPreferredApiFirst)
 		{
-			const char* key = "GraphicsAPI";
 			DKPropertySet& config = DKPropertySet::SystemConfig();
-			if (config.HasValue(key))
+			if (config.HasValue(preferredGraphicsAPIKey))
 			{
-				const DKVariant& var = config.Value(key);
+				const DKVariant& var = config.Value(preferredGraphicsAPIKey);
 				if (var.ValueType() == DKVariant::TypeString)
 				{
 					DKString selectAPI = (DKString)DKStringU8(var.String());
@@ -109,6 +109,7 @@ namespace DKFramework
 							if (i > 0)
 							{
 								APISet api = apis.Value(i);
+								api.preferred = true;
 								apis.Remove(i);
 								apis.Insert(api, 0);
 							}
@@ -125,7 +126,7 @@ namespace DKFramework
 			int index = 0;
 			for (const APISet& as : apis)
 			{
-				DKLog(" GraphicsAPI[%d]: %s", index, as.name);
+				DKLog(" GraphicsAPI[%d]: \"%s\"%s", index, as.name, as.preferred ? " (Preferred)" : "");
 				index++;
 			}
 			if (index == 0)

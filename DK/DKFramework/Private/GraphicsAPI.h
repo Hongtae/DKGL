@@ -51,3 +51,12 @@
 #    define DKGL_USE_DIRECT3D 0
 #  endif
 #endif
+
+
+namespace DKFramework
+{
+	// useful key (DKPropertySet::SystemConfig)
+	constexpr const char* graphicsDeviceListKey = "GraphicsDeviceList";
+	constexpr const char* preferredGraphicsAPIKey = "GraphicsAPI";
+	constexpr const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
+}

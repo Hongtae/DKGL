@@ -10,6 +10,8 @@
 
 #include "CommandQueue.h"
 #include "CommandBuffer.h"
+#include "GraphicsDevice.h"
+#include "SwapChain.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -28,6 +30,34 @@ CommandQueue::~CommandQueue(void)
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
+	return NULL;
+}
+
+DKObject<DKDrawable> CommandQueue::CreateDrawable(DKWindow* window)
+{
+	DKObject<Swapchain> swapChain = DKOBJECT_NEW Swapchain(this, window);
+	if (swapChain->Setup())
+	{
+		if (!this->family->IsSupportPresentation())
+		{
+			GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+			VkPhysicalDevice physicalDevice = dc->physicalDevice;
+
+			VkBool32 supported = VK_FALSE;
+			VkResult err = iproc.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, this->family->FamilyIndex(), swapChain->surface, &supported);
+			if (err != VK_SUCCESS)
+			{
+				DKLog("ERROR: vkGetPhysicalDeviceSurfaceSupportKHR failed: %s", VkResultCStr(err));
+				return NULL;
+			}
+			if (!supported)
+			{
+				DKLog("ERROR: Vulkan WSI not supported with this queue family. Try to use other queue family!");
+				return NULL;
+			}
+		}
+		return swapChain.SafeCast<DKDrawable>();
+	}
 	return NULL;
 }
 
