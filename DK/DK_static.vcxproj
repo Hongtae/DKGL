@@ -511,6 +511,7 @@
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />

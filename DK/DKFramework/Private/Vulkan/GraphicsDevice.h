@@ -8,7 +8,7 @@
 #pragma once
 #include "../GraphicsAPI.h"
 #if DKGL_USE_VULKAN
-#include <vulkan/vulkan.h>
+#include "Extensions.h"
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
 #include "QueueFamily.h"
@@ -34,10 +34,6 @@ namespace DKFramework
 				VkDevice device;
 				VkPhysicalDevice physicalDevice;
 
-				PFN_vkCreateDebugReportCallbackEXT CreateDebugReportCallback;
-				PFN_vkDestroyDebugReportCallbackEXT DestroyDebugReportCallback;
-				PFN_vkDebugReportMessageEXT DebugReportMessage;
-
 				DKString deviceName;
 
 				DKArray<QueueFamily*> queueFamilies;
@@ -46,7 +42,9 @@ namespace DKFramework
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
 
-				static const char* ErrorString(VkResult);
+				// extensions
+				InstanceProc instanceProc;
+				DeviceProc deviceProc;
 			};
 		}
 	}

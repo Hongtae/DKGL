@@ -88,9 +88,6 @@ using namespace DKFramework::Private::Vulkan;
 
 GraphicsDevice::GraphicsDevice(void)
 	: instance(NULL)
-	, CreateDebugReportCallback(NULL)
-	, DestroyDebugReportCallback(NULL)
-	, DebugReportMessage(NULL)
 	, msgCallback(NULL)
 	, enableValidation(false)
 {
@@ -106,13 +103,24 @@ GraphicsDevice::GraphicsDevice(void)
 
 	DKArray<const char*> enabledExtensions = { VK_KHR_SURFACE_EXTENSION_NAME };
 
-	// Enable surface extensions depending on os
-#if defined(_WIN32)
-	enabledExtensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(__ANDROID__)
-	enabledExtensions.Add(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#elif defined(__linux__)
+	// Enable surface extensions depending on OS
+#ifdef VK_USE_PLATFORM_XLIB_KHR
+	enabledExtensions.Add(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_XCB_KHR
 	enabledExtensions.Add(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_WAYLAND_KHR
+	enabledExtensions.Add(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_MIR_KHR
+	enabledExtensions.Add(VK_KHR_MIR_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+	enabledExtensions.Add(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+	enabledExtensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #endif
 
 	VkInstanceCreateInfo instanceCreateInfo = {};
@@ -137,24 +145,22 @@ GraphicsDevice::GraphicsDevice(void)
 	VkResult err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 	if (err != VK_SUCCESS)
 	{
-		throw std::exception((const char*)DKStringU8::Format("vkCreateInstance failed: %s", ErrorString(err)));
+		throw std::exception((const char*)DKStringU8::Format("vkCreateInstance failed: %s", VkResultCStr(err)));
 	}
+	// initialize instance extensions
+	instanceProc.Init(instance);
 
 	if (enableValidation)
 	{
-		CreateDebugReportCallback = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT"));
-		DestroyDebugReportCallback = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT"));
-		DebugReportMessage = reinterpret_cast<PFN_vkDebugReportMessageEXT>(vkGetInstanceProcAddr(instance, "vkDebugReportMessageEXT"));
-
 		VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = {};
 		dbgCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
 		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
 		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
 		
-		err = CreateDebugReportCallback(instance, &dbgCreateInfo, nullptr, &msgCallback);
+		err = instanceProc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, nullptr, &msgCallback);
 		if (err != VK_SUCCESS)
 		{
-			throw std::exception((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", ErrorString(err)));
+			throw std::exception((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", VkResultCStr(err)));
 		}
 	}
 
@@ -177,7 +183,7 @@ GraphicsDevice::GraphicsDevice(void)
 		err = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
 		if (err != VK_SUCCESS)
 		{
-			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", VkResultCStr(err)));
 		}
 		if (gpuCount == 0)
 		{
@@ -188,7 +194,7 @@ GraphicsDevice::GraphicsDevice(void)
 		err = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices);
 		if (err)
 		{
-			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", ErrorString(err)));
+			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", VkResultCStr(err)));
 		}
 		physicalDeviceList.Reserve(gpuCount);
 
@@ -404,6 +410,9 @@ GraphicsDevice::GraphicsDevice(void)
 		err = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice);
 		if (err == VK_SUCCESS)
 		{
+			// initialize device extensions
+			deviceProc.Init(logicalDevice);
+
 			this->device = logicalDevice;
 			this->physicalDevice = physicalDevice;
 			this->deviceName = desc.deviceName;
@@ -438,7 +447,7 @@ GraphicsDevice::~GraphicsDevice(void)
 	vkDeviceWaitIdle(device);
 	vkDestroyDevice(device, nullptr);
 	if (msgCallback)
-		DestroyDebugReportCallback(instance, msgCallback, nullptr);
+		instanceProc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, nullptr);
 }
 
 DKString GraphicsDevice::DeviceName(void) const
@@ -455,39 +464,6 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 			return queue;
 	}
 	return NULL;
-}
-
-const char* GraphicsDevice::ErrorString(VkResult code)
-{
-	switch (code)
-	{
-#define CASE_STR(c) case c: return #c
-		CASE_STR(VK_NOT_READY);
-		CASE_STR(VK_TIMEOUT);
-		CASE_STR(VK_EVENT_SET);
-		CASE_STR(VK_EVENT_RESET);
-		CASE_STR(VK_INCOMPLETE);
-		CASE_STR(VK_ERROR_OUT_OF_HOST_MEMORY);
-		CASE_STR(VK_ERROR_OUT_OF_DEVICE_MEMORY);
-		CASE_STR(VK_ERROR_INITIALIZATION_FAILED);
-		CASE_STR(VK_ERROR_DEVICE_LOST);
-		CASE_STR(VK_ERROR_MEMORY_MAP_FAILED);
-		CASE_STR(VK_ERROR_LAYER_NOT_PRESENT);
-		CASE_STR(VK_ERROR_EXTENSION_NOT_PRESENT);
-		CASE_STR(VK_ERROR_FEATURE_NOT_PRESENT);
-		CASE_STR(VK_ERROR_INCOMPATIBLE_DRIVER);
-		CASE_STR(VK_ERROR_TOO_MANY_OBJECTS);
-		CASE_STR(VK_ERROR_FORMAT_NOT_SUPPORTED);
-		CASE_STR(VK_ERROR_SURFACE_LOST_KHR);
-		CASE_STR(VK_ERROR_NATIVE_WINDOW_IN_USE_KHR);
-		CASE_STR(VK_SUBOPTIMAL_KHR);
-		CASE_STR(VK_ERROR_OUT_OF_DATE_KHR);
-		CASE_STR(VK_ERROR_INCOMPATIBLE_DISPLAY_KHR);
-		CASE_STR(VK_ERROR_VALIDATION_FAILED_EXT);
-		CASE_STR(VK_ERROR_INVALID_SHADER_NV);
-#undef CASE_STR
-	}
-	return "UNKNOWN_ERROR";
 }
 
 #endif //#if DKGL_USE_VULKAN
