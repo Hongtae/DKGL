@@ -19,8 +19,6 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void);
-
 			class GraphicsDevice : public DKGraphicsDeviceInterface
 			{
 			public:

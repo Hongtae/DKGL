@@ -19,8 +19,6 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void);
-
 			class GraphicsDevice : public DKGraphicsDeviceInterface
 			{
 			public:
@@ -34,8 +32,6 @@ namespace DKFramework
 				VkDevice device;
 				VkPhysicalDevice physicalDevice;
 
-				DKString deviceName;
-
 				DKArray<QueueFamily*> queueFamilies;
 				
 
@@ -45,6 +41,11 @@ namespace DKFramework
 				// extensions
 				InstanceProc instanceProc;
 				DeviceProc deviceProc;
+
+				// device properties
+				VkPhysicalDeviceProperties properties;
+				VkPhysicalDeviceFeatures features;
+				DKArray<VkExtensionProperties> extensionProperties;
 			};
 		}
 	}

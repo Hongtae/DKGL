@@ -23,8 +23,6 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void);
-
 			class GraphicsDevice : public DKGraphicsDeviceInterface
 			{
 			public:
