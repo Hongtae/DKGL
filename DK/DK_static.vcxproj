@@ -315,7 +315,7 @@
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
-    <ClCompile Include="DKFramework\Private\Vulkan\Swapchain.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
@@ -512,7 +512,7 @@
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
-    <ClInclude Include="DKFramework\Private\Vulkan\Swapchain.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />

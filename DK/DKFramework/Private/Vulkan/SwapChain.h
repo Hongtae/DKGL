@@ -1,5 +1,5 @@
 //
-//  File: Swapchain.h
+//  File: SwapChain.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
@@ -19,11 +19,11 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			class Swapchain : public DKDrawable
+			class SwapChain : public DKSwapChain
 			{
 			public:
-				Swapchain(CommandQueue*, DKWindow*);
-				~Swapchain(void);
+				SwapChain(CommandQueue*, DKWindow*);
+				~SwapChain(void);
 
 				bool Setup(void);
 

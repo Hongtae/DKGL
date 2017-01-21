@@ -14,10 +14,10 @@ namespace DKFramework
 	class DKGraphicsDevice;
 	class DKWindow;
 
-	class DKDrawable
+	class DKSwapChain
 	{
 	public:
-		virtual ~DKDrawable(void) {}
+		virtual ~DKSwapChain(void) {}
 		virtual bool Present(void) = 0;
 	};
 	/// @brief GPU command queue
@@ -27,7 +27,7 @@ namespace DKFramework
 		virtual ~DKCommandQueue(void) {}
 
 		virtual DKObject<DKCommandBuffer> CreateCommandBuffer(void) = 0;
-		virtual DKObject<DKDrawable> CreateDrawable(DKWindow*) = 0;
+		virtual DKObject<DKSwapChain> CreateSwapChain(DKWindow*) = 0;
 
 		virtual DKGraphicsDevice* Device(void) = 0;
 	};

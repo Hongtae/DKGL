@@ -480,7 +480,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\Private\Vulkan\Swapchain.cpp">
+    <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1103,7 +1103,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Vulkan\Swapchain.h">
+    <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

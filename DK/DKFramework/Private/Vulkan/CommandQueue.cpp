@@ -33,9 +33,9 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 	return NULL;
 }
 
-DKObject<DKDrawable> CommandQueue::CreateDrawable(DKWindow* window)
+DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 {
-	DKObject<Swapchain> swapChain = DKOBJECT_NEW Swapchain(this, window);
+	DKObject<SwapChain> swapChain = DKOBJECT_NEW SwapChain(this, window);
 	if (swapChain->Setup())
 	{
 		if (!this->family->IsSupportPresentation())
@@ -56,7 +56,7 @@ DKObject<DKDrawable> CommandQueue::CreateDrawable(DKWindow* window)
 				return NULL;
 			}
 		}
-		return swapChain.SafeCast<DKDrawable>();
+		return swapChain.SafeCast<DKSwapChain>();
 	}
 	return NULL;
 }

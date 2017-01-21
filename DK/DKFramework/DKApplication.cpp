@@ -2,23 +2,32 @@
 //  File: DKApplication.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "DKApplication.h"
 #include "Interface/DKApplicationInterface.h"
 
-using namespace DKFramework;
+
 namespace DKFoundation
 {
 	namespace Private
 	{
 		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
+	}
+}
 
+namespace DKFramework
+{
+	namespace Private
+	{
+		using namespace DKFoundation::Private;
 		static DKCondition appCond;
 		static DKApplication *application = NULL;
 	}
 }
+
+using namespace DKFramework;
 
 DKApplication::DKApplication(int argc, char* argv[])
 	: exitCode(0)

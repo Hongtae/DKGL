@@ -28,7 +28,7 @@ namespace DKFramework
 				~CommandQueue(void);
 
 				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
-				DKObject<DKDrawable> CreateDrawable(DKWindow*) override;
+				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 
 				DKGraphicsDevice* Device(void) override { return device; }
 

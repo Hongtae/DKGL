@@ -50,7 +50,7 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 	return NULL;
 }
 
-DKObject<DKDrawable> CommandQueue::CreateDrawable(DKWindow* window)
+DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 {
 	return NULL;
 }

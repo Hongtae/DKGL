@@ -1,5 +1,5 @@
 //
-//  File: Swapchain.cpp
+//  File: SwapChain.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
@@ -14,17 +14,17 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-Swapchain::Swapchain(CommandQueue* q, DKWindow* w)
+SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	: queue(q)
 	, window(w)
 	, surface(nullptr)
 	, swapchain(nullptr)
 	, enableVSync(false)
 {
-	window->AddEventHandler(this, DKFunction(this, &Swapchain::OnWindowEvent), nullptr, nullptr);
+	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
 }
 
-Swapchain::~Swapchain(void)
+SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
 
@@ -46,7 +46,7 @@ Swapchain::~Swapchain(void)
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 }
 
-bool Swapchain::Setup(void)
+bool SwapChain::Setup(void)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkInstance instance = dc->instance;
@@ -125,12 +125,12 @@ bool Swapchain::Setup(void)
 	return this->Update();
 }
 
-bool Swapchain::Present(void)
+bool SwapChain::Present(void)
 {
 	return false;
 }
 
-bool Swapchain::Update(void)
+bool SwapChain::Update(void)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkPhysicalDevice physicalDevice = dc->physicalDevice;
@@ -342,7 +342,7 @@ bool Swapchain::Update(void)
 	return true;
 }
 
-void Swapchain::OnWindowEvent(const DKWindow::WindowEvent& e)
+void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)
 {
 	if (e.type == DKWindow::WindowEvent::WindowResized)
 	{
