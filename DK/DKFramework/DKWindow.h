@@ -2,7 +2,7 @@
 //  File: DKWindow.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -175,10 +175,11 @@ namespace DKFramework
 		void SetTitle(const DKString&);
 		DKString Title(void) const;
 
-		/// add event handler.
+		/// Add event handler.
 		/// (a event that can be processed asynchronously, and dont need to response)
 		using EventHandlerContext = const void*;
 		void AddEventHandler(EventHandlerContext context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*);
+		/// Remove event handler.
 		void RemoveEventHandler(EventHandlerContext context);
 
 		// control keyboard state
@@ -219,6 +220,7 @@ namespace DKFramework
 		void PostWindowEvent(const WindowEvent&); ///< call window event handlers manually
 
 	private:
+		DKSharedLock eventLock;
 		DKSpinLock handlerLock;
 		DKMap<EventHandlerContext, DKObject<WindowEventHandler>> windowEventHandlers;
 		DKMap<EventHandlerContext, DKObject<KeyboardEventHandler>> keyboardEventHandlers;
@@ -230,7 +232,7 @@ namespace DKFramework
 		};
 		mutable DKMap<int, KeyboardState>		keyboardStateMap;
 		KeyboardState& GetKeyboardState(int deviceId) const;	// Get key states without lock
-		DKSpinLock keyboardLock;
+		DKSpinLock stateLock;
 
 		DKRect windowRect;		// window's origin, size (including border, system coordinates)
 		DKRect contentRect;		// content origin, size in window space (or parent view space)

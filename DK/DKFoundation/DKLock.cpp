@@ -105,7 +105,7 @@ using namespace DKFoundation::Private;
 
 DKLock::DKLock(void)
 {
-	impl = reinterpret_cast<void*>(new LockImpl);
+	impl = reinterpret_cast<void*>(new LockImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 

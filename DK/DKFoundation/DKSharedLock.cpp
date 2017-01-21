@@ -232,7 +232,7 @@ using namespace DKFoundation::Private;
 
 DKSharedLock::DKSharedLock(void)
 {
-	impl = reinterpret_cast<void*>(new SharedLockImpl);
+	impl = reinterpret_cast<void*>(new SharedLockImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 

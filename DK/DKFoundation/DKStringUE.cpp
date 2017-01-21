@@ -604,26 +604,26 @@ namespace DKFoundation
 			{
 				if (inputUnitSize == 2)
 				{
-					UIntUTF16* p2 = reinterpret_cast<UIntUTF16*>(malloc(len));
+					UIntUTF16* p2 = reinterpret_cast<UIntUTF16*>(DKMalloc(len));
 					const UIntUTF16* pc = reinterpret_cast<const UIntUTF16*>(p);
 					size_t s = len / inputUnitSize;
 					for (size_t i = 0; i < s; ++i )
 						p2[i] = DKSwitchIntegralByteOrder(pc[i]);
 
 					bool result = EncodeString(p2, len, DKStringEncoding::UTF16, outputEnc, output);
-					free(p2);
+					DKFree(p2);
 					return result;
 				}
 				else if (inputUnitSize == 4)
 				{
-					UIntUTF32* p2 = reinterpret_cast<UIntUTF32*>(malloc(len));
+					UIntUTF32* p2 = reinterpret_cast<UIntUTF32*>(DKMalloc(len));
 					const UIntUTF32* pc = reinterpret_cast<const UIntUTF32*>(p);
 					size_t s = len / inputUnitSize;
 					for (size_t i = 0; i < s; ++i )
 						p2[i] = DKSwitchIntegralByteOrder(pc[i]);
 
 					bool result = EncodeString(p2, len, DKStringEncoding::UTF32, outputEnc, output);
-					free(p2);
+					DKFree(p2);
 					return result;
 				}
 				return false;

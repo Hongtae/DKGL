@@ -168,7 +168,7 @@ using namespace DKFoundation::Private;
 
 DKCondition::DKCondition(void)
 {
-	impl = reinterpret_cast<void*>(new ConditionImpl);
+	impl = reinterpret_cast<void*>(new ConditionImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 

@@ -346,7 +346,7 @@ void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)
 {
 	if (e.type == DKWindow::WindowEvent::WindowResized)
 	{
-		this->Update();
+		//this->Update();
 	}
 }
 

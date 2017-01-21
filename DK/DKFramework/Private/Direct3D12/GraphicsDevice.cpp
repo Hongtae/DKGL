@@ -50,7 +50,7 @@ GraphicsDevice::GraphicsDevice(void)
 		}
 	}
 #endif
-	ComPtr<IDXGIFactory5> factory;
+	
 	if (FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory))))
 		throw std::exception("CreateDXGIFactory2 failed");
 

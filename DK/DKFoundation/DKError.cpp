@@ -480,7 +480,7 @@ namespace DKFoundation
 				DKCriticalSection<DKSpinLock> guard(traceLock);
 
 				// generate callstack
-				void** callstack = (void**)malloc(sizeof(void*) * maxDepth);
+				void** callstack = (void**)DKMemoryHeapAlloc(sizeof(void*) * maxDepth);
 				int numFrames = backtrace(callstack, maxDepth);
 
 				for (int i = skip; i < numFrames; ++i)
@@ -518,7 +518,7 @@ namespace DKFoundation
 
 					frames.Add(frame);
 				}
-				free(callstack);
+				DKMemoryHeapFree(callstack);
 			}
 #elif defined(__linux__)
 			void __attribute__((noinline)) TraceCallStack(int skip, int maxDepth, DKArray<DKError::StackFrame>& frames)
@@ -710,7 +710,9 @@ DKError::DKError(const DKError& e)
 DKError::~DKError(void)
 {
 	if (stackFrames)
+	{
 		delete[] stackFrames;
+	}
 }
 
 DKError& DKError::operator = (DKError&& e)

@@ -2,7 +2,7 @@
 //  File: DKWindow.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -128,7 +128,7 @@ void DKWindow::SetTextInputEnabled(int deviceId, bool enabled)
 bool DKWindow::KeyState(int deviceId, const DKVirtualKey& k) const
 {
 	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
-	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
+	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	auto p = keyboardStateMap.Find(deviceId);
 	if (p)
 	{
@@ -140,7 +140,7 @@ bool DKWindow::KeyState(int deviceId, const DKVirtualKey& k) const
 void DKWindow::SetKeyState(int deviceId, const DKVirtualKey& k, bool down)
 {
 	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
-	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
+	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	KeyboardState& state = GetKeyboardState(deviceId);
 
 	_SetUCArrayBit(state.keyStateBits, k, down);
@@ -148,7 +148,7 @@ void DKWindow::SetKeyState(int deviceId, const DKVirtualKey& k, bool down)
 
 void DKWindow::ResetKeyState(int deviceId)
 {
-	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
+	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	auto p = keyboardStateMap.Find(deviceId);
 	if (p)
 	{
@@ -159,7 +159,7 @@ void DKWindow::ResetKeyState(int deviceId)
 
 void DKWindow::ResetKeyStateForAllDevices(void)
 {
-	DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
+	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	this->keyboardStateMap.Clear();
 }
 
@@ -176,9 +176,10 @@ DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
 
 void DKWindow::PostMouseEvent(const MouseEvent& event)
 {
+	DKSharedLockReadOnlySection guard(eventLock);
 	if (this->eventLoop)
 	{
-		MouseEvent* eventCopy = ::new(DKMemoryDefaultAllocator::Alloc(sizeof(MouseEvent))) MouseEvent(event);	
+		MouseEvent* eventCopy = new MouseEvent(event);	
 
 		DKArray<DKObject<DKOperation>> operations;
 		handlerLock.Lock();
@@ -194,8 +195,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 		// delete eventCopy
 		this->eventLoop->Post(DKFunction([eventCopy]()
 		{
-			eventCopy->~MouseEvent();
-			DKMemoryDefaultAllocator::Free(eventCopy);
+			delete eventCopy;
 		})->Invocation());
 	}
 	else
@@ -218,7 +218,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 {
 	if (true)
 	{
-		DKCriticalSection<DKSpinLock> guard(this->keyboardLock);
+		DKCriticalSection<DKSpinLock> guard(this->stateLock);
 		KeyboardState& keyboard = GetKeyboardState(event.deviceId);
 
 		if (event.type == KeyboardEvent::KeyDown)
@@ -237,9 +237,10 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		}
 	}
 
+	DKSharedLockReadOnlySection guard(eventLock);
 	if (this->eventLoop)
 	{
-		KeyboardEvent* eventCopy = ::new(DKMemoryDefaultAllocator::Alloc(sizeof(KeyboardEvent))) KeyboardEvent(event);
+		KeyboardEvent* eventCopy = new KeyboardEvent(event);
 
 		DKArray<DKObject<DKOperation>> operations;
 		handlerLock.Lock();
@@ -255,8 +256,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		// delete eventCopy
 		this->eventLoop->Post(DKFunction([eventCopy]()
 		{
-			eventCopy->~KeyboardEvent();
-			DKMemoryDefaultAllocator::Free(eventCopy);
+			delete eventCopy;
 		})->Invocation());
 	}
 	else
@@ -277,62 +277,67 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 
 void DKWindow::PostWindowEvent(const WindowEvent& event)
 {
-	switch (event.type)
+	if (true)
 	{
-	case WindowEvent::WindowCreated:
-		this->windowRect = event.windowRect;
-		this->contentRect = event.contentRect;
-		this->activated = false;
-		this->visible = false;
-		DKLog("EventWindowCreated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowClosed:
-		this->activated = false;
-		this->visible = false;
-		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowDestroy (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowHidden:
-		this->activated = false;
-		this->visible = false;
-		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowHidden (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowShown:
-		this->visible = true;
-		DKLog("EventWindowShown (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowActivated:
-		this->activated = true;
-		this->visible = true;
-		DKLog("EventWindowActivated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowInactivated:
-		this->activated = false;
-		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowInactivated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowMinimized:
-		this->visible = false;
-		this->ResetKeyStateForAllDevices();
-		DKLog("EventWindowMinimized (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowMoved:
-	//	DKLog("EventWindowMoved (%.0f x %.0f)\n", contentSize.width, contentSize.height);
-		break;
-	case WindowEvent::WindowResized:
-		this->windowRect = event.windowRect;
-		this->contentRect = event.contentRect;
-		DKLog("EventWindowResized (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
-		break;
-	case WindowEvent::WindowUpdate:
-	//	DKLog("EventWindowUpdate (%.0f x %.0f)\n", contentSize.width, contentSize.height);
-		break;
+		DKCriticalSection<DKSpinLock> guard(this->stateLock);
+		switch (event.type)
+		{
+		case WindowEvent::WindowCreated:
+			this->windowRect = event.windowRect;
+			this->contentRect = event.contentRect;
+			this->activated = false;
+			this->visible = false;
+			DKLog("EventWindowCreated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowClosed:
+			this->activated = false;
+			this->visible = false;
+			this->keyboardStateMap.Clear();
+			DKLog("EventWindowDestroy (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowHidden:
+			this->activated = false;
+			this->visible = false;
+			this->keyboardStateMap.Clear();
+			DKLog("EventWindowHidden (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowShown:
+			this->visible = true;
+			DKLog("EventWindowShown (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowActivated:
+			this->activated = true;
+			this->visible = true;
+			DKLog("EventWindowActivated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowInactivated:
+			this->activated = false;
+			this->keyboardStateMap.Clear();
+			DKLog("EventWindowInactivated (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowMinimized:
+			this->visible = false;
+			this->keyboardStateMap.Clear();
+			DKLog("EventWindowMinimized (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowMoved:
+			//	DKLog("EventWindowMoved (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+			break;
+		case WindowEvent::WindowResized:
+			this->windowRect = event.windowRect;
+			this->contentRect = event.contentRect;
+			DKLog("EventWindowResized (%.0f x %.0f)\n", contentRect.size.width, contentRect.size.height);
+			break;
+		case WindowEvent::WindowUpdate:
+			//	DKLog("EventWindowUpdate (%.0f x %.0f)\n", contentSize.width, contentSize.height);
+			break;
+		}
 	}
 
+	DKSharedLockReadOnlySection guard(eventLock);
 	if (this->eventLoop)
 	{
-		WindowEvent* eventCopy = ::new(DKMemoryDefaultAllocator::Alloc(sizeof(WindowEvent))) WindowEvent(event);
+		WindowEvent* eventCopy = new WindowEvent(event);
 
 		DKArray<DKObject<DKOperation>> operations;
 		handlerLock.Lock();
@@ -348,8 +353,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 		// delete eventCopy
 		this->eventLoop->Post(DKFunction([eventCopy]()
 		{
-			eventCopy->~WindowEvent();
-			DKMemoryDefaultAllocator::Free(eventCopy);
+			delete eventCopy;
 		})->Invocation());
 	}
 	else
@@ -497,7 +501,8 @@ void DKWindow::RemoveEventHandler(EventHandlerContext context)
 {
 	if (context)
 	{
-		DKCriticalSection<DKSpinLock> guard(handlerLock);
+		DKCriticalSection<DKSharedLock> guard1(eventLock);	// to flush processing event
+		DKCriticalSection<DKSpinLock> guard2(handlerLock);
 		windowEventHandlers.Remove(context);
 		keyboardEventHandlers.Remove(context);
 		mouseEventHandlers.Remove(context);

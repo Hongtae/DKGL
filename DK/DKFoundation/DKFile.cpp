@@ -562,10 +562,10 @@ size_t DKFile::Write(DKStream* s)
 		size_t len = s->RemainLength();
 		if (len > 0)
 		{
-			void* p = DKMemoryDefaultAllocator::Alloc(len);
+			void* p = DKMalloc(len);
 			size_t numRead = s->Read(p, len);
 			size_t numWritten = this->Write(p, numRead);
-			DKMemoryDefaultAllocator::Free(p);
+			DKFree(p);
 
 			return numWritten;
 		}

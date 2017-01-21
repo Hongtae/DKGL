@@ -556,13 +556,13 @@ bool DKXmlParser::BeginHtml(const DKData* data)
 
 			if (((const char*)buffer)[bufferSize -1])		// non-null terminated
 			{
-				char* text = (char*)DKMemoryDefaultAllocator::Alloc(bufferSize + 4);
+				char* text = (char*)DKMalloc(bufferSize + 4);
 				memset(text, 0, bufferSize+4);
 				memcpy(text, buffer, bufferSize);
 
 				htmlDocPtr doc = htmlSAXParseDoc((xmlChar*)text, 0, &Private::defaultSAX2Handler, this);
 
-				DKMemoryDefaultAllocator::Free(text);
+				DKFree(text);
 
 				if (doc == NULL)
 				{

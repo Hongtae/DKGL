@@ -8,8 +8,6 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKWindow.h"
-#include "DKPoint.h"
-#include "DKSize.h"
 #include "DKFrame.h"
 
 namespace DKFramework
@@ -21,7 +19,25 @@ namespace DKFramework
 	class DKGL_API DKScreen
 	{
 	public:
-		DKScreen(void);
+		DKScreen(DKWindow*, DKFrame*);
 		~DKScreen(void);
+
+		/// Create rendering thread and start event-loop
+		void Start(void);
+		void Pause(void);
+		void Resume(void);
+		void Stop(void);
+
+		DKWindow* Window(void)		{ return window; }
+		DKFrame* RootFrame(void)	{ return rootFrame; }
+
+	private:
+		void DrawFrame(void);
+		static void EventLoopIdle(DKScreen*, DKEventLoop*);
+
+		DKObject<DKEventLoop> eventLoop;
+		DKObject<DKWindow> window;
+		DKObject<DKFrame> rootFrame;
+		DKObject<DKThread> thread;	// rendering thread
 	};
 }

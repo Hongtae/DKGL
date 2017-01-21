@@ -40,9 +40,11 @@ namespace DKFramework
 				ComPtr<ID3D12CommandList> RetrieveReusableCommandList(D3D12_COMMAND_LIST_TYPE);
 				void PurgeAllReusableCommandLists(void);
 
+				ComPtr<IDXGIFactory5> factory;
+				ComPtr<ID3D12Device1> device;
+
 			private:
 				DKString deviceName;
-				ComPtr<ID3D12Device1> device;
 				ComPtr<ID3D12CommandAllocator> dummyAllocator;
 
 				DKSpinLock					reusableItemsLock;

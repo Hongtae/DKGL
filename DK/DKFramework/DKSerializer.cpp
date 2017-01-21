@@ -187,8 +187,7 @@ DKSerializer::~DKSerializer(void)
 {
 	auto dtor = [](EntityMap::Pair& p)
 	{
-		p.value->~Entity();
-		DKMemoryDefaultAllocator::Free(p.value);
+		delete p.value;
 	};
 	entityMap.EnumerateForward(dtor);
 	entityMap.Clear();
@@ -216,7 +215,7 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 	if (s == NULL)
 		return false;
 
-	SerializerEntity* se = new (DKMemoryDefaultAllocator::Alloc(sizeof(SerializerEntity))) SerializerEntity;
+	SerializerEntity* se = new SerializerEntity();
 	se->serializer = s;
 	se->faultHandler = faultHandler;
 
@@ -226,7 +225,7 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 
 bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueValidator* validator, FaultHandler* faultHandler)
 {
-	VariantEntity *ve = new (DKMemoryDefaultAllocator::Alloc(sizeof(VariantEntity))) VariantEntity;
+	VariantEntity *ve = new VariantEntity();
 	ve->getter = getter;
 	ve->setter = setter;
 	ve->validator = validator;
@@ -238,7 +237,7 @@ bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* s
 
 bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntity* ee = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntity))) ExternalEntity;
+	ExternalEntity* ee = new ExternalEntity();
 	ee->getter = getter;
 	ee->setter = setter;
 	ee->validator = validator;
@@ -251,7 +250,7 @@ bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSet
 
 bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntityArray* ea = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntityArray))) ExternalEntityArray;
+	ExternalEntityArray* ea = new ExternalEntityArray();
 	ea->getter = getter;
 	ea->setter = setter;
 	ea->validator = validator;
@@ -264,7 +263,7 @@ bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, Extern
 
 bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntityMap* em = new (DKMemoryDefaultAllocator::Alloc(sizeof(ExternalEntityMap))) ExternalEntityMap;
+	ExternalEntityMap* em = new ExternalEntityMap();
 	em->getter = getter;
 	em->setter = setter;
 	em->validator = validator;
@@ -281,8 +280,7 @@ void DKSerializer::Unbind(const DKString& key)
 	EntityMap::Pair* p = entityMap.Find(key);
 	if (p)
 	{
-		p->value->~Entity();
-		DKMemoryDefaultAllocator::Free(p->value);
+		delete p->value;
 		entityMap.Remove(key);
 	}
 }
@@ -1569,12 +1567,12 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 		classLen = byteorder(classLen);
 		if (classLen > 0 && classLen <= s->RemainLength())
 		{
-			char* cid = (char*)malloc(classLen);
+			char* cid = (char*)DKMalloc(classLen);
 			if (s->Read(cid, classLen) == classLen)
 			{
 				classId.SetValue(cid, classLen);
 			}
-			free(cid);
+			DKFree(cid);
 		}
 		else
 			return false;
@@ -1752,12 +1750,12 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			}
 			else
 			{
-				char* tmp = (char*)malloc(keyLen);
+				char* tmp = (char*)DKMalloc(keyLen);
 				if (s->Read(tmp, keyLen) == keyLen)
 					objectKey.SetValue(tmp, keyLen);
 				else
 					error = true;
-				free(tmp);
+				DKFree(tmp);
 				if (error)	break;
 			}
 		}
@@ -1781,12 +1779,12 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			}
 			else
 			{
-				char* tmp = (char*)malloc(cKeyLen);
+				char* tmp = (char*)DKMalloc(cKeyLen);
 				if (s->Read(tmp, cKeyLen) == cKeyLen)
 					containerKey.SetValue(tmp, cKeyLen);
 				else
 					error = true;
-				free(tmp);
+				DKFree(tmp);
 				if (error) break;
 			}
 		}
@@ -1999,14 +1997,14 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 					clsLen = byteorder(clsLen);
 					if (clsLen > 0)
 					{
-						char* clsId = (char*)malloc(clsLen);
+						char* clsId = (char*)DKMalloc(clsLen);
 
 						DKString classId = L"";
 						if (s->Read(clsId, clsLen) == clsLen)
 						{
 							classId.SetValue(clsId, clsLen);
 						}
-						free(clsId);
+						DKFree(clsId);
 
 						if (classId.Length() > 0)
 						{

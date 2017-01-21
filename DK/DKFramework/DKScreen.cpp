@@ -7,12 +7,53 @@
 
 #include "DKScreen.h"
 
-using namespace DKFramework;
-
-DKScreen::DKScreen(void)
+namespace DKFramework
 {
+	namespace Private
+	{
+		class RenderEventLoop : public DKEventLoop
+		{
+		};
+	}
+}
+using namespace DKFramework;
+using namespace DKFramework::Private;
+
+DKScreen::DKScreen(DKWindow*, DKFrame*)
+{
+	eventLoop = DKOBJECT_NEW RenderEventLoop();
 }
 
 DKScreen::~DKScreen(void)
+{
+	if (thread && thread->IsAlive())
+	{
+		eventLoop->Stop();
+		thread->WaitTerminate();
+	}
+}
+
+void DKScreen::Start(void)
+{
+
+}
+
+void DKScreen::Pause(void)
+{
+}
+
+void DKScreen::Resume(void)
+{
+}
+
+void DKScreen::Stop(void)
+{
+}
+
+void DKScreen::DrawFrame(void)
+{
+}
+
+void DKScreen::EventLoopIdle(DKScreen*, DKEventLoop*)
 {
 }

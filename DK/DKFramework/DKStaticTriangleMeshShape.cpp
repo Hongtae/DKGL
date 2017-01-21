@@ -24,9 +24,9 @@ public:
 	~IndexedTriangleData(void)
 	{
 		if (vertices)
-			free(vertices);
+			DKFree(vertices);
 		if (indices)
-			free(indices);
+			DKFree(indices);
 	}
 
 	template <typename IndexType>
@@ -56,14 +56,14 @@ public:
 		this->numVertices = numVertices;
 		this->numIndices = numIndices;
 
-		this->vertices = malloc(numVertices * sizeof(DKVector3));
+		this->vertices = DKMalloc(numVertices * sizeof(DKVector3));
 		memcpy(this->vertices, vertices, numVertices * sizeof(DKVector3));
 
 		if (sizeof(IndexType) == 4 && numVertices <= 0xffff)
 		{
 			this->indexType = PHY_SHORT;
 
-			this->indices = malloc(numIndices * sizeof(unsigned short));
+			this->indices = DKMalloc(numIndices * sizeof(unsigned short));
 			for (size_t i = 0; i < numIndices; ++i)
 				reinterpret_cast<unsigned short*>(this->indices)[i] = static_cast<unsigned short>(indices[i]);
 		}
@@ -71,7 +71,7 @@ public:
 		{
 			this->indexType = (sizeof(IndexType) == 4) ? PHY_INTEGER : PHY_SHORT;
 
-			this->indices = malloc(numIndices * sizeof(IndexType));
+			this->indices = DKMalloc(numIndices * sizeof(IndexType));
 			memcpy(this->indices, indices, numIndices * sizeof(IndexType));
 		}
 

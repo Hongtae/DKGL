@@ -9,6 +9,7 @@
 #include "DKAllocatorChain.h"
 #include "DKSpinLock.h"
 #include "DKCriticalSection.h"
+#include "DKMemory.h"
 
 namespace DKFoundation
 {
@@ -79,6 +80,14 @@ namespace DKFoundation
 				ScopedSpinLock guard(lock);
 				this->refCount--;
 				return this->refCount;
+			}
+			void* operator new (size_t s)
+			{
+				return DKMemoryHeapAlloc(s);
+			}
+			void operator delete (void* p) noexcept
+			{
+				DKMemoryHeapFree(p);
 			}
 		};
 		Chain* Chain::instance;
@@ -170,11 +179,10 @@ DKAllocatorChain::Maintainer::~Maintainer(void) noexcept(!DKGL_MEMORY_DEBUG)
 
 void* DKAllocatorChain::operator new (size_t s)
 {
-	return ::malloc(s);
+	return DKMemoryHeapAlloc(s);
 }
 
 void DKAllocatorChain::operator delete (void* p) noexcept
 {
-	::free(p);
+	DKMemoryHeapFree(p);
 }
-

@@ -79,6 +79,14 @@ namespace DKFoundation
 					static AllocationTable* table = NULL;
 					return table;
 				}
+				void* operator new (size_t s)
+				{
+					return DKMemoryHeapAlloc(s);
+				}
+				void operator delete (void* p) noexcept
+				{
+					DKMemoryHeapFree(p);
+				}
 			};
 
 			AllocationNode& GetAllocationNode(void* ptr)

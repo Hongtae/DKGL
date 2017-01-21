@@ -12,6 +12,7 @@
 #include "CommandBuffer.h"
 #include "CommandAllocator.h"
 #include "GraphicsDevice.h"
+#include "SwapChain.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
@@ -52,6 +53,12 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 
 DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 {
+	DKObject<SwapChain> swapChain = DKOBJECT_NEW SwapChain(this, window);
+	if (swapChain->Setup())
+	{
+
+		return swapChain.SafeCast<DKSwapChain>();
+	}
 	return NULL;
 }
 
@@ -81,11 +88,6 @@ UINT64 CommandQueue::EnqueuedCounterValue(void)
 {
 	DKCriticalSection<DKSpinLock> guard(queueLock);
 	return fenceCounter;
-}
-
-ID3D12Fence* CommandQueue::Fence(void)
-{
-	return fence.Get();
 }
 
 #endif //#if DKGL_USE_DIRECT3D

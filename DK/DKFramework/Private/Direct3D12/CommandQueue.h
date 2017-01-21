@@ -39,13 +39,13 @@ namespace DKFramework
 
 				UINT64 EnqueuedCounterValue(void);
 
-				ID3D12Fence* Fence(void);
+
+				ComPtr<ID3D12CommandQueue> queue;
+				ComPtr<ID3D12Fence> fence;
 
 			private:
 				DKObject<DKGraphicsDevice> device;
-				ComPtr<ID3D12CommandQueue> queue;
 
-				ComPtr<ID3D12Fence> fence;
 				UINT64 fenceCounter;
 				DKSpinLock queueLock;
 			};

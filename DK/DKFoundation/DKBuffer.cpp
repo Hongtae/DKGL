@@ -177,13 +177,13 @@ namespace DKFoundation
 			int len = xmlNanoHTTPContentLength(ctxt);
 			if (len > 0)
 			{
-				void* buffer = DKMemoryDefaultAllocator::Alloc(len);
+				void* buffer = DKMalloc(len);
 				int recv = xmlNanoHTTPRead(ctxt, buffer, len); // download
 				if (recv == len)
 				{
 					data = DKBuffer::Create(buffer, len, alloc);
 				}
-				DKMemoryDefaultAllocator::Free(buffer);
+				DKFree(buffer);
 			}
 			xmlNanoHTTPClose(ctxt);
 			xmlNanoHTTPCleanup();
@@ -210,7 +210,7 @@ namespace DKFoundation
 
 			size_t	bufferSize = 4096;
 			size_t	received = 0;
-			char*	buffer = (char*)DKMemoryDefaultAllocator::Alloc(bufferSize);
+			char*	buffer = (char*)DKMalloc(bufferSize);
 
 			while (true)
 			{
@@ -229,7 +229,7 @@ namespace DKFoundation
 				if (received + 100 > bufferSize)
 				{
 					bufferSize += 4096;
-					char* tmp = (char*)DKMemoryDefaultAllocator::Realloc(buffer, bufferSize);
+					char* tmp = (char*)DKRealloc(buffer, bufferSize);
 					if (tmp == NULL)
 					{
 						DKLog("Warning: Out of memory!\n");
@@ -238,7 +238,7 @@ namespace DKFoundation
 					buffer = tmp;
 				}
 			}
-			DKMemoryDefaultAllocator::Free(buffer);
+			DKFree(buffer);
 
 			xmlNanoFTPClose(ctxt);
 			xmlNanoFTPCleanup();
@@ -393,7 +393,7 @@ DKObject<DKBuffer> DKBuffer::Compress(const void* p, size_t len, DKCompressor co
 			prefs.frameInfo.contentSize = len;
 
 			size_t bufferSize = LZ4F_compressFrameBound(len, &prefs);
-			void* compressed = DKMemoryDefaultAllocator::Alloc(bufferSize);
+			void* compressed = DKMalloc(bufferSize);
 			size_t compressedSize = LZ4F_compressFrame(compressed, bufferSize, p, len, &prefs);
 			if (LZ4F_isError(compressedSize))
 			{
@@ -403,18 +403,18 @@ DKObject<DKBuffer> DKBuffer::Compress(const void* p, size_t len, DKCompressor co
 			{
 				result = DKBuffer::Create(compressed, compressedSize, alloc);
 			}
-			DKMemoryDefaultAllocator::Free(compressed);
+			DKFree(compressed);
 		}
 		else if (compressor == DKCompressor::Deflate)
 		{
 			int compressLevel = 9;	// Z_DEFAULT_COMPRESSION is 6
 			uLongf compressedSize = len + (len / 10) + 100;
-			void* compressed = DKMemoryDefaultAllocator::Alloc(compressedSize);
+			void* compressed = DKMalloc(compressedSize);
 			if (compress2((Bytef*)compressed, &compressedSize, (const Bytef*)p, len, compressLevel) == Z_OK)
 			{
 				result = DKBuffer::Create(compressed, compressedSize, alloc);
 			}
-			DKMemoryDefaultAllocator::Free(compressed);
+			DKFree(compressed);
 		}
 	}
 	return result;
@@ -456,7 +456,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 			}
 			else
 			{
-				uint8_t* outData = (uint8_t*)DKMemoryDefaultAllocator::Alloc(COMPRESS_DEFAULT_BLOCK);
+				uint8_t* outData = (uint8_t*)DKMalloc(COMPRESS_DEFAULT_BLOCK);
 
 				uint32_t header;
 				size_t decoded = 0;
@@ -487,7 +487,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 							if (outSize > 0)
 							{
 								decoded += outSize;
-								uint8_t* tmp = (uint8_t*)DKMemoryDefaultAllocator::Realloc(outData, decoded + COMPRESS_DEFAULT_BLOCK);
+								uint8_t* tmp = (uint8_t*)DKRealloc(outData, decoded + COMPRESS_DEFAULT_BLOCK);
 								if (tmp == NULL)
 								{
 									DKLog("Decompress Error: Out of memory!");
@@ -524,7 +524,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 					result = DKBuffer::Create(outData, decoded, alloc);
 				}
 
-				DKMemoryDefaultAllocator::Free(outData);
+				DKFree(outData);
 
 				errorCode = LZ4F_freeDecompressionContext(ctxt);
 				if (LZ4F_isError(errorCode))
@@ -539,7 +539,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 			uLongf outputLength = COMPRESS_DEFAULT_BLOCK;
 
 			Bytef* inputSource = (Bytef*)p;
-			Bytef* output = (Bytef*)DKMemoryDefaultAllocator::Alloc(outputLength);
+			Bytef* output = (Bytef*)DKMalloc(outputLength);
 			uLongf inputLength = len;
 
 			z_stream stream;
@@ -565,7 +565,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 					}
 					else if (err == Z_OK)
 					{
-						Bytef* tmp = (Bytef*)DKMemoryDefaultAllocator::Realloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
+						Bytef* tmp = (Bytef*)DKRealloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
 						if (tmp == NULL)
 						{
 							DKLog("Decompress Error: OUT OF MEMORY!");
@@ -579,7 +579,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 				}
 				inflateEnd(&stream);
 			}
-			DKMemoryDefaultAllocator::Free(output);
+			DKFree(output);
 		}
 	}
 	return result;

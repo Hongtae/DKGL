@@ -230,7 +230,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			ftBitmap.num_grays	= 256; 
 			ftBitmap.pixel_mode	= FT_PIXEL_MODE_GRAY; 
 			size_t bufferSize = ftBitmap.pitch * ftBitmap.rows;
-			ftBitmap.buffer		= (unsigned char*)DKMemoryDefaultAllocator::Alloc(bufferSize);
+			ftBitmap.buffer		= (unsigned char*)DKMalloc(bufferSize);
 			memset(ftBitmap.buffer, 0, bufferSize);
 
 			FT_Outline_Translate(&ftOutline, -x_shift, -y_shift);
@@ -243,7 +243,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.rect);
 			}
 
-			DKMemoryDefaultAllocator::Free(ftBitmap.buffer);
+			DKFree(ftBitmap.buffer);
 			ftBitmap.buffer = NULL;
 			FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &ftBitmap);
 			FT_Outline_Done(Private::FTLibrary::GetLibrary(), &ftOutline);
@@ -330,7 +330,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 	DKObject<DKTexture2D> tex = NULL;
 
-	char* buff = (char*)DKMemoryDefaultAllocator::Alloc(width * height);
+	char* buff = (char*)DKMalloc(width * height);
 	for (int i = 0; i < height; i++)
 	{
 		memcpy(&buff[i * width] , &((char*)data)[(height - i -1) * width], width);
@@ -368,10 +368,10 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 		int newTexHeight = Height() + padding;
 
-		void* initialData = DKMemoryDefaultAllocator::Alloc(newTexWidth * newTexHeight);
+		void* initialData = DKMalloc(newTexWidth * newTexHeight);
 		memset(initialData, 0, newTexWidth * newTexHeight);
 		tex = DKTexture2D::Create(newTexWidth, newTexHeight, DKTexture::FormatR8, DKTexture::TypeUnsignedByte, initialData);
-		DKMemoryDefaultAllocator::Free(initialData);
+		DKFree(initialData);
 
 		rect = DKRect(0,0,width,height);
 		tex->SetPixelData(rect, buff);
@@ -379,7 +379,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 		GlyphTextureAtlas gta = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
 		textures.Add(gta);
 	}
-	DKMemoryDefaultAllocator::Free(buff);
+	DKFree(buff);
 	numGlyphsLoaded++;
 
 	return tex;

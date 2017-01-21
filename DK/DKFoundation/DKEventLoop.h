@@ -92,8 +92,12 @@ namespace DKFoundation
 		virtual void Stop(void);
 		
 		/// Blocks the current thread until an active event arrives.
+		/// However, the arrival of an active event does not guarantee immediate
+		/// processing of the event, and the Event-Loop must go to the next loop.
         void WaitNextLoop(void);
 		/// Blocks the current thread until an active event arrives or times out.
+		/// However, the arrival of an active event does not guarantee immediate
+		/// processing of the event, and the Event-Loop must go to the next loop.
 		bool WaitNextLoopTimeout(double t);
 		/// Retrieves the delay before the next event begins.
 		/// @return A positive value indicates a delay before the next event.

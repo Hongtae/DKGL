@@ -173,7 +173,7 @@ DKStringW::DKStringW(DKUniChar8 c)
 DKStringW::~DKStringW(void)
 {
 	if (stringData)
-		DKMemoryDefaultAllocator::Free(stringData);
+		DKFree(stringData);
 }
 
 DKStringW DKStringW::Format(const DKUniChar8* fmt, ...)
@@ -321,13 +321,13 @@ DKStringW DKStringW::Right(long index) const
 		if (count < 0)
 			count = 0;
 
-		DKUniCharW* tmp = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len+1) * sizeof(DKUniCharW));
+		DKUniCharW* tmp = (DKUniCharW*)DKMalloc((len+1) * sizeof(DKUniCharW));
 		memset(tmp, 0, sizeof(DKUniCharW) * (len+1));
 		wcsncpy(tmp, &stringData[index], count);
 
 		string = tmp;
 
-		DKMemoryDefaultAllocator::Free(tmp);
+		DKFree(tmp);
 	}
 	return string;
 }
@@ -341,13 +341,13 @@ DKStringW DKStringW::Left(size_t count) const
 		if (count > len)
 			count = len;
 
-		DKUniCharW* tmp = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len+1) * sizeof(DKUniCharW));
+		DKUniCharW* tmp = (DKUniCharW*)DKMalloc((len+1) * sizeof(DKUniCharW));
 		memset(tmp, 0 , sizeof(DKUniCharW) * (len+1));
 		wcsncpy(tmp, stringData, count);
 
 		string = tmp;
 
-		DKMemoryDefaultAllocator::Free(tmp);
+		DKFree(tmp);
 	}
 	return string;
 }
@@ -362,13 +362,13 @@ DKStringW DKStringW::Mid(long index, size_t count) const
 
 	if (count > 0 && index + count < len)
 	{
-		DKUniCharW* buff = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((count+1) * sizeof(DKUniCharW));
+		DKUniCharW* buff = (DKUniCharW*)DKMalloc((count+1) * sizeof(DKUniCharW));
 		wcsncpy(buff, &stringData[index], count);
 		buff[count] = 0;
 
 		string = buff;
 
-		DKMemoryDefaultAllocator::Free(buff);
+		DKFree(buff);
 	}
 	else
 	{
@@ -381,7 +381,7 @@ DKStringW DKStringW::LowercaseString(void) const
 {
 	if (stringData)
 	{
-		DKUniCharW *buff = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((Length()+1) * sizeof(DKUniCharW));
+		DKUniCharW *buff = (DKUniCharW*)DKMalloc((Length()+1) * sizeof(DKUniCharW));
 		int i;
 		for (i = 0 ; stringData[i] != 0; ++i)
 		{
@@ -390,7 +390,7 @@ DKStringW DKStringW::LowercaseString(void) const
 		buff[i] = 0;
 
 		DKStringW ret = buff;
-		DKMemoryDefaultAllocator::Free(buff);
+		DKFree(buff);
 		return ret;
 	}
 	return DKStringW(L"");			
@@ -400,7 +400,7 @@ DKStringW DKStringW::UppercaseString(void) const
 {
 	if (stringData)
 	{
-		DKUniCharW *buff = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((Length()+1) * sizeof(DKUniCharW));
+		DKUniCharW *buff = (DKUniCharW*)DKMalloc((Length()+1) * sizeof(DKUniCharW));
 		int i;
 		for (i = 0 ; stringData[i] != 0; ++i)
 		{
@@ -409,7 +409,7 @@ DKStringW DKStringW::UppercaseString(void) const
 		buff[i] = 0;
 
 		DKStringW ret = buff;
-		DKMemoryDefaultAllocator::Free(buff);
+		DKFree(buff);
 		return ret;
 	}
 	return DKStringW(L"");			
@@ -458,7 +458,7 @@ int DKStringW::Replace(const DKUniCharW c1, const DKUniCharW c2)
 		else
 		{
 			size_t len = Length();
-			DKUniCharW* tmp = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len+1) * sizeof(DKUniCharW));
+			DKUniCharW* tmp = (DKUniCharW*)DKMalloc((len+1) * sizeof(DKUniCharW));
 			size_t tmpLen = 0;
 			for (size_t i = 0; stringData[i]; ++i)
 			{
@@ -469,7 +469,7 @@ int DKStringW::Replace(const DKUniCharW c1, const DKUniCharW c2)
 			}
 			tmp[tmpLen] = 0;
 			this->SetValue(tmp, tmpLen);
-			DKMemoryDefaultAllocator::Free(tmp);
+			DKFree(tmp);
 		}
 	}
 	return result;
@@ -523,7 +523,7 @@ DKStringW& DKStringW::Insert(long index, const DKUniCharW* str)
 	int newStrLen = (int)wcslen(str);
 	if (newStrLen)
 	{
-		DKUniCharW* tmp = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len + newStrLen + 4) * sizeof(DKUniCharW));
+		DKUniCharW* tmp = (DKUniCharW*)DKMalloc((len + newStrLen + 4) * sizeof(DKUniCharW));
 		memset(tmp, 0, sizeof(DKUniCharW) * (len + newStrLen + 4));
 		if (index > 0)
 		{
@@ -534,7 +534,7 @@ DKStringW& DKStringW::Insert(long index, const DKUniCharW* str)
 
 		this->SetValue(tmp);
 
-		DKMemoryDefaultAllocator::Free(tmp);;
+		DKFree(tmp);
 	}
 	return *this;
 }
@@ -665,7 +665,7 @@ DKStringW& DKStringW::RemoveWhitespaces(long begin, long count)
 	if (count <= 0)
 		return *this;
 
-	DKUniCharW* buffer = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((count+2) * sizeof(DKUniCharW));
+	DKUniCharW* buffer = (DKUniCharW*)DKMalloc((count+2) * sizeof(DKUniCharW));
 	size_t bufferIndex = 0;
 
 	for (long i = 0; i < count; i++)
@@ -679,7 +679,7 @@ DKStringW& DKStringW::RemoveWhitespaces(long begin, long count)
 
 	DKStringW tmp = DKStringW(buffer) + Right(begin + count);
 
-	DKMemoryDefaultAllocator::Free(buffer);
+	DKFree(buffer);
 
 	return *this = tmp;
 }
@@ -729,7 +729,7 @@ DKStringW& DKStringW::Append(const DKUniCharW* str, size_t len)
 
 		if (totalLen > 0)
 		{
-			DKUniCharW* buff = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len1 + len2 + 1) * sizeof(DKUniCharW));
+			DKUniCharW* buff = (DKUniCharW*)DKMalloc((len1 + len2 + 1) * sizeof(DKUniCharW));
 			memset(buff, 0, sizeof(DKUniCharW) * (len1 + len2 + 1));
 
 			if (stringData && stringData[0])
@@ -742,7 +742,7 @@ DKStringW& DKStringW::Append(const DKUniCharW* str, size_t len)
 			//wcscat_s(pNewBuff, nLen+nLen2+4, str);
 
 			if (stringData)
-				DKMemoryDefaultAllocator::Free(stringData);
+				DKFree(stringData);
 			stringData = buff;
 		}
 	}
@@ -769,14 +769,14 @@ DKStringW& DKStringW::SetValue(const DKStringW& str)
 		return *this;
 
 	if (this->stringData)
-		DKMemoryDefaultAllocator::Free(this->stringData);
+		DKFree(this->stringData);
 	this->stringData = NULL;
 
 	size_t len = str.Length();
 	if (len > 0)
 	{
 		DKASSERT_DEBUG(str.stringData != NULL);
-		this->stringData = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len+1) * sizeof(DKUniCharW));
+		this->stringData = (DKUniCharW*)DKMalloc((len+1) * sizeof(DKUniCharW));
 		wcscpy(this->stringData, str.stringData);
 	}
 	return *this;
@@ -801,13 +801,13 @@ DKStringW& DKStringW::SetValue(const DKUniCharW* str, size_t len)
 
 		if (len > 0)
 		{
-			buff = (DKUniCharW*)DKMemoryDefaultAllocator::Alloc((len+1) * sizeof(DKUniCharW));
+			buff = (DKUniCharW*)DKMalloc((len+1) * sizeof(DKUniCharW));
 			memcpy(buff, str, len * sizeof(DKUniCharW));
 			buff[len] = NULL;
 		}
 	}
 	if (stringData)
-		DKMemoryDefaultAllocator::Free(stringData);
+		DKFree(stringData);
 	stringData = buff;
 
 	return *this;
@@ -835,7 +835,7 @@ DKStringW& DKStringW::operator = (DKStringW&& str)
 	if (this != &str)
 	{
 		if (stringData)
-			DKMemoryDefaultAllocator::Free(stringData);
+			DKFree(stringData);
 
 		stringData = str.stringData;
 		str.stringData = NULL;

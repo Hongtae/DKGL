@@ -108,9 +108,9 @@ namespace DKFoundation
 
 					if (readBytes > 0)
 					{
-						void* tmp = DKMemoryDefaultAllocator::Alloc(readBytes);
+						void* tmp = DKMalloc(readBytes);
 						unzReadCurrentFile(handle, tmp, readBytes);
-						DKMemoryDefaultAllocator::Free(tmp);
+						DKFree(tmp);
 					}
 					return GetPos();
 				}

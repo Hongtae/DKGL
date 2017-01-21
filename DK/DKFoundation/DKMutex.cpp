@@ -136,7 +136,7 @@ using namespace DKFoundation::Private;
 
 DKMutex::DKMutex(void)
 {
-	impl = reinterpret_cast<void*>(new MutexImpl);
+	impl = reinterpret_cast<void*>(new MutexImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 

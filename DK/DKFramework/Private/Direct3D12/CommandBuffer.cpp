@@ -64,7 +64,7 @@ bool CommandBuffer::Commit(void)
 		static_assert(sizeof(ComPtr<ID3D12CommandList>) == sizeof(ID3D12CommandList*), "");
 
 		UINT64 enqueued = commandQueue->Enqueue(reinterpret_cast<ID3D12CommandList * const *>(lists), numLists);
-		this->commandAllocator->SetPendingState(commandQueue->Fence(), enqueued);
+		this->commandAllocator->SetPendingState(commandQueue->fence.Get(), enqueued);
 		return true;
 	}
 	return false;

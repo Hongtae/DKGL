@@ -62,7 +62,7 @@ namespace DKFramework
 					LPCWSTR subBlockPVer = L"\\StringFileInfo\\040904b0\\ProductVersion";
 					DKString prdName, prdVersion;
 
-					void* buffer = DKMemoryDefaultAllocator::Alloc(bufferSize);
+					void* buffer = DKMalloc(bufferSize);
 					do
 					{
 						if (!GetFileVersionInfoW(L"kernel32.dll", NULL, bufferSize, buffer))
@@ -83,7 +83,7 @@ namespace DKFramework
 						version = std::move(prdVersion);
 						result = true;
 					} while (0);
-					DKMemoryDefaultAllocator::Free(buffer);
+					DKFree(buffer);
 				}
 				return result;
 			}

@@ -460,11 +460,11 @@ DKString Window::Title(void) const
 	int len = ::GetWindowTextLengthW(hWnd);
 	if (len > 0)
 	{
-		wchar_t* title = (wchar_t*)DKMemoryDefaultAllocator::Alloc(sizeof(wchar_t)* (len + 2));
+		wchar_t* title = (wchar_t*)DKMalloc(sizeof(wchar_t)* (len + 2));
 		len = ::GetWindowTextW(hWnd, title, len + 1);
 		title[len] = 0;
 		ret = title;
-		DKMemoryDefaultAllocator::Free(title);
+		DKFree(title);
 	}
 	return ret;
 }
@@ -1000,12 +1000,12 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							long textLength = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, 0, 0);
 							if (textLength)
 							{
-								unsigned char *tmp = (unsigned char*)DKMemoryDefaultAllocator::Alloc(textLength + 4);
+								unsigned char *tmp = (unsigned char*)DKMalloc(textLength + 4);
 								memset(tmp, 0, textLength + 4);
 
 								ImmGetCompositionStringW(hIMC, GCS_COMPSTR, tmp, textLength + 2);
 								DKString compositionText((const wchar_t*)tmp);
-								DKMemoryDefaultAllocator::Free(tmp);
+								DKFree(tmp);
 
 								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, compositionText });
 								//	DKLog("WM_IME_COMPOSITION: '%ls'\n", strInputCandidate));
@@ -1045,14 +1045,14 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						for (UINT i = 0; i < numFiles; ++i)
 						{
 							UINT len = DragQueryFileW(hd, i, NULL, 0);
-							LPWSTR file = (LPWSTR)malloc(sizeof(WCHAR) * (len + 2));
+							LPWSTR file = (LPWSTR)DKMalloc(sizeof(WCHAR) * (len + 2));
 
 							UINT r = DragQueryFileW(hd, i, file, len + 1);
 							file[r] = 0;
 
 							fileNames.Add(file);
 
-							free(file);
+							DKFree(file);
 						}
 						if (fileNames.Count() > 0)
 						{

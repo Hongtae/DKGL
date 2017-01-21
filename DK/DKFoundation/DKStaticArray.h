@@ -180,19 +180,19 @@ namespace DKFoundation
 					size_t right = count - left;
 					if (right < left)
 					{
-						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * right);
+						void* tmp = DKMalloc(sizeof(VALUE) * right);
 						memcpy(tmp, std::addressof(data[left]), sizeof(VALUE) * right);
 						memmove(std::addressof(data[right]), data, sizeof(VALUE) * left);
 						memcpy(data, tmp, sizeof(VALUE) * right);
-						DKMemoryDefaultAllocator::Free(tmp);
+						DKFree(tmp);
 					}
 					else
 					{
-						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * left);
+						void* tmp = DKMalloc(sizeof(VALUE) * left);
 						memcpy(tmp, data, sizeof(VALUE) * left);
 						memmove(data, std::addressof(data[left]), sizeof(VALUE) * right);
 						memcpy(std::addressof(data[right]), tmp, sizeof(VALUE) * left);
-						DKMemoryDefaultAllocator::Free(tmp);
+						DKFree(tmp);
 					}
 #endif
 				}
