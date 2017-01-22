@@ -849,11 +849,11 @@ DKWorld::DKWorld(void)
 : context(NULL)
 , ambientColor(0, 0, 0)
 {
-	context = new CollisionWorldContext();
-	context->configuration = new btDefaultCollisionConfiguration();
-	context->dispatcher = new btCollisionDispatcher(context->configuration);
-	context->broadphase = new btDbvtBroadphase();
-	context->world = new btCollisionWorld(context->dispatcher, context->broadphase, context->configuration);
+	context = DKRawPtrNew<CollisionWorldContext>();
+	context->configuration = DKRawPtrNew<btDefaultCollisionConfiguration>();
+	context->dispatcher = DKRawPtrNew<btCollisionDispatcher>(context->configuration);
+	context->broadphase = DKRawPtrNew<btDbvtBroadphase>();
+	context->world = DKRawPtrNew<btCollisionWorld>(context->dispatcher, context->broadphase, context->configuration);
 	context->solver = NULL;
 	context->tick = 0;
 	context->internalTick = 0;
@@ -864,7 +864,7 @@ DKWorld::DKWorld(void)
 	DKASSERT_DEBUG(context->configuration);
 	DKASSERT_DEBUG(context->world);
 
-//	context->world->setDebugDrawer(new ShapeDrawer);
+//	context->world->setDebugDrawer(DKRawPtrNew<ShapeDrawer>());
 	context->world->setForceUpdateAllAabbs(false);
 }
 
@@ -879,7 +879,7 @@ DKWorld::DKWorld(CollisionWorldContext* ctxt)
 	DKASSERT_DEBUG(context->world);
 	context->tick = 0;
 	context->internalTick = 0;
-//	context->world->setDebugDrawer(new ShapeDrawer);
+//	context->world->setDebugDrawer(DKRawPtrNew<ShapeDrawer>());
 }
 
 DKWorld::~DKWorld(void)
@@ -892,25 +892,14 @@ DKWorld::~DKWorld(void)
 	btIDebugDraw* drawer = context->world->getDebugDrawer();
 	context->world->setDebugDrawer(NULL);
 
-	if (context->world)
-		delete context->world;
-	if (context->solver)
-		delete context->solver;
-	if (context->broadphase)
-		delete context->broadphase;
-	if (context->dispatcher)
-		delete context->dispatcher;
-	if (context->configuration)
-		delete context->configuration;
+	DKRawPtrDelete(context->world);
+	DKRawPtrDelete(context->solver);
+	DKRawPtrDelete(context->broadphase);
+	DKRawPtrDelete(context->dispatcher);
+	DKRawPtrDelete(context->configuration);
 
-	context->world = NULL;
-	context->solver = NULL;
-	context->broadphase = NULL;
-	context->dispatcher = NULL;
-	context->configuration = NULL;
-
-	delete context;
-	delete drawer;
+	DKRawPtrDelete(context);
+	DKRawPtrDelete(drawer);
 }
 
 void DKWorld::Update(double tickDelta, DKTimeTick tick)

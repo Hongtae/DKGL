@@ -187,7 +187,7 @@ DKSerializer::~DKSerializer(void)
 {
 	auto dtor = [](EntityMap::Pair& p)
 	{
-		delete p.value;
+		DKRawPtrDelete(p.value);
 	};
 	entityMap.EnumerateForward(dtor);
 	entityMap.Clear();
@@ -215,7 +215,7 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 	if (s == NULL)
 		return false;
 
-	SerializerEntity* se = new SerializerEntity();
+	SerializerEntity* se = DKRawPtrNew<SerializerEntity>();
 	se->serializer = s;
 	se->faultHandler = faultHandler;
 
@@ -225,7 +225,7 @@ bool DKSerializer::Bind(const DKString& key, DKSerializer* s, FaultHandler* faul
 
 bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueValidator* validator, FaultHandler* faultHandler)
 {
-	VariantEntity *ve = new VariantEntity();
+	VariantEntity *ve = DKRawPtrNew<VariantEntity>();
 	ve->getter = getter;
 	ve->setter = setter;
 	ve->validator = validator;
@@ -237,7 +237,7 @@ bool DKSerializer::Bind(const DKString& key, ValueGetter* getter, ValueSetter* s
 
 bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSetter* setter, ExternalValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntity* ee = new ExternalEntity();
+	ExternalEntity* ee = DKRawPtrNew<ExternalEntity>();
 	ee->getter = getter;
 	ee->setter = setter;
 	ee->validator = validator;
@@ -250,7 +250,7 @@ bool DKSerializer::Bind(const DKString& key, ExternalGetter* getter, ExternalSet
 
 bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, ExternalArraySetter* setter, ExternalArrayValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntityArray* ea = new ExternalEntityArray();
+	ExternalEntityArray* ea = DKRawPtrNew<ExternalEntityArray>();
 	ea->getter = getter;
 	ea->setter = setter;
 	ea->validator = validator;
@@ -263,7 +263,7 @@ bool DKSerializer::Bind(const DKString& key, ExternalArrayGetter* getter, Extern
 
 bool DKSerializer::Bind(const DKString& key, ExternalMapGetter* getter, ExternalMapSetter* setter, ExternalMapValidator* validator, ExternalResource ext, FaultHandler* faultHandler)
 {
-	ExternalEntityMap* em = new ExternalEntityMap();
+	ExternalEntityMap* em = DKRawPtrNew<ExternalEntityMap>();
 	em->getter = getter;
 	em->setter = setter;
 	em->validator = validator;
@@ -280,7 +280,7 @@ void DKSerializer::Unbind(const DKString& key)
 	EntityMap::Pair* p = entityMap.Find(key);
 	if (p)
 	{
-		delete p->value;
+		DKRawPtrDelete(p->value);
 		entityMap.Remove(key);
 	}
 }

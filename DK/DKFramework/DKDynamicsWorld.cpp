@@ -59,12 +59,12 @@ namespace DKFramework
 
 		CollisionWorldContext* CreateDynamicsWorldContext(void)
 		{
-			CollisionWorldContext* ctxt = new CollisionWorldContext;
-			ctxt->configuration = new btDefaultCollisionConfiguration();
-			ctxt->dispatcher = new CollisionDispatcher(ctxt->configuration);
-			ctxt->broadphase = new btDbvtBroadphase();
-			ctxt->solver = new btSequentialImpulseConstraintSolver();
-			ctxt->world = new btDiscreteDynamicsWorld(ctxt->dispatcher, ctxt->broadphase, ctxt->solver, ctxt->configuration);
+			CollisionWorldContext* ctxt = DKRawPtrNew<CollisionWorldContext>();
+			ctxt->configuration = DKRawPtrNew<btDefaultCollisionConfiguration>();
+			ctxt->dispatcher = DKRawPtrNew<CollisionDispatcher>(ctxt->configuration);
+			ctxt->broadphase = DKRawPtrNew<btDbvtBroadphase>();
+			ctxt->solver = DKRawPtrNew<btSequentialImpulseConstraintSolver>();
+			ctxt->world = DKRawPtrNew<btDiscreteDynamicsWorld>(ctxt->dispatcher, ctxt->broadphase, ctxt->solver, ctxt->configuration);
 			ctxt->tick = 0;
 			return ctxt;
 		}
@@ -108,7 +108,7 @@ DKDynamicsWorld::DKDynamicsWorld(void)
 	world->setInternalTickCallback((btInternalTickCallback)DKDynamicsWorld::PreTickCallback, this, true);
 	world->setInternalTickCallback((btInternalTickCallback)DKDynamicsWorld::PostTickCallback, this, false);
 
-	ActionInterface* act = new ActionInterface();
+	ActionInterface* act = DKRawPtrNew<ActionInterface>();
 	act->updater = DKFunction(this, &DKDynamicsWorld::UpdateActions);
 	this->actionInterface = act;
 	world->addAction(this->actionInterface);	
@@ -129,7 +129,7 @@ DKDynamicsWorld::~DKDynamicsWorld(void)
 
 	DKASSERT_DEBUG(world->getNumConstraints() == 0);
 
-	delete this->actionInterface;
+	DKRawPtrDelete(this->actionInterface);
 }
 
 void DKDynamicsWorld::PreTickCallback(void* world, float delta)

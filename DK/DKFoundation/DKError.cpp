@@ -701,7 +701,7 @@ DKError::DKError(const DKError& e)
 	if (e.numFrames > 0)
 	{
 		this->numFrames = e.numFrames;
-		this->stackFrames = new StackFrame[this->numFrames];
+		this->stackFrames = DKRawPtrNewArray<StackFrame>(this->numFrames);
 		for (size_t i = 0; i < this->numFrames; ++i)
 			this->stackFrames[i] = e.stackFrames[i];
 	}
@@ -709,10 +709,7 @@ DKError::DKError(const DKError& e)
 
 DKError::~DKError(void)
 {
-	if (stackFrames)
-	{
-		delete[] stackFrames;
-	}
+	DKRawPtrDeleteArray(stackFrames, numFrames);
 }
 
 DKError& DKError::operator = (DKError&& e)
@@ -750,9 +747,7 @@ DKError& DKError::operator = (const DKError& e)
 		this->description = e.description;
 		this->threadId = e.threadId;
 
-		if (this->stackFrames)
-			delete[] stackFrames;
-
+		DKRawPtrDeleteArray(stackFrames, numFrames);
 		this->numFrames = 0;
 		this->stackFrames = NULL;
 
@@ -760,7 +755,7 @@ DKError& DKError::operator = (const DKError& e)
 		if (e.numFrames > 0)
 		{
 			this->numFrames = e.numFrames;
-			this->stackFrames = new StackFrame[this->numFrames];
+			this->stackFrames = DKRawPtrNewArray<StackFrame>(this->numFrames);
 			for (size_t i = 0; i < this->numFrames; ++i)
 				this->stackFrames[i] = e.stackFrames[i];
 		}
@@ -831,9 +826,7 @@ size_t DKError::CopyStackFrames(StackFrame* s, size_t maxCount) const
 
 size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 {
-	if (stackFrames)
-		delete[] stackFrames;
-
+	DKRawPtrDeleteArray(stackFrames, numFrames);
 	numFrames = 0;
 	stackFrames = NULL;
 	threadId = DKThread::CurrentThreadId();
@@ -850,7 +843,7 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 	numFrames = sf.Count();
 	if (numFrames > 0)
 	{
-		stackFrames = new StackFrame[numFrames];
+		stackFrames = DKRawPtrNewArray<StackFrame>(numFrames);
 		StackFrame* frames = (StackFrame*)sf;
 		try
 		{
@@ -861,9 +854,8 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 		}
 		catch (...)
 		{
+			DKRawPtrDeleteArray(stackFrames, numFrames);
 			numFrames = 0;
-			if (stackFrames)
-				delete[] stackFrames;
 			DKLog("[%s] CRITICAL-ERROR: unknown error occurred while copying frame data.\n", DKGL_FUNCTION_NAME);
 		}
 	}
@@ -1104,7 +1096,7 @@ void DKError::DumpUnexpectedError(Private::UnexpectedError* e)
 		StackFrame* frames = (StackFrame*)e->callstack;
 
 		err.numFrames = e->callstack.Count();
-		err.stackFrames = new StackFrame[err.numFrames];
+		err.stackFrames = DKRawPtrNewArray<StackFrame>(err.numFrames);
 		for (size_t i = 0; i < err.numFrames; ++i)
 			err.stackFrames[i] = frames[i];
 	}

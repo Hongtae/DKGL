@@ -47,7 +47,7 @@ DKWindow::~DKWindow(void)
 	if (impl)
 	{
 		impl->Destroy();
-		delete impl;
+		DKRawPtrDelete(impl);
 	}
 }
 
@@ -106,7 +106,7 @@ void DKWindow::Close(void)
 	if (impl)
 	{
 		impl->Destroy();
-		delete impl;
+		DKRawPtrDelete(impl);
 	}
 	impl = NULL;
 	this->callback = Callback();
@@ -179,7 +179,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 	DKSharedLockReadOnlySection guard(eventLock);
 	if (this->eventLoop)
 	{
-		MouseEvent* eventCopy = new MouseEvent(event);	
+		MouseEvent* eventCopy = DKRawPtrNew<MouseEvent>(event);	
 
 		DKArray<DKObject<DKOperation>> operations;
 		handlerLock.Lock();
@@ -195,7 +195,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 		// delete eventCopy
 		this->eventLoop->Post(DKFunction([eventCopy]()
 		{
-			delete eventCopy;
+			DKRawPtrDelete(eventCopy);
 		})->Invocation());
 	}
 	else
@@ -240,7 +240,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 	DKSharedLockReadOnlySection guard(eventLock);
 	if (this->eventLoop)
 	{
-		KeyboardEvent* eventCopy = new KeyboardEvent(event);
+		KeyboardEvent* eventCopy = DKRawPtrNew<KeyboardEvent>(event);
 
 		DKArray<DKObject<DKOperation>> operations;
 		handlerLock.Lock();
@@ -256,7 +256,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		// delete eventCopy
 		this->eventLoop->Post(DKFunction([eventCopy]()
 		{
-			delete eventCopy;
+			DKRawPtrDelete(eventCopy);
 		})->Invocation());
 	}
 	else
@@ -337,7 +337,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 	DKSharedLockReadOnlySection guard(eventLock);
 	if (this->eventLoop)
 	{
-		WindowEvent* eventCopy = new WindowEvent(event);
+		WindowEvent* eventCopy = DKRawPtrNew<WindowEvent>(event);
 
 		DKArray<DKObject<DKOperation>> operations;
 		handlerLock.Lock();
@@ -353,7 +353,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 		// delete eventCopy
 		this->eventLoop->Post(DKFunction([eventCopy]()
 		{
-			delete eventCopy;
+			DKRawPtrDelete(eventCopy);
 		})->Invocation());
 	}
 	else

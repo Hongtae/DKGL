@@ -105,14 +105,14 @@ using namespace DKFoundation::Private;
 
 DKLock::DKLock(void)
 {
-	impl = reinterpret_cast<void*>(new LockImpl());
+	impl = reinterpret_cast<void*>(DKRawPtrNew<LockImpl>());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
 DKLock::~DKLock(void)
 {
 	DKASSERT_DEBUG(impl != NULL);
-	delete reinterpret_cast<LockImpl*>(impl);
+	DKRawPtrDelete(reinterpret_cast<LockImpl*>(impl));
 }
 
 void DKLock::Lock(void) const

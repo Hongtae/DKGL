@@ -272,7 +272,7 @@ bool DKAnimation::AddSamplingNode(const DKString& name, const DKTransformUnit* f
 		return false;
 	if (frames && numFrames > 0)
 	{
-		SamplingNode* node = new (DKMalloc(sizeof(SamplingNode))) SamplingNode();
+		SamplingNode* node = DKRawPtrNew<SamplingNode>();
 		node->name = name;
 		node->frames.Add(frames, numFrames);
 		nodeIndexMap.Update(node->name, nodes.Add(node)); // add new node, and update indexes.
@@ -290,7 +290,7 @@ bool DKAnimation::AddKeyframeNode(const DKString& name,
 		return false;
 	if ((scaleKeys && numSk > 0) || (rotationKeys && numRk > 0) || (translationKeys && numTk > 0))
 	{
-		KeyframeNode* node = new (DKMalloc(sizeof(KeyframeNode))) KeyframeNode();
+		KeyframeNode* node = DKRawPtrNew<KeyframeNode>();
 		node->name = name;
 		 // filter by time in scale of 0.0 ~ 1.0, and sort, copy frames.
 		node->scaleKeys = ClipKeyframeTimeScale(scaleKeys, numSk);
@@ -317,8 +317,7 @@ void DKAnimation::RemoveNode(const DKString& name)
 		size_t index = indexPtr->value;
 		Node* n = nodes.Value(index);
 		nodes.Remove(index);
-		n->~Node();
-		DKFree(n);
+		DKRawPtrDelete(n);
 	}
 	nodeIndexMap.Remove(name);
 }
@@ -328,8 +327,7 @@ void DKAnimation::RemoveAllNodes(void)
 	for (size_t i = 0; i < nodes.Count(); ++i)
 	{
 		Node* n = nodes.Value(i);
-		n->~Node();
-		DKFree(n);
+		DKRawPtrDelete(n);
 	}
 	nodes.Clear();
 	nodeIndexMap.Clear();

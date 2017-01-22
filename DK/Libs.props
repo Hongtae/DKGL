@@ -24,7 +24,7 @@ MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(C
       <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src;Libs/Vulkan/include</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PreprocessorDefinitions>NOMINMAX;DKGL_OPERATOR_NEW;VK_USE_PLATFORM_WIN32_KHR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;VK_USE_PLATFORM_WIN32_KHR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/$(PlatformTarget)</AdditionalLibraryDirectories>

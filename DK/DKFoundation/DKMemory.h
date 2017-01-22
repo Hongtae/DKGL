@@ -7,6 +7,7 @@
 
 #pragma once
 #include "../DKInclude.h"
+#include "DKTypes.h"
 
 namespace DKFoundation
 {
@@ -153,5 +154,103 @@ namespace DKFoundation
 	FORCEINLINE void DKFree(void* p)
 	{
 		DKMemoryDefaultAllocator::Free(p);
+	}
+
+	namespace Private
+	{
+		template <typename T> struct AllocationOperatorTest
+		{
+			template <typename U> static auto _HasOperatorNew(decltype(&U::operator new))->DKTrue;
+			template <typename U> static auto _HasOperatorNew(...)->DKFalse;
+			template <typename U> static auto _HasOperatorNewArray(decltype(&U::operator new[]))->DKTrue;
+			template <typename U> static auto _HasOperatorNewArray(...)->DKFalse;
+			template <typename U> static auto _HasOperatorDelete(decltype(&U::operator delete))->DKTrue;
+			template <typename U> static auto _HasOperatorDelete(...)->DKFalse;
+			template <typename U> static auto _HasOperatorDeleteArray(decltype(&U::operator delete[]))->DKTrue;
+			template <typename U> static auto _HasOperatorDeleteArray(...)->DKFalse;
+
+			enum { HasOperatorNew = decltype(_HasOperatorNew<T>(0))::Value };
+			enum { HasOperatorNewArray = decltype(_HasOperatorNewArray<T>(0))::Value };
+			enum { HasOperatorDelete = decltype(_HasOperatorDelete<T>(0))::Value };
+			enum { HasOperatorDeleteArray = decltype(_HasOperatorDeleteArray<T>(0))::Value };
+		};
+
+	}
+	template <typename T, typename... Args>
+	inline T* DKRawPtrNew(Args&&... args)
+	{
+		if (Private::AllocationOperatorTest<T>::HasOperatorNew)
+			return new T(std::forward<Args>(args)...);
+
+		void* p = DKMalloc(sizeof(T));
+		if (p)
+		{
+			try {
+				return ::new(p) T(std::forward<Args>(args)...); 
+			} catch (...) {
+				DKFree(p);
+				throw;
+			}
+		}
+		throw std::bad_alloc();
+	}
+	template <typename T>
+	inline T* DKRawPtrNewArray(size_t num)
+	{
+		if (Private::AllocationOperatorTest<T>::HasOperatorNewArray)
+			return new T[num];
+
+		if (num > 0)
+		{
+			void* p = DKMalloc(sizeof(T) * num);
+			if (p)
+			{
+				T* ptr = (T*)p;
+				size_t initialized = 0;
+				try {
+					for (initialized = 0; initialized < num; ++initialized)
+					{
+						::new(std::addressof(ptr[initialized])) T();
+					}
+				} catch(...) {
+					for (size_t i = 0; i < initialized; ++i)
+					{
+						ptr[i].~T();
+					}
+					DKFree(p);
+					throw;
+				}
+			}
+		}
+		throw std::bad_alloc();
+	}
+	template <typename T>
+	inline void DKRawPtrDelete(T* p)
+	{
+		if (Private::AllocationOperatorTest<T>::HasOperatorDelete)
+			delete p;
+		else if (p)
+		{
+			void* addr = DKTypeBaseAddressCast(p);
+			p->~T();
+			DKFree(addr);
+		}
+	}
+	template <typename T>
+	inline void DKRawPtrDeleteArray(T* p, size_t num)
+	{
+		if (Private::AllocationOperatorTest<T>::HasOperatorDeleteArray)
+			delete[] p;
+		else if (p)
+		{
+			if (num > 0)
+			{
+				for (size_t i = 0; i < num; ++i)
+				{
+					p[i].~T();
+				}
+			}
+			DKFree(p);
+		}
 	}
 }

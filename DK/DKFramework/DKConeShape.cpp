@@ -16,10 +16,10 @@ namespace DKFramework
 		{
 			switch (up)
 			{
-			case DKConeShape::UpAxis::Left:		return new btConeShapeX(radius, height); break;
-			case DKConeShape::UpAxis::Forward:	return new btConeShapeZ(radius, height); break;
+			case DKConeShape::UpAxis::Left:		return DKRawPtrNew<btConeShapeX>(radius, height); break;
+			case DKConeShape::UpAxis::Forward:	return DKRawPtrNew<btConeShapeZ>(radius, height); break;
 			}
-			return new btConeShape(radius, height);
+			return DKRawPtrNew<btConeShape>(radius, height);
 		}
 	}
 }

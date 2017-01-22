@@ -116,8 +116,8 @@ bool DKRigidBody::ResetObject(DKCollisionShape* shape, const ObjectData& data)
 }
 
 DKRigidBody::DKRigidBody(const DKString& name)
-: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0, 0, 0))
-, motionState(new btDefaultMotionState())
+: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
+, motionState(DKRawPtrNew<btDefaultMotionState>())
 {
 	SetName(name);
 	btRigidBody* body = btRigidBody::upcast(this->impl);
@@ -128,8 +128,8 @@ DKRigidBody::DKRigidBody(const DKString& name)
 }
 
 DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass)
-: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0, 0, 0))
-, motionState(new btDefaultMotionState())
+: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
+, motionState(DKRawPtrNew<btDefaultMotionState>())
 {
 	if (shape)
 	{
@@ -157,8 +157,8 @@ DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass)
 }
 
 DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass, const DKVector3& inertia)
-: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0, 0, 0))
-, motionState(new btDefaultMotionState())
+: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
+, motionState(DKRawPtrNew<btDefaultMotionState>())
 {
 	btCollisionShape* cs = NULL;
 	if (shape)
@@ -175,8 +175,8 @@ DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass, const DKVector3& i
 }
 
 DKRigidBody::DKRigidBody(DKCollisionShape* shape, const ObjectData& data)
-: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0, 0, 0))
-, motionState(new btDefaultMotionState())
+: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
+, motionState(DKRawPtrNew<btDefaultMotionState>())
 {
 	bool b = ResetObject(shape, data);
 	DKASSERT_DEBUG(b);
@@ -189,10 +189,10 @@ DKRigidBody::~DKRigidBody(void)
 	DKASSERT_DEBUG(rb->getUserPointer() == this);
 	DKASSERT_DEBUG(rb->getNumConstraintRefs() == 0);
 
-	delete impl;
+	DKRawPtrDelete(impl);
 	impl = NULL;
 
-	delete motionState;
+	DKRawPtrDelete(motionState);
 	motionState = NULL;
 }
 

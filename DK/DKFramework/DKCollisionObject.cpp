@@ -12,18 +12,18 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKCollisionObject::DKCollisionObject(void)
-: DKModel(TypeCollision)
-, objectType(CollisionObject)
-, impl(new btCollisionObject())
+	: DKModel(TypeCollision)
+	, objectType(CollisionObject)
+	, impl(DKRawPtrNew<btCollisionObject>())
 {
 	impl->setUserPointer(this);
 	this->SetCollisionShape(NULL);
 }
 
 DKCollisionObject::DKCollisionObject(ObjectType t, btCollisionObject* co)
-: DKModel(TypeCollision)
-, objectType(t)
-, impl(co)
+	: DKModel(TypeCollision)
+	, objectType(t)
+	, impl(co)
 {
 	impl->setUserPointer(this);
 	this->SetCollisionShape(NULL);
@@ -34,7 +34,7 @@ DKCollisionObject::~DKCollisionObject(void)
 	if (impl)
 	{
 		DKASSERT_DEBUG(impl->getUserPointer() == this);
-		delete impl;
+		DKRawPtrDelete(impl);
 	}
 }
 

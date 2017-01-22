@@ -22,7 +22,7 @@ namespace DKFramework
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void)
 			{
-				return new GraphicsDevice();
+				return DKRawPtrNew<GraphicsDevice>();
 			}
 		}
 	}
@@ -246,7 +246,7 @@ CommandAllocator* GraphicsDevice::RetrieveReusableCommandAllocator(D3D12_COMMAND
 		return NULL;
 	}
 
-	return new CommandAllocator(commandAllocator.Get(), type);
+	return DKRawPtrNew<CommandAllocator>(commandAllocator.Get(), type);
 }
 
 void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
@@ -254,7 +254,7 @@ void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
 	{
-		delete allocator;
+		DKRawPtrDelete(allocator);
 	});
 	this->reusableCommandAllocators.Clear();
 }

@@ -65,7 +65,7 @@ auto DispatchSyncOnMain(Fn&& fn) -> typename DKFunctionType<Fn>::ReturnType
 #pragma mark - DKWindowInterface
 DKWindowInterface* DKWindowInterface::CreateInterface(DKWindow* win)
 {
-	return new Window(win);
+	return DKRawPtrNew<Window>(win);
 }
 
 #pragma mark - Window implementation

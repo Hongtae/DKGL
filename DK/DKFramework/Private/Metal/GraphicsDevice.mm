@@ -20,7 +20,7 @@ namespace DKFramework
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void)
 			{
-				return new GraphicsDevice();
+				return DKRawPtrNew<GraphicsDevice>();
 			}
 		}
 	}

@@ -136,14 +136,14 @@ using namespace DKFoundation::Private;
 
 DKMutex::DKMutex(void)
 {
-	impl = reinterpret_cast<void*>(new MutexImpl());
+	impl = reinterpret_cast<void*>(DKRawPtrNew<MutexImpl>());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
 DKMutex::~DKMutex(void)
 {
 	DKASSERT_DEBUG(impl != NULL);
-	delete reinterpret_cast<MutexImpl*>(impl);
+	DKRawPtrDelete(reinterpret_cast<MutexImpl*>(impl));
 }
 
 void DKMutex::Lock(void) const

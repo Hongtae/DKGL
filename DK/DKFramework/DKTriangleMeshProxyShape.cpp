@@ -82,7 +82,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKTriangleMeshProxyShape::DKTriangleMeshProxyShape(void)
-: DKConcaveShape(ShapeType::Custom, new TriangleMeshProxyShape(this))
+: DKConcaveShape(ShapeType::Custom, DKRawPtrNew<TriangleMeshProxyShape>(this))
 {
 }
 

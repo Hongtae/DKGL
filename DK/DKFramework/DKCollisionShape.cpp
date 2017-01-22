@@ -35,7 +35,7 @@ DKCollisionShape::~DKCollisionShape(void)
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
-	delete impl;
+	DKRawPtrDelete(impl);
 }
 
 DKAabb DKCollisionShape::Aabb(const DKNSTransform& transform) const
