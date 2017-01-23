@@ -372,6 +372,11 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 	}
 }
 
+void DKWindow::FlushAllEvents(void)
+{
+	DKCriticalSection<DKSharedLock> guard(eventLock);
+}
+
 void DKWindow::ShowMouse(int deviceId, bool bShow)
 {
 	if (impl)
@@ -501,8 +506,7 @@ void DKWindow::RemoveEventHandler(EventHandlerContext context)
 {
 	if (context)
 	{
-		DKCriticalSection<DKSharedLock> guard1(eventLock);	// to flush processing event
-		DKCriticalSection<DKSpinLock> guard2(handlerLock);
+		DKCriticalSection<DKSpinLock> guard(handlerLock);
 		windowEventHandlers.Remove(context);
 		keyboardEventHandlers.Remove(context);
 		mouseEventHandlers.Remove(context);

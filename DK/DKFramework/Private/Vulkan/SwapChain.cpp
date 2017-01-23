@@ -27,6 +27,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
+	window->FlushAllEvents();
 
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkInstance instance = dc->instance;

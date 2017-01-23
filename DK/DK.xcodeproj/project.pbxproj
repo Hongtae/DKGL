@@ -1261,6 +1261,18 @@
 		84F970181B4D711C00BA24E4 /* DKTriangleMeshBvh.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F970101B4D711200BA24E4 /* DKTriangleMeshBvh.h */; };
 		84FA82F7166F64150014115F /* DKActionController.h in Headers */ = {isa = PBXBuildFile; fileRef = 84FA82F2166F64150014115F /* DKActionController.h */; };
 		84FA82F8166F64150014115F /* DKActionController.h in Headers */ = {isa = PBXBuildFile; fileRef = 84FA82F2166F64150014115F /* DKActionController.h */; };
+		84FCF17E1E3693D000DF9386 /* CommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DCE1E1592830013DD29 /* CommandBuffer.h */; };
+		84FCF17F1E3693D000DF9386 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DCF1E1592830013DD29 /* CommandBuffer.mm */; };
+		84FCF1801E3693D000DF9386 /* CommandQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DD01E1592830013DD29 /* CommandQueue.h */; };
+		84FCF1811E3693D000DF9386 /* CommandQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DD11E1592830013DD29 /* CommandQueue.mm */; };
+		84FCF1821E3693D100DF9386 /* CommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DCE1E1592830013DD29 /* CommandBuffer.h */; };
+		84FCF1831E3693D100DF9386 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DCF1E1592830013DD29 /* CommandBuffer.mm */; };
+		84FCF1841E3693D100DF9386 /* CommandQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DD01E1592830013DD29 /* CommandQueue.h */; };
+		84FCF1851E3693D100DF9386 /* CommandQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DD11E1592830013DD29 /* CommandQueue.mm */; };
+		84FCF1861E3693D200DF9386 /* CommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DCE1E1592830013DD29 /* CommandBuffer.h */; };
+		84FCF1871E3693D200DF9386 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DCF1E1592830013DD29 /* CommandBuffer.mm */; };
+		84FCF1881E3693D200DF9386 /* CommandQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DD01E1592830013DD29 /* CommandQueue.h */; };
+		84FCF1891E3693D200DF9386 /* CommandQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DD11E1592830013DD29 /* CommandQueue.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2190,6 +2202,13 @@
 		84F9700F1B4D711200BA24E4 /* DKTriangleMeshBvh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshBvh.cpp; sourceTree = "<group>"; };
 		84F970101B4D711200BA24E4 /* DKTriangleMeshBvh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKTriangleMeshBvh.h; sourceTree = "<group>"; };
 		84FA82F2166F64150014115F /* DKActionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKActionController.h; sourceTree = "<group>"; };
+		84FCF1601E3693A800DF9386 /* SwapChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwapChain.cpp; sourceTree = "<group>"; };
+		84FCF1611E3693A800DF9386 /* SwapChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwapChain.h; sourceTree = "<group>"; };
+		84FCF1641E3693B500DF9386 /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
+		84FCF1651E3693B500DF9386 /* QueueFamily.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QueueFamily.cpp; sourceTree = "<group>"; };
+		84FCF1661E3693B500DF9386 /* QueueFamily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueueFamily.h; sourceTree = "<group>"; };
+		84FCF1671E3693B500DF9386 /* SwapChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwapChain.cpp; sourceTree = "<group>"; };
+		84FCF1681E3693B500DF9386 /* SwapChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwapChain.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2460,6 +2479,11 @@
 		66DA89811DD30BC100338015 /* Vulkan */ = {
 			isa = PBXGroup;
 			children = (
+				84FCF1641E3693B500DF9386 /* Extensions.h */,
+				84FCF1651E3693B500DF9386 /* QueueFamily.cpp */,
+				84FCF1661E3693B500DF9386 /* QueueFamily.h */,
+				84FCF1671E3693B500DF9386 /* SwapChain.cpp */,
+				84FCF1681E3693B500DF9386 /* SwapChain.h */,
 				844324051E19525D00FD6B53 /* CommandBuffer.cpp */,
 				844324061E19525D00FD6B53 /* CommandBuffer.h */,
 				844324011E1950D700FD6B53 /* CommandQueue.cpp */,
@@ -2613,6 +2637,8 @@
 		8497052C1E28CD2200E34F5C /* Direct3D12 */ = {
 			isa = PBXGroup;
 			children = (
+				84FCF1601E3693A800DF9386 /* SwapChain.cpp */,
+				84FCF1611E3693A800DF9386 /* SwapChain.h */,
 				849705181E28CD0E00E34F5C /* CommandAllocator.cpp */,
 				849705191E28CD0E00E34F5C /* CommandAllocator.h */,
 				8497051A1E28CD0E00E34F5C /* CommandBuffer.cpp */,
@@ -3001,6 +3027,7 @@
 				840CA5CD1928952800689BB6 /* DKLinearTransform2.h in Headers */,
 				8436CDEB1928A78900F18892 /* DKMutex.h in Headers */,
 				84F970061B4C26C400BA24E4 /* DKTriangleMesh.h in Headers */,
+				84FCF1821E3693D100DF9386 /* CommandBuffer.h in Headers */,
 				8436CE011928A78900F18892 /* DKStack.h in Headers */,
 				840CA59B1928952800689BB6 /* DKBoxShape.h in Headers */,
 				840CA5BE1928952800689BB6 /* DKGearConstraint.h in Headers */,
@@ -3098,6 +3125,7 @@
 				840CA5AC1928952800689BB6 /* DKConeTwistConstraint.h in Headers */,
 				840CA6341928952800689BB6 /* DKVector4.h in Headers */,
 				840CA6181928952800689BB6 /* DKSpline.h in Headers */,
+				84FCF1841E3693D100DF9386 /* CommandQueue.h in Headers */,
 				840CA5FF1928952800689BB6 /* DKRigidBody.h in Headers */,
 				8436CDF31928A78900F18892 /* DKQueue.h in Headers */,
 				8436CDBC1928A78900F18892 /* DKArray.h in Headers */,
@@ -3209,6 +3237,7 @@
 				84798C8D19E51E96009378A6 /* DKAllocator.h in Headers */,
 				84798C4D19E51E7F009378A6 /* DKLinearTransform3.h in Headers */,
 				84798C7F19E51E80009378A6 /* DKVariant.h in Headers */,
+				84FCF1861E3693D200DF9386 /* CommandBuffer.h in Headers */,
 				84A6A3AA1ADFFBDE001C1778 /* DKAllocatorChain.h in Headers */,
 				84798CAD19E51E96009378A6 /* DKObjectRefCounter.h in Headers */,
 				84798C5419E51E7F009378A6 /* DKModel.h in Headers */,
@@ -3274,6 +3303,7 @@
 				84798C4419E51E7F009378A6 /* DKGearConstraint.h in Headers */,
 				84798C3519E51E7F009378A6 /* DKCollisionObject.h in Headers */,
 				84798C7D19E51E80009378A6 /* DKTransform.h in Headers */,
+				84FCF1881E3693D200DF9386 /* CommandQueue.h in Headers */,
 				84798C7219E51E80009378A6 /* DKSphere.h in Headers */,
 				84798C2A19E51E7F009378A6 /* DKAnimationController.h in Headers */,
 				84798CB119E51E96009378A6 /* DKQueue.h in Headers */,
@@ -3386,6 +3416,7 @@
 				84211D181665E89700B9B9A2 /* DKColor.h in Headers */,
 				84211D191665E89700B9B9A2 /* DKCompoundShape.h in Headers */,
 				84211D1A1665E89700B9B9A2 /* DKConeShape.h in Headers */,
+				84FCF17E1E3693D000DF9386 /* CommandBuffer.h in Headers */,
 				84211D1B1665E89700B9B9A2 /* DKConeTwistConstraint.h in Headers */,
 				84211D1C1665E89700B9B9A2 /* DKConstraint.h in Headers */,
 				84211D1D1665E89700B9B9A2 /* DKConvexHullShape.h in Headers */,
@@ -3451,6 +3482,7 @@
 				84211D641665E89700B9B9A2 /* DKVertexStream.h in Headers */,
 				84211D651665E89700B9B9A2 /* DKVKey.h in Headers */,
 				84211D671665E89700B9B9A2 /* DKWindow.h in Headers */,
+				84FCF1801E3693D000DF9386 /* CommandQueue.h in Headers */,
 				84211E0A1665EB4400B9B9A2 /* DKConcaveShape.h in Headers */,
 				84211E0E1665EB4400B9B9A2 /* DKConvexShape.h in Headers */,
 				84211E121665EB4400B9B9A2 /* DKPolyhedralConvexShape.h in Headers */,
@@ -4142,6 +4174,7 @@
 				840CA62D1928952800689BB6 /* DKVariant.cpp in Sources */,
 				8436CE0D1928A78900F18892 /* DKTimer.cpp in Sources */,
 				840CA5FE1928952800689BB6 /* DKRigidBody.cpp in Sources */,
+				84FCF1831E3693D100DF9386 /* CommandBuffer.mm in Sources */,
 				840CA5E31928952800689BB6 /* DKPlane.cpp in Sources */,
 				840CA6151928952800689BB6 /* DKSphereShape.cpp in Sources */,
 				840CA61D1928952800689BB6 /* DKStaticTriangleMeshShape.cpp in Sources */,
@@ -4231,6 +4264,7 @@
 				8436CE1F1928A78900F18892 /* DKZipArchiver.cpp in Sources */,
 				840CA5B31928952800689BB6 /* DKCylinderShape.cpp in Sources */,
 				840CA5BB1928952800689BB6 /* DKFrame.cpp in Sources */,
+				84FCF1851E3693D100DF9386 /* CommandQueue.mm in Sources */,
 				840CA6271928952800689BB6 /* DKTextureSampler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4264,6 +4298,7 @@
 				84798BF619E51E48009378A6 /* DKSerializer.cpp in Sources */,
 				84798BD419E51E48009378A6 /* DKGeneric6DofConstraint.cpp in Sources */,
 				84798BA219E51DFB009378A6 /* DKEventLoop.cpp in Sources */,
+				84FCF1891E3693D200DF9386 /* CommandQueue.mm in Sources */,
 				84798BD119E51E48009378A6 /* DKFont.cpp in Sources */,
 				84798BA119E51DFB009378A6 /* DKRational.cpp in Sources */,
 				84798BAD19E51DFB009378A6 /* DKUuid.cpp in Sources */,
@@ -4362,6 +4397,7 @@
 				84798B9319E51DFB009378A6 /* DKDataStream.cpp in Sources */,
 				84798BC419E51E48009378A6 /* DKCapsuleShape.cpp in Sources */,
 				84798BA619E51DFB009378A6 /* DKStringU8.cpp in Sources */,
+				84FCF1871E3693D200DF9386 /* CommandBuffer.mm in Sources */,
 				84798C0619E51E48009378A6 /* DKTextureSampler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4395,6 +4431,7 @@
 				84211B791665E7FD00B9B9A2 /* DKBoxShape.cpp in Sources */,
 				84211B7B1665E7FD00B9B9A2 /* DKCamera.cpp in Sources */,
 				840C3E36178D396E00F57A8D /* DKSpinLock.cpp in Sources */,
+				84FCF1811E3693D000DF9386 /* CommandQueue.mm in Sources */,
 				84211B7D1665E7FD00B9B9A2 /* DKCapsuleShape.cpp in Sources */,
 				840C3E3E178D396E00F57A8D /* DKXmlDocument.cpp in Sources */,
 				84211B811665E7FD00B9B9A2 /* DKCollisionShape.cpp in Sources */,
@@ -4493,6 +4530,7 @@
 				840C3E24178D396E00F57A8D /* DKDataStream.cpp in Sources */,
 				84C907D0171445A500F62F3C /* DKGearConstraint.cpp in Sources */,
 				840C3E20178D396E00F57A8D /* DKBuffer.cpp in Sources */,
+				84FCF17F1E3693D000DF9386 /* CommandBuffer.mm in Sources */,
 				840C3E34178D396E00F57A8D /* DKEventLoopTimer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

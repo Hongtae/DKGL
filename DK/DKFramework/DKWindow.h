@@ -179,7 +179,9 @@ namespace DKFramework
 		/// (a event that can be processed asynchronously, and dont need to response)
 		using EventHandlerContext = const void*;
 		void AddEventHandler(EventHandlerContext context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*);
-		/// Remove event handler.
+		/// Remove the event handler. However, the event being processed will be delivered.
+		/// To wait for all events to finish processing, call FlushAllEvents().
+		/// This is especially useful when you want to call this function from an object's destructor.
 		void RemoveEventHandler(EventHandlerContext context);
 
 		// control keyboard state
@@ -219,6 +221,9 @@ namespace DKFramework
 		void PostKeyboardEvent(const KeyboardEvent&); ///< call keyboard event handlers manually
 		void PostWindowEvent(const WindowEvent&); ///< call window event handlers manually
 
+		/// Wait until all pending events have been completed.
+		/// Never call this function within an event handler's callback function.
+		void FlushAllEvents(void);
 	private:
 		DKSharedLock eventLock;
 		DKSpinLock handlerLock;

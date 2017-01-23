@@ -24,6 +24,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
+	window->FlushAllEvents();
 }
 
 bool SwapChain::Setup(void)
