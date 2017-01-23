@@ -36,95 +36,94 @@ bool AppEventLoop::Run(void)
 	{
 		running = true;
 
-		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-		// initialize multi-threading mode
-		if ([NSThread isMultiThreaded] == NO)
-		{
-			NSThread *thread = [[[NSThread alloc] init] autorelease];
-			[thread start];
-		}
-
-		lock.Lock();
-		runLoop = CFRunLoopGetCurrent();
-		CFRetain(runLoop);
-		lock.Unlock();
-
-		NSApplication* app = [NSApplication sharedApplication];
-
-		id appDelegate = nil;
-
 		@autoreleasepool {
-			DKPropertySet& config = DKPropertySet::SystemConfig();
-			Class appDelegateClass = nil;
-			for (const char* key : {PSKEY_APP_DELEGATE, "AppDelegate"})
+			// initialize multi-threading mode
+			if ([NSThread isMultiThreaded] == NO)
 			{
-				if (config.HasValue(key))
+				NSThread *thread = [[[NSThread alloc] init] autorelease];
+				[thread start];
+			}
+
+			lock.Lock();
+			runLoop = CFRunLoopGetCurrent();
+			CFRetain(runLoop);
+			lock.Unlock();
+
+			NSApplication* app = [NSApplication sharedApplication];
+
+			id appDelegate = nil;
+
+			@autoreleasepool {
+				DKPropertySet& config = DKPropertySet::SystemConfig();
+				Class appDelegateClass = nil;
+				for (const char* key : {PSKEY_APP_DELEGATE, "AppDelegate"})
 				{
-					const DKVariant& var = config.Value(key);
-					if (var.ValueType() == DKVariant::TypeString)
+					if (config.HasValue(key))
 					{
-						DKStringU8 className = DKStringU8(var.String());
-						appDelegateClass = NSClassFromString([NSString stringWithUTF8String:(const char*)className]);
-						if (appDelegateClass)
-							break;
+						const DKVariant& var = config.Value(key);
+						if (var.ValueType() == DKVariant::TypeString)
+						{
+							DKStringU8 className = DKStringU8(var.String());
+							appDelegateClass = NSClassFromString([NSString stringWithUTF8String:(const char*)className]);
+							if (appDelegateClass)
+								break;
+						}
 					}
 				}
+				if (appDelegateClass)
+					appDelegate = [[appDelegateClass alloc] init];
 			}
-			if (appDelegateClass)
-				appDelegate = [[appDelegateClass alloc] init];
+
+			if (appDelegate)
+				app.delegate = appDelegate;
+
+			NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+
+			// install notification observers.
+			NSArray* observers =
+			@[
+			  [center addObserverForName:NSSystemClockDidChangeNotification
+								  object:nil
+								   queue:nil
+							  usingBlock:^(NSNotification *note) {
+								  this->DispatchAndInstallTimer();
+							  }]
+			  ];
+
+			// initialize DKApplication instance.
+			@autoreleasepool {
+				DKApplicationInterface::AppInitialize(appInstance);
+			}
+			if (running)
+			{
+				CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+					this->DispatchAndInstallTimer();
+				});
+				[app run];
+			}
+			// finalize DKApplication instance.
+			@autoreleasepool {
+				DKApplicationInterface::AppFinalize(appInstance);
+			}
+
+			// uninstall observer
+			for (id ob in observers)
+				[center removeObserver:ob];
+
+			lock.Lock();
+			CFRelease(runLoop);
+			runLoop = nil;
+			lock.Unlock();
+
+			if (timer)
+			{
+				[timer invalidate];
+				[timer release];
+				timer = nil;
+			}
+			
+			[appDelegate release];
 		}
-
-		if (appDelegate)
-			app.delegate = appDelegate;
-
-		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-
-		// install notification observers.
-		NSArray* observers =
-		@[
-		  [center addObserverForName:NSSystemClockDidChangeNotification
-							  object:nil
-							   queue:nil
-						  usingBlock:^(NSNotification *note) {
-							  this->DispatchAndInstallTimer();
-						  }]
-		  ];
-
-		// initialize DKApplication instance.
-		@autoreleasepool {
-			DKApplicationInterface::AppInitialize(appInstance);
-		}
-		if (running)
-		{
-			CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
-				this->DispatchAndInstallTimer();
-			});
-			[app run];
-		}
-		// finalize DKApplication instance.
-		@autoreleasepool {
-			DKApplicationInterface::AppFinalize(appInstance);
-		}
-
-		// uninstall observer
-		for (id ob in observers)
-			[center removeObserver:ob];
-
-		lock.Lock();
-		CFRelease(runLoop);
-		runLoop = nil;
-		lock.Unlock();
-
-		if (timer)
-		{
-			[timer invalidate];
-			[timer release];
-			timer = nil;
-		}
-
-		[appDelegate release];
-		[pool release];
 
 		running = false;
 		UnbindThread();

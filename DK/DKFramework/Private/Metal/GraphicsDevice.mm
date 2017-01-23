@@ -33,51 +33,51 @@ using namespace DKFramework::Private::Metal;
 
 GraphicsDevice::GraphicsDevice(void)
 {
-	NSArray<id<MTLDevice>>* devices = MTLCopyAllDevices();
+	@autoreleasepool {
+		NSArray<id<MTLDevice>>* devices = MTLCopyAllDevices();
 
-	NSString* preferredDeviceName = @"";
-	// get preferred device.
-	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
-	{
-		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
+		NSString* preferredDeviceName = @"";
+		// get preferred device.
+		if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
 		{
-			DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
-			if (prefDevName.Length() > 0)
-				preferredDeviceName = [NSString stringWithUTF8String:(const char*)DKStringU8(prefDevName)];
-		}
-	}
-
-	// save device list into system config.
-	DKVariant deviceList = DKVariant::TypeArray;
-	uint32_t deviceIndex = 0;
-	for (id<MTLDevice> dev in devices)
-	{
-		bool pref = false;
-		if (this->device == nil && preferredDeviceName)
-		{
-			if ([preferredDeviceName caseInsensitiveCompare:dev.name] == NSOrderedSame)
+			if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
 			{
-				this->device = [dev retain];
-				pref = true;
+				DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
+				if (prefDevName.Length() > 0)
+					preferredDeviceName = [NSString stringWithUTF8String:(const char*)DKStringU8(prefDevName)];
 			}
 		}
 
-		DKString deviceName = DKString(dev.name.UTF8String);
-		deviceList.Array().Add(deviceName);
-		DKLog("METAL: Device[%u]: \"%s\"%s", deviceIndex, dev.name.UTF8String, pref? " (Preferred)" : "");
-		deviceIndex++;
-	}
-	DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
+		// save device list into system config.
+		DKVariant deviceList = DKVariant::TypeArray;
+		uint32_t deviceIndex = 0;
+		for (id<MTLDevice> dev in devices)
+		{
+			bool pref = false;
+			if (this->device == nil && preferredDeviceName)
+			{
+				if ([preferredDeviceName caseInsensitiveCompare:dev.name] == NSOrderedSame)
+				{
+					this->device = [dev retain];
+					pref = true;
+				}
+			}
 
-	if (this->device == nil)
-		device = MTLCreateSystemDefaultDevice();
+			DKString deviceName = DKString(dev.name.UTF8String);
+			deviceList.Array().Add(deviceName);
+			DKLog("METAL: Device[%u]: \"%s\"%s", deviceIndex, dev.name.UTF8String, pref? " (Preferred)" : "");
+			deviceIndex++;
+		}
+		DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
+
+		if (this->device == nil)
+			device = MTLCreateSystemDefaultDevice();
+	}
 
 	if (this->device == nil)
 	{
 		throw std::runtime_error("No metal device.");
 	}
-
-	DKLog("METAL Device: \"%s\" created.", device.name.UTF8String);
 }
 
 GraphicsDevice::~GraphicsDevice(void)
