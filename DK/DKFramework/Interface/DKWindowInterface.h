@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "DKBackendInterface.h"
 #include "../DKWindow.h"
 
 namespace DKFramework
@@ -16,9 +15,11 @@ namespace DKFramework
 	/// Microsoft Windows, Apple macOS/iOS is builtin supported at this time.
 	/// You may need to your own subclass for your platform if you have plan
 	/// to use DKWindow.
-	class DKWindowInterface : public DKBackendInterface
+	class DKWindowInterface
 	{
 	public:
+		virtual ~DKWindowInterface(void) {}
+
 		using Style = DKWindow::Style;
 		using MouseEvent = DKWindow::MouseEvent;
 		using KeyboardEvent = DKWindow::KeyboardEvent;

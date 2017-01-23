@@ -484,7 +484,6 @@
     <ClInclude Include="DKFramework\DKWindow.h" />
     <ClInclude Include="DKFramework\DKWorld.h" />
     <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h" />
-    <ClInclude Include="DKFramework\Interface\DKBackendInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamFLAC.h" />

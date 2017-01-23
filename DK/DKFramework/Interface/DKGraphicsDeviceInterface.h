@@ -6,15 +6,16 @@
 //
 
 #pragma once
-#include "DKBackendInterface.h"
 #include "../DKGraphicsDevice.h"
 
 namespace DKFramework
 {
 	/// @brief Interface for graphics device (GPU) control.
-	class DKGraphicsDeviceInterface : public DKBackendInterface
+	class DKGraphicsDeviceInterface
 	{
 	public:
+		virtual ~DKGraphicsDeviceInterface(void) {}
+
 		virtual DKString DeviceName(void) const = 0;
 		virtual DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) = 0;
 		

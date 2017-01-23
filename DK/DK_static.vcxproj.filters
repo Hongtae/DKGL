@@ -1103,9 +1103,6 @@
     <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Interface\DKBackendInterface.h">
-      <Filter>DKFramework\Interface</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT">

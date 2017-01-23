@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include "DKBackendInterface.h"
 #include "../DKApplication.h"
 
 namespace DKFramework
@@ -16,9 +15,11 @@ namespace DKFramework
 	/// Microsoft Windows, Apple macOS/iOS is builtin supported at this time.
 	/// You may need to your own subclass for your platform if you have plan
 	/// to use DKApplication.
-	class DKApplicationInterface : public DKBackendInterface
+	class DKApplicationInterface
 	{
 	public:
+		virtual ~DKApplicationInterface(void) {}
+
 		using SystemPath = DKApplication::SystemPath;
 		using ProcessInfo = DKApplication::ProcessInfo;
 

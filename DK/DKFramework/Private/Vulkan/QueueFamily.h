@@ -11,7 +11,6 @@
 #include <vulkan/vulkan.h>
 
 #include "../../DKCommandQueue.h"
-#include "../../Interface/DKBackendInterface.h"
 
 namespace DKFramework
 {
@@ -19,7 +18,7 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			class QueueFamily : public DKBackendInterface
+			class QueueFamily
 			{
 			public:
 				QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop);

@@ -13,7 +13,6 @@
 #include <dxgi1_5.h>
 using Microsoft::WRL::ComPtr;
 
-#include "../../Interface/DKBackendInterface.h"
 
 namespace DKFramework
 {
@@ -21,7 +20,7 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			class CommandAllocator : public DKBackendInterface
+			class CommandAllocator
 			{
 			public:
 				CommandAllocator(ID3D12CommandAllocator*, D3D12_COMMAND_LIST_TYPE);
