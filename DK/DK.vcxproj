@@ -315,7 +315,6 @@
     <ClInclude Include="DKFramework\DKAudioPlayer.h" />
     <ClInclude Include="DKFramework\DKAudioSource.h" />
     <ClInclude Include="DKFramework\DKAudioStream.h" />
-    <ClInclude Include="DKFramework\DKBlendState.h" />
     <ClInclude Include="DKFramework\DKBlitCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKBox.h" />
     <ClInclude Include="DKFramework\DKBoxShape.h" />
@@ -326,6 +325,7 @@
     <ClInclude Include="DKFramework\DKCollisionShape.h" />
     <ClInclude Include="DKFramework\DKColor.h" />
     <ClInclude Include="DKFramework\DKCommandBuffer.h" />
+    <ClInclude Include="DKFramework\DKCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKCommandQueue.h" />
     <ClInclude Include="DKFramework\DKCompoundShape.h" />
     <ClInclude Include="DKFramework\DKComputeCommandEncoder.h" />
@@ -392,7 +392,6 @@
     <ClInclude Include="DKFramework\DKWindow.h" />
     <ClInclude Include="DKFramework\DKWorld.h" />
     <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h" />
-    <ClInclude Include="DKFramework\Interface\DKBackendInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamFLAC.h" />
@@ -413,13 +412,17 @@
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />
@@ -507,7 +510,6 @@
     <ClCompile Include="DKFramework\DKAudioPlayer.cpp" />
     <ClCompile Include="DKFramework\DKAudioSource.cpp" />
     <ClCompile Include="DKFramework\DKAudioStream.cpp" />
-    <ClCompile Include="DKFramework\DKBlendState.cpp" />
     <ClCompile Include="DKFramework\DKBox.cpp" />
     <ClCompile Include="DKFramework\DKBoxShape.cpp" />
     <ClCompile Include="DKFramework\DKBvh.cpp" />
@@ -579,10 +581,13 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
