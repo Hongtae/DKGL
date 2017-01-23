@@ -28,4 +28,9 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 	return buffer.SafeCast<DKCommandBuffer>();
 }
 
+DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow*)
+{
+	return nullptr;
+}
+
 #endif //#if DKGL_USE_METAL

@@ -149,7 +149,7 @@ GraphicsDevice::GraphicsDevice(void)
 	VkResult err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 	if (err != VK_SUCCESS)
 	{
-		throw std::exception((const char*)DKStringU8::Format("vkCreateInstance failed: %s", VkResultCStr(err)));
+		throw std::runtime_error((const char*)DKStringU8::Format("vkCreateInstance failed: %s", VkResultCStr(err)));
 	}
 	// load instance extensions
 	iproc.Load(instance);
@@ -164,7 +164,7 @@ GraphicsDevice::GraphicsDevice(void)
 		err = iproc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, nullptr, &msgCallback);
 		if (err != VK_SUCCESS)
 		{
-			throw std::exception((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", VkResultCStr(err)));
+			throw std::runtime_error((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", VkResultCStr(err)));
 		}
 	}
 
@@ -202,18 +202,18 @@ GraphicsDevice::GraphicsDevice(void)
 		err = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
 		if (err != VK_SUCCESS)
 		{
-			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", VkResultCStr(err)));
+			throw std::runtime_error((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", VkResultCStr(err)));
 		}
 		if (gpuCount == 0)
 		{
-			throw std::exception("No vulkan gpu found.");
+			throw std::runtime_error("No vulkan gpu found.");
 		}
 		// Enumerate devices
 		DKArray<VkPhysicalDevice> physicalDevices(VkPhysicalDevice(), gpuCount);
 		err = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices);
 		if (err)
 		{
-			throw std::exception((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", VkResultCStr(err)));
+			throw std::runtime_error((const char*)DKStringU8::Format("vkEnumeratePhysicalDevices failed: %s", VkResultCStr(err)));
 		}
 		physicalDeviceList.Reserve(gpuCount);
 
@@ -442,7 +442,7 @@ GraphicsDevice::GraphicsDevice(void)
 	}
 
 	if (this->device == nullptr)
-		throw std::exception("Failed to create device!");
+		throw std::runtime_error("Failed to create device!");
 
 	// sort queue family order by presentationSupport, index
 	queueFamilies.Sort([](QueueFamily* lhs, QueueFamily* rhs)->bool

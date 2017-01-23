@@ -6,6 +6,8 @@
 //
 
 #pragma once
+#include <new>
+#include <memory>
 #include "../DKInclude.h"
 #include "DKTypes.h"
 

@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../DKinclude.h"
+#include "../DKInclude.h"
 #include "DKObject.h"
 #include "DKString.h"
 #include "DKSharedLock.h"

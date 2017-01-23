@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <typeinfo>
+#include "../DKInclude.h"
 #include "DKString.h"
 
 namespace DKFoundation

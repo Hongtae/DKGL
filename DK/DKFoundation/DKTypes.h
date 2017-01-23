@@ -6,9 +6,9 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <type_traits>
 #include <utility>
+#include "../DKInclude.h"
 
 namespace DKFoundation
 {

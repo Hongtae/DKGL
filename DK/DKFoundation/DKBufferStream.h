@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../DKinclude.h"
+#include "../DKInclude.h"
 #include "DKStream.h"
 #include "DKBuffer.h"
 #include "DKObject.h"

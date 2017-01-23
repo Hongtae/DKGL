@@ -875,7 +875,7 @@ void DKError::RaiseException(const DKString& func, const DKString& file, unsigne
 #ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
@@ -892,7 +892,7 @@ void DKError::RaiseException(int errorCode, const DKString& desc)
 #ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
@@ -909,7 +909,7 @@ void DKError::RaiseException(const DKString& desc)
 #ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
@@ -926,7 +926,7 @@ void DKError::RaiseException(const DKError& e)
 #ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 

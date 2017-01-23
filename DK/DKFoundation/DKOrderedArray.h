@@ -7,7 +7,6 @@
 
 #pragma once
 #include "../DKInclude.h"
-#include "../DKInclude.h"
 #include "DKTypeTraits.h"
 #include "DKDummyLock.h"
 #include "DKCriticalSection.h"

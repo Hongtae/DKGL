@@ -139,7 +139,7 @@ namespace DKFramework
 				DKGraphicsDeviceInterface* device = as.fn();
 				if (device)
 				{
-					DKLog("Graphics API \"%s\" selected.", as.name);
+					DKLog("Graphics API: \"%s\", Device: \"%ls\" selected.", as.name, (const wchar_t*)device->DeviceName());
 					return device;
 				}
 				else

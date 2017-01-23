@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <stdarg.h>		// for va_list
+#include "../DKInclude.h"
 
 namespace DKFoundation
 {

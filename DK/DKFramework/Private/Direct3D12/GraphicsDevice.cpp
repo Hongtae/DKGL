@@ -52,7 +52,7 @@ GraphicsDevice::GraphicsDevice(void)
 #endif
 	
 	if (FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory))))
-		throw std::exception("CreateDXGIFactory2 failed");
+		throw std::runtime_error("CreateDXGIFactory2 failed");
 
 	// feature levels (order by priority)
 	std::initializer_list<D3D_FEATURE_LEVEL> featureLevels = {
@@ -157,7 +157,7 @@ GraphicsDevice::GraphicsDevice(void)
 		// use software (WARP) device.
 		ComPtr<IDXGIAdapter> adapter = nullptr;
 		if (FAILED(factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter) )))
-			throw std::exception("IDXGIFactory5::EnumWarpAdapter failed");
+			throw std::runtime_error("IDXGIFactory5::EnumWarpAdapter failed");
 
 		DXGI_ADAPTER_DESC desc;
 		adapter->GetDesc(&desc);
@@ -170,13 +170,13 @@ GraphicsDevice::GraphicsDevice(void)
 				desc.Description, this->device->GetNodeCount(), featureLevel);
 		}
 		else
-			throw std::exception("D3D12CreateDevice failed");
+			throw std::runtime_error("D3D12CreateDevice failed");
 	}
 	DKASSERT_DEBUG(this->device != nullptr);
 
 	if (FAILED(this->device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->dummyAllocator))))
 	{
-		throw std::exception("ID3D12Device::CreateCommandAllocator failed");
+		throw std::runtime_error("ID3D12Device::CreateCommandAllocator failed");
 	}
 }
 

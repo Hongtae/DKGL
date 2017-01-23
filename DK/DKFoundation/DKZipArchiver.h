@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../DKinclude.h"
+#include "../DKInclude.h"
 #include "DKString.h"
 #include "DKBuffer.h"
 #include "DKDateTime.h"
