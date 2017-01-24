@@ -375,6 +375,15 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 void DKWindow::FlushAllEvents(void)
 {
 	DKCriticalSection<DKSharedLock> guard(eventLock);
+	if (this->eventLoop)
+	{
+		// Wait for the event loop to complete all events.
+		struct Noop : public DKOperation
+		{
+			void Perform(void) const {}
+		} noop;
+		this->eventLoop->Process(&noop);
+	}
 }
 
 void DKWindow::ShowMouse(int deviceId, bool bShow)
