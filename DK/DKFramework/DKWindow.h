@@ -15,7 +15,7 @@ namespace DKFramework
 {
 	class DKWindowInterface;
 	/// @brief System GUI window class.
-	/// 
+	///
 	/// You can create GUI window with this class.
 	/// You can also create proxy-window for window that was created by
 	/// other frameworks or libraries.
@@ -156,7 +156,7 @@ namespace DKFramework
 		/// @param systemHandle HWND for Win32, NSView for macOS, UIView subclass for iOS
 		/// @note
 		///  on iOS systemHandle should be UIView subclass object.
-		///  [UIView layerClass] should return CAMetalLayer, otherwise 
+		///  [UIView layerClass] should return CAMetalLayer, otherwise
 		///  function will fail.
 		static DKObject<DKWindow> CreateProxy(void* systemHandle);
 		void UpdateProxy(void);							///< update proxy window status
@@ -179,9 +179,7 @@ namespace DKFramework
 		/// (a event that can be processed asynchronously, and dont need to response)
 		using EventHandlerContext = const void*;
 		void AddEventHandler(EventHandlerContext context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*);
-		/// Remove the event handler. However, the event being processed will be delivered.
-		/// To wait for all events to finish processing, call FlushAllEvents().
-		/// This is especially useful when you want to call this function from an object's destructor.
+		/// Removes the event handler and any associated pending events.
 		void RemoveEventHandler(EventHandlerContext context);
 
 		// control keyboard state
@@ -221,15 +219,18 @@ namespace DKFramework
 		void PostKeyboardEvent(const KeyboardEvent&); ///< call keyboard event handlers manually
 		void PostWindowEvent(const WindowEvent&); ///< call window event handlers manually
 
-		/// Wait until all pending events have been completed.
-		/// Never call this function within an event handler's callback function.
-		void FlushAllEvents(void);
 	private:
-		DKSharedLock eventLock;
 		DKSpinLock handlerLock;
 		DKMap<EventHandlerContext, DKObject<WindowEventHandler>> windowEventHandlers;
 		DKMap<EventHandlerContext, DKObject<KeyboardEventHandler>> keyboardEventHandlers;
 		DKMap<EventHandlerContext, DKObject<MouseEventHandler>> mouseEventHandlers;
+		struct PendingEvent
+		{
+			EventHandlerContext context;
+			DKObject<DKEventLoop::PendingState> state;
+		};
+		DKArray<PendingEvent> pendingEvents; // valid only if user's EventLoop have been provided.
+		void ClearCompletedEvents(void); // cleanup completed events
 
 		struct KeyboardState
 		{
