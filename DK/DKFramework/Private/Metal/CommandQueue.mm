@@ -8,9 +8,11 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_USE_METAL
+#include <TargetConditionals.h>
 
 #include "CommandQueue.h"
 #include "CommandBuffer.h"
+#include "SwapChain.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -28,9 +30,15 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 	return buffer.SafeCast<DKCommandBuffer>();
 }
 
-DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow*)
+DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 {
-	return nullptr;
+	DKObject<SwapChain> swapChain = DKOBJECT_NEW SwapChain(this, window);
+	if (swapChain->Setup())
+	{
+
+		return swapChain.SafeCast<DKSwapChain>();
+	}
+	return NULL;
 }
 
 #endif //#if DKGL_USE_METAL

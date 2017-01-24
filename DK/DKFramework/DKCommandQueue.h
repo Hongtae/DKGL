@@ -31,4 +31,9 @@ namespace DKFramework
 
 		virtual DKGraphicsDevice* Device(void) = 0;
 	};
+
+	inline DKGraphicsDevice* DKCommandBuffer::Device(void)
+	{
+		return Queue()->Device();
+	}
 }

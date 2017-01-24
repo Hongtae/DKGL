@@ -131,6 +131,9 @@ bool Window::Create(const DKString& title, uint32_t style)
 		window.acceptsMouseMovedEvents = YES;
 		window.title = [NSString stringWithUTF8String:(const char*)DKStringU8(title)];
 
+		if (style & DKWindow::StyleAcceptFileDrop)
+			[view registerForDraggedTypes:@[NSFilenamesPboardType]];
+
 		instance->PostWindowEvent({
 			WindowEvent::WindowCreated,
 			WindowRect(),

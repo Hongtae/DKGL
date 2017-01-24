@@ -34,6 +34,7 @@ using namespace DKFramework::Private::Metal;
 GraphicsDevice::GraphicsDevice(void)
 {
 	@autoreleasepool {
+#if !TARGET_OS_IPHONE
 		NSArray<id<MTLDevice>>* devices = MTLCopyAllDevices();
 
 		NSString* preferredDeviceName = @"";
@@ -69,7 +70,8 @@ GraphicsDevice::GraphicsDevice(void)
 			deviceIndex++;
 		}
 		DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
-
+#endif	//if !TARGET_OS_IPHONE
+		
 		if (this->device == nil)
 			device = MTLCreateSystemDefaultDevice();
 	}

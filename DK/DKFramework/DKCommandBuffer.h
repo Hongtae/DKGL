@@ -16,7 +16,7 @@ namespace DKFramework
 	class DKGraphicsDevice;
 	class DKCommandQueue;
 	/// @brief GPU command buffer
-	class DKGL_API DKCommandBuffer
+	class DKCommandBuffer
 	{
 	public:
 		enum class Status
@@ -29,7 +29,7 @@ namespace DKFramework
 			Error,
 		};
 
-		virtual ~DKCommandBuffer(void);
+		virtual ~DKCommandBuffer(void) {}
 
 		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
 		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
