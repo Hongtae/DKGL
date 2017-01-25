@@ -465,9 +465,6 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKCommandBuffer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandAllocator.cpp">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>

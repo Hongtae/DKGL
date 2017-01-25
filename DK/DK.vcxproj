@@ -517,7 +517,6 @@
     <ClCompile Include="DKFramework\DKCapsuleShape.cpp" />
     <ClCompile Include="DKFramework\DKCollisionObject.cpp" />
     <ClCompile Include="DKFramework\DKCollisionShape.cpp" />
-    <ClCompile Include="DKFramework\DKCommandBuffer.cpp" />
     <ClCompile Include="DKFramework\DKCompoundShape.cpp" />
     <ClCompile Include="DKFramework\DKConcaveShape.cpp" />
     <ClCompile Include="DKFramework\DKConeShape.cpp" />

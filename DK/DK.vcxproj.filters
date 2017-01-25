@@ -883,9 +883,6 @@
     <ClCompile Include="DKFramework\DKCollisionShape.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKCommandBuffer.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKCompoundShape.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
