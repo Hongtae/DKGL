@@ -24,11 +24,11 @@ namespace DKFoundation
 	public:
 		using CharT = DKUniCharW;
 
-		typedef DKSet<DKUniCharW, DKDummyLock, DKSetComparator<DKUniCharW>> CharacterSet;
-		typedef DKArray<int64_t, DKDummyLock> IntegerArray;
-		typedef DKArray<uint64_t, DKDummyLock> UnsignedIntegerArray;
-		typedef DKArray<double, DKDummyLock> RealNumberArray;
-		typedef DKArray<DKStringW, DKDummyLock> StringArray;
+		using CharacterSet = DKSet<CharT>;
+		using IntegerArray = DKArray<int64_t>;
+		using UnsignedIntegerArray = DKArray<uint64_t>;
+		using RealNumberArray = DKArray<double>;
+		using StringArray = DKArray<DKStringW>;
 
 		static const DKStringW empty;
 		/// DKUniCharW encoding with endianness.

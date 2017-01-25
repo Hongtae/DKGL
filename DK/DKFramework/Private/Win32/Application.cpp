@@ -3,7 +3,7 @@
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32

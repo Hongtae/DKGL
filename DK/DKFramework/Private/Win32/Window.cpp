@@ -3,13 +3,14 @@
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
 #include <windows.h>
 #include <ShellScalingAPI.h>
 #include "Window.h"
+#include "DropTarget.h"
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "Shcore.lib")
 
@@ -49,6 +50,7 @@ using MouseEvent = DKWindow::MouseEvent;
 
 Window::Window(DKWindow* userInstance)
 	: instance(userInstance)
+	, dropTarget(NULL)
 	, hWnd(NULL)
 	, windowRect({ 0, 0, 1, 1 })
 	, contentRect({ 0, 0, 1, 1 })
@@ -63,6 +65,8 @@ Window::Window(DKWindow* userInstance)
 	, autoResize(false)
 	, mouseButtonDown({ 0 })
 {
+	OleInitialize(NULL);
+
 	// register window-class once
 	static const WNDCLASSW	wc = {
 		CS_OWNDC,
@@ -88,6 +92,8 @@ Window::~Window(void)
 {
 	DKASSERT_DESC_DEBUG(hWnd == NULL,
 		"Window must be destroyed before instance being released.");
+
+	OleUninitialize();
 }
 
 bool Window::Create(const DKString& title, uint32_t style)
@@ -142,7 +148,10 @@ bool Window::Create(const DKString& title, uint32_t style)
 	}
 
 	if (style & DKWindow::StyleAcceptFileDrop)
-		DragAcceptFiles(hWnd, TRUE);
+	{
+		this->dropTarget = new DropTarget(instance);
+		RegisterDragDrop(hWnd, dropTarget);
+	}
 	if (style & DKWindow::StyleAutoResize)
 		this->autoResize = true;
 
@@ -279,6 +288,13 @@ void Window::Destroy(void)
 		}
 		else
 		{
+			if (this->dropTarget)
+			{
+				RevokeDragDrop(hWnd);
+				this->dropTarget->Release();
+				this->dropTarget = nullptr;				
+			}
+
 			::KillTimer(hWnd, TIMERID_UPDATEKEYBOARDMOUSE);
 
 			// set GWLP_USERDATA to 0, to forwarding messages to DefWindowProc.
@@ -1030,47 +1046,6 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					window->instance->PostWindowEvent({ WindowEvent::WindowUpdate, window->windowRect, window->contentRect, window->contentScaleFactor });
 				}
 				break;
-			case WM_DROPFILES:
-				if (wParam)
-				{
-					HDROP hd = (HDROP)wParam;
-					const DKWindow::WindowCallback& cb = window->instance->Callback();
-					if (cb.filesDropped)
-					{
-						UINT numFiles = DragQueryFileW(hd, 0xFFFFFFFF, NULL, 0);
-
-						DKWindow::WindowCallback::StringArray fileNames;
-						fileNames.Reserve(numFiles);
-
-						for (UINT i = 0; i < numFiles; ++i)
-						{
-							UINT len = DragQueryFileW(hd, i, NULL, 0);
-							LPWSTR file = (LPWSTR)DKMalloc(sizeof(WCHAR) * (len + 2));
-
-							UINT r = DragQueryFileW(hd, i, file, len + 1);
-							file[r] = 0;
-
-							fileNames.Add(file);
-
-							DKFree(file);
-						}
-						if (fileNames.Count() > 0)
-						{
-							DKPoint dragPoint(0, 0);
-
-							POINT pt;
-							if (DragQueryPoint(hd, &pt))
-							{
-								dragPoint.x = pt.x;
-								dragPoint.y = pt.y;
-							}
-
-							cb.filesDropped->Invoke(window->instance, dragPoint, fileNames);
-						}
-					}
-					DragFinish(hd);
-				}
-				return 0;
 			case WM_CLOSE:
 				if (true)
 				{

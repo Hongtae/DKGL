@@ -480,6 +480,9 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Win32\DropTarget.cpp">
+      <Filter>DKFramework\Private\Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1099,6 +1102,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h">
       <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Win32\DropTarget.h">
+      <Filter>DKFramework\Private\Win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

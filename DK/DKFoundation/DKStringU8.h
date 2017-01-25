@@ -9,6 +9,8 @@
 #include <stdarg.h>		// for va_list
 #include "../DKInclude.h"
 #include "DKObject.h"
+#include "DKSet.h"
+#include "DKArray.h"
 #include "DKStringUE.h"
 
 namespace DKFoundation
@@ -19,6 +21,12 @@ namespace DKFoundation
 	{
 	public:
 		using CharT = DKUniChar8;
+
+		using CharacterSet = DKSet<CharT>;
+		using IntegerArray = DKArray<int64_t>;
+		using UnsignedIntegerArray = DKArray<uint64_t>;
+		using RealNumberArray = DKArray<double>;
+		using StringArray = DKArray<DKStringU8>;
 
 		static const DKStringU8 empty;
 		/// SystemEncoding returns 'DKStringEncoding::UTF8' always!

@@ -127,15 +127,31 @@ namespace DKFramework
 		typedef DKFunctionSignature<KeyboardProc> KeyboardEventHandler;
 		typedef DKFunctionSignature<MouseProc> MouseEventHandler;
 
+		/// drag and drop (files only)
+		enum DraggingState 
+		{
+			DraggingEntered = 0,
+			DraggingUpdates,
+			DraggingExited,
+			DraggingDropped,
+		};
+		/// drag and drop operation
+		enum DragOperation
+		{
+			DragOperationNone = 0,	///< drag & drop not allowed
+			DragOperationCopy,		///< Inform the user that a copy operation will be performed.
+			DragOperationMove,		///< Inform the user that a move operation will be performed.
+			DragOperationLink,		///< Inform the user that a link operation will be performed.
+		};
+
 		/// @brief Window Callback
 		/// @details Callback function is required for some events that cannot be
 		/// processed asynchronously.
 		struct WindowCallback
 		{
 			template <typename T> using Function = DKObject<DKFunctionSignature<T>>;
-			using StringArray = DKArray<DKString>;
-
-			Function<void (DKWindow*, const DKPoint&, const StringArray&)> filesDropped;
+			using DragOperationCallback = Function<DragOperation (DKWindow*, DraggingState, const DKPoint&, const DKStringArray&)>;
+			DragOperationCallback draggingFeedback;
 			Function<DKSize (DKWindow*)> contentMinSize;
 			Function<DKSize (DKWindow*)> contentMaxSize;
 			Function<bool (DKWindow*)> closeRequest;

@@ -320,6 +320,7 @@
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\DropTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -517,6 +518,7 @@
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />
+    <ClInclude Include="DKFramework\Private\Win32\DropTarget.h" />
     <ClInclude Include="DKFramework\Private\Win32\Window.h" />
     <ClInclude Include="DKInclude.h" />
     <ClInclude Include="Libs\Inc_BulletPhysics.h" />

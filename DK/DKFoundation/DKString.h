@@ -19,6 +19,7 @@ namespace DKFoundation
 	/// using utf-16 for Win32, else utf-32 (for Unix, Mac OS X) with current implementation.
 	/// using wchar_t for character type. (see DKStringW.h)
 	typedef DKStringW DKString;
+	typedef DKString::StringArray DKStringArray;
 
 	/// Template Spealization for DKString. (for DKMap, DKSet)
 	template <> struct DKMapKeyComparator<DKStringW>
