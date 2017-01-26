@@ -9,6 +9,9 @@
 #include "../DKFoundation.h"
 #include "DKWindow.h"
 #include "DKFrame.h"
+#include "DKCommandQueue.h"
+#include "DKGraphicsDevice.h"
+#include "DKAudioDevice.h"
 
 namespace DKFramework
 {
@@ -31,6 +34,9 @@ namespace DKFramework
 		DKWindow* Window(void)		{ return window; }
 		DKFrame* RootFrame(void)	{ return rootFrame; }
 
+		DKCommandQueue* CommandQueue(void) { return commandQueue;} ///< main command queue
+		DKEventLoop* EventLoop(void) {return eventLoop;} ///< event loop for render thread
+
 	private:
 		void DrawFrame(void);
 		static void EventLoopIdle(DKScreen*, DKEventLoop*);
@@ -39,5 +45,8 @@ namespace DKFramework
 		DKObject<DKWindow> window;
 		DKObject<DKFrame> rootFrame;
 		DKObject<DKThread> thread;	// rendering thread
+		DKObject<DKCommandQueue> commandQueue;
+		DKObject<DKGraphicsDevice> graphicsDevice;
+		DKObject<DKAudioDevice> audioDevice;
 	};
 }

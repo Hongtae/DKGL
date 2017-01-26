@@ -7,21 +7,21 @@
 
 #include "DKScreen.h"
 
-namespace DKFramework
-{
-	namespace Private
-	{
-		class RenderEventLoop : public DKEventLoop
-		{
-		};
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKScreen::DKScreen(DKWindow*, DKFrame*)
 {
-	eventLoop = DKOBJECT_NEW RenderEventLoop();
+	struct LocalEventLoop : public DKEventLoop
+	{
+		DKScreen* screen;
+	};
+	DKObject<LocalEventLoop> localEventLoop = DKOBJECT_NEW LocalEventLoop();
+	localEventLoop->screen = this;
+
+	eventLoop = localEventLoop.SafeCast<DKEventLoop>();
+	graphicsDevice = DKGraphicsDevice::SharedInstance();
+	audioDevice = DKAudioDevice::SharedInstance();
 }
 
 DKScreen::~DKScreen(void)

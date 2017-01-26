@@ -7,26 +7,55 @@
 
 #pragma once
 #include "../DKFoundation.h"
-
+#include "DKColor.h"
 
 namespace DKFramework
 {
-	class DKRenderPassAttachmentDescriptor
+	struct DKRenderPassAttachmentDescriptor
 	{
+		enum LoadAction
+		{
+			LoadActionDontCare = 0,
+			LoadActionLoad,
+			LoadActionClear,
+		};
+		enum StoreAction
+		{
+			StoreActionDontCare = 0,
+			StoreActionStore,
+		};
+
+		uint32_t mipmapLevel = 0;
+		LoadAction loadAction = LoadActionDontCare;
+		StoreAction storeAction = StoreActionDontCare;
+
+		virtual ~DKRenderPassAttachmentDescriptor(void) {}
 	};
 
-	class DKRenderPassColorAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
+	struct DKRenderPassColorAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
 	{
+		DKColor clearColor;
 	};
 
-	class DKRenderPassStencilAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
+	struct DKRenderPassDepthAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
 	{
+		float clearDepth = 1.0;
+	};
+
+	struct DKRenderPassStencilAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
+	{
+		uint32_t clearStencil = 0;
 	};
 
 	/**
 	 @brief A render-pass descriptor
 	 */
-	class DKRenderPassDescriptor
+	struct DKRenderPassDescriptor
 	{
+		DKArray<DKRenderPassColorAttachmentDescriptor> colorAttachments;
+		DKObject<DKRenderPassDepthAttachmentDescriptor> depthAttachment;
+		DKObject<DKRenderPassStencilAttachmentDescriptor> stencilAttachment;
+
+		size_t numberOfActiveLayers = 0;
 	};
 }
