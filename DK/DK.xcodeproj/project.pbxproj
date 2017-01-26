@@ -2206,6 +2206,8 @@
 		84D3E6871637071F00337848 /* DKSoftBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSoftBody.h; sourceTree = "<group>"; };
 		84D81BE915569390009B408A /* DKStringUE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKStringUE.cpp; sourceTree = "<group>"; };
 		84D81BEA15569390009B408A /* DKStringUE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStringUE.h; sourceTree = "<group>"; };
+		84D883371E39EC5E00478725 /* DropTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DropTarget.cpp; sourceTree = "<group>"; };
+		84D883381E39EC5E00478725 /* DropTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropTarget.h; sourceTree = "<group>"; };
 		84D8AF6A1E0027B9005059F7 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
 		84D8AF6B1E0027B9005059F7 /* View.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = View.mm; sourceTree = "<group>"; };
 		84D9FEBC1521B6570073362E /* DKUuid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKUuid.cpp; sourceTree = "<group>"; };
@@ -2632,6 +2634,8 @@
 				840D5DC21DDA0C11009DA369 /* Application.h */,
 				840D5DC31DDA0C11009DA369 /* AppLogger.cpp */,
 				840D5DC41DDA0C11009DA369 /* AppLogger.h */,
+				84D883371E39EC5E00478725 /* DropTarget.cpp */,
+				84D883381E39EC5E00478725 /* DropTarget.h */,
 				8447CB711E37B6DF00E02637 /* Window.cpp */,
 				8447CB721E37B6DF00E02637 /* Window.h */,
 			);

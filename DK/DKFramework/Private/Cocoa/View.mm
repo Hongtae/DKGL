@@ -801,70 +801,92 @@ using MouseEvent = DKWindow::MouseEvent;
 }
 
 #pragma mark - NSDraggingDestination protocol
-- (NSDragOperation)draggingEntered:(id < NSDraggingInfo >)sender
+- (NSDragOperation)dragOperationCallback:(id<NSDraggingInfo>)draggingInfo withState:(DKWindow::DraggingState)draggingState
 {
 	if (userInstance)
 	{
 		const DKWindow::WindowCallback& cb = userInstance->Callback();
-		if (cb.filesDropped)
+		if (cb.draggingFeedback)
 		{
-			NSPasteboard *pboard = [sender draggingPasteboard];
-			NSDragOperation sourceDragMask = [sender draggingSourceOperationMask];
+			NSPasteboard *pboard = [draggingInfo draggingPasteboard];
+			NSWindow* target = [draggingInfo draggingDestinationWindow];
 
-			if ( [[pboard types] containsObject:NSFilenamesPboardType] )
+			if ([self window] == target)
 			{
-				if (sourceDragMask & NSDragOperationCopy)
-					return NSDragOperationCopy;
-				if (sourceDragMask & NSDragOperationLink)
-					return NSDragOperationLink;
-				if (sourceDragMask & NSDragOperationGeneric)
-					return NSDragOperationGeneric;
+				if ([pboard.types containsObject:NSFilenamesPboardType])
+				{
+					NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
+
+					DKStringArray filenameList;
+					filenameList.Reserve(files.count);
+					for (NSString* str in files)
+					{
+						if ([str isKindOfClass:[NSString class]])
+							filenameList.Add(str.UTF8String);
+					}
+					NSPoint pos = [draggingInfo draggingLocation];
+					pos = [self convertPoint:pos fromView:nil];
+
+					DKWindow::DragOperation op = cb.draggingFeedback->Invoke(userInstance,
+																			 draggingState,
+																			 DKPoint(pos.x, pos.y),
+																			 filenameList);
+
+					NSDragOperation dragOperation = [draggingInfo draggingSourceOperationMask];
+					switch (op)
+					{
+						case DKWindow::DragOperationCopy:
+							dragOperation = dragOperation & NSDragOperationCopy;
+							break;
+						case DKWindow::DragOperationMove:
+							dragOperation = dragOperation & NSDragOperationMove;
+							break;
+						case DKWindow::DragOperationLink:
+							dragOperation = dragOperation & NSDragOperationLink;
+							break;
+						case DKWindow::DragOperationNone:
+							dragOperation = dragOperation & NSDragOperationNone;
+							break;
+						default:
+							dragOperation = dragOperation & NSDragOperationGeneric;
+							break;
+					}
+					return dragOperation;
+				}
 			}
 		}
 	}
 	return NSDragOperationNone;
 }
 
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+- (BOOL)wantsPeriodicDraggingUpdates
 {
-	if (userInstance)
-	{
-		const DKWindow::WindowCallback& cb = userInstance->Callback();
-		if (cb.filesDropped)
-		{
-			NSPasteboard *pboard = [sender draggingPasteboard];
-			NSWindow* target = [sender draggingDestinationWindow];
-			NSPoint pos = [sender draggingLocation];
-
-			if ([self window] == target)
-			{
-				if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
-					NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
-
-					pos = [self convertPoint:pos fromView:nil];
-					pos = [self convertPointToBacking:pos];
-					DKPoint pt(pos.x, pos.y);
-
-					DKWindow::WindowCallback::StringArray fileNames;
-					fileNames.Reserve(files.count);
-
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					for (NSString* f in files)
-					{
-						if ([f isKindOfClass:[NSString class]])
-						{
-							fileNames.Add([f UTF8String]);
-						}
-					}
-					[pool release];
-
-					cb.filesDropped->Invoke(userInstance, pt, fileNames);
-				}
-				return YES;
-			}
-		}
-	}
 	return NO;
+}
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
+{
+	return [self dragOperationCallback:sender withState:DKWindow::DraggingEntered];
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender
+{
+	return [self dragOperationCallback:sender withState:DKWindow::DraggingUpdated];
+}
+
+- (void)draggingEnded:(id<NSDraggingInfo>)sender
+{
+}
+
+- (void)draggingExited:(id<NSDraggingInfo>)sender
+{
+	[self dragOperationCallback:sender withState:DKWindow::DraggingExited];
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
+{
+	NSDragOperation op = [self dragOperationCallback:sender withState:DKWindow::DraggingDropped];
+	return op != DKWindow::DragOperationNone;
 }
 
 #pragma mark - NSWindowDelegate protocol

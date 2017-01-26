@@ -131,7 +131,7 @@ namespace DKFramework
 		enum DraggingState 
 		{
 			DraggingEntered = 0,
-			DraggingUpdates,
+			DraggingUpdated,
 			DraggingExited,
 			DraggingDropped,
 		};

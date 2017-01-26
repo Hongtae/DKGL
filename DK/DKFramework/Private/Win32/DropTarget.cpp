@@ -16,7 +16,7 @@ using namespace DKFramework::Private::Win32;
 DropTarget::DropTarget(DKWindow* win)
 	: refCount(1)
 	, target(win)
-	, periodicUpdate(TRUE)
+	, periodicUpdate(FALSE)
 	, lastEffectMask(DROPEFFECT_NONE)
 {
 }
@@ -128,7 +128,7 @@ HRESULT DropTarget::DragOver(DWORD grfKeyState, POINTL pt, DWORD * pdwEffect)
 			lastKeyState = grfKeyState;
 			lastPosition = pt2;
 
-			DKWindow::DraggingState state = DKWindow::DraggingUpdates;
+			DKWindow::DraggingState state = DKWindow::DraggingUpdated;
 			DKWindow::DragOperation op = target->Callback().draggingFeedback->Invoke(target,
 																					 state,
 																					 DKPoint(pt2.x, pt2.y),
