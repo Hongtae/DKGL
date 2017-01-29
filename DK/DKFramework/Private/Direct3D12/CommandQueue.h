@@ -8,10 +8,7 @@
 #pragma once
 #include "../GraphicsAPI.h"
 #if DKGL_USE_DIRECT3D
-#include <wrl.h>
-#include <D3D12.h>
-#include <dxgi1_5.h>
-using Microsoft::WRL::ComPtr;
+#include "d3d12_headers.h"
 
 #include "../../DKCommandQueue.h"
 #include "../../DKGraphicsDevice.h"

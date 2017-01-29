@@ -264,6 +264,7 @@
     <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="DKFramework\DKGraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\DKHingeConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKImage.cpp" />
     <ClCompile Include="DKFramework\DKLine.cpp" />
     <ClCompile Include="DKFramework\DKLinearTransform2.cpp" />
     <ClCompile Include="DKFramework\DKLinearTransform3.cpp" />
@@ -437,6 +438,7 @@
     <ClInclude Include="DKFramework\DKGeneric6DofSpringConstraint.h" />
     <ClInclude Include="DKFramework\DKGraphicsDevice.h" />
     <ClInclude Include="DKFramework\DKHingeConstraint.h" />
+    <ClInclude Include="DKFramework\DKImage.h" />
     <ClInclude Include="DKFramework\DKLine.h" />
     <ClInclude Include="DKFramework\DKLinearTransform2.h" />
     <ClInclude Include="DKFramework\DKLinearTransform3.h" />
@@ -501,6 +503,8 @@
     <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandAllocator.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\d3dx12.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\d3d12_headers.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
