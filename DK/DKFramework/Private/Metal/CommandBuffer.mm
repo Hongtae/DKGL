@@ -14,6 +14,13 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
+CommandBuffer::CommandBuffer(id<MTLCommandBuffer> cb, DKCommandQueue* q)
+: buffer(nil)
+, queue(q)
+{
+	buffer = [cb retain];
+}
+
 CommandBuffer::~CommandBuffer(void)
 {
 	[buffer autorelease];

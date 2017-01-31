@@ -750,6 +750,13 @@
 		84211E101665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84211DE11665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp */; };
 		84211E111665EB4400B9B9A2 /* DKPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211DE21665EB4400B9B9A2 /* DKPolyhedralConvexShape.h */; };
 		84211E121665EB4400B9B9A2 /* DKPolyhedralConvexShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84211DE21665EB4400B9B9A2 /* DKPolyhedralConvexShape.h */; };
+		84219C181E40E3E40046B099 /* PixelFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84219C131E40E3E40046B099 /* PixelFormat.cpp */; };
+		84219C191E40E3E40046B099 /* PixelFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 84219C141E40E3E40046B099 /* PixelFormat.h */; };
+		84219C1A1E40E3E40046B099 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84219C151E40E3E40046B099 /* Texture.cpp */; };
+		84219C1B1E40E3E40046B099 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 84219C161E40E3E40046B099 /* Texture.h */; };
+		84219C201E40E5E30046B099 /* PixelFormat.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84219C1D1E40E5E30046B099 /* PixelFormat.mm */; };
+		84219C211E40E5E30046B099 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 84219C1E1E40E5E30046B099 /* Texture.h */; };
+		84219C221E40E5E30046B099 /* Texture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84219C1F1E40E5E30046B099 /* Texture.mm */; };
 		842BF13F1E0AB206007D58B0 /* AppEventLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 840D5DD71DDA20C9009DA369 /* AppEventLoop.h */; };
 		842BF1401E0AB206007D58B0 /* AppEventLoop.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840D5DD81DDA20C9009DA369 /* AppEventLoop.mm */; };
 		842BF1411E0AB206007D58B0 /* Application.h in Headers */ = {isa = PBXBuildFile; fileRef = 840D5DD91DDA20C9009DA369 /* Application.h */; };
@@ -926,7 +933,6 @@
 		844DF8CC1E16CA1800F5361C /* GraphicsAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844DF8C91E16C8E000F5361C /* GraphicsAPI.cpp */; };
 		844DF8CD1E16CA1900F5361C /* GraphicsAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 844DF8C91E16C8E000F5361C /* GraphicsAPI.cpp */; };
 		844DF8DD1E16F5EF00F5361C /* GraphicsAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 844DF8DC1E16F5EF00F5361C /* GraphicsAPI.h */; };
-		846C53A51E406A0200B2FA6F /* DKRenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 846C53A41E406A0200B2FA6F /* DKRenderTarget.h */; };
 		846C53A71E40802100B2FA6F /* DKPixelFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 846C53A61E40802100B2FA6F /* DKPixelFormat.h */; };
 		846C53A91E40950B00B2FA6F /* PixelFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 846C53A81E40950B00B2FA6F /* PixelFormat.h */; };
 		84768FD61B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
@@ -1929,6 +1935,13 @@
 		84211DE11665EB4400B9B9A2 /* DKPolyhedralConvexShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKPolyhedralConvexShape.cpp; sourceTree = "<group>"; };
 		84211DE21665EB4400B9B9A2 /* DKPolyhedralConvexShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKPolyhedralConvexShape.h; sourceTree = "<group>"; };
 		84211E551665EB8F00B9B9A2 /* BulletUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BulletUtils.h; sourceTree = "<group>"; };
+		84219C131E40E3E40046B099 /* PixelFormat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PixelFormat.cpp; sourceTree = "<group>"; };
+		84219C141E40E3E40046B099 /* PixelFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PixelFormat.h; sourceTree = "<group>"; };
+		84219C151E40E3E40046B099 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		84219C161E40E3E40046B099 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		84219C1D1E40E5E30046B099 /* PixelFormat.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PixelFormat.mm; sourceTree = "<group>"; };
+		84219C1E1E40E5E30046B099 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		84219C1F1E40E5E30046B099 /* Texture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Texture.mm; sourceTree = "<group>"; };
 		842BF0FF1E09949B007D58B0 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
 		842BF1001E09949B007D58B0 /* View.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = View.mm; sourceTree = "<group>"; };
 		842BF1311E0AB16A007D58B0 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -1963,7 +1976,6 @@
 		846B29691921FE6300918B1B /* DKFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFramework.h; sourceTree = "<group>"; };
 		846B296A1921FE6300918B1B /* DKInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKInclude.h; sourceTree = "<group>"; };
 		846B296B1921FE6300918B1B /* DK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DK.h; sourceTree = "<group>"; };
-		846C53A41E406A0200B2FA6F /* DKRenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKRenderTarget.h; sourceTree = "<group>"; };
 		846C53A61E40802100B2FA6F /* DKPixelFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKPixelFormat.h; sourceTree = "<group>"; };
 		846C53A81E40950B00B2FA6F /* PixelFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PixelFormat.h; sourceTree = "<group>"; };
 		84768FD51B1D981D0006DD7C /* DKBitArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKBitArray.h; sourceTree = "<group>"; };
@@ -2374,15 +2386,18 @@
 		666ECA6E1DB1721F00354463 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				846C53A81E40950B00B2FA6F /* PixelFormat.h */,
 				84F16DCE1E1592830013DD29 /* CommandBuffer.h */,
 				84F16DCF1E1592830013DD29 /* CommandBuffer.mm */,
 				84F16DD01E1592830013DD29 /* CommandQueue.h */,
 				84F16DD11E1592830013DD29 /* CommandQueue.mm */,
 				666ECA6F1DB1721F00354463 /* GraphicsDevice.h */,
 				666ECA701DB1721F00354463 /* GraphicsDevice.mm */,
+				846C53A81E40950B00B2FA6F /* PixelFormat.h */,
+				84219C1D1E40E5E30046B099 /* PixelFormat.mm */,
 				8447CB3E1E379C2200E02637 /* SwapChain.h */,
 				8447CB3F1E379C2200E02637 /* SwapChain.mm */,
+				84219C1E1E40E5E30046B099 /* Texture.h */,
+				84219C1F1E40E5E30046B099 /* Texture.mm */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -2694,10 +2709,14 @@
 				8497051D1E28CD0E00E34F5C /* CommandQueue.h */,
 				8497051E1E28CD0E00E34F5C /* GraphicsDevice.cpp */,
 				8497051F1E28CD0E00E34F5C /* GraphicsDevice.h */,
+				84219C131E40E3E40046B099 /* PixelFormat.cpp */,
+				84219C141E40E3E40046B099 /* PixelFormat.h */,
 				849705201E28CD0E00E34F5C /* RenderCommandEncoder.cpp */,
 				849705211E28CD0E00E34F5C /* RenderCommandEncoder.h */,
 				84FCF1601E3693A800DF9386 /* SwapChain.cpp */,
 				84FCF1611E3693A800DF9386 /* SwapChain.h */,
+				84219C151E40E3E40046B099 /* Texture.cpp */,
+				84219C161E40E3E40046B099 /* Texture.h */,
 			);
 			path = Direct3D12;
 			sourceTree = "<group>";
@@ -2997,7 +3016,6 @@
 				666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */,
 				848566A51E1FFC020011B53B /* DKRenderPass.h */,
 				848566A71E1FFE390011B53B /* DKRenderPipeline.h */,
-				846C53A41E406A0200B2FA6F /* DKRenderTarget.h */,
 				848566CE1E214B330011B53B /* DKSampler.h */,
 				848566CC1E21491E0011B53B /* DKTexture.h */,
 			);
@@ -3578,6 +3596,7 @@
 				84211C1C1665E86300B9B9A2 /* DKArray.h in Headers */,
 				84211C1D1665E86300B9B9A2 /* DKAtomicNumber32.h in Headers */,
 				84211C1E1665E86300B9B9A2 /* DKAVLTree.h in Headers */,
+				84219C191E40E3E40046B099 /* PixelFormat.h in Headers */,
 				84211C1F1665E86300B9B9A2 /* DKBuffer.h in Headers */,
 				84211C201665E86300B9B9A2 /* DKBufferStream.h in Headers */,
 				84F96FFF1B4C26C200BA24E4 /* DKBvh.h in Headers */,
@@ -3614,6 +3633,7 @@
 				84211C401665E86300B9B9A2 /* DKOperationQueue.h in Headers */,
 				84211C411665E86300B9B9A2 /* DKOrderedArray.h in Headers */,
 				844DF8DD1E16F5EF00F5361C /* GraphicsAPI.h in Headers */,
+				84219C1B1E40E3E40046B099 /* Texture.h in Headers */,
 				84211C431665E86300B9B9A2 /* DKQueue.h in Headers */,
 				84211C441665E86300B9B9A2 /* DKRational.h in Headers */,
 				666ECA661DB1703600354463 /* DKAudioDevice.h in Headers */,
@@ -3664,6 +3684,7 @@
 				849705301E28CDEB00E34F5C /* DKCommandEncoder.h in Headers */,
 				84211CAB1665E88E00B9B9A2 /* DKApplication.h in Headers */,
 				66DA125F1DAC7D2600B3056E /* Inc_zlib.h in Headers */,
+				84219C211E40E5E30046B099 /* Texture.h in Headers */,
 				84211CAC1665E88E00B9B9A2 /* DKAudioListener.h in Headers */,
 				84211CAD1665E88E00B9B9A2 /* DKAudioPlayer.h in Headers */,
 				84211CAE1665E88E00B9B9A2 /* DKAudioSource.h in Headers */,
@@ -3716,7 +3737,6 @@
 				84211CD61665E88E00B9B9A2 /* DKPlane.h in Headers */,
 				84211CD71665E88E00B9B9A2 /* DKPoint.h in Headers */,
 				84211CD81665E88E00B9B9A2 /* DKPoint2PointConstraint.h in Headers */,
-				846C53A51E406A0200B2FA6F /* DKRenderTarget.h in Headers */,
 				66DA12591DAC7D2600B3056E /* Inc_FreeType.h in Headers */,
 				84DB573F1DFD90DB00ED5E38 /* Window.h in Headers */,
 				84F16DD21E1592830013DD29 /* CommandBuffer.h in Headers */,
@@ -4644,6 +4664,7 @@
 				84DB573D1DFD90CF00ED5E38 /* Window.mm in Sources */,
 				840C3E05178D396D00F57A8D /* DKFile.cpp in Sources */,
 				840D5DD31DDA1DAF009DA369 /* AppEventLoop.mm in Sources */,
+				84219C221E40E5E30046B099 /* Texture.mm in Sources */,
 				84211ABA1665E7FC00B9B9A2 /* DKAudioStream.cpp in Sources */,
 				84211ABE1665E7FC00B9B9A2 /* DKBox.cpp in Sources */,
 				840C3DFB178D396D00F57A8D /* DKAtomicNumber32.cpp in Sources */,
@@ -4662,8 +4683,10 @@
 				84211AD51665E7FC00B9B9A2 /* DKCylinderShape.cpp in Sources */,
 				84D388AC18AB845200A86851 /* DKResourceLoader.cpp in Sources */,
 				840C3E1C178D396D00F57A8D /* DKZipArchiver.cpp in Sources */,
+				84219C201E40E5E30046B099 /* PixelFormat.mm in Sources */,
 				84211AD91665E7FC00B9B9A2 /* DKDynamicsWorld.cpp in Sources */,
 				840C3E11178D396D00F57A8D /* DKSharedLock.cpp in Sources */,
+				84219C181E40E3E40046B099 /* PixelFormat.cpp in Sources */,
 				84211ADB1665E7FC00B9B9A2 /* DKFixedConstraint.cpp in Sources */,
 				840C3E0D178D396D00F57A8D /* DKOperationQueue.cpp in Sources */,
 				84211ADD1665E7FC00B9B9A2 /* DKFont.cpp in Sources */,
@@ -4694,6 +4717,7 @@
 				8482B7391DCE27230079FD84 /* AudioStreamVorbis.cpp in Sources */,
 				84211B0C1665E7FC00B9B9A2 /* DKPropertySet.cpp in Sources */,
 				84211B0E1665E7FC00B9B9A2 /* DKQuaternion.cpp in Sources */,
+				84219C1A1E40E3E40046B099 /* Texture.cpp in Sources */,
 				842F125D17C24B0F004E66FB /* DKAtomicNumber64.cpp in Sources */,
 				84211B101665E7FC00B9B9A2 /* DKRect.cpp in Sources */,
 				840C3E13178D396D00F57A8D /* DKStringU8.cpp in Sources */,

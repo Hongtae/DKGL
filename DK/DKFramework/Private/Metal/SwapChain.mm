@@ -20,6 +20,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 : queue(q)
 , window(w)
 , metalLayer(nil)
+, currentDrawable(nil)
 {
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
 
@@ -69,21 +70,7 @@ bool SwapChain::Setup(void)
 	{
 		this->metalLayer.device = this->queue->queue.device;
 		this->metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
-#if 0
-		CGSize drawableSize = this->metalLayer.drawableSize;
-		BOOL framebufferOnly = this->metalLayer.framebufferOnly;
-		CGSize preferredFrameSize = this->metalLayer.preferredFrameSize;
-		BOOL presentsWithTransaction = this->metalLayer.presentsWithTransaction;
 
-		id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
-		if (drawable)
-		{
-			id<MTLTexture> texture = drawable.texture;
-			NSUInteger width = texture.width;
-			NSUInteger height = texture.height;
-			BOOL framebufferOnly = texture.framebufferOnly;
-		}
-#endif
 		return true;
 	}
 	return false;
@@ -91,9 +78,29 @@ bool SwapChain::Setup(void)
 
 bool SwapChain::Present(void)
 {
-	return false;
+	@autoreleasepool
+	{
+		id<MTLCommandBuffer> cb = [this->queue->queue commandBuffer];
+		[cb presentDrawable:this->currentDrawable];
+		[this->currentDrawable autorelease];
+		this->currentDrawable = nil;
+	}
+	return true;
 }
 
+DKObject<DKTexture> SwapChain::NextFrame(void)
+{
+	id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
+	if (drawable)
+	{
+		this->currentDrawable = [drawable retain];
+
+		id<MTLTexture> texture = drawable.texture;
+		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(texture);
+		return renderTarget.SafeCast<DKTexture>();
+	}
+	return NULL;
+}
 
 void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)
 {

@@ -23,6 +23,7 @@ namespace DKFramework
 			class CommandBuffer : public DKCommandBuffer
 			{
 			public:
+				CommandBuffer(id<MTLCommandBuffer>, DKCommandQueue*);
 				~CommandBuffer(void);
 
 				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) override;
@@ -32,7 +33,8 @@ namespace DKFramework
 				bool Commit(void) override;
 				bool WaitUntilCompleted(void) override;
 				DKCommandQueue* Queue(void) override { return queue; };
-				
+
+			private:
 				DKObject<DKCommandQueue> queue;
 				id<MTLCommandBuffer> buffer;
 			};

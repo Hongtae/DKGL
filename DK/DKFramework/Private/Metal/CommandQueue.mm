@@ -17,6 +17,13 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
+CommandQueue::CommandQueue(id<MTLCommandQueue> q, DKGraphicsDevice* d)
+: queue(nil)
+, device(d)
+{
+	queue = [q retain];
+}
+
 CommandQueue::~CommandQueue(void)
 {
 	[queue autorelease];
@@ -24,9 +31,7 @@ CommandQueue::~CommandQueue(void)
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
-	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer();
-	buffer->buffer = [[queue commandBuffer] retain];
-	buffer->queue = this;
+	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer([queue commandBuffer], this);
 	return buffer.SafeCast<DKCommandBuffer>();
 }
 

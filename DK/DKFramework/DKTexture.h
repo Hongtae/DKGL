@@ -22,6 +22,7 @@ namespace DKFramework
 			Type2D,
 			Type2DArray,
 			Type3D,
+			TypeCube,
 		};
 
 

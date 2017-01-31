@@ -14,6 +14,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
+#include "Texture.h"
 
 namespace DKFramework
 {
@@ -31,11 +32,15 @@ namespace DKFramework
 
 				bool Present(void) override;
 
+				DKObject<DKTexture> NextFrame(void);
+
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;
 
 				CAMetalLayer* metalLayer;
+
 			private:
+				id<CAMetalDrawable> currentDrawable;
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};
 		}

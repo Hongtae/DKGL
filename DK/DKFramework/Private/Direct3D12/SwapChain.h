@@ -12,7 +12,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
-#include "RenderTarget.h"
+#include "Texture.h"
 
 namespace DKFramework
 {
@@ -38,7 +38,7 @@ namespace DKFramework
 				ComPtr<ID3D12DescriptorHeap> rtvHeap;
 				UINT rtvDescriptorSize;
 
-				DKArray<DKObject<RenderTarget>> renderTargets;
+				DKArray<DKObject<Texture>> renderTargets;
 
 			private:
 				UINT bufferCount = 2;	// double-buffering

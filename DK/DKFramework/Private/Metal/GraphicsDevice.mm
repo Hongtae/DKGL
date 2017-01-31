@@ -94,9 +94,8 @@ DKString GraphicsDevice::DeviceName(void) const
 
 DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* ctxt)
 {
-	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue();
-	queue->queue = [device newCommandQueue];
-	queue->device = ctxt;
+	id<MTLCommandQueue> q = [device newCommandQueue];
+	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue([q autorelease], ctxt);
 	return queue.SafeCast<DKCommandQueue>();
 }
 

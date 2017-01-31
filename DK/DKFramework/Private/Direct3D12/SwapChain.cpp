@@ -102,8 +102,8 @@ bool SwapChain::Setup(void)
 		device->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
 		rtvHandle.Offset(1, this->rtvDescriptorSize);
 
-		DKObject<RenderTarget> rt = DKOBJECT_NEW RenderTarget(renderTarget.Get(), this->rtvHeap.Get(), rtvHandle);
-		this->renderTargets.Add(rt);
+		DKObject<Texture> texture = DKOBJECT_NEW Texture(renderTarget.Get(), this->rtvHeap.Get(), rtvHandle);
+		this->renderTargets.Add(texture);
 	}
 
 	DKLog("%d RenderTargets for SwapChain created.", (int)this->renderTargets.Count());
