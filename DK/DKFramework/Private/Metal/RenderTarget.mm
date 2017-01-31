@@ -1,5 +1,5 @@
 //
-//  File: Texture.mm
+//  File: RenderTarget.mm
 //  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -9,20 +9,20 @@
 #include "../GraphicsAPI.h"
 #if DKGL_USE_METAL
 
-#include "Texture.h"
+#include "RenderTarget.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-Texture::Texture(id<MTLTexture> t, DKGraphicsDevice* d)
+RenderTarget::RenderTarget(id<MTLTexture> t, DKGraphicsDevice* d)
 : TextureBaseT(t)
 , device(d)
 {
 
 }
 
-Texture::~Texture(void)
+RenderTarget::~RenderTarget(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 

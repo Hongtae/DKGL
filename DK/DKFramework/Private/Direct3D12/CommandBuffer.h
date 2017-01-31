@@ -26,7 +26,7 @@ namespace DKFramework
 				CommandBuffer(CommandAllocator*, DKCommandQueue*);
 				~CommandBuffer(void);
 
-				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) override;
+				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
 				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 

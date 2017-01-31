@@ -25,16 +25,16 @@ CommandBuffer::CommandBuffer(CommandAllocator* a, DKCommandQueue* q)
 
 CommandBuffer::~CommandBuffer(void)
 {
-	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
-	dc->ReleaseCommandAllocator(this->commandAllocator);
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
+	dev->ReleaseCommandAllocator(this->commandAllocator);
 
 	for (ComPtr<ID3D12CommandList>& list : commandLists)
 	{
-		dc->ReleaseCommandList(list.Get());
+		dev->ReleaseCommandList(list.Get());
 	}
 }
 
-DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(DKRenderPassDescriptor*)
+DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor&)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12CommandList> cm = dc->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);

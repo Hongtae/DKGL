@@ -26,7 +26,7 @@ CommandBuffer::~CommandBuffer(void)
 	[buffer autorelease];
 }
 
-DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(DKRenderPassDescriptor*)
+DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor&)
 {
 	return NULL;
 }

@@ -12,6 +12,8 @@
 #import <Metal/Metal.h>
 
 #include "../../DKTexture.h"
+#include "../../DKGraphicsDevice.h"
+#include "TextureBaseT.h"
 
 namespace DKFramework
 {
@@ -19,22 +21,14 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			class Texture : public DKTexture
+			class Texture : public TextureBaseT<DKTexture>
 			{
 			public:
-				Texture(id<MTLTexture>);
+				Texture(id<MTLTexture>, DKGraphicsDevice*);
 				~Texture(void);
 
-				uint32_t Width(void) override;
-				uint32_t Height(void) override;
-				uint32_t Depth(void) override;
-				uint32_t MipmapCount(void) override;
-
-				Type TextureType(void) override;
-				DKPixelFormat PixelFormat(void) override;
-
-			protected:
-				id<MTLTexture> texture;
+			private:
+				DKObject<DKGraphicsDevice> device;
 			};
 		}
 	}

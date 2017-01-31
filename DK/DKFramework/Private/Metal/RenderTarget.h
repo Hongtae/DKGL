@@ -1,5 +1,6 @@
 //
-//  File: Texture.h
+//  File: RenderTarget.h
+//  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -7,10 +8,10 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
-#include "d3d12_headers.h"
+#if DKGL_USE_METAL
+#import <Metal/Metal.h>
 
-#include "../../DKTexture.h"
+#include "../../DKRenderTarget.h"
 #include "../../DKGraphicsDevice.h"
 #include "TextureBaseT.h"
 
@@ -18,20 +19,19 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Direct3D
+		namespace Metal
 		{
-			class Texture : public TextureBaseT<DKTexture>
+			class RenderTarget : public TextureBaseT<DKRenderTarget>
 			{
 			public:
-				Texture(DKGraphicsDevice*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE);
-				~Texture(void);
+				RenderTarget(id<MTLTexture>, DKGraphicsDevice*);
+				~RenderTarget(void);
 
 			private:
 				DKObject<DKGraphicsDevice> device;
-				D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 			};
 		}
 	}
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_USE_METAL

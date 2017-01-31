@@ -86,7 +86,7 @@ bool SwapChain::Setup(void)
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = dc->GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 		device->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
 
-		DKObject<RenderTarget> texture = DKOBJECT_NEW RenderTarget(dc, renderTarget.Get(), CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT), rtvHandle);
+		DKObject<RenderTarget> texture = DKOBJECT_NEW RenderTarget(queue->Device(), renderTarget.Get(), CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT), rtvHandle);
 		this->renderTargets.Add(texture);
 	}
 

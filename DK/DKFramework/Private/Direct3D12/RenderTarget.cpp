@@ -14,7 +14,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
-RenderTarget::RenderTarget(GraphicsDevice* dev, ID3D12Resource* res, D3D12_CPU_DESCRIPTOR_HANDLE srv, D3D12_CPU_DESCRIPTOR_HANDLE rtv)
+RenderTarget::RenderTarget(DKGraphicsDevice* dev, ID3D12Resource* res, D3D12_CPU_DESCRIPTOR_HANDLE srv, D3D12_CPU_DESCRIPTOR_HANDLE rtv)
 	: TextureBaseT(res)
 	, device(dev)
 	, srvHandle(srv)
@@ -24,10 +24,11 @@ RenderTarget::RenderTarget(GraphicsDevice* dev, ID3D12Resource* res, D3D12_CPU_D
 
 RenderTarget::~RenderTarget(void)
 {
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (srvHandle.ptr)
-		device->ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, srvHandle);
+		dev->ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, srvHandle);
 	if (rtvHandle.ptr)
-		device->ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtvHandle);
+		dev->ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtvHandle);
 }
 
 #endif //#if DKGL_USE_DIRECT3D

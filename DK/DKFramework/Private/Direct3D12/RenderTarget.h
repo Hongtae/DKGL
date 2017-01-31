@@ -11,6 +11,7 @@
 #include "d3d12_headers.h"
 
 #include "../../DKRenderTarget.h"
+#include "../../DKGraphicsDevice.h"
 #include "TextureBaseT.h"
 
 namespace DKFramework
@@ -19,14 +20,14 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			class GraphicsDevice;
 			class RenderTarget : public TextureBaseT<DKRenderTarget>
 			{
 			public:
-				RenderTarget(GraphicsDevice*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE srv, D3D12_CPU_DESCRIPTOR_HANDLE rtv);
+				RenderTarget(DKGraphicsDevice*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE srv, D3D12_CPU_DESCRIPTOR_HANDLE rtv);
 				~RenderTarget(void);
 
-				GraphicsDevice* device;
+			private:
+				DKObject<DKGraphicsDevice> device;
 				D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 				D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 			};

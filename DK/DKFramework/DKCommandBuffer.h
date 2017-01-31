@@ -31,7 +31,7 @@ namespace DKFramework
 
 		virtual ~DKCommandBuffer(void) {}
 
-		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(DKRenderPassDescriptor*) = 0;
+		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) = 0;
 		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
 		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
 

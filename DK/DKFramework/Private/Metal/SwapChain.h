@@ -14,7 +14,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
-#include "Texture.h"
+#include "RenderTarget.h"
 
 namespace DKFramework
 {
@@ -32,7 +32,7 @@ namespace DKFramework
 
 				bool Present(void) override;
 
-				DKObject<DKTexture> NextFrame(void);
+				DKObject<DKRenderTarget> NextFrame(void);
 
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;

@@ -88,7 +88,7 @@ bool SwapChain::Present(void)
 	return true;
 }
 
-DKObject<DKTexture> SwapChain::NextFrame(void)
+DKObject<DKRenderTarget> SwapChain::NextFrame(void)
 {
 	id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
 	if (drawable)
@@ -96,8 +96,8 @@ DKObject<DKTexture> SwapChain::NextFrame(void)
 		this->currentDrawable = [drawable retain];
 
 		id<MTLTexture> texture = drawable.texture;
-		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(texture);
-		return renderTarget.SafeCast<DKTexture>();
+		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(texture, queue->Device());
+		return renderTarget.SafeCast<DKRenderTarget>();
 	}
 	return NULL;
 }
