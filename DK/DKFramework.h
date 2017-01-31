@@ -82,7 +82,6 @@ namespace DKFramework {}
 #include "DKFramework/DKSpline.h"
 #include "DKFramework/DKStaticPlaneShape.h"
 #include "DKFramework/DKStaticTriangleMeshShape.h"
-#include "DKFramework/DKTextureSampler.h"
 #include "DKFramework/DKTransform.h"
 #include "DKFramework/DKTriangle.h"
 #include "DKFramework/DKTriangleMesh.h"

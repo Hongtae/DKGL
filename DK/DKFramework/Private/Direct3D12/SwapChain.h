@@ -12,6 +12,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
+#include "RenderTarget.h"
 
 namespace DKFramework
 {
@@ -34,7 +35,14 @@ namespace DKFramework
 
 				ComPtr<IDXGISwapChain4> swapChain;
 
+				ComPtr<ID3D12DescriptorHeap> rtvHeap;
+				UINT rtvDescriptorSize;
+
+				DKArray<DKObject<RenderTarget>> renderTargets;
+
 			private:
+				UINT bufferCount = 2;	// double-buffering
+
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};
 		}

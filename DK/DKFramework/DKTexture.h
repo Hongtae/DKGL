@@ -12,6 +12,7 @@ namespace DKFramework
 {
 	class DKTexture
 	{
+	public:
 		enum Type
 		{
 			Type1D,
@@ -30,5 +31,7 @@ namespace DKFramework
 			UsageRenderTarget,
 			UsagePixelFormatView,
 		};
+
+		virtual ~DKTexture(void) {}
 	};
 }

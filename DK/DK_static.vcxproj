@@ -292,7 +292,6 @@
     <ClCompile Include="DKFramework\DKSpline.cpp" />
     <ClCompile Include="DKFramework\DKStaticPlaneShape.cpp" />
     <ClCompile Include="DKFramework\DKStaticTriangleMeshShape.cpp" />
-    <ClCompile Include="DKFramework\DKTextureSampler.cpp" />
     <ClCompile Include="DKFramework\DKTransform.cpp" />
     <ClCompile Include="DKFramework\DKTriangle.cpp" />
     <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp" />
@@ -311,6 +310,7 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
@@ -422,6 +422,7 @@
     <ClInclude Include="DKFramework\DKCommandQueue.h" />
     <ClInclude Include="DKFramework\DKCompoundShape.h" />
     <ClInclude Include="DKFramework\DKComputeCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKComputePipeline.h" />
     <ClInclude Include="DKFramework\DKConcaveShape.h" />
     <ClInclude Include="DKFramework\DKConeShape.h" />
     <ClInclude Include="DKFramework\DKConeTwistConstraint.h" />
@@ -429,6 +430,7 @@
     <ClInclude Include="DKFramework\DKConvexHullShape.h" />
     <ClInclude Include="DKFramework\DKConvexShape.h" />
     <ClInclude Include="DKFramework\DKCylinderShape.h" />
+    <ClInclude Include="DKFramework\DKDepthStencil.h" />
     <ClInclude Include="DKFramework\DKDynamicsWorld.h" />
     <ClInclude Include="DKFramework\DKFixedConstraint.h" />
     <ClInclude Include="DKFramework\DKFont.h" />
@@ -456,10 +458,14 @@
     <ClInclude Include="DKFramework\DKQuaternion.h" />
     <ClInclude Include="DKFramework\DKRect.h" />
     <ClInclude Include="DKFramework\DKRenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKRenderPass.h" />
+    <ClInclude Include="DKFramework\DKRenderPipeline.h" />
+    <ClInclude Include="DKFramework\DKRenderTarget.h" />
     <ClInclude Include="DKFramework\DKResource.h" />
     <ClInclude Include="DKFramework\DKResourceLoader.h" />
     <ClInclude Include="DKFramework\DKResourcePool.h" />
     <ClInclude Include="DKFramework\DKRigidBody.h" />
+    <ClInclude Include="DKFramework\DKSampler.h" />
     <ClInclude Include="DKFramework\DKScreen.h" />
     <ClInclude Include="DKFramework\DKSerializer.h" />
     <ClInclude Include="DKFramework\DKShaderConstant.h" />
@@ -471,7 +477,7 @@
     <ClInclude Include="DKFramework\DKSpline.h" />
     <ClInclude Include="DKFramework\DKStaticPlaneShape.h" />
     <ClInclude Include="DKFramework\DKStaticTriangleMeshShape.h" />
-    <ClInclude Include="DKFramework\DKTextureSampler.h" />
+    <ClInclude Include="DKFramework\DKTexture.h" />
     <ClInclude Include="DKFramework\DKTransform.h" />
     <ClInclude Include="DKFramework\DKTriangle.h" />
     <ClInclude Include="DKFramework\DKTriangleMesh.h" />
@@ -508,6 +514,7 @@
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />

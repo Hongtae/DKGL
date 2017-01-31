@@ -390,9 +390,6 @@
     <ClCompile Include="DKFramework\DKStaticTriangleMeshShape.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKTextureSampler.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKTransform.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
@@ -485,6 +482,9 @@
     </ClCompile>
     <ClCompile Include="DKFramework\DKImage.cpp">
       <Filter>DKFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -953,9 +953,6 @@
     <ClInclude Include="DKFramework\DKStaticTriangleMeshShape.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKTextureSampler.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKTransform.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -1116,6 +1113,30 @@
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\d3d12_headers.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKComputePipeline.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKDepthStencil.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderPass.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderPipeline.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSampler.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTexture.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderTarget.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClInclude>
   </ItemGroup>

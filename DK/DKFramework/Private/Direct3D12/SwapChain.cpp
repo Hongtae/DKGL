@@ -30,54 +30,85 @@ bool SwapChain::Setup(void)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	IDXGIFactory5* factory = dc->factory.Get();
+	ID3D12Device1* device = dc->device.Get();
 
 	HWND hWnd = (HWND)window->PlatformHandle();
-	if (hWnd)
+	if (hWnd == NULL)
+		return false;
+
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+	swapChainDesc.BufferCount = bufferCount;
+	swapChainDesc.Width = 0;
+	swapChainDesc.Height = 0;
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.SampleDesc.Count = 1;
+
+	ComPtr<IDXGISwapChain1> sc;
+	if (FAILED(factory->CreateSwapChainForHwnd(
+		queue->queue.Get(),
+		hWnd,
+		&swapChainDesc,
+		nullptr,
+		nullptr,
+		&sc)))
 	{
-		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-		swapChainDesc.BufferCount = 2; // double-buffering
-		swapChainDesc.Width = 0;
-		swapChainDesc.Height = 0;
-		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		swapChainDesc.SampleDesc.Count = 1;
-
-		ComPtr<IDXGISwapChain1> sc;
-		if (SUCCEEDED(factory->CreateSwapChainForHwnd(
-			queue->queue.Get(),
-			hWnd,
-			&swapChainDesc,
-			nullptr,
-			nullptr,
-			&sc)))
-		{
-			if (SUCCEEDED(sc.As(&this->swapChain)))
-			{
-				if (SUCCEEDED(this->swapChain->GetDesc1(&swapChainDesc)))
-				{
-					DKLog("IDXGISwapChain4 created with resolution: %u x %u",
-						swapChainDesc.Width,
-						swapChainDesc.Height);
-
-					return true;
-				}
-				else
-				{
-					DKLog("ERROR: IDXGISwapChain1::GetDesc1 failed");
-				}
-			}
-			else
-			{
-				DKLog("ERROR: IDXGISwapChain1::QueryInterface(IDXGISwapChain4) failed");
-			}
-		}
-		else
-		{
-			DKLog("ERROR: ID3D12Device::CreateFence() failed");
-		}
+		DKLog("ERROR: IDXGIFactory5::CreateSwapChainForHwnd() failed");
+		return false;
 	}
-	return false;
+
+	if (FAILED(sc.As(&this->swapChain)))
+	{
+		DKLog("ERROR: IDXGISwapChain1::QueryInterface(IDXGISwapChain4) failed");
+		return false;
+	}
+	if (FAILED(this->swapChain->GetDesc1(&swapChainDesc)))
+	{
+		DKLog("ERROR: IDXGISwapChain1::GetDesc1 failed");
+		return false;
+	}
+
+	DKLog("IDXGISwapChain4 created with resolution: %u x %u",
+		  swapChainDesc.Width,
+		  swapChainDesc.Height);
+
+	// create RenderTargetView
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+	rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	if (FAILED(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&this->rtvHeap))))
+	{
+		DKLog("ERROR: ID3D12Device1::CreateDescriptorHeap failed");
+		return false;
+	}
+
+	this->rtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	// Create frame resources.
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->rtvHeap->GetCPUDescriptorHandleForHeapStart());
+
+	// Create a RTV for each frame.
+	for (UINT n = 0; n < swapChainDesc.BufferCount; n++)
+	{
+		ComPtr<ID3D12Resource> renderTarget;
+		if (FAILED(this->swapChain->GetBuffer(n, IID_PPV_ARGS(&renderTarget))))
+		{
+			DKLog("ERROR: IDXGISwapChain4::GetBuffer failed");
+			return false;
+		}
+
+		device->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
+		rtvHandle.Offset(1, this->rtvDescriptorSize);
+
+		DKObject<RenderTarget> rt = DKOBJECT_NEW RenderTarget(renderTarget.Get());
+		this->renderTargets.Add(rt);
+	}
+
+	DKLog("%d RenderTargets for SwapChain created.", (int)this->renderTargets.Count());
+
+	return true;
 }
 
 bool SwapChain::Present(void)
