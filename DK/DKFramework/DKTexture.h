@@ -7,6 +7,7 @@
 
 #pragma once
 #include "../DKFoundation.h"
+#include "DKPixelFormat.h"
 
 namespace DKFramework
 {
@@ -33,5 +34,14 @@ namespace DKFramework
 		};
 
 		virtual ~DKTexture(void) {}
+
+		virtual uint32_t Width(void) = 0;
+		virtual uint32_t Height(void) = 0;
+		virtual uint32_t Depth(void) = 0;
+		virtual uint32_t MipmapCount(void) = 0;
+
+		virtual Type TextureType(void) = 0;
+		virtual Usage TextureUsage(void) = 0;
+		virtual DKPixelFormat PixelFormat(void) = 0;
 	};
 }
