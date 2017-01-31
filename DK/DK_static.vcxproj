@@ -188,6 +188,7 @@
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="DKFramework\Private\Metal\PixelFormat.mm" />
     <None Include="DKFramework\Private\Metal\SwapChain.mm" />
+    <None Include="DKFramework\Private\Metal\Texture.mm" />
     <None Include="Libs.props" />
   </ItemGroup>
   <ItemGroup>
@@ -309,12 +310,12 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandAllocator.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandBuffer.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\PixelFormat.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\PixelFormat.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\Texture.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
@@ -514,21 +515,21 @@
     <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandAllocator.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\d3dx12.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\d3d12_headers.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\d3dx12.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\TextureBaseT.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\Texture.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />

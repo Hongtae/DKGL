@@ -28,6 +28,7 @@ namespace DKFramework
 				uint32_t Height(void) override;
 				uint32_t Depth(void) override;
 				uint32_t MipmapCount(void) override;
+
 				Type TextureType(void) override;
 				DKPixelFormat PixelFormat(void) override;
 
