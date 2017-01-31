@@ -14,8 +14,10 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
-RenderTarget::RenderTarget(ID3D12Resource* r)
+RenderTarget::RenderTarget(ID3D12Resource* r, ID3D12DescriptorHeap* h, D3D12_CPU_DESCRIPTOR_HANDLE d)
 	: resource(r)
+	, descHeap(h)
+	, descHandle(d)
 {
 }
 

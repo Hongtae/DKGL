@@ -21,10 +21,12 @@ namespace DKFramework
 			class RenderTarget : public DKRenderTarget
 			{
 			public:
-				RenderTarget(ID3D12Resource*);
+				RenderTarget(ID3D12Resource*, ID3D12DescriptorHeap*, D3D12_CPU_DESCRIPTOR_HANDLE);
 				~RenderTarget(void);
 
 				ComPtr<ID3D12Resource> resource;
+				ComPtr<ID3D12DescriptorHeap> descHeap;
+				D3D12_CPU_DESCRIPTOR_HANDLE descHandle;
 			};
 		}
 	}
