@@ -78,9 +78,6 @@ namespace DKFramework
 		// Depth
 		D32,
 
-		// Stencil
-		S8,
-
 		// Depth Stencil
 		D32S8X24,
 	};

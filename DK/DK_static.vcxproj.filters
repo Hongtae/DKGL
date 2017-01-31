@@ -41,6 +41,12 @@
     <None Include="DKFramework\Private\CocoaTouch\Window.mm">
       <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
+    <None Include="DKFramework\Private\Metal\SwapChain.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\PixelFormat.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
@@ -484,6 +490,12 @@
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\PixelFormat.cpp">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1137,6 +1149,24 @@
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\SwapChain.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\PixelFormat.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPixelFormat.h">
+      <Filter>DKFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\TextureBaseT.h">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,32 +1,29 @@
 //
 //  File: PixelFormat.h
-//  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
-#import <Metal/Metal.h>
-
+#if DKGL_USE_VULKAN
+#include <vulkan/vulkan.h>
 #include "../../DKPixelFormat.h"
 
 namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Metal
+		namespace Vulkan
 		{
 			struct PixelFormat
 			{
-				static MTLPixelFormat From(DKPixelFormat);
-				static DKPixelFormat To(MTLPixelFormat);
+				static VkFormat From(DKPixelFormat);
+				static DKPixelFormat To(VkFormat);
 			};
 		}
 	}
 }
 
 #endif //#if DKGL_USE_METAL
-

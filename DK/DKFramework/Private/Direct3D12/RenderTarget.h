@@ -10,6 +10,7 @@
 #if DKGL_USE_DIRECT3D
 #include "d3d12_headers.h"
 
+#include "TextureBaseT.h"
 #include "../../DKRenderTarget.h"
 
 namespace DKFramework
@@ -18,13 +19,12 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			class RenderTarget : public DKRenderTarget
+			class RenderTarget : public TextureBaseT<DKRenderTarget>
 			{
 			public:
 				RenderTarget(ID3D12Resource*, ID3D12DescriptorHeap*, D3D12_CPU_DESCRIPTOR_HANDLE);
 				~RenderTarget(void);
 
-				ComPtr<ID3D12Resource> resource;
 				ComPtr<ID3D12DescriptorHeap> descHeap;
 				D3D12_CPU_DESCRIPTOR_HANDLE descHandle;
 			};

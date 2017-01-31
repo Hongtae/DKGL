@@ -1,6 +1,5 @@
 //
 //  File: PixelFormat.h
-//  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -8,8 +7,8 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
-#import <Metal/Metal.h>
+#if DKGL_USE_DIRECT3D
+#include "d3d12_headers.h"
 
 #include "../../DKPixelFormat.h"
 
@@ -17,12 +16,12 @@ namespace DKFramework
 {
 	namespace Private
 	{
-		namespace Metal
+		namespace Direct3D
 		{
 			struct PixelFormat
 			{
-				static MTLPixelFormat From(DKPixelFormat);
-				static DKPixelFormat To(MTLPixelFormat);
+				static DXGI_FORMAT From(DKPixelFormat);
+				static DKPixelFormat To(DXGI_FORMAT);
 			};
 		}
 	}

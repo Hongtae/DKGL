@@ -16,22 +16,14 @@ namespace DKFramework
 	public:
 		enum Type
 		{
+			TypeUnknown = 0,
 			Type1D,
 			Type1DArray,
 			Type2D,
 			Type2DArray,
-			Type2DMultisample,
-			TypeCube,
 			Type3D,
 		};
-		enum Usage
-		{
-			UsageUnknown,
-			UsageShaderRead,
-			UsageShaderWrite,
-			UsageRenderTarget,
-			UsagePixelFormatView,
-		};
+
 
 		virtual ~DKTexture(void) {}
 
@@ -41,7 +33,6 @@ namespace DKFramework
 		virtual uint32_t MipmapCount(void) = 0;
 
 		virtual Type TextureType(void) = 0;
-		virtual Usage TextureUsage(void) = 0;
 		virtual DKPixelFormat PixelFormat(void) = 0;
 	};
 }
