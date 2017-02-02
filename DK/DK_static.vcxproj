@@ -321,6 +321,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
@@ -536,6 +537,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />

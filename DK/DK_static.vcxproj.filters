@@ -504,6 +504,9 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1180,6 +1183,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h">
       <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

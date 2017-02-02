@@ -12,6 +12,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
+#include "RenderTarget.h"
 
 namespace DKFramework
 {
@@ -36,18 +37,12 @@ namespace DKFramework
 				VkSurfaceKHR surface;
 				VkSwapchainKHR swapchain;
 
+				DKArray<DKObject<RenderTarget>> renderTargets;
+
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;
 
 			private:
-
-				struct SwapchainImageView
-				{
-					VkImage image = nullptr;
-					VkImageView imageView = nullptr;
-				};
-				DKArray<SwapchainImageView> buffers;
-
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};
 		}

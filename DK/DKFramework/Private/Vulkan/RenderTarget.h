@@ -1,5 +1,5 @@
 //
-//  File: PixelFormat.h
+//  File: RenderTarget.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
@@ -10,7 +10,7 @@
 #if DKGL_USE_VULKAN
 #include <vulkan/vulkan.h>
 
-#include "../../DKPixelFormat.h"
+#include "../../DKRenderTarget.h"
 
 namespace DKFramework
 {
@@ -18,13 +18,17 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			struct PixelFormat
+			class RenderTarget /*: public DKRenderTarget */
 			{
-				static VkFormat From(DKPixelFormat);
-				static DKPixelFormat To(VkFormat);
+			public:
+				RenderTarget(VkDevice, VkImageView);
+				~RenderTarget(void);
+
+				VkDevice device;
+				VkImageView imageView;
 			};
 		}
 	}
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_USE_VULKAN

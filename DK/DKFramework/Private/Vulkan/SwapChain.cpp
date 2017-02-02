@@ -32,12 +32,7 @@ SwapChain::~SwapChain(void)
 	VkInstance instance = dc->instance;
 	VkDevice device = dc->device;
 
-	for (SwapchainImageView& view : buffers)
-	{
-		if (view.imageView)
-			vkDestroyImageView(device, view.imageView, nullptr);
-	}
-	buffers.Clear();
+	renderTargets.Clear();
 
 	if (swapchain)
 		vkDestroySwapchainKHR(device, swapchain, nullptr);
@@ -275,14 +270,9 @@ bool SwapChain::Update(void)
 	// This also cleans up all the presentable images
 	if (swapchainOld)
 	{
-		for (SwapchainImageView& view : this->buffers)
-		{
-			if (view.imageView)
-				vkDestroyImageView(device, view.imageView, nullptr);
-		}
 		vkDestroySwapchainKHR(device, swapchainOld, nullptr);
 	}
-	this->buffers.Clear();
+	this->renderTargets.Clear();
 	
 	uint32_t swapchainImageCount = 0;
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, NULL);
@@ -302,7 +292,7 @@ bool SwapChain::Update(void)
 	}
 
 	// Get the swap chain buffers containing the image and imageview
-	this->buffers.Reserve(swapchainImages.Count());
+	this->renderTargets.Reserve(swapchainImages.Count());
 	for (VkImage image : swapchainImages)
 	{
 		VkImageViewCreateInfo colorAttachmentView = {};
@@ -332,11 +322,8 @@ bool SwapChain::Update(void)
 			return false;
 		}
 
-		SwapchainImageView swapchainImageView;
-		swapchainImageView.image = image;
-		swapchainImageView.imageView = imageView;
-
-		this->buffers.Add(swapchainImageView);
+		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(device, imageView);
+		this->renderTargets.Add(renderTarget);
 	}
 
 	return true;
