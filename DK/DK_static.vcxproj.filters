@@ -501,6 +501,9 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\Texture.cpp">
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1171,6 +1174,12 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Texture.h">
       <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\TextureBaseT.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKColor.h"
+#include "DKRenderTarget.h"
 
 namespace DKFramework
 {
@@ -24,6 +25,8 @@ namespace DKFramework
 			StoreActionDontCare = 0,
 			StoreActionStore,
 		};
+
+		DKObject<DKRenderTarget> renderTarget;
 
 		uint32_t mipmapLevel = 0;
 		LoadAction loadAction = LoadActionDontCare;

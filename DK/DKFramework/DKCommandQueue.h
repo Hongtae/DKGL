@@ -12,6 +12,7 @@
 namespace DKFramework
 {
 	class DKGraphicsDevice;
+	class DKRenderTarget;
 	class DKWindow;
 
 	class DKSwapChain

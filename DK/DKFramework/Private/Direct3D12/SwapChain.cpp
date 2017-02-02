@@ -73,22 +73,6 @@ bool SwapChain::Setup(void)
 		  swapChainDesc.Width,
 		  swapChainDesc.Height);
 
-	// create RenderTargetView
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-	rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount;
-	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	if (FAILED(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&this->rtvHeap))))
-	{
-		DKLog("ERROR: ID3D12Device1::CreateDescriptorHeap failed");
-		return false;
-	}
-
-	this->rtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	// Create frame resources.
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->rtvHeap->GetCPUDescriptorHandleForHeapStart());
-
 	// Create a RTV for each frame.
 	for (UINT n = 0; n < swapChainDesc.BufferCount; n++)
 	{
@@ -99,10 +83,10 @@ bool SwapChain::Setup(void)
 			return false;
 		}
 
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = dc->GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 		device->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
-		rtvHandle.Offset(1, this->rtvDescriptorSize);
 
-		DKObject<Texture> texture = DKOBJECT_NEW Texture(renderTarget.Get(), this->rtvHeap.Get(), rtvHandle);
+		DKObject<RenderTarget> texture = DKOBJECT_NEW RenderTarget(dc, renderTarget.Get(), CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT), rtvHandle);
 		this->renderTargets.Add(texture);
 	}
 

@@ -315,6 +315,7 @@
     <ClCompile Include="DKFramework\Private\Direct3D12\PixelFormat.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp" />
+    <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Direct3D12\Texture.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
@@ -522,7 +523,9 @@
     <ClInclude Include="DKFramework\Private\Direct3D12\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\Texture.h" />
+    <ClInclude Include="DKFramework\Private\Direct3D12\TextureBaseT.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />

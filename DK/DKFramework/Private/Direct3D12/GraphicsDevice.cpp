@@ -178,12 +178,21 @@ GraphicsDevice::GraphicsDevice(void)
 	{
 		throw std::runtime_error("ID3D12Device::CreateCommandAllocator failed");
 	}
+
+	for (UINT i = 0; i < D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES; ++i)
+	{
+		descriptorHandleIncrementSizes[i] = this->device->GetDescriptorHandleIncrementSize((D3D12_DESCRIPTOR_HEAP_TYPE)i);
+	}
+	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV] = 4096;
+	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER] = 1024;
+	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_RTV] = 128;
+	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_DSV] = 128;
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
-	PurgeAllReusableCommandLists();
-	PurgeAllReusableCommandAllocators();
+	PurgeCachedCommandLists();
+	PurgeCachedCommandAllocators();
 	this->dummyAllocator = nullptr;
 	this->device = nullptr;
 	DKLog("Direct3D12 Device destroyed.");
@@ -217,13 +226,7 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 	return queue.SafeCast<DKCommandQueue>();
 }
 
-void GraphicsDevice::PushReusableCommandAllocator(CommandAllocator* allocator)
-{
-	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
-	this->reusableCommandAllocators.Add(allocator);
-}
-
-CommandAllocator* GraphicsDevice::RetrieveReusableCommandAllocator(D3D12_COMMAND_LIST_TYPE type)
+CommandAllocator* GraphicsDevice::GetCommandAllocator(D3D12_COMMAND_LIST_TYPE type)
 {
 	if (true)
 	{
@@ -249,7 +252,13 @@ CommandAllocator* GraphicsDevice::RetrieveReusableCommandAllocator(D3D12_COMMAND
 	return DKRawPtrNew<CommandAllocator>(commandAllocator.Get(), type);
 }
 
-void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
+void GraphicsDevice::ReleaseCommandAllocator(CommandAllocator* allocator)
+{
+	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+	this->reusableCommandAllocators.Add(allocator);
+}
+
+void GraphicsDevice::PurgeCachedCommandAllocators(void)
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
@@ -259,23 +268,7 @@ void GraphicsDevice::PurgeAllReusableCommandAllocators(void)
 	this->reusableCommandAllocators.Clear();
 }
 
-void GraphicsDevice::PushReusableCommandList(ID3D12CommandList* list)
-{
-	ComPtr<ID3D12GraphicsCommandList> graphicsCommandList;
-	if (SUCCEEDED(list->QueryInterface(IID_PPV_ARGS(&graphicsCommandList))))
-	{
-		graphicsCommandList->Reset(this->dummyAllocator.Get(), nullptr);
-		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
-		this->reusableCommandLists.Add( list );
-		list->AddRef();
-	}
-	else
-	{
-		DKLog("ERROR: ID3D12CommandList::QueryInterface(ID3D12GraphicsCommandList) failed");
-	}
-}
-
-ComPtr<ID3D12CommandList> GraphicsDevice::RetrieveReusableCommandList(D3D12_COMMAND_LIST_TYPE type)
+ComPtr<ID3D12CommandList> GraphicsDevice::GetCommandList(D3D12_COMMAND_LIST_TYPE type)
 {
 	if (true)
 	{
@@ -300,10 +293,101 @@ ComPtr<ID3D12CommandList> GraphicsDevice::RetrieveReusableCommandList(D3D12_COMM
 	return commandList;
 }
 
-void GraphicsDevice::PurgeAllReusableCommandLists(void)
+void GraphicsDevice::ReleaseCommandList(ID3D12CommandList* list)
+{
+	ComPtr<ID3D12GraphicsCommandList> graphicsCommandList;
+	if (SUCCEEDED(list->QueryInterface(IID_PPV_ARGS(&graphicsCommandList))))
+	{
+		graphicsCommandList->Reset(this->dummyAllocator.Get(), nullptr);
+		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+		this->reusableCommandLists.Add( list );
+		list->AddRef();
+	}
+	else
+	{
+		DKLog("ERROR: ID3D12CommandList::QueryInterface(ID3D12GraphicsCommandList) failed");
+	}
+}
+
+void GraphicsDevice::PurgeCachedCommandLists(void)
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandLists.Clear();
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE GraphicsDevice::GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE type)
+{
+	DKASSERT_DEBUG( type >= 0 && type < D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES);
+
+	DKArray<DescriptorHeap>& heapList = descriptorHeaps[type];
+	UINT incrementSizes = descriptorHandleIncrementSizes[type];
+
+	DKCriticalSection<DKSpinLock> guard(descriptorHeapLock);
+	for (DescriptorHeap& dh : heapList)
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = dh.heap->GetCPUDescriptorHandleForHeapStart();
+		for (INT i = 0, c = (INT)dh.inUseBits.Count(); i < c; ++i)
+		{
+			if (dh.inUseBits.Value(i) == false)
+			{
+				dh.inUseBits.SetValue(i, true);
+				return handle;
+			}
+			handle.ptr += incrementSizes;
+		}
+	}
+	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+	desc.Type = type;
+	desc.NumDescriptors = descriptorHeapInitialCapacities[type];
+	if (type == D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV || type == D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER)
+		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+	ComPtr<ID3D12DescriptorHeap> descHeap;
+	if (SUCCEEDED(this->device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&descHeap))))
+	{
+		auto index = heapList.Add(DescriptorHeap());
+		DescriptorHeap& dh = heapList.Value(index);
+		dh.heap = descHeap;
+		dh.inUseBits.Resize(desc.NumDescriptors, false);
+		dh.inUseBits.SetValue(0, true);
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = dh.heap->GetCPUDescriptorHandleForHeapStart();
+		return handle;
+	}
+	else
+	{
+		DKLog("ERROR: ID3D12Device::CreateDescriptorHeap() failed");
+	}
+
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT);
+}
+
+void GraphicsDevice::ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_CPU_DESCRIPTOR_HANDLE handle)
+{
+	DKASSERT_DEBUG( type >= 0 && type < D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES);
+
+	DKArray<DescriptorHeap>& heapList = descriptorHeaps[type];
+	UINT incrementSizes = descriptorHandleIncrementSizes[type];
+
+	DKCriticalSection<DKSpinLock> guard(descriptorHeapLock);
+	for (DescriptorHeap& dh : heapList)
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC desc = dh.heap->GetDesc();
+		DKASSERT_DEBUG(desc.Type == type);
+
+		SIZE_T start = dh.heap->GetCPUDescriptorHandleForHeapStart().ptr;
+		SIZE_T end = start + incrementSizes * desc.NumDescriptors;
+
+		if (handle.ptr >= start && handle.ptr < end)
+		{
+			SIZE_T offset = handle.ptr - start;
+			SIZE_T index = offset / incrementSizes;
+
+			dh.inUseBits.SetValue(index, false);
+			return;
+		}
+	}
+
+	DKASSERT_DEBUG(false);	// error!
 }
 
 #endif //#if DKGL_USE_DIRECT3D
