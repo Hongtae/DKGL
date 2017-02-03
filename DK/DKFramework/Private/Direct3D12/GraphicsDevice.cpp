@@ -339,8 +339,8 @@ D3D12_CPU_DESCRIPTOR_HANDLE GraphicsDevice::GetDescriptor(D3D12_DESCRIPTOR_HEAP_
 	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 	desc.Type = type;
 	desc.NumDescriptors = descriptorHeapInitialCapacities[type];
-	if (type == D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV || type == D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER)
-		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	desc.NodeMask = 0;
 
 	ComPtr<ID3D12DescriptorHeap> descHeap;
 	if (SUCCEEDED(this->device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&descHeap))))

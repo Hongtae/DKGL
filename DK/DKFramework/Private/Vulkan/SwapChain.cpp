@@ -295,34 +295,34 @@ bool SwapChain::Update(void)
 	this->renderTargets.Reserve(swapchainImages.Count());
 	for (VkImage image : swapchainImages)
 	{
-		VkImageViewCreateInfo colorAttachmentView = {};
-		colorAttachmentView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		colorAttachmentView.pNext = NULL;
-		colorAttachmentView.format = this->surfaceFormat.format;
-		colorAttachmentView.components = {
+		VkImageViewCreateInfo imageViewCI = {};
+		imageViewCI.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		imageViewCI.pNext = NULL;
+		imageViewCI.format = this->surfaceFormat.format;
+		imageViewCI.components = {
 			VK_COMPONENT_SWIZZLE_R,
 			VK_COMPONENT_SWIZZLE_G,
 			VK_COMPONENT_SWIZZLE_B,
 			VK_COMPONENT_SWIZZLE_A
 		};
-		colorAttachmentView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		colorAttachmentView.subresourceRange.baseMipLevel = 0;
-		colorAttachmentView.subresourceRange.levelCount = 1;
-		colorAttachmentView.subresourceRange.baseArrayLayer = 0;
-		colorAttachmentView.subresourceRange.layerCount = 1;
-		colorAttachmentView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		colorAttachmentView.flags = 0;
-		colorAttachmentView.image = image;
+		imageViewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageViewCI.subresourceRange.baseMipLevel = 0;
+		imageViewCI.subresourceRange.levelCount = 1;
+		imageViewCI.subresourceRange.baseArrayLayer = 0;
+		imageViewCI.subresourceRange.layerCount = 1;
+		imageViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageViewCI.flags = 0;
+		imageViewCI.image = image;
 
 		VkImageView imageView = nullptr;
-		err = vkCreateImageView(device, &colorAttachmentView, nullptr, &imageView);
+		err = vkCreateImageView(device, &imageViewCI, nullptr, &imageView);
 		if (err != VK_SUCCESS)
 		{
 			DKLog("ERROR: vkCreateImageView failed: %s", VkResultCStr(err));
 			return false;
 		}
 
-		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(device, imageView);
+		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(queue->Device(), imageView);
 		this->renderTargets.Add(renderTarget);
 	}
 

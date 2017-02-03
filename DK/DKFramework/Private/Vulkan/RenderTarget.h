@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.h>
 
 #include "../../DKRenderTarget.h"
+#include "../../DKGraphicsDevice.h"
 
 namespace DKFramework
 {
@@ -21,10 +22,10 @@ namespace DKFramework
 			class RenderTarget /*: public DKRenderTarget */
 			{
 			public:
-				RenderTarget(VkDevice, VkImageView);
+				RenderTarget(DKGraphicsDevice*, VkImageView);
 				~RenderTarget(void);
 
-				VkDevice device;
+				DKObject<DKGraphicsDevice> device;
 				VkImageView imageView;
 			};
 		}

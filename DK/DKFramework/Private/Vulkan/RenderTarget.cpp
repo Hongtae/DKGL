@@ -9,11 +9,12 @@
 #if DKGL_USE_VULKAN
 #include "Extensions.h"
 #include "RenderTarget.h"
+#include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-RenderTarget::RenderTarget(VkDevice d, VkImageView v)
+RenderTarget::RenderTarget(DKGraphicsDevice* d, VkImageView v)
 	: device(d)
 	, imageView(v)
 {
@@ -21,8 +22,9 @@ RenderTarget::RenderTarget(VkDevice d, VkImageView v)
 
 RenderTarget::~RenderTarget(void)
 {
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (imageView)
-		vkDestroyImageView(device, imageView, nullptr);
+		vkDestroyImageView(dev->device, imageView, nullptr);
 }
 
 #endif //#if DKGL_USE_VULKAN

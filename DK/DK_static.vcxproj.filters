@@ -50,6 +50,9 @@
     <None Include="DKFramework\Private\Metal\Texture.mm">
       <Filter>DKFramework\Private\Metal</Filter>
     </None>
+    <None Include="DKFramework\Private\Metal\RenderTarget.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
@@ -1186,6 +1189,12 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\RenderTarget.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\TextureBaseT.h">
+      <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

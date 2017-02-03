@@ -20,6 +20,7 @@ RenderTarget::RenderTarget(DKGraphicsDevice* dev, ID3D12Resource* res, D3D12_CPU
 	, srvHandle(srv)
 	, rtvHandle(rtv)
 {
+	DKASSERT_DEBUG((resource->GetDesc().Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET) != 0);
 }
 
 RenderTarget::~RenderTarget(void)
