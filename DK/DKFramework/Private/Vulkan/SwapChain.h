@@ -27,10 +27,14 @@ namespace DKFramework
 				~SwapChain(void);
 
 				bool Setup(void);
+				bool Update(void);
+
+				void SetColorPixelFormat(DKPixelFormat) override;
+				void SetDepthStencilPixelFormat(DKPixelFormat) override;
+				const DKRenderPassDescriptor& CurrentRenderPassDescriptor(void) const override;
 
 				bool Present(void) override;
 
-				bool Update(void);
 
 				bool enableVSync;
 				VkSurfaceFormatKHR surfaceFormat;
@@ -43,6 +47,7 @@ namespace DKFramework
 				DKObject<CommandQueue> queue;
 
 			private:
+				DKRenderPassDescriptor renderPassDescriptor;
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};
 		}

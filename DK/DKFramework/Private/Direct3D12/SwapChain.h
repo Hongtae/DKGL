@@ -28,7 +28,12 @@ namespace DKFramework
 
 				bool Setup(void);
 
+				void SetColorPixelFormat(DKPixelFormat) override;
+				void SetDepthStencilPixelFormat(DKPixelFormat) override;
+				const DKRenderPassDescriptor& CurrentRenderPassDescriptor(void) const override;
+
 				bool Present(void) override;
+
 
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;
@@ -42,6 +47,7 @@ namespace DKFramework
 
 			private:
 				UINT bufferCount = 3;	// triple-buffering
+				DKRenderPassDescriptor renderPassDescriptor;
 
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};

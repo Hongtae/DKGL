@@ -120,11 +120,6 @@ bool SwapChain::Setup(void)
 	return this->Update();
 }
 
-bool SwapChain::Present(void)
-{
-	return false;
-}
-
 bool SwapChain::Update(void)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
@@ -273,7 +268,7 @@ bool SwapChain::Update(void)
 		vkDestroySwapchainKHR(device, swapchainOld, nullptr);
 	}
 	this->renderTargets.Clear();
-	
+
 	uint32_t swapchainImageCount = 0;
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, NULL);
 	if (err != VK_SUCCESS)
@@ -322,11 +317,35 @@ bool SwapChain::Update(void)
 			return false;
 		}
 
-		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(queue->Device(), imageView);
+		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(queue->Device(), imageView, image, nullptr);
+		renderTarget->imageType = VK_IMAGE_TYPE_2D;
+		renderTarget->format = swapchainCI.imageFormat;
+		renderTarget->extent = { swapchainExtent.width, swapchainExtent.height, 1 };
+		renderTarget->mipLevels = 1;
+		renderTarget->arrayLayers = swapchainCI.imageArrayLayers;
+		renderTarget->usage = swapchainCI.imageUsage;
 		this->renderTargets.Add(renderTarget);
 	}
 
 	return true;
+}
+
+void SwapChain::SetColorPixelFormat(DKPixelFormat)
+{
+}
+
+void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
+{
+}
+
+const DKRenderPassDescriptor& SwapChain::CurrentRenderPassDescriptor(void) const
+{
+	return renderPassDescriptor;
+}
+
+bool SwapChain::Present(void)
+{
+	return false;
 }
 
 void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)

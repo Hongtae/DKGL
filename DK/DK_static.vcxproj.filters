@@ -1196,6 +1196,9 @@
     <ClInclude Include="DKFramework\Private\Metal\TextureBaseT.h">
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\TextureBaseT.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Libs\VERSION.TXT">

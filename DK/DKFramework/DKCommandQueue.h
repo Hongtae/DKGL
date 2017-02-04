@@ -7,18 +7,23 @@
 
 #pragma once
 #include "../DKFoundation.h"
+#include "DKRenderPass.h"
 #include "DKCommandBuffer.h"
 
 namespace DKFramework
 {
 	class DKGraphicsDevice;
-	class DKRenderTarget;
 	class DKWindow;
 
 	class DKSwapChain
 	{
 	public:
 		virtual ~DKSwapChain(void) {}
+
+		virtual void SetColorPixelFormat(DKPixelFormat) = 0;
+		virtual void SetDepthStencilPixelFormat(DKPixelFormat) = 0;
+		virtual const DKRenderPassDescriptor& CurrentRenderPassDescriptor(void) const = 0;
+
 		virtual bool Present(void) = 0;
 	};
 	/// @brief GPU command queue

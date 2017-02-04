@@ -95,6 +95,19 @@ bool SwapChain::Setup(void)
 	return true;
 }
 
+void SwapChain::SetColorPixelFormat(DKPixelFormat)
+{
+}
+
+void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
+{
+}
+
+const DKRenderPassDescriptor& SwapChain::CurrentRenderPassDescriptor(void) const
+{
+	return renderPassDescriptor;
+}
+
 bool SwapChain::Present(void)
 {
 	return false;

@@ -30,6 +30,10 @@ namespace DKFramework
 
 				bool Setup(void);
 
+				void SetColorPixelFormat(DKPixelFormat) override;
+				void SetDepthStencilPixelFormat(DKPixelFormat) override;
+				const DKRenderPassDescriptor& CurrentRenderPassDescriptor(void) const override;
+
 				bool Present(void) override;
 
 				DKObject<DKRenderTarget> NextFrame(void);
@@ -41,6 +45,8 @@ namespace DKFramework
 
 			private:
 				id<CAMetalDrawable> currentDrawable;
+				DKRenderPassDescriptor renderPassDescriptor;
+
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};
 		}

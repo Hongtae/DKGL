@@ -14,8 +14,9 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-RenderTarget::RenderTarget(DKGraphicsDevice* d, VkImageView v)
-	: device(d)
+RenderTarget::RenderTarget(DKGraphicsDevice* d, VkImageView v, VkImage i, const VkImageCreateInfo* ci)
+	: TextureBaseT(i, ci)
+	, device(d)
 	, imageView(v)
 {
 }

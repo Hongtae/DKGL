@@ -76,6 +76,20 @@ bool SwapChain::Setup(void)
 	return false;
 }
 
+
+void SwapChain::SetColorPixelFormat(DKPixelFormat)
+{
+}
+
+void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
+{
+}
+
+const DKRenderPassDescriptor& SwapChain::CurrentRenderPassDescriptor(void) const
+{
+	return renderPassDescriptor;
+}
+
 bool SwapChain::Present(void)
 {
 	@autoreleasepool

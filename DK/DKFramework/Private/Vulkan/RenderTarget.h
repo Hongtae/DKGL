@@ -12,6 +12,7 @@
 
 #include "../../DKRenderTarget.h"
 #include "../../DKGraphicsDevice.h"
+#include "TextureBaseT.h"
 
 namespace DKFramework
 {
@@ -19,10 +20,10 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			class RenderTarget /*: public DKRenderTarget */
+			class RenderTarget : public TextureBaseT<DKRenderTarget>
 			{
 			public:
-				RenderTarget(DKGraphicsDevice*, VkImageView);
+				RenderTarget(DKGraphicsDevice*, VkImageView, VkImage, const VkImageCreateInfo*);
 				~RenderTarget(void);
 
 				DKObject<DKGraphicsDevice> device;
