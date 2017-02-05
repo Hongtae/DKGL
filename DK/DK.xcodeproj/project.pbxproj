@@ -1293,6 +1293,7 @@
 		848566CF1E214B330011B53B /* DKSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 848566CE1E214B330011B53B /* DKSampler.h */; };
 		848566D11E214DCB0011B53B /* DKComputePipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 848566D01E214DCB0011B53B /* DKComputePipeline.h */; };
 		849705301E28CDEB00E34F5C /* DKCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */; };
+		8498FC341E4720E400E6A961 /* TextureBaseT.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC331E4720E400E6A961 /* TextureBaseT.h */; };
 		84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */; };
 		84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
@@ -2093,6 +2094,7 @@
 		849705201E28CD0E00E34F5C /* RenderCommandEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCommandEncoder.cpp; sourceTree = "<group>"; };
 		849705211E28CD0E00E34F5C /* RenderCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCommandEncoder.h; sourceTree = "<group>"; };
 		8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCommandEncoder.h; sourceTree = "<group>"; };
+		8498FC331E4720E400E6A961 /* TextureBaseT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBaseT.h; sourceTree = "<group>"; };
 		84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshProxyShape.cpp; sourceTree = "<group>"; };
 		84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTriangleMeshProxyShape.h; sourceTree = "<group>"; };
 		849E2A9115634718000CBE79 /* DKFence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFence.cpp; sourceTree = "<group>"; };
@@ -2477,8 +2479,8 @@
 				666ECA701DB1721F00354463 /* GraphicsDevice.mm */,
 				846C53A81E40950B00B2FA6F /* PixelFormat.h */,
 				84219C1D1E40E5E30046B099 /* PixelFormat.mm */,
-				8458E6D11E44587300871311 /* RenderTarget.mm */,
 				8458E6D21E44587300871311 /* RenderTarget.h */,
+				8458E6D11E44587300871311 /* RenderTarget.mm */,
 				8447CB3E1E379C2200E02637 /* SwapChain.h */,
 				8447CB3F1E379C2200E02637 /* SwapChain.mm */,
 				84219C1E1E40E5E30046B099 /* Texture.h */,
@@ -2640,6 +2642,7 @@
 				8458E6C81E44582500871311 /* RenderTarget.h */,
 				84FCF1671E3693B500DF9386 /* SwapChain.cpp */,
 				84FCF1681E3693B500DF9386 /* SwapChain.h */,
+				8498FC331E4720E400E6A961 /* TextureBaseT.h */,
 			);
 			path = Vulkan;
 			sourceTree = "<group>";
@@ -3765,6 +3768,7 @@
 				666ECA661DB1703600354463 /* DKAudioDevice.h in Headers */,
 				84211C451665E86300B9B9A2 /* DKEventLoop.h in Headers */,
 				84211C461665E86300B9B9A2 /* DKEventLoopTimer.h in Headers */,
+				8498FC341E4720E400E6A961 /* TextureBaseT.h in Headers */,
 				84211C471665E86300B9B9A2 /* DKSet.h in Headers */,
 				84A6A3AC1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */,
 				84211C481665E86300B9B9A2 /* DKSharedInstance.h in Headers */,

@@ -85,7 +85,7 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
 {
 }
 
-const DKRenderPassDescriptor& SwapChain::CurrentRenderPassDescriptor(void) const
+DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void) const
 {
 	return renderPassDescriptor;
 }
