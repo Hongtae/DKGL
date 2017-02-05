@@ -44,6 +44,8 @@ namespace DKFramework
 				CAMetalLayer* metalLayer;
 
 			private:
+				DKPixelFormat colorPixelFormat;
+				DKPixelFormat depthStencilPixelFormat;
 				id<CAMetalDrawable> currentDrawable;
 				DKRenderPassDescriptor renderPassDescriptor;
 

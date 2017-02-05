@@ -12,6 +12,7 @@
 #import <MetalKit/MTKView.h>
 
 #include "SwapChain.h"
+#include "PixelFormat.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -21,6 +22,8 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 , window(w)
 , metalLayer(nil)
 , currentDrawable(nil)
+, colorPixelFormat(DKPixelFormat::BGRA8Unorm)
+, depthStencilPixelFormat(DKPixelFormat::Invalid)
 {
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
 
@@ -73,7 +76,7 @@ bool SwapChain::Setup(void)
 	if (this->metalLayer)
 	{
 		this->metalLayer.device = this->queue->queue.device;
-		this->metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
+		this->metalLayer.pixelFormat = PixelFormat::From(colorPixelFormat);
 
 		return true;
 	}
@@ -81,18 +84,48 @@ bool SwapChain::Setup(void)
 }
 
 
-void SwapChain::SetColorPixelFormat(DKPixelFormat)
+void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
 {
+	switch (pf)
+	{
+		case DKPixelFormat::BGRA8Unorm:
+		case DKPixelFormat::BGRA8Unorm_sRGB:
+		case DKPixelFormat::RGBA16Float:
+			break;
+		default:	// invalid format!
+			return;
+			break;
+	}
+
+	if (colorPixelFormat != pf)
+	{
+		colorPixelFormat = pf;
+		if (currentDrawable)
+			[currentDrawable release];
+		currentDrawable = nil;
+	}
 }
 
-void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
+void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
 {
+	if (depthStencilPixelFormat != pf)
+	{
+		depthStencilPixelFormat = pf;
+		if (currentDrawable)
+			[currentDrawable release];
+		currentDrawable = nil;
+	}
 }
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 {
 	if (currentDrawable == nil)
-		SetupFrame();
+	{
+		@autoreleasepool
+		{
+			SetupFrame();
+		}
+	}
 
 	return renderPassDescriptor;
 }
@@ -119,6 +152,8 @@ void SwapChain::SetupFrame(void)
 		renderPassDescriptor.colorAttachments.Clear();
 		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 
+		this->metalLayer.pixelFormat = PixelFormat::From(colorPixelFormat);
+
 		id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
 		if (drawable)
 			currentDrawable = [drawable retain];
@@ -129,6 +164,7 @@ void SwapChain::SetupFrame(void)
 		renderPassDescriptor.colorAttachments.Clear();
 		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 
+		// setup color-attachment
 		id<MTLTexture> texture = currentDrawable.texture;
 		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(texture, queue->Device());
 
@@ -136,13 +172,43 @@ void SwapChain::SetupFrame(void)
 		colorAttachment.renderTarget = renderTarget.SafeCast<DKRenderTarget>();
 		colorAttachment.clearColor = DKColor(0,0,0,0);
 		colorAttachment.loadAction = colorAttachment.LoadActionClear;
-		colorAttachment.storeAction = colorAttachment.StoreActionStore;
+		colorAttachment.storeAction = colorAttachment.StoreActionStore; // default for color-attachment
 
 		renderPassDescriptor.colorAttachments.Clear();
 		renderPassDescriptor.colorAttachments.Add(colorAttachment);
-		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
+
+		// setup depth-stencil attachment
+		MTLPixelFormat dsFormat = MTLPixelFormatInvalid;
+		switch (depthStencilPixelFormat)
+		{
+			case DKPixelFormat::D32:
+			case DKPixelFormat::D32S8X24:
+				dsFormat = PixelFormat::From(depthStencilPixelFormat);
+				break;
+		}
+		DKObject<RenderTarget> depthStencilRT = nullptr;
+		if (dsFormat != MTLPixelFormatInvalid)
+		{
+			NSUInteger width = texture.width;
+			NSUInteger height = texture.height;
+
+			MTLTextureDescriptor* depthTextureDesc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:dsFormat
+																										width:width
+																									   height:height
+																									mipmapped:NO];
+			id<MTLDevice> device = this->queue->queue.device;
+			id<MTLTexture> depthTexture = [device newTextureWithDescriptor:depthTextureDesc];
+			if (depthTexture)
+			{
+				depthStencilRT = DKOBJECT_NEW RenderTarget(depthTexture, this->queue->Device());
+				[depthTexture autorelease];
+			}
+		}
+		renderPassDescriptor.depthStencilAttachment.renderTarget = depthStencilRT;
+		renderPassDescriptor.depthStencilAttachment.clearDepth = 1.0;	// default clear-depth value
+		renderPassDescriptor.depthStencilAttachment.clearStencil = 0;	// default clear-stencil value
 		renderPassDescriptor.depthStencilAttachment.loadAction = DKRenderPassAttachmentDescriptor::LoadActionClear;
-		renderPassDescriptor.depthStencilAttachment.storeAction = DKRenderPassAttachmentDescriptor::StoreActionDontCare;
+		renderPassDescriptor.depthStencilAttachment.storeAction = DKRenderPassAttachmentDescriptor::StoreActionDontCare; // default for depth-stencil
 	}
 }
 

@@ -38,22 +38,22 @@ namespace DKFramework
 
 				uint32_t Width(void) const override
 				{
-					return texture.width;
+					return static_cast<uint32_t>(texture.width);
 				}
 
 				uint32_t Height(void) const override
 				{
-					return texture.height;
+					return static_cast<uint32_t>(texture.height);
 				}
 
 				uint32_t Depth(void) const override
 				{
-					return texture.depth;
+					return static_cast<uint32_t>(texture.depth);
 				}
 
 				uint32_t MipmapCount(void) const override
 				{
-					return texture.mipmapLevelCount;
+					return static_cast<uint32_t>(texture.mipmapLevelCount);
 				}
 
 				DKTexture::Type TextureType(void) const override
