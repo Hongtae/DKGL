@@ -1,5 +1,5 @@
 //
-//  File: RenderCommandEncoder.mm
+//  File: BlitCommandEncoder.mm
 //  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -9,25 +9,25 @@
 #include "../GraphicsAPI.h"
 #if DKGL_USE_METAL
 
-#include "RenderCommandEncoder.h"
+#include "BlitCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderCommandEncoder::RenderCommandEncoder(CommandBuffer* b, id<MTLRenderCommandEncoder> e)
+BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* b, id<MTLBlitCommandEncoder> e)
 : buffer(b)
 , encoder(nil)
 {
 	encoder = [e retain];
 }
 
-RenderCommandEncoder::~RenderCommandEncoder(void)
+BlitCommandEncoder::~BlitCommandEncoder(void)
 {
 	if (encoder)
 		[encoder release];
 }
 
-void RenderCommandEncoder::EndEncoding(void)
+void BlitCommandEncoder::EndEncoding(void)
 {
 	if (encoder)
 	{
@@ -39,7 +39,7 @@ void RenderCommandEncoder::EndEncoding(void)
 	}
 }
 
-DKCommandBuffer* RenderCommandEncoder::Buffer(void)
+DKCommandBuffer* BlitCommandEncoder::Buffer(void)
 {
 	return buffer;
 }

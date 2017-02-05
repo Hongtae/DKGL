@@ -9,25 +9,25 @@
 #include "../GraphicsAPI.h"
 #if DKGL_USE_METAL
 
-#include "RenderCommandEncoder.h"
+#include "ComputeCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderCommandEncoder::RenderCommandEncoder(CommandBuffer* b, id<MTLRenderCommandEncoder> e)
+ComputeCommandEncoder::ComputeCommandEncoder(CommandBuffer* b, id<MTLComputeCommandEncoder> e)
 : buffer(b)
 , encoder(nil)
 {
 	encoder = [e retain];
 }
 
-RenderCommandEncoder::~RenderCommandEncoder(void)
+ComputeCommandEncoder::~ComputeCommandEncoder(void)
 {
 	if (encoder)
 		[encoder release];
 }
 
-void RenderCommandEncoder::EndEncoding(void)
+void ComputeCommandEncoder::EndEncoding(void)
 {
 	if (encoder)
 	{
@@ -39,7 +39,7 @@ void RenderCommandEncoder::EndEncoding(void)
 	}
 }
 
-DKCommandBuffer* RenderCommandEncoder::Buffer(void)
+DKCommandBuffer* ComputeCommandEncoder::Buffer(void)
 {
 	return buffer;
 }

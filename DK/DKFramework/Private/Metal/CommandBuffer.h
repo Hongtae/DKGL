@@ -34,7 +34,10 @@ namespace DKFramework
 				bool WaitUntilCompleted(void) override;
 				DKCommandQueue* Queue(void) override { return queue; };
 
+				void EndEncoder(DKCommandEncoder*);
+
 			private:
+				DKCommandEncoder* activeEncoder;
 				DKObject<DKCommandQueue> queue;
 				id<MTLCommandBuffer> buffer;
 				bool committed;

@@ -29,6 +29,7 @@ namespace DKFramework
 				TextureBaseT(id<MTLTexture> tex) : texture(nil)
 				{
 					texture = [tex retain];
+					DKASSERT_DEBUG(texture != nil);
 				}
 				virtual ~TextureBaseT(void)
 				{
