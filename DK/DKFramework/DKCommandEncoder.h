@@ -10,7 +10,7 @@
 
 namespace DKFramework
 {
-	class DKGraphicsDevice;
+	class DKCommandBuffer;
 	/// @brief Command encoder for GPU compute operation
 	class DKCommandEncoder
 	{
@@ -18,6 +18,6 @@ namespace DKFramework
 		virtual ~DKCommandEncoder(void) {}
 
 		virtual void EndEncoding(void) = 0;
-		virtual DKGraphicsDevice* Device(void) = 0;
+		virtual DKCommandBuffer* Buffer(void) = 0;
 	};
 }

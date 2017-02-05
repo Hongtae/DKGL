@@ -31,7 +31,7 @@ namespace DKFramework
 
 				void SetColorPixelFormat(DKPixelFormat) override;
 				void SetDepthStencilPixelFormat(DKPixelFormat) override;
-				DKRenderPassDescriptor CurrentRenderPassDescriptor(void) const override;
+				DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
 
 				bool Present(void) override;
 

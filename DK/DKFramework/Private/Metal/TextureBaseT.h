@@ -35,27 +35,27 @@ namespace DKFramework
 					[texture release];
 				}
 
-				uint32_t Width(void) override
+				uint32_t Width(void) const override
 				{
 					return texture.width;
 				}
 
-				uint32_t Height(void) override
+				uint32_t Height(void) const override
 				{
 					return texture.height;
 				}
 
-				uint32_t Depth(void) override
+				uint32_t Depth(void) const override
 				{
 					return texture.depth;
 				}
 
-				uint32_t MipmapCount(void) override
+				uint32_t MipmapCount(void) const override
 				{
 					return texture.mipmapLevelCount;
 				}
 
-				DKTexture::Type TextureType(void) override
+				DKTexture::Type TextureType(void) const override
 				{
 					MTLTextureType t = texture.textureType;
 					switch (t)
@@ -76,7 +76,7 @@ namespace DKFramework
 					return DKTexture::TypeUnknown;
 				}
 
-				DKPixelFormat PixelFormat(void) override
+				DKPixelFormat PixelFormat(void) const override
 				{
 					return PixelFormat::To(texture.pixelFormat);
 				}

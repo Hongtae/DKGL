@@ -37,6 +37,7 @@ namespace DKFramework
 			private:
 				DKObject<DKCommandQueue> queue;
 				id<MTLCommandBuffer> buffer;
+				bool committed;
 			};
 		}
 	}

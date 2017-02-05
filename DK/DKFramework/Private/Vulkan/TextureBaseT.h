@@ -51,29 +51,29 @@ namespace DKFramework
 					}
 				}
 
-				uint32_t Width(void) override
+				uint32_t Width(void) const override
 				{
 					DKASSERT_DEBUG(extent.width > 0);
 					return extent.width;
 				}
-				uint32_t Height(void) override
+				uint32_t Height(void) const override
 				{
 					DKASSERT_DEBUG(extent.height > 0);
 					return extent.height;
 				}
-				uint32_t Depth(void) override
+				uint32_t Depth(void) const override
 				{
 					DKASSERT_DEBUG(extent.depth > 0);
 					return extent.depth;
 				}
 
-				uint32_t MipmapCount(void) override
+				uint32_t MipmapCount(void) const override
 				{
 					DKASSERT_DEBUG(mipLevels > 0);
 					return mipLevels;
 				}
 
-				DKTexture::Type TextureType(void) override
+				DKTexture::Type TextureType(void) const override
 				{
 					switch (imageType)
 					{
@@ -87,7 +87,7 @@ namespace DKFramework
 					return DKTexture::TypeUnknown;
 				}
 
-				DKPixelFormat PixelFormat(void) override
+				DKPixelFormat PixelFormat(void) const override
 				{
 					DKASSERT_DEBUG(format != VK_FORMAT_UNDEFINED);
 					return PixelFormat::To(format);

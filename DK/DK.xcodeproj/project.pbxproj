@@ -1294,6 +1294,8 @@
 		848566D11E214DCB0011B53B /* DKComputePipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 848566D01E214DCB0011B53B /* DKComputePipeline.h */; };
 		849705301E28CDEB00E34F5C /* DKCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */; };
 		8498FC341E4720E400E6A961 /* TextureBaseT.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC331E4720E400E6A961 /* TextureBaseT.h */; };
+		8498FC451E47683B00E6A961 /* RenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */; };
+		8498FC461E47683B00E6A961 /* RenderCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */; };
 		84990AFE1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */; };
 		84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
@@ -2095,6 +2097,8 @@
 		849705211E28CD0E00E34F5C /* RenderCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCommandEncoder.h; sourceTree = "<group>"; };
 		8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCommandEncoder.h; sourceTree = "<group>"; };
 		8498FC331E4720E400E6A961 /* TextureBaseT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBaseT.h; sourceTree = "<group>"; };
+		8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCommandEncoder.h; sourceTree = "<group>"; };
+		8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderCommandEncoder.mm; sourceTree = "<group>"; };
 		84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshProxyShape.cpp; sourceTree = "<group>"; };
 		84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTriangleMeshProxyShape.h; sourceTree = "<group>"; };
 		849E2A9115634718000CBE79 /* DKFence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFence.cpp; sourceTree = "<group>"; };
@@ -2479,6 +2483,8 @@
 				666ECA701DB1721F00354463 /* GraphicsDevice.mm */,
 				846C53A81E40950B00B2FA6F /* PixelFormat.h */,
 				84219C1D1E40E5E30046B099 /* PixelFormat.mm */,
+				8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */,
+				8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */,
 				8458E6D21E44587300871311 /* RenderTarget.h */,
 				8458E6D11E44587300871311 /* RenderTarget.mm */,
 				8447CB3E1E379C2200E02637 /* SwapChain.h */,
@@ -3723,6 +3729,7 @@
 				84211C1A1665E86300B9B9A2 /* DKAllocator.h in Headers */,
 				84211C1C1665E86300B9B9A2 /* DKArray.h in Headers */,
 				84211C1D1665E86300B9B9A2 /* DKAtomicNumber32.h in Headers */,
+				8498FC451E47683B00E6A961 /* RenderCommandEncoder.h in Headers */,
 				8458E6D51E44587300871311 /* RenderTarget.h in Headers */,
 				84211C1E1665E86300B9B9A2 /* DKAVLTree.h in Headers */,
 				84211C1F1665E86300B9B9A2 /* DKBuffer.h in Headers */,
@@ -4868,6 +4875,7 @@
 				840C3E07178D396D00F57A8D /* DKHash.cpp in Sources */,
 				84211AF71665E7FC00B9B9A2 /* DKMatrix3.cpp in Sources */,
 				84211AF91665E7FC00B9B9A2 /* DKMatrix4.cpp in Sources */,
+				8498FC461E47683B00E6A961 /* RenderCommandEncoder.mm in Sources */,
 				844C64D91C08B93600FB97B6 /* DKFloat16.cpp in Sources */,
 				84F970111B4D711A00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
 				84211AFD1665E7FC00B9B9A2 /* DKModel.cpp in Sources */,

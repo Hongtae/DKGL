@@ -30,6 +30,10 @@ SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
 
+	renderPassDescriptor.colorAttachments.Clear();
+	renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
+
+	[currentDrawable release];
 	[metalLayer release];
 }
 
@@ -85,35 +89,61 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
 {
 }
 
-DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void) const
+DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 {
+	if (currentDrawable == nil)
+		SetupFrame();
+
 	return renderPassDescriptor;
 }
 
 bool SwapChain::Present(void)
 {
-	@autoreleasepool
+	if (currentDrawable)
 	{
-		id<MTLCommandBuffer> cb = [this->queue->queue commandBuffer];
-		[cb presentDrawable:this->currentDrawable];
-		[this->currentDrawable autorelease];
-		this->currentDrawable = nil;
+		@autoreleasepool
+		{
+			[currentDrawable present];
+			[currentDrawable autorelease];
+			currentDrawable = nil;
+		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
-DKObject<DKRenderTarget> SwapChain::NextFrame(void)
+void SwapChain::SetupFrame(void)
 {
-	id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
-	if (drawable)
+	if (currentDrawable == nil)
 	{
-		this->currentDrawable = [drawable retain];
+		renderPassDescriptor.colorAttachments.Clear();
+		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 
-		id<MTLTexture> texture = drawable.texture;
-		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(texture, queue->Device());
-		return renderTarget.SafeCast<DKRenderTarget>();
+		id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
+		if (drawable)
+			currentDrawable = [drawable retain];
 	}
-	return NULL;
+
+	if (currentDrawable)
+	{
+		renderPassDescriptor.colorAttachments.Clear();
+		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
+
+		id<MTLTexture> texture = currentDrawable.texture;
+		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(texture, queue->Device());
+
+		DKRenderPassColorAttachmentDescriptor colorAttachment;
+		colorAttachment.renderTarget = renderTarget.SafeCast<DKRenderTarget>();
+		colorAttachment.clearColor = DKColor(0,0,0,0);
+		colorAttachment.loadAction = colorAttachment.LoadActionClear;
+		colorAttachment.storeAction = colorAttachment.StoreActionStore;
+
+		renderPassDescriptor.colorAttachments.Clear();
+		renderPassDescriptor.colorAttachments.Add(colorAttachment);
+		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
+		renderPassDescriptor.depthStencilAttachment.loadAction = DKRenderPassAttachmentDescriptor::LoadActionClear;
+		renderPassDescriptor.depthStencilAttachment.storeAction = DKRenderPassAttachmentDescriptor::StoreActionDontCare;
+	}
 }
 
 void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)

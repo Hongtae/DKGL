@@ -26,27 +26,27 @@ namespace DKFramework
 				ComPtr<ID3D12Resource> resource;
 				TextureBaseT(ID3D12Resource* tex) : resource(tex) {}
 
-				uint32_t Width(void) override
+				uint32_t Width(void) const override
 				{
 					return resource->GetDesc().Width;
 				}
 
-				uint32_t Height(void) override
+				uint32_t Height(void) const override
 				{
 					return resource->GetDesc().Height;
 				}
 
-				uint32_t Depth(void) override
+				uint32_t Depth(void) const override
 				{
 					return resource->GetDesc().DepthOrArraySize;
 				}
 
-				uint32_t MipmapCount(void) override
+				uint32_t MipmapCount(void) const override
 				{
 					return resource->GetDesc().MipLevels;
 				}
 
-				DKTexture::Type TextureType(void) override
+				DKTexture::Type TextureType(void) const override
 				{
 					D3D12_RESOURCE_DESC desc = resource->GetDesc();
 					switch (desc.Dimension)
@@ -61,7 +61,7 @@ namespace DKFramework
 					return TypeUnknown;
 				}
 
-				DKPixelFormat PixelFormat(void) override
+				DKPixelFormat PixelFormat(void) const override
 				{
 					return PixelFormat::To(resource->GetDesc().Format);
 				}

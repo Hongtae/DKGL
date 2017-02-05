@@ -40,13 +40,9 @@ namespace DKFramework
 		DKColor clearColor;
 	};
 
-	struct DKRenderPassDepthAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
+	struct DKRenderPassDepthStencilAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
 	{
 		float clearDepth = 1.0;
-	};
-
-	struct DKRenderPassStencilAttachmentDescriptor : public DKRenderPassAttachmentDescriptor
-	{
 		uint32_t clearStencil = 0;
 	};
 
@@ -56,8 +52,7 @@ namespace DKFramework
 	struct DKRenderPassDescriptor
 	{
 		DKArray<DKRenderPassColorAttachmentDescriptor> colorAttachments;
-		DKObject<DKRenderPassDepthAttachmentDescriptor> depthAttachment;
-		DKObject<DKRenderPassStencilAttachmentDescriptor> stencilAttachment;
+		DKRenderPassDepthStencilAttachmentDescriptor depthStencilAttachment;
 
 		size_t numberOfActiveLayers = 0;
 	};

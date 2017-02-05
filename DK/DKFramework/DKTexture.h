@@ -28,12 +28,12 @@ namespace DKFramework
 
 		virtual ~DKTexture(void) {}
 
-		virtual uint32_t Width(void) = 0;
-		virtual uint32_t Height(void) = 0;
-		virtual uint32_t Depth(void) = 0;
-		virtual uint32_t MipmapCount(void) = 0;
+		virtual uint32_t Width(void) const = 0;
+		virtual uint32_t Height(void) const = 0;
+		virtual uint32_t Depth(void) const = 0;
+		virtual uint32_t MipmapCount(void) const = 0;
 
-		virtual Type TextureType(void) = 0;
-		virtual DKPixelFormat PixelFormat(void) = 0;
+		virtual Type TextureType(void) const = 0;
+		virtual DKPixelFormat PixelFormat(void) const = 0;
 	};
 }

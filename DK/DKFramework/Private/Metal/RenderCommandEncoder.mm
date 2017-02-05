@@ -1,35 +1,39 @@
 //
-//  File: RenderCommandEncoder.cpp
+//  File: RenderCommandEncoder.mm
+//  Platform: OS X, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_USE_METAL
 
 #include "RenderCommandEncoder.h"
-#include "GraphicsDevice.h"
 
 using namespace DKFramework;
-using namespace DKFramework::Private::Direct3D;
+using namespace DKFramework::Private::Metal;
 
-RenderCommandEncoder::RenderCommandEncoder(ID3D12CommandList* cm)
-	: commandList(cm)
+RenderCommandEncoder::RenderCommandEncoder(CommandBuffer* b, id<MTLRenderCommandEncoder> e)
+: buffer(b)
+, encoder(nil)
 {
+	encoder = [e retain];
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
+	[encoder release];
 }
 
 void RenderCommandEncoder::EndEncoding(void)
 {
+	[encoder endEncoding];
 }
 
 DKCommandBuffer* RenderCommandEncoder::Buffer(void)
 {
-	return commandBuffer;
+	return buffer;
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_USE_METAL

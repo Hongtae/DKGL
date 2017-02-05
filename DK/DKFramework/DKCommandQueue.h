@@ -22,7 +22,7 @@ namespace DKFramework
 
 		virtual void SetColorPixelFormat(DKPixelFormat) = 0;
 		virtual void SetDepthStencilPixelFormat(DKPixelFormat) = 0;
-		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor(void) const = 0;
+		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor(void) = 0;
 
 		virtual bool Present(void) = 0;
 	};
