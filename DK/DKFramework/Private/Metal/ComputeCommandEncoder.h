@@ -23,7 +23,7 @@ namespace DKFramework
 			class ComputeCommandEncoder : public DKComputeCommandEncoder
 			{
 			public:
-				ComputeCommandEncoder(CommandBuffer*, id<MTLComputeCommandEncoder>);
+				ComputeCommandEncoder(id<MTLComputeCommandEncoder>, CommandBuffer*);
 				~ComputeCommandEncoder(void);
 
 				void EndEncoding(void) override;

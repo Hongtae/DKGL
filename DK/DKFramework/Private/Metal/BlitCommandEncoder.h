@@ -23,7 +23,7 @@ namespace DKFramework
 			class BlitCommandEncoder : public DKBlitCommandEncoder
 			{
 			public:
-				BlitCommandEncoder(CommandBuffer*, id<MTLBlitCommandEncoder>);
+				BlitCommandEncoder(id<MTLBlitCommandEncoder>, CommandBuffer*);
 				~BlitCommandEncoder(void);
 
 				void EndEncoding(void) override;

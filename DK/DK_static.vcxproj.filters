@@ -53,6 +53,15 @@
     <None Include="DKFramework\Private\Metal\RenderTarget.mm">
       <Filter>DKFramework\Private\Metal</Filter>
     </None>
+    <None Include="DKFramework\Private\Metal\BlitCommandEncoder.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
@@ -508,6 +517,21 @@
       <Filter>DKFramework\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\ComputeCommandEncoder.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.cpp">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\BlitCommandEncoder.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1197,6 +1221,30 @@
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\TextureBaseT.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\ComputeCommandEncoder.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.h">
+      <Filter>DKFramework\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h">
+      <Filter>DKFramework\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h">
+      <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>

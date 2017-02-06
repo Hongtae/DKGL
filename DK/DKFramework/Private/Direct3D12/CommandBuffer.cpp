@@ -12,6 +12,8 @@
 #include "CommandQueue.h"
 #include "GraphicsDevice.h"
 #include "RenderCommandEncoder.h"
+#include "ComputeCommandEncoder.h"
+#include "BlitCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
@@ -28,29 +30,48 @@ CommandBuffer::~CommandBuffer(void)
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	dev->ReleaseCommandAllocator(this->commandAllocator);
 
-	for (ComPtr<ID3D12CommandList>& list : commandLists)
+	for (ComPtr<ID3D12GraphicsCommandList>& list : commandLists)
 	{
 		dev->ReleaseCommandList(list.Get());
 	}
 }
 
-DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor&)
+DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor& desc)
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
-	ComPtr<ID3D12CommandList> cm = dc->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	ComPtr<ID3D12GraphicsCommandList> cm = dc->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	cm->Close();
+	cm->Reset(commandAllocator->allocator.Get(), nullptr);
 
-	DKObject<RenderCommandEncoder> encoder = DKOBJECT_NEW RenderCommandEncoder(cm.Get());
+	DKObject<RenderCommandEncoder> encoder = DKOBJECT_NEW RenderCommandEncoder(cm.Get(), this, desc);
 	return encoder.SafeCast<DKRenderCommandEncoder>();
 }
 
 DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(void)
 {
-	return NULL;
+	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
+	ComPtr<ID3D12GraphicsCommandList> cm = dc->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	cm->Close();
+	cm->Reset(commandAllocator->allocator.Get(), nullptr);
+
+	DKObject<ComputeCommandEncoder> encoder = DKOBJECT_NEW ComputeCommandEncoder(cm.Get(), this);
+	return encoder.SafeCast<DKComputeCommandEncoder>();
 }
 
 DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 {
-	return NULL;
+	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
+	ComPtr<ID3D12GraphicsCommandList> cm = dc->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	cm->Close();
+	cm->Reset(commandAllocator->allocator.Get(), nullptr);
+
+	DKObject<BlitCommandEncoder> encoder = DKOBJECT_NEW BlitCommandEncoder(cm.Get(), this);
+	return encoder.SafeCast<DKBlitCommandEncoder>();
+}
+
+void CommandBuffer::FinishCommandList(ID3D12GraphicsCommandList* list)
+{
+	commandLists.Add(list);
 }
 
 bool CommandBuffer::Commit(void)
@@ -58,10 +79,10 @@ bool CommandBuffer::Commit(void)
 	if (commandLists.Count() > 0 && commandAllocator->IsCompleted())
 	{
 		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
-		ComPtr<ID3D12CommandList>* lists = this->commandLists;
+		ComPtr<ID3D12GraphicsCommandList>* lists = this->commandLists;
 		UINT numLists = static_cast<UINT>(this->commandLists.Count());
 
-		static_assert(sizeof(ComPtr<ID3D12CommandList>) == sizeof(ID3D12CommandList*), "");
+		static_assert(sizeof(ComPtr<ID3D12GraphicsCommandList>) == sizeof(ID3D12CommandList*), "");
 
 		UINT64 enqueued = commandQueue->Enqueue(reinterpret_cast<ID3D12CommandList * const *>(lists), numLists);
 		this->commandAllocator->SetPendingState(commandQueue->fence.Get(), enqueued);

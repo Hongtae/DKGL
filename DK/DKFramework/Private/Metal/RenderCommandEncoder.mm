@@ -14,7 +14,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderCommandEncoder::RenderCommandEncoder(CommandBuffer* b, id<MTLRenderCommandEncoder> e)
+RenderCommandEncoder::RenderCommandEncoder(id<MTLRenderCommandEncoder> e, CommandBuffer* b)
 : buffer(b)
 , encoder(nil)
 {

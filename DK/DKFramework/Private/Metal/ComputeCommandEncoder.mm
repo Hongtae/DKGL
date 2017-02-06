@@ -14,7 +14,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-ComputeCommandEncoder::ComputeCommandEncoder(CommandBuffer* b, id<MTLComputeCommandEncoder> e)
+ComputeCommandEncoder::ComputeCommandEncoder(id<MTLComputeCommandEncoder> e, CommandBuffer* b)
 : buffer(b)
 , encoder(nil)
 {

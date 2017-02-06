@@ -14,7 +14,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* b, id<MTLBlitCommandEncoder> e)
+BlitCommandEncoder::BlitCommandEncoder(id<MTLBlitCommandEncoder> e, CommandBuffer* b)
 : buffer(b)
 , encoder(nil)
 {

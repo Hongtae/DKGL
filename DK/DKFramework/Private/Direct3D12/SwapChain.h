@@ -27,6 +27,7 @@ namespace DKFramework
 				~SwapChain(void);
 
 				bool Setup(void);
+				void SetupFrame(void);
 
 				void SetColorPixelFormat(DKPixelFormat) override;
 				void SetDepthStencilPixelFormat(DKPixelFormat) override;
@@ -46,6 +47,7 @@ namespace DKFramework
 				DKArray<DKObject<RenderTarget>> renderTargets;
 
 			private:
+				bool enableVerticalSync = false;
 				UINT bufferCount = 3;	// triple-buffering
 				DKRenderPassDescriptor renderPassDescriptor;
 

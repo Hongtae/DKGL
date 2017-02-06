@@ -24,6 +24,22 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
+
+	swapChain->Present(0, DXGI_PRESENT_RESTART);
+
+#if 0
+	// wait until queue completed.
+	UINT64 counter = this->queue->EnqueuedCounterValue();
+	ID3D12Fence* fence = this->queue->fence.Get();
+
+	if (fence->GetCompletedValue() < counter)
+	{
+		HANDLE fenceEvent = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+		fence->SetEventOnCompletion(counter, fenceEvent);
+		WaitForSingleObject(fenceEvent, INFINITE);
+		CloseHandle(fenceEvent);
+	}
+#endif
 }
 
 bool SwapChain::Setup(void)
@@ -45,6 +61,7 @@ bool SwapChain::Setup(void)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.SampleDesc.Count = 1;
 
+	this->swapChain = nullptr;
 	ComPtr<IDXGISwapChain1> sc;
 	if (FAILED(factory->CreateSwapChainForHwnd(
 		queue->queue.Get(),
@@ -105,12 +122,33 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 {
+	if (renderPassDescriptor.colorAttachments.Count() == 0)
+		this->SetupFrame();
+
 	return renderPassDescriptor;
+}
+
+void SwapChain::SetupFrame(void)
+{
+	UINT frameIndex = swapChain->GetCurrentBackBufferIndex();
+
+	DKRenderPassColorAttachmentDescriptor colorAttachment = {};
+	colorAttachment.renderTarget = renderTargets.Value(frameIndex);
+	colorAttachment.clearColor = DKColor(0, 0, 0, 0);
+	colorAttachment.loadAction = DKRenderPassAttachmentDescriptor::LoadActionClear;
+	colorAttachment.storeAction = DKRenderPassAttachmentDescriptor::StoreActionStore;
+
+	this->renderPassDescriptor.colorAttachments.Clear();
+	this->renderPassDescriptor.colorAttachments.Add(colorAttachment);
 }
 
 bool SwapChain::Present(void)
 {
-	return false;
+	UINT syncInterval = enableVerticalSync ? 1 : 0;
+	swapChain->Present(syncInterval, 0);
+
+	renderPassDescriptor.colorAttachments.Clear();
+	return true;
 }
 
 void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)

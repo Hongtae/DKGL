@@ -144,7 +144,7 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 	id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:rpDesc];
 	if (encoder)
 	{
-		DKObject<RenderCommandEncoder> enc = DKOBJECT_NEW RenderCommandEncoder(this, encoder);
+		DKObject<RenderCommandEncoder> enc = DKOBJECT_NEW RenderCommandEncoder(encoder, this);
 		DKObject<DKRenderCommandEncoder> r = enc.SafeCast<DKRenderCommandEncoder>();
 		activeEncoder = r;
 		return r;
@@ -168,7 +168,7 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(voi
 	id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
 	if (encoder)
 	{
-		DKObject<ComputeCommandEncoder> enc = DKOBJECT_NEW ComputeCommandEncoder(this, encoder);
+		DKObject<ComputeCommandEncoder> enc = DKOBJECT_NEW ComputeCommandEncoder(encoder, this);
 		DKObject<DKComputeCommandEncoder> r = enc.SafeCast<DKComputeCommandEncoder>();
 		activeEncoder = r;
 		return r;
@@ -192,7 +192,7 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 	id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
 	if (encoder)
 	{
-		DKObject<BlitCommandEncoder> enc = DKOBJECT_NEW BlitCommandEncoder(this, encoder);
+		DKObject<BlitCommandEncoder> enc = DKOBJECT_NEW BlitCommandEncoder(encoder, this);
 		DKObject<DKBlitCommandEncoder> r = enc.SafeCast<DKBlitCommandEncoder>();
 		activeEncoder = r;
 		return r;

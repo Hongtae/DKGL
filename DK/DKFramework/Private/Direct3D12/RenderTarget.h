@@ -26,7 +26,6 @@ namespace DKFramework
 				RenderTarget(DKGraphicsDevice*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE srv, D3D12_CPU_DESCRIPTOR_HANDLE rtv);
 				~RenderTarget(void);
 
-			private:
 				DKObject<DKGraphicsDevice> device;
 				D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 				D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;

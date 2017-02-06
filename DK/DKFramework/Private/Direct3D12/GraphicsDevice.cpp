@@ -268,23 +268,23 @@ void GraphicsDevice::PurgeCachedCommandAllocators(void)
 	this->reusableCommandAllocators.Clear();
 }
 
-ComPtr<ID3D12CommandList> GraphicsDevice::GetCommandList(D3D12_COMMAND_LIST_TYPE type)
+ComPtr<ID3D12GraphicsCommandList> GraphicsDevice::GetCommandList(D3D12_COMMAND_LIST_TYPE type)
 {
 	if (true)
 	{
 		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 		for (size_t i = 0, numItems = this->reusableCommandLists.Count(); i < numItems; ++i)
 		{
-			ComPtr<ID3D12CommandList>& list = this->reusableCommandLists.Value(i);
+			ComPtr<ID3D12GraphicsCommandList>& list = this->reusableCommandLists.Value(i);
 			if (list->GetType() == type)
 			{
-				ComPtr<ID3D12CommandList> commandList = list;
+				ComPtr<ID3D12GraphicsCommandList> commandList = list;
 				this->reusableCommandLists.Remove(i);
 				return commandList;
 			}
 		}
 	}
-	ComPtr<ID3D12CommandList> commandList;
+	ComPtr<ID3D12GraphicsCommandList> commandList;
 	if (FAILED(this->device->CreateCommandList(0, type, this->dummyAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList))))
 	{
 		DKLog("ERROR: ID3D12Device::CreateCommandList() failed");
@@ -293,20 +293,13 @@ ComPtr<ID3D12CommandList> GraphicsDevice::GetCommandList(D3D12_COMMAND_LIST_TYPE
 	return commandList;
 }
 
-void GraphicsDevice::ReleaseCommandList(ID3D12CommandList* list)
+void GraphicsDevice::ReleaseCommandList(ID3D12GraphicsCommandList* list)
 {
-	ComPtr<ID3D12GraphicsCommandList> graphicsCommandList;
-	if (SUCCEEDED(list->QueryInterface(IID_PPV_ARGS(&graphicsCommandList))))
-	{
-		graphicsCommandList->Reset(this->dummyAllocator.Get(), nullptr);
-		DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
-		this->reusableCommandLists.Add( list );
-		list->AddRef();
-	}
-	else
-	{
-		DKLog("ERROR: ID3D12CommandList::QueryInterface(ID3D12GraphicsCommandList) failed");
-	}
+	DKASSERT_DEBUG(list);
+	list->Reset(this->dummyAllocator.Get(), nullptr);
+	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
+	this->reusableCommandLists.Add(list);
+	list->AddRef();
 }
 
 void GraphicsDevice::PurgeCachedCommandLists(void)

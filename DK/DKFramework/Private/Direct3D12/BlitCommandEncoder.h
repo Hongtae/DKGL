@@ -1,5 +1,5 @@
 //
-//  File: RenderCommandEncoder.h
+//  File: BlitCommandEncoder.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -10,7 +10,7 @@
 #if DKGL_USE_DIRECT3D
 #include "d3d12_headers.h"
 
-#include "../../DKRenderCommandEncoder.h"
+#include "../../DKBlitCommandEncoder.h"
 #include "CommandBuffer.h"
 
 namespace DKFramework
@@ -19,11 +19,11 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			class RenderCommandEncoder : public DKRenderCommandEncoder
+			class BlitCommandEncoder : public DKBlitCommandEncoder
 			{
 			public:
-				RenderCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*, const DKRenderPassDescriptor&);
-				~RenderCommandEncoder(void);
+				BlitCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*);
+				~BlitCommandEncoder(void);
 
 
 				void EndEncoding(void) override;
@@ -31,10 +31,6 @@ namespace DKFramework
 
 				ComPtr<ID3D12GraphicsCommandList> commandList;
 				DKObject<CommandBuffer> commandBuffer;
-
-			private:
-				DKArray<D3D12_RESOURCE_BARRIER> rtBarriers;
-				DKRenderPassDescriptor renderPassDesc;
 			};
 		}
 	}

@@ -33,8 +33,8 @@ namespace DKFramework
 				void ReleaseCommandAllocator(CommandAllocator* allocator);
 				void PurgeCachedCommandAllocators(void);
 				
-				ComPtr<ID3D12CommandList> GetCommandList(D3D12_COMMAND_LIST_TYPE);
-				void ReleaseCommandList(ID3D12CommandList* list);
+				ComPtr<ID3D12GraphicsCommandList> GetCommandList(D3D12_COMMAND_LIST_TYPE);
+				void ReleaseCommandList(ID3D12GraphicsCommandList* list);
 				void PurgeCachedCommandLists(void);
 
 				D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE);
@@ -50,7 +50,7 @@ namespace DKFramework
 				// command lists / command allocators
 				DKSpinLock					reusableItemsLock;
 				DKArray<CommandAllocator*>	reusableCommandAllocators;				
-				DKArray<ComPtr<ID3D12CommandList>>	reusableCommandLists;
+				DKArray<ComPtr<ID3D12GraphicsCommandList>>	reusableCommandLists;
 
 				// descriptor heaps
 				struct DescriptorHeap
