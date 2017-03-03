@@ -141,7 +141,7 @@ bool DKImage::LoadFromStream(DKStream* stream)
 {
 	DKObject<DKDataStream> ds = DKObject<DKStream>(stream).SafeCast<DKDataStream>();
 	if (ds)
-		return LoadFromData(ds->DataSource());
+		return LoadFromData(ds->Data());
 	return LoadFromData(DKBuffer::Create(stream));
 }
 

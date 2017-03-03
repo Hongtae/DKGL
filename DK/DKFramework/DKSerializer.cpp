@@ -556,7 +556,7 @@ DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 
 					if (queryEntities.variant.ExportStream(&stream))
 					{
-						const DKBuffer* buffer = stream.BufferObject();
+						const DKBuffer* buffer = stream.Buffer();
 						if (buffer && buffer->Length() > 0)
 						{
 							DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
@@ -1197,7 +1197,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					DKBufferStream stream;
 					if (variant.ExportStream(&stream))
 					{
-						DKBuffer* buffer = stream.BufferObject();
+						DKBuffer* buffer = stream.Buffer();
 						EntityChunk chunk;
 						if (chunk.Create(L"",L"", compress ? 'varc' : 'vars', 'hash', buffer, compress))
 							chunks.Add(chunk);
@@ -1737,7 +1737,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 		{
 			DKData* data = NULL;
 			if (dataStream && s->IsSeekable())
-				data = dataStream->DataSource();
+				data = dataStream->Data();
 
 			if (data)
 			{
@@ -1766,7 +1766,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 		{
 			DKData* data = NULL;
 			if (dataStream && s->IsSeekable())
-				data = dataStream->DataSource();
+				data = dataStream->Data();
 
 			if (data)
 			{
@@ -1799,7 +1799,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 		{
 			DKData* data = NULL;
 			if (dataStream && s->IsSeekable())
-				data = dataStream->DataSource();
+				data = dataStream->Data();
 
 			if (data)
 			{
@@ -2149,7 +2149,7 @@ DKObject<DKData> DKSerializer::Serialize(SerializeForm sf) const
 			DKBufferStream stream;
 			if (this->SerializeBinary(sf, &stream) > 0)
 			{
-				data = stream.DataSource();
+				data = stream.Data();
 			}
 		}
 		break;

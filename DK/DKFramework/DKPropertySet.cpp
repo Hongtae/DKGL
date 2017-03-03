@@ -203,7 +203,7 @@ DKObject<DKXmlElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 			DKBufferStream stream;
 			if (pair.value.ExportStream(&stream))
 			{
-				const DKBuffer* buffer = stream.BufferObject();
+				const DKBuffer* buffer = stream.Buffer();
 				if (buffer && buffer->Length() > 0)
 				{
 					DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);

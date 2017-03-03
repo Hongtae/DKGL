@@ -602,7 +602,7 @@ bool DKXmlParser::BeginHtml(DKStream* stream)
 	{
 		DKObject<DKDataStream> ds = DKObject<DKStream>(stream).SafeCast<DKDataStream>();
 		if (ds)
-			return BeginHtml(ds->DataSource());
+			return BeginHtml(ds->Data());
 		return BeginHtml(DKBuffer::Create(stream));
 	}
 	return false;
@@ -663,7 +663,7 @@ bool DKXmlParser::BeginXml(DKStream* stream)
 	{
 		DKObject<DKDataStream> ds = DKObject<DKStream>(stream).SafeCast<DKDataStream>();
 		if (ds)
-			return BeginXml(ds->DataSource());
+			return BeginXml(ds->Data());
 		return BeginXml(DKBuffer::Create(stream));
 	}
 	return false;

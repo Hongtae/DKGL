@@ -40,11 +40,11 @@ namespace DKFoundation
 		void ResetStream(DKBuffer*);
 
 		/// internal storage object. (DKData type)
-		DKData* DataSource(void);
-		const DKData* DataSource(void) const;
+		DKData* Data(void);
+		const DKData* Data(void) const;
 		/// internal storage object. (DKBuffer type)
-		DKBuffer* BufferObject(void);
-		const DKBuffer* BufferObject(void) const;
+		DKBuffer* Buffer(void);
+		const DKBuffer* Buffer(void) const;
 
 	private:
 		DKObject<DKBuffer> data;

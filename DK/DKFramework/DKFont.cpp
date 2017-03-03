@@ -140,7 +140,7 @@ DKObject<DKFont> DKFont::Create(DKStream* stream)
 			}
 			else if (ds)
 			{
-				DKObject<DKFont> font = Create(const_cast<DKData*>(ds->DataSource()));
+				DKObject<DKFont> font = Create(const_cast<DKData*>(ds->Data()));
 				if (font)
 					return font;
 			}

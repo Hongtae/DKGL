@@ -168,22 +168,22 @@ void DKBufferStream::ResetStream(DKBuffer* d)
 	this->offset = 0;
 }
 
-DKData* DKBufferStream::DataSource(void)
+DKData* DKBufferStream::Data(void)
 {
-	return BufferObject();
+	return Buffer();
 }
 
-const DKData* DKBufferStream::DataSource(void) const
+const DKData* DKBufferStream::Data(void) const
 {
-	return BufferObject();
+	return Buffer();
 }
 
-DKBuffer* DKBufferStream::BufferObject(void)
+DKBuffer* DKBufferStream::Buffer(void)
 {
 	return this->data;
 }
 
-const DKBuffer* DKBufferStream::BufferObject(void) const
+const DKBuffer* DKBufferStream::Buffer(void) const
 {
 	return this->data;
 }

@@ -142,7 +142,7 @@ DKObject<DKData> DKResource::Serialize(DKSerializer::SerializeForm sf) const
 	{
 		DKBufferStream stream;
 		if (s->Serialize(sf, &stream) > 0)
-			return stream.DataSource();
+			return stream.Data();
 	}
 	else if (sf == DKSerializer::SerializeFormXML || sf == DKSerializer::SerializeFormBinXML)
 	{

@@ -34,8 +34,8 @@ namespace DKFoundation
 		bool IsSeekable(void) const {return true;}
 		bool IsWritable(void) const {return false;}
 
-		virtual DKData* DataSource(void);
-		virtual const DKData* DataSource(void) const;
+		virtual DKData* Data(void);
+		virtual const DKData* Data(void) const;
 	private:
 		size_t offset;
 		DKObject<DKData> data;

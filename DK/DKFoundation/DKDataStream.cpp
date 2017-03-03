@@ -111,12 +111,12 @@ size_t DKDataStream::Write(const void* p, size_t s)
 	return 0;
 }
 
-DKData* DKDataStream::DataSource(void)
+DKData* DKDataStream::Data(void)
 {
 	return this->data;
 }
 
-const DKData* DKDataStream::DataSource(void) const
+const DKData* DKDataStream::Data(void) const
 {
 	return this->data;
 }
