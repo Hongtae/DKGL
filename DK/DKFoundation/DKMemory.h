@@ -162,19 +162,95 @@ namespace DKFoundation
 	{
 		template <typename T> struct AllocationOperatorTest
 		{
-			template <typename U> static auto _HasOperatorNew(decltype(&U::operator new))->DKTrue;
-			template <typename U> static auto _HasOperatorNew(...)->DKFalse;
-			template <typename U> static auto _HasOperatorNewArray(decltype(&U::operator new[]))->DKTrue;
-			template <typename U> static auto _HasOperatorNewArray(...)->DKFalse;
-			template <typename U> static auto _HasOperatorDelete(decltype(&U::operator delete))->DKTrue;
-			template <typename U> static auto _HasOperatorDelete(...)->DKFalse;
-			template <typename U> static auto _HasOperatorDeleteArray(decltype(&U::operator delete[]))->DKTrue;
-			template <typename U> static auto _HasOperatorDeleteArray(...)->DKFalse;
+#if _MSC_VER > 1900
+			template <typename A, A a> struct _Test;
+			//void* T::operator new  (std::size_t);
+			template <typename U> static auto _TestOperatorNew1(U*, _Test<void*(*)(std::size_t), &U::operator new>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorNew1(...)->DKFalse;
+			enum { _HasOperatorNew1 = decltype(_TestOperatorNew1<T>(nullptr))::Value };
+#if _MSVC_LANG >= 201703L
+			//void* T::operator new  (std::size_t, std::align_val_t); //C++17
+			template <typename U> static auto _TestOperatorNew2(U*, _Test<void*(*)(std::size_t, std::align_val_t), &U::operator new>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorNew2(...)->DKFalse;
+			enum { _HasOperatorNew2 = decltype(_TestOperatorNew2<T>(nullptr))::Value };
+#else
+			enum { _HasOperatorNew2 = 0 };
+#endif
+			//void* T::operator new[](std::size_t);
+			template <typename U> static auto _TestOperatorNewArray1(U*, _Test<void*(*)(std::size_t), &U::operator new[]>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorNewArray1(...)->DKFalse;
+			enum { _HasOperatorNewArray1 = decltype(_TestOperatorNewArray1<T>(nullptr))::Value };
+#if _MSVC_LANG >= 201703L
+			//void* T::operator new[](std::size_t, std::align_val_t); //C++17
+			template <typename U> static auto _TestOperatorNewArray2(U*, _Test<void*(*)(std::size_t, std::align_val_t), &U::operator new[]>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorNewArray2(...)->DKFalse;
+			enum { _HasOperatorNewArray2 = decltype(_TestOperatorNewArray2<T>(nullptr))::Value };
+#else
+			enum { _HasOperatorNewArray2 = 0 };
+#endif
 
-			enum { HasOperatorNew = decltype(_HasOperatorNew<T>(0))::Value };
-			enum { HasOperatorNewArray = decltype(_HasOperatorNewArray<T>(0))::Value };
-			enum { HasOperatorDelete = decltype(_HasOperatorDelete<T>(0))::Value };
-			enum { HasOperatorDeleteArray = decltype(_HasOperatorDeleteArray<T>(0))::Value };
+			//void T::operator delete  (void*);
+			template <typename U> static auto _TestOperatorDelete1(U*, _Test<void(*)(void*), &U::operator delete>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDelete1(...)->DKFalse;
+			enum { _HasOperatorDelete1 = decltype(_TestOperatorDelete1<T>(nullptr))::Value };
+			//void T::operator delete  (void*, std::size_t);
+			template <typename U> static auto _TestOperatorDelete2(U*, _Test<void(*)(void*, std::size_t), &U::operator delete>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDelete2(...)->DKFalse;
+			enum { _HasOperatorDelete2 = decltype(_TestOperatorDelete2<T>(nullptr))::Value };
+#if _MSVC_LANG >= 201703L
+			//void T::operator delete  (void*, std::align_val_t); //C++17
+			template <typename U> static auto _TestOperatorDelete3(U*, _Test<void(*)(void*, std::align_val_t), &U::operator delete>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDelete3(...)->DKFalse;
+			enum { _HasOperatorDelete3 = decltype(_TestOperatorDelete3<T>(nullptr))::Value };
+			//void T::operator delete  (void*, std::size_t, std::align_val_t); //C++17
+			template <typename U> static auto _TestOperatorDelete4(U*, _Test<void(*)(void*, std::size_t, std::align_val_t), &U::operator delete>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDelete4(...)->DKFalse;
+			enum { _HasOperatorDelete4 = decltype(_TestOperatorDelete4<T>(nullptr))::Value };
+#else
+			enum { _HasOperatorDelete3 = 0 };
+			enum { _HasOperatorDelete4 = 0 };
+#endif
+			//void T::operator delete[](void*);
+			template <typename U> static auto _TestOperatorDeleteArray1(U*, _Test<void(*)(void*), &U::operator delete[]>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDeleteArray1(...)->DKFalse;
+			enum { _HasOperatorDeleteArray1 = decltype(_TestOperatorDeleteArray1<T>(nullptr))::Value };
+			//void T::operator delete[](void*, std::size_t);
+			template <typename U> static auto _TestOperatorDeleteArray2(U*, _Test<void(*)(void*, std::size_t), &U::operator delete[]>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDeleteArray2(...)->DKFalse;
+			enum { _HasOperatorDeleteArray2 = decltype(_TestOperatorDeleteArray2<T>(nullptr))::Value };
+#if _MSVC_LANG >= 201703L
+			//void T::operator delete[](void*, std::align_val_t); //C++17
+			template <typename U> static auto _TestOperatorDeleteArray3(U*, _Test<void(*)(void*, std::align_val_t), &U::operator delete[]>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDeleteArray3(...)->DKFalse;
+			enum { _HasOperatorDeleteArray3 = decltype(_TestOperatorDeleteArray3<T>(nullptr))::Value };
+			//void T::operator delete[](void*, std::size_t, std::align_val_t); //C++17
+			template <typename U> static auto _TestOperatorDeleteArray4(U*, _Test<void(*)(void*, std::size_t, std::align_val_t), &U::operator delete[]>* = nullptr)->DKTrue;
+			template <typename U> static auto _TestOperatorDeleteArray4(...)->DKFalse;
+			enum { _HasOperatorDeleteArray4 = decltype(_TestOperatorDeleteArray4<T>(nullptr))::Value };
+#else
+			enum { _HasOperatorDeleteArray3 = 0 };
+			enum { _HasOperatorDeleteArray4 = 0 };
+#endif
+
+			enum { HasOperatorNew = _HasOperatorNew1 || _HasOperatorNew2 };
+			enum { HasOperatorNewArray = _HasOperatorNewArray1 || _HasOperatorNewArray2 };
+			enum { HasOperatorDelete = _HasOperatorDelete1 || _HasOperatorDelete2 || _HasOperatorDelete3 || _HasOperatorDelete4 };
+			enum { HasOperatorDeleteArray = _HasOperatorDeleteArray1 || _HasOperatorDeleteArray2 || _HasOperatorDeleteArray3 || _HasOperatorDeleteArray4 };
+#else
+			template <typename U> static auto _TestOperatorNew(decltype(&U::operator new))->DKTrue;
+			template <typename U> static auto _TestOperatorNew(...)->DKFalse;
+			template <typename U> static auto _TestOperatorNewArray(decltype(&U::operator new[]))->DKTrue;
+			template <typename U> static auto _TestOperatorNewArray(...)->DKFalse;
+			template <typename U> static auto _TestOperatorDelete(decltype(&U::operator delete))->DKTrue;
+			template <typename U> static auto _TestOperatorDelete(...)->DKFalse;
+			template <typename U> static auto _TestOperatorDeleteArray(decltype(&U::operator delete[]))->DKTrue;
+			template <typename U> static auto _TestOperatorDeleteArray(...)->DKFalse;
+
+			enum { HasOperatorNew = decltype(_TestOperatorNew<T>(0))::Value };
+			enum { HasOperatorNewArray = decltype(_TestOperatorNewArray<T>(0))::Value };
+			enum { HasOperatorDelete = decltype(_TestOperatorDelete<T>(0))::Value };
+			enum { HasOperatorDeleteArray = decltype(_TestOperatorDeleteArray<T>(0))::Value };
+#endif
 		};
 
 	}

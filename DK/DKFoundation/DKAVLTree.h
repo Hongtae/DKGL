@@ -254,7 +254,7 @@ namespace DKFoundation
 		/// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (VALUE&, bool*)");
 
 			if (count > 0)
@@ -266,7 +266,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (VALUE&, bool*)");
 
 			if (count > 0)
@@ -279,7 +279,7 @@ namespace DKFoundation
 		/// lambda enumerator bool (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (const VALUE&, bool*)");
 
 			if (count > 0)
@@ -291,7 +291,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (const VALUE&, bool*)");
 
 			if (count > 0)
