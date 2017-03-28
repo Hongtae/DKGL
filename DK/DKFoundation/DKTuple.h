@@ -227,6 +227,7 @@ namespace DKFoundation
 		using TypeList = DKTypeList<Types...>;
 
 		template <size_t Index> using TypeAt = typename TypeList::template TypeAt<Index>;
+		template <size_t Index> using TupleUnitTypeAt = typename DKTupleUnit<TypeAt<Index>>;
 
 		template <typename T> constexpr static auto IndexOf(void) -> int
 		{
@@ -238,22 +239,22 @@ namespace DKFoundation
 			return TypeList::template Count<T>::Value > 0;
 		};
 		
-		template <size_t Index> auto Unit(void) -> DKTupleUnit<TypeAt<Index>>&
+		template <size_t Index> auto Unit(void) -> TupleUnitTypeAt<Index>&
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return static_cast<DataUnitAtIndex<Index>&>(dataUnits).unit;
 		};
-		template <size_t Index> auto Unit(void) const -> const DKTupleUnit<TypeAt<Index>>&
+		template <size_t Index> auto Unit(void) const -> const TupleUnitTypeAt<Index>&
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return static_cast<const DataUnitAtIndex<Index>&>(dataUnits).unit;
 		};
-		template <size_t Index> auto Value(void) -> typename DKTupleUnit<TypeAt<Index>>::RefType
+		template <size_t Index> auto Value(void) -> typename TupleUnitTypeAt<Index>::RefType
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return Unit<Index>().Value();
 		};
-		template <size_t Index> auto Value(void) const -> typename DKTupleUnit<TypeAt<Index>>::CRefType
+		template <size_t Index> auto Value(void) const -> typename TupleUnitTypeAt<Index>::CRefType
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return Unit<Index>().Value();
