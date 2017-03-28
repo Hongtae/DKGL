@@ -119,7 +119,7 @@ namespace DKFoundation
 			};
 			using Result = _Result;
 		};
-		template <size_t Length> using TupleInvoker = typename _TupleInvoker<0, Length>::Result;
+		template <int Length> using TupleInvoker = typename _TupleInvoker<0, Length>::Result;
 
 		////////////////////////////////////////////////////////////////////////////////
 		// generate Invocation object from regular function, function object.

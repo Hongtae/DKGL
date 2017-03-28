@@ -75,10 +75,10 @@ namespace DKFramework
 		RGBA32 RGBA32Value(void) const
 		{
 			RGBA32 val = {
-				static_cast<uint8_t>(Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<uint8_t>(Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<uint8_t>(Clamp<int>(b * 255.0f, 0, 0xff)),
-				static_cast<uint8_t>(Clamp<int>(a * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(r * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(g * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(b * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(a * 255.0f), 0, 0xff)),
 			};
 			return val;
 		}
@@ -86,10 +86,10 @@ namespace DKFramework
 		ARGB32 ARGB32Value(void) const
 		{
 			ARGB32 val = {
-				static_cast<uint8_t>(Clamp<int>(a * 255.0f, 0, 0xff)),
-				static_cast<uint8_t>(Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<uint8_t>(Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<uint8_t>(Clamp<int>(b * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(a * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(r * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(g * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(b * 255.0f), 0, 0xff)),
 			};
 			return val;
 		}

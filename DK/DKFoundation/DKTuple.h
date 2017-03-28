@@ -177,12 +177,12 @@ namespace DKFoundation
 		// a data unit object that includes single DKTupleUnit.
 		// each types can be recognized with index.
 		// one object should contains all types with inheritance.
-		template <size_t Level, typename... Ts> struct DataUnitHierarchy
+		template <int Level, typename... Ts> struct DataUnitHierarchy
 		: public DataUnitHierarchy<Level-1, Ts...>
 		{
 			using Super = DataUnitHierarchy<Level-1, Ts...>;
 			using TypeList = DKTypeList<Ts...>;
-			enum {Index = TypeList::Length - Level};
+			enum { Index = TypeList::Length - Level };
 			static_assert(Index >= 0, "Index must be greater or equal to zero");
 			using UnitType = typename TypeList::template TypeAt<Index>;
 			using TupleUnit = DKTupleUnit<UnitType>;
@@ -217,17 +217,23 @@ namespace DKFoundation
 			DataUnitHierarchy(const DKTupleValueSet&)	{}
 		};
 		// a type, could be recognized by index.
-		template <size_t Index> using DataUnitAtIndex = DataUnitHierarchy<sizeof...(Types) - Index, Types...>;
+		template <int Index> using DataUnitAtIndex = DataUnitHierarchy<sizeof...(Types) - Index, Types...>;
 		using DataUnitType = DataUnitHierarchy<sizeof...(Types), Types...>;
 
 		DataUnitType dataUnits;
+
+		template <int Index> struct ItemAt
+		{
+			using ElementType = typename DKTypeList<Types...>::template TypeAt<Index>;
+			using TupleUnitType = DKTupleUnit<ElementType>;
+		};
 
 	public:
 		enum {Length = sizeof...(Types)};
 		using TypeList = DKTypeList<Types...>;
 
-		template <size_t Index> using TypeAt = typename TypeList::template TypeAt<Index>;
-		template <size_t Index> using TupleUnitTypeAt = typename DKTupleUnit<TypeAt<Index>>;
+		template <int Index> using TypeAt = typename ItemAt<Index>::ElementType;
+		template <int Index> using UnitTypeAt = typename ItemAt<Index>::TupleUnitType;
 
 		template <typename T> constexpr static auto IndexOf(void) -> int
 		{
@@ -239,29 +245,29 @@ namespace DKFoundation
 			return TypeList::template Count<T>::Value > 0;
 		};
 		
-		template <size_t Index> auto Unit(void) -> TupleUnitTypeAt<Index>&
+		template <int Index> auto Unit(void) -> UnitTypeAt<Index>&
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return static_cast<DataUnitAtIndex<Index>&>(dataUnits).unit;
 		};
-		template <size_t Index> auto Unit(void) const -> const TupleUnitTypeAt<Index>&
+		template <int Index> auto Unit(void) const -> const UnitTypeAt<Index>&
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return static_cast<const DataUnitAtIndex<Index>&>(dataUnits).unit;
 		};
-		template <size_t Index> auto Value(void) -> typename TupleUnitTypeAt<Index>::RefType
+		template <int Index> auto Value(void) -> typename UnitTypeAt<Index>::RefType
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return Unit<Index>().Value();
 		};
-		template <size_t Index> auto Value(void) const -> typename TupleUnitTypeAt<Index>::CRefType
+		template <int Index> auto Value(void) const -> typename UnitTypeAt<Index>::CRefType
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return Unit<Index>().Value();
 		};
 
-		template <size_t Index, typename... Ts> void SetValue(Ts&&...) {}
-		template <size_t Index, typename T, typename... Ts> void SetValue(T&& v, Ts&&... vs)
+		template <int Index, typename... Ts> void SetValue(Ts&&...) {}
+		template <int Index, typename T, typename... Ts> void SetValue(T&& v, Ts&&... vs)
 		{
 			static_assert(Index < sizeof...(Types)," Index must be lesser than type size");
 			Unit<Index>().SetValue(std::forward<T>(v));
