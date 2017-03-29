@@ -2,7 +2,7 @@
 //  File: DKError.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 
@@ -81,6 +81,26 @@ namespace DKFoundation
 			}
 
 #ifdef _WIN32
+			// DbgHelp.dll is not thread-safe!
+			// We have to synchronize all DLL functions with Win32 CRITICAL_SECTION.
+			struct ScopeDbgHelpDllLock final
+			{
+				struct CriticalSection
+				{
+					CRITICAL_SECTION cs;
+					CriticalSection(void) { ::InitializeCriticalSection(&cs); }
+					static CRITICAL_SECTION* GetCS(void)
+					{
+						static CriticalSection cs;
+						return &cs.cs;
+					}
+					static void Enter(void) { ::EnterCriticalSection(GetCS()); }
+					static void Leave(void) { ::LeaveCriticalSection(GetCS()); }
+				};
+				ScopeDbgHelpDllLock(void) { CriticalSection::Enter(); }
+				~ScopeDbgHelpDllLock(void) { CriticalSection::Leave(); }
+			};
+
 			struct DbgHelpDLL
 			{
 				HMODULE hDLL;
@@ -220,6 +240,8 @@ namespace DKFoundation
 
 			DbgHelpDLL* GetDbgHelpDLL(void)
 			{
+				ScopeDbgHelpDllLock guard;
+
 				static bool init = false;
 				static DbgHelpDLL dbg;
 
@@ -300,6 +322,8 @@ namespace DKFoundation
 				DbgHelpDLL* dbg = GetDbgHelpDLL();
 				if (dbg)
 				{
+					ScopeDbgHelpDllLock guard;
+
 					HANDLE hProcess = ::GetCurrentProcess();
 					if (dbg->pSymInitializeW(hProcess, NULL, TRUE))
 					{
@@ -874,7 +898,7 @@ void DKError::RaiseException(const DKString& func, const DKString& file, unsigne
 	err.RetraceStackFrames(1, 1024);
 
 #ifdef DKGL_DEBUG_ENABLED
-	err.PrintDescriptionWithStackFrames();
+	//err.PrintDescriptionWithStackFrames();
 #else
 	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
@@ -891,7 +915,7 @@ void DKError::RaiseException(int errorCode, const DKString& desc)
 	err.RetraceStackFrames(1, 1024);
 
 #ifdef DKGL_DEBUG_ENABLED
-	err.PrintDescriptionWithStackFrames();
+	//err.PrintDescriptionWithStackFrames();
 #else
 	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
@@ -908,7 +932,7 @@ void DKError::RaiseException(const DKString& desc)
 	err.RetraceStackFrames(1, 1024);
 
 #ifdef DKGL_DEBUG_ENABLED
-	err.PrintDescriptionWithStackFrames();
+	//err.PrintDescriptionWithStackFrames();
 #else
 	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
@@ -1113,5 +1137,6 @@ void DKError::DumpUnexpectedError(Private::UnexpectedError* e)
 	else
 	{
 		err.WriteToDefaultDescriptor();
+		abort();
 	}
 }

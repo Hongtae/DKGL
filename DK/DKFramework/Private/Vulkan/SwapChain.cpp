@@ -17,8 +17,8 @@ using namespace DKFramework::Private::Vulkan;
 SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	: queue(q)
 	, window(w)
-	, surface(nullptr)
-	, swapchain(nullptr)
+	, surface(NULL)
+	, swapchain(NULL)
 	, enableVSync(false)
 {
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
@@ -278,7 +278,7 @@ bool SwapChain::Update(void)
 	}
 
 	// Get the swap chain images
-	DKArray<VkImage> swapchainImages(VkImage(nullptr), swapchainImageCount);
+	DKArray<VkImage> swapchainImages(VkImage(NULL), swapchainImageCount);
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, swapchainImages);
 	if (err != VK_SUCCESS)
 	{
@@ -309,7 +309,7 @@ bool SwapChain::Update(void)
 		imageViewCI.flags = 0;
 		imageViewCI.image = image;
 
-		VkImageView imageView = nullptr;
+		VkImageView imageView = NULL;
 		err = vkCreateImageView(device, &imageViewCI, nullptr, &imageView);
 		if (err != VK_SUCCESS)
 		{

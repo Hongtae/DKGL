@@ -54,6 +54,23 @@ GraphicsDevice::GraphicsDevice(void)
 	if (FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory))))
 		throw std::runtime_error("CreateDXGIFactory2 failed");
 
+	auto featureLevelToCStr = [](D3D_FEATURE_LEVEL lv) -> const char*
+	{
+		switch (lv)
+		{
+		case D3D_FEATURE_LEVEL_9_1: return "9_1";
+		case D3D_FEATURE_LEVEL_9_2: return "9_2";
+		case D3D_FEATURE_LEVEL_9_3: return "9_3";
+		case D3D_FEATURE_LEVEL_10_0: return "10_0";
+		case D3D_FEATURE_LEVEL_10_1: return "10_1";
+		case D3D_FEATURE_LEVEL_11_0: return "11_0";
+		case D3D_FEATURE_LEVEL_11_1: return "11_1";
+		case D3D_FEATURE_LEVEL_12_0: return "12_0";
+		case D3D_FEATURE_LEVEL_12_1: return "12_1";
+		}
+		return "Unknown";
+	};
+
 	// feature levels (order by priority)
 	std::initializer_list<D3D_FEATURE_LEVEL> featureLevels = {
 		D3D_FEATURE_LEVEL_12_1,
@@ -107,8 +124,8 @@ GraphicsDevice::GraphicsDevice(void)
 							if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
 							{
 								this->deviceName = desc.Description;
-								DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
-									desc.Description, this->device->GetNodeCount(), featureLevel);
+								DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
+									desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 								break;
 							}
 						}
@@ -137,17 +154,18 @@ GraphicsDevice::GraphicsDevice(void)
 			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 				continue;
 
-			ComPtr<IDXGIAdapter3> dxgiAdapter3;
-			adapter->QueryInterface(IID_PPV_ARGS(&dxgiAdapter3));
-			if (dxgiAdapter3)
-			{
-			}
+			//ComPtr<IDXGIAdapter3> dxgiAdapter3;
+			//adapter->QueryInterface(IID_PPV_ARGS(&dxgiAdapter3));
+			//if (dxgiAdapter3)
+			//{
+			//}
 
-			if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
+			HRESULT hr = D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device));
+			if (SUCCEEDED(hr))
 			{
 				this->deviceName = desc.Description;
-				DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
-					desc.Description, this->device->GetNodeCount(), featureLevel);
+				DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
+					desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 				break;
 			}
 		}
@@ -163,11 +181,12 @@ GraphicsDevice::GraphicsDevice(void)
 		adapter->GetDesc(&desc);
 
 		D3D_FEATURE_LEVEL featureLevel = *featureLevels.begin();
-		if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
+		HRESULT hr = D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device));
+		if (SUCCEEDED(hr))
 		{
 			this->deviceName = desc.Description;
-			DKLog("D3D12CreateDevice created WARP device with \"%ls\" (NodeCount:%u, FeatureLevel:%x)",
-				desc.Description, this->device->GetNodeCount(), featureLevel);
+			DKLog("D3D12CreateDevice created WARP device with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
+				desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 		}
 		else
 			throw std::runtime_error("D3D12CreateDevice failed");
