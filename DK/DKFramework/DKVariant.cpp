@@ -2352,3 +2352,89 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 	}
 	return result;
 }
+
+#define KEY_PATH_DELIMITER	'.'
+
+bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bool(DKVariant&)>* callback)
+{
+	if (path.Length() > 0)
+	{
+		if (this->ValueType() == TypePairs)
+		{
+			VPairs& map = this->Pairs();
+
+			DKString key = path;
+			DKString rest = "";
+			while (true)
+			{
+				VPairs::Pair* pair = map.Find(key);
+				if (pair)
+				{
+					if (pair->value.FindObjectAtKeyPath(rest, callback))
+						return true;
+				}
+				// continue to next search
+				long findResult = -1;
+				for (long f = key.Find(KEY_PATH_DELIMITER, findResult + 1);
+					 f >= 0;
+					 f = key.Find(KEY_PATH_DELIMITER, findResult + 1))
+				{
+					findResult = f;
+				}
+				if (findResult >= 0)
+				{
+					key = key.Left(findResult);
+					rest = path.Right(findResult+1);
+				}
+				else
+					break;
+			}
+		}
+		return false;
+	}
+	if (callback)
+		return callback->Invoke(*this);
+	return true;
+}
+
+bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bool(const DKVariant&)>* callback) const
+{
+	if (path.Length() > 0)
+	{
+		if (this->ValueType() == TypePairs)
+		{
+			const VPairs& map = this->Pairs();
+
+			DKString key = path;
+			DKString rest = "";
+			while (true)
+			{
+				const VPairs::Pair* pair = map.Find(key);
+				if (pair)
+				{
+					if (pair->value.FindObjectAtKeyPath(rest, callback))
+						return true;
+				}
+				// continue to next search
+				long findResult = -1;
+				for (long f = key.Find(KEY_PATH_DELIMITER, findResult + 1);
+					 f >= 0;
+					 f = key.Find(KEY_PATH_DELIMITER, findResult + 1))
+				{
+					findResult = f;
+				}
+				if (findResult >= 0)
+				{
+					key = key.Left(findResult);
+					rest = path.Right(findResult+1);
+				}
+				else
+					break;
+			}
+		}
+		return false;
+	}
+	if (callback)
+		return callback->Invoke(*this);
+	return true;
+}
