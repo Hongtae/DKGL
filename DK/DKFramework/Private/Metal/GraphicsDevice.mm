@@ -39,15 +39,18 @@ GraphicsDevice::GraphicsDevice(void)
 
 		NSString* preferredDeviceName = @"";
 		// get preferred device.
-		if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
+		DKPropertySet::SystemConfig().LookUpValueForKeyPath(preferredDeviceNameKey,
+															DKFunction([&preferredDeviceName](const DKVariant& var)->bool
 		{
-			if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
+			if (var.ValueType() == DKVariant::TypeString)
 			{
-				DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
+				DKString prefDevName = var.String();
 				if (prefDevName.Length() > 0)
 					preferredDeviceName = [NSString stringWithUTF8String:(const char*)DKStringU8(prefDevName)];
+				return true;
 			}
-		}
+			return false;
+		});
 
 		// save device list into system config.
 		DKVariant deviceList = DKVariant::TypeArray;

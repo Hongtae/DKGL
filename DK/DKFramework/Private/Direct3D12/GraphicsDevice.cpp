@@ -104,20 +104,20 @@ GraphicsDevice::GraphicsDevice(void)
 	}
 
 	// select preferred device first.
-	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
+	DKPropertySet::SystemConfig().LookUpValueForKeyPath(preferredDeviceNameKey,
+														DKFunction([&](const DKVariant& var)->bool
 	{
-		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
+		if (var.ValueType() == DKVariant::TypeString)
 		{
-			DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
-
-			if (prefDevName.Length() > 0)
+			DKString preferredDeviceName = var.String();
+			if (preferredDeviceName.Length() > 0)
 			{
 				ComPtr<IDXGIAdapter1> adapter = nullptr;
 				for (UINT index = 0; factory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND; ++index)
 				{
 					DXGI_ADAPTER_DESC1 desc;
 					adapter->GetDesc1(&desc);
-					if (prefDevName.CompareNoCase(desc.Description) == 0)
+					if (preferredDeviceName.CompareNoCase(desc.Description) == 0)
 					{
 						for (D3D_FEATURE_LEVEL featureLevel : featureLevels)
 						{
@@ -125,21 +125,23 @@ GraphicsDevice::GraphicsDevice(void)
 							{
 								this->deviceName = desc.Description;
 								DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
-									desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
+									  desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 								break;
 							}
 						}
 						if (this->device == nullptr)
 						{
-							DKLog("Cannot create device with preferred-device (%ls)", (const wchar_t*)prefDevName);
+							DKLog("Cannot create device with preferred-device (%ls)", (const wchar_t*)preferredDeviceName);
 						}
 						break;
 					}
 				}
 			}
+			return true;
 		}
-	}
-
+		return false;
+	}));
+	
 	for (D3D_FEATURE_LEVEL featureLevel : featureLevels)
 	{
 		if (this->device)

@@ -92,6 +92,8 @@ using namespace DKFramework::Private::Vulkan;
 
 GraphicsDevice::GraphicsDevice(void)
 	: instance(NULL)
+	, device(NULL)
+	, physicalDevice(NULL)
 	, msgCallback(NULL)
 	, enableValidation(false)
 {
@@ -224,9 +226,9 @@ GraphicsDevice::GraphicsDevice(void)
 			desc.deviceTypePriority = 0;
 
 			uint32_t queueFamilyCount;
-			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+			vkGetPhysicalDeviceQueueFamilyProperties(desc.physicalDevice, &queueFamilyCount, nullptr);
 			desc.queueFamilyProperties.Resize(queueFamilyCount);
-			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, desc.queueFamilyProperties);
+			vkGetPhysicalDeviceQueueFamilyProperties(desc.physicalDevice, &queueFamilyCount, desc.queueFamilyProperties);
 
 			size_t numGCQueues = 0; // graphics | compute queue
 			// calculate num available queues. (Graphics & Compute)
@@ -243,9 +245,9 @@ GraphicsDevice::GraphicsDevice(void)
 				desc.numQueues = numGCQueues;
 				desc.deviceMemory = 0;
 
-				vkGetPhysicalDeviceProperties(physicalDevice, &desc.properties);
-				vkGetPhysicalDeviceMemoryProperties(physicalDevice, &desc.memoryProperties);
-				vkGetPhysicalDeviceFeatures(physicalDevice, &desc.features);
+				vkGetPhysicalDeviceProperties(desc.physicalDevice, &desc.properties);
+				vkGetPhysicalDeviceMemoryProperties(desc.physicalDevice, &desc.memoryProperties);
+				vkGetPhysicalDeviceFeatures(desc.physicalDevice, &desc.features);
 
 				switch (desc.properties.deviceType)
 				{
@@ -267,11 +269,11 @@ GraphicsDevice::GraphicsDevice(void)
 
 				// Get list of supported extensions
 				uint32_t extCount = 0;
-				vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, nullptr);
+				vkEnumerateDeviceExtensionProperties(desc.physicalDevice, nullptr, &extCount, nullptr);
 				if (extCount > 0)
 				{
 					desc.extensionProperties.Resize(extCount);
-					vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extCount, desc.extensionProperties);
+					vkEnumerateDeviceExtensionProperties(desc.physicalDevice, nullptr, &extCount, desc.extensionProperties);
 				}
 
 				physicalDeviceList.Add(desc);
@@ -339,17 +341,17 @@ GraphicsDevice::GraphicsDevice(void)
 	}
 
 	// make preferred device first.
-	if (DKPropertySet::SystemConfig().HasValue(preferredDeviceNameKey))
+	DKPropertySet::SystemConfig().LookUpValueForKeyPath(preferredDeviceNameKey,
+														DKFunction([&physicalDeviceList](const DKVariant& var)->bool
 	{
-		if (DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).ValueType() == DKVariant::TypeString)
+		if (var.ValueType() == DKVariant::TypeString)
 		{
-			DKString prefDevName = DKPropertySet::SystemConfig().Value(preferredDeviceNameKey).String();
-
-			if (prefDevName.Length() > 0)
+			DKString preferredDeviceName = var.String();
+			if (preferredDeviceName.Length() > 0)
 			{
 				for (size_t i = 0; i < physicalDeviceList.Count(); ++i)
 				{
-					if (prefDevName.CompareNoCase(physicalDeviceList.Value(i).properties.deviceName) == 0)
+					if (preferredDeviceName.CompareNoCase(physicalDeviceList.Value(i).properties.deviceName) == 0)
 					{
 						PhysicalDeviceDesc desc = physicalDeviceList.Value(i);
 						physicalDeviceList.Remove(i);
@@ -358,8 +360,10 @@ GraphicsDevice::GraphicsDevice(void)
 					}
 				}
 			}
+			return true;
 		}
-	}
+		return false;
+	}));
 
 	// create logical device
 	const float defaultQueuePriority(0.0f);
@@ -416,14 +420,14 @@ GraphicsDevice::GraphicsDevice(void)
 
 		VkDevice logicalDevice;
 
-		err = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice);
+		err = vkCreateDevice(desc.physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice);
 		if (err == VK_SUCCESS)
 		{
 			// initialize device extensions
 			dproc.Load(logicalDevice);
 
 			this->device = logicalDevice;
-			this->physicalDevice = physicalDevice;
+			this->physicalDevice = desc.physicalDevice;
 			this->properties = desc.properties;
 			this->features = desc.features;
 			this->extensionProperties = desc.extensionProperties;
@@ -433,7 +437,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 			for (const VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
 			{
-				QueueFamily* qf = DKRawPtrNew<QueueFamily>(physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueCount));
+				QueueFamily* qf = DKRawPtrNew<QueueFamily>(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex));
 				this->queueFamilies.Add(qf);
 			}
 			DKLog("Vulkan device created with \"%s\"", desc.properties.deviceName);

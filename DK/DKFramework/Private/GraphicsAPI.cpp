@@ -91,34 +91,32 @@ namespace DKFramework
 		}
 
 		// get user preferred API name.
-		bool tryPreferredApiFirst = true;
-		if (tryPreferredApiFirst)
+		DKPropertySet::SystemConfig().LookUpValueForKeyPath(preferredGraphicsAPIKey,
+															DKFunction([&apis](const DKVariant& var)->bool
 		{
-			DKPropertySet& config = DKPropertySet::SystemConfig();
-			if (config.HasValue(preferredGraphicsAPIKey))
+			if (var.ValueType() == DKVariant::TypeString)
 			{
-				const DKVariant& var = config.Value(preferredGraphicsAPIKey);
-				if (var.ValueType() == DKVariant::TypeString)
-				{
-					DKString selectAPI = (DKString)DKStringU8(var.String());
+				DKString selectAPI = var.String();
 
-					for (size_t i = 0; i < apis.Count(); ++i)
+				for (size_t i = 0; i < apis.Count(); ++i)
+				{
+					if (selectAPI.CompareNoCase(apis.Value(i).name) == 0)
 					{
-						if (selectAPI.CompareNoCase(apis.Value(i).name) == 0)
+						if (i > 0)
 						{
-							if (i > 0)
-							{
-								APISet api = apis.Value(i);
-								api.preferred = true;
-								apis.Remove(i);
-								apis.Insert(api, 0);
-							}
-							break;
+							APISet api = apis.Value(i);
+							api.preferred = true;
+							apis.Remove(i);
+							apis.Insert(api, 0);
 						}
+						break;
 					}
 				}
+				return true;
 			}
-		}
+			return false;
+		}));
+
 
 		bool printApiSet = true;
 		if (printApiSet)
