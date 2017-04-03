@@ -2,7 +2,7 @@
 //  File: DKPropertySet.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "DKPropertySet.h"
@@ -10,6 +10,7 @@
 using namespace DKFramework;
 
 DKPropertySet::DKPropertySet(void)
+	: dataSet(DKVariant::TypePairs)
 {
 }
 
@@ -32,7 +33,7 @@ int DKPropertySet::Import(const DKPropertySet& prop, bool overwrite)
 	DKCriticalSection<DKSpinLock> gaurd(prop.lock);
 
 	int imported = 0;
-	prop.properties.EnumerateForward([&](const PropertyMap::Pair& pair)
+	prop.dataSet.Pairs().EnumerateForward([&](const PropertyMap::Pair& pair)
 	{
 		if (overwrite)
 		{
@@ -177,7 +178,7 @@ DKObject<DKXmlElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 
 	bool exportFailed = false;
 
-	this->properties.EnumerateForward([&](const PropertyMap::Pair& pair, bool* stop)
+	this->dataSet.Pairs().EnumerateForward([&](const PropertyMap::Pair& pair, bool* stop)
 	{
 		DKObject<DKXmlElement> pnode = NULL;
 		if (exportXML)
@@ -255,14 +256,14 @@ DKObject<DKXmlElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 bool DKPropertySet::HasValue(const DKString& key) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
-	return properties.Find(key) != NULL;
+	return dataSet.Pairs().Find(key) != NULL;
 }
 
 const DKVariant& DKPropertySet::Value(const DKString& key) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 
-	const PropertyMap::Pair* p = properties.Find(key);
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
 	if (p)
 	{
 		return p->value;
@@ -274,7 +275,7 @@ const DKVariant& DKPropertySet::Value(const DKString& key) const
 bool DKPropertySet::SetInitialValue(const DKString& key, const DKVariant& value)
 {
 	lock.Lock();
-	bool result = properties.Insert(key, value);
+	bool result = dataSet.Pairs().Insert(key, value);
 	lock.Unlock();
 
 	if (result)
@@ -292,13 +293,13 @@ void DKPropertySet::SetValue(const DKString& key, const DKVariant& value)
 	DKVariant oldValue;
 	bool modification = false;
 
-	const PropertyMap::Pair* p = properties.Find(key);
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
 	if (p)
 	{
 		oldValue = p->value;
 		modification = true;
 	}
-	properties.Update(key, value);
+	dataSet.Pairs().Update(key, value);
 
 	lock.Unlock();
 
@@ -319,13 +320,13 @@ void DKPropertySet::Remove(const DKString& key)
 	DKVariant oldValue;
 	bool deletion = false;
 
-	const PropertyMap::Pair* p = properties.Find(key);
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
 	if (p)
 	{
 		oldValue = p->value;
 		deletion = true;
 
-		properties.Remove(key);
+		dataSet.Pairs().Remove(key);
 	}
 
 	lock.Unlock();
@@ -338,7 +339,13 @@ void DKPropertySet::Remove(const DKString& key)
 
 size_t DKPropertySet::NumberOfEntries(void) const
 {
-	return properties.Count();
+	return dataSet.Pairs().Count();
+}
+
+bool DKPropertySet::LookUpValueForKeyPath(const DKString& path, DKVariant::ConstKeyPathEnumerator* callback) const
+{
+	DKCriticalSection<DKSpinLock> guard(lock);
+	return dataSet.FindObjectAtKeyPath(path, callback);
 }
 
 DKPropertySet& DKPropertySet::DefaultSet(void)
@@ -422,7 +429,10 @@ void DKPropertySet::EnumerateForward(const Enumerator* e) const
 	if (e)
 	{
 		DKCriticalSection<DKSpinLock> guard(lock);
-		properties.EnumerateForward([e](const PropertyMap::Pair& pair) {e->Invoke(pair.key, pair.value);} );
+		dataSet.Pairs().EnumerateForward([e](const PropertyMap::Pair& pair)
+		{
+			e->Invoke(pair.key, pair.value);
+		});
 	}
 }
 
@@ -431,8 +441,11 @@ void DKPropertySet::EnumerateBackward(const Enumerator* e) const
 	if (e)
 	{
 		DKCriticalSection<DKSpinLock> guard(lock);
-		properties.EnumerateBackward([e](const PropertyMap::Pair& pair) {e->Invoke(pair.key, pair.value);} );
-	}	
+		dataSet.Pairs().EnumerateBackward([e](const PropertyMap::Pair& pair)
+		{
+			e->Invoke(pair.key, pair.value);
+		});
+	}
 }
 
 template <typename T, typename... Args>
@@ -451,5 +464,4 @@ void DKPropertySet::CallbackObservers(const DKString& key, const DKMap<DKString,
 	callbackLock.Unlock();
 	for (T* cb : callbacks)
 		cb->Invoke(key, std::forward<Args>(args)...);
-
 }

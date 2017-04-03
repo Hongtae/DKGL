@@ -198,6 +198,9 @@ namespace DKFramework
 
 		bool IsEqual(const DKVariant& v) const;
 
+		using KeyPathEnumerator = DKFunctionSignature<bool (DKVariant&)>;
+		using ConstKeyPathEnumerator = DKFunctionSignature<bool (const DKVariant&)>;
+
 		/// @brief Find descendants with key-path
 		/// A parent node object must be DKVariant::TypePair type and key-Path
 		/// is dot-notation of ancestors-descendants relationship.
@@ -205,8 +208,8 @@ namespace DKFramework
 		/// @note
 		///  For the same path, the object with the shortest depth is first called with the callback function.
 		/// @param callback A callback function that is invoked when a matching object is found. If this callback function returns false, it continues to search for another matching object.
-		bool FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bool(DKVariant&)>* callback);
-		bool FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bool(const DKVariant&)>* callback) const;
+		bool FindObjectAtKeyPath(const DKString& path, KeyPathEnumerator* callback);
+		bool FindObjectAtKeyPath(const DKString& path, ConstKeyPathEnumerator* callback) const;
 	private:
 		// data block size chosen from biggest value of minSize, sizeof(void*)
 		template <int minSize> struct VBlock

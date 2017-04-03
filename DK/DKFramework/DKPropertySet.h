@@ -2,7 +2,7 @@
 //  File: DKPropertySet.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -58,6 +58,9 @@ namespace DKFramework
 		void Remove(const DKString& key);
 		size_t NumberOfEntries(void) const;
 
+		/// search all values that matching key-path.
+		bool LookUpValueForKeyPath(const DKString& path, DKVariant::ConstKeyPathEnumerator* callback) const;
+
 		// Add / Remove callback for key insertion, modification, deletion.
 		using ObserverContext = const void*;
 		/// add callback for key insertion, modification, deletion
@@ -71,8 +74,8 @@ namespace DKFramework
 				
 	private:
 		DKSpinLock lock;
-		typedef DKMap<DKString, DKVariant> PropertyMap;
-		PropertyMap properties;
+		using PropertyMap = DKVariant::VPairs;
+		DKVariant dataSet;
 
 		DKSpinLock callbackLock;
 		template <typename T> using ObserverMap = DKMap<ObserverContext, T>;
@@ -80,6 +83,7 @@ namespace DKFramework
 		DKMap<DKString, ObserverMap<DKObject<ModificationCallback>>> modificationCallbacks;
 		DKMap<DKString, ObserverMap<DKObject<DeletionCallback>>> deletionCallbacks;
 
-		template <typename T, typename... Args> void CallbackObservers(const DKString& key, const DKMap<DKString, ObserverMap<DKObject<T>>>& target, Args&&... args) const;
+		template <typename T, typename... Args>
+		void CallbackObservers(const DKString& key, const DKMap<DKString, ObserverMap<DKObject<T>>>& target, Args&&... args) const;
 	};
 }
