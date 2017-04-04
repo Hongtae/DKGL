@@ -50,7 +50,7 @@ GraphicsDevice::GraphicsDevice(void)
 				return true;
 			}
 			return false;
-		});
+        }));
 
 		// save device list into system config.
 		DKVariant deviceList = DKVariant::TypeArray;
