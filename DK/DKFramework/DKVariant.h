@@ -210,7 +210,14 @@ namespace DKFramework
 		/// @param callback A callback function that is invoked when a matching object is found. If this callback function returns false, it continues to search for another matching object.
 		bool FindObjectAtKeyPath(const DKString& path, KeyPathEnumerator* callback);
 		bool FindObjectAtKeyPath(const DKString& path, ConstKeyPathEnumerator* callback) const;
+
+		/// Insert new value at given key-path.
+		/// If this function succeeded, FindObjectAtKeyPath() is able to locate new value.
+		/// This function will create intermediate pairs (TypePairs) as a container.
+		/// @return new value's address, NULL if item cannot be created with given path.
+		DKVariant* NewValueAtKeyPath(const DKString& path, const DKVariant& value);
 	private:
+
 		// data block size chosen from biggest value of minSize, sizeof(void*)
 		template <int minSize> struct VBlock
 		{

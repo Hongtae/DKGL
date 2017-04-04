@@ -2438,3 +2438,33 @@ bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bo
 		return callback->Invoke(*this);
 	return true;
 }
+
+DKVariant* DKVariant::NewValueAtKeyPath(const DKString& path, const DKVariant& value)
+{
+	if (this->ValueType() == TypePairs)
+	{
+		VPairs& pair = this->Pairs();
+		for (long findResult = path.Find(KEY_PATH_DELIMITER, 0);
+			 findResult >= 0;
+			 findResult = path.Find(KEY_PATH_DELIMITER, findResult + 1))
+		{
+			DKString key = path.Left(findResult);
+			DKString rest = path.Right(findResult + 1);
+			auto p = pair.Find(key);
+			if (p)
+			{
+				DKVariant* result = p->value.NewValueAtKeyPath(rest, value);
+				if (result)
+					return result;
+			}
+			else
+			{
+				if (pair.Insert(key, TypePairs))
+					return pair.Value(key).NewValueAtKeyPath(rest, value);
+			}
+		}
+		if (pair.Insert(path, value))
+			return &pair.Value(path);
+	}
+	return NULL;
+}
