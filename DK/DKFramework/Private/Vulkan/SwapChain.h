@@ -28,6 +28,7 @@ namespace DKFramework
 
 				bool Setup(void);
 				bool Update(void);
+				void SetupFrame(void);
 
 				void SetColorPixelFormat(DKPixelFormat) override;
 				void SetDepthStencilPixelFormat(DKPixelFormat) override;
@@ -47,6 +48,7 @@ namespace DKFramework
 				DKObject<CommandQueue> queue;
 
 			private:
+				uint32_t frameIndex;
 				DKRenderPassDescriptor renderPassDescriptor;
 				void OnWindowEvent(const DKWindow::WindowEvent&);
 			};

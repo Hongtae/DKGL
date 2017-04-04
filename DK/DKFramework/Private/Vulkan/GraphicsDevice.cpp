@@ -72,7 +72,7 @@ namespace DKFramework
 				}
 
 				// Display message to default output (console if activated)
-				DKLog("[VulkanDebug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
+				DKLog("[Vulkan-Debug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
 
 				// The return value of this callback controls wether the Vulkan call that caused
 				// the validation message will be aborted or not

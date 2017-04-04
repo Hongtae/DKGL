@@ -340,12 +340,56 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 {
+	if (renderPassDescriptor.colorAttachments.Count() == 0)
+		this->SetupFrame();
+
 	return renderPassDescriptor;
+}
+
+void SwapChain::SetupFrame(void)
+{
+	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkPhysicalDevice physicalDevice = dc->physicalDevice;
+	VkDevice device = dc->device;
+
+	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, VK_NULL_HANDLE, VK_NULL_HANDLE, &this->frameIndex);
+
+	DKRenderPassColorAttachmentDescriptor colorAttachment = {};
+	colorAttachment.renderTarget = renderTargets.Value(frameIndex);
+	colorAttachment.clearColor = DKColor(0, 0, 0, 0);
+	colorAttachment.loadAction = DKRenderPassAttachmentDescriptor::LoadActionClear;
+	colorAttachment.storeAction = DKRenderPassAttachmentDescriptor::StoreActionStore;
+
+	this->renderPassDescriptor.colorAttachments.Clear();
+	this->renderPassDescriptor.colorAttachments.Add(colorAttachment);
 }
 
 bool SwapChain::Present(void)
 {
-	return false;
+	VkSemaphore waitSemaphore = VK_NULL_HANDLE;
+
+	VkPresentInfoKHR presentInfo = {};
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.pNext = NULL;
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = &this->swapchain;
+	presentInfo.pImageIndices = &this->frameIndex;
+	// Check if a wait semaphore has been specified to wait for before presenting the image
+	if (waitSemaphore != VK_NULL_HANDLE)
+	{
+		presentInfo.pWaitSemaphores = &waitSemaphore;
+		presentInfo.waitSemaphoreCount = 1;
+	}
+	VkResult result = vkQueuePresentKHR(queue->queue, &presentInfo);
+	if (result == VK_SUCCESS)
+	{
+		renderPassDescriptor.colorAttachments.Clear();
+	}
+	else
+	{
+		DKLog("vkQueuePresentKHR ERROR: %s", VkResultCStr(result));
+	}
+	return result == VK_SUCCESS;
 }
 
 void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)

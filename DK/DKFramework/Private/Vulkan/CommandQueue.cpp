@@ -30,7 +30,10 @@ CommandQueue::~CommandQueue(void)
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
-	return NULL;
+	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer();
+	buffer->queue = this;
+
+	return buffer.SafeCast<DKCommandBuffer>();
 }
 
 DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
