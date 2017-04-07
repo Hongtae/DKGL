@@ -101,6 +101,26 @@ GraphicsDevice::GraphicsDevice(void)
 	this->enableValidation = true;
 #endif
 
+	// checking layers
+	if (1)
+	{
+		uint32_t layerCount = 0;
+		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+		DKArray<VkLayerProperties> availableLayers(VkLayerProperties(), layerCount);
+		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers);
+
+		DKLog("Vulkan available layers: %d", layerCount);
+		for (const VkLayerProperties& prop : availableLayers)
+		{
+			DKLog(" -- Layer: %s (\"%s\", %d / %d)",
+				  prop.layerName,
+				  prop.description,
+				  prop.specVersion, 
+				  prop.implementationVersion);
+		}
+	}
+
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "DKGL";
