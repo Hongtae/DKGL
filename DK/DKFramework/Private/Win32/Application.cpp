@@ -254,7 +254,7 @@ DKObject<DKData> Application::LoadResource(const DKString& res, DKAllocator& all
 	HRSRC hRes = ::FindResourceW(0, (const wchar_t*)res, (LPCWSTR)RT_RCDATA);
 	if (hRes)
 	{
-		int contentSize = ::SizeofResource(0, hRes);
+		DWORD contentSize = ::SizeofResource(0, hRes);
 		if (contentSize > 0)
 		{
 			HGLOBAL hMem = ::LoadResource(0, hRes);
@@ -275,7 +275,7 @@ DKObject<DKData> Application::LoadStaticResource(const DKString& res)
 	HRSRC hRes = ::FindResourceW(0, (const wchar_t*)res, (LPCWSTR)RT_RCDATA);
 	if (hRes)
 	{
-		int contentSize = ::SizeofResource(0, hRes);
+		DWORD contentSize = ::SizeofResource(0, hRes);
 		if (contentSize > 0)
 		{
 			HGLOBAL hMem = ::LoadResource(0, hRes);

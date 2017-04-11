@@ -24,6 +24,7 @@ namespace DKFramework
 		using namespace DKFoundation::Private;
 		static DKCondition appCond;
 		static DKApplication *application = NULL;
+		static bool disableLogger = false;
 	}
 }
 
@@ -40,7 +41,19 @@ DKApplication::DKApplication(int argc, char* argv[])
 	}
 
 	impl = DKApplicationInterface::CreateInterface(this, argc, argv);
-	DKLoggerCompareAndReplace(NULL, impl->DefaultLogger());
+	Private::disableLogger = false;
+	DKPropertySet::SystemConfig().LookUpValueForKeyPath("DisableApplicationLogger",
+														DKFunction([&](const DKVariant& var)
+	{
+		if (var.ValueType() == DKVariant::TypeInteger)
+		{
+			Private::disableLogger = var.Integer() != 0;
+			return true;
+		}
+		return false;
+	}));
+	if (!Private::disableLogger)
+		impl->DefaultLogger()->Bind();
 
 	Private::application = this;
 }
@@ -51,7 +64,8 @@ DKApplication::DKApplication(void) : DKApplication(0, 0)
 
 DKApplication::~DKApplication(void)
 {
-	DKLoggerCompareAndReplace(impl->DefaultLogger(), NULL);
+	if (!Private::disableLogger)
+		impl->DefaultLogger()->Unbind();
 
 	DKCriticalSection<DKCondition> guard(Private::appCond);
 

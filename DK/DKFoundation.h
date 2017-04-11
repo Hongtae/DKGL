@@ -109,4 +109,5 @@ namespace DKFoundation {}
 #include "DKFoundation/DKEndianness.h"
 #include "DKFoundation/DKError.h"
 #include "DKFoundation/DKLog.h"
+#include "DKFoundation/DKLogger.h"
 #include "DKFoundation/DKUtils.h"

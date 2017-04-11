@@ -21,7 +21,6 @@ using namespace DKFramework::Private::Win32;
 AppLogger::AppLogger(void)
 	: console(NULL)
 {
-
 }
 
 AppLogger::~AppLogger(void)
@@ -68,23 +67,44 @@ void AppLogger::OnUnbind(void)
 	//}
 }
 
-void AppLogger::Log(const DKString& msg)
+void AppLogger::Log(Category cat, const DKString& msg)
 {
-	DKString msg2 = DKString::Format("[PID:%u TID:%u] %ls",
-		(uint32_t)GetCurrentProcessId(),
-		(uint32_t)GetCurrentThreadId(),
-		(const wchar_t*)msg);
+	DKString msg2 = DKString::Format("[P:%u T:%u %c] %ls",
+									 (uint32_t)GetCurrentProcessId(),
+									 (uint32_t)GetCurrentThreadId(),
+									 (char)cat,
+									 (const wchar_t*)msg);
 	if (!msg2.HasSuffix("\n"))
 		msg2 += "\n";
 
 	::OutputDebugStringW((const wchar_t*)msg2);
-	WriteLog((const wchar_t*)(msg2));
+	WORD attr;
+	switch (cat)
+	{
+	case Category::Warning:
+		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
+		break;
+	case Category::Error:
+		attr = FOREGROUND_RED | FOREGROUND_INTENSITY;
+		break;
+	case Category::Info:
+		attr = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+		break;
+	case Category::Debug:
+		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+		break;
+	default:
+		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+		break;
+	}
+	WriteLog(attr, (const wchar_t*)(msg2));
 }
 
-void AppLogger::WriteLog(const char* str)
+void AppLogger::WriteLog(WORD attr, const char* str)
 {
 	if (console)
 	{
+		SetConsoleTextAttribute(console, attr);
 		DWORD dwWritten = 0;
 		WriteConsoleA(console, str, (DWORD)strlen(str), &dwWritten, 0);
 		return;
@@ -93,10 +113,11 @@ void AppLogger::WriteLog(const char* str)
 		printf(str);
 }
 
-void AppLogger::WriteLog(const wchar_t* str)
+void AppLogger::WriteLog(WORD attr, const wchar_t* str)
 {
 	if (console)
 	{
+		SetConsoleTextAttribute(console, attr);
 		DWORD dwWritten = 0;
 		WriteConsoleW(console, str, (DWORD)wcslen(str), &dwWritten, 0);
 		return;

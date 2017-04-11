@@ -217,6 +217,7 @@
     <ClCompile Include="DKFoundation\DKHash.cpp" />
     <ClCompile Include="DKFoundation\DKLock.cpp" />
     <ClCompile Include="DKFoundation\DKLog.cpp" />
+    <ClCompile Include="DKFoundation\DKLogger.cpp" />
     <ClCompile Include="DKFoundation\DKMemory.cpp" />
     <ClCompile Include="DKFoundation\DKMutex.cpp" />
     <ClCompile Include="DKFoundation\DKObjectRefCounter.cpp" />
@@ -375,6 +376,7 @@
     <ClInclude Include="DKFoundation\DKList.h" />
     <ClInclude Include="DKFoundation\DKLock.h" />
     <ClInclude Include="DKFoundation\DKLog.h" />
+    <ClInclude Include="DKFoundation\DKLogger.h" />
     <ClInclude Include="DKFoundation\DKMap.h" />
     <ClInclude Include="DKFoundation\DKMemory.h" />
     <ClInclude Include="DKFoundation\DKMutex.h" />

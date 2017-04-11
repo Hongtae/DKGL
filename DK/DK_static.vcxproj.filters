@@ -534,6 +534,9 @@
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp">
       <Filter>DKFramework\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFoundation\DKLogger.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1246,6 +1249,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h">
       <Filter>DKFramework\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKLogger.h">
+      <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

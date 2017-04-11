@@ -26,11 +26,11 @@ namespace DKFramework
 				void OnBind(void) override;
 				void OnUnbind(void) override;
 
-				void Log(const DKString&) override;
+				void Log(Category, const DKString&) override;
 
-				void WriteLog(const char* str); // MBCS, not UTF-8
-				void WriteLog(const wchar_t* str);
-				HANDLE console;
+				void WriteLog(WORD, const char* str); // MBCS, not UTF-8
+				void WriteLog(WORD, const wchar_t* str);
+				HANDLE console;				
 			};
 		}
 	}

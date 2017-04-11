@@ -43,16 +43,19 @@ namespace DKFramework
 				void* pUserData)
 			{
 				DKStringU8 prefix = "";
+				DKLogCategory cat = DKLogCategory::Info;
 
 				// Error that may result in undefined behaviour
 				if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
 				{
 					prefix += "ERROR:";
+					cat = DKLogCategory::Error;
 				};
 				// Warnings may hint at unexpected / non-spec API usage
 				if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
 				{
 					prefix += "WARNING:";
+					cat = DKLogCategory::Warning;
 				};
 				// May indicate sub-optimal usage of the API
 				if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
@@ -72,7 +75,7 @@ namespace DKFramework
 				}
 
 				// Display message to default output (console if activated)
-				DKLog("[Vulkan-Debug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
+				DKLog(cat, "[Vulkan-Debug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
 
 				// The return value of this callback controls wether the Vulkan call that caused
 				// the validation message will be aborted or not

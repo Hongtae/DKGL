@@ -1027,7 +1027,7 @@ void DKError::PrintStackFrames(const StringOutput* pfn) const
 
 void DKError::PrintDescriptionWithStackFrames(void) const
 {
-	PrintDescriptionWithStackFrames(DKFunction((void (*)(const DKString&))&DKLog));
+	PrintDescriptionWithStackFrames(DKFunction([](const DKString& str) {DKLogE(str);}));
 }
 
 void DKError::PrintDescriptionWithStackFrames(const StringOutput* pfn) const

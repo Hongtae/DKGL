@@ -293,49 +293,49 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 			this->contentRect = event.contentRect;
 			this->activated = false;
 			this->visible = false;
-			DKLog("EventWindowCreated (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowCreated (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowClosed:
 			this->activated = false;
 			this->visible = false;
 			this->keyboardStateMap.Clear();
-			DKLog("EventWindowDestroy (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowDestroy (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowHidden:
 			this->activated = false;
 			this->visible = false;
 			this->keyboardStateMap.Clear();
-			DKLog("EventWindowHidden (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowHidden (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowShown:
 			this->visible = true;
-			DKLog("EventWindowShown (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowShown (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowActivated:
 			this->activated = true;
 			this->visible = true;
-			DKLog("EventWindowActivated (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowActivated (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowInactivated:
 			this->activated = false;
 			this->keyboardStateMap.Clear();
-			DKLog("EventWindowInactivated (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowInactivated (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowMinimized:
 			this->visible = false;
 			this->keyboardStateMap.Clear();
-			DKLog("EventWindowMinimized (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowMinimized (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowMoved:
-			//	DKLog("EventWindowMoved (%.0f x %.0f), scale:%.1f", contentSize.width, contentSize.height, event.contentScaleFactor);
+			//	DKLogD("EventWindowMoved (%.0f x %.0f), scale:%.1f", contentSize.width, contentSize.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowResized:
 			this->windowRect = event.windowRect;
 			this->contentRect = event.contentRect;
-			DKLog("EventWindowResized (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
+			DKLogD("EventWindowResized (%.0f x %.0f), scale:%.1f", contentRect.size.width, contentRect.size.height, event.contentScaleFactor);
 			break;
 		case WindowEvent::WindowUpdate:
-			//	DKLog("EventWindowUpdate (%.0f x %.0f), scale:%.1f", contentSize.width, contentSize.height, event.contentScaleFactor);
+			//	DKLogD("EventWindowUpdate (%.0f x %.0f), scale:%.1f", contentSize.width, contentSize.height, event.contentScaleFactor);
 			break;
 		}
 	}
