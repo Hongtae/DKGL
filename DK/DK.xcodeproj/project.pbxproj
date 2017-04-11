@@ -1347,6 +1347,14 @@
 		84A6A3AD1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
 		84A6A3AE1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
 		84A6A3AF1AE0001B001C1778 /* DKFixedSizeAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */; };
+		84C3D8BD1E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
+		84C3D8BE1E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
+		84C3D8BF1E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
+		84C3D8C01E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
+		84C3D8C11E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
+		84C3D8C21E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
+		84C3D8C31E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
+		84C3D8C41E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
 		84C907CF171445A500F62F3C /* DKGearConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C907CD171445A500F62F3C /* DKGearConstraint.cpp */; };
 		84C907D0171445A500F62F3C /* DKGearConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C907CD171445A500F62F3C /* DKGearConstraint.cpp */; };
 		84C907D1171445A500F62F3C /* DKGearConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C907CE171445A500F62F3C /* DKGearConstraint.h */; };
@@ -2335,6 +2343,8 @@
 		84BBE62D164AD2D100B9B7F1 /* DKPoint2PointConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKPoint2PointConstraint.h; sourceTree = "<group>"; };
 		84BBE62E164AD2D100B9B7F1 /* DKSliderConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSliderConstraint.cpp; sourceTree = "<group>"; };
 		84BBE62F164AD2D100B9B7F1 /* DKSliderConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSliderConstraint.h; sourceTree = "<group>"; };
+		84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKLogger.cpp; sourceTree = "<group>"; };
+		84C3D8BC1E9D09BE0003222C /* DKLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKLogger.h; sourceTree = "<group>"; };
 		84C907CD171445A500F62F3C /* DKGearConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKGearConstraint.cpp; sourceTree = "<group>"; };
 		84C907CE171445A500F62F3C /* DKGearConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKGearConstraint.h; sourceTree = "<group>"; };
 		84D2C108146B6D2A006874C2 /* DKSpline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSpline.cpp; sourceTree = "<group>"; };
@@ -2923,6 +2933,8 @@
 				84A1E4B2141DD4B70091D2C0 /* DKLock.h */,
 				84A1E4B3141DD4B70091D2C0 /* DKLog.cpp */,
 				84A1E4B4141DD4B70091D2C0 /* DKLog.h */,
+				84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */,
+				84C3D8BC1E9D09BE0003222C /* DKLogger.h */,
 				84A1E4B5141DD4B70091D2C0 /* DKMap.h */,
 				84A1E4B6141DD4B70091D2C0 /* DKMemory.cpp */,
 				84A1E4B7141DD4B70091D2C0 /* DKMemory.h */,
@@ -3252,6 +3264,7 @@
 				8436CDEB1928A78900F18892 /* DKMutex.h in Headers */,
 				8498FC671E4783D400E6A961 /* BlitCommandEncoder.h in Headers */,
 				846A2D6E1E40F29F009F117C /* SwapChain.h in Headers */,
+				84C3D8C31E9D09BE0003222C /* DKLogger.h in Headers */,
 				84F970061B4C26C400BA24E4 /* DKTriangleMesh.h in Headers */,
 				84FCF1821E3693D100DF9386 /* CommandBuffer.h in Headers */,
 				8436CE011928A78900F18892 /* DKStack.h in Headers */,
@@ -3551,6 +3564,7 @@
 				84798C7119E51E80009378A6 /* DKSoftBody.h in Headers */,
 				84798C9B19E51E96009378A6 /* DKDirectory.h in Headers */,
 				842BF1511E0AB209007D58B0 /* ViewController.h in Headers */,
+				84C3D8C41E9D09BE0003222C /* DKLogger.h in Headers */,
 				84798C3C19E51E7F009378A6 /* DKConstraint.h in Headers */,
 				666ECB271DB180EA00354463 /* DKComputeCommandEncoder.h in Headers */,
 				84798C7E19E51E80009378A6 /* DKTriangle.h in Headers */,
@@ -3755,6 +3769,7 @@
 				84211D551665E89700B9B9A2 /* DKStaticPlaneShape.h in Headers */,
 				844C64DE1C08BC7C00FB97B6 /* DKFloat16.h in Headers */,
 				842BF1451E0AB206007D58B0 /* ViewController.h in Headers */,
+				84C3D8C21E9D09BE0003222C /* DKLogger.h in Headers */,
 				84211D561665E89700B9B9A2 /* DKStaticTriangleMeshShape.h in Headers */,
 				843A689117C6145D000DE61A /* DKWindowInterface.h in Headers */,
 				840CA65A1928957600689BB6 /* DK.h in Headers */,
@@ -3993,6 +4008,7 @@
 				8406AE0B1706CD1D00F8963C /* DKCollisionObject.h in Headers */,
 				84C907D1171445A500F62F3C /* DKGearConstraint.h in Headers */,
 				666ECA6D1DB1703600354463 /* DKGraphicsDevice.h in Headers */,
+				84C3D8C11E9D09BE0003222C /* DKLogger.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4544,6 +4560,7 @@
 				8436CDF61928A78900F18892 /* DKEventLoop.cpp in Sources */,
 				8436CE171928A78900F18892 /* DKUtils.mm in Sources */,
 				840CA62F1928952800689BB6 /* DKVector2.cpp in Sources */,
+				84C3D8BF1E9D09BE0003222C /* DKLogger.cpp in Sources */,
 				840CA5E81928952800689BB6 /* DKPolyhedralConvexShape.cpp in Sources */,
 				840CA5B51928952800689BB6 /* DKDynamicsWorld.cpp in Sources */,
 				840CA5BD1928952800689BB6 /* DKGearConstraint.cpp in Sources */,
@@ -4674,6 +4691,7 @@
 				84798BE119E51E48009378A6 /* DKModel.cpp in Sources */,
 				84798BB719E51E48009378A6 /* DKAffineTransform2.cpp in Sources */,
 				84798B9619E51DFB009378A6 /* DKError.cpp in Sources */,
+				84C3D8C01E9D09BE0003222C /* DKLogger.cpp in Sources */,
 				8498FC721E4783D500E6A961 /* ComputeCommandEncoder.mm in Sources */,
 				666ECB231DB180EA00354463 /* DKAudioDevice.cpp in Sources */,
 				84798BD019E51E48009378A6 /* DKFixedConstraint.cpp in Sources */,
@@ -4821,6 +4839,7 @@
 				84211BC71665E7FD00B9B9A2 /* DKQuaternion.cpp in Sources */,
 				842F125E17C24B0F004E66FB /* DKAtomicNumber64.cpp in Sources */,
 				84211BC91665E7FD00B9B9A2 /* DKRect.cpp in Sources */,
+				84C3D8BE1E9D09BE0003222C /* DKLogger.cpp in Sources */,
 				8498FC601E4783D300E6A961 /* ComputeCommandEncoder.mm in Sources */,
 				840C3E37178D396E00F57A8D /* DKStringU8.cpp in Sources */,
 				666ECB111DB180E800354463 /* DKAudioDevice.cpp in Sources */,
@@ -4984,6 +5003,7 @@
 				84211B251665E7FD00B9B9A2 /* DKSerializer.cpp in Sources */,
 				840C3E0E178D396D00F57A8D /* DKRational.cpp in Sources */,
 				840C3E01178D396D00F57A8D /* DKDateTime.cpp in Sources */,
+				84C3D8BD1E9D09BE0003222C /* DKLogger.cpp in Sources */,
 				84211B311665E7FD00B9B9A2 /* DKSliderConstraint.cpp in Sources */,
 				84211B331665E7FD00B9B9A2 /* DKSoftBody.cpp in Sources */,
 				84D883531E3A653B00478725 /* DKImage.cpp in Sources */,

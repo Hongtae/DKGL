@@ -39,7 +39,7 @@ DKLogger* Application::DefaultLogger(void)
 {
 	struct Logger : public DKLogger
 	{
-		void Log(const DKString& msg) override
+		void Log(Category, const DKString& msg) override
 		{
 			NSLog(@"%@", [NSString stringWithUTF8String:(const char*)DKStringU8(msg)]);
 		}
