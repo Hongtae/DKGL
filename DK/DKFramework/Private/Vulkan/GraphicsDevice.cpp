@@ -218,6 +218,7 @@ GraphicsDevice::GraphicsDevice(void)
 	};
 	DKArray<PhysicalDeviceDesc> physicalDeviceList;
 
+	size_t maxQueueCount = 0;
 	// Extract physical devices that can create graphics & compute queues.
 	if (true)
 	{
@@ -233,6 +234,7 @@ GraphicsDevice::GraphicsDevice(void)
 		{
 			throw std::runtime_error("No vulkan gpu found.");
 		}
+		DKLogI("Vulkan GPU Count: %lu", gpuCount);
 		// Enumerate devices
 		DKArray<VkPhysicalDevice> physicalDevices(VkPhysicalDevice(), gpuCount);
 		err = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices);
@@ -261,6 +263,7 @@ GraphicsDevice::GraphicsDevice(void)
 				{
 					numGCQueues += qfp.queueCount;
 				}
+				maxQueueCount = Max(maxQueueCount, (size_t)qfp.queueCount);
 			}
 
 			if (numGCQueues > 0)
@@ -389,7 +392,10 @@ GraphicsDevice::GraphicsDevice(void)
 	}));
 
 	// create logical device
-	const float defaultQueuePriority(0.0f);
+	DKArray<float> defaultQueuePriorities(0.0f, 16);
+	if (maxQueueCount > defaultQueuePriorities.Count())
+		defaultQueuePriorities.Add(0.0f, maxQueueCount - defaultQueuePriorities.Count());
+
 	for (PhysicalDeviceDesc& desc : physicalDeviceList)
 	{
 		VkPhysicalDevice pdevice = desc.physicalDevice;
@@ -405,7 +411,7 @@ GraphicsDevice::GraphicsDevice(void)
 				queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 				queueInfo.queueFamilyIndex = queueFamilyIndex;
 				queueInfo.queueCount = queueFamily.queueCount;
-				queueInfo.pQueuePriorities = &defaultQueuePriority;
+				queueInfo.pQueuePriorities = (const float*)defaultQueuePriorities;
 				queueCreateInfos.Add(queueInfo);
 			}
 		}

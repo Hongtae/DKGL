@@ -69,7 +69,7 @@ void AppLogger::OnUnbind(void)
 
 void AppLogger::Log(Category cat, const DKString& msg)
 {
-	DKString msg2 = DKString::Format("[P:%u T:%u %c] %ls",
+	DKString msg2 = DKString::Format("[%u:%u %c] %ls",
 									 (uint32_t)GetCurrentProcessId(),
 									 (uint32_t)GetCurrentThreadId(),
 									 (char)cat,

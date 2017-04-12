@@ -48,6 +48,8 @@ bool SwapChain::Setup(void)
 	VkPhysicalDevice physicalDevice = dc->physicalDevice;
 	VkDevice device = dc->device;
 
+	uint32_t queueFamilyIndex = queue->family->FamilyIndex();
+
 	VkResult err = VK_SUCCESS;
 
 	// create VkSurfaceKHR
@@ -71,10 +73,23 @@ bool SwapChain::Setup(void)
 	err = iproc.vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkCreateWin32SurfaceKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkCreateWin32SurfaceKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 #endif
+
+	VkBool32 surfaceSupported = VK_FALSE;
+	err = vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueFamilyIndex, surface, &surfaceSupported);
+	if (err != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceSupportKHR failed: %s", VkResultCStr(err));
+		return false;
+	}
+	if (!surfaceSupported)
+	{
+		DKLogE("ERROR: VkSurfaceKHR not support with QueueFamily at index:%lu", queueFamilyIndex);
+		return false;
+	}
 	
 	// get color format, color space
 	// Get list of supported surface formats
@@ -82,12 +97,12 @@ bool SwapChain::Setup(void)
 	err = iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, NULL);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 	if (surfaceFormatCount == 0)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR returns 0 surface format count");
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR returns 0 surface format count");
 		return false;
 	}
 
@@ -96,7 +111,7 @@ bool SwapChain::Setup(void)
 	err = iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, surfaceFormats);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 
@@ -138,7 +153,7 @@ bool SwapChain::Update(void)
 	err = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCaps);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 
@@ -147,12 +162,12 @@ bool SwapChain::Update(void)
 	err = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, NULL);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfacePresentModesKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfacePresentModesKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 	if (presentModeCount == 0)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfacePresentModesKHR returns 0 present mode count");
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfacePresentModesKHR returns 0 present mode count");
 		return false;
 	}
 
@@ -162,7 +177,7 @@ bool SwapChain::Update(void)
 	err = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, presentModes);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetPhysicalDeviceSurfacePresentModesKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetPhysicalDeviceSurfacePresentModesKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 
@@ -257,7 +272,7 @@ bool SwapChain::Update(void)
 	err = vkCreateSwapchainKHR(device, &swapchainCI, nullptr, &this->swapchain);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkCreateSwapchainKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkCreateSwapchainKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 
@@ -273,7 +288,7 @@ bool SwapChain::Update(void)
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, NULL);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetSwapchainImagesKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetSwapchainImagesKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 
@@ -282,7 +297,7 @@ bool SwapChain::Update(void)
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, swapchainImages);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkGetSwapchainImagesKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkGetSwapchainImagesKHR failed: %s", VkResultCStr(err));
 		return false;
 	}
 
@@ -313,7 +328,7 @@ bool SwapChain::Update(void)
 		err = vkCreateImageView(device, &imageViewCI, nullptr, &imageView);
 		if (err != VK_SUCCESS)
 		{
-			DKLog("ERROR: vkCreateImageView failed: %s", VkResultCStr(err));
+			DKLogE("ERROR: vkCreateImageView failed: %s", VkResultCStr(err));
 			return false;
 		}
 

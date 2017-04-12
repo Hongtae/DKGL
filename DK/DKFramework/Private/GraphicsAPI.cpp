@@ -124,11 +124,11 @@ namespace DKFramework
 			int index = 0;
 			for (const APISet& as : apis)
 			{
-				DKLog(" GraphicsAPI[%d]: \"%s\"%s", index, as.name, as.preferred ? " (Preferred)" : "");
+				DKLogI(" GraphicsAPI[%d]: \"%s\"%s", index, as.name, as.preferred ? " (Preferred)" : "");
 				index++;
 			}
 			if (index == 0)
-				DKLog(" No Graphics API available.");
+				DKLogW(" No Graphics API available.");
 		}
 
 		for (const APISet& as : apis)
@@ -137,25 +137,25 @@ namespace DKFramework
 				DKGraphicsDeviceInterface* device = as.fn();
 				if (device)
 				{
-					DKLog("Graphics API: \"%s\", Device: \"%ls\" selected.", as.name, (const wchar_t*)device->DeviceName());
+					DKLogI("Graphics API: \"%s\", Device: \"%ls\" selected.", as.name, (const wchar_t*)device->DeviceName());
 					return device;
 				}
 				else
 				{
-					DKLog("Graphics API \"%s\" not supported.", as.name);
+					DKLogW("Graphics API \"%s\" not supported.", as.name);
 				}
 			}
 			catch (DKError& e)
 			{
-				DKLog("Graphics API \"%s\" Failed: %ls", as.name, (const wchar_t*)e.Description());
+				DKLogE("Graphics API \"%s\" Failed: %ls", as.name, (const wchar_t*)e.Description());
 			}
 			catch (std::exception& e)
 			{
-				DKLog("Graphics API \"%s\" Failed: %s", as.name, e.what());
+				DKLogE("Graphics API \"%s\" Failed: %s", as.name, e.what());
 			}
 		}
 
-		DKLog("ERROR: No Graphics device found.");
+		DKLogE("ERROR: No Graphics device found.");
 		return NULL;
 	}
 }
