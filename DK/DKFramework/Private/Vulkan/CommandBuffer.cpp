@@ -9,6 +9,9 @@
 #if DKGL_USE_VULKAN
 
 #include "CommandBuffer.h"
+#include "RenderCommandEncoder.h"
+#include "ComputeCommandEncoder.h"
+#include "BlitCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -17,19 +20,22 @@ CommandBuffer::~CommandBuffer(void)
 {
 }
 
-DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor&)
+DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor& rp)
 {
-	return NULL;
+	DKObject<RenderCommandEncoder> encoder = DKOBJECT_NEW RenderCommandEncoder(this, rp);
+	return encoder.SafeCast<DKRenderCommandEncoder>();
 }
 
 DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(void)
 {
-	return NULL;
+	DKObject<ComputeCommandEncoder> encoder = DKOBJECT_NEW ComputeCommandEncoder(this);
+	return encoder.SafeCast<DKComputeCommandEncoder>();
 }
 
 DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 {
-	return NULL;
+	DKObject<BlitCommandEncoder> encoder = DKOBJECT_NEW BlitCommandEncoder(this);
+	return encoder.SafeCast<DKBlitCommandEncoder>();
 }
 
 bool CommandBuffer::Commit(void)

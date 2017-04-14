@@ -124,8 +124,7 @@ GraphicsDevice::GraphicsDevice(void)
 		}
 	}
 
-	VkApplicationInfo appInfo = {};
-	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	VkApplicationInfo appInfo = {VK_STRUCTURE_TYPE_APPLICATION_INFO};
 	appInfo.pApplicationName = "DKGL";
 	appInfo.pEngineName = "DKGL";
 	appInfo.apiVersion = VK_API_VERSION_1_0;
@@ -152,9 +151,7 @@ GraphicsDevice::GraphicsDevice(void)
 	enabledExtensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #endif
 
-	VkInstanceCreateInfo instanceCreateInfo = {};
-	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	instanceCreateInfo.pNext = NULL;
+	VkInstanceCreateInfo instanceCreateInfo = {VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 	if (enabledExtensions.Count() > 0)
 	{
@@ -181,8 +178,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 	if (enableValidation)
 	{
-		VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = {};
-		dbgCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+		VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = {VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT};
 		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
 		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
 		
@@ -348,7 +344,13 @@ GraphicsDevice::GraphicsDevice(void)
 				break;
 			}
 
-			DKLog(" VkPhysicalDevice[%lu]: \"%s\" Type:%s (QueueFamilies:%u)", i, desc.properties.deviceName, deviceType, (uint32_t)desc.queueFamilyProperties.Count());
+			uint32_t apiVersionMajor = desc.properties.apiVersion >> 22;
+			uint32_t apiVersionMinor = (desc.properties.apiVersion >> 12) & 0x3ff;
+			uint32_t apiVersionPatch = desc.properties.apiVersion & 0xfff;
+			DKLog(" VkPhysicalDevice[%lu]: \"%s\" Type:%s API:%d.%d.%d (QueueFamilies:%u)", i,
+				  desc.properties.deviceName, deviceType,
+				  apiVersionMajor, apiVersionMinor, apiVersionPatch,
+				  (uint32_t)desc.queueFamilyProperties.Count());
 			for (size_t j = 0; j < desc.queueFamilyProperties.Count(); ++j)
 			{
 				VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
@@ -407,8 +409,7 @@ GraphicsDevice::GraphicsDevice(void)
 			VkQueueFamilyProperties& queueFamily = desc.queueFamilyProperties.Value(queueFamilyIndex);
 			if (queueFamily.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT))
 			{
-				VkDeviceQueueCreateInfo queueInfo{};
-				queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+				VkDeviceQueueCreateInfo queueInfo = {VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
 				queueInfo.queueFamilyIndex = queueFamilyIndex;
 				queueInfo.queueCount = queueFamily.queueCount;
 				queueInfo.pQueuePriorities = (const float*)defaultQueuePriorities;
@@ -434,9 +435,8 @@ GraphicsDevice::GraphicsDevice(void)
 				deviceExtensions.Add(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 		}
 
-		VkPhysicalDeviceFeatures enabledFeatures{};
-		VkDeviceCreateInfo deviceCreateInfo = {};
-		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		VkPhysicalDeviceFeatures enabledFeatures = {};
+		VkDeviceCreateInfo deviceCreateInfo = {VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.Count());;
 		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos;
 		deviceCreateInfo.pEnabledFeatures = &enabledFeatures;

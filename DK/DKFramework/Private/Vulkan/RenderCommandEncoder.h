@@ -23,8 +23,13 @@ namespace DKFramework
 			class RenderCommandEncoder : public DKRenderCommandEncoder
 			{
 			public:
-				RenderCommandEncoder(CommandBuffer*);
+				RenderCommandEncoder(CommandBuffer*, const DKRenderPassDescriptor&);
 				~RenderCommandEncoder(void);
+
+				void EndEncoding(void) override;
+				DKCommandBuffer* Buffer(void) override;
+
+				DKObject<CommandBuffer> commandBuffer;
 			};
 		}
 	}

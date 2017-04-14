@@ -69,11 +69,23 @@ void AppLogger::OnUnbind(void)
 
 void AppLogger::Log(Category cat, const DKString& msg)
 {
-	DKString msg2 = DKString::Format("[%u:%u %c] %ls",
-									 (uint32_t)GetCurrentProcessId(),
-									 (uint32_t)GetCurrentThreadId(),
-									 (char)cat,
-									 (const wchar_t*)msg);
+	DKString msg2;
+	if (isprint(static_cast<int>(cat) & 0xff))
+	{
+		msg2 = DKString::Format("[%u:%u %c] %ls",
+			(uint32_t)GetCurrentProcessId(),
+			(uint32_t)GetCurrentThreadId(),
+			(char)cat,
+			(const wchar_t*)msg);
+	}
+	else
+	{
+		msg2 = DKString::Format("[%u:%u 0x%2x] %ls",
+			(uint32_t)GetCurrentProcessId(),
+			(uint32_t)GetCurrentThreadId(),
+			static_cast<int>(cat),
+			(const wchar_t*)msg);
+	}
 	if (!msg2.HasSuffix("\n"))
 		msg2 += "\n";
 
@@ -91,10 +103,13 @@ void AppLogger::Log(Category cat, const DKString& msg)
 		attr = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
 		break;
 	case Category::Debug:
-		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+		attr = FOREGROUND_GREEN;
+		break;
+	case Category::Verbose:
+		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
 		break;
 	default:
-		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+		attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
 		break;
 	}
 	WriteLog(attr, (const wchar_t*)(msg2));

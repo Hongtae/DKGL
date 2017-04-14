@@ -13,12 +13,22 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-BlitCommandEncoder::BlitCommandEncoder(CommandBuffer*)
+BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* cb)
+	: commandBuffer(cb)
 {
 }
 
 BlitCommandEncoder::~BlitCommandEncoder(void)
 {
+}
+
+void BlitCommandEncoder::EndEncoding(void)
+{
+}
+
+DKCommandBuffer* BlitCommandEncoder::Buffer(void)
+{
+	return commandBuffer;
 }
 
 #endif //#if DKGL_USE_VULKAN

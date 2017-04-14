@@ -13,12 +13,22 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-RenderCommandEncoder::RenderCommandEncoder(CommandBuffer*)
+RenderCommandEncoder::RenderCommandEncoder(CommandBuffer* cb, const DKRenderPassDescriptor&)
+	: commandBuffer(cb)
 {
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
+}
+
+void RenderCommandEncoder::EndEncoding(void)
+{
+}
+
+DKCommandBuffer* RenderCommandEncoder::Buffer(void)
+{
+	return commandBuffer;
 }
 
 #endif //#if DKGL_USE_VULKAN

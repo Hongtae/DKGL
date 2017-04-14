@@ -25,6 +25,11 @@ namespace DKFramework
 			public:
 				BlitCommandEncoder(CommandBuffer*);
 				~BlitCommandEncoder(void);
+
+				void EndEncoding(void) override;
+				DKCommandBuffer* Buffer(void) override;
+
+				DKObject<CommandBuffer> commandBuffer;
 			};
 		}
 	}

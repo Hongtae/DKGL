@@ -20,6 +20,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	, surface(NULL)
 	, swapchain(NULL)
 	, enableVSync(false)
+	, imageSemaphore(VK_NULL_HANDLE)
 {
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
 }
@@ -39,6 +40,9 @@ SwapChain::~SwapChain(void)
 
 	if (surface)
 		vkDestroySurfaceKHR(instance, surface, nullptr);
+
+	if (imageSemaphore != VK_NULL_HANDLE)
+		vkDestroySemaphore(device, imageSemaphore, nullptr);
 }
 
 bool SwapChain::Setup(void)
@@ -54,8 +58,7 @@ bool SwapChain::Setup(void)
 
 	// create VkSurfaceKHR
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-	VkAndroidSurfaceCreateInfoKHR surfaceCreateInfo = {};
-	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+	VkAndroidSurfaceCreateInfoKHR surfaceCreateInfo = {VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR};
 	surfaceCreateInfo.window = (ANativeWindow*)window->PlatformHandle();
 	err = vkCreateAndroidSurfaceKHR(instance, &surfaceCreateInfo, NULL, &surface);
 	if (err != VK_SUCCESS)
@@ -65,9 +68,7 @@ bool SwapChain::Setup(void)
 	}	
 #endif
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-
-	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
-	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
 	surfaceCreateInfo.hinstance = (HINSTANCE)GetModuleHandleW(NULL);
 	surfaceCreateInfo.hwnd = (HWND)window->PlatformHandle();
 	err = iproc.vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
@@ -130,6 +131,15 @@ bool SwapChain::Setup(void)
 		this->surfaceFormat.format = surfaceFormats[0].format;
 	}
 	this->surfaceFormat.colorSpace = surfaceFormats[0].colorSpace;
+
+	// create semaphore
+	VkSemaphoreCreateInfo semaphoreCreateInfo = {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
+	err = vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &imageSemaphore);
+	if (err != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
+		return false;
+	}
 
 	// create swapchain
 	return this->Update();
@@ -197,9 +207,13 @@ bool SwapChain::Update(void)
 		width = surfaceCaps.currentExtent.width;
 		height = surfaceCaps.currentExtent.height;
 	}
-
-
+	
 	// Select a present mode for the swapchain
+
+	// VK_PRESENT_MODE_IMMEDIATE_KHR
+	// VK_PRESENT_MODE_MAILBOX_KHR
+	// VK_PRESENT_MODE_FIFO_KHR
+	// VK_PRESENT_MODE_FIFO_RELAXED_KHR
 
 	// The VK_PRESENT_MODE_FIFO_KHR mode must always be present as per spec
 	// This mode waits for the vertical blank ("v-sync")
@@ -242,9 +256,7 @@ bool SwapChain::Update(void)
 		preTransform = surfaceCaps.currentTransform;
 	}
 
-	VkSwapchainCreateInfoKHR swapchainCI = {};
-	swapchainCI.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	swapchainCI.pNext = NULL;
+	VkSwapchainCreateInfoKHR swapchainCI = {VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR};
 	swapchainCI.surface = surface;
 	swapchainCI.minImageCount = desiredNumberOfSwapchainImages;
 	swapchainCI.imageFormat = this->surfaceFormat.format;
@@ -305,9 +317,7 @@ bool SwapChain::Update(void)
 	this->renderTargets.Reserve(swapchainImages.Count());
 	for (VkImage image : swapchainImages)
 	{
-		VkImageViewCreateInfo imageViewCI = {};
-		imageViewCI.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		imageViewCI.pNext = NULL;
+		VkImageViewCreateInfo imageViewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewCI.format = this->surfaceFormat.format;
 		imageViewCI.components = {
 			VK_COMPONENT_SWIZZLE_R,
@@ -367,7 +377,7 @@ void SwapChain::SetupFrame(void)
 	VkPhysicalDevice physicalDevice = dc->physicalDevice;
 	VkDevice device = dc->device;
 
-	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, VK_NULL_HANDLE, VK_NULL_HANDLE, &this->frameIndex);
+	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, imageSemaphore, VK_NULL_HANDLE, &this->frameIndex);
 
 	DKRenderPassColorAttachmentDescriptor colorAttachment = {};
 	colorAttachment.renderTarget = renderTargets.Value(frameIndex);
@@ -383,9 +393,7 @@ bool SwapChain::Present(void)
 {
 	VkSemaphore waitSemaphore = VK_NULL_HANDLE;
 
-	VkPresentInfoKHR presentInfo = {};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.pNext = NULL;
+	VkPresentInfoKHR presentInfo = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &this->swapchain;
 	presentInfo.pImageIndices = &this->frameIndex;
