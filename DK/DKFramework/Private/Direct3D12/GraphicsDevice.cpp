@@ -233,13 +233,13 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 	ComPtr<ID3D12CommandQueue> commandQueue;
 	if (FAILED(device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue))))
 	{
-		DKLog("ERROR: ID3D12Device::CreateCommandQueue() failed");
+		DKLogE("ERROR: ID3D12Device::CreateCommandQueue() failed");
 		return NULL;
 	}
 	ComPtr<ID3D12Fence> fence;
 	if (FAILED(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence))))
 	{
-		DKLog("ERROR: ID3D12Device::CreateFence() failed");
+		DKLogE("ERROR: ID3D12Device::CreateFence() failed");
 		return NULL;
 	}
 
@@ -266,7 +266,7 @@ CommandAllocator* GraphicsDevice::GetCommandAllocator(D3D12_COMMAND_LIST_TYPE ty
 	ComPtr<ID3D12CommandAllocator> commandAllocator;
 	if (FAILED(this->device->CreateCommandAllocator(type, IID_PPV_ARGS(&commandAllocator))))
 	{
-		DKLog("ERROR: ID3D12Device::CreateCommandAllocator() failed");
+		DKLogE("ERROR: ID3D12Device::CreateCommandAllocator() failed");
 		return NULL;
 	}
 
@@ -308,7 +308,7 @@ ComPtr<ID3D12GraphicsCommandList> GraphicsDevice::GetCommandList(D3D12_COMMAND_L
 	ComPtr<ID3D12GraphicsCommandList> commandList;
 	if (FAILED(this->device->CreateCommandList(0, type, this->dummyAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList))))
 	{
-		DKLog("ERROR: ID3D12Device::CreateCommandList() failed");
+		DKLogE("ERROR: ID3D12Device::CreateCommandList() failed");
 		return NULL;
 	}
 	return commandList;
@@ -369,7 +369,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE GraphicsDevice::GetDescriptor(D3D12_DESCRIPTOR_HEAP_
 	}
 	else
 	{
-		DKLog("ERROR: ID3D12Device::CreateDescriptorHeap() failed");
+		DKLogE("ERROR: ID3D12Device::CreateDescriptorHeap() failed");
 	}
 
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT);

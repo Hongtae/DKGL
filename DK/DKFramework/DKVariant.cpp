@@ -831,7 +831,7 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 								stData.data = static_cast<DKBuffer&&>(*data); // move!
 								if (!ConvertStructuredDataByteOrder(stData, dataByteOrder))
 								{
-									DKLog("Error: DKVariant::VStructuredData data byte order error!\n");
+									DKLogE("Error: DKVariant::VStructuredData data byte order error!\n");
 								}
 								break;
 							}

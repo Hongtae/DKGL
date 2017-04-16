@@ -29,9 +29,9 @@ SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
 
-	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-	VkInstance instance = dc->instance;
-	VkDevice device = dc->device;
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkInstance instance = dev->instance;
+	VkDevice device = dev->device;
 
 	renderTargets.Clear();
 
@@ -47,10 +47,10 @@ SwapChain::~SwapChain(void)
 
 bool SwapChain::Setup(void)
 {
-	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-	VkInstance instance = dc->instance;
-	VkPhysicalDevice physicalDevice = dc->physicalDevice;
-	VkDevice device = dc->device;
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkInstance instance = dev->instance;
+	VkPhysicalDevice physicalDevice = dev->physicalDevice;
+	VkDevice device = dev->device;
 
 	uint32_t queueFamilyIndex = queue->family->FamilyIndex();
 
@@ -63,7 +63,7 @@ bool SwapChain::Setup(void)
 	err = vkCreateAndroidSurfaceKHR(instance, &surfaceCreateInfo, NULL, &surface);
 	if (err != VK_SUCCESS)
 	{
-		DKLog("ERROR: vkCreateAndroidSurfaceKHR failed: %s", VkResultCStr(err));
+		DKLogE("ERROR: vkCreateAndroidSurfaceKHR failed: %s", VkResultCStr(err));
 		return false;
 	}	
 #endif
@@ -147,9 +147,9 @@ bool SwapChain::Setup(void)
 
 bool SwapChain::Update(void)
 {
-	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-	VkPhysicalDevice physicalDevice = dc->physicalDevice;
-	VkDevice device = dc->device;
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkPhysicalDevice physicalDevice = dev->physicalDevice;
+	VkDevice device = dev->device;
 
 	DKRect windowContentRect = this->window->ContentRect();
 	uint32_t width = static_cast<uint32_t>(floor(windowContentRect.size.width + 0.5));
@@ -373,9 +373,9 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 
 void SwapChain::SetupFrame(void)
 {
-	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-	VkPhysicalDevice physicalDevice = dc->physicalDevice;
-	VkDevice device = dc->device;
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkPhysicalDevice physicalDevice = dev->physicalDevice;
+	VkDevice device = dev->device;
 
 	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, imageSemaphore, VK_NULL_HANDLE, &this->frameIndex);
 

@@ -360,7 +360,7 @@ bool DKDirectory::Reload(void) const
 		DWORD dwLen = GetLogicalDriveStringsW(buffer_len-1, buffer);
 		if (dwLen > buffer_len-1)
 		{
-			DKLog("Error: GetLogicalDriveStringsW failed.\n");
+			DKLogE("Error: GetLogicalDriveStringsW failed.\n");
 			return false;
 		}
 
@@ -384,7 +384,7 @@ bool DKDirectory::Reload(void) const
 		HANDLE hFind = FindFirstFileW((const wchar_t*)str, &findData);
 		if (hFind == INVALID_HANDLE_VALUE)
 		{
-			DKLog("Error: FindFirstFileW failed.\n");
+			DKLogE("Error: FindFirstFileW failed.\n");
 			return false;
 		}
 		else
@@ -434,13 +434,13 @@ bool DKDirectory::Reload(void) const
 		}
 		else
 		{
-			DKLog("Error: opendir failed.\n");
+			DKLogE("Error: opendir failed.\n");
 			return false;
 		}
 	}
 	else
 	{
-		DKLog("Error: invalid path (%ls).\n", (const wchar_t*)currentPath);
+		DKLogE("Error: invalid path (%ls).\n", (const wchar_t*)currentPath);
 		return false;
 	}
 #endif

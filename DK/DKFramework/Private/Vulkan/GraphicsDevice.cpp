@@ -469,7 +469,7 @@ GraphicsDevice::GraphicsDevice(void)
 				QueueFamily* qf = DKRawPtrNew<QueueFamily>(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex));
 				this->queueFamilies.Add(qf);
 			}
-			DKLog("Vulkan device created with \"%s\"", desc.properties.deviceName);
+			DKLogI("Vulkan device created with \"%s\"", desc.properties.deviceName);
 			break;
 		}
 	}

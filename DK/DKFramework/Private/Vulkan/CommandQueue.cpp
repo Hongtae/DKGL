@@ -30,9 +30,22 @@ CommandQueue::~CommandQueue(void)
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
-	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer();
-	buffer->queue = this;
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+	VkDevice device = dev->device;
 
+	VkCommandPoolCreateInfo cmdPoolCreateInfo = { VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
+	cmdPoolCreateInfo.queueFamilyIndex = this->family->FamilyIndex();
+	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+	VkCommandPool commandPool = nullptr;
+	VkResult err = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &commandPool);
+	if (err != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreateCommandPool failed: %s", VkResultCStr(err));
+		return NULL;
+	}
+
+	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer(commandPool, this);
 	return buffer.SafeCast<DKCommandBuffer>();
 }
 
@@ -50,12 +63,12 @@ DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 			VkResult err = iproc.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, this->family->FamilyIndex(), swapChain->surface, &supported);
 			if (err != VK_SUCCESS)
 			{
-				DKLog("ERROR: vkGetPhysicalDeviceSurfaceSupportKHR failed: %s", VkResultCStr(err));
+				DKLogE("ERROR: vkGetPhysicalDeviceSurfaceSupportKHR failed: %s", VkResultCStr(err));
 				return NULL;
 			}
 			if (!supported)
 			{
-				DKLog("ERROR: Vulkan WSI not supported with this queue family. Try to use other queue family!");
+				DKLogE("ERROR: Vulkan WSI not supported with this queue family. Try to use other queue family!");
 				return NULL;
 			}
 		}

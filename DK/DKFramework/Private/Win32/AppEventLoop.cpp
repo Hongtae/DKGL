@@ -88,7 +88,7 @@ bool AppEventLoop::Run(void)
 		{
 			if (keyboardHook)
 			{
-				DKLog("Error: Keyboard hook state invalid. (already installed?)\n");
+				DKLogE("Error: Keyboard hook state invalid. (already installed?)\n");
 				::UnhookWindowsHookEx(keyboardHook);
 				keyboardHook = NULL;
 			}
@@ -107,7 +107,7 @@ bool AppEventLoop::Run(void)
 				keyboardHook = ::SetWindowsHookExW(WH_KEYBOARD_LL, KeyboardHookProc, GetModuleHandleW(0), 0);
 				if (keyboardHook == NULL)
 				{
-					DKLog("ERROR: SetWindowsHookEx Failed.\n");
+					DKLogE("ERROR: SetWindowsHookEx Failed.\n");
 					//	DKERROR_THROW("Failed to install hook procedure");
 					//	return 0;
 				}

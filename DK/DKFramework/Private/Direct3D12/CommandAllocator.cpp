@@ -46,7 +46,7 @@ bool CommandAllocator::Reset(void)
 		return true;
 	}
 	
-	DKLog("ID3D12CommandAllocator::Reset() failed!");
+	DKLogE("ID3D12CommandAllocator::Reset() failed!");
 	return false;
 }
 

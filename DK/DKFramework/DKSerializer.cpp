@@ -545,7 +545,7 @@ DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					}
 					else
 					{
-						DKLog("Error: Failed to generate DKVariant XML data.\n");
+						DKLogE("Error: Failed to generate DKVariant XML data.\n");
 						result = NULL;
 					}
 				}
@@ -580,13 +580,13 @@ DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					}
 					else
 					{
-						DKLog("Error: Failed to generate DKVariant binary data.\n");
+						DKLogE("Error: Failed to generate DKVariant binary data.\n");
 						result = NULL;
 					}
 				}
 				else 
 				{
-					DKLog("Error: Unknown serialization format!\n");
+					DKLogE("Error: Unknown serialization format!\n");
 					result = NULL;
 				}
 			}

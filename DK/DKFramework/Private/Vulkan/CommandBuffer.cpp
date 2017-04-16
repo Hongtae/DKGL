@@ -12,12 +12,24 @@
 #include "RenderCommandEncoder.h"
 #include "ComputeCommandEncoder.h"
 #include "BlitCommandEncoder.h"
+#include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
+CommandBuffer::CommandBuffer(VkCommandPool p, DKCommandQueue* q)
+	: commandPool(p)
+	, queue(q)
+{
+	DKASSERT_DEBUG(commandPool);
+}
+
 CommandBuffer::~CommandBuffer(void)
 {
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkDevice device = dev->device;
+
+	vkDestroyCommandPool(device, commandPool, nullptr);
 }
 
 DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor& rp)

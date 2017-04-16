@@ -22,6 +22,7 @@ namespace DKFramework
 			class CommandBuffer : public DKCommandBuffer
 			{
 			public:
+				CommandBuffer(VkCommandPool, DKCommandQueue*);
 				~CommandBuffer(void);
 
 				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
@@ -33,6 +34,7 @@ namespace DKFramework
 
 				DKCommandQueue* Queue(void) override { return queue; };
 
+				VkCommandPool commandPool;
 				DKObject<DKCommandQueue> queue;
 			};
 		}

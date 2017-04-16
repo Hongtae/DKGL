@@ -257,7 +257,7 @@ DKObject<DKZipUnarchiver> DKZipUnarchiver::Create(const DKString& file)
 				}
 				else
 				{
-					DKLog("zip[%d] error.\n", i);
+					DKLogE("zip[%d] error.\n", i);
 				}
 
 				err = unzGoToNextFile(uf);
@@ -265,7 +265,7 @@ DKObject<DKZipUnarchiver> DKZipUnarchiver::Create(const DKString& file)
 					break;
 				if (err != UNZ_OK)
 				{
-					DKLog("error %d with zipfile in unzGoToNextFile\n",err);
+					DKLogE("error %d with zipfile in unzGoToNextFile\n",err);
 					return NULL;
 				}
 			}

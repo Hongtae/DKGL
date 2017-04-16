@@ -39,12 +39,12 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 {
 	if (committed)
 	{
-		DKLog("ERROR: DKCommandBuffer(%p) has already been committed and cannot be reused.", this);
+		DKLogE("ERROR: DKCommandBuffer(%p) has already been committed and cannot be reused.", this);
 		return NULL;
 	}
 	if (activeEncoder)
 	{
-		DKLog("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
+		DKLogE("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
 		return NULL;
 	}
 
@@ -156,12 +156,12 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(voi
 {
 	if (committed)
 	{
-		DKLog("ERROR: DKCommandBuffer(%p) has already been committed and cannot be reused.", this);
+		DKLogE("ERROR: DKCommandBuffer(%p) has already been committed and cannot be reused.", this);
 		return NULL;
 	}
 	if (activeEncoder)
 	{
-		DKLog("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
+		DKLogE("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
 		return NULL;
 	}
 
@@ -180,12 +180,12 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 {
 	if (committed)
 	{
-		DKLog("ERROR: DKCommandBuffer(%p) has already been committed and cannot be reused.", this);
+		DKLogE("ERROR: DKCommandBuffer(%p) has already been committed and cannot be reused.", this);
 		return NULL;
 	}
 	if (activeEncoder)
 	{
-		DKLog("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
+		DKLogE("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
 		return NULL;
 	}
 

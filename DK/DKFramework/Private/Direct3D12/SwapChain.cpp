@@ -71,18 +71,18 @@ bool SwapChain::Setup(void)
 		nullptr,
 		&sc)))
 	{
-		DKLog("ERROR: IDXGIFactory5::CreateSwapChainForHwnd() failed");
+		DKLogE("ERROR: IDXGIFactory5::CreateSwapChainForHwnd() failed");
 		return false;
 	}
 
 	if (FAILED(sc.As(&this->swapChain)))
 	{
-		DKLog("ERROR: IDXGISwapChain1::QueryInterface(IDXGISwapChain4) failed");
+		DKLogE("ERROR: IDXGISwapChain1::QueryInterface(IDXGISwapChain4) failed");
 		return false;
 	}
 	if (FAILED(this->swapChain->GetDesc1(&swapChainDesc)))
 	{
-		DKLog("ERROR: IDXGISwapChain1::GetDesc1 failed");
+		DKLogE("ERROR: IDXGISwapChain1::GetDesc1 failed");
 		return false;
 	}
 
@@ -96,7 +96,7 @@ bool SwapChain::Setup(void)
 		ComPtr<ID3D12Resource> renderTarget;
 		if (FAILED(this->swapChain->GetBuffer(n, IID_PPV_ARGS(&renderTarget))))
 		{
-			DKLog("ERROR: IDXGISwapChain4::GetBuffer failed");
+			DKLogE("ERROR: IDXGISwapChain4::GetBuffer failed");
 			return false;
 		}
 
