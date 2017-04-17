@@ -23,12 +23,13 @@ namespace DKFramework
 			class ComputeCommandEncoder : public DKComputeCommandEncoder
 			{
 			public:
-				ComputeCommandEncoder(CommandBuffer*);
+				ComputeCommandEncoder(VkCommandBuffer, CommandBuffer*);
 				~ComputeCommandEncoder(void);
 
 				void EndEncoding(void) override;
 				DKCommandBuffer* Buffer(void) override;
 
+				VkCommandBuffer encodingBuffer;
 				DKObject<CommandBuffer> commandBuffer;
 			};
 		}

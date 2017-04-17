@@ -13,8 +13,9 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* cb)
-	: commandBuffer(cb)
+BlitCommandEncoder::BlitCommandEncoder(VkCommandBuffer vcb, CommandBuffer* cb)
+	: encodingBuffer(vcb)
+	, commandBuffer(cb)
 {
 }
 

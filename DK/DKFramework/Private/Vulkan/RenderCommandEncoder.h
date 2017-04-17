@@ -23,12 +23,15 @@ namespace DKFramework
 			class RenderCommandEncoder : public DKRenderCommandEncoder
 			{
 			public:
-				RenderCommandEncoder(CommandBuffer*, const DKRenderPassDescriptor&);
+				RenderCommandEncoder(VkCommandBuffer, CommandBuffer*, const DKRenderPassDescriptor&);
 				~RenderCommandEncoder(void);
 
 				void EndEncoding(void) override;
 				DKCommandBuffer* Buffer(void) override;
 
+				VkFramebuffer framebuffer;
+				VkRenderPass renderPass;
+				VkCommandBuffer encodingBuffer;
 				DKObject<CommandBuffer> commandBuffer;
 			};
 		}

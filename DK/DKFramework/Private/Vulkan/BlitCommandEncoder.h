@@ -23,12 +23,13 @@ namespace DKFramework
 			class BlitCommandEncoder : public DKBlitCommandEncoder
 			{
 			public:
-				BlitCommandEncoder(CommandBuffer*);
+				BlitCommandEncoder(VkCommandBuffer, CommandBuffer*);
 				~BlitCommandEncoder(void);
 
 				void EndEncoding(void) override;
 				DKCommandBuffer* Buffer(void) override;
 
+				VkCommandBuffer encodingBuffer;
 				DKObject<CommandBuffer> commandBuffer;
 			};
 		}

@@ -83,6 +83,10 @@ namespace DKFramework
 				// (and return a VkResult) to abort
 				// If you instead want to have calls abort, pass in VK_TRUE and the function will 
 				// return VK_ERROR_VALIDATION_FAILED_EXT 
+				
+#ifdef DKGL_DEBUG_ENABLED
+				return VK_TRUE;
+#endif
 				return VK_FALSE;
 			}
 		}
@@ -407,7 +411,8 @@ GraphicsDevice::GraphicsDevice(void)
 		for (uint32_t queueFamilyIndex = 0; queueFamilyIndex < desc.queueFamilyProperties.Count(); ++queueFamilyIndex)
 		{
 			VkQueueFamilyProperties& queueFamily = desc.queueFamilyProperties.Value(queueFamilyIndex);
-			if (queueFamily.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT))
+			if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) &&
+				(queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
 			{
 				VkDeviceQueueCreateInfo queueInfo = {VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
 				queueInfo.queueFamilyIndex = queueFamilyIndex;
@@ -485,7 +490,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 		if (lhs_ps == rhs_ps)
 		{
-			return lhs->FamilyIndex() > rhs->FamilyIndex();
+			return lhs->FamilyIndex() < rhs->FamilyIndex(); // smaller index first
 		}
 		return lhs_ps > rhs_ps;
 	});

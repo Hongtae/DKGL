@@ -40,7 +40,6 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12GraphicsCommandList> cm = dev->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
-	cm->Close();
 	cm->Reset(commandAllocator->allocator.Get(), nullptr);
 
 	DKObject<RenderCommandEncoder> encoder = DKOBJECT_NEW RenderCommandEncoder(cm.Get(), this, desc);
@@ -51,7 +50,6 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(voi
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12GraphicsCommandList> cm = dev->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
-	cm->Close();
 	cm->Reset(commandAllocator->allocator.Get(), nullptr);
 
 	DKObject<ComputeCommandEncoder> encoder = DKOBJECT_NEW ComputeCommandEncoder(cm.Get(), this);
@@ -62,7 +60,6 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12GraphicsCommandList> cm = dev->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
-	cm->Close();
 	cm->Reset(commandAllocator->allocator.Get(), nullptr);
 
 	DKObject<BlitCommandEncoder> encoder = DKOBJECT_NEW BlitCommandEncoder(cm.Get(), this);

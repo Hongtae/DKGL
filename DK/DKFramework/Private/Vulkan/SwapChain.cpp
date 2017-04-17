@@ -397,6 +397,7 @@ bool SwapChain::Present(void)
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &this->swapchain;
 	presentInfo.pImageIndices = &this->frameIndex;
+
 	// Check if a wait semaphore has been specified to wait for before presenting the image
 	if (waitSemaphore != VK_NULL_HANDLE)
 	{
@@ -410,7 +411,7 @@ bool SwapChain::Present(void)
 	}
 	else
 	{
-		DKLog("vkQueuePresentKHR ERROR: %s", VkResultCStr(result));
+		DKLogE("vkQueuePresentKHR ERROR: %s", VkResultCStr(result));
 	}
 	return result == VK_SUCCESS;
 }

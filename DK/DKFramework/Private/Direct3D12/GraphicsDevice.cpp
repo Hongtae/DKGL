@@ -124,14 +124,14 @@ GraphicsDevice::GraphicsDevice(void)
 							if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, IID_PPV_ARGS(&this->device))))
 							{
 								this->deviceName = desc.Description;
-								DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
+								DKLogI("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
 									  desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 								break;
 							}
 						}
 						if (this->device == nullptr)
 						{
-							DKLog("Cannot create device with preferred-device (%ls)", (const wchar_t*)preferredDeviceName);
+							DKLogW("Cannot create device with preferred-device (%ls)", (const wchar_t*)preferredDeviceName);
 						}
 						break;
 					}
@@ -166,7 +166,7 @@ GraphicsDevice::GraphicsDevice(void)
 			if (SUCCEEDED(hr))
 			{
 				this->deviceName = desc.Description;
-				DKLog("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
+				DKLogI("D3D12CreateDevice created with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
 					desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 				break;
 			}
@@ -187,7 +187,7 @@ GraphicsDevice::GraphicsDevice(void)
 		if (SUCCEEDED(hr))
 		{
 			this->deviceName = desc.Description;
-			DKLog("D3D12CreateDevice created WARP device with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
+			DKLogI("D3D12CreateDevice created WARP device with \"%ls\" (NodeCount:%u, FeatureLevel:%s(%x))",
 				desc.Description, this->device->GetNodeCount(), featureLevelToCStr(featureLevel), featureLevel);
 		}
 		else
@@ -311,6 +311,7 @@ ComPtr<ID3D12GraphicsCommandList> GraphicsDevice::GetCommandList(D3D12_COMMAND_L
 		DKLogE("ERROR: ID3D12Device::CreateCommandList() failed");
 		return NULL;
 	}
+	commandList->Close();
 	return commandList;
 }
 
@@ -318,6 +319,7 @@ void GraphicsDevice::ReleaseCommandList(ID3D12GraphicsCommandList* list)
 {
 	DKASSERT_DEBUG(list);
 	list->Reset(this->dummyAllocator.Get(), nullptr);
+	list->Close();
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandLists.Add(list);
 	list->AddRef();

@@ -34,8 +34,14 @@ namespace DKFramework
 
 				DKCommandQueue* Queue(void) override { return queue; };
 
+				void FinishCommandBuffer(VkCommandBuffer);
+			private:
+				VkCommandBuffer GetEncodingBuffer(void);
+
 				VkCommandPool commandPool;
 				DKObject<DKCommandQueue> queue;
+
+				DKArray<VkCommandBuffer> finishedBuffers;
 			};
 		}
 	}
