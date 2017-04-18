@@ -37,7 +37,7 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 	cmdPoolCreateInfo.queueFamilyIndex = this->family->FamilyIndex();
 	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-	VkCommandPool commandPool = nullptr;
+	VkCommandPool commandPool = VK_NULL_HANDLE;
 	VkResult err = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &commandPool);
 	if (err != VK_SUCCESS)
 	{
@@ -76,5 +76,26 @@ DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 	}
 	return NULL;
 }
+
+bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKOperation* callback)
+{
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+
+	VkFence fence = VK_NULL_HANDLE;
+	if (callback)
+		fence = dev->GetFence();
+
+	VkResult err = vkQueueSubmit(queue, submitCount, submits, fence);
+	if (err != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkQueueSubmit failed: %s", VkResultCStr(err));
+		DKASSERT(err == VK_SUCCESS);
+	}
+	if (fence)
+		dev->WaitFenceAsync(fence, callback);
+
+	return err == VK_SUCCESS;
+}
+
 
 #endif //#if DKGL_USE_VULKAN

@@ -68,24 +68,29 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 
 bool CommandBuffer::Commit(void)
 {
-	if (finishedBuffers.Count() > 0)
+	bool result = false;
+	if (submitInfos.Count() > 0)
 	{
 		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
 
-		VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
-		submitInfo.commandBufferCount = static_cast<uint32_t>(finishedBuffers.Count());
-		submitInfo.pCommandBuffers = finishedBuffers;
-		VkResult err = vkQueueSubmit(commandQueue->queue, 1, &submitInfo, nullptr);
+		DKArray<DKObject<DKOperation>> callbacksCopy = std::move(callbacks);
 
-		if (err != VK_SUCCESS)
+		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+		VkDevice device = dev->device;
+
+		result = commandQueue->Submit(submitInfos, submitInfos.Count(),
+							 DKFunction([=](DKObject<CommandBuffer> cb) mutable
 		{
-			DKLogE("ERROR: vkEndCommandBuffer failed: %s", VkResultCStr(err));
-			DKASSERT(err == VK_SUCCESS);
-		}
+			for (DKOperation* op : callbacksCopy)
+				op->Perform();
+			callbacksCopy.Clear();
 
-		finishedBuffers.Clear();
+		})->Invocation(this));
 	}
-	return false;
+	submitInfos.Clear();
+	callbacks.Clear();
+
+	return result;
 }
 
 bool CommandBuffer::WaitUntilCompleted(void)
@@ -113,9 +118,21 @@ VkCommandBuffer CommandBuffer::GetEncodingBuffer(void)
 	return buffer;
 }
 
-void CommandBuffer::FinishCommandBuffer(VkCommandBuffer cb)
+void CommandBuffer::ReleaseEncodingBuffer(VkCommandBuffer cb)
 {
-	finishedBuffers.Add(cb);
+	if (cb)
+	{
+		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+		VkDevice device = dev->device;
+		vkFreeCommandBuffers(device, commandPool, 1, &cb);
+	}
+}
+
+void CommandBuffer::Submit(const VkSubmitInfo& info, DKOperation* callback)
+{
+	submitInfos.Add(info);
+	if (callback)
+		callbacks.Add(callback);
 }
 
 #endif //#if DKGL_USE_VULKAN

@@ -20,6 +20,7 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
+			class SwapChain;
 			class RenderTarget : public TextureBaseT<DKRenderTarget>
 			{
 			public:
@@ -28,6 +29,8 @@ namespace DKFramework
 
 				DKObject<DKGraphicsDevice> device;
 				VkImageView imageView;
+
+				SwapChain* swapchain;
 			};
 		}
 	}

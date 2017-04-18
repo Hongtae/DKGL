@@ -85,7 +85,8 @@ namespace DKFramework
 				// return VK_ERROR_VALIDATION_FAILED_EXT 
 				
 #ifdef DKGL_DEBUG_ENABLED
-				return VK_TRUE;
+				if (!DKIsDebuggerPresent())
+					return VK_TRUE;
 #endif
 				return VK_FALSE;
 			}
@@ -103,6 +104,7 @@ GraphicsDevice::GraphicsDevice(void)
 	, physicalDevice(NULL)
 	, msgCallback(NULL)
 	, enableValidation(false)
+	, queueCompletionHelperThreadRunning(true)
 {
 #ifdef DKGL_DEBUG_ENABLED
 	this->enableValidation = true;
@@ -495,10 +497,28 @@ GraphicsDevice::GraphicsDevice(void)
 		return lhs_ps > rhs_ps;
 	});
 	queueFamilies.ShrinkToFit();
+
+	queueCompletionHelperThread = DKThread::Create(
+		DKFunction(this, &GraphicsDevice::QueueCompletionCallbackThreadProc)->Invocation());
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
+	if (queueCompletionHelperThread && queueCompletionHelperThread->IsAlive())
+	{
+		completionHelperCond.Lock();
+		queueCompletionHelperThreadRunning = false;
+		completionHelperCond.Broadcast();
+		completionHelperCond.Unlock();
+
+		queueCompletionHelperThread->WaitTerminate();
+	}
+
+	DKASSERT_DEBUG(submittedFences.IsEmpty());
+	for (VkFence fence : reusableFences)
+		vkDestroyFence(device, fence, nullptr);
+	reusableFences.Clear();
+
 	for (QueueFamily* family : queueFamilies)
 	{
 		DKRawPtrDelete(family);
@@ -525,6 +545,113 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 			return queue;
 	}
 	return NULL;
+}
+
+VkFence GraphicsDevice::GetFence(void)
+{
+	VkFence fence = VK_NULL_HANDLE;
+
+	if (fence == VK_NULL_HANDLE)
+	{
+		DKCriticalSection<DKCondition> guard(completionHelperCond);
+		if (reusableFences.Count() > 0)
+		{
+			VkFence fence = reusableFences.Value(0);
+			reusableFences.Remove(0);
+		}
+	}
+	if (fence == VK_NULL_HANDLE)
+	{
+		VkFenceCreateInfo fenceCreateInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+		VkResult err = vkCreateFence(device, &fenceCreateInfo, nullptr, &fence);
+		if (err != VK_SUCCESS)
+		{
+			DKLogE("ERROR: vkCreateFence failed: %s", VkResultCStr(err));
+			DKASSERT(err == VK_SUCCESS);
+		}
+	}
+	return fence;
+}
+
+void GraphicsDevice::WaitFenceAsync(VkFence fence, DKOperation* callback)
+{
+	DKCriticalSection<DKCondition> guard(completionHelperCond);
+	SubmittedFenceOperation op = { fence, callback };
+	submittedFences.Add(op);
+	completionHelperCond.Broadcast();
+}
+
+void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
+{
+	const double resolution = 1.0 / 60.0;
+
+	DKArray<VkFence> fences;
+	DKArray<SubmittedFenceOperation> waitingFences;
+	DKArray<DKObject<DKOperation>> availableCallbacks;
+
+	DKLogI("Vulkan Queue Completion Helper thread is started.");
+
+	DKCriticalSection<DKCondition> guard(completionHelperCond);
+	while (queueCompletionHelperThreadRunning)
+	{
+		waitingFences.Add(submittedFences);
+		submittedFences.Clear();
+		completionHelperCond.Unlock();
+	
+		{	// condition is unlocked from here.
+			fences.Clear();
+			fences.Reserve(waitingFences.Count());
+			for (SubmittedFenceOperation& fence : waitingFences)
+				fences.Add(fence.fence);
+
+			if (fences.Count() > 0)
+			{
+				VkResult err = vkWaitForFences(device,
+											   static_cast<uint32_t>(fences.Count()),
+											   fences,
+											   VK_FALSE,
+											   0);
+				fences.Clear();
+				if (err == VK_SUCCESS)
+				{
+					DKArray<SubmittedFenceOperation> waitingFencesCopy;
+					waitingFencesCopy.Reserve(waitingFences.Count());
+
+					for (SubmittedFenceOperation& fence : waitingFences)
+					{
+						if (vkGetFenceStatus(device, fence.fence) == VK_SUCCESS)
+						{
+							fences.Add(fence.fence);
+							if (fence.callback)
+								availableCallbacks.Add(fence.callback);
+						}
+						else
+							waitingFencesCopy.Add(fence); // fence is not ready
+					}
+					waitingFences.Clear();
+					waitingFences = std::move(waitingFencesCopy);
+				}
+				else if (err != VK_TIMEOUT)
+				{
+					DKLogE("ERROR: vkWaitForFences failed: %s", VkResultCStr(err));
+					DKASSERT(VK_FALSE);
+				}
+			}
+
+			if (availableCallbacks.Count() > 0)
+			{
+				for (DKOperation* op : availableCallbacks)
+					op->Perform();
+			}
+			availableCallbacks.Clear();
+		}
+
+		completionHelperCond.Lock();
+		reusableFences.Add(fences);
+		completionHelperCond.WaitTimeout(resolution);
+	}
+
+	DKLogI("Vulkan Queue Completion Helper thread is finished.");
 }
 
 #endif //#if DKGL_USE_VULKAN

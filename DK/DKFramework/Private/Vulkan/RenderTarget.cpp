@@ -18,6 +18,7 @@ RenderTarget::RenderTarget(DKGraphicsDevice* d, VkImageView v, VkImage i, const 
 	: TextureBaseT(i, ci)
 	, device(d)
 	, imageView(v)
+	, swapchain(nullptr)
 {
 }
 

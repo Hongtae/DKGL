@@ -42,15 +42,16 @@ namespace DKFramework
 				VkSurfaceKHR surface;
 				VkSwapchainKHR swapchain;
 
+				VkSemaphore presentCompleteSemaphore;
+				VkSemaphore renderCompleteSemaphore;
+
+
 				DKArray<DKObject<RenderTarget>> renderTargets;
 
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;
 
 			private:
-
-				VkSemaphore imageSemaphore;
-
 				uint32_t frameIndex;
 				DKRenderPassDescriptor renderPassDescriptor;
 				void OnWindowEvent(const DKWindow::WindowEvent&);

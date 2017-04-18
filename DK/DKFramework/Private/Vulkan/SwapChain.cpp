@@ -20,9 +20,29 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	, surface(NULL)
 	, swapchain(NULL)
 	, enableVSync(false)
-	, imageSemaphore(VK_NULL_HANDLE)
+	, presentCompleteSemaphore(VK_NULL_HANDLE)
+	, renderCompleteSemaphore(VK_NULL_HANDLE)
 {
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+	VkDevice device = dev->device;
+
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
+
+	VkResult err;
+	// create semaphore
+	VkSemaphoreCreateInfo semaphoreCreateInfo = {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
+	err = vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &presentCompleteSemaphore);
+	if (err != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
+		DKASSERT_DEBUG(0);
+	}
+	err = vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &renderCompleteSemaphore);
+	if (err != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
+		DKASSERT_DEBUG(0);
+	}
 }
 
 SwapChain::~SwapChain(void)
@@ -33,6 +53,12 @@ SwapChain::~SwapChain(void)
 	VkInstance instance = dev->instance;
 	VkDevice device = dev->device;
 
+	for (RenderTarget* rt : renderTargets)
+	{
+		rt->swapchain = nullptr;
+		rt->imageView = VK_NULL_HANDLE;
+		rt->image = VK_NULL_HANDLE;
+	}
 	renderTargets.Clear();
 
 	if (swapchain)
@@ -41,8 +67,8 @@ SwapChain::~SwapChain(void)
 	if (surface)
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 
-	if (imageSemaphore != VK_NULL_HANDLE)
-		vkDestroySemaphore(device, imageSemaphore, nullptr);
+	vkDestroySemaphore(device, presentCompleteSemaphore, nullptr);
+	vkDestroySemaphore(device, renderCompleteSemaphore, nullptr);
 }
 
 bool SwapChain::Setup(void)
@@ -131,15 +157,6 @@ bool SwapChain::Setup(void)
 		this->surfaceFormat.format = surfaceFormats[0].format;
 	}
 	this->surfaceFormat.colorSpace = surfaceFormats[0].colorSpace;
-
-	// create semaphore
-	VkSemaphoreCreateInfo semaphoreCreateInfo = {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
-	err = vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &imageSemaphore);
-	if (err != VK_SUCCESS)
-	{
-		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
-		return false;
-	}
 
 	// create swapchain
 	return this->Update();
@@ -349,6 +366,9 @@ bool SwapChain::Update(void)
 		renderTarget->mipLevels = 1;
 		renderTarget->arrayLayers = swapchainCI.imageArrayLayers;
 		renderTarget->usage = swapchainCI.imageUsage;
+
+		renderTarget->swapchain = this;
+
 		this->renderTargets.Add(renderTarget);
 	}
 
@@ -377,7 +397,7 @@ void SwapChain::SetupFrame(void)
 	VkPhysicalDevice physicalDevice = dev->physicalDevice;
 	VkDevice device = dev->device;
 
-	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, imageSemaphore, VK_NULL_HANDLE, &this->frameIndex);
+	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &this->frameIndex);
 
 	DKRenderPassColorAttachmentDescriptor colorAttachment = {};
 	colorAttachment.renderTarget = renderTargets.Value(frameIndex);
@@ -391,7 +411,7 @@ void SwapChain::SetupFrame(void)
 
 bool SwapChain::Present(void)
 {
-	VkSemaphore waitSemaphore = VK_NULL_HANDLE;
+	VkSemaphore waitSemaphore = renderCompleteSemaphore;
 
 	VkPresentInfoKHR presentInfo = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};
 	presentInfo.swapchainCount = 1;
@@ -404,16 +424,16 @@ bool SwapChain::Present(void)
 		presentInfo.pWaitSemaphores = &waitSemaphore;
 		presentInfo.waitSemaphoreCount = 1;
 	}
-	VkResult result = vkQueuePresentKHR(queue->queue, &presentInfo);
-	if (result == VK_SUCCESS)
+	VkResult err = vkQueuePresentKHR(queue->queue, &presentInfo);
+	if (err != VK_SUCCESS)
 	{
+		DKLogE("vkQueuePresentKHR ERROR: %s", VkResultCStr(err));
+		DKASSERT_DEBUG(err == VK_SUCCESS);
+	}
+
+	if (err == VK_SUCCESS)
 		renderPassDescriptor.colorAttachments.Clear();
-	}
-	else
-	{
-		DKLogE("vkQueuePresentKHR ERROR: %s", VkResultCStr(result));
-	}
-	return result == VK_SUCCESS;
+	return err == VK_SUCCESS;
 }
 
 void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)

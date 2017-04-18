@@ -28,6 +28,9 @@ namespace DKFramework
 				DKString DeviceName(void) const override;
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
+				VkFence GetFence(void);
+				void WaitFenceAsync(VkFence, DKOperation*);
+
 				VkInstance instance;
 				VkDevice device;
 				VkPhysicalDevice physicalDevice;
@@ -42,6 +45,19 @@ namespace DKFramework
 				VkPhysicalDeviceProperties properties;
 				VkPhysicalDeviceFeatures features;
 				DKArray<VkExtensionProperties> extensionProperties;
+
+			private:
+				struct SubmittedFenceOperation
+				{
+					VkFence fence;
+					DKObject<DKOperation> callback;
+				};
+				DKArray<SubmittedFenceOperation> submittedFences;
+				DKArray<VkFence> reusableFences;
+				DKCondition completionHelperCond;
+				bool queueCompletionHelperThreadRunning;
+				DKObject<DKThread> queueCompletionHelperThread;
+				void QueueCompletionCallbackThreadProc(void);
 			};
 		}
 	}

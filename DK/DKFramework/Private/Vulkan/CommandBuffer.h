@@ -34,14 +34,17 @@ namespace DKFramework
 
 				DKCommandQueue* Queue(void) override { return queue; };
 
-				void FinishCommandBuffer(VkCommandBuffer);
-			private:
+				void Submit(const VkSubmitInfo&, DKOperation*);
+				void ReleaseEncodingBuffer(VkCommandBuffer cb);
 				VkCommandBuffer GetEncodingBuffer(void);
+
+			private:
 
 				VkCommandPool commandPool;
 				DKObject<DKCommandQueue> queue;
 
-				DKArray<VkCommandBuffer> finishedBuffers;
+				DKArray<VkSubmitInfo> submitInfos;
+				DKArray<DKObject<DKOperation>> callbacks;
 			};
 		}
 	}

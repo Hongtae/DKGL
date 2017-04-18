@@ -15,13 +15,35 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* cb, const DKRenderPassDescriptor& desc)
-	: encodingBuffer(vcb)
-	, commandBuffer(cb)
-	, renderPass(nullptr)
-	, framebuffer(nullptr)
+RenderCommandEncoder::Resources::Resources(CommandBuffer* b)
+	: cb(b)
+	, framebuffer(VK_NULL_HANDLE)
+	, renderPass(VK_NULL_HANDLE)
+	, commandBuffer(VK_NULL_HANDLE)
 {
-	DKASSERT_DEBUG(encodingBuffer);
+}
+
+RenderCommandEncoder::Resources::~Resources(void)
+{
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(cb->Queue()->Device());
+	VkDevice device = dev->device;
+
+	if (renderPass)
+		vkDestroyRenderPass(device, renderPass, nullptr);
+
+	if (framebuffer)
+		vkDestroyFramebuffer(device, framebuffer, nullptr);
+
+	if (commandBuffer)
+		cb->ReleaseEncodingBuffer(commandBuffer);
+}
+
+RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* cb, const DKRenderPassDescriptor& desc)
+	: commandBuffer(cb)
+{
+	resources = DKOBJECT_NEW Resources(cb);
+	resources->commandBuffer = vcb;
+	DKASSERT_DEBUG(resources->commandBuffer);
 
 	uint32_t frameWidth = 0;
 	uint32_t frameHeight = 0;
@@ -37,13 +59,17 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 
 	DKArray<VkClearValue> attachmentClearValues;
 	attachmentClearValues.Reserve(desc.colorAttachments.Count() + 1);
-	
+
+	DKSet<SwapChain*> swapchains;
 
 	for (const DKRenderPassColorAttachmentDescriptor& colorAttachment : desc.colorAttachments)
 	{
 		const RenderTarget* rt = colorAttachment.renderTarget.SafeCast<RenderTarget>();
 		if (rt)
 		{
+			if (rt->swapchain)
+				swapchains.Insert(rt->swapchain);
+
 			VkAttachmentDescription attachment = {};
 			attachment.format = rt->format;
 			attachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -101,6 +127,9 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 		const RenderTarget* rt = depthStencilAttachment.renderTarget.SafeCast<RenderTarget>();
 		if (rt)
 		{
+			if (rt->swapchain)
+				swapchains.Insert(rt->swapchain);
+
 			VkAttachmentDescription attachment = {};
 			attachment.format = rt->format;
 			attachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -167,7 +196,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(commandBuffer->Queue()->Device());
 	VkDevice device = dev->device;
 
-	VkResult err = vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass);
+	VkResult err = vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &resources->renderPass);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateRenderPass failed: %s", VkResultCStr(err));
@@ -175,13 +204,13 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	}
 
 	VkFramebufferCreateInfo frameBufferCreateInfo = {VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
-	frameBufferCreateInfo.renderPass = renderPass;
+	frameBufferCreateInfo.renderPass = resources->renderPass;
 	frameBufferCreateInfo.attachmentCount = static_cast<uint32_t>(framebufferImageViews.Count());
 	frameBufferCreateInfo.pAttachments = framebufferImageViews;
 	frameBufferCreateInfo.width = frameWidth;
 	frameBufferCreateInfo.height = frameHeight;
 	frameBufferCreateInfo.layers = 1;
-	err = vkCreateFramebuffer(device, &frameBufferCreateInfo, nullptr, &framebuffer);
+	err = vkCreateFramebuffer(device, &frameBufferCreateInfo, nullptr, &resources->framebuffer);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateFramebuffer failed: %s", VkResultCStr(err));
@@ -189,46 +218,50 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	}
 
 	VkCommandBufferBeginInfo commandBufferBeginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-	vkBeginCommandBuffer(encodingBuffer, &commandBufferBeginInfo);
+	vkBeginCommandBuffer(resources->commandBuffer, &commandBufferBeginInfo);
 		
 	VkRenderPassBeginInfo renderPassBeginInfo = {VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO};
-	renderPassBeginInfo.renderPass = renderPass;
+	renderPassBeginInfo.renderPass = resources->renderPass;
 	renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(attachmentClearValues.Count());
 	renderPassBeginInfo.pClearValues = attachmentClearValues;
 	renderPassBeginInfo.renderArea.offset.x = 0;
 	renderPassBeginInfo.renderArea.offset.y = 0;
 	renderPassBeginInfo.renderArea.extent.width = frameWidth;
 	renderPassBeginInfo.renderArea.extent.height = frameHeight;
-	renderPassBeginInfo.framebuffer = framebuffer;
-	vkCmdBeginRenderPass(encodingBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+	renderPassBeginInfo.framebuffer = resources->framebuffer;
+	vkCmdBeginRenderPass(resources->commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 	VkViewport viewport = {};
 	viewport.height = (float)frameHeight;
 	viewport.width = (float)frameWidth;
 	viewport.minDepth = (float) 0.0f;
 	viewport.maxDepth = (float) 1.0f;
-	vkCmdSetViewport(encodingBuffer, 0, 1, &viewport);
+	vkCmdSetViewport(resources->commandBuffer, 0, 1, &viewport);
+
+	swapchains.EnumerateForward([&](SwapChain* sc)
+	{
+		VkSemaphore present = sc->presentCompleteSemaphore;
+		VkSemaphore render = sc->renderCompleteSemaphore;
+		if (present)
+		{
+			resources->waitSemaphores.Add(present);
+			resources->waitStageMasks.Add(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+		}
+		if (render)
+			resources->signalSemaphores.Add(render);
+	});
+
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
-	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(commandBuffer->Queue()->Device());
-	VkDevice device = dev->device;
-
-	if (renderPass)
-	{
-		vkDestroyRenderPass(device, renderPass, nullptr);
-	}
-	if (framebuffer)
-	{
-		vkDestroyFramebuffer(device, framebuffer, nullptr);
-	}
+	resources = NULL;
 }
 
 void RenderCommandEncoder::EndEncoding(void)
 {
-	vkCmdEndRenderPass(encodingBuffer);
-	VkResult err = vkEndCommandBuffer(encodingBuffer);
+	vkCmdEndRenderPass(resources->commandBuffer);
+	VkResult err = vkEndCommandBuffer(resources->commandBuffer);
 
 	if (err != VK_SUCCESS)
 	{
@@ -236,7 +269,27 @@ void RenderCommandEncoder::EndEncoding(void)
 		DKASSERT(err == VK_SUCCESS);
 	}
 
-	commandBuffer->FinishCommandBuffer(encodingBuffer);
+	VkSubmitInfo submitInfo = { VK_STRUCTURE_TYPE_SUBMIT_INFO };
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &resources->commandBuffer;
+
+	if (resources->waitSemaphores.Count() > 0)
+	{
+		submitInfo.waitSemaphoreCount = resources->waitSemaphores.Count();
+		submitInfo.pWaitSemaphores = resources->waitSemaphores;
+		submitInfo.pWaitDstStageMask = resources->waitStageMasks;
+	}
+	if (resources->signalSemaphores.Count() > 0)
+	{
+		submitInfo.signalSemaphoreCount = resources->signalSemaphores.Count();
+		submitInfo.pSignalSemaphores = resources->signalSemaphores;
+	}
+
+	commandBuffer->Submit(submitInfo, DKFunction([=](DKObject<Resources> res)
+	{
+		res = NULL;
+	})->Invocation(resources));
+	resources = NULL;
 }
 
 DKCommandBuffer* RenderCommandEncoder::Buffer(void)

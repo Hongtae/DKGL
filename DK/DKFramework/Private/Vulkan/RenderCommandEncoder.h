@@ -13,6 +13,7 @@
 #include "../../DKRenderCommandEncoder.h"
 
 #include "CommandBuffer.h"
+#include "SwapChain.h"
 
 namespace DKFramework
 {
@@ -29,9 +30,21 @@ namespace DKFramework
 				void EndEncoding(void) override;
 				DKCommandBuffer* Buffer(void) override;
 
-				VkFramebuffer framebuffer;
-				VkRenderPass renderPass;
-				VkCommandBuffer encodingBuffer;
+				struct Resources
+				{
+					VkFramebuffer framebuffer;
+					VkRenderPass renderPass;
+					DKArray<VkSemaphore> waitSemaphores;
+					DKArray<VkSemaphore> signalSemaphores;
+					DKArray<VkPipelineStageFlags> waitStageMasks;
+
+					CommandBuffer* cb;
+					VkCommandBuffer commandBuffer;
+
+					Resources(CommandBuffer*);
+					~Resources(void);
+				};
+				DKObject<Resources> resources;
 				DKObject<CommandBuffer> commandBuffer;
 			};
 		}

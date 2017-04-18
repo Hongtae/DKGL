@@ -30,6 +30,8 @@ namespace DKFramework
 				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
 				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 
+				bool Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKOperation* callback);
+
 				DKGraphicsDevice* Device(void) override { return device; }
 
 				QueueFamily* family;
