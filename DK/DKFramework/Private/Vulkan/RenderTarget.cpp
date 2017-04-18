@@ -18,7 +18,7 @@ RenderTarget::RenderTarget(DKGraphicsDevice* d, VkImageView v, VkImage i, const 
 	: TextureBaseT(i, ci)
 	, device(d)
 	, imageView(v)
-	, swapchain(nullptr)
+	, signalSemaphore(VK_NULL_HANDLE)
 {
 }
 
@@ -27,6 +27,10 @@ RenderTarget::~RenderTarget(void)
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (imageView)
 		vkDestroyImageView(dev->device, imageView, nullptr);
+	if (signalSemaphore)
+		vkDestroySemaphore(dev->device, signalSemaphore, nullptr);
+	if (waitSemaphore)
+		vkDestroySemaphore(dev->device, waitSemaphore, nullptr);
 }
 
 #endif //#if DKGL_USE_VULKAN

@@ -25,6 +25,7 @@ CommandQueue::CommandQueue(DKGraphicsDevice* d, QueueFamily* f, VkQueue q)
 
 CommandQueue::~CommandQueue(void)
 {
+	vkQueueWaitIdle(queue);
 	family->RecycleQueue(queue);
 }
 
@@ -97,5 +98,9 @@ bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKO
 	return err == VK_SUCCESS;
 }
 
+bool CommandQueue::WaitIdle(void)
+{
+	return vkQueueWaitIdle(queue) == VK_SUCCESS;
+}
 
 #endif //#if DKGL_USE_VULKAN

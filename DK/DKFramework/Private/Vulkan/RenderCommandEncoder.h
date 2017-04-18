@@ -32,11 +32,12 @@ namespace DKFramework
 
 				struct Resources
 				{
-					VkFramebuffer framebuffer;
-					VkRenderPass renderPass;
-					DKArray<VkSemaphore> waitSemaphores;
-					DKArray<VkSemaphore> signalSemaphores;
-					DKArray<VkPipelineStageFlags> waitStageMasks;
+					VkFramebuffer		framebuffer;
+					VkRenderPass		renderPass;
+
+					DKArray<VkSemaphore>			waitSemaphores;
+					DKArray<VkPipelineStageFlags>	waitStageMasks;
+					DKArray<VkSemaphore>			signalSemaphores;
 
 					CommandBuffer* cb;
 					VkCommandBuffer commandBuffer;
@@ -44,6 +45,15 @@ namespace DKFramework
 					Resources(CommandBuffer*);
 					~Resources(void);
 				};
+
+				void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
+				void AddSignalSemaphore(VkSemaphore);
+
+			private:
+
+				DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
+				DKSet<VkSemaphore> signalSemaphores;
+
 				DKObject<Resources> resources;
 				DKObject<CommandBuffer> commandBuffer;
 			};

@@ -105,6 +105,7 @@ GraphicsDevice::GraphicsDevice(void)
 	, msgCallback(NULL)
 	, enableValidation(false)
 	, queueCompletionHelperThreadRunning(true)
+	, numberOfFences(0)
 {
 #ifdef DKGL_DEBUG_ENABLED
 	this->enableValidation = true;
@@ -504,6 +505,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 GraphicsDevice::~GraphicsDevice(void)
 {
+	vkDeviceWaitIdle(device);
 	if (queueCompletionHelperThread && queueCompletionHelperThread->IsAlive())
 	{
 		completionHelperCond.Lock();
@@ -556,7 +558,7 @@ VkFence GraphicsDevice::GetFence(void)
 		DKCriticalSection<DKCondition> guard(completionHelperCond);
 		if (reusableFences.Count() > 0)
 		{
-			VkFence fence = reusableFences.Value(0);
+			fence = reusableFences.Value(0);
 			reusableFences.Remove(0);
 		}
 	}
@@ -569,6 +571,8 @@ VkFence GraphicsDevice::GetFence(void)
 			DKLogE("ERROR: vkCreateFence failed: %s", VkResultCStr(err));
 			DKASSERT(err == VK_SUCCESS);
 		}
+		numberOfFences.Increment();
+		DKLogD("Queue Completion Helper: Num-Fences: %llu", (uint64_t)numberOfFences);
 	}
 	return fence;
 }
@@ -584,6 +588,8 @@ void GraphicsDevice::WaitFenceAsync(VkFence fence, DKOperation* callback)
 void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
 {
 	const double resolution = 1.0 / 60.0;
+
+	VkResult err = VK_SUCCESS;
 
 	DKArray<VkFence> fences;
 	DKArray<SubmittedFenceOperation> waitingFences;
@@ -606,11 +612,11 @@ void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
 
 			if (fences.Count() > 0)
 			{
-				VkResult err = vkWaitForFences(device,
-											   static_cast<uint32_t>(fences.Count()),
-											   fences,
-											   VK_FALSE,
-											   0);
+				err = vkWaitForFences(device,
+									  static_cast<uint32_t>(fences.Count()),
+									  fences,
+									  VK_FALSE,
+									  0);
 				fences.Clear();
 				if (err == VK_SUCCESS)
 				{
@@ -648,6 +654,16 @@ void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
 
 		completionHelperCond.Lock();
 		reusableFences.Add(fences);
+		fences.Clear();
+		if (reusableFences.Count() > 0)
+		{
+			err = vkResetFences(device, static_cast<uint32_t>(reusableFences.Count()), reusableFences);
+			if (err != VK_SUCCESS)
+			{
+				DKLogE("ERROR: vkResetFences failed: %s", VkResultCStr(err));
+				DKASSERT(err == VK_SUCCESS);
+			}
+		}
 		completionHelperCond.WaitTimeout(resolution);
 	}
 

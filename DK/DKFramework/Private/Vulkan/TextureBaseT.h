@@ -30,6 +30,7 @@ namespace DKFramework
 				uint32_t				mipLevels;
 				uint32_t				arrayLayers;
 				VkImageUsageFlags		usage;
+				VkSemaphore				waitSemaphore;
 
 				TextureBaseT(VkImage i, const VkImageCreateInfo* ci)
 					: image(i)
@@ -39,6 +40,7 @@ namespace DKFramework
 					, mipLevels(0)
 					, arrayLayers(0)
 					, usage(0)
+					, waitSemaphore(VK_NULL_HANDLE)
 				{
 					if (ci)
 					{

@@ -60,15 +60,13 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	DKArray<VkClearValue> attachmentClearValues;
 	attachmentClearValues.Reserve(desc.colorAttachments.Count() + 1);
 
-	DKSet<SwapChain*> swapchains;
-
 	for (const DKRenderPassColorAttachmentDescriptor& colorAttachment : desc.colorAttachments)
 	{
 		const RenderTarget* rt = colorAttachment.renderTarget.SafeCast<RenderTarget>();
 		if (rt)
 		{
-			if (rt->swapchain)
-				swapchains.Insert(rt->swapchain);
+			AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+			AddSignalSemaphore(rt->signalSemaphore);
 
 			VkAttachmentDescription attachment = {};
 			attachment.format = rt->format;
@@ -98,7 +96,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 			attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-			
+
 			VkAttachmentReference attachmentReference = {};
 			attachmentReference.attachment = static_cast<uint32_t>(attachments.Count());
 			attachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -127,8 +125,8 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 		const RenderTarget* rt = depthStencilAttachment.renderTarget.SafeCast<RenderTarget>();
 		if (rt)
 		{
-			if (rt->swapchain)
-				swapchains.Insert(rt->swapchain);
+			AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+			AddSignalSemaphore(rt->signalSemaphore);
 
 			VkAttachmentDescription attachment = {};
 			attachment.format = rt->format;
@@ -173,7 +171,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 			frameHeight = (frameHeight > 0) ? Min(frameHeight, rt->Height()) : rt->Height();
 		}
 	}
-	
+
 	VkSubpassDescription subpassDescription = {};
 	subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 	subpassDescription.colorAttachmentCount = static_cast<uint32_t>(colorReferences.Count());
@@ -203,7 +201,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 		DKASSERT(err == VK_SUCCESS);
 	}
 
-	VkFramebufferCreateInfo frameBufferCreateInfo = {VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
+	VkFramebufferCreateInfo frameBufferCreateInfo = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
 	frameBufferCreateInfo.renderPass = resources->renderPass;
 	frameBufferCreateInfo.attachmentCount = static_cast<uint32_t>(framebufferImageViews.Count());
 	frameBufferCreateInfo.pAttachments = framebufferImageViews;
@@ -217,10 +215,10 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 		DKASSERT(err == VK_SUCCESS);
 	}
 
-	VkCommandBufferBeginInfo commandBufferBeginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+	VkCommandBufferBeginInfo commandBufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
 	vkBeginCommandBuffer(resources->commandBuffer, &commandBufferBeginInfo);
-		
-	VkRenderPassBeginInfo renderPassBeginInfo = {VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO};
+
+	VkRenderPassBeginInfo renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
 	renderPassBeginInfo.renderPass = resources->renderPass;
 	renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(attachmentClearValues.Count());
 	renderPassBeginInfo.pClearValues = attachmentClearValues;
@@ -237,25 +235,26 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	viewport.minDepth = (float) 0.0f;
 	viewport.maxDepth = (float) 1.0f;
 	vkCmdSetViewport(resources->commandBuffer, 0, 1, &viewport);
-
-	swapchains.EnumerateForward([&](SwapChain* sc)
-	{
-		VkSemaphore present = sc->presentCompleteSemaphore;
-		VkSemaphore render = sc->renderCompleteSemaphore;
-		if (present)
-		{
-			resources->waitSemaphores.Add(present);
-			resources->waitStageMasks.Add(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
-		}
-		if (render)
-			resources->signalSemaphores.Add(render);
-	});
-
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
 	resources = NULL;
+}
+
+void RenderCommandEncoder::AddWaitSemaphore(VkSemaphore semaphore, VkPipelineStageFlags flags)
+{
+	if (semaphore != VK_NULL_HANDLE)
+	{
+		if (!semaphorePipelineStageMasks.Insert(semaphore, flags))
+			semaphorePipelineStageMasks.Value(semaphore) |= flags;
+	}
+}
+
+void RenderCommandEncoder::AddSignalSemaphore(VkSemaphore semaphore)
+{
+	if (semaphore != VK_NULL_HANDLE)
+		signalSemaphores.Insert(semaphore);
 }
 
 void RenderCommandEncoder::EndEncoding(void)
@@ -273,23 +272,37 @@ void RenderCommandEncoder::EndEncoding(void)
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &resources->commandBuffer;
 
-	if (resources->waitSemaphores.Count() > 0)
+	resources->waitSemaphores.Reserve(semaphorePipelineStageMasks.Count());
+	resources->waitStageMasks.Reserve(semaphorePipelineStageMasks.Count());
+		
+	semaphorePipelineStageMasks.EnumerateForward([&](decltype(semaphorePipelineStageMasks)::Pair& pair)
 	{
-		submitInfo.waitSemaphoreCount = resources->waitSemaphores.Count();
-		submitInfo.pWaitSemaphores = resources->waitSemaphores;
-		submitInfo.pWaitDstStageMask = resources->waitStageMasks;
-	}
-	if (resources->signalSemaphores.Count() > 0)
+		resources->waitSemaphores.Add(pair.key);
+		resources->waitStageMasks.Add(pair.value);
+	});
+
+	resources->signalSemaphores.Reserve(signalSemaphores.Count());
+	signalSemaphores.EnumerateForward([&](VkSemaphore semaphore)
 	{
-		submitInfo.signalSemaphoreCount = resources->signalSemaphores.Count();
-		submitInfo.pSignalSemaphores = resources->signalSemaphores;
-	}
+		resources->signalSemaphores.Add(semaphore);
+	});
+
+	DKASSERT_DEBUG(resources->waitSemaphores.Count() == resources->waitStageMasks.Count());
+
+	submitInfo.waitSemaphoreCount = resources->waitSemaphores.Count();
+	submitInfo.pWaitSemaphores = resources->waitSemaphores;
+	submitInfo.pWaitDstStageMask = resources->waitStageMasks;
+	submitInfo.signalSemaphoreCount = resources->signalSemaphores.Count();
+	submitInfo.pSignalSemaphores = resources->signalSemaphores;
 
 	commandBuffer->Submit(submitInfo, DKFunction([=](DKObject<Resources> res)
 	{
 		res = NULL;
 	})->Invocation(resources));
+
 	resources = NULL;
+	semaphorePipelineStageMasks.Clear();
+	signalSemaphores.Clear();
 }
 
 DKCommandBuffer* RenderCommandEncoder::Buffer(void)

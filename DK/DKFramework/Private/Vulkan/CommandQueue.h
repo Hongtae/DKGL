@@ -32,6 +32,8 @@ namespace DKFramework
 
 				bool Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKOperation* callback);
 
+				bool WaitIdle(void);
+
 				DKGraphicsDevice* Device(void) override { return device; }
 
 				QueueFamily* family;

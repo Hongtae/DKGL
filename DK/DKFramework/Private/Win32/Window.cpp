@@ -792,44 +792,45 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if (true)
 				{
 					const DKWindow::WindowCallback& cb = window->instance->Callback();
-					if (cb.contentMinSize || cb.contentMaxSize)
+
+					DWORD style = ((DWORD)GetWindowLong(hWnd, GWL_STYLE));
+					DWORD styleEx = ((DWORD)GetWindowLong(hWnd, GWL_EXSTYLE));
+					BOOL menu = ::GetMenu(hWnd) != NULL;
+
+					if (true)
 					{
-						DWORD style = ((DWORD)GetWindowLong(hWnd, GWL_STYLE));
-						DWORD styleEx = ((DWORD)GetWindowLong(hWnd, GWL_EXSTYLE));
-						BOOL menu = ::GetMenu(hWnd) != NULL;
-
+						DKSize s = { 1, 1 };
 						if (cb.contentMinSize)
-						{
-							DKSize s = cb.contentMinSize->Invoke(window->instance);
-							LONG w = floor(s.width + 0.5f);
-							LONG h = floor(s.height + 0.5f);
-							RECT rc = { 0, 0, Max(w, 0), Max(h, 0) };
+							s = cb.contentMinSize->Invoke(window->instance);
+						LONG w = floor(s.width + 0.5f);
+						LONG h = floor(s.height + 0.5f);
+						RECT rc = { 0, 0, Max(w, 1), Max(h, 1) };
 
-							if (::AdjustWindowRectEx(&rc, style, menu, styleEx))
-							{
-								MINMAXINFO* mm = (MINMAXINFO*)lParam;
-								mm->ptMinTrackSize.x = rc.right - rc.left;
-								mm->ptMinTrackSize.y = rc.bottom - rc.top;
-							}
-						}
-						if (cb.contentMaxSize)
+						if (::AdjustWindowRectEx(&rc, style, menu, styleEx))
 						{
-							DKSize s = cb.contentMaxSize->Invoke(window->instance);
-							LONG w = floor(s.width + 0.5f);
-							LONG h = floor(s.height + 0.5f);
-							RECT rc = { 0, 0, Max(w, 0), Max(h, 0) };
-
-							if (::AdjustWindowRectEx(&rc, style, menu, styleEx))
-							{
-								MINMAXINFO* mm = (MINMAXINFO*)lParam;
-								if (w > 0)
-									mm->ptMaxTrackSize.x = rc.right - rc.left;
-								if (h > 0)
-									mm->ptMaxTrackSize.y = rc.bottom - rc.top;
-							}
+							MINMAXINFO* mm = (MINMAXINFO*)lParam;
+							mm->ptMinTrackSize.x = rc.right - rc.left;
+							mm->ptMinTrackSize.y = rc.bottom - rc.top;
 						}
-						return 0;
 					}
+					if (cb.contentMaxSize)
+					{
+						DKSize s = cb.contentMaxSize->Invoke(window->instance);
+						LONG w = floor(s.width + 0.5f);
+						LONG h = floor(s.height + 0.5f);
+						RECT rc = { 0, 0, Max(w, 1), Max(h, 1) };
+
+						if (::AdjustWindowRectEx(&rc, style, menu, styleEx))
+						{
+							MINMAXINFO* mm = (MINMAXINFO*)lParam;
+							if (w > 0)
+								mm->ptMaxTrackSize.x = rc.right - rc.left;
+							if (h > 0)
+								mm->ptMaxTrackSize.y = rc.bottom - rc.top;
+						}
+
+					}
+					return 0;
 				}
 				break;
 			case WM_TIMER:

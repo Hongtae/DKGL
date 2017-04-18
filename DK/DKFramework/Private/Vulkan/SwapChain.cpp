@@ -20,6 +20,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	, surface(NULL)
 	, swapchain(NULL)
 	, enableVSync(false)
+	, deviceReset(false)
 	, presentCompleteSemaphore(VK_NULL_HANDLE)
 	, renderCompleteSemaphore(VK_NULL_HANDLE)
 {
@@ -49,15 +50,17 @@ SwapChain::~SwapChain(void)
 {
 	window->RemoveEventHandler(this);
 
+	queue->WaitIdle();
+
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkInstance instance = dev->instance;
 	VkDevice device = dev->device;
 
 	for (RenderTarget* rt : renderTargets)
 	{
-		rt->swapchain = nullptr;
-		rt->imageView = VK_NULL_HANDLE;
 		rt->image = VK_NULL_HANDLE;
+		rt->waitSemaphore = VK_NULL_HANDLE;
+		rt->signalSemaphore = VK_NULL_HANDLE;
 	}
 	renderTargets.Clear();
 
@@ -305,13 +308,35 @@ bool SwapChain::Update(void)
 		return false;
 	}
 
+	DKLogI("VkSwapchainKHR created. (%u x %u, V-sync:%d, %s)",
+		   swapchainExtent.width, swapchainExtent.height,
+		   this->enableVSync,
+		   [](VkPresentModeKHR mode)->const char*
+	{
+		switch (mode)
+		{
+		case VK_PRESENT_MODE_IMMEDIATE_KHR:			return "VK_PRESENT_MODE_IMMEDIATE_KHR";
+		case VK_PRESENT_MODE_MAILBOX_KHR:			return "VK_PRESENT_MODE_MAILBOX_KHR";
+		case VK_PRESENT_MODE_FIFO_KHR:				return "VK_PRESENT_MODE_FIFO_KHR";
+		case VK_PRESENT_MODE_FIFO_RELAXED_KHR:		return "VK_PRESENT_MODE_FIFO_RELAXED_KHR";
+		}
+		return "## UNKNOWN ##";
+	}(swapchainPresentMode));
+
 	// If an existing swap chain is re-created, destroy the old swap chain
 	// This also cleans up all the presentable images
 	if (swapchainOld)
 	{
 		vkDestroySwapchainKHR(device, swapchainOld, nullptr);
 	}
-	this->renderTargets.Clear();
+
+	for (RenderTarget* rt : renderTargets)
+	{
+		rt->image = VK_NULL_HANDLE;
+		rt->waitSemaphore = VK_NULL_HANDLE;
+		rt->signalSemaphore = VK_NULL_HANDLE;
+	}
+	renderTargets.Clear();
 
 	uint32_t swapchainImageCount = 0;
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, NULL);
@@ -366,8 +391,8 @@ bool SwapChain::Update(void)
 		renderTarget->mipLevels = 1;
 		renderTarget->arrayLayers = swapchainCI.imageArrayLayers;
 		renderTarget->usage = swapchainCI.imageUsage;
-
-		renderTarget->swapchain = this;
+		renderTarget->waitSemaphore = presentCompleteSemaphore;
+		renderTarget->signalSemaphore = renderCompleteSemaphore;
 
 		this->renderTargets.Add(renderTarget);
 	}
@@ -394,8 +419,23 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 void SwapChain::SetupFrame(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-	VkPhysicalDevice physicalDevice = dev->physicalDevice;
 	VkDevice device = dev->device;
+
+	if (true)
+	{
+		lock.Lock();
+		bool resetSwapChain = this->deviceReset;
+		lock.Unlock();
+
+		if (resetSwapChain)
+		{
+			vkDeviceWaitIdle(device);
+			lock.Lock();
+			this->deviceReset = false;
+			lock.Unlock();
+			this->Update();
+		}
+	}
 
 	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &this->frameIndex);
 
@@ -428,11 +468,10 @@ bool SwapChain::Present(void)
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("vkQueuePresentKHR ERROR: %s", VkResultCStr(err));
-		DKASSERT_DEBUG(err == VK_SUCCESS);
+		//DKASSERT_DEBUG(err == VK_SUCCESS);
 	}
 
-	if (err == VK_SUCCESS)
-		renderPassDescriptor.colorAttachments.Clear();
+	renderPassDescriptor.colorAttachments.Clear();
 	return err == VK_SUCCESS;
 }
 
@@ -440,7 +479,8 @@ void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)
 {
 	if (e.type == DKWindow::WindowEvent::WindowResized)
 	{
-		//this->Update();
+		DKCriticalSection<DKSpinLock> guard(lock);
+		this->deviceReset = true;
 	}
 }
 

@@ -52,6 +52,9 @@ namespace DKFramework
 				DKObject<CommandQueue> queue;
 
 			private:
+				DKSpinLock lock;
+				bool deviceReset;
+
 				uint32_t frameIndex;
 				DKRenderPassDescriptor renderPassDescriptor;
 				void OnWindowEvent(const DKWindow::WindowEvent&);
