@@ -145,6 +145,20 @@ namespace DKFoundation
 			for (const Pair& p : il)
 				container.Insert(p);
 		}
+		template <typename K, typename V>
+		DKMap(std::initializer_list<K> keys, std::initializer_list<V> values)
+		{
+			DKASSERT_DEBUG(keys.size() == values.size());
+			auto k = keys.begin();
+			auto k_end = keys.end();
+			auto v = values.begin();
+			auto v_end = values.end();
+			while (k != k_end && v != v_end)
+			{
+				Insert(*k, *v);
+				++k; ++v;
+			}
+		}
 		~DKMap(void)
 		{
 			Clear();
@@ -164,7 +178,8 @@ namespace DKFoundation
 			for (size_t i = 0; i < size; i++)
 				Update(p[i]);
 		}
-		template <typename ...Args> void Update(const DKMap<Key, ValueT, Args...>& m)
+		template <typename ...Args>
+		void Update(const DKMap<Key, ValueT, Args...>& m)
 		{
 			CriticalSection guard(lock);
 			m.EnumerateForward([this](const typename DKMap<Key, ValueT, Args...>::Pair& pair)
@@ -178,6 +193,23 @@ namespace DKFoundation
 			for (const Pair& p : il)
 				container.Update(p);
 		}
+		template <typename K, typename V>
+		void Update(std::initializer_list<K> keys, std::initializer_list<V> values)
+		{
+			DKASSERT_DEBUG(keys.size() == values.size());
+
+			auto k = keys.begin();
+			auto k_end = keys.end();
+			auto v = values.begin();
+			auto v_end = values.end();
+
+			CriticalSection guard(lock);
+			while (k != k_end && v != v_end)
+			{
+				Update(*k, *v);
+				++k; ++v;
+			}
+		}
 		/// insert item if key is not exist, fails otherwise.
 		bool Insert(const Pair& p)
 		{
@@ -187,14 +219,6 @@ namespace DKFoundation
 		bool Insert(const Key& k, const ValueT& v)
 		{
 			return Insert(Pair(k, v));
-		}
-		size_t Insert(const Pair* p, size_t size)
-		{
-			size_t ret = 0;
-			for (size_t i = 0; i < size; i++)
-				if (Insert(p[i]))
-					ret++;
-			return ret;
 		}
 		template <typename ...Args> size_t Insert(const DKMap<Key, ValueT, Args...>& m)
 		{
@@ -215,6 +239,25 @@ namespace DKFoundation
 			{
 				if (container.Insert(p) != NULL)
 					n++;
+			}
+			return n;
+		}
+		template <typename K, typename V>
+		size_t Insert(std::initializer_list<K> keys, std::initializer_list<V> values)
+		{
+			DKASSERT_DEBUG(keys.size() == values.size());
+			size_t n = 0;
+			auto k = keys.begin();
+			auto k_end = keys.end();
+			auto v = values.begin();
+			auto v_end = values.end();
+
+			CriticalSection guard(lock);
+			while (k != k_end && v != v_end)
+			{
+				if (container.Insert(Pair(*k, *v)))
+					n++;
+				++k; ++v;
 			}
 			return n;
 		}
