@@ -121,9 +121,9 @@ namespace DKFoundation
 		bool Process(const DKOperation* operation);
 
 		/// returns EventLoop object which runs on current thread as worker-thread.
-		static DKEventLoop* CurrentEventLoop(void);
+		static DKObject<DKEventLoop> CurrentEventLoop(void);
 		/// returns EventLoop for specified thread-id.
-		static DKEventLoop* EventLoopForThreadId(DKThread::ThreadId id);
+		static DKObject<DKEventLoop> EventLoopForThreadId(DKThread::ThreadId id);
 		/// Check whether the given EventLoop is running or not.
 		/// @param eventLoop EventLoop to test, should not be null.
 		static bool IsRunning(DKEventLoop* eventLoop);

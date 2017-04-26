@@ -49,9 +49,9 @@ namespace DKFoundation
 			GetEventLoopMap().Remove(id);
 			GetEventLoopMapLock().Unlock();
 		}
-		static DKEventLoop* GetEventLoop(DKThread::ThreadId id)
+		static DKObject<DKEventLoop> GetEventLoop(DKThread::ThreadId id)
 		{
-			DKEventLoop* ret = NULL;
+			DKObject<DKEventLoop> ret = NULL;
 			GetEventLoopMapLock().Lock();
 			EventLoopMap::Pair* p = GetEventLoopMap().Find(id);
 			if (p)
@@ -522,12 +522,12 @@ DKThread::ThreadId DKEventLoop::RunningThreadId(void) const
 	return this->threadId;
 }
 
-DKEventLoop* DKEventLoop::CurrentEventLoop(void)
+DKObject<DKEventLoop> DKEventLoop::CurrentEventLoop(void)
 {
 	return GetEventLoop(DKThread::CurrentThreadId());
 }
 
-DKEventLoop* DKEventLoop::EventLoopForThreadId(DKThread::ThreadId id)
+DKObject<DKEventLoop> DKEventLoop::EventLoopForThreadId(DKThread::ThreadId id)
 {
 	return GetEventLoop(id);
 }
