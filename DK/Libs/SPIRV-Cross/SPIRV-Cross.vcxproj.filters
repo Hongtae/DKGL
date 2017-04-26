@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{608ffba0-202d-4911-8c6a-702e873a7971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4adcff44-5fd7-4a97-966b-0727e94d282c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\spirv_cross\barrier.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\external_interface.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\image.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\internal_interface.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\sampler.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\thread_group.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLSL.std.450.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_cfg.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_common.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_cpp.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_cross.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_glsl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_hlsl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spirv_msl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\LICENSE">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\README.md">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\spirv_cfg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cpp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cross.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_glsl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_hlsl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_msl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

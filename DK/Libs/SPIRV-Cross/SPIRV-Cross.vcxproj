@@ -19,58 +19,47 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="adler32.c" />
-    <ClCompile Include="compress.c" />
-    <ClCompile Include="contrib\minizip\ioapi.c" />
-    <ClCompile Include="contrib\minizip\iowin32.c" />
-    <ClCompile Include="contrib\minizip\mztools.c" />
-    <ClCompile Include="contrib\minizip\unzip.c" />
-    <ClCompile Include="contrib\minizip\zip.c" />
-    <ClCompile Include="crc32.c" />
-    <ClCompile Include="deflate.c" />
-    <ClCompile Include="gzclose.c" />
-    <ClCompile Include="gzlib.c" />
-    <ClCompile Include="gzread.c" />
-    <ClCompile Include="gzwrite.c" />
-    <ClCompile Include="infback.c" />
-    <ClCompile Include="inffast.c" />
-    <ClCompile Include="inflate.c" />
-    <ClCompile Include="inftrees.c" />
-    <ClCompile Include="trees.c" />
-    <ClCompile Include="uncompr.c" />
-    <ClCompile Include="zutil.c" />
+    <ClInclude Include="include\spirv_cross\barrier.hpp" />
+    <ClInclude Include="include\spirv_cross\external_interface.h" />
+    <ClInclude Include="include\spirv_cross\image.hpp" />
+    <ClInclude Include="include\spirv_cross\internal_interface.hpp" />
+    <ClInclude Include="include\spirv_cross\sampler.hpp" />
+    <ClInclude Include="include\spirv_cross\thread_group.hpp" />
+    <ClInclude Include="src\GLSL.std.450.h" />
+    <ClInclude Include="src\spirv.hpp" />
+    <ClInclude Include="src\spirv_cfg.hpp" />
+    <ClInclude Include="src\spirv_common.hpp" />
+    <ClInclude Include="src\spirv_cpp.hpp" />
+    <ClInclude Include="src\spirv_cross.hpp" />
+    <ClInclude Include="src\spirv_glsl.hpp" />
+    <ClInclude Include="src\spirv_hlsl.hpp" />
+    <ClInclude Include="src\spirv_msl.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="contrib\minizip\crypt.h" />
-    <ClInclude Include="contrib\minizip\ioapi.h" />
-    <ClInclude Include="contrib\minizip\iowin32.h" />
-    <ClInclude Include="contrib\minizip\mztools.h" />
-    <ClInclude Include="contrib\minizip\unzip.h" />
-    <ClInclude Include="contrib\minizip\zip.h" />
-    <ClInclude Include="crc32.h" />
-    <ClInclude Include="deflate.h" />
-    <ClInclude Include="gzguts.h" />
-    <ClInclude Include="inffast.h" />
-    <ClInclude Include="inffixed.h" />
-    <ClInclude Include="inflate.h" />
-    <ClInclude Include="inftrees.h" />
-    <ClInclude Include="trees.h" />
-    <ClInclude Include="zconf.h" />
-    <ClInclude Include="zlib.h" />
-    <ClInclude Include="zutil.h" />
+    <None Include="src\LICENSE" />
+    <None Include="src\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\spirv_cfg.cpp" />
+    <ClCompile Include="src\spirv_cpp.cpp" />
+    <ClCompile Include="src\spirv_cross.cpp" />
+    <ClCompile Include="src\spirv_glsl.cpp" />
+    <ClCompile Include="src\spirv_hlsl.cpp" />
+    <ClCompile Include="src\spirv_msl.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B79870DD-49D1-41C0-835E-E38024AE9455}</ProjectGuid>
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{0B99AC25-F938-4A25-AEDF-67A61B21D9E8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>zlib</RootNamespace>
+    <RootNamespace>SPIRVCross</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -132,9 +121,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;HAVE_BZIP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>.;../bzip2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,9 +134,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;HAVE_BZIP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>.;../bzip2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,9 +149,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;HAVE_BZIP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>.;../bzip2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -180,9 +166,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_LIB;HAVE_BZIP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>.;../bzip2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
