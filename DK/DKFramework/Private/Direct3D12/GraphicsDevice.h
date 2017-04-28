@@ -40,6 +40,8 @@ namespace DKFramework
 				D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE);
 				void ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE, D3D12_CPU_DESCRIPTOR_HANDLE);
 
+				void AddFenceCompletionHandler(ID3D12Fence*, UINT64, DKObject<DKOperation>, bool useEventLoop);
+
 				ComPtr<IDXGIFactory5> factory;
 				ComPtr<ID3D12Device1> device;
 
@@ -62,6 +64,21 @@ namespace DKFramework
 				DKArray<DescriptorHeap> descriptorHeaps[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES];
 				UINT descriptorHandleIncrementSizes[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES];
 				UINT descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES];
+
+
+				struct PendingFenceCallback
+				{
+					ComPtr<ID3D12Fence> fence;
+					UINT64 fenceValue;
+					DKObject<DKOperation> callback;
+					DKThread::ThreadId threadId;
+				};
+				DKArray<PendingFenceCallback> pendingFenceCallbacks;
+				DKCondition fenceCompletionCond;
+				bool fenceCompletionThreadRunning;
+				DKObject<DKThread> fenceCompletionThread;
+				void FenceCompletionCallbackThreadProc(void);
+				HANDLE fenceCompletionEvent;
 			};
 		}
 	}

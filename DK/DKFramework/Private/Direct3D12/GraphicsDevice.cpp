@@ -33,6 +33,8 @@ using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
 GraphicsDevice::GraphicsDevice(void)
+	: fenceCompletionEvent(NULL)
+	, fenceCompletionThreadRunning(true)
 {
 	UINT dxgiFactoryFlags = 0;
 
@@ -208,14 +210,34 @@ GraphicsDevice::GraphicsDevice(void)
 	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER] = 1024;
 	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_RTV] = 128;
 	descriptorHeapInitialCapacities[D3D12_DESCRIPTOR_HEAP_TYPE_DSV] = 128;
+
+	fenceCompletionEvent = CreateEventW(0, 0, 0, 0);
+	DKASSERT_DEBUG(fenceCompletionEvent);
+
+	fenceCompletionThread = DKThread::Create(DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
+	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
+	{
+		// finish Fence-Completion-Helper thread
+		fenceCompletionCond.Lock();
+		fenceCompletionThreadRunning = false;
+		::SetEvent(fenceCompletionEvent);
+		fenceCompletionCond.Broadcast();
+		fenceCompletionCond.Unlock();
+
+		fenceCompletionThread->WaitTerminate();
+	}
+	CloseHandle(fenceCompletionEvent);
+
 	PurgeCachedCommandLists();
 	PurgeCachedCommandAllocators();
 	this->dummyAllocator = nullptr;
 	this->device = nullptr;
+
+
 	DKLog("Direct3D12 Device destroyed.");
 }
 
@@ -404,6 +426,148 @@ void GraphicsDevice::ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_CP
 	}
 
 	DKASSERT_DEBUG(false);	// error!
+}
+
+void GraphicsDevice::AddFenceCompletionHandler(ID3D12Fence* fence, UINT64 value, DKObject<DKOperation> op, bool useEventLoop)
+{
+	DKASSERT_DEBUG(fence);
+	if (fence && op)
+	{
+		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+
+		PendingFenceCallback cb = { fence, value, op, 0 };
+		if (useEventLoop)
+			cb.threadId = DKThread::CurrentThreadId();
+
+		pendingFenceCallbacks.Add(cb);
+		SetEvent(fenceCompletionEvent);
+		fenceCompletionCond.Broadcast();
+	}
+}
+
+void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
+{
+	DKArray<ID3D12Fence*> waitingFences;
+	DKArray<UINT64> waitingFenceValues;
+
+	struct ThreadOperation
+	{
+		DKObject<DKOperation> operation;
+		DKThread::ThreadId threadId;
+	};
+	struct FenceCallback
+	{
+		UINT64 fenceValueToFire;
+		DKObject<DKOperation> operation;
+		DKThread::ThreadId threadId;
+	};
+	struct PendingFenceCallbackArray
+	{
+		ComPtr<ID3D12Fence> fence;
+		DKArray<FenceCallback> callbacks;
+	};
+
+	DKArray<ThreadOperation> callbacksToFire;
+	DKMap<ID3D12Fence*, PendingFenceCallbackArray> pendingFenceCallbackArrayMap;
+
+	DKLogI("Direct3D12 Fence Completion Helper thread is started.");
+
+	DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+	while (fenceCompletionThreadRunning)
+	{
+		for (PendingFenceCallback& cb : pendingFenceCallbacks)
+		{
+			DKASSERT_DEBUG(cb.callback);
+
+			PendingFenceCallbackArray& cb2 = pendingFenceCallbackArrayMap.Value(cb.fence.Get());
+			cb2.fence = cb.fence.Get();
+			cb2.callbacks.Add({ cb.fenceValue, cb.callback, cb.threadId });
+		}
+		pendingFenceCallbacks.Clear();
+
+		if (pendingFenceCallbackArrayMap.IsEmpty())
+		{
+			fenceCompletionCond.Wait();
+		}
+		else
+		{
+			fenceCompletionCond.Unlock();
+
+			waitingFences.Clear();		// to wait fences
+			waitingFenceValues.Clear();	// fence completed values to signal
+
+			waitingFences.Reserve(pendingFenceCallbackArrayMap.Count());
+			waitingFenceValues.Reserve(pendingFenceCallbackArrayMap.Count());
+			size_t totalCallbacks = 0;
+
+			pendingFenceCallbackArrayMap.EnumerateForward([&](decltype(pendingFenceCallbackArrayMap)::Pair& pair)
+			{
+				pair.value.callbacks.Sort([](const FenceCallback& lhs, const FenceCallback& rhs)
+				{
+					return lhs.fenceValueToFire < rhs.fenceValueToFire;
+				});
+				waitingFences.Add(pair.key);
+				waitingFenceValues.Add(pair.value.callbacks.Value(0).fenceValueToFire);
+				totalCallbacks += pair.value.callbacks.Count();
+			});
+			DKASSERT_DEBUG(waitingFences.Count() > 0);
+			DKASSERT_DEBUG(waitingFences.Count() == waitingFenceValues.Count());
+
+			// wait event!
+			this->device->SetEventOnMultipleFenceCompletion(
+				(ID3D12Fence**)waitingFences,
+				(const UINT64*)waitingFenceValues,
+				static_cast<UINT>(waitingFences.Count()),
+				D3D12_MULTIPLE_FENCE_WAIT_FLAG_ANY,
+				this->fenceCompletionEvent);
+
+			DWORD waitResult = WaitForSingleObject(this->fenceCompletionEvent, INFINITE);
+
+			callbacksToFire.Clear();
+			if (waitResult == WAIT_OBJECT_0)
+			{
+				waitingFences.Clear();		// store key(fence), that is no longer needed
+				callbacksToFire.Reserve(totalCallbacks);
+
+				pendingFenceCallbackArrayMap.EnumerateForward([&](decltype(pendingFenceCallbackArrayMap)::Pair& pair)
+				{
+					UINT64 completedValue = pair.key->GetCompletedValue();
+					size_t index = 0;
+					while (index < pair.value.callbacks.Count())
+					{
+						FenceCallback& cb = pair.value.callbacks.Value(index);
+						if (cb.fenceValueToFire > completedValue)
+							break;
+
+						callbacksToFire.Add({ cb.operation, cb.threadId });
+						index++;
+					}
+					pair.value.callbacks.Remove(0, index);
+					if (pair.value.callbacks.IsEmpty())
+						waitingFences.Add(pair.key);
+				});
+				for (ID3D12Fence* fence : waitingFences)
+				{
+					pendingFenceCallbackArrayMap.Remove(fence);
+				}
+			}
+
+			for (ThreadOperation& tc : callbacksToFire)
+			{
+				DKObject<DKEventLoop> eventLoop = NULL;
+				if (tc.threadId != 0)
+					eventLoop = DKEventLoop::EventLoopForThreadId(tc.threadId);
+				if (eventLoop)
+					eventLoop->Post(tc.operation);
+				else
+					tc.operation->Perform();
+			}
+			callbacksToFire.Clear();
+
+			fenceCompletionCond.Lock();
+		}
+	}
+	DKLogI("Direct3D12 Fence Completion Helper thread is finished.");
 }
 
 #endif //#if DKGL_USE_DIRECT3D

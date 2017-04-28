@@ -29,7 +29,7 @@ namespace DKFramework
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
 				VkFence GetFence(void);
-				void WaitFenceAsync(VkFence, DKOperation*);
+				void AddFenceCompletionHandler(VkFence, DKOperation*, bool useEventLoop = false);
 
 				VkInstance instance;
 				VkDevice device;
@@ -47,17 +47,18 @@ namespace DKFramework
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
 
-				struct SubmittedFenceOperation
+				struct FenceCallback
 				{
 					VkFence fence;
-					DKObject<DKOperation> callback;
+					DKObject<DKOperation> operation;
+					DKThread::ThreadId threadId;
 				};
-				DKArray<SubmittedFenceOperation> submittedFences;
+				DKArray<FenceCallback> pendingFenceCallbacks;
 				DKArray<VkFence> reusableFences;
-				DKCondition completionHelperCond;
-				bool queueCompletionHelperThreadRunning;
-				DKObject<DKThread> queueCompletionHelperThread;
-				void QueueCompletionCallbackThreadProc(void);
+				DKCondition fenceCompletionCond;
+				bool fenceCompletionThreadRunning;
+				DKObject<DKThread> fenceCompletionThread;
+				void FenceCompletionCallbackThreadProc(void);
 			};
 		}
 	}

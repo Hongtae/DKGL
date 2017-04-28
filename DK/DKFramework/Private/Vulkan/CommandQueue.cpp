@@ -93,7 +93,7 @@ bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKO
 		DKASSERT(err == VK_SUCCESS);
 	}
 	if (fence)
-		dev->WaitFenceAsync(fence, callback);
+		dev->AddFenceCompletionHandler(fence, callback);
 
 	return err == VK_SUCCESS;
 }

@@ -104,7 +104,7 @@ GraphicsDevice::GraphicsDevice(void)
 	, physicalDevice(NULL)
 	, msgCallback(NULL)
 	, enableValidation(false)
-	, queueCompletionHelperThreadRunning(true)
+	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
 {
 #ifdef DKGL_DEBUG_ENABLED
@@ -499,24 +499,24 @@ GraphicsDevice::GraphicsDevice(void)
 	});
 	queueFamilies.ShrinkToFit();
 
-	queueCompletionHelperThread = DKThread::Create(
-		DKFunction(this, &GraphicsDevice::QueueCompletionCallbackThreadProc)->Invocation());
+	fenceCompletionThread = DKThread::Create(
+		DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
 }
 
 GraphicsDevice::~GraphicsDevice(void)
 {
 	vkDeviceWaitIdle(device);
-	if (queueCompletionHelperThread && queueCompletionHelperThread->IsAlive())
+	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
 	{
-		completionHelperCond.Lock();
-		queueCompletionHelperThreadRunning = false;
-		completionHelperCond.Broadcast();
-		completionHelperCond.Unlock();
+		fenceCompletionCond.Lock();
+		fenceCompletionThreadRunning = false;
+		fenceCompletionCond.Broadcast();
+		fenceCompletionCond.Unlock();
 
-		queueCompletionHelperThread->WaitTerminate();
+		fenceCompletionThread->WaitTerminate();
 	}
 
-	DKASSERT_DEBUG(submittedFences.IsEmpty());
+	DKASSERT_DEBUG(pendingFenceCallbacks.IsEmpty());
 	for (VkFence fence : reusableFences)
 		vkDestroyFence(device, fence, nullptr);
 	reusableFences.Clear();
@@ -555,7 +555,7 @@ VkFence GraphicsDevice::GetFence(void)
 
 	if (fence == VK_NULL_HANDLE)
 	{
-		DKCriticalSection<DKCondition> guard(completionHelperCond);
+		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
 		if (reusableFences.Count() > 0)
 		{
 			fence = reusableFences.Value(0);
@@ -577,38 +577,50 @@ VkFence GraphicsDevice::GetFence(void)
 	return fence;
 }
 
-void GraphicsDevice::WaitFenceAsync(VkFence fence, DKOperation* callback)
+void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op, bool useEventLoop)
 {
-	DKCriticalSection<DKCondition> guard(completionHelperCond);
-	SubmittedFenceOperation op = { fence, callback };
-	submittedFences.Add(op);
-	completionHelperCond.Broadcast();
+	DKASSERT_DEBUG(fence != VK_NULL_HANDLE);
+
+	if (op)
+	{
+		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+		FenceCallback cb = { fence, op, 0 };
+		if (useEventLoop)
+			cb.threadId = DKThread::CurrentThreadId();
+		pendingFenceCallbacks.Add(cb);
+		fenceCompletionCond.Broadcast();
+	}
 }
 
-void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
+void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 {
 	const double resolution = 1.0 / 60.0;
 
 	VkResult err = VK_SUCCESS;
 
 	DKArray<VkFence> fences;
-	DKArray<SubmittedFenceOperation> waitingFences;
-	DKArray<DKObject<DKOperation>> availableCallbacks;
+	DKArray<FenceCallback> waitingFences;
+	struct ThreadCallback
+	{
+		DKObject<DKOperation> operation;
+		DKThread::ThreadId threadId;
+	};
+	DKArray<ThreadCallback> availableCallbacks;
 
 	DKLogI("Vulkan Queue Completion Helper thread is started.");
 
-	DKCriticalSection<DKCondition> guard(completionHelperCond);
-	while (queueCompletionHelperThreadRunning)
+	DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+	while (fenceCompletionThreadRunning)
 	{
-		waitingFences.Add(submittedFences);
-		submittedFences.Clear();
-		completionHelperCond.Unlock();
+		waitingFences.Add(pendingFenceCallbacks);
+		pendingFenceCallbacks.Clear();
+		fenceCompletionCond.Unlock();
 	
 		{	// condition is unlocked from here.
 			fences.Clear();
 			fences.Reserve(waitingFences.Count());
-			for (SubmittedFenceOperation& fence : waitingFences)
-				fences.Add(fence.fence);
+			for (FenceCallback& cb : waitingFences)
+				fences.Add(cb.fence);
 
 			if (fences.Count() > 0)
 			{
@@ -620,19 +632,18 @@ void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
 				fences.Clear();
 				if (err == VK_SUCCESS)
 				{
-					DKArray<SubmittedFenceOperation> waitingFencesCopy;
+					DKArray<FenceCallback> waitingFencesCopy;
 					waitingFencesCopy.Reserve(waitingFences.Count());
 
-					for (SubmittedFenceOperation& fence : waitingFences)
+					for (FenceCallback& cb : waitingFences)
 					{
-						if (vkGetFenceStatus(device, fence.fence) == VK_SUCCESS)
+						if (vkGetFenceStatus(device, cb.fence) == VK_SUCCESS)
 						{
-							fences.Add(fence.fence);
-							if (fence.callback)
-								availableCallbacks.Add(fence.callback);
+							fences.Add(cb.fence);
+							availableCallbacks.Add({ cb.operation, cb.threadId });
 						}
 						else
-							waitingFencesCopy.Add(fence); // fence is not ready
+							waitingFencesCopy.Add(cb); // fence is not ready
 					}
 					waitingFences.Clear();
 					waitingFences = std::move(waitingFencesCopy);
@@ -644,15 +655,20 @@ void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
 				}
 			}
 
-			if (availableCallbacks.Count() > 0)
+			for (ThreadCallback& tc : availableCallbacks)
 			{
-				for (DKOperation* op : availableCallbacks)
-					op->Perform();
+				DKObject<DKEventLoop> eventLoop = NULL;
+				if (tc.threadId != 0)
+					eventLoop = DKEventLoop::EventLoopForThreadId(tc.threadId);
+				if (eventLoop)
+					eventLoop->Post(tc.operation);
+				else
+					tc.operation->Perform();
 			}
 			availableCallbacks.Clear();
 		}
 
-		completionHelperCond.Lock();
+		fenceCompletionCond.Lock();
 		reusableFences.Add(fences);
 		fences.Clear();
 		if (reusableFences.Count() > 0)
@@ -664,7 +680,7 @@ void GraphicsDevice::QueueCompletionCallbackThreadProc(void)
 				DKASSERT(err == VK_SUCCESS);
 			}
 		}
-		completionHelperCond.WaitTimeout(resolution);
+		fenceCompletionCond.WaitTimeout(resolution);
 	}
 
 	DKLogI("Vulkan Queue Completion Helper thread is finished.");
