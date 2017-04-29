@@ -1335,6 +1335,10 @@
 		84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84990C1C1BF0DC0E00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
 		84990C1D1BF0DC0F00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */; };
+		849B24021EB4C29E0033C44C /* libSPIRV-Cross.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23D81EB4C1E60033C44C /* libSPIRV-Cross.a */; };
+		849B24031EB4C2A70033C44C /* libSPIRV-Cross_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */; };
+		849B240A1EB4C2CF0033C44C /* libSPIRV-Cross.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23D81EB4C1E60033C44C /* libSPIRV-Cross.a */; };
+		849B240D1EB4C2E20033C44C /* libSPIRV-Cross_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */; };
 		84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
@@ -1978,6 +1982,48 @@
 			remoteGlobalIDString = 84A4099C1DA3F25400E5A725;
 			remoteInfo = zlib_macOS;
 		};
+		849B23D71EB4C1E60033C44C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 849B23B11EB4C1870033C44C;
+			remoteInfo = "SPIRV-Cross";
+		};
+		849B23D91EB4C1E60033C44C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 849B23BC1EB4C19F0033C44C;
+			remoteInfo = "SPIRV-Cross_iOS";
+		};
+		849B24041EB4C2B20033C44C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 849B23B01EB4C1870033C44C;
+			remoteInfo = "SPIRV-Cross_macOS";
+		};
+		849B24061EB4C2BE0033C44C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 849B23BB1EB4C19F0033C44C;
+			remoteInfo = "SPIRV-Cross_iOS";
+		};
+		849B24081EB4C2C70033C44C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 849B23B01EB4C1870033C44C;
+			remoteInfo = "SPIRV-Cross_macOS";
+		};
+		849B240B1EB4C2D80033C44C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 849B23BB1EB4C19F0033C44C;
+			remoteInfo = "SPIRV-Cross_iOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -2147,6 +2193,7 @@
 		8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputeCommandEncoder.mm; sourceTree = "<group>"; };
 		84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshProxyShape.cpp; sourceTree = "<group>"; };
 		84990AFD1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTriangleMeshProxyShape.h; sourceTree = "<group>"; };
+		849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "SPIRV-Cross.xcodeproj"; path = "SPIRV-Cross/SPIRV-Cross.xcodeproj"; sourceTree = "<group>"; };
 		849E2A9115634718000CBE79 /* DKFence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFence.cpp; sourceTree = "<group>"; };
 		849E2A9215634718000CBE79 /* DKFence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFence.h; sourceTree = "<group>"; };
 		849E2A9315634719000CBE79 /* DKSharedLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSharedLock.cpp; sourceTree = "<group>"; };
@@ -2407,6 +2454,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849B240A1EB4C2CF0033C44C /* libSPIRV-Cross.a in Frameworks */,
 				84F16DB81E157F140013DD29 /* AppKit.framework in Frameworks */,
 				84F16DB91E157F140013DD29 /* Metal.framework in Frameworks */,
 				84F16DBA1E157F140013DD29 /* OpenAL.framework in Frameworks */,
@@ -2430,6 +2478,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849B240D1EB4C2E20033C44C /* libSPIRV-Cross_iOS.a in Frameworks */,
 				84F16DB31E157EE00013DD29 /* Metal.framework in Frameworks */,
 				84F16D9D1E1572270013DD29 /* OpenAL.framework in Frameworks */,
 				84F16DB41E157EF60013DD29 /* QuartzCore.framework in Frameworks */,
@@ -2454,6 +2503,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849B24031EB4C2A70033C44C /* libSPIRV-Cross_iOS.a in Frameworks */,
 				66DA12F01DAE05EF00B3056E /* libBulletPhysics_iOS.a in Frameworks */,
 				66DA12F11DAE05EF00B3056E /* libbzip2_iOS.a in Frameworks */,
 				66DA12F21DAE05EF00B3056E /* libCxImage_iOS.a in Frameworks */,
@@ -2474,6 +2524,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849B24021EB4C29E0033C44C /* libSPIRV-Cross.a in Frameworks */,
 				66DA13241DAE063B00B3056E /* libBulletPhysics_macOS.a in Frameworks */,
 				66DA13251DAE063B00B3056E /* libbzip2_macOS.a in Frameworks */,
 				66DA13261DAE063B00B3056E /* libCxImage_macOS.a in Frameworks */,
@@ -2731,6 +2782,7 @@
 				66DA122B1DAC7C9900B3056E /* libvorbis.xcodeproj */,
 				66DA12341DAC7CA100B3056E /* libxml2.xcodeproj */,
 				66DA123D1DAC7CA800B3056E /* lz4.xcodeproj */,
+				849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */,
 				66DA12461DAC7CB300B3056E /* zlib.xcodeproj */,
 			);
 			path = Libs;
@@ -2875,6 +2927,15 @@
 				8458E6B11E44581000871311 /* TextureBaseT.h */,
 			);
 			path = Direct3D12;
+			sourceTree = "<group>";
+		};
+		849B23D31EB4C1E60033C44C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				849B23D81EB4C1E60033C44C /* libSPIRV-Cross.a */,
+				849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		84A1E492141DD4B70091D2C0 /* DKFoundation */ = {
@@ -4028,6 +4089,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				849B24091EB4C2C70033C44C /* PBXTargetDependency */,
 				66DA12A31DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12A51DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12A71DAE005A00B3056E /* PBXTargetDependency */,
@@ -4060,6 +4122,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				849B240C1EB4C2D80033C44C /* PBXTargetDependency */,
 				66DA12BD1DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12BF1DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12C11DAE05B800B3056E /* PBXTargetDependency */,
@@ -4090,6 +4153,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				849B24071EB4C2BE0033C44C /* PBXTargetDependency */,
 				66DA12D71DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12D91DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12DB1DAE05D900B3056E /* PBXTargetDependency */,
@@ -4120,6 +4184,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				849B24051EB4C2B20033C44C /* PBXTargetDependency */,
 				66DA130B1DAE062700B3056E /* PBXTargetDependency */,
 				66DA130D1DAE062700B3056E /* PBXTargetDependency */,
 				66DA130F1DAE062700B3056E /* PBXTargetDependency */,
@@ -4212,6 +4277,10 @@
 				{
 					ProductGroup = 66DA123E1DAC7CA800B3056E /* Products */;
 					ProjectRef = 66DA123D1DAC7CA800B3056E /* lz4.xcodeproj */;
+				},
+				{
+					ProductGroup = 849B23D31EB4C1E60033C44C /* Products */;
+					ProjectRef = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
 				},
 				{
 					ProductGroup = 66DA12471DAC7CB300B3056E /* Products */;
@@ -4409,6 +4478,20 @@
 			fileType = archive.ar;
 			path = libzlib_macOS.a;
 			remoteRef = 66DA124D1DAC7CB300B3056E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		849B23D81EB4C1E60033C44C /* libSPIRV-Cross.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libSPIRV-Cross.a";
+			remoteRef = 849B23D71EB4C1E60033C44C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libSPIRV-Cross_iOS.a";
+			remoteRef = 849B23D91EB4C1E60033C44C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -5313,6 +5396,26 @@
 			name = zlib_macOS;
 			targetProxy = 66DA13221DAE062700B3056E /* PBXContainerItemProxy */;
 		};
+		849B24051EB4C2B20033C44C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SPIRV-Cross_macOS";
+			targetProxy = 849B24041EB4C2B20033C44C /* PBXContainerItemProxy */;
+		};
+		849B24071EB4C2BE0033C44C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SPIRV-Cross_iOS";
+			targetProxy = 849B24061EB4C2BE0033C44C /* PBXContainerItemProxy */;
+		};
+		849B24091EB4C2C70033C44C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SPIRV-Cross_macOS";
+			targetProxy = 849B24081EB4C2C70033C44C /* PBXContainerItemProxy */;
+		};
+		849B240C1EB4C2D80033C44C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SPIRV-Cross_iOS";
+			targetProxy = 849B240B1EB4C2D80033C44C /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -5346,7 +5449,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
@@ -5404,7 +5507,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
