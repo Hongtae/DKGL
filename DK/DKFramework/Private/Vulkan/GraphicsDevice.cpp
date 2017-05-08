@@ -594,7 +594,7 @@ void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op, b
 
 void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 {
-	const double resolution = 1.0 / 60.0;
+	const double idleTimerValue = 0.1; // idle timer resolution
 
 	VkResult err = VK_SUCCESS;
 
@@ -614,73 +614,95 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 	{
 		waitingFences.Add(pendingFenceCallbacks);
 		pendingFenceCallbacks.Clear();
-		fenceCompletionCond.Unlock();
-	
-		{	// condition is unlocked from here.
+
+		if (waitingFences.Count() > 0)
+		{
+			// condition is unlocked from here.
+			fenceCompletionCond.Unlock();
+
 			fences.Clear();
 			fences.Reserve(waitingFences.Count());
 			for (FenceCallback& cb : waitingFences)
 				fences.Add(cb.fence);
 
+			DKASSERT_DEBUG(fences.Count() > 0);
+			err = vkWaitForFences(device,
+								  static_cast<uint32_t>(fences.Count()),
+								  fences,
+								  VK_FALSE,
+								  0);
+			fences.Clear();
+			if (err == VK_SUCCESS)
+			{
+				DKArray<FenceCallback> waitingFencesCopy;
+				waitingFencesCopy.Reserve(waitingFences.Count());
+
+				// check state for each fences
+				for (FenceCallback& cb : waitingFences)
+				{
+					if (vkGetFenceStatus(device, cb.fence) == VK_SUCCESS)
+					{
+						fences.Add(cb.fence);
+						availableCallbacks.Add({ cb.operation, cb.threadId });
+					}
+					else
+						waitingFencesCopy.Add(cb); // fence is not ready (unsignaled)
+				}
+				// save unsignaled fences
+				waitingFences.Clear();
+				waitingFences = std::move(waitingFencesCopy);
+
+				// reset signaled fences
+				if (fences.Count() > 0)
+				{
+					err = vkResetFences(device, static_cast<uint32_t>(fences.Count()), fences);
+					if (err != VK_SUCCESS)
+					{
+						DKLogE("ERROR: vkResetFences failed: %s", VkResultCStr(err));
+						DKASSERT(err == VK_SUCCESS);
+					}
+				}
+			}
+			else if (err != VK_TIMEOUT)
+			{
+				DKLogE("ERROR: vkWaitForFences failed: %s", VkResultCStr(err));
+				DKASSERT(0);
+			}			
+
+			if (availableCallbacks.Count() > 0)
+			{
+				for (ThreadCallback& tc : availableCallbacks)
+				{
+					DKObject<DKEventLoop> eventLoop = NULL;
+					if (tc.threadId != 0)
+						eventLoop = DKEventLoop::EventLoopForThreadId(tc.threadId);
+					if (eventLoop)
+						eventLoop->Post(tc.operation);
+					else
+						tc.operation->Perform();
+				}
+				availableCallbacks.Clear();
+			}
+			else
+			{
+				DKThread::Yield();
+			}
+
+			// lock condition (requires to reset fences mutually exclusive)
+			fenceCompletionCond.Lock();
 			if (fences.Count() > 0)
 			{
-				err = vkWaitForFences(device,
-									  static_cast<uint32_t>(fences.Count()),
-									  fences,
-									  VK_FALSE,
-									  0);
+				reusableFences.Add(fences);
 				fences.Clear();
-				if (err == VK_SUCCESS)
-				{
-					DKArray<FenceCallback> waitingFencesCopy;
-					waitingFencesCopy.Reserve(waitingFences.Count());
-
-					for (FenceCallback& cb : waitingFences)
-					{
-						if (vkGetFenceStatus(device, cb.fence) == VK_SUCCESS)
-						{
-							fences.Add(cb.fence);
-							availableCallbacks.Add({ cb.operation, cb.threadId });
-						}
-						else
-							waitingFencesCopy.Add(cb); // fence is not ready
-					}
-					waitingFences.Clear();
-					waitingFences = std::move(waitingFencesCopy);
-				}
-				else if (err != VK_TIMEOUT)
-				{
-					DKLogE("ERROR: vkWaitForFences failed: %s", VkResultCStr(err));
-					DKASSERT(VK_FALSE);
-				}
 			}
-
-			for (ThreadCallback& tc : availableCallbacks)
-			{
-				DKObject<DKEventLoop> eventLoop = NULL;
-				if (tc.threadId != 0)
-					eventLoop = DKEventLoop::EventLoopForThreadId(tc.threadId);
-				if (eventLoop)
-					eventLoop->Post(tc.operation);
-				else
-					tc.operation->Perform();
-			}
-			availableCallbacks.Clear();
 		}
-
-		fenceCompletionCond.Lock();
-		reusableFences.Add(fences);
-		fences.Clear();
-		if (reusableFences.Count() > 0)
+		else
 		{
-			err = vkResetFences(device, static_cast<uint32_t>(reusableFences.Count()), reusableFences);
-			if (err != VK_SUCCESS)
-			{
-				DKLogE("ERROR: vkResetFences failed: %s", VkResultCStr(err));
-				DKASSERT(err == VK_SUCCESS);
-			}
+			if (idleTimerValue > 0.0)
+				fenceCompletionCond.WaitTimeout(idleTimerValue);
+			else
+				fenceCompletionCond.Wait();
 		}
-		fenceCompletionCond.WaitTimeout(resolution);
 	}
 
 	DKLogI("Vulkan Queue Completion Helper thread is finished.");
