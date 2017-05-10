@@ -571,19 +571,6 @@
     <ClInclude Include="DKFramework\Private\Win32\DropTarget.h" />
     <ClInclude Include="DKFramework\Private\Win32\Window.h" />
     <ClInclude Include="DKInclude.h" />
-    <ClInclude Include="Libs\Inc_BulletPhysics.h" />
-    <ClInclude Include="Libs\Inc_CxImage.h" />
-    <ClInclude Include="Libs\Inc_FreeType.h" />
-    <ClInclude Include="Libs\Inc_libFLAC.h" />
-    <ClInclude Include="Libs\Inc_libogg.h" />
-    <ClInclude Include="Libs\Inc_libvorbis.h" />
-    <ClInclude Include="Libs\Inc_libxml2.h" />
-    <ClInclude Include="Libs\Inc_lz4.h" />
-    <ClInclude Include="Libs\Inc_OpenAL.h" />
-    <ClInclude Include="Libs\Inc_zlib.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Libs\VERSION.TXT" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

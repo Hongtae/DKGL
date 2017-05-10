@@ -70,9 +70,6 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{50436f89-2e01-4d67-b353-cdf4acf409a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Libs">
-      <UniqueIdentifier>{ed828aa4-a0d0-4a15-95b0-921fdf9bd42e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DKFramework">
       <UniqueIdentifier>{87c7e972-8ab6-4079-9e77-d1d877b9ec36}</UniqueIdentifier>
     </Filter>
@@ -755,36 +752,6 @@
     <ClInclude Include="DKInclude.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Libs\Inc_BulletPhysics.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_CxImage.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_FreeType.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_libFLAC.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_libogg.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_libvorbis.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_libxml2.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_lz4.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_OpenAL.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\Inc_zlib.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKAabb.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -1256,10 +1223,5 @@
     <ClInclude Include="DKFramework\Private\BulletPhysics.h">
       <Filter>DKFramework\Private</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Libs\VERSION.TXT">
-      <Filter>Libs</Filter>
-    </Text>
   </ItemGroup>
 </Project>

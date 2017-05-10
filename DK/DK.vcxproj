@@ -304,23 +304,10 @@
     <ClInclude Include="DKFoundation\DKZipUnarchiver.h" />
     <ClInclude Include="DKFramework.h" />
     <ClInclude Include="DKInclude.h" />
-    <ClInclude Include="Libs\Inc_BulletPhysics.h" />
-    <ClInclude Include="Libs\Inc_CxImage.h" />
-    <ClInclude Include="Libs\Inc_FreeType.h" />
-    <ClInclude Include="Libs\Inc_libFLAC.h" />
-    <ClInclude Include="Libs\Inc_libogg.h" />
-    <ClInclude Include="Libs\Inc_libvorbis.h" />
-    <ClInclude Include="Libs\Inc_libxml2.h" />
-    <ClInclude Include="Libs\Inc_lz4.h" />
-    <ClInclude Include="Libs\Inc_OpenAL.h" />
-    <ClInclude Include="Libs\Inc_zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DKFoundation\DKUtils.mm" />
     <None Include="Libs.props" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Libs\VERSION.TXT" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFoundation\DKAllocator.cpp" />
