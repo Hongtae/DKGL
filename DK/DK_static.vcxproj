@@ -516,7 +516,7 @@
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamFLAC.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h" />
     <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h" />
-    <ClInclude Include="DKFramework\Private\BulletUtils.h" />
+    <ClInclude Include="DKFramework\Private\BulletPhysics.h" />
     <ClInclude Include="DKFramework\Private\CocoaTouch\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\CocoaTouch\Application.h" />
     <ClInclude Include="DKFramework\Private\CocoaTouch\View.h" />
@@ -552,6 +552,7 @@
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
     <ClInclude Include="DKFramework\Private\Metal\TextureBaseT.h" />
+    <ClInclude Include="DKFramework\Private\OpenAL.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />

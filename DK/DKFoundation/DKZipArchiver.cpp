@@ -5,7 +5,12 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../Libs/Inc_zlib.h"
+#include "../Libs/zlib/zlib.h"
+#include "../Libs/zlib/contrib/minizip/zip.h"
+#include "../Libs/zlib/contrib/minizip/unzip.h"
+#ifdef _WIN32
+#include "../Libs/zlib/contrib/minizip/iowin32.h"
+#endif
 #include "DKZipArchiver.h"
 #include "DKCriticalSection.h"
 #include "DKString.h"

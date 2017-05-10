@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKCollisionShape.h"
 #include "DKAffineTransform3.h"
 #include "DKLinearTransform3.h"

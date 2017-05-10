@@ -5,26 +5,10 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKConeTwistConstraint.h"
 
-namespace DKFramework
-{
-	namespace Private
-	{
-		struct ConeTwistConstraintExt : public btConeTwistConstraint
-		{
-			using btConeTwistConstraint::m_swingSpan1;
-			using btConeTwistConstraint::m_swingSpan2;
-			using btConeTwistConstraint::m_twistSpan;
-			using btConeTwistConstraint::m_limitSoftness;
-			using btConeTwistConstraint::m_biasFactor;
-			using btConeTwistConstraint::m_relaxationFactor;
-			using btConeTwistConstraint::m_damping;
-			using btConeTwistConstraint::m_flags;
-		};
-	}
-}
+
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -54,6 +38,10 @@ void DKConeTwistConstraint::SetLimit(float swingSpan1, float swingSpan2, float t
 	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(swingSpan1, swingSpan2, twistSpan, softness, biasFactor, relaxationFactor);
 }
 
+#define LIMIT_SWINGSPAN1	5
+#define LIMIT_SWINGSPAN2	4
+#define LIMIT_TWISTSPAN		3
+
 float DKConeTwistConstraint::SwingSpan1(void) const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getSwingSpan1();
@@ -61,7 +49,7 @@ float DKConeTwistConstraint::SwingSpan1(void) const
 
 void DKConeTwistConstraint::SetSwingSpan1(float f)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->m_swingSpan1 = f;
+	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(LIMIT_SWINGSPAN1, f);
 }
 
 float DKConeTwistConstraint::SwingSpan2(void) const
@@ -71,7 +59,7 @@ float DKConeTwistConstraint::SwingSpan2(void) const
 
 void DKConeTwistConstraint::SetSwingSpan2(float f)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->m_swingSpan2 = f;
+	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(LIMIT_SWINGSPAN2, f);
 }
 
 float DKConeTwistConstraint::TwistSpan(void) const
@@ -81,69 +69,87 @@ float DKConeTwistConstraint::TwistSpan(void) const
 
 void DKConeTwistConstraint::SetTwistSpan(float f)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->m_twistSpan = f;
+	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(LIMIT_TWISTSPAN, f);
 }
 
 float DKConeTwistConstraint::Softness(void) const
 {
-	return static_cast<ConeTwistConstraintExt*>(this->impl)->m_limitSoftness;
+	return static_cast<btConeTwistConstraint*>(this->impl)->getLimitSoftness();
 }
 
-void DKConeTwistConstraint::SetSoftness(float f)
+void DKConeTwistConstraint::SetSoftness(float softness)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->m_limitSoftness = f;
+	btConeTwistConstraint* c = static_cast<btConeTwistConstraint*>(this->impl);
+	c->setLimit(c->getSwingSpan1(),
+				c->getSwingSpan2(),
+				c->getTwistSpan(),
+				softness,
+				c->getBiasFactor(),
+				c->getRelaxationFactor());
 }
 
 float DKConeTwistConstraint::BiasFactor(void) const
 {
-	return static_cast<ConeTwistConstraintExt*>(this->impl)->m_biasFactor;
+	return static_cast<btConeTwistConstraint*>(this->impl)->getBiasFactor();
 }
 
-void DKConeTwistConstraint::SetBiasFactor(float f)
+void DKConeTwistConstraint::SetBiasFactor(float biasFactor)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->m_biasFactor = f;
+	btConeTwistConstraint* c = static_cast<btConeTwistConstraint*>(this->impl);
+	c->setLimit(c->getSwingSpan1(),
+				c->getSwingSpan2(),
+				c->getTwistSpan(),
+				c->getLimitSoftness(),
+				biasFactor,
+				c->getRelaxationFactor());
 }
 
 float DKConeTwistConstraint::RelaxationFactor(void) const
 {
-	return static_cast<ConeTwistConstraintExt*>(this->impl)->m_relaxationFactor;
+	return static_cast<btConeTwistConstraint*>(this->impl)->getRelaxationFactor();
 }
 
-void DKConeTwistConstraint::SetRelaxationFactor(float f)
+void DKConeTwistConstraint::SetRelaxationFactor(float relaxationFactor)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->m_relaxationFactor = f;
+	btConeTwistConstraint* c = static_cast<btConeTwistConstraint*>(this->impl);
+	c->setLimit(c->getSwingSpan1(),
+				c->getSwingSpan2(),
+				c->getTwistSpan(),
+				c->getLimitSoftness(),
+				c->getBiasFactor(),
+				relaxationFactor);
 }
 
 float DKConeTwistConstraint::TwistAngle(void) const
 {
-	return static_cast<ConeTwistConstraintExt*>(this->impl)->getTwistAngle();
+	return static_cast<btConeTwistConstraint*>(this->impl)->getTwistAngle();
 }
 
 float DKConeTwistConstraint::Damping(void) const
 {
-	return static_cast<ConeTwistConstraintExt*>(this->impl)->m_damping;
+	return static_cast<btConeTwistConstraint*>(this->impl)->getDamping();
 }
 
 void DKConeTwistConstraint::SetDamping(float damping)
 {
-	static_cast<ConeTwistConstraintExt*>(this->impl)->setDamping(damping);
+	static_cast<btConeTwistConstraint*>(this->impl)->setDamping(damping);
 }
 
 void DKConeTwistConstraint::SetFrames(const DKNSTransform& fA, const DKNSTransform& fB)
 {
 	btTransform ta = BulletTransform(fA);
 	btTransform tb = BulletTransform(fB);
-	static_cast<ConeTwistConstraintExt*>(this->impl)->setFrames(ta, tb);
+	static_cast<btConeTwistConstraint*>(this->impl)->setFrames(ta, tb);
 }
 
 DKNSTransform DKConeTwistConstraint::FrameA(void) const
 {
-	return BulletTransform(static_cast<ConeTwistConstraintExt*>(this->impl)->getFrameOffsetA());
+	return BulletTransform(static_cast<btConeTwistConstraint*>(this->impl)->getFrameOffsetA());
 }
 
 DKNSTransform DKConeTwistConstraint::FrameB(void) const
 {
-	return BulletTransform(static_cast<ConeTwistConstraintExt*>(this->impl)->getFrameOffsetB());
+	return BulletTransform(static_cast<btConeTwistConstraint*>(this->impl)->getFrameOffsetB());
 }
 
 bool DKConeTwistConstraint::IsValidParam(ParamType type, ParamAxis axis) const
@@ -163,7 +169,7 @@ bool DKConeTwistConstraint::IsValidParam(ParamType type, ParamAxis axis) const
 
 bool DKConeTwistConstraint::HasParam(ParamType type, ParamAxis axis) const
 {
-	int flags = static_cast<ConeTwistConstraintExt*>(this->impl)->m_flags;
+	int flags = static_cast<btConeTwistConstraint*>(this->impl)->getFlags();
 
 	switch (type)
 	{
@@ -206,13 +212,13 @@ void DKConeTwistConstraint::ResetContext(void)
 
 	btTransform frameA = c->getFrameOffsetA();
 	btTransform frameB = c->getFrameOffsetB();
-	float swingSpan1 = static_cast<ConeTwistConstraintExt*>(this->impl)->getSwingSpan1();
-	float swingSpan2 = static_cast<ConeTwistConstraintExt*>(this->impl)->getSwingSpan2();
-	float twistSpan = static_cast<ConeTwistConstraintExt*>(this->impl)->getTwistSpan();
-	float softness = static_cast<ConeTwistConstraintExt*>(this->impl)->m_limitSoftness;
-	float biasFactor = static_cast<ConeTwistConstraintExt*>(this->impl)->m_biasFactor;
-	float relaxationFactor = static_cast<ConeTwistConstraintExt*>(this->impl)->m_relaxationFactor;
-	float damping = static_cast<ConeTwistConstraintExt*>(this->impl)->m_damping;
+	float swingSpan1 = static_cast<btConeTwistConstraint*>(this->impl)->getSwingSpan1();
+	float swingSpan2 = static_cast<btConeTwistConstraint*>(this->impl)->getSwingSpan2();
+	float twistSpan = static_cast<btConeTwistConstraint*>(this->impl)->getTwistSpan();
+	float softness = static_cast<btConeTwistConstraint*>(this->impl)->getLimitSoftness();
+	float biasFactor = static_cast<btConeTwistConstraint*>(this->impl)->getBiasFactor();
+	float relaxationFactor = static_cast<btConeTwistConstraint*>(this->impl)->getRelaxationFactor();
+	float damping = static_cast<btConeTwistConstraint*>(this->impl)->getDamping();
 
 	DKConstraint::ResetContext();
 
@@ -240,12 +246,12 @@ DKConeTwistConstraint* DKConeTwistConstraint::Copy(UUIDObjectMap& uuids, const D
 {
 	if (DKConstraint::Copy(uuids, obj))
 	{
-		ConeTwistConstraintExt* src = static_cast<ConeTwistConstraintExt*>(obj->impl);
-		ConeTwistConstraintExt* dst = static_cast<ConeTwistConstraintExt*>(this->impl);
+		btConeTwistConstraint* src = static_cast<btConeTwistConstraint*>(obj->impl);
+		btConeTwistConstraint* dst = static_cast<btConeTwistConstraint*>(this->impl);
 
 		dst->setFrames(src->getFrameOffsetA(), src->getFrameOffsetB());
-		dst->setLimit(src->m_swingSpan1, src->m_swingSpan2, src->m_twistSpan, src->m_limitSoftness, src->m_biasFactor, src->m_relaxationFactor);
-		dst->setDamping(src->m_damping);
+		dst->setLimit(src->getSwingSpan1(), src->getSwingSpan2(), src->getTwistSpan(), src->getLimitSoftness(), src->getBiasFactor(), src->getRelaxationFactor());
+		dst->setDamping(src->getDamping());
 		return this;
 	}
 	return NULL;

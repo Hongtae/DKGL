@@ -5,7 +5,24 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../Libs/Inc_CxImage.h"
+#include "../Libs/CxImage/ximage.h"
+#include "../Libs/CxImage/ximabmp.h"
+#include "../Libs/CxImage/ximagif.h"
+#include "../Libs/CxImage/ximaico.h"
+#include "../Libs/CxImage/ximajas.h"
+#include "../Libs/CxImage/ximajbg.h"
+#include "../Libs/CxImage/ximajpg.h"
+#include "../Libs/CxImage/ximamng.h"
+#include "../Libs/CxImage/ximapcx.h"
+#include "../Libs/CxImage/ximapng.h"
+#include "../Libs/CxImage/ximapsd.h"
+#include "../Libs/CxImage/ximaraw.h"
+#include "../Libs/CxImage/ximaska.h"
+#include "../Libs/CxImage/ximatga.h"
+#include "../Libs/CxImage/ximatif.h"
+#include "../Libs/CxImage/ximawbmp.h"
+#include "../Libs/CxImage/ximawmf.h"
+
 #include "DKImage.h"
 
 using namespace DKFramework;

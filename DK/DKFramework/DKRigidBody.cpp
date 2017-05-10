@@ -5,31 +5,11 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKRigidBody.h"
 #include "DKConstraint.h"
 
-namespace DKFramework
-{
-	namespace Private
-	{
-		struct RigidBodyExt : public btRigidBody
-		{
-			btScalar& linearDamping()							{ return m_linearDamping; }
-			btScalar& angularDamping()							{ return m_angularDamping; }
-			btScalar& friction()								{ return m_friction; }
-			btScalar& rollingFriction()							{ return m_rollingFriction; }
-			btScalar& restitution()								{ return m_restitution; }
-			btScalar& linearSleepingThreshold()					{ return m_linearSleepingThreshold; }
-			btScalar& angularSleepingThreshold()				{ return m_angularSleepingThreshold; }
-			bool& additionalDamping()							{ return m_additionalDamping; }
-			btScalar& additionalDampingFactor()					{ return m_additionalDampingFactor; }
-			btScalar& additionalLinearDampingThresholdSqr()		{ return m_additionalLinearDampingThresholdSqr; }
-			btScalar& additionalAngularDampingThresholdSqr()	{ return m_additionalAngularDampingThresholdSqr; }
-			btScalar& additionalAngularDampingFactor()			{ return m_additionalAngularDampingFactor; }
-		};
-	}
-}
+
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -54,18 +34,27 @@ DKRigidBody::ObjectData::ObjectData(float m, const DKVector3& inertia)
 
 bool DKRigidBody::GetObjectData(ObjectData& data) const
 {
+	struct RigidBodyExt : public btRigidBody
+	{
+		bool& additionalDamping()							{ return m_additionalDamping; }
+		btScalar& additionalDampingFactor()					{ return m_additionalDampingFactor; }
+		btScalar& additionalLinearDampingThresholdSqr()		{ return m_additionalLinearDampingThresholdSqr; }
+		btScalar& additionalAngularDampingThresholdSqr()	{ return m_additionalAngularDampingThresholdSqr; }
+		btScalar& additionalAngularDampingFactor()			{ return m_additionalAngularDampingFactor; }
+	};
+
 	RigidBodyExt* body = static_cast<RigidBodyExt*>(btRigidBody::upcast(this->impl));
 	if (body)
 	{
 		data.mass = this->Mass();
 		data.localInertia = this->LocalInertia();
-		data.linearDamping = body->linearDamping();
-		data.angularDamping = body->angularDamping();
-		data.friction = body->friction();
-		data.rollingFriction = body->rollingFriction();
-		data.restitution = body->restitution();
-		data.linearSleepingThreshold = body->linearSleepingThreshold();
-		data.angularSleepingThreshold = body->angularSleepingThreshold();
+		data.linearDamping = body->getLinearDamping();
+		data.angularDamping = body->getAngularDamping();
+		data.friction = body->getFriction();
+		data.rollingFriction = body->getRollingFriction();
+		data.restitution = body->getRestitution();
+		data.linearSleepingThreshold = body->getLinearSleepingThreshold();
+		data.angularSleepingThreshold = body->getAngularSleepingThreshold();
 		data.additionalDamping = body->additionalDamping();
 		data.additionalDampingFactor = body->additionalDampingFactor();
 		data.additionalLinearDampingThresholdSqr = body->additionalLinearDampingThresholdSqr();
@@ -446,7 +435,7 @@ DKVector3 DKRigidBody::ComputeGyroscopicForce(float maxGyroscopicForce) const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
-	return BulletVector3(body->computeGyroscopicForce(maxGyroscopicForce));
+	return BulletVector3(body->computeGyroscopicForceExplicit(maxGyroscopicForce));
 }
 
 void DKRigidBody::ApplyForce(const DKVector3& force, const DKVector3& relpos)

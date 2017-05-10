@@ -7,7 +7,19 @@
 
 #include <string.h>
 #include <memory.h>
-#include "../Libs/Inc_libxml2.h"
+
+#define LIBXML_STATIC
+#include "../Libs/libxml2/include/libxml/globals.h"
+#include "../Libs/libxml2/include/libxml/xmlerror.h"
+#include "../Libs/libxml2/include/libxml/parser.h"
+#include "../Libs/libxml2/include/libxml/tree.h"
+#include "../Libs/libxml2/include/libxml/debugXML.h"
+#include "../Libs/libxml2/include/libxml/xmlmemory.h"
+#include "../Libs/libxml2/include/libxml/HTMLparser.h"
+#include "../Libs/libxml2/include/libxml/HTMLtree.h"
+#include "../Libs/libxml2/include/libxml/nanohttp.h"
+#include "../Libs/libxml2/include/libxml/nanoftp.h"
+
 #include "DKXmlParser.h"
 #include "DKLog.h"
 #include "DKString.h"

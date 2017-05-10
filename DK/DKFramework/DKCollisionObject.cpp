@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKCollisionObject.h"
 
 using namespace DKFramework;

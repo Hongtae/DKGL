@@ -7,7 +7,8 @@
 
 #include <memory.h>
 #include <math.h>
-#include "../../../Libs/Inc_libFLAC.h"
+
+#include "../../../Libs/libFLAC/include/FLAC/stream_decoder.h"
 #include "AudioStreamFLAC.h"
 
 using namespace DKFramework;

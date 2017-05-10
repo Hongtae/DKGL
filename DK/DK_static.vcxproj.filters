@@ -1043,9 +1043,6 @@
     <ClInclude Include="DKFramework\DKWorld.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\BulletUtils.h">
-      <Filter>DKFramework\Private</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h">
       <Filter>DKFramework\Private</Filter>
     </ClInclude>
@@ -1252,6 +1249,12 @@
     </ClInclude>
     <ClInclude Include="DKFoundation\DKLogger.h">
       <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\OpenAL.h">
+      <Filter>DKFramework\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\BulletPhysics.h">
+      <Filter>DKFramework\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

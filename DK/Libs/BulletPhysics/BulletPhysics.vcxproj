@@ -174,16 +174,8 @@
     <ProjectReference />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Extras\HACD\hacdCircularList.h" />
-    <ClInclude Include="Extras\HACD\hacdGraph.h" />
-    <ClInclude Include="Extras\HACD\hacdHACD.h" />
-    <ClInclude Include="Extras\HACD\hacdICHull.h" />
-    <ClInclude Include="Extras\HACD\hacdManifoldMesh.h" />
-    <ClInclude Include="Extras\HACD\hacdVector.h" />
-    <ClInclude Include="Extras\HACD\hacdVersion.h" />
     <ClInclude Include="src\btBulletCollisionCommon.h" />
     <ClInclude Include="src\btBulletDynamicsCommon.h" />
-    <ClInclude Include="src\Bullet-C-Api.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btAxisSweep3.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btBroadphaseInterface.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btBroadphaseProxy.h" />
@@ -191,7 +183,6 @@
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btDbvt.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btDbvtBroadphase.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btDispatcher.h" />
-    <ClInclude Include="src\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btOverlappingPairCache.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btOverlappingPairCallback.h" />
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btQuantizedBvh.h" />
@@ -333,18 +324,23 @@
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btUniversalConstraint.h" />
     <ClInclude Include="src\BulletDynamics\Dynamics\btActionInterface.h" />
     <ClInclude Include="src\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.h" />
+    <ClInclude Include="src\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.h" />
     <ClInclude Include="src\BulletDynamics\Dynamics\btDynamicsWorld.h" />
     <ClInclude Include="src\BulletDynamics\Dynamics\btRigidBody.h" />
     <ClInclude Include="src\BulletDynamics\Dynamics\btSimpleDynamicsWorld.h" />
+    <ClInclude Include="src\BulletDynamics\Dynamics\btSimulationIslandManagerMt.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBody.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyConstraint.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.h" />
+    <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.h" />
+    <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyJointFeedback.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyJointMotor.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyLink.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyLinkCollider.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyPoint2Point.h" />
+    <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.h" />
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodySolverConstraint.h" />
     <ClInclude Include="src\BulletDynamics\MLCPSolvers\btDantzigLCP.h" />
     <ClInclude Include="src\BulletDynamics\MLCPSolvers\btDantzigSolver.h" />
@@ -419,17 +415,12 @@
     <ClInclude Include="src\vectormath\vmInclude.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Extras\HACD\hacdGraph.cpp" />
-    <ClCompile Include="Extras\HACD\hacdHACD.cpp" />
-    <ClCompile Include="Extras\HACD\hacdICHull.cpp" />
-    <ClCompile Include="Extras\HACD\hacdManifoldMesh.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btDbvt.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btDbvtBroadphase.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btDispatcher.cpp" />
-    <ClCompile Include="src\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btSimpleBroadphase.cpp" />
@@ -534,16 +525,19 @@
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btTypedConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
+    <ClCompile Include="src\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp" />
     <ClCompile Include="src\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="src\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
-    <ClCompile Include="src\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
+    <ClCompile Include="src\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBody.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
+    <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
     <ClCompile Include="src\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
     <ClCompile Include="src\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />
@@ -565,10 +559,6 @@
     <ClCompile Include="src\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="src\LinearMath\btSerializer.cpp" />
     <ClCompile Include="src\LinearMath\btVector3.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Extras\HACD\hacdCircularList.inl" />
-    <None Include="Extras\HACD\hacdVector.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

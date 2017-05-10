@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKConvexShape.h"
 
 using namespace DKFramework;
@@ -24,8 +24,11 @@ DKConvexShape::~DKConvexShape(void)
 
 void DKConvexShape::Project(const DKNSTransform& t, const DKVector3& dir, float& min, float& max) const
 {
+	btVector3 witnesPtMin;
+	btVector3 witnesPtMax;
+
 	static_cast<const btConvexShape*>(this->impl)->project(
-		BulletTransform(t), BulletVector3(dir), min, max);
+		BulletTransform(t), BulletVector3(dir), min, max, witnesPtMin, witnesPtMax);
 }
 
 bool DKConvexShape::Intersect(const DKConvexShape* shapeA, const DKNSTransform& ta, const DKConvexShape* shapeB, const DKNSTransform& tb)

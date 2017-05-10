@@ -6,9 +6,9 @@
 //
 
 #include <memory.h>
-#include "../../../Libs/Inc_libogg.h"
-#include "../../../Libs/Inc_libvorbis.h"
-
+#include <ogg/ogg.h>
+#include "../../../Libs/libvorbis/include/vorbis/codec.h"
+#include "../../../Libs/libvorbis/include/vorbis/vorbisfile.h"
 #include "AudioStreamVorbis.h"
 
 #define SWAP_CHANNEL16(x, y)		{short t = x; x = y ; y = t;}

@@ -8,9 +8,18 @@
 #include <ctype.h>
 #include <wctype.h>
 
-#include "../Libs/Inc_zlib.h"
-#include "../Libs/Inc_lz4.h"
-#include "../Libs/Inc_libxml2.h"
+#include "../Libs/zlib/zlib.h"
+#include "../Libs/zlib/contrib/minizip/zip.h"
+#include "../Libs/zlib/contrib/minizip/unzip.h"
+
+#include "../Libs/lz4/lib/lz4.h"
+#include "../Libs/lz4/lib/lz4hc.h"
+#include "../Libs/lz4/lib/lz4frame.h"
+#include "../Libs/lz4/lib/xxhash.h"
+
+#define LIBXML_STATIC
+#include "../Libs/libxml2/include/libxml/nanohttp.h"
+#include "../Libs/libxml2/include/libxml/nanoftp.h"
 
 #include "DKEndianness.h"
 #include "DKString.h"

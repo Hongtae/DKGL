@@ -56,12 +56,6 @@
     <Filter Include="src\vectormath\neon">
       <UniqueIdentifier>{d7bbfd85-022d-474d-a6a7-68fa5b76601c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Extras">
-      <UniqueIdentifier>{e038ab3d-1fe6-4726-86a3-f135452bca3e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Extras\HACD">
-      <UniqueIdentifier>{bc4bf715-485b-4471-acdf-397082357f31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\BulletDynamics\Featherstone">
       <UniqueIdentifier>{931ac41f-2e41-4982-afeb-4ad52dba67dc}</UniqueIdentifier>
     </Filter>
@@ -74,9 +68,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\btBulletDynamicsCommon.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Bullet-C-Api.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\vectormath\vmInclude.h">
@@ -332,9 +323,6 @@
       <Filter>src\BulletCollision\BroadphaseCollision</Filter>
     </ClInclude>
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btDispatcher.h">
-      <Filter>src\BulletCollision\BroadphaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.h">
       <Filter>src\BulletCollision\BroadphaseCollision</Filter>
     </ClInclude>
     <ClInclude Include="src\BulletCollision\BroadphaseCollision\btOverlappingPairCache.h">
@@ -706,27 +694,6 @@
     <ClInclude Include="src\LinearMath\btPolarDecomposition.h">
       <Filter>src\LinearMath</Filter>
     </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdCircularList.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdGraph.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdHACD.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdICHull.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdManifoldMesh.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdVector.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
-    <ClInclude Include="Extras\HACD\hacdVersion.h">
-      <Filter>Extras\HACD</Filter>
-    </ClInclude>
     <ClInclude Include="src\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.h">
       <Filter>src\BulletCollision\CollisionDispatch</Filter>
     </ClInclude>
@@ -798,6 +765,21 @@
     </ClInclude>
     <ClInclude Include="src\LinearMath\btMatrixX.h">
       <Filter>src\LinearMath</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.h">
+      <Filter>src\BulletDynamics\Dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletDynamics\Dynamics\btSimulationIslandManagerMt.h">
+      <Filter>src\BulletDynamics\Dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.h">
+      <Filter>src\BulletDynamics\Featherstone</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodyJointFeedback.h">
+      <Filter>src\BulletDynamics\Featherstone</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.h">
+      <Filter>src\BulletDynamics\Featherstone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -891,9 +873,6 @@
     <ClCompile Include="src\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp">
       <Filter>src\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="src\BulletDynamics\Dynamics\Bullet-C-API.cpp">
-      <Filter>src\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
     <ClCompile Include="src\BulletDynamics\Vehicle\btRaycastVehicle.cpp">
       <Filter>src\BulletDynamics\Vehicle</Filter>
     </ClCompile>
@@ -916,9 +895,6 @@
       <Filter>src\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btDispatcher.cpp">
-      <Filter>src\BulletCollision\BroadphaseCollision</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp">
       <Filter>src\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
     <ClCompile Include="src\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp">
@@ -1185,18 +1161,6 @@
     <ClCompile Include="src\LinearMath\btPolarDecomposition.cpp">
       <Filter>src\LinearMath</Filter>
     </ClCompile>
-    <ClCompile Include="Extras\HACD\hacdGraph.cpp">
-      <Filter>Extras\HACD</Filter>
-    </ClCompile>
-    <ClCompile Include="Extras\HACD\hacdHACD.cpp">
-      <Filter>Extras\HACD</Filter>
-    </ClCompile>
-    <ClCompile Include="Extras\HACD\hacdICHull.cpp">
-      <Filter>Extras\HACD</Filter>
-    </ClCompile>
-    <ClCompile Include="Extras\HACD\hacdManifoldMesh.cpp">
-      <Filter>Extras\HACD</Filter>
-    </ClCompile>
     <ClCompile Include="src\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp">
       <Filter>src\BulletCollision\CollisionDispatch</Filter>
     </ClCompile>
@@ -1239,13 +1203,17 @@
     <ClCompile Include="src\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp">
       <Filter>src\BulletDynamics\MLCPSolvers</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Extras\HACD\hacdCircularList.inl">
-      <Filter>Extras\HACD</Filter>
-    </None>
-    <None Include="Extras\HACD\hacdVector.inl">
-      <Filter>Extras\HACD</Filter>
-    </None>
+    <ClCompile Include="src\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp">
+      <Filter>src\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp">
+      <Filter>src\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp">
+      <Filter>src\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp">
+      <Filter>src\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

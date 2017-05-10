@@ -5,19 +5,9 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKPoint2PointConstraint.h"
 
-namespace DKFramework
-{
-	namespace Private
-	{
-		struct Point2PointConstraintExt : public btPoint2PointConstraint
-		{
-			using btPoint2PointConstraint::m_flags;
-		};
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -82,7 +72,7 @@ bool DKPoint2PointConstraint::HasParam(ParamType type, ParamAxis axis) const
 {
 	if (axis == ParamAxis::Default)
 	{
-		int flags = static_cast<Point2PointConstraintExt*>(this->impl)->m_flags;
+		int flags = static_cast<btPoint2PointConstraint*>(this->impl)->getFlags();
 
 		switch (type)
 		{

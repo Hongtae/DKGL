@@ -5,20 +5,10 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKHingeConstraint.h"
 
-namespace DKFramework
-{
-	namespace Private
-	{
-		struct HingeConstraintExt : public btHingeConstraint
-		{
-			using btHingeConstraint::m_limit;
-			using btHingeConstraint::m_flags;
-		};
-	}
-}
+
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -74,17 +64,17 @@ float DKHingeConstraint::UpperLimit(void) const
 
 float DKHingeConstraint::Softness(void) const
 {
-	return static_cast<HingeConstraintExt*>(this->impl)->m_limit.getSoftness();
+	return static_cast<btHingeConstraint*>(this->impl)->getLimitSoftness();
 }
 
 float DKHingeConstraint::BiasFactor(void) const
 {
-	return static_cast<HingeConstraintExt*>(this->impl)->m_limit.getBiasFactor();
+	return static_cast<btHingeConstraint*>(this->impl)->getLimitBiasFactor();
 }
 
 float DKHingeConstraint::RelaxationFactor(void) const
 {
-	return static_cast<HingeConstraintExt*>(this->impl)->m_limit.getRelaxationFactor();
+	return static_cast<btHingeConstraint*>(this->impl)->getLimitRelaxationFactor();
 }
 
 void DKHingeConstraint::SetAngularOnly(bool angularOnly)
@@ -186,7 +176,7 @@ bool DKHingeConstraint::HasParam(ParamType type, ParamAxis axis) const
 {
 	if (axis == ParamAxis::Default || axis == ParamAxis::AngularZ)
 	{
-		int flags = static_cast<HingeConstraintExt*>(this->impl)->m_flags;
+		int flags = static_cast<btHingeConstraint*>(this->impl)->getFlags();
 
 		switch (type)
 		{
@@ -210,9 +200,9 @@ void DKHingeConstraint::ResetContext(void)
 	btTransform frameB = c->getFrameOffsetB();
 	float lowerLimit = c->getLowerLimit();
 	float upperLimit = c->getUpperLimit();
-	float softness = static_cast<HingeConstraintExt*>(c)->m_limit.getSoftness();
-	float biasFactor = static_cast<HingeConstraintExt*>(c)->m_limit.getBiasFactor();
-	float relaxationFactor = static_cast<HingeConstraintExt*>(c)->m_limit.getRelaxationFactor();
+	float softness = static_cast<btHingeConstraint*>(c)->getLimitSoftness();
+	float biasFactor = static_cast<btHingeConstraint*>(c)->getLimitBiasFactor();
+	float relaxationFactor = static_cast<btHingeConstraint*>(c)->getLimitRelaxationFactor();
 	float motorTargetVelocity = c->getMotorTargetVelosity();
 	float maxMotorImpulse = c->getMaxMotorImpulse();
 	bool angularOnly = c->getAngularOnly();
@@ -245,11 +235,15 @@ DKHingeConstraint* DKHingeConstraint::Copy(UUIDObjectMap& uuids, const DKHingeCo
 {
 	if (DKConstraint::Copy(uuids, obj))
 	{
-		HingeConstraintExt* dst = static_cast<HingeConstraintExt*>(this->impl);
-		HingeConstraintExt* src = static_cast<HingeConstraintExt*>(obj->impl);
+		btHingeConstraint* dst = static_cast<btHingeConstraint*>(this->impl);
+		btHingeConstraint* src = static_cast<btHingeConstraint*>(obj->impl);
 
 		dst->setFrames(src->getFrameOffsetA(), src->getFrameOffsetB());
-		dst->setLimit(src->getLowerLimit(), src->getUpperLimit(), src->m_limit.getSoftness(), src->m_limit.getBiasFactor(), src->m_limit.getRelaxationFactor());
+		dst->setLimit(src->getLowerLimit(),
+					  src->getUpperLimit(),
+					  src->getLimitSoftness(),
+					  src->getLimitBiasFactor(),
+					  src->getLimitRelaxationFactor());
 		dst->setAngularOnly(src->getAngularOnly());
 		dst->enableAngularMotor(src->getEnableAngularMotor(), src->getMotorTargetVelosity(), src->getMaxMotorImpulse());
 		return this;

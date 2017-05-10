@@ -267,8 +267,18 @@ public:
 
 	/**@brief Return the norm (length) of the vector */
 	SIMD_FORCE_INLINE btScalar norm() const
-	{
+	{		
 		return length();
+	}
+
+	/**@brief Return the norm (length) of the vector */
+	SIMD_FORCE_INLINE btScalar safeNorm() const
+	{
+		btScalar d = length2();
+		//workaround for some clang/gcc issue of sqrtf(tiny number) = -INF
+		if (d>SIMD_EPSILON)
+			return btSqrt(d);
+		return btScalar(0);
 	}
 
   /**@brief Return the distance squared between the ends of this and another vector
@@ -281,14 +291,16 @@ public:
 
 	SIMD_FORCE_INLINE btVector3& safeNormalize() 
 	{
-		btVector3 absVec = this->absolute();
-		int maxIndex = absVec.maxAxis();
-		if (absVec[maxIndex]>0)
+		btScalar l2 = length2();
+		//triNormal.normalize();
+		if (l2 >= SIMD_EPSILON*SIMD_EPSILON)
 		{
-			*this /= absVec[maxIndex];
-			return *this /= length();
+			(*this) /= btSqrt(l2);
 		}
-		setValue(1,0,0);
+		else
+		{
+			setValue(1, 0, 0);
+		}
 		return *this;
 	}
 
@@ -501,10 +513,10 @@ public:
 		__m128 tmp3 = _mm_add_ps(r0,r1);
 		mVec128 = tmp3;
 #elif defined(BT_USE_NEON)
-		mVec128 = vsubq_f32(v1.mVec128, v0.mVec128);
-		mVec128 = vmulq_n_f32(mVec128, rt);
-		mVec128 = vaddq_f32(mVec128, v0.mVec128);
-#else	
+		float32x4_t vl = vsubq_f32(v1.mVec128, v0.mVec128);
+		vl = vmulq_n_f32(vl, rt);
+		mVec128 = vaddq_f32(vl, v0.mVec128);
+#else
 		btScalar s = btScalar(1.0) - rt;
 		m_floats[0] = s * v0.m_floats[0] + rt * v1.m_floats[0];
 		m_floats[1] = s * v0.m_floats[1] + rt * v1.m_floats[1];
