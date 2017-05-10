@@ -1,0 +1,7 @@
+Repository:
+	https://github.com/KhronosGroup/SPIRV-Cross.git
+Commit Hash: 
+	a0d0a0ec9eb366fcb707b4b6656f55cc6154b408
+Date:
+	9 May 2017 16:50
+

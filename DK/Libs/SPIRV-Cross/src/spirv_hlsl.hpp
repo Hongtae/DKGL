@@ -31,6 +31,9 @@ public:
 		uint32_t shader_model = 30; // TODO: map ps_4_0_level_9_0,... somehow
 		bool fixup_clipspace = false;
 		bool flip_vert_y = false;
+
+		// Allows the PointSize builtin, and ignores it, as PointSize is not supported in HLSL.
+		bool point_size_compat = false;
 	};
 
 	CompilerHLSL(std::vector<uint32_t> spirv_)
@@ -58,6 +61,8 @@ public:
 private:
 	std::string type_to_glsl(const SPIRType &type) override;
 	std::string image_type_hlsl(const SPIRType &type);
+	std::string image_type_hlsl_modern(const SPIRType &type);
+	std::string image_type_hlsl_legacy(const SPIRType &type);
 	void emit_function_prototype(SPIRFunction &func, uint64_t return_flags) override;
 	void emit_hlsl_entry_point();
 	void emit_header() override;
@@ -73,9 +78,14 @@ private:
 	void emit_buffer_block(const SPIRVariable &type) override;
 	void emit_push_constant_block(const SPIRVariable &var) override;
 	void emit_uniform(const SPIRVariable &var) override;
+	void emit_modern_uniform(const SPIRVariable &var);
+	void emit_legacy_uniform(const SPIRVariable &var);
 	std::string layout_for_member(const SPIRType &type, uint32_t index) override;
 	std::string to_interpolation_qualifiers(uint64_t flags) override;
 	std::string bitcast_glsl_op(const SPIRType &result_type, const SPIRType &argument_type) override;
+	std::string to_func_call_arg(uint32_t id) override;
+	std::string to_sampler_expression(uint32_t id);
+	void emit_sampled_image_op(uint32_t result_type, uint32_t result_id, uint32_t image_id, uint32_t samp_id) override;
 
 	const char *to_storage_qualifiers_glsl(const SPIRVariable &var) override;
 

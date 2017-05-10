@@ -205,10 +205,15 @@ static void print_resources(const Compiler &compiler, const char *tag, const vec
 {
 	fprintf(stderr, "%s\n", tag);
 	fprintf(stderr, "=============\n\n");
+	bool print_ssbo = !strcmp(tag, "ssbos");
+
 	for (auto &res : resources)
 	{
 		auto &type = compiler.get_type(res.type_id);
 		auto mask = compiler.get_decoration_mask(res.id);
+
+		if (print_ssbo && compiler.buffer_is_hlsl_counter_buffer(res.id))
+			continue;
 
 		// If we don't have a name, use the fallback for the type instead of the variable
 		// for SSBOs and UBOs since those are the only meaningful names to use externally.
@@ -245,6 +250,10 @@ static void print_resources(const Compiler &compiler, const char *tag, const vec
 			fprintf(stderr, " readonly");
 		if (is_sized_block)
 			fprintf(stderr, " (BlockSize : %u bytes)", block_size);
+
+		uint32_t counter_id = 0;
+		if (print_ssbo && compiler.buffer_get_hlsl_counter_buffer(res.id, counter_id))
+			fprintf(stderr, " (HLSL counter buffer ID: %u)", counter_id);
 		fprintf(stderr, "\n");
 	}
 	fprintf(stderr, "=============\n\n");
@@ -435,6 +444,7 @@ struct CLIArguments
 	bool msl = false;
 	bool msl_pack_ubos = true;
 	bool hlsl = false;
+	bool hlsl_compat = false;
 	bool vulkan_semantics = false;
 	bool remove_unused = false;
 	bool cfg_analysis = true;
@@ -447,7 +457,7 @@ static void print_help()
 	                "[--vulkan-semantics] [--flatten-ubo] [--fixup-clipspace] [--iterations iter] "
 	                "[--cpp] [--cpp-interface-name <name>] "
 	                "[--msl] [--msl-no-pack-ubos] "
-	                "[--hlsl] [--shader-model] "
+	                "[--hlsl] [--shader-model] [--hlsl-enable-compat] "
 	                "[--pls-in format input-name] [--pls-out format output-name] [--remap source_name target_name "
 	                "components] [--extension ext] [--entry name] [--remove-unused-variables] "
 	                "[--remap-variable-type <variable_name> <new_variable_type>]\n");
@@ -571,6 +581,7 @@ int main(int argc, char *argv[])
 	cbs.add("--msl", [&args](CLIParser &) { args.msl = true; });
 	cbs.add("--msl-no-pack-ubos", [&args](CLIParser &) { args.msl_pack_ubos = false; });
 	cbs.add("--hlsl", [&args](CLIParser &) { args.hlsl = true; });
+	cbs.add("--hlsl-enable-compat", [&args](CLIParser &) { args.hlsl_compat = true; });
 	cbs.add("--vulkan-semantics", [&args](CLIParser &) { args.vulkan_semantics = true; });
 	cbs.add("--extension", [&args](CLIParser &parser) { args.extensions.push_back(parser.next_string()); });
 	cbs.add("--entry", [&args](CLIParser &parser) { args.entry = parser.next_string(); });
@@ -697,6 +708,12 @@ int main(int argc, char *argv[])
 			}
 
 			hlsl_opts.shader_model = args.shader_model;
+		}
+
+		if (args.hlsl_compat)
+		{
+			// Enable all compat options.
+			hlsl_opts.point_size_compat = true;
 		}
 		hlsl->set_options(hlsl_opts);
 	}

@@ -10,6 +10,3 @@ libvorbis-1.3.3
 libxml2-2.9.0
 lz4-r131
 zlib-1.2.8
-
-glslang (https://github.com/KhronosGroup/glslang.git) Commit: 88aabcca (26 Apr 2017)
-SPIRV-Cross (https://github.com/KhronosGroup/SPIRV-Cross.git) Commit: 9e85815 (26 Apr 2017)
