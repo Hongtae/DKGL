@@ -23,8 +23,7 @@ RenderCommandEncoder::RenderCommandEncoder(id<MTLRenderCommandEncoder> e, Comman
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
-	if (encoder)
-		[encoder release];
+    [encoder autorelease];
 }
 
 void RenderCommandEncoder::EndEncoding(void)
@@ -32,7 +31,7 @@ void RenderCommandEncoder::EndEncoding(void)
 	if (encoder)
 	{
 		[encoder endEncoding];
-		[encoder release];
+		[encoder autorelease];
 		encoder = nil;
 
 		buffer->EndEncoder(this);

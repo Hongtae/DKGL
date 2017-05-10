@@ -5,7 +5,7 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../Libs/Inc_OpenAL.h"
+#include "Private/OpenAL.h"
 #include "../DKFoundation.h"
 #include "DKAudioPlayer.h"
 #include "DKAudioStream.h"

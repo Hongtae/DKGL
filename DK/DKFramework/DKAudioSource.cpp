@@ -6,7 +6,7 @@
 //
 
 #include <float.h>
-#include "../Libs/Inc_OpenAL.h"
+#include "Private/OpenAL.h"
 #include "DKAudioSource.h"
 #include "DKAudioDevice.h"
 
