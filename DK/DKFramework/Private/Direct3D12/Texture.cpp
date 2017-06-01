@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 
 #include "Texture.h"
 #include "GraphicsDevice.h"
@@ -29,4 +29,4 @@ Texture::~Texture(void)
 		dev->ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, srvHandle);
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

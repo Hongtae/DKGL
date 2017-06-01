@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 
 #include "CommandBuffer.h"
 #include "CommandQueue.h"
@@ -93,4 +93,4 @@ bool CommandBuffer::WaitUntilCompleted(void)
 	return commandAllocator->WaitUntilCompleted(INFINITE);
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

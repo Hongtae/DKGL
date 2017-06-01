@@ -7,7 +7,7 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include "Extensions.h"
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
@@ -63,4 +63,4 @@ namespace DKFramework
 		}
 	}
 }
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

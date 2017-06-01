@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include "Extensions.h"
 #include "RenderTarget.h"
 #include "GraphicsDevice.h"
@@ -33,4 +33,4 @@ RenderTarget::~RenderTarget(void)
 		vkDestroySemaphore(dev->device, waitSemaphore, nullptr);
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

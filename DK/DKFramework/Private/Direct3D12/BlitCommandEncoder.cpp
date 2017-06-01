@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 
 #include "BlitCommandEncoder.h"
 #include "GraphicsDevice.h"
@@ -42,4 +42,4 @@ DKCommandBuffer* BlitCommandEncoder::Buffer(void)
 	return commandBuffer;
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

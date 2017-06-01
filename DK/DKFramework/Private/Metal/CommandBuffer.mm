@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 #include <TargetConditionals.h>
 
 #include "CommandBuffer.h"
@@ -226,4 +226,4 @@ void CommandBuffer::EndEncoder(DKCommandEncoder* enc)
 	activeEncoder = NULL;
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

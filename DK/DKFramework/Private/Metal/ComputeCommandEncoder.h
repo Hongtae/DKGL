@@ -8,7 +8,7 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 #import <Metal/Metal.h>
 
 #include "../../DKComputeCommandEncoder.h"
@@ -37,4 +37,4 @@ namespace DKFramework
 	}
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

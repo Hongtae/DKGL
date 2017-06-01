@@ -8,7 +8,7 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 #include "PixelFormat.h"
 
 using namespace DKFramework;
@@ -134,5 +134,5 @@ DKPixelFormat PixelFormat::To(MTLPixelFormat fmt)
 	return DKPixelFormat::Invalid;
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL
 

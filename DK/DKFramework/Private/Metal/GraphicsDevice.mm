@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 #include <stdexcept>
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
@@ -102,4 +102,4 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* ct
 	return queue.SafeCast<DKCommandQueue>();
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

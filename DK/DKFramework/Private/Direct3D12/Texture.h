@@ -7,7 +7,7 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 #include "d3d12_headers.h"
 
 #include "../../DKTexture.h"
@@ -34,4 +34,4 @@ namespace DKFramework
 	}
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 
 #include "CommandQueue.h"
 #include "CommandBuffer.h"
@@ -103,4 +103,4 @@ bool CommandQueue::WaitIdle(void)
 	return vkQueueWaitIdle(queue) == VK_SUCCESS;
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

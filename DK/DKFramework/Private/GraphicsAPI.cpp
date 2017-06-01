@@ -14,25 +14,25 @@ namespace DKFramework
 {
 	namespace Private
 	{
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 		namespace Metal
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
 #endif
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 		namespace Vulkan
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
 #endif
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 		namespace Direct3D
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
 		}
 #endif
-#if DKGL_USE_OPENGL
+#if DKGL_ENABLE_OPENGL
 		namespace OpenGL
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void);
@@ -43,13 +43,13 @@ namespace DKFramework
 	DKGraphicsDeviceInterface* DKGraphicsDeviceInterface::CreateInterface(void)
 	{
 		DKString defaultAPI =
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 		"Metal";
-#elif DKGL_USE_DIRECT3D
+#elif DKGL_ENABLE_DIRECT3D12
 		"Direct3D";
-#elif DKGL_USE_VULKAN
+#elif DKGL_ENABLE_VULKAN
 		"Vulkan";
-#elif DKGL_USE_OPENGL
+#elif DKGL_ENABLE_OPENGL
 		"OpenGL";
 #else
 		"";
@@ -62,16 +62,16 @@ namespace DKFramework
 		};
 
 		DKArray<APISet> apis = {
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 			{ "Metal", Private::Metal::CreateInterface, false },
 #endif
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 			{ "Direct3D", Private::Direct3D::CreateInterface, false},
 #endif
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 			{ "Vulkan", Private::Vulkan::CreateInterface, false },
 #endif
-#if DKGL_USE_OPENGL
+#if DKGL_ENABLE_OPENGL
 			{ "OpenGL", Private::OpenGL::CreateInterface, false },
 #endif
 		};

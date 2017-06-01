@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 #include <TargetConditionals.h>
 #import <MetalKit/MTKView.h>
 
@@ -220,4 +220,4 @@ void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)
 	}
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

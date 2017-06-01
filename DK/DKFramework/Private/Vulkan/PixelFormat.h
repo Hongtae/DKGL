@@ -7,7 +7,7 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
 
 #include "../../DKPixelFormat.h"
@@ -27,4 +27,4 @@ namespace DKFramework
 	}
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

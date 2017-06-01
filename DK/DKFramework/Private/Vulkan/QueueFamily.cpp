@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include "Extensions.h"
 #include "QueueFamily.h"
 #include "CommandQueue.h"
@@ -59,4 +59,4 @@ void QueueFamily::RecycleQueue(VkQueue queue)
 	freeQueues.Add(queue);
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

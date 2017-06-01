@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
 #include "../../DKPropertySet.h"
@@ -570,4 +570,4 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 	DKLogI("Direct3D12 Fence Completion Helper thread is finished.");
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

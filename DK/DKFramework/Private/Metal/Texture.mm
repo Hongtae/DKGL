@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 
 #include "Texture.h"
 #include "GraphicsDevice.h"
@@ -28,4 +28,4 @@ Texture::~Texture(void)
 
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

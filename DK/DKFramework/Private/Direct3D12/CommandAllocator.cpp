@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 
 #include "CommandAllocator.h"
 #include "GraphicsDevice.h"
@@ -73,4 +73,4 @@ bool CommandAllocator::WaitUntilCompleted(DWORD timeout)
 	return true;
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

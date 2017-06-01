@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 
 #include "CommandBuffer.h"
 #include "RenderCommandEncoder.h"
@@ -135,4 +135,4 @@ void CommandBuffer::Submit(const VkSubmitInfo& info, DKOperation* callback)
 		callbacks.Add(callback);
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

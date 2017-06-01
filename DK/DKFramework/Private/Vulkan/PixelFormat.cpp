@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include "PixelFormat.h"
 
 using namespace DKFramework;
@@ -145,4 +145,4 @@ DKPixelFormat PixelFormat::To(VkFormat fmt)
 	return DKPixelFormat::Invalid;
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include "Extensions.h"
 #include "SwapChain.h"
 #include "GraphicsDevice.h"
@@ -484,4 +484,4 @@ void SwapChain::OnWindowEvent(const DKWindow::WindowEvent& e)
 	}
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

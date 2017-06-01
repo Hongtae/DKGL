@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 
 #include "RenderTarget.h"
 #include "GraphicsDevice.h"
@@ -28,4 +28,4 @@ RenderTarget::~RenderTarget(void)
 
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

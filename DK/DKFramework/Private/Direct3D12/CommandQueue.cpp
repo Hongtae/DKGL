@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 
 #include "CommandQueue.h"
 #include "CommandBuffer.h"
@@ -90,4 +90,4 @@ UINT64 CommandQueue::EnqueuedCounterValue(void)
 	return fenceCounter;
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

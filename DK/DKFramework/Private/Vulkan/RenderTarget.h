@@ -7,7 +7,7 @@
 
 #pragma once
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
 
 #include "../../DKRenderTarget.h"
@@ -35,4 +35,4 @@ namespace DKFramework
 	}
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 #include <TargetConditionals.h>
 
 #include "CommandQueue.h"
@@ -46,4 +46,4 @@ DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 	return NULL;
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

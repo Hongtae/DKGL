@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 
 #include "RenderCommandEncoder.h"
 #include "RenderTarget.h"
@@ -310,4 +310,4 @@ DKCommandBuffer* RenderCommandEncoder::Buffer(void)
 	return commandBuffer;
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN

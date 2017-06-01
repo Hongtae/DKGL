@@ -7,7 +7,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_METAL
+#if DKGL_ENABLE_METAL
 
 #include "BlitCommandEncoder.h"
 
@@ -44,4 +44,4 @@ DKCommandBuffer* BlitCommandEncoder::Buffer(void)
 	return buffer;
 }
 
-#endif //#if DKGL_USE_METAL
+#endif //#if DKGL_ENABLE_METAL

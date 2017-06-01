@@ -1,7 +1,7 @@
 #pragma once
 
-#if !DKGL_USE_DIRECT3D
-#error DKGL_USE_DIRECT3D must be set to 1
+#if !DKGL_ENABLE_DIRECT3D12
+#error DKGL_ENABLE_DIRECT3D12 must be set to 1
 #endif
 
 #include <wrl.h>

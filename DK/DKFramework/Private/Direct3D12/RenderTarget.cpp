@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_DIRECT3D
+#if DKGL_ENABLE_DIRECT3D12
 
 #include "RenderTarget.h"
 #include "GraphicsDevice.h"
@@ -32,4 +32,4 @@ RenderTarget::~RenderTarget(void)
 		dev->ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtvHandle);
 }
 
-#endif //#if DKGL_USE_DIRECT3D
+#endif //#if DKGL_ENABLE_DIRECT3D12

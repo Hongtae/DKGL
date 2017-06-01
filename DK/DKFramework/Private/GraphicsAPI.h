@@ -8,47 +8,47 @@
 #pragma once
 
 #if defined(__APPLE__) && defined(__MACH__)
-#  ifndef DKGL_USE_METAL
-#    define DKGL_USE_METAL 1
+#  ifndef DKGL_ENABLE_METAL
+#    define DKGL_ENABLE_METAL 1
 #  endif
-#  ifndef DKGL_USE_VULKAN
-#    define DKGL_USE_VULKAN 0
+#  ifndef DKGL_ENABLE_VULKAN
+#    define DKGL_ENABLE_VULKAN 0
 #  endif
-#  ifndef DKGL_USE_OPENGL
-#    define DKGL_USE_OPENGL 0
+#  ifndef DKGL_ENABLE_OPENGL
+#    define DKGL_ENABLE_OPENGL 0
 #  endif
-#ifndef DKGL_USE_DIRECT3D
-#    define DKGL_USE_DIRECT3D 0
+#ifndef DKGL_ENABLE_DIRECT3D12
+#    define DKGL_ENABLE_DIRECT3D12 0
 #  endif
 #endif
 
 #ifdef _WIN32
-#  ifndef DKGL_USE_DIRECT3D
-#    define DKGL_USE_DIRECT3D 1
+#  ifndef DKGL_ENABLE_DIRECT3D12
+#    define DKGL_ENABLE_DIRECT3D12 1
 #  endif
-#  ifndef DKGL_USE_VULKAN
-#    define DKGL_USE_VULKAN 1
+#  ifndef DKGL_ENABLE_VULKAN
+#    define DKGL_ENABLE_VULKAN 1
 #  endif
-#  ifndef DKGL_USE_METAL
-#    define DKGL_USE_METAL 0
+#  ifndef DKGL_ENABLE_METAL
+#    define DKGL_ENABLE_METAL 0
 #  endif
-#  ifndef DKGL_USE_OPENGL
-#    define DKGL_USE_OPENGL 0
+#  ifndef DKGL_ENABLE_OPENGL
+#    define DKGL_ENABLE_OPENGL 0
 #  endif
 #endif
 
 #ifdef __linux__
-#  ifndef DKGL_USE_VULKAN
-#    define DKGL_USE_VULKAN 1
+#  ifndef DKGL_ENABLE_VULKAN
+#    define DKGL_ENABLE_VULKAN 1
 #  endif
-#  ifndef DKGL_USE_OPENGL
-#    define DKGL_USE_OPENGL 1
+#  ifndef DKGL_ENABLE_OPENGL
+#    define DKGL_ENABLE_OPENGL 1
 #  endif
-#  ifndef DKGL_USE_METAL
-#    define DKGL_USE_METAL 0
+#  ifndef DKGL_ENABLE_METAL
+#    define DKGL_ENABLE_METAL 0
 #  endif
-#  ifndef DKGL_USE_DIRECT3D
-#    define DKGL_USE_DIRECT3D 0
+#  ifndef DKGL_ENABLE_DIRECT3D12
+#    define DKGL_ENABLE_DIRECT3D12 0
 #  endif
 #endif
 

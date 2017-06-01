@@ -6,7 +6,7 @@
 //
 
 #include "../GraphicsAPI.h"
-#if DKGL_USE_VULKAN
+#if DKGL_ENABLE_VULKAN
 
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
@@ -708,4 +708,4 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 	DKLogI("Vulkan Queue Completion Helper thread is finished.");
 }
 
-#endif //#if DKGL_USE_VULKAN
+#endif //#if DKGL_ENABLE_VULKAN
