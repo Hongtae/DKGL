@@ -8,6 +8,11 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKCommandQueue.h"
+#include "DKShaderModule.h"
+#include "DKShader.h"
+#include "DKRenderPipeline.h"
+#include "DKComputePipeline.h"
+#include "DKPipelineReflection.h"
 
 namespace DKFramework
 {
@@ -21,6 +26,10 @@ namespace DKFramework
 
 
 		DKObject<DKCommandQueue> CreateCommandQueue(void);
+		DKObject<DKShaderModule> CreateShaderModule(DKShader*);
+
+		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);
+		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 
 	private:
 		DKGraphicsDeviceInterface* impl;

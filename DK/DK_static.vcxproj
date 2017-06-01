@@ -88,7 +88,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -112,7 +112,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -134,7 +134,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -158,7 +158,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -293,6 +293,7 @@
     <ClCompile Include="DKFramework\DKRigidBody.cpp" />
     <ClCompile Include="DKFramework\DKScreen.cpp" />
     <ClCompile Include="DKFramework\DKSerializer.cpp" />
+    <ClCompile Include="DKFramework\DKShader.cpp" />
     <ClCompile Include="DKFramework\DKSliderConstraint.cpp" />
     <ClCompile Include="DKFramework\DKSoftBody.cpp" />
     <ClCompile Include="DKFramework\DKSphere.cpp" />
@@ -332,6 +333,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
@@ -468,6 +470,7 @@
     <ClInclude Include="DKFramework\DKMatrix4.h" />
     <ClInclude Include="DKFramework\DKModel.h" />
     <ClInclude Include="DKFramework\DKMultiSphereShape.h" />
+    <ClInclude Include="DKFramework\DKPipelineReflection.h" />
     <ClInclude Include="DKFramework\DKPixelFormat.h" />
     <ClInclude Include="DKFramework\DKPlane.h" />
     <ClInclude Include="DKFramework\DKPoint.h" />
@@ -487,7 +490,9 @@
     <ClInclude Include="DKFramework\DKSampler.h" />
     <ClInclude Include="DKFramework\DKScreen.h" />
     <ClInclude Include="DKFramework\DKSerializer.h" />
+    <ClInclude Include="DKFramework\DKShader.h" />
     <ClInclude Include="DKFramework\DKShaderConstant.h" />
+    <ClInclude Include="DKFramework\DKShaderModule.h" />
     <ClInclude Include="DKFramework\DKSize.h" />
     <ClInclude Include="DKFramework\DKSliderConstraint.h" />
     <ClInclude Include="DKFramework\DKSoftBody.h" />
@@ -560,6 +565,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />

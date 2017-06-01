@@ -32,14 +32,13 @@ CommandQueue::~CommandQueue(void)
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	VkDevice device = dev->device;
 
 	VkCommandPoolCreateInfo cmdPoolCreateInfo = { VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
 	cmdPoolCreateInfo.queueFamilyIndex = this->family->FamilyIndex();
 	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 	VkCommandPool commandPool = VK_NULL_HANDLE;
-	VkResult err = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &commandPool);
+	VkResult err = vkCreateCommandPool(dev->device, &cmdPoolCreateInfo, nullptr, &commandPool);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateCommandPool failed: %s", VkResultCStr(err));

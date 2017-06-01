@@ -389,7 +389,7 @@ DKObject<DKData> DKResourcePool::LoadResourceData(const DKString& name, bool map
 	{
 		AddResourceData(name, ret);
 		
-		DKLog("Resource Data:%ls loaded.\n", (const wchar_t*)name);	
+		DKLog("Resource Data \"%ls\" loaded. (%llu bytes)\n", (const wchar_t*)name, ret->Length());	
 	}
 	
 	return ret;

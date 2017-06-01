@@ -82,9 +82,6 @@
     <Filter Include="DKFramework\Private\AudioStream">
       <UniqueIdentifier>{0aaa11e7-f501-44d0-acb5-0b31c9e90203}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DKFramework\Private\Vulkan">
-      <UniqueIdentifier>{1a1a42c9-a423-49b5-a89d-6ce8c64e4cdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DKFramework\Private\Metal">
       <UniqueIdentifier>{e004958e-73db-4019-ae06-9649c13b24c8}</UniqueIdentifier>
     </Filter>
@@ -97,8 +94,20 @@
     <Filter Include="DKFramework\Interface">
       <UniqueIdentifier>{6e5086fe-42ee-470e-a75e-de63ab6c5399}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DKFramework\Private\Direct3D12">
+    <Filter Include="DKFramework_WIP">
+      <UniqueIdentifier>{8f388040-17ca-4182-8f9d-546733f983c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework_WIP\Private">
+      <UniqueIdentifier>{ce943dac-3c7d-4b51-afdb-93f1f53ce6f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework_WIP\Private\Vulkan">
+      <UniqueIdentifier>{1a1a42c9-a423-49b5-a89d-6ce8c64e4cdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework_WIP\Private\Direct3D12">
       <UniqueIdentifier>{7ffb3a57-eb9d-4eed-bcf4-b63066608d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DKFramework_WIP\Interface">
+      <UniqueIdentifier>{a846c2e9-0ea0-4797-8cbb-4703b1e4e454}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -309,9 +318,6 @@
     <ClCompile Include="DKFramework\DKFont.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKFrame.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKGearConstraint.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
@@ -319,9 +325,6 @@
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKGraphicsDevice.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKHingeConstraint.cpp">
@@ -381,16 +384,10 @@
     <ClCompile Include="DKFramework\DKRigidBody.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKScreen.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKSerializer.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKSliderConstraint.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKSoftBody.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKSphere.cpp">
@@ -463,76 +460,94 @@
       <Filter>DKFramework\Private\AudioStream</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Win32\DropTarget.cpp">
       <Filter>DKFramework\Private\Win32</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKImage.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandAllocator.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandBuffer.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\PixelFormat.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\Texture.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\ComputeCommandEncoder.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.cpp">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\BlitCommandEncoder.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="DKFoundation\DKLogger.cpp">
       <Filter>DKFoundation</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKImage.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKSoftBody.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKFrame.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKScreen.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKGraphicsDevice.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKShader.cpp">
+      <Filter>DKFramework_WIP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -788,9 +803,6 @@
     <ClInclude Include="DKFramework\DKAudioStream.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKBlitCommandEncoder.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKBox.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -815,16 +827,7 @@
     <ClInclude Include="DKFramework\DKColor.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKCommandBuffer.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKCommandQueue.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKCompoundShape.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKComputeCommandEncoder.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKConcaveShape.h">
@@ -857,9 +860,6 @@
     <ClInclude Include="DKFramework\DKFont.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKFrame.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKGearConstraint.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -867,9 +867,6 @@
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKGeneric6DofSpringConstraint.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKGraphicsDevice.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKHingeConstraint.h">
@@ -923,9 +920,6 @@
     <ClInclude Include="DKFramework\DKRect.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderCommandEncoder.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKResource.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -938,22 +932,13 @@
     <ClInclude Include="DKFramework\DKRigidBody.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKScreen.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKSerializer.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKShaderConstant.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKSize.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKSliderConstraint.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSoftBody.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKSphere.h">
@@ -998,9 +983,6 @@
     <ClInclude Include="DKFramework\DKVector4.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKVertexStream.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKVKey.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -1035,13 +1017,13 @@
       <Filter>DKFramework\Private\AudioStream</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
       <Filter>DKFramework\Private\Metal</Filter>
@@ -1082,50 +1064,20 @@
     <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h">
       <Filter>DKFramework\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h">
-      <Filter>DKFramework\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h">
       <Filter>DKFramework\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKCommandEncoder.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Win32\DropTarget.h">
       <Filter>DKFramework\Private\Win32</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKImage.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKComputePipeline.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKDepthStencil.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderPass.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderPipeline.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKSampler.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKTexture.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKRenderTarget.h">
-      <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h">
       <Filter>DKFramework\Private\Metal</Filter>
@@ -1134,52 +1086,49 @@
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKPixelFormat.h">
-      <Filter>DKFramework</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandAllocator.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\d3d12_headers.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\d3dx12.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\PixelFormat.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\Texture.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Texture.h">
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\TextureBaseT.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\RenderTarget.h">
       <Filter>DKFramework\Private\Metal</Filter>
@@ -1188,13 +1137,13 @@
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\TextureBaseT.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\ComputeCommandEncoder.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.h">
-      <Filter>DKFramework\Private\Direct3D12</Filter>
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h">
       <Filter>DKFramework\Private\Metal</Filter>
@@ -1206,13 +1155,13 @@
       <Filter>DKFramework\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h">
-      <Filter>DKFramework\Private\Vulkan</Filter>
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKLogger.h">
       <Filter>DKFoundation</Filter>
@@ -1222,6 +1171,84 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\BulletPhysics.h">
       <Filter>DKFramework\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCommandBuffer.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCommandEncoder.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCommandQueue.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKComputeCommandEncoder.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKComputePipeline.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderCommandEncoder.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderPass.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderPipeline.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKRenderTarget.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKTexture.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSampler.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKImage.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBlitCommandEncoder.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKVertexStream.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKShaderModule.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKShaderConstant.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKSoftBody.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPixelFormat.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKDepthStencil.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKFrame.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKScreen.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGraphicsDevice.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h">
+      <Filter>DKFramework_WIP\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKShader.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKPipelineReflection.h">
+      <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

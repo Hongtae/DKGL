@@ -10,6 +10,7 @@
 
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
+#include "ShaderModule.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework
@@ -546,6 +547,40 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 		if (queue)
 			return queue;
 	}
+	return NULL;
+}
+
+DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
+{
+	DKASSERT_DEBUG(shader);
+	if (shader->codeData)
+	{
+		DKDataReader reader(shader->codeData);
+		if (reader.Length() > 0)
+		{
+			VkShaderModuleCreateInfo shaderModuleCreateInfo = { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
+			shaderModuleCreateInfo.codeSize = reader.Length();
+			shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(reader.Bytes());
+
+			VkShaderModule shaderModule;
+			VkResult res = vkCreateShaderModule(device, &shaderModuleCreateInfo, NULL, &shaderModule);
+			if (res == VK_SUCCESS)
+			{
+				DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
+				return module.SafeCast<DKShaderModule>();
+			}
+		}
+	}
+	return NULL;
+}
+
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)
+{
+	return NULL;
+}
+
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)
+{
 	return NULL;
 }
 

@@ -26,3 +26,22 @@ DKObject<DKCommandQueue> DKGraphicsDevice::CreateCommandQueue(void)
 {
 	return impl->CreateCommandQueue(this);
 }
+
+DKObject<DKShaderModule> DKGraphicsDevice::CreateShaderModule(DKShader* shader)
+{
+	if (shader)
+	{
+		return impl->CreateShaderModule(this, shader);
+	}
+	return NULL;
+}
+
+DKObject<DKRenderPipelineState> DKGraphicsDevice::CreateRenderPipeline(const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
+{
+	return impl->CreateRenderPipeline(this, desc, reflection);
+}
+
+DKObject<DKComputePipelineState> DKGraphicsDevice::CreateComputePipeline(const DKComputePipelineDescriptor& desc, DKPipelineReflection* reflection)
+{
+	return impl->CreateComputePipeline(this, desc, reflection);
+}

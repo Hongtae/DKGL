@@ -781,6 +781,9 @@
     <ClInclude Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.h">
       <Filter>src\BulletDynamics\Featherstone</Filter>
     </ClInclude>
+    <ClInclude Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.h">
+      <Filter>src\BulletDynamics\ConstraintSolver</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LinearMath\btAlignedAllocator.cpp">
@@ -1214,6 +1217,9 @@
     </ClCompile>
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp">
       <Filter>src\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp">
+      <Filter>src\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

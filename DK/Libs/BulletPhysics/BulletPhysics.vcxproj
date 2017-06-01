@@ -309,6 +309,7 @@
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btFixedConstraint.h" />
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btGearConstraint.h" />
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.h" />
+    <ClInclude Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.h" />
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.h" />
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btHinge2Constraint.h" />
     <ClInclude Include="src\BulletDynamics\ConstraintSolver\btHingeConstraint.h" />
@@ -514,6 +515,7 @@
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
+    <ClCompile Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btHinge2Constraint.cpp" />
     <ClCompile Include="src\BulletDynamics\ConstraintSolver\btHingeConstraint.cpp" />

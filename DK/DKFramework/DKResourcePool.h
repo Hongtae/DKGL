@@ -10,10 +10,6 @@
 #include "DKResource.h"
 #include "DKResourceLoader.h"
 
-#ifdef FindResource
-#undef FindResource
-#endif
-
 namespace DKFramework
 {
 	/**

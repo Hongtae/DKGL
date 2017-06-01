@@ -8,6 +8,10 @@
 #pragma once
 #include "../DKFoundation.h"
 
+#ifdef FindResource
+#undef FindResource
+#endif
+
 namespace DKFramework
 {
 	class DKResource;
