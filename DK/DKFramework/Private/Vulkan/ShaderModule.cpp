@@ -40,7 +40,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	}
 
 	// SPIRV-Cross test!
-	spirv_cross::Compiler comp(reinterpret_cast<const uint32_t*>(data), size);
+	spirv_cross::Compiler comp(reinterpret_cast<const uint32_t*>(data), size / sizeof(uint32_t));
 
 	// The SPIR-V is now parsed, and we can perform reflection on it.
 	spirv_cross::ShaderResources resources = comp.get_shader_resources();

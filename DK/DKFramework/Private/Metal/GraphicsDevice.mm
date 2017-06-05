@@ -9,6 +9,7 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 #include <stdexcept>
+#include "../../../Libs/SPIRV-Cross/src/spirv_msl.hpp"
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
 #include "../../DKPropertySet.h"
@@ -95,11 +96,45 @@ DKString GraphicsDevice::DeviceName(void) const
 	return DKString( device.name.UTF8String );
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* ctxt)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
 {
 	id<MTLCommandQueue> q = [device newCommandQueue];
-	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue([q autorelease], ctxt);
+	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue([q autorelease], dev);
 	return queue.SafeCast<DKCommandQueue>();
+}
+
+DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
+{
+    DKASSERT_DEBUG(shader);
+    if (shader->codeData)
+    {
+        DKDataReader reader(shader->codeData);
+        if (reader.Length() > 0)
+        {
+            spirv_cross::CompilerMSL compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+            spirv_cross::CompilerMSL::Options options;
+            options.flip_vert_y = false;
+            options.is_rendering_points = true;
+            options.pad_and_pack_uniform_structs = false;
+            options.entry_point_name = (const char*)DKStringU8(shader->entryPoint);
+
+            compiler.set_options(options);
+            std::string source = compiler.compile();
+
+            NSLog(@"MSL Source: Entry-point:%s\n%s", options.entry_point_name.c_str(), source.c_str());
+        }
+    }
+    return NULL;
+}
+
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)
+{
+    return NULL;
+}
+
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)
+{
+    return NULL;
 }
 
 #endif //#if DKGL_ENABLE_METAL

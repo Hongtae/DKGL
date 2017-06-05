@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8420EDFB1EE5B3E300A20933 /* btGeneric6DofSpring2Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D7626E1EC3489500158097 /* btGeneric6DofSpring2Constraint.cpp */; };
+		8420EDFC1EE5B3E300A20933 /* btGeneric6DofSpring2Constraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D7626F1EC3489500158097 /* btGeneric6DofSpring2Constraint.h */; };
 		84427F8217CC8BC600095E62 /* btCompoundFromGimpact.h in Headers */ = {isa = PBXBuildFile; fileRef = 84427F8117CC8BC600095E62 /* btCompoundFromGimpact.h */; };
 		84427F8317CC8BC600095E62 /* btCompoundFromGimpact.h in Headers */ = {isa = PBXBuildFile; fileRef = 84427F8117CC8BC600095E62 /* btCompoundFromGimpact.h */; };
 		844920A2183F514400AD77B2 /* btCompoundCompoundCollisionAlgorithm.h in Headers */ = {isa = PBXBuildFile; fileRef = 8449209E183F514400AD77B2 /* btCompoundCompoundCollisionAlgorithm.h */; };
@@ -2086,6 +2088,7 @@
 				84C996B313C8958D00B28333 /* btAlignedAllocator.h in Headers */,
 				84C996B513C8958D00B28333 /* btAlignedObjectArray.h in Headers */,
 				84C996B913C8958D00B28333 /* btConvexHull.h in Headers */,
+				8420EDFC1EE5B3E300A20933 /* btGeneric6DofSpring2Constraint.h in Headers */,
 				84492278183F519700AD77B2 /* btDantzigLCP.h in Headers */,
 				84C996BD13C8958D00B28333 /* btConvexHullComputer.h in Headers */,
 				84492274183F519700AD77B2 /* btMultiBodySolverConstraint.h in Headers */,
@@ -2356,6 +2359,7 @@
 				84C993A913C8958D00B28333 /* btDbvt.cpp in Sources */,
 				84C993AD13C8958D00B28333 /* btDbvtBroadphase.cpp in Sources */,
 				84C993B113C8958D00B28333 /* btDispatcher.cpp in Sources */,
+				8420EDFB1EE5B3E300A20933 /* btGeneric6DofSpring2Constraint.cpp in Sources */,
 				8449224E183F519700AD77B2 /* btSimpleDynamicsWorld.cpp in Sources */,
 				84C993B913C8958D00B28333 /* btOverlappingPairCache.cpp in Sources */,
 				84C993BF13C8958D00B28333 /* btQuantizedBvh.cpp in Sources */,
