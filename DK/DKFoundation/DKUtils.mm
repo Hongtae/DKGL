@@ -13,7 +13,7 @@
 #warning Compiling DKUtils for iOS
 #import <UIKit/UIKit.h>
 #else
-#warning Compiling DKUtils for Mac OS X
+#warning Compiling DKUtils for macOS
 #import <AppKit/AppKit.h>
 #endif	// if TARGET_OS_IPHONE
 

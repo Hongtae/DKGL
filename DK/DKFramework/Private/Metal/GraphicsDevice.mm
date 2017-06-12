@@ -1,6 +1,6 @@
 //
 //  File: GraphicsDevice.mm
-//  Platform: OS X, iOS
+//  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -12,6 +12,7 @@
 #include "../../../Libs/SPIRV-Cross/src/spirv_msl.hpp"
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
+#include "ShaderModule.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework
@@ -106,25 +107,67 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
 {
     DKASSERT_DEBUG(shader);
+
+    DKObject<DKShaderModule> module = NULL;
     if (shader->codeData)
     {
         DKDataReader reader(shader->codeData);
         if (reader.Length() > 0)
         {
-            spirv_cross::CompilerMSL compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
-            spirv_cross::CompilerMSL::Options options;
+            DKStringU8 spirvEntryPoint(shader->entryPoint);
+
+            class Compiler : public spirv_cross::CompilerMSL
+            {
+            public:
+                using Super = spirv_cross::CompilerMSL;
+                using Super::Options;
+                using Super::Super;
+                using Super::clean_func_name;
+                using Super::ensure_valid_name;
+            };
+            Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+            Compiler::Options options;
             options.flip_vert_y = false;
             options.is_rendering_points = true;
             options.pad_and_pack_uniform_structs = false;
-            options.entry_point_name = (const char*)DKStringU8(shader->entryPoint);
+            options.entry_point_name = (const char*)spirvEntryPoint;
 
             compiler.set_options(options);
-            std::string source = compiler.compile();
 
-            NSLog(@"MSL Source: Entry-point:%s\n%s", options.entry_point_name.c_str(), source.c_str());
+            @autoreleasepool {
+                NSString* entryPoint = [NSString stringWithUTF8String:compiler.clean_func_name((const char*)spirvEntryPoint).c_str()];
+                NSString* source = [NSString stringWithUTF8String:compiler.compile().c_str()];
+
+                NSLog(@"MSL Source: Entry-point:\"%@\" (spirv:\"%s\")\n%@", entryPoint, (const char*)spirvEntryPoint, source);
+
+                NSError* compileError = nil;
+                MTLCompileOptions* compileOptions = [[[MTLCompileOptions alloc] init] autorelease];
+                compileOptions.fastMathEnabled = NO;
+
+                id<MTLLibrary> library = [device newLibraryWithSource:source
+                                                              options:compileOptions
+                                                                error:&compileError];
+
+                if (compileError)
+                {
+                    NSLog(@"MTLLibrary compile error: %@", [compileError localizedDescription]);
+                }
+                if (library)
+                {
+                    NSLog(@"MTLLibrary: %@", library);
+                    id<MTLFunction> fn = [library newFunctionWithName:entryPoint];
+                    if (fn)
+                    {
+                        module = DKOBJECT_NEW ShaderModule(dev, library, fn);
+                        [fn release];
+                    }
+                    NSLog(@"MTLFunction: %@", fn);
+                    [library release];
+                }
+            }
         }
     }
-    return NULL;
+    return module;
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)

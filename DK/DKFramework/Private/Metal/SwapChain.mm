@@ -1,6 +1,6 @@
 //
 //  File: SwapChain.mm
-//  Platform: OS X, iOS
+//  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -65,7 +65,13 @@ bool SwapChain::Setup(void)
 
 		this->metalLayer = [[CAMetalLayer layer] retain];
 
+#if 1
 		[view setLayer:this->metalLayer];
+#else
+        [view makeBackingLayer];
+        [view.layer addSublayer:this->metalLayer];
+        this->metalLayer.frame = view.layer.bounds;
+#endif
 		NSWindow* window = view.window;
 		if (window)
 			this->metalLayer.contentsScale = window.backingScaleFactor;
@@ -153,6 +159,9 @@ void SwapChain::SetupFrame(void)
 		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 
 		this->metalLayer.pixelFormat = PixelFormat::From(colorPixelFormat);
+
+        CGRect frame = this->metalLayer.frame;
+        DKASSERT_DEBUG(frame.size.width > 0 && frame.size.height > 0);
 
 		id<CAMetalDrawable> drawable = [this->metalLayer nextDrawable];
 		if (drawable)

@@ -107,6 +107,14 @@
 		8406AE0A1706CD1D00F8963C /* DKCollisionObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8406AE071706CD1D00F8963C /* DKCollisionObject.cpp */; };
 		8406AE0B1706CD1D00F8963C /* DKCollisionObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8406AE081706CD1D00F8963C /* DKCollisionObject.h */; };
 		8406AE0C1706CD1D00F8963C /* DKCollisionObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8406AE081706CD1D00F8963C /* DKCollisionObject.h */; };
+		840A33D61EEECDFD002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
+		840A33D71EEECDFD002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
+		840A33D81EEECE5E002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
+		840A33D91EEECE5E002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
+		840A33DA1EEECE5F002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
+		840A33DB1EEECE5F002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
+		840A33DC1EEECE61002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
+		840A33DD1EEECE61002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
 		840C3DF8178D396600F57A8D /* DKObjectRefCounter.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */; };
 		840C3DF9178D396600F57A8D /* DKObjectRefCounter.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */; };
 		840C3DFA178D396D00F57A8D /* DKAllocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E493141DD4B70091D2C0 /* DKAllocator.cpp */; };
@@ -2064,6 +2072,8 @@
 		8405EBDB15BEF75400E91EEF /* BulletPhysics.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BulletPhysics.xcodeproj; path = BulletPhysics/BulletPhysics.xcodeproj; sourceTree = "<group>"; };
 		8406AE071706CD1D00F8963C /* DKCollisionObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKCollisionObject.cpp; sourceTree = "<group>"; };
 		8406AE081706CD1D00F8963C /* DKCollisionObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKCollisionObject.h; sourceTree = "<group>"; };
+		840A33D41EEECDFD002F57C5 /* ShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderModule.h; sourceTree = "<group>"; };
+		840A33D51EEECDFD002F57C5 /* ShaderModule.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShaderModule.mm; sourceTree = "<group>"; };
 		840C3DF4178D396600F57A8D /* DKObjectRefCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKObjectRefCounter.cpp; sourceTree = "<group>"; };
 		840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKObjectRefCounter.h; sourceTree = "<group>"; };
 		840CA4ED1928946800689BB6 /* DK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2601,6 +2611,8 @@
 				8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */,
 				8458E6D21E44587300871311 /* RenderTarget.h */,
 				8458E6D11E44587300871311 /* RenderTarget.mm */,
+				840A33D41EEECDFD002F57C5 /* ShaderModule.h */,
+				840A33D51EEECDFD002F57C5 /* ShaderModule.mm */,
 				8447CB3E1E379C2200E02637 /* SwapChain.h */,
 				8447CB3F1E379C2200E02637 /* SwapChain.mm */,
 				84219C1E1E40E5E30046B099 /* Texture.h */,
@@ -3462,6 +3474,7 @@
 				840CA5FD1928952800689BB6 /* DKResourcePool.h in Headers */,
 				8436CDC71928A78900F18892 /* DKCircularQueue.h in Headers */,
 				840CA5F91928952800689BB6 /* DKResource.h in Headers */,
+				840A33DA1EEECE5F002F57C5 /* ShaderModule.h in Headers */,
 				840CA6381928952800689BB6 /* DKVKey.h in Headers */,
 				84D8AF721E002892005059F7 /* Window.h in Headers */,
 				840CA5AC1928952800689BB6 /* DKConeTwistConstraint.h in Headers */,
@@ -3590,6 +3603,7 @@
 				666ECB101DB180A000354463 /* DKGraphicsDeviceInterface.h in Headers */,
 				84798C2D19E51E7F009378A6 /* DKAudioPlayer.h in Headers */,
 				84798C8219E51E80009378A6 /* DKVector4.h in Headers */,
+				840A33DC1EEECE61002F57C5 /* ShaderModule.h in Headers */,
 				84798C8D19E51E96009378A6 /* DKAllocator.h in Headers */,
 				84798C4D19E51E7F009378A6 /* DKLinearTransform3.h in Headers */,
 				84798C7F19E51E80009378A6 /* DKVariant.h in Headers */,
@@ -3795,6 +3809,7 @@
 				84211D141665E89700B9B9A2 /* DKCamera.h in Headers */,
 				84211D151665E89700B9B9A2 /* DKCapsuleShape.h in Headers */,
 				84211D171665E89700B9B9A2 /* DKCollisionShape.h in Headers */,
+				840A33D81EEECE5E002F57C5 /* ShaderModule.h in Headers */,
 				84211D181665E89700B9B9A2 /* DKColor.h in Headers */,
 				84211D191665E89700B9B9A2 /* DKCompoundShape.h in Headers */,
 				84211D1A1665E89700B9B9A2 /* DKConeShape.h in Headers */,
@@ -3968,6 +3983,7 @@
 				8458E6D61E44587300871311 /* TextureBaseT.h in Headers */,
 				84211C511665E86300B9B9A2 /* DKStringUE.h in Headers */,
 				84F224BD1EE503220053F08B /* RenderCommandEncoder.h in Headers */,
+				840A33D61EEECDFD002F57C5 /* ShaderModule.h in Headers */,
 				84211C521665E86300B9B9A2 /* DKStringW.h in Headers */,
 				84211C531665E86300B9B9A2 /* DKThread.h in Headers */,
 				84211C541665E86300B9B9A2 /* DKTimer.h in Headers */,
@@ -4605,6 +4621,7 @@
 				840CA6051928952800689BB6 /* DKSerializer.cpp in Sources */,
 				8436CDCF1928A78900F18892 /* DKDateTime.cpp in Sources */,
 				840CA5901928952800689BB6 /* DKAudioPlayer.cpp in Sources */,
+				840A33DB1EEECE5F002F57C5 /* ShaderModule.mm in Sources */,
 				8436CDF81928A78900F18892 /* DKEventLoopTimer.cpp in Sources */,
 				840CA59E1928952800689BB6 /* DKCapsuleShape.cpp in Sources */,
 				840CA6171928952800689BB6 /* DKSpline.cpp in Sources */,
@@ -4836,6 +4853,7 @@
 				84798B8C19E51DFB009378A6 /* DKAllocator.cpp in Sources */,
 				84798B8F19E51DFB009378A6 /* DKBuffer.cpp in Sources */,
 				84798BAE19E51DFB009378A6 /* DKXmlDocument.cpp in Sources */,
+				840A33DD1EEECE61002F57C5 /* ShaderModule.mm in Sources */,
 				84798BE519E51E48009378A6 /* DKPlane.cpp in Sources */,
 				84798B9119E51DFB009378A6 /* DKCondition.cpp in Sources */,
 				842BF1541E0AB209007D58B0 /* Window.mm in Sources */,
@@ -4984,6 +5002,7 @@
 				84211BF41665E7FD00B9B9A2 /* DKSpline.cpp in Sources */,
 				84211BF61665E7FD00B9B9A2 /* DKStaticPlaneShape.cpp in Sources */,
 				84211BF81665E7FD00B9B9A2 /* DKStaticTriangleMeshShape.cpp in Sources */,
+				840A33D91EEECE5E002F57C5 /* ShaderModule.mm in Sources */,
 				840C3E2A178D396E00F57A8D /* DKFileMap.cpp in Sources */,
 				842BF1481E0AB206007D58B0 /* Window.mm in Sources */,
 				840C3E27178D396E00F57A8D /* DKError.cpp in Sources */,
@@ -5052,6 +5071,7 @@
 				84211AC21665E7FC00B9B9A2 /* DKCamera.cpp in Sources */,
 				840C3E12178D396D00F57A8D /* DKSpinLock.cpp in Sources */,
 				84211AC41665E7FC00B9B9A2 /* DKCapsuleShape.cpp in Sources */,
+				840A33D71EEECDFD002F57C5 /* ShaderModule.mm in Sources */,
 				846A2D501E40F29D009F117C /* CommandQueue.cpp in Sources */,
 				840C3E1A178D396D00F57A8D /* DKXmlDocument.cpp in Sources */,
 				84211AC81665E7FC00B9B9A2 /* DKCollisionShape.cpp in Sources */,

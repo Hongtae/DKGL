@@ -83,10 +83,10 @@
 #		define DKGL_APPLE_OSX 1
 #		ifdef DKGL_DYNAMIC		// dylib or Framework
 #			define DKGL_API	__attribute__((visibility ("default")))
-#			warning Build DK for Mac OS X Dynamic Library.
+#			warning Build DK for macOS Dynamic Library.
 #		else
 #			define DKGL_API
-#			warning Build DK for Mac OS X Static Library.
+#			warning Build DK for macOS Static Library.
 #		endif
 #	endif
 #endif //if defined(__APPLE__) && defined(__MACH__)

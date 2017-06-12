@@ -232,20 +232,30 @@ void Window::Minimize(void)
 
 void Window::SetOrigin(const DKPoint& pt)
 {
+    CGPoint origin = CGPointMake(pt.x, pt.y);
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		CGRect frame = view.frame;
-		frame.origin = CGPointMake(pt.x, pt.y);
+		frame.origin = origin;
 		view.frame = frame;
 	});
 }
 
 void Window::Resize(const DKSize& s, const DKPoint* pt)
 {
+    CGSize size = CGSizeMake(s.width, s.height);
+    CGPoint origin;
+    BOOL updateOrigin = NO;
+    if (pt)
+    {
+        origin = CGPointMake(pt-x, pt->y);
+        updateOrigin = YES;
+    }
+    
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		CGRect frame = view.frame;
-		frame.size = CGSizeMake(s.width, s.height);
-		if (pt)
-			frame.origin = CGPointMake(pt->x, pt->y);
+		frame.size = size;
+		if (updateOrigin)
+			frame.origin = origin;
 
 		view.frame = frame;
 	});

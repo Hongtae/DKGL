@@ -29,7 +29,7 @@ namespace DKFramework
 	///
 	/// @note
 	///   This class using system provided GUI system window.
-	///   Microsoft Windows, Apple Mac OS X, Apple iOS are supported by default.
+	///   Microsoft Windows, Apple macOS, Apple iOS are supported by default.
 	///   You need to implement window interface class to use on other platforms.
 	///   (see DKFramework/Interface/DKWindowInterface.h)
 	/// @see DKWindowInterface

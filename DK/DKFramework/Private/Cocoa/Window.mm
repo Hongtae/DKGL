@@ -327,13 +327,14 @@ void Window::Minimize(void)
 
 void Window::SetOrigin(const DKPoint& pt)
 {
+    NSPoint origin = NSMakePoint(pt.x, pt.y);
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		if (view.window && view.window.contentView == view)
-			[view.window setFrameOrigin:NSMakePoint(pt.x, pt.y)];
+			[view.window setFrameOrigin:origin];
 		else
 		{
 			NSRect frame = view.frame;
-			frame.origin = NSMakePoint(pt.x, pt.y);
+			frame.origin = origin;
 			view.frame = frame;
 		}
 	});
@@ -341,20 +342,29 @@ void Window::SetOrigin(const DKPoint& pt)
 
 void Window::Resize(const DKSize& s, const DKPoint* pt)
 {
+    NSSize size = NSMakeSize(s.width, s.height);
+    NSPoint origin;
+    BOOL updateOrigin = NO;
+    if (pt)
+    {
+        origin = NSMakePoint(pt->x, pt->y);
+        updateOrigin = YES;
+    }
+
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		if (view.window && view.window.contentView == view)
 		{
-			view.window.contentSize = NSMakeSize(s.width, s.height);
-			if (pt)
-				[view.window setFrameOrigin:NSMakePoint(pt->x, pt->y)];
+			view.window.contentSize = size;
+			if (updateOrigin)
+				[view.window setFrameOrigin:origin];
 			[view.window displayIfNeeded];
 		}
 		else
 		{
 			NSRect frame = view.frame;
-			frame.size = NSMakeSize(s.width, s.height);
-			if (pt)
-				frame.origin = NSMakePoint(pt->x, pt->y);
+			frame.size = size;
+			if (updateOrigin)
+				frame.origin = origin;
 			view.frame = frame;
 			if (view.window)
 				[view.window layoutIfNeeded];

@@ -44,7 +44,7 @@ namespace DKFramework
 	///   use DKLib together, you can create proxy window with created from other UI
 	///   tools, and you can create and attach screen into that window.
 	///
-	///   On some platforms (OS X, iOS includes) a window object should be created
+	///   On some platforms (macOS, iOS includes) a window object should be created
 	///   on main thread.
 	///
 	///   On iOS, calling Terminate() will terminate current process and will not

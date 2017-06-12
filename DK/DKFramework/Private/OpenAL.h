@@ -2,7 +2,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // OpenAL library
-// Project DK requires OpenAL-soft except for darwin (OS X / iOS).
+// Project DK requires OpenAL-soft except for darwin (macOS / iOS).
 // You may want to use dynamic-library(dll) version of OpenAL,
 // because it was released under 'LGPL' licensed.
 // see OpenAL/COPYING
