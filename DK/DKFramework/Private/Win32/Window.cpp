@@ -421,7 +421,7 @@ void Window::Minimize(void)
 		::ShowWindow(hWnd, SW_MINIMIZE);
 }
 
-void Window::SetOrigin(const DKPoint& pt)
+void Window::SetOrigin(DKPoint pt)
 {
 	int x = floor(pt.x + 0.5f);
 	int y = floor(pt.y + 0.5f);
@@ -430,7 +430,7 @@ void Window::SetOrigin(const DKPoint& pt)
 		::SetWindowPos(hWnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
-void Window::Resize(const DKSize& s, const DKPoint* pt)
+void Window::Resize(DKSize s, const DKPoint* pt)
 {
 	int w = floor(s.width + 0.5);
 	int h = floor(s.height + 0.5);
@@ -485,7 +485,7 @@ DKString Window::Title(void) const
 	return ret;
 }
 
-void Window::SetMousePosition(int deviceId, const DKPoint& pt)
+void Window::SetMousePosition(int deviceId, DKPoint pt)
 {
 	if (deviceId != 0)
 		return;

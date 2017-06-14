@@ -49,14 +49,14 @@ namespace DKFramework
 				void Activate(void);
 				void Minimize(void);
 
-				void SetOrigin(const DKPoint&);
-				void Resize(const DKSize&, const DKPoint* optionalOrigin);
+				void SetOrigin(DKPoint);
+				void Resize(DKSize, const DKPoint* optionalOrigin);
 				double ContentScaleFactor(void) const;  // logical coords by pixel ratio.
 
 				void SetTitle(const DKString& title);
 				DKString Title(void) const;
 
-				void SetMousePosition(int deviceId, const DKPoint& pt);
+				void SetMousePosition(int deviceId, DKPoint pt);
 				DKPoint MousePosition(int deviceId) const;
 
 				void EnableTextInput(int deviceId, bool enable);

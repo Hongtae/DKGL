@@ -44,15 +44,15 @@ namespace DKFramework
 		virtual void Minimize(void) = 0;
 
 		/// Window's origin, size is based on system GUI coordinates.
-		virtual void SetOrigin(const DKPoint&) = 0;
-		virtual void Resize(const DKSize&, const DKPoint* optionalOrigin) = 0;
+		virtual void SetOrigin(DKPoint) = 0;
+		virtual void Resize(DKSize, const DKPoint* optionalOrigin) = 0;
 
 		virtual double ContentScaleFactor(void) const = 0;  ///< logical coords by pixel ratio.
 
 		virtual void SetTitle(const DKString& title) = 0;
 		virtual DKString Title(void) const = 0;
 
-		virtual void SetMousePosition(int deviceId, const DKPoint& pt) = 0;
+		virtual void SetMousePosition(int deviceId, DKPoint pt) = 0;
 		virtual DKPoint MousePosition(int deviceId) const = 0;
 
 		virtual void EnableTextInput(int deviceId, bool enable) = 0;

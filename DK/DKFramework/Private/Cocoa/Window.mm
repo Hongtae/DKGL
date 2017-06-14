@@ -325,7 +325,7 @@ void Window::Minimize(void)
 	});
 }
 
-void Window::SetOrigin(const DKPoint& pt)
+void Window::SetOrigin(DKPoint pt)
 {
     NSPoint origin = NSMakePoint(pt.x, pt.y);
 	dispatch_async(dispatch_get_main_queue(), ^(){
@@ -340,7 +340,7 @@ void Window::SetOrigin(const DKPoint& pt)
 	});
 }
 
-void Window::Resize(const DKSize& s, const DKPoint* pt)
+void Window::Resize(DKSize s, const DKPoint* pt)
 {
     NSSize size = NSMakeSize(s.width, s.height);
     NSPoint origin;
@@ -398,7 +398,7 @@ DKString Window::Title(void) const
 	});
 }
 
-void Window::SetMousePosition(int deviceId, const DKPoint& pt)
+void Window::SetMousePosition(int deviceId, DKPoint pt)
 {
 	if (deviceId == 0)
 	{

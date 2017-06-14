@@ -230,7 +230,7 @@ void Window::Minimize(void)
 {
 }
 
-void Window::SetOrigin(const DKPoint& pt)
+void Window::SetOrigin(DKPoint pt)
 {
     CGPoint origin = CGPointMake(pt.x, pt.y);
 	dispatch_async(dispatch_get_main_queue(), ^(){
@@ -240,14 +240,14 @@ void Window::SetOrigin(const DKPoint& pt)
 	});
 }
 
-void Window::Resize(const DKSize& s, const DKPoint* pt)
+void Window::Resize(DKSize s, const DKPoint* pt)
 {
     CGSize size = CGSizeMake(s.width, s.height);
     CGPoint origin;
     BOOL updateOrigin = NO;
     if (pt)
     {
-        origin = CGPointMake(pt-x, pt->y);
+        origin = CGPointMake(pt->x, pt->y);
         updateOrigin = YES;
     }
     
@@ -285,7 +285,7 @@ DKString Window::Title(void) const
 	});
 }
 
-void Window::SetMousePosition(int deviceId, const DKPoint& pt)
+void Window::SetMousePosition(int deviceId, DKPoint pt)
 {
 }
 
