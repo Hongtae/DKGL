@@ -34,6 +34,7 @@ using namespace DKFramework::Private::Metal;
 
 
 GraphicsDevice::GraphicsDevice(void)
+: device(nil)
 {
 	@autoreleasepool {
 #if !TARGET_OS_IPHONE
@@ -71,7 +72,18 @@ GraphicsDevice::GraphicsDevice(void)
 
 			DKString deviceName = DKString(dev.name.UTF8String);
 			deviceList.Array().Add(deviceName);
-			DKLog("METAL: Device[%u]: \"%s\"%s", deviceIndex, dev.name.UTF8String, pref? " (Preferred)" : "");
+			DKLog("MTLDevice[%u]: \"%s\" (depth24Stencil8PixelFormatSupported:%d, headless:%d, lowPower:%d, maxThreadsPerThreadgroup:%dx%dx%d, recommendedMaxWorkingSetSize:%s%s)",
+                  deviceIndex,
+                  dev.name.UTF8String,
+                  (int)dev.depth24Stencil8PixelFormatSupported,
+                  (int)dev.headless,
+                  (int)dev.lowPower,
+                  (int)dev.maxThreadsPerThreadgroup.width,
+                  (int)dev.maxThreadsPerThreadgroup.height,
+                  (int)dev.maxThreadsPerThreadgroup.depth,
+                  [NSByteCountFormatter stringFromByteCount:dev.recommendedMaxWorkingSetSize
+                                                 countStyle:NSByteCountFormatterCountStyleMemory].UTF8String,
+                  pref? ", Preferred" : "");
 			deviceIndex++;
 		}
 		DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
@@ -158,6 +170,9 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                     id<MTLFunction> fn = [library newFunctionWithName:entryPoint];
                     if (fn)
                     {
+//                        NSDictionary<NSString*, MTLFunctionConstant*>* constants = fn.functionConstantsDictionary;
+//                        NSLog(@"functionConstantsDictionary: %@", constants);
+
                         module = DKOBJECT_NEW ShaderModule(dev, library, fn);
                         [fn release];
                     }

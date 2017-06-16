@@ -9,7 +9,7 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 #include <TargetConditionals.h>
-#import <MetalKit/MTKView.h>
+#import <AppKit/AppKit.h>
 
 #include "SwapChain.h"
 #include "PixelFormat.h"
@@ -60,17 +60,17 @@ bool SwapChain::Setup(void)
 #else
 	if ([handle isKindOfClass:[NSView class]])
 	{
-		NSView* view = (NSView*)handle;
-		[view setWantsLayer:YES];
-
 		this->metalLayer = [[CAMetalLayer layer] retain];
 
+		NSView* view = (NSView*)handle;
+		view.wantsLayer = YES;
 #if 1
+		view.layer = this->metalLayer;
 		[view setLayer:this->metalLayer];
 #else
-        [view makeBackingLayer];
-        [view.layer addSublayer:this->metalLayer];
-        this->metalLayer.frame = view.layer.bounds;
+		[view makeBackingLayer];
+		[view.layer addSublayer:this->metalLayer];
+		this->metalLayer.frame = view.layer.bounds;
 #endif
 		NSWindow* window = view.window;
 		if (window)

@@ -20,11 +20,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib, id<MTLFunc
 , device(dev)
 {
     library = [lib retain];
-
-    NSString* name = func.name;
-    NSDictionary<NSString*, MTLFunctionConstant*>* constants = func.functionConstantsDictionary;
-
-    NSLog(@"dict: %@", constants);
+    entryPoint = [func retain];
 }
 
 ShaderModule::~ShaderModule(void)
