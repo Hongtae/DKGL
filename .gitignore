@@ -58,8 +58,8 @@ __pycache__/
 docs/*/
 
 # project settings
-Build/**
-DK/Libs/Build/**
+Build/
+DK/Libs/Build/
 
 # Visual Studio 2015 and later
 *.VC.db

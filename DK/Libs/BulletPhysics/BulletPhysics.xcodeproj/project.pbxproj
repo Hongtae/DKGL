@@ -717,7 +717,6 @@
 		84C996E813C8958D00B28333 /* btTransformUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C9938213C8958D00B28333 /* btTransformUtil.h */; };
 		84C996E913C8958D00B28333 /* btVector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C9938313C8958D00B28333 /* btVector3.h */; };
 		84C996EA13C8958D00B28333 /* btVector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C9938313C8958D00B28333 /* btVector3.h */; };
-		84D762561EC3480200158097 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 84D762541EC3480200158097 /* README.md */; };
 		84D7626A1EC3486F00158097 /* btComputeGjkEpaPenetration.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D762661EC3486F00158097 /* btComputeGjkEpaPenetration.h */; };
 		84D7626B1EC3486F00158097 /* btGjkCollisionDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D762671EC3486F00158097 /* btGjkCollisionDescription.h */; };
 		84D7626C1EC3486F00158097 /* btGjkEpa3.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D762681EC3486F00158097 /* btGjkEpa3.h */; };
@@ -2265,7 +2264,6 @@
 				84C9946E13C8958D00B28333 /* btHeightfieldTerrainShape.cpp in Sources */,
 				84C9947413C8958D00B28333 /* btMinkowskiSumShape.cpp in Sources */,
 				84C9947813C8958D00B28333 /* btMultimaterialTriangleMeshShape.cpp in Sources */,
-				84D762561EC3480200158097 /* README.md in Sources */,
 				84C9947C13C8958D00B28333 /* btMultiSphereShape.cpp in Sources */,
 				84C9948013C8958D00B28333 /* btOptimizedBvh.cpp in Sources */,
 				84492219183F519700AD77B2 /* btHinge2Constraint.cpp in Sources */,

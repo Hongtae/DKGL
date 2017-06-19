@@ -222,6 +222,7 @@ void Window::Activate(void)
 {
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		view.hidden = NO;
+		[window makeKeyAndVisible];
 		[view becomeFirstResponder];
 	});
 }

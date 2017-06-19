@@ -1369,6 +1369,14 @@
 		84AAAD9B1EF12B9E00F370F5 /* DKShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224C21EE503960053F08B /* DKShader.cpp */; };
 		84AAAD9C1EF12B9E00F370F5 /* DKShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C31EE503960053F08B /* DKShader.h */; };
 		84AAAD9D1EF12B9E00F370F5 /* DKShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderModule.h */; };
+		84B673E51EF7C3210058F553 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E41EF7C3210058F553 /* OpenAL.framework */; };
+		84B673E71EF7C33F0058F553 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E61EF7C33F0058F553 /* AppKit.framework */; };
+		84B673E91EF7C3570058F553 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E81EF7C3570058F553 /* Metal.framework */; };
+		84B673EB1EF7C36D0058F553 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673EA1EF7C36D0058F553 /* QuartzCore.framework */; };
+		84B673EC1EF7C3CA0058F553 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E41EF7C3210058F553 /* OpenAL.framework */; };
+		84B673ED1EF7C3FE0058F553 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673EA1EF7C36D0058F553 /* QuartzCore.framework */; };
+		84B673EE1EF7C3FE0058F553 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E81EF7C3570058F553 /* Metal.framework */; };
+		84B673F01EF7C4180058F553 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673EF1EF7C4180058F553 /* UIKit.framework */; };
 		84C3D8BD1E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
 		84C3D8BE1E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
 		84C3D8BF1E9D09BE0003222C /* DKLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */; };
@@ -1406,13 +1414,6 @@
 		84D8AF771E002892005059F7 /* Application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840D5DCB1DDA1C69009DA369 /* Application.mm */; };
 		84DB573D1DFD90CF00ED5E38 /* Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DB573C1DFD90CF00ED5E38 /* Window.mm */; };
 		84DB573F1DFD90DB00ED5E38 /* Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DB573E1DFD90DB00ED5E38 /* Window.h */; };
-		84F16D9B1E1571AE0013DD29 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16D9A1E1571AE0013DD29 /* UIKit.framework */; };
-		84F16D9D1E1572270013DD29 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16D9C1E1572270013DD29 /* OpenAL.framework */; };
-		84F16DB31E157EE00013DD29 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16DB21E157EE00013DD29 /* Metal.framework */; };
-		84F16DB41E157EF60013DD29 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16DA01E15726E0013DD29 /* QuartzCore.framework */; };
-		84F16DB81E157F140013DD29 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16D961E1571110013DD29 /* AppKit.framework */; };
-		84F16DB91E157F140013DD29 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16DB01E157EAE0013DD29 /* Metal.framework */; };
-		84F16DBA1E157F140013DD29 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F16D981E1571380013DD29 /* OpenAL.framework */; };
 		84F16DBF1E1584740013DD29 /* DKCommandQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DBE1E1584740013DD29 /* DKCommandQueue.h */; };
 		84F16DD21E1592830013DD29 /* CommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DCE1E1592830013DD29 /* CommandBuffer.h */; };
 		84F16DD31E1592830013DD29 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DCF1E1592830013DD29 /* CommandBuffer.mm */; };
@@ -2402,6 +2403,11 @@
 		84B43D4F15D0F9A700C7A681 /* DKRational.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKRational.cpp; sourceTree = "<group>"; };
 		84B43D5015D0F9A700C7A681 /* DKRational.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRational.h; sourceTree = "<group>"; };
 		84B43E0015D1001600C7A681 /* DKMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKMath.h; sourceTree = "<group>"; };
+		84B673E41EF7C3210058F553 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		84B673E61EF7C33F0058F553 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		84B673E81EF7C3570058F553 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		84B673EA1EF7C36D0058F553 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		84B673EF1EF7C4180058F553 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		84BBE622164AD2D100B9B7F1 /* DKConeTwistConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKConeTwistConstraint.cpp; sourceTree = "<group>"; };
 		84BBE623164AD2D100B9B7F1 /* DKConeTwistConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKConeTwistConstraint.h; sourceTree = "<group>"; };
 		84BBE626164AD2D100B9B7F1 /* DKFixedConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKFixedConstraint.cpp; sourceTree = "<group>"; };
@@ -2447,13 +2453,6 @@
 		84E42A5D13AF8B4200BF31EA /* libDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84F03CE2145D3AF300EDFD66 /* DKBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKBufferStream.cpp; sourceTree = "<group>"; };
 		84F03CE3145D3AF300EDFD66 /* DKBufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKBufferStream.h; sourceTree = "<group>"; };
-		84F16D961E1571110013DD29 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		84F16D981E1571380013DD29 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		84F16D9A1E1571AE0013DD29 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		84F16D9C1E1572270013DD29 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk/System/Library/Frameworks/OpenAL.framework; sourceTree = DEVELOPER_DIR; };
-		84F16DA01E15726E0013DD29 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
-		84F16DB01E157EAE0013DD29 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
-		84F16DB21E157EE00013DD29 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
 		84F16DBE1E1584740013DD29 /* DKCommandQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCommandQueue.h; sourceTree = "<group>"; };
 		84F16DCE1E1592830013DD29 /* CommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandBuffer.h; sourceTree = "<group>"; };
 		84F16DCF1E1592830013DD29 /* CommandBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandBuffer.mm; sourceTree = "<group>"; };
@@ -2492,10 +2491,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84B673EB1EF7C36D0058F553 /* QuartzCore.framework in Frameworks */,
+				84B673E91EF7C3570058F553 /* Metal.framework in Frameworks */,
+				84B673E71EF7C33F0058F553 /* AppKit.framework in Frameworks */,
+				84B673E51EF7C3210058F553 /* OpenAL.framework in Frameworks */,
 				849B240A1EB4C2CF0033C44C /* libSPIRV-Cross_macOS.a in Frameworks */,
-				84F16DB81E157F140013DD29 /* AppKit.framework in Frameworks */,
-				84F16DB91E157F140013DD29 /* Metal.framework in Frameworks */,
-				84F16DBA1E157F140013DD29 /* OpenAL.framework in Frameworks */,
 				66DA12A11DADFFAA00B3056E /* libBulletPhysics_macOS.a in Frameworks */,
 				66DA12951DADFD5A00B3056E /* libbzip2_macOS.a in Frameworks */,
 				66DA12961DADFD5A00B3056E /* libCxImage_macOS.a in Frameworks */,
@@ -2516,19 +2516,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84B673F01EF7C4180058F553 /* UIKit.framework in Frameworks */,
+				84B673ED1EF7C3FE0058F553 /* QuartzCore.framework in Frameworks */,
 				849B240D1EB4C2E20033C44C /* libSPIRV-Cross_iOS.a in Frameworks */,
-				84F16DB31E157EE00013DD29 /* Metal.framework in Frameworks */,
-				84F16D9D1E1572270013DD29 /* OpenAL.framework in Frameworks */,
-				84F16DB41E157EF60013DD29 /* QuartzCore.framework in Frameworks */,
-				84F16D9B1E1571AE0013DD29 /* UIKit.framework in Frameworks */,
 				66DA12FD1DAE060E00B3056E /* libBulletPhysics_iOS.a in Frameworks */,
 				66DA12FE1DAE060E00B3056E /* libbzip2_iOS.a in Frameworks */,
+				84B673EC1EF7C3CA0058F553 /* OpenAL.framework in Frameworks */,
 				66DA12FF1DAE060E00B3056E /* libCxImage_iOS.a in Frameworks */,
 				66DA13001DAE060E00B3056E /* libFreeType_iOS.a in Frameworks */,
 				66DA13011DAE060E00B3056E /* libjpeg_iOS.a in Frameworks */,
 				66DA13021DAE060E00B3056E /* liblibFLAC_iOS.a in Frameworks */,
 				66DA13031DAE060E00B3056E /* liblibogg_iOS.a in Frameworks */,
 				66DA13041DAE060E00B3056E /* liblibpng_iOS.a in Frameworks */,
+				84B673EE1EF7C3FE0058F553 /* Metal.framework in Frameworks */,
 				66DA13051DAE060E00B3056E /* liblibtiff_iOS.a in Frameworks */,
 				66DA13061DAE060E00B3056E /* liblibvorbis_iOS.a in Frameworks */,
 				66DA13071DAE060E00B3056E /* liblibxml2_iOS.a in Frameworks */,
@@ -2830,6 +2830,9 @@
 		840CA4EE1928946800689BB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84B673EA1EF7C36D0058F553 /* QuartzCore.framework */,
+				84B673E81EF7C3570058F553 /* Metal.framework */,
+				84B673E41EF7C3210058F553 /* OpenAL.framework */,
 				841E55341A6CBFCD00741B62 /* iOS */,
 				841E55351A6CBFD600741B62 /* OSX */,
 			);
@@ -2839,10 +2842,7 @@
 		841E55341A6CBFCD00741B62 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				84F16DB21E157EE00013DD29 /* Metal.framework */,
-				84F16D9C1E1572270013DD29 /* OpenAL.framework */,
-				84F16DA01E15726E0013DD29 /* QuartzCore.framework */,
-				84F16D9A1E1571AE0013DD29 /* UIKit.framework */,
+				84B673EF1EF7C4180058F553 /* UIKit.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -2850,9 +2850,7 @@
 		841E55351A6CBFD600741B62 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				84F16D961E1571110013DD29 /* AppKit.framework */,
-				84F16DB01E157EAE0013DD29 /* Metal.framework */,
-				84F16D981E1571380013DD29 /* OpenAL.framework */,
+				84B673E61EF7C33F0058F553 /* AppKit.framework */,
 			);
 			name = OSX;
 			sourceTree = "<group>";

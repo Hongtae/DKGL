@@ -9,7 +9,11 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 #include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
 #import <AppKit/AppKit.h>
+#endif
 
 #include "SwapChain.h"
 #include "PixelFormat.h"
@@ -60,22 +64,30 @@ bool SwapChain::Setup(void)
 #else
 	if ([handle isKindOfClass:[NSView class]])
 	{
-		this->metalLayer = [[CAMetalLayer layer] retain];
-
 		NSView* view = (NSView*)handle;
-		view.wantsLayer = YES;
-#if 1
-		view.layer = this->metalLayer;
-		[view setLayer:this->metalLayer];
-#else
-		[view makeBackingLayer];
-		[view.layer addSublayer:this->metalLayer];
-		this->metalLayer.frame = view.layer.bounds;
-#endif
-		NSWindow* window = view.window;
-		if (window)
-			this->metalLayer.contentsScale = window.backingScaleFactor;
-		this->metalLayer.bounds = NSRectToCGRect(view.bounds);
+
+		void (^setupView)() = ^() {
+
+			this->metalLayer = [[CAMetalLayer layer] retain];
+
+			view.wantsLayer = YES;
+			view.layer = this->metalLayer;
+			[view setLayer:this->metalLayer];
+
+			NSWindow* window = view.window;
+			if (window)
+				this->metalLayer.contentsScale = window.backingScaleFactor;
+			this->metalLayer.bounds = NSRectToCGRect(view.bounds);
+		};
+
+		if ([NSThread isMainThread])
+		{
+			setupView();
+		}
+		else
+		{
+			dispatch_sync(dispatch_get_main_queue(), setupView);
+		}
 	}
 #endif
 
