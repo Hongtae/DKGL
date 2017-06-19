@@ -12,7 +12,9 @@
 #include "../../../Libs/SPIRV-Cross/src/spirv_msl.hpp"
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
-#include "ShaderModule.h"
+#include "ShaderFunction.h"
+#include "PixelFormat.h"
+#include "RenderPipelineState.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework
@@ -112,15 +114,15 @@ DKString GraphicsDevice::DeviceName(void) const
 DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
 {
 	id<MTLCommandQueue> q = [device newCommandQueue];
-	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue([q autorelease], dev);
+	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue(dev, [q autorelease]);
 	return queue.SafeCast<DKCommandQueue>();
 }
 
-DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
+DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice* dev, DKShader* shader)
 {
     DKASSERT_DEBUG(shader);
 
-    DKObject<DKShaderModule> module = NULL;
+    DKObject<DKShaderFunction> function = NULL;
     if (shader->codeData)
     {
         DKDataReader reader(shader->codeData);
@@ -150,11 +152,11 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                 NSString* entryPoint = [NSString stringWithUTF8String:compiler.clean_func_name((const char*)spirvEntryPoint).c_str()];
                 NSString* source = [NSString stringWithUTF8String:compiler.compile().c_str()];
 
-                NSLog(@"MSL Source: Entry-point:\"%@\" (spirv:\"%s\")\n%@", entryPoint, (const char*)spirvEntryPoint, source);
+                NSLog(@"MSL Source: Entry-point:\"%@\" (spirv:\"%s\")\n%@\n", entryPoint, (const char*)spirvEntryPoint, source);
 
                 NSError* compileError = nil;
                 MTLCompileOptions* compileOptions = [[[MTLCompileOptions alloc] init] autorelease];
-                compileOptions.fastMathEnabled = NO;
+                compileOptions.fastMathEnabled = YES;
 
                 id<MTLLibrary> library = [device newLibraryWithSource:source
                                                               options:compileOptions
@@ -173,7 +175,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 //                        NSDictionary<NSString*, MTLFunctionConstant*>* constants = fn.functionConstantsDictionary;
 //                        NSLog(@"functionConstantsDictionary: %@", constants);
 
-                        module = DKOBJECT_NEW ShaderModule(dev, library, fn);
+                        function = DKOBJECT_NEW ShaderFunction(dev, library, fn);
                         [fn release];
                     }
                     NSLog(@"MTLFunction: %@", fn);
@@ -182,12 +184,204 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
             }
         }
     }
-    return module;
+    return function;
 }
 
-DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
-    return NULL;
+	DKObject<DKRenderPipelineState> state = NULL;
+	@autoreleasepool {
+		NSError* error = nil;
+		MTLRenderPipelineDescriptor* descriptor = [[[MTLRenderPipelineDescriptor alloc] init] autorelease];
+
+		const ShaderFunction* vertexFunction = desc.vertexFunction.SafeCast<ShaderFunction>();
+		if (vertexFunction)
+			descriptor.vertexFunction = vertexFunction->function;
+		const ShaderFunction* fragmentFunction = desc.fragmentFunction.SafeCast<ShaderFunction>();
+		if (fragmentFunction)
+			descriptor.fragmentFunction = fragmentFunction->function;
+
+		auto GetVertexFormat = [](DKVertexFormat f)->MTLVertexFormat
+		{
+			switch (f)
+			{
+				case DKVertexFormat::UChar2:	return MTLVertexFormatUChar2;
+				case DKVertexFormat::UChar3:	return MTLVertexFormatUChar3;
+				case DKVertexFormat::UChar4:	return MTLVertexFormatUChar4;
+				case DKVertexFormat::Char2:		return MTLVertexFormatChar2;
+				case DKVertexFormat::Char3:		return MTLVertexFormatChar3;
+				case DKVertexFormat::Char4:		return MTLVertexFormatChar4;
+				case DKVertexFormat::UChar2Normalized:	return MTLVertexFormatUChar2Normalized;
+				case DKVertexFormat::UChar3Normalized:	return MTLVertexFormatUChar3Normalized;
+				case DKVertexFormat::UChar4Normalized:	return MTLVertexFormatUChar4Normalized;
+				case DKVertexFormat::Char2Normalized:	return MTLVertexFormatChar2Normalized;
+				case DKVertexFormat::Char3Normalized:	return MTLVertexFormatChar3Normalized;
+				case DKVertexFormat::Char4Normalized:	return MTLVertexFormatChar4Normalized;
+				case DKVertexFormat::UShort2:	return MTLVertexFormatUShort2;
+				case DKVertexFormat::UShort3:	return MTLVertexFormatUShort3;
+				case DKVertexFormat::UShort4:	return MTLVertexFormatUShort4;
+				case DKVertexFormat::Short2:	return MTLVertexFormatShort2;
+				case DKVertexFormat::Short3:	return MTLVertexFormatShort3;
+				case DKVertexFormat::Short4:	return MTLVertexFormatShort4;
+				case DKVertexFormat::UShort2Normalized:	return MTLVertexFormatUShort2Normalized;
+				case DKVertexFormat::UShort3Normalized:	return MTLVertexFormatUShort3Normalized;
+				case DKVertexFormat::UShort4Normalized:	return MTLVertexFormatUShort4Normalized;
+				case DKVertexFormat::Short2Normalized:	return MTLVertexFormatShort2Normalized;
+				case DKVertexFormat::Short3Normalized:	return MTLVertexFormatShort3Normalized;
+				case DKVertexFormat::Short4Normalized:	return MTLVertexFormatShort4Normalized;
+				case DKVertexFormat::Half2:		return MTLVertexFormatHalf2;
+				case DKVertexFormat::Half3:		return MTLVertexFormatHalf3;
+				case DKVertexFormat::Half4:		return MTLVertexFormatHalf4;
+				case DKVertexFormat::Float:		return MTLVertexFormatFloat;
+				case DKVertexFormat::Float2:	return MTLVertexFormatFloat2;
+				case DKVertexFormat::Float3:	return MTLVertexFormatFloat3;
+				case DKVertexFormat::Float4:	return MTLVertexFormatFloat4;
+				case DKVertexFormat::Int:		return MTLVertexFormatInt;
+				case DKVertexFormat::Int2:		return MTLVertexFormatInt2;
+				case DKVertexFormat::Int3:		return MTLVertexFormatInt3;
+				case DKVertexFormat::Int4:		return MTLVertexFormatInt4;
+				case DKVertexFormat::UInt:		return MTLVertexFormatUInt;
+				case DKVertexFormat::UInt2:		return MTLVertexFormatUInt2;
+				case DKVertexFormat::UInt3:		return MTLVertexFormatUInt3;
+				case DKVertexFormat::UInt4:		return MTLVertexFormatUInt4;
+				case DKVertexFormat::Int1010102Normalized:	return MTLVertexFormatInt1010102Normalized;
+				case DKVertexFormat::UInt1010102Normalized:	return MTLVertexFormatUInt1010102Normalized;
+			}
+			return MTLVertexFormatInvalid;
+		};
+
+		auto GetVertexStepFunction = [](DKVertexStepFunction fn)->MTLVertexStepFunction
+		{
+			switch (fn)
+			{
+				case DKVertexStepFunction::Constant:	return MTLVertexStepFunctionConstant;
+				case DKVertexStepFunction::PerVertex:	return MTLVertexStepFunctionPerVertex;
+				case DKVertexStepFunction::PerInstance:	return MTLVertexStepFunctionPerInstance;
+				case DKVertexStepFunction::PerPatch:	return MTLVertexStepFunctionPerPatch;
+				case DKVertexStepFunction::PerPatchControlPoint:	return MTLVertexStepFunctionPerPatchControlPoint;
+			}
+			DKASSERT_DESC_DEBUG(0, "Unknown value!");
+			return MTLVertexStepFunctionConstant;
+		};
+
+		auto GetBlendFactor = [](DKBlendFactor f)->MTLBlendFactor
+		{
+			switch (f)
+			{
+				case DKBlendFactor::Zero:
+					return MTLBlendFactorZero;
+				case DKBlendFactor::One:
+					return MTLBlendFactorOne;
+				case DKBlendFactor::SourceColor:
+					return MTLBlendFactorSourceColor;
+				case DKBlendFactor::OneMinusSourceColor:
+					return MTLBlendFactorOneMinusSourceColor;
+				case DKBlendFactor::SourceAlpha:
+					return MTLBlendFactorSourceAlpha;
+				case DKBlendFactor::OneMinusSourceAlpha:
+					return MTLBlendFactorOneMinusSourceAlpha;
+				case DKBlendFactor::DestinationColor:
+					return MTLBlendFactorDestinationColor;
+				case DKBlendFactor::OneMinusDestinationColor:
+					return MTLBlendFactorOneMinusDestinationColor;
+				case DKBlendFactor::DestinationAlpha:
+					return MTLBlendFactorDestinationAlpha;
+				case DKBlendFactor::OneMinusDestinationAlpha:
+					return MTLBlendFactorOneMinusDestinationAlpha;
+				case DKBlendFactor::SourceAlphaSaturated:
+					return MTLBlendFactorSourceAlphaSaturated;
+				case DKBlendFactor::BlendColor:
+					return MTLBlendFactorBlendColor;
+				case DKBlendFactor::OneMinusBlendColor:
+					return MTLBlendFactorOneMinusBlendColor;
+				case DKBlendFactor::BlendAlpha:
+					return MTLBlendFactorBlendAlpha;
+				case DKBlendFactor::OneMinusBlendAlpha:
+					return MTLBlendFactorOneMinusBlendAlpha;
+			}
+		};
+		auto GetBlendOperation = [](DKBlendOperation o)->MTLBlendOperation
+		{
+			switch (o)
+			{
+				case DKBlendOperation::Add:				return MTLBlendOperationAdd;
+				case DKBlendOperation::Subtract:		return MTLBlendOperationSubtract;
+				case DKBlendOperation::ReverseSubtract:	return MTLBlendOperationReverseSubtract;
+				case DKBlendOperation::Min:				return MTLBlendOperationMin;
+				case DKBlendOperation::Max:				return MTLBlendOperationMax;
+			}
+		};
+		auto GetColorWriteMask = [](DKColorWriteMask mask)->MTLColorWriteMask
+		{
+			MTLColorWriteMask value = MTLColorWriteMaskNone;
+			if (mask & DKColorWriteMaskRed)	value |= MTLColorWriteMaskRed;
+			if (mask & DKColorWriteMaskGreen)	value |= MTLColorWriteMaskGreen;
+			if (mask & DKColorWriteMaskBlue)	value |= MTLColorWriteMaskBlue;
+			if (mask & DKColorWriteMaskAlpha)	value |= MTLColorWriteMaskAlpha;
+			return value;
+		};
+
+		for (NSUInteger index = 0; index < desc.colorAttachments.Count(); ++index)
+		{
+			const DKRenderPipelineColorAttachmentDescriptor& attachment = desc.colorAttachments.Value(index);
+			MTLRenderPipelineColorAttachmentDescriptor* colorAttachmentDesc = [descriptor.colorAttachments objectAtIndexedSubscript:index];
+			colorAttachmentDesc.pixelFormat = PixelFormat::From(attachment.pixelFormat);
+			colorAttachmentDesc.writeMask = GetColorWriteMask(attachment.writeMask);
+			colorAttachmentDesc.blendingEnabled = attachment.blendingEnabled;
+			colorAttachmentDesc.alphaBlendOperation = GetBlendOperation(attachment.alphaBlendOperation);
+			colorAttachmentDesc.rgbBlendOperation = GetBlendOperation(attachment.rgbBlendOperation);
+			colorAttachmentDesc.sourceRGBBlendFactor = GetBlendFactor(attachment.sourceRGBBlendFactor);
+			colorAttachmentDesc.sourceAlphaBlendFactor = GetBlendFactor(attachment.sourceAlphaBlendFactor);
+			colorAttachmentDesc.destinationRGBBlendFactor = GetBlendFactor(attachment.destinationRGBBlendFactor);
+			colorAttachmentDesc.destinationAlphaBlendFactor = GetBlendFactor(attachment.destinationAlphaBlendFactor);
+		}
+		if (desc.vertexDescriptor.attributes.Count() > 0 || desc.vertexDescriptor.layouts.Count() > 0)
+		{
+			MTLVertexDescriptor *vertexDescriptor = [MTLVertexDescriptor vertexDescriptor];
+			for (NSUInteger index = 0; index < desc.vertexDescriptor.attributes.Count(); ++index)
+			{
+				const DKVertexAttributeDescriptor& attrDesc = desc.vertexDescriptor.attributes.Value(index);
+				MTLVertexAttributeDescriptor* attr = vertexDescriptor.attributes[index];
+				attr.format = GetVertexFormat(attrDesc.format);
+				attr.offset = attrDesc.offset;
+				attr.bufferIndex = attrDesc.bufferIndex;
+			}
+			for (NSUInteger index = 0; index < desc.vertexDescriptor.layouts.Count(); ++index)
+			{
+				const DKVertexBufferLayoutDescriptor& layoutDesc = desc.vertexDescriptor.layouts.Value(index);
+				MTLVertexBufferLayoutDescriptor* layout = vertexDescriptor.layouts[index];
+				layout.stepFunction = GetVertexStepFunction(layoutDesc.stepFunction);
+				layout.stepRate = layoutDesc.stepRate;
+				layout.stride = layoutDesc.stride;
+			}
+			descriptor.vertexDescriptor = vertexDescriptor;
+		}
+
+		id<MTLRenderPipelineState> pipelineState = nil;
+		if (reflection)
+		{
+			MTLPipelineOption options = MTLPipelineOptionArgumentInfo | MTLPipelineOptionBufferTypeInfo;
+			MTLRenderPipelineReflection* pipelineReflection = nil;
+			pipelineState = [device newRenderPipelineStateWithDescriptor:descriptor
+																 options:options
+															  reflection:&pipelineReflection
+																   error:&error];
+		}
+		else
+			pipelineState = [device newRenderPipelineStateWithDescriptor:descriptor error:&error];
+
+		if (error)
+		{
+			DKLogE("GraphicsDevice::CreateRenderPipeline Error: %s", (const char*)error.localizedDescription.UTF8String);
+		}
+
+		if (pipelineState)
+		{
+			state = DKOBJECT_NEW RenderPipelineState(dev, pipelineState);
+			[pipelineState autorelease];
+		}
+	}
+	return state;
 }
 
 DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)

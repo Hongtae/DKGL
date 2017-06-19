@@ -7,8 +7,9 @@
 
 #pragma once
 #include "../DKFoundation.h"
-#include "DKRenderPass.h"
-#include "DKRenderCommandEncoder.h"
+#include "DKPixelFormat.h"
+#include "DKShaderFunction.h"
+#include "DKVertexDescriptor.h"
 
 namespace DKFramework
 {
@@ -40,25 +41,45 @@ namespace DKFramework
 		Max,
 	};
 
-	enum class DKColorWriteMask
+	enum DKColorWriteMask : uint8_t
 	{
-		None	= 0,
-		Red		= 0x1 << 3,
-		Green	= 0x1 << 2,
-		Blue	= 0x1 << 1,
-		Alpha	= 0x1 << 0,
-		All		= 0xf
+		DKColorWriteMaskNone	= 0,
+		DKColorWriteMaskRed		= 0x1 << 3,
+		DKColorWriteMaskGreen	= 0x1 << 2,
+		DKColorWriteMaskBlue	= 0x1 << 1,
+		DKColorWriteMaskAlpha	= 0x1 << 0,
+		DKColorWriteMaskAll		= 0xf
 	};
 
-	class DKRenderPipelineDescriptor
+	struct DKRenderPipelineColorAttachmentDescriptor
 	{
+		DKPixelFormat pixelFormat;
+		DKColorWriteMask writeMask = DKColorWriteMaskAll;
+
+		bool blendingEnabled = false;
+		DKBlendOperation alphaBlendOperation = DKBlendOperation::Add;
+		DKBlendOperation rgbBlendOperation = DKBlendOperation::Add;
+
+		DKBlendFactor sourceRGBBlendFactor = DKBlendFactor::One;
+		DKBlendFactor sourceAlphaBlendFactor = DKBlendFactor::One;
+		DKBlendFactor destinationRGBBlendFactor = DKBlendFactor::Zero;
+		DKBlendFactor destinationAlphaBlendFactor = DKBlendFactor::Zero;
 	};
 
-	class DKRenderPipelineColorAttachmentDescriptor
+	struct DKRenderPipelineDescriptor
 	{
+		DKObject<DKShaderFunction> vertexFunction;
+		DKObject<DKShaderFunction> fragmentFunction;
+		DKVertexDescriptor vertexDescriptor;
+		DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
+		DKPixelFormat depthStencilAttachmentPixelFormat = DKPixelFormat::Invalid;
 	};
 
+	class DKGraphicsDevice;
 	class DKRenderPipelineState
 	{
+	public:
+		virtual ~DKRenderPipelineState() {}
+		virtual DKGraphicsDevice* Device(void) = 0;
 	};
 }

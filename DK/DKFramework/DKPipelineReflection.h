@@ -11,10 +11,6 @@
 
 namespace DKFramework
 {
-	struct DKShaderFunction
-	{
-		DKString name;
-	};
 	struct DKShaderArgument
 	{
 		enum Type

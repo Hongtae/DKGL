@@ -9,23 +9,13 @@
 #include "../DKFoundation.h"
 #include "DKRenderPass.h"
 #include "DKCommandBuffer.h"
+#include "DKSwapChain.h"
 
 namespace DKFramework
 {
 	class DKGraphicsDevice;
 	class DKWindow;
 
-	class DKSwapChain
-	{
-	public:
-		virtual ~DKSwapChain(void) {}
-
-		virtual void SetColorPixelFormat(DKPixelFormat) = 0;
-		virtual void SetDepthStencilPixelFormat(DKPixelFormat) = 0;
-		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor(void) = 0;
-
-		virtual bool Present(void) = 0;
-	};
 	/// @brief GPU command queue
 	class DKCommandQueue
 	{

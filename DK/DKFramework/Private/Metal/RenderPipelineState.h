@@ -1,5 +1,5 @@
 //
-//  File: CommandQueue.h
+//  File: RenderPipelineState.h
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -11,7 +11,7 @@
 #if DKGL_ENABLE_METAL
 #import <Metal/Metal.h>
 
-#include "../../DKCommandQueue.h"
+#include "../../DKRenderPipeline.h"
 #include "../../DKGraphicsDevice.h"
 
 namespace DKFramework
@@ -20,19 +20,16 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			class CommandQueue : public DKCommandQueue
+			class RenderPipelineState : public DKRenderPipelineState
 			{
 			public:
-				CommandQueue(DKGraphicsDevice*, id<MTLCommandQueue>);
-				~CommandQueue(void);
+				RenderPipelineState(DKGraphicsDevice*, id<MTLRenderPipelineState>);
+				~RenderPipelineState(void);
 
-				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
-				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
-				
-				DKGraphicsDevice* Device(void) override { return device; }
+				DKGraphicsDevice* Device(void) override { return device;}
 
 				DKObject<DKGraphicsDevice> device;
-				id<MTLCommandQueue> queue;
+				id<MTLRenderPipelineState> pipelineState;
 			};
 		}
 	}

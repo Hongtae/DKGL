@@ -107,14 +107,14 @@
 		8406AE0A1706CD1D00F8963C /* DKCollisionObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8406AE071706CD1D00F8963C /* DKCollisionObject.cpp */; };
 		8406AE0B1706CD1D00F8963C /* DKCollisionObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8406AE081706CD1D00F8963C /* DKCollisionObject.h */; };
 		8406AE0C1706CD1D00F8963C /* DKCollisionObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 8406AE081706CD1D00F8963C /* DKCollisionObject.h */; };
-		840A33D61EEECDFD002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
-		840A33D71EEECDFD002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
-		840A33D81EEECE5E002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
-		840A33D91EEECE5E002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
-		840A33DA1EEECE5F002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
-		840A33DB1EEECE5F002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
-		840A33DC1EEECE61002F57C5 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderModule.h */; };
-		840A33DD1EEECE61002F57C5 /* ShaderModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderModule.mm */; };
+		840A33D61EEECDFD002F57C5 /* ShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderFunction.h */; };
+		840A33D71EEECDFD002F57C5 /* ShaderFunction.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderFunction.mm */; };
+		840A33D81EEECE5E002F57C5 /* ShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderFunction.h */; };
+		840A33D91EEECE5E002F57C5 /* ShaderFunction.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderFunction.mm */; };
+		840A33DA1EEECE5F002F57C5 /* ShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderFunction.h */; };
+		840A33DB1EEECE5F002F57C5 /* ShaderFunction.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderFunction.mm */; };
+		840A33DC1EEECE61002F57C5 /* ShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 840A33D41EEECDFD002F57C5 /* ShaderFunction.h */; };
+		840A33DD1EEECE61002F57C5 /* ShaderFunction.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840A33D51EEECDFD002F57C5 /* ShaderFunction.mm */; };
 		840C3DF8178D396600F57A8D /* DKObjectRefCounter.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */; };
 		840C3DF9178D396600F57A8D /* DKObjectRefCounter.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */; };
 		840C3DFA178D396D00F57A8D /* DKAllocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E493141DD4B70091D2C0 /* DKAllocator.cpp */; };
@@ -1356,19 +1356,19 @@
 		84AAAD8E1EF12B9B00F370F5 /* DKRenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C11EE503960053F08B /* DKRenderTarget.h */; };
 		84AAAD8F1EF12B9B00F370F5 /* DKShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224C21EE503960053F08B /* DKShader.cpp */; };
 		84AAAD901EF12B9B00F370F5 /* DKShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C31EE503960053F08B /* DKShader.h */; };
-		84AAAD911EF12B9B00F370F5 /* DKShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderModule.h */; };
+		84AAAD911EF12B9B00F370F5 /* DKShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderFunction.h */; };
 		84AAAD921EF12B9D00F370F5 /* DKPipelineReflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C01EE503960053F08B /* DKPipelineReflection.h */; };
 		84AAAD931EF12B9D00F370F5 /* DKPixelFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 846C53A61E40802100B2FA6F /* DKPixelFormat.h */; };
 		84AAAD941EF12B9D00F370F5 /* DKRenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C11EE503960053F08B /* DKRenderTarget.h */; };
 		84AAAD951EF12B9D00F370F5 /* DKShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224C21EE503960053F08B /* DKShader.cpp */; };
 		84AAAD961EF12B9D00F370F5 /* DKShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C31EE503960053F08B /* DKShader.h */; };
-		84AAAD971EF12B9D00F370F5 /* DKShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderModule.h */; };
+		84AAAD971EF12B9D00F370F5 /* DKShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderFunction.h */; };
 		84AAAD981EF12B9E00F370F5 /* DKPipelineReflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C01EE503960053F08B /* DKPipelineReflection.h */; };
 		84AAAD991EF12B9E00F370F5 /* DKPixelFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 846C53A61E40802100B2FA6F /* DKPixelFormat.h */; };
 		84AAAD9A1EF12B9E00F370F5 /* DKRenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C11EE503960053F08B /* DKRenderTarget.h */; };
 		84AAAD9B1EF12B9E00F370F5 /* DKShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224C21EE503960053F08B /* DKShader.cpp */; };
 		84AAAD9C1EF12B9E00F370F5 /* DKShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C31EE503960053F08B /* DKShader.h */; };
-		84AAAD9D1EF12B9E00F370F5 /* DKShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderModule.h */; };
+		84AAAD9D1EF12B9E00F370F5 /* DKShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderFunction.h */; };
 		84B673E51EF7C3210058F553 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E41EF7C3210058F553 /* OpenAL.framework */; };
 		84B673E71EF7C33F0058F553 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E61EF7C33F0058F553 /* AppKit.framework */; };
 		84B673E91EF7C3570058F553 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E81EF7C3570058F553 /* Metal.framework */; };
@@ -1394,6 +1394,9 @@
 		84D388AC18AB845200A86851 /* DKResourceLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D388A918AB845200A86851 /* DKResourceLoader.cpp */; };
 		84D388AD18AB845200A86851 /* DKResourceLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D388A918AB845200A86851 /* DKResourceLoader.cpp */; };
 		84D762911EC3497D00158097 /* OpenAL.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D762901EC3497D00158097 /* OpenAL.h */; };
+		84D7C5A71EF820D000CF2D51 /* RenderPipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D7C5A51EF820D000CF2D51 /* RenderPipelineState.h */; };
+		84D7C5A81EF820D000CF2D51 /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D7C5A61EF820D000CF2D51 /* RenderPipelineState.mm */; };
+		84D7C5AA1EF82C7E00CF2D51 /* DKSwapChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D7C5A91EF82C7E00CF2D51 /* DKSwapChain.h */; };
 		84D883531E3A653B00478725 /* DKImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D883511E3A653B00478725 /* DKImage.cpp */; };
 		84D883541E3A653B00478725 /* DKImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D883521E3A653B00478725 /* DKImage.h */; };
 		84D883591E3A6AAD00478725 /* DKImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D883511E3A653B00478725 /* DKImage.cpp */; };
@@ -1414,6 +1417,7 @@
 		84D8AF771E002892005059F7 /* Application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 840D5DCB1DDA1C69009DA369 /* Application.mm */; };
 		84DB573D1DFD90CF00ED5E38 /* Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84DB573C1DFD90CF00ED5E38 /* Window.mm */; };
 		84DB573F1DFD90DB00ED5E38 /* Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DB573E1DFD90DB00ED5E38 /* Window.h */; };
+		84ED58CC1EFD669E00A58363 /* DKVertexDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ED58CB1EFD669E00A58363 /* DKVertexDescriptor.h */; };
 		84F16DBF1E1584740013DD29 /* DKCommandQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DBE1E1584740013DD29 /* DKCommandQueue.h */; };
 		84F16DD21E1592830013DD29 /* CommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DCE1E1592830013DD29 /* CommandBuffer.h */; };
 		84F16DD31E1592830013DD29 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DCF1E1592830013DD29 /* CommandBuffer.mm */; };
@@ -1425,13 +1429,13 @@
 		84F224BB1EE503220053F08B /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B31EE503220053F08B /* ComputeCommandEncoder.h */; };
 		84F224BC1EE503220053F08B /* RenderCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */; };
 		84F224BD1EE503220053F08B /* RenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B51EE503220053F08B /* RenderCommandEncoder.h */; };
-		84F224BE1EE503220053F08B /* ShaderModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B61EE503220053F08B /* ShaderModule.cpp */; };
-		84F224BF1EE503220053F08B /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B71EE503220053F08B /* ShaderModule.h */; };
+		84F224BE1EE503220053F08B /* ShaderFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B61EE503220053F08B /* ShaderFunction.cpp */; };
+		84F224BF1EE503220053F08B /* ShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B71EE503220053F08B /* ShaderFunction.h */; };
 		84F224C51EE503960053F08B /* DKPipelineReflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C01EE503960053F08B /* DKPipelineReflection.h */; };
 		84F224C61EE503960053F08B /* DKRenderTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C11EE503960053F08B /* DKRenderTarget.h */; };
 		84F224C71EE503960053F08B /* DKShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224C21EE503960053F08B /* DKShader.cpp */; };
 		84F224C81EE503960053F08B /* DKShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C31EE503960053F08B /* DKShader.h */; };
-		84F224C91EE503960053F08B /* DKShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderModule.h */; };
+		84F224C91EE503960053F08B /* DKShaderFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224C41EE503960053F08B /* DKShaderFunction.h */; };
 		84F96FFE1B4C26C200BA24E4 /* DKBvh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F96FF11B4ACA7200BA24E4 /* DKBvh.cpp */; };
 		84F96FFF1B4C26C200BA24E4 /* DKBvh.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F96FF21B4ACA7200BA24E4 /* DKBvh.h */; };
 		84F970001B4C26C200BA24E4 /* DKTriangleMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F96FF31B4ACA7200BA24E4 /* DKTriangleMesh.h */; };
@@ -2091,8 +2095,8 @@
 		8405EBDB15BEF75400E91EEF /* BulletPhysics.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BulletPhysics.xcodeproj; path = BulletPhysics/BulletPhysics.xcodeproj; sourceTree = "<group>"; };
 		8406AE071706CD1D00F8963C /* DKCollisionObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKCollisionObject.cpp; sourceTree = "<group>"; };
 		8406AE081706CD1D00F8963C /* DKCollisionObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKCollisionObject.h; sourceTree = "<group>"; };
-		840A33D41EEECDFD002F57C5 /* ShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderModule.h; sourceTree = "<group>"; };
-		840A33D51EEECDFD002F57C5 /* ShaderModule.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShaderModule.mm; sourceTree = "<group>"; };
+		840A33D41EEECDFD002F57C5 /* ShaderFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderFunction.h; sourceTree = "<group>"; };
+		840A33D51EEECDFD002F57C5 /* ShaderFunction.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShaderFunction.mm; sourceTree = "<group>"; };
 		840C3DF4178D396600F57A8D /* DKObjectRefCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKObjectRefCounter.cpp; sourceTree = "<group>"; };
 		840C3DF5178D396600F57A8D /* DKObjectRefCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKObjectRefCounter.h; sourceTree = "<group>"; };
 		840CA4ED1928946800689BB6 /* DK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2435,6 +2439,9 @@
 		84D3E6861637071F00337848 /* DKSoftBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSoftBody.cpp; sourceTree = "<group>"; };
 		84D3E6871637071F00337848 /* DKSoftBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSoftBody.h; sourceTree = "<group>"; };
 		84D762901EC3497D00158097 /* OpenAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenAL.h; sourceTree = "<group>"; };
+		84D7C5A51EF820D000CF2D51 /* RenderPipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderPipelineState.h; sourceTree = "<group>"; };
+		84D7C5A61EF820D000CF2D51 /* RenderPipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderPipelineState.mm; sourceTree = "<group>"; };
+		84D7C5A91EF82C7E00CF2D51 /* DKSwapChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKSwapChain.h; sourceTree = "<group>"; };
 		84D81BE915569390009B408A /* DKStringUE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKStringUE.cpp; sourceTree = "<group>"; };
 		84D81BEA15569390009B408A /* DKStringUE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKStringUE.h; sourceTree = "<group>"; };
 		84D883371E39EC5E00478725 /* DropTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DropTarget.cpp; sourceTree = "<group>"; };
@@ -2451,6 +2458,7 @@
 		84DB57431DFD932600ED5E38 /* Window.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Window.mm; sourceTree = "<group>"; };
 		84E42A5C13AF8B4200BF31EA /* libDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		84E42A5D13AF8B4200BF31EA /* libDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		84ED58CB1EFD669E00A58363 /* DKVertexDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKVertexDescriptor.h; sourceTree = "<group>"; };
 		84F03CE2145D3AF300EDFD66 /* DKBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKBufferStream.cpp; sourceTree = "<group>"; };
 		84F03CE3145D3AF300EDFD66 /* DKBufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKBufferStream.h; sourceTree = "<group>"; };
 		84F16DBE1E1584740013DD29 /* DKCommandQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCommandQueue.h; sourceTree = "<group>"; };
@@ -2464,13 +2472,13 @@
 		84F224B31EE503220053F08B /* ComputeCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputeCommandEncoder.h; sourceTree = "<group>"; };
 		84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCommandEncoder.cpp; sourceTree = "<group>"; };
 		84F224B51EE503220053F08B /* RenderCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCommandEncoder.h; sourceTree = "<group>"; };
-		84F224B61EE503220053F08B /* ShaderModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderModule.cpp; sourceTree = "<group>"; };
-		84F224B71EE503220053F08B /* ShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderModule.h; sourceTree = "<group>"; };
+		84F224B61EE503220053F08B /* ShaderFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderFunction.cpp; sourceTree = "<group>"; };
+		84F224B71EE503220053F08B /* ShaderFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderFunction.h; sourceTree = "<group>"; };
 		84F224C01EE503960053F08B /* DKPipelineReflection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKPipelineReflection.h; sourceTree = "<group>"; };
 		84F224C11EE503960053F08B /* DKRenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKRenderTarget.h; sourceTree = "<group>"; };
 		84F224C21EE503960053F08B /* DKShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKShader.cpp; sourceTree = "<group>"; };
 		84F224C31EE503960053F08B /* DKShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKShader.h; sourceTree = "<group>"; };
-		84F224C41EE503960053F08B /* DKShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKShaderModule.h; sourceTree = "<group>"; };
+		84F224C41EE503960053F08B /* DKShaderFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKShaderFunction.h; sourceTree = "<group>"; };
 		84F96FF11B4ACA7200BA24E4 /* DKBvh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKBvh.cpp; sourceTree = "<group>"; };
 		84F96FF21B4ACA7200BA24E4 /* DKBvh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKBvh.h; sourceTree = "<group>"; };
 		84F96FF31B4ACA7200BA24E4 /* DKTriangleMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKTriangleMesh.h; sourceTree = "<group>"; };
@@ -2627,10 +2635,12 @@
 				84219C1D1E40E5E30046B099 /* PixelFormat.mm */,
 				8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */,
 				8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */,
+				84D7C5A51EF820D000CF2D51 /* RenderPipelineState.h */,
+				84D7C5A61EF820D000CF2D51 /* RenderPipelineState.mm */,
 				8458E6D21E44587300871311 /* RenderTarget.h */,
 				8458E6D11E44587300871311 /* RenderTarget.mm */,
-				840A33D41EEECDFD002F57C5 /* ShaderModule.h */,
-				840A33D51EEECDFD002F57C5 /* ShaderModule.mm */,
+				840A33D41EEECDFD002F57C5 /* ShaderFunction.h */,
+				840A33D51EEECDFD002F57C5 /* ShaderFunction.mm */,
 				8447CB3E1E379C2200E02637 /* SwapChain.h */,
 				8447CB3F1E379C2200E02637 /* SwapChain.mm */,
 				84219C1E1E40E5E30046B099 /* Texture.h */,
@@ -2796,8 +2806,8 @@
 				84F224B51EE503220053F08B /* RenderCommandEncoder.h */,
 				8458E6C71E44582500871311 /* RenderTarget.cpp */,
 				8458E6C81E44582500871311 /* RenderTarget.h */,
-				84F224B61EE503220053F08B /* ShaderModule.cpp */,
-				84F224B71EE503220053F08B /* ShaderModule.h */,
+				84F224B61EE503220053F08B /* ShaderFunction.cpp */,
+				84F224B71EE503220053F08B /* ShaderFunction.h */,
 				84FCF1671E3693B500DF9386 /* SwapChain.cpp */,
 				84FCF1681E3693B500DF9386 /* SwapChain.h */,
 				8498FC331E4720E400E6A961 /* TextureBaseT.h */,
@@ -3273,8 +3283,10 @@
 				848566CE1E214B330011B53B /* DKSampler.h */,
 				84F224C21EE503960053F08B /* DKShader.cpp */,
 				84F224C31EE503960053F08B /* DKShader.h */,
-				84F224C41EE503960053F08B /* DKShaderModule.h */,
+				84F224C41EE503960053F08B /* DKShaderFunction.h */,
+				84D7C5A91EF82C7E00CF2D51 /* DKSwapChain.h */,
 				848566CC1E21491E0011B53B /* DKTexture.h */,
+				84ED58CB1EFD669E00A58363 /* DKVertexDescriptor.h */,
 				84A1E595141DD4B70091D2C0 /* DKVertexStream.h */,
 				84F224AE1EE502D10053F08B /* Interface */,
 				84F224AF1EE502E30053F08B /* Private */,
@@ -3373,7 +3385,7 @@
 				84D8AF741E002892005059F7 /* AppEventLoop.h in Headers */,
 				8447CB651E37A6DE00E02637 /* DKRenderPipeline.h in Headers */,
 				8436CE031928A78900F18892 /* DKStream.h in Headers */,
-				84AAAD971EF12B9D00F370F5 /* DKShaderModule.h in Headers */,
+				84AAAD971EF12B9D00F370F5 /* DKShaderFunction.h in Headers */,
 				8436CDD31928A78900F18892 /* DKDummyLock.h in Headers */,
 				840CA5911928952800689BB6 /* DKAudioPlayer.h in Headers */,
 				8498FC6E1E4783D400E6A961 /* TextureBaseT.h in Headers */,
@@ -3495,7 +3507,7 @@
 				840CA5FD1928952800689BB6 /* DKResourcePool.h in Headers */,
 				8436CDC71928A78900F18892 /* DKCircularQueue.h in Headers */,
 				840CA5F91928952800689BB6 /* DKResource.h in Headers */,
-				840A33DA1EEECE5F002F57C5 /* ShaderModule.h in Headers */,
+				840A33DA1EEECE5F002F57C5 /* ShaderFunction.h in Headers */,
 				840CA6381928952800689BB6 /* DKVKey.h in Headers */,
 				84D8AF721E002892005059F7 /* Window.h in Headers */,
 				840CA5AC1928952800689BB6 /* DKConeTwistConstraint.h in Headers */,
@@ -3626,7 +3638,7 @@
 				666ECB101DB180A000354463 /* DKGraphicsDeviceInterface.h in Headers */,
 				84798C2D19E51E7F009378A6 /* DKAudioPlayer.h in Headers */,
 				84798C8219E51E80009378A6 /* DKVector4.h in Headers */,
-				840A33DC1EEECE61002F57C5 /* ShaderModule.h in Headers */,
+				840A33DC1EEECE61002F57C5 /* ShaderFunction.h in Headers */,
 				84798C8D19E51E96009378A6 /* DKAllocator.h in Headers */,
 				84798C4D19E51E7F009378A6 /* DKLinearTransform3.h in Headers */,
 				84798C7F19E51E80009378A6 /* DKVariant.h in Headers */,
@@ -3699,7 +3711,7 @@
 				666ECB271DB180EA00354463 /* DKComputeCommandEncoder.h in Headers */,
 				84798C7E19E51E80009378A6 /* DKTriangle.h in Headers */,
 				84798CBE19E51E96009378A6 /* DKStringU8.h in Headers */,
-				84AAAD911EF12B9B00F370F5 /* DKShaderModule.h in Headers */,
+				84AAAD911EF12B9B00F370F5 /* DKShaderFunction.h in Headers */,
 				84798C6C19E51E7F009378A6 /* DKShaderConstant.h in Headers */,
 				84798C3919E51E7F009378A6 /* DKConcaveShape.h in Headers */,
 				84798CA119E51E96009378A6 /* DKFileMap.h in Headers */,
@@ -3837,7 +3849,7 @@
 				84211D141665E89700B9B9A2 /* DKCamera.h in Headers */,
 				84211D151665E89700B9B9A2 /* DKCapsuleShape.h in Headers */,
 				84211D171665E89700B9B9A2 /* DKCollisionShape.h in Headers */,
-				840A33D81EEECE5E002F57C5 /* ShaderModule.h in Headers */,
+				840A33D81EEECE5E002F57C5 /* ShaderFunction.h in Headers */,
 				84211D181665E89700B9B9A2 /* DKColor.h in Headers */,
 				84211D191665E89700B9B9A2 /* DKCompoundShape.h in Headers */,
 				84211D1A1665E89700B9B9A2 /* DKConeShape.h in Headers */,
@@ -3910,7 +3922,7 @@
 				843A689117C6145D000DE61A /* DKWindowInterface.h in Headers */,
 				840CA65A1928957600689BB6 /* DK.h in Headers */,
 				84211D5B1665E89700B9B9A2 /* DKTransform.h in Headers */,
-				84AAAD9D1EF12B9E00F370F5 /* DKShaderModule.h in Headers */,
+				84AAAD9D1EF12B9E00F370F5 /* DKShaderFunction.h in Headers */,
 				84211D5C1665E89700B9B9A2 /* DKTriangle.h in Headers */,
 				84211D5F1665E89700B9B9A2 /* DKVariant.h in Headers */,
 				666ECB151DB180E800354463 /* DKComputeCommandEncoder.h in Headers */,
@@ -3949,7 +3961,7 @@
 				84211C201665E86300B9B9A2 /* DKBufferStream.h in Headers */,
 				84F96FFF1B4C26C200BA24E4 /* DKBvh.h in Headers */,
 				84211C221665E86300B9B9A2 /* DKCircularQueue.h in Headers */,
-				84F224BF1EE503220053F08B /* ShaderModule.h in Headers */,
+				84F224BF1EE503220053F08B /* ShaderFunction.h in Headers */,
 				84211C231665E86300B9B9A2 /* DKCondition.h in Headers */,
 				84211C241665E86300B9B9A2 /* DKCriticalSection.h in Headers */,
 				84211C251665E86300B9B9A2 /* DKData.h in Headers */,
@@ -4011,10 +4023,11 @@
 				84F224B91EE503220053F08B /* BlitCommandEncoder.h in Headers */,
 				840DD9A918EF04A50040D1D5 /* DKUtils.h in Headers */,
 				84211C501665E86300B9B9A2 /* DKStringU8.h in Headers */,
+				84D7C5AA1EF82C7E00CF2D51 /* DKSwapChain.h in Headers */,
 				8458E6D61E44587300871311 /* TextureBaseT.h in Headers */,
 				84211C511665E86300B9B9A2 /* DKStringUE.h in Headers */,
 				84F224BD1EE503220053F08B /* RenderCommandEncoder.h in Headers */,
-				840A33D61EEECDFD002F57C5 /* ShaderModule.h in Headers */,
+				840A33D61EEECDFD002F57C5 /* ShaderFunction.h in Headers */,
 				84211C521665E86300B9B9A2 /* DKStringW.h in Headers */,
 				84211C531665E86300B9B9A2 /* DKThread.h in Headers */,
 				84211C541665E86300B9B9A2 /* DKTimer.h in Headers */,
@@ -4081,6 +4094,7 @@
 				840C3DF8178D396600F57A8D /* DKObjectRefCounter.h in Headers */,
 				84D388AA18AB845200A86851 /* DKResourceLoader.h in Headers */,
 				666ECA6A1DB1703600354463 /* DKRenderCommandEncoder.h in Headers */,
+				84ED58CC1EFD669E00A58363 /* DKVertexDescriptor.h in Headers */,
 				848566A81E1FFE390011B53B /* DKRenderPipeline.h in Headers */,
 				84211CCD1665E88E00B9B9A2 /* DKMath.h in Headers */,
 				84F224BB1EE503220053F08B /* ComputeCommandEncoder.h in Headers */,
@@ -4125,7 +4139,7 @@
 				84211CF41665E88E00B9B9A2 /* DKStaticPlaneShape.h in Headers */,
 				84211CF51665E88E00B9B9A2 /* DKStaticTriangleMeshShape.h in Headers */,
 				843A689017C6145D000DE61A /* DKWindowInterface.h in Headers */,
-				84F224C91EE503960053F08B /* DKShaderModule.h in Headers */,
+				84F224C91EE503960053F08B /* DKShaderFunction.h in Headers */,
 				84211CFA1665E88E00B9B9A2 /* DKTransform.h in Headers */,
 				666ECA681DB1703600354463 /* DKCommandBuffer.h in Headers */,
 				84211CFB1665E88E00B9B9A2 /* DKTriangle.h in Headers */,
@@ -4149,6 +4163,7 @@
 				84C907D1171445A500F62F3C /* DKGearConstraint.h in Headers */,
 				666ECA6D1DB1703600354463 /* DKGraphicsDevice.h in Headers */,
 				84C3D8C11E9D09BE0003222C /* DKLogger.h in Headers */,
+				84D7C5A71EF820D000CF2D51 /* RenderPipelineState.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4652,7 +4667,7 @@
 				840CA6051928952800689BB6 /* DKSerializer.cpp in Sources */,
 				8436CDCF1928A78900F18892 /* DKDateTime.cpp in Sources */,
 				840CA5901928952800689BB6 /* DKAudioPlayer.cpp in Sources */,
-				840A33DB1EEECE5F002F57C5 /* ShaderModule.mm in Sources */,
+				840A33DB1EEECE5F002F57C5 /* ShaderFunction.mm in Sources */,
 				8436CDF81928A78900F18892 /* DKEventLoopTimer.cpp in Sources */,
 				840CA59E1928952800689BB6 /* DKCapsuleShape.cpp in Sources */,
 				840CA6171928952800689BB6 /* DKSpline.cpp in Sources */,
@@ -4886,7 +4901,7 @@
 				84798B8C19E51DFB009378A6 /* DKAllocator.cpp in Sources */,
 				84798B8F19E51DFB009378A6 /* DKBuffer.cpp in Sources */,
 				84798BAE19E51DFB009378A6 /* DKXmlDocument.cpp in Sources */,
-				840A33DD1EEECE61002F57C5 /* ShaderModule.mm in Sources */,
+				840A33DD1EEECE61002F57C5 /* ShaderFunction.mm in Sources */,
 				84798BE519E51E48009378A6 /* DKPlane.cpp in Sources */,
 				84798B9119E51DFB009378A6 /* DKCondition.cpp in Sources */,
 				842BF1541E0AB209007D58B0 /* Window.mm in Sources */,
@@ -5036,7 +5051,7 @@
 				84211BF41665E7FD00B9B9A2 /* DKSpline.cpp in Sources */,
 				84211BF61665E7FD00B9B9A2 /* DKStaticPlaneShape.cpp in Sources */,
 				84211BF81665E7FD00B9B9A2 /* DKStaticTriangleMeshShape.cpp in Sources */,
-				840A33D91EEECE5E002F57C5 /* ShaderModule.mm in Sources */,
+				840A33D91EEECE5E002F57C5 /* ShaderFunction.mm in Sources */,
 				840C3E2A178D396E00F57A8D /* DKFileMap.cpp in Sources */,
 				842BF1481E0AB206007D58B0 /* Window.mm in Sources */,
 				840C3E27178D396E00F57A8D /* DKError.cpp in Sources */,
@@ -5078,6 +5093,7 @@
 				84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */,
 				840C3E17178D396D00F57A8D /* DKTimer.cpp in Sources */,
 				840C3E18178D396D00F57A8D /* DKTypeInfo.cpp in Sources */,
+				84D7C5A81EF820D000CF2D51 /* RenderPipelineState.mm in Sources */,
 				84D8AF6D1E0027B9005059F7 /* View.mm in Sources */,
 				84211AA81665E7FC00B9B9A2 /* DKAabb.cpp in Sources */,
 				840C3E04178D396D00F57A8D /* DKFence.cpp in Sources */,
@@ -5105,7 +5121,7 @@
 				84211AC21665E7FC00B9B9A2 /* DKCamera.cpp in Sources */,
 				840C3E12178D396D00F57A8D /* DKSpinLock.cpp in Sources */,
 				84211AC41665E7FC00B9B9A2 /* DKCapsuleShape.cpp in Sources */,
-				840A33D71EEECDFD002F57C5 /* ShaderModule.mm in Sources */,
+				840A33D71EEECDFD002F57C5 /* ShaderFunction.mm in Sources */,
 				846A2D501E40F29D009F117C /* CommandQueue.cpp in Sources */,
 				840C3E1A178D396D00F57A8D /* DKXmlDocument.cpp in Sources */,
 				84211AC81665E7FC00B9B9A2 /* DKCollisionShape.cpp in Sources */,
@@ -5203,7 +5219,7 @@
 				84211B531665E7FD00B9B9A2 /* DKVector2.cpp in Sources */,
 				84211B551665E7FD00B9B9A2 /* DKVector3.cpp in Sources */,
 				84211B571665E7FD00B9B9A2 /* DKVector4.cpp in Sources */,
-				84F224BE1EE503220053F08B /* ShaderModule.cpp in Sources */,
+				84F224BE1EE503220053F08B /* ShaderFunction.cpp in Sources */,
 				8447CB411E379C2200E02637 /* SwapChain.mm in Sources */,
 				84211B5F1665E7FD00B9B9A2 /* DKWindow.cpp in Sources */,
 				84211E071665EB4400B9B9A2 /* DKConcaveShape.cpp in Sources */,

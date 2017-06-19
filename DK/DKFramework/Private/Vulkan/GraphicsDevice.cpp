@@ -10,7 +10,7 @@
 
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
-#include "ShaderModule.h"
+#include "ShaderFunction.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework
@@ -550,7 +550,7 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 	return NULL;
 }
 
-DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
+DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice* dev, DKShader* shader)
 {
 	DKASSERT_DEBUG(shader);
 	if (shader->codeData)
@@ -566,8 +566,8 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 			VkResult res = vkCreateShaderModule(device, &shaderModuleCreateInfo, NULL, &shaderModule);
 			if (res == VK_SUCCESS)
 			{
-				DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
-				return module.SafeCast<DKShaderModule>();
+				DKObject<ShaderFunction> function = DKOBJECT_NEW ShaderFunction(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
+				return function.SafeCast<DKShaderModule>();
 			}
 		}
 	}

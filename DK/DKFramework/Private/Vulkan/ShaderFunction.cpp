@@ -1,5 +1,5 @@
 //
-//  File: ShaderModule.cpp
+//  File: ShaderFunction.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
@@ -9,13 +9,13 @@
 #if DKGL_ENABLE_VULKAN
 #include "../../../Libs/SPIRV-Cross/src/spirv_cross.hpp"
 #include "Extensions.h"
-#include "ShaderModule.h"
+#include "ShaderFunction.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st, const DKStringU8& entry)
+ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st, const DKStringU8& entry)
 	: device(d)
 	, module(s)
 	, entryPoint(entry)
@@ -61,7 +61,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 
 }
 
-ShaderModule::~ShaderModule(void)
+ShaderFunction::~ShaderFunction(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	vkDestroyShaderModule(dev->device, module, 0);

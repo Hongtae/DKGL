@@ -13,6 +13,7 @@
 #import <QuartzCore/CAMetalLayer.h>
 
 #include "../../DKWindow.h"
+#include "../../DKSwapChain.h"
 #include "CommandQueue.h"
 #include "RenderTarget.h"
 
@@ -32,6 +33,11 @@ namespace DKFramework
 
 				void SetColorPixelFormat(DKPixelFormat) override;
 				void SetDepthStencilPixelFormat(DKPixelFormat) override;
+
+				DKPixelFormat ColorPixelFormat(void) const override { return colorPixelFormat;}
+				DKPixelFormat DepthStencilPixelFormat(void) const override {return depthStencilPixelFormat;}
+
+
 				DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
 
 				bool Present(void) override;
@@ -43,7 +49,6 @@ namespace DKFramework
 
 				CAMetalLayer* metalLayer;
 
-			private:
 				DKPixelFormat colorPixelFormat;
 				DKPixelFormat depthStencilPixelFormat;
 				id<CAMetalDrawable> currentDrawable;

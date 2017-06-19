@@ -39,9 +39,24 @@ DKLogger* Application::DefaultLogger(void)
 {
 	struct Logger : public DKLogger
 	{
-		void Log(Category, const DKString& msg) override
+		void Log(Category c, const DKString& msg) override
 		{
-			NSLog(@"%@", [NSString stringWithUTF8String:(const char*)DKStringU8(msg)]);
+			switch (c)
+			{
+				case Category::Verbose:
+				case Category::Info:
+				case Category::Debug:
+				case Category::Warning:
+					//fprintf(stderr, "[%c] %s\n", c, (const char*)DKStringU8(msg));
+					NSLog(@"[%c] %@", c, [NSString stringWithUTF8String:(const char*)DKStringU8(msg)]);
+					break;
+				case Category::Error:
+					NSLog(@"<ERROR> %@", [NSString stringWithUTF8String:(const char*)DKStringU8(msg)]);
+					break;
+				default:
+					NSLog(@"[0x%X] %@", c, [NSString stringWithUTF8String:(const char*)DKStringU8(msg)]);
+					break;
+			}
 		}
 	};
 	static Logger logger;

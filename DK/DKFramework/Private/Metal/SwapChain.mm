@@ -67,9 +67,7 @@ bool SwapChain::Setup(void)
 		NSView* view = (NSView*)handle;
 
 		void (^setupView)() = ^() {
-
 			this->metalLayer = [[CAMetalLayer layer] retain];
-
 			view.wantsLayer = YES;
 			view.layer = this->metalLayer;
 			[view setLayer:this->metalLayer];
@@ -77,7 +75,7 @@ bool SwapChain::Setup(void)
 			NSWindow* window = view.window;
 			if (window)
 				this->metalLayer.contentsScale = window.backingScaleFactor;
-			this->metalLayer.bounds = NSRectToCGRect(view.bounds);
+			this->metalLayer.frame = NSRectToCGRect(view.bounds);
 		};
 
 		if ([NSThread isMainThread])

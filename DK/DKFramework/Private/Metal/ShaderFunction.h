@@ -1,5 +1,5 @@
 //
-//  File: ShaderModule.h
+//  File: ShaderFunction.h
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -11,7 +11,7 @@
 #if DKGL_ENABLE_METAL
 #import <Metal/Metal.h>
 
-#include "../../DKShaderModule.h"
+#include "../../DKShaderFunction.h"
 #include "../../DKGraphicsDevice.h"
 
 namespace DKFramework
@@ -20,17 +20,23 @@ namespace DKFramework
     {
         namespace Metal
         {
-            class ShaderModule : public DKShaderModule
+            class ShaderFunction : public DKShaderFunction
             {
             public:
-                ShaderModule(DKGraphicsDevice*, id<MTLLibrary>, id<MTLFunction>);
-                ~ShaderModule(void);
+                ShaderFunction(DKGraphicsDevice*, id<MTLLibrary>, id<MTLFunction>);
+                ~ShaderFunction(void);
+
+				const DKArray<DKVertexAttribute> VertexAttributes(void) const override { return vertexAttributes;}
+				const DKArray<DKShaderAttribute> StageInputAttributes(void) const override { return stageInputAttributes;}
 
                 DKGraphicsDevice* Device(void) override { return device; }
 
                 id<MTLLibrary> library;
-                id<MTLFunction> entryPoint;
+                id<MTLFunction> function;
                 DKObject<DKGraphicsDevice> device;
+
+				DKArray<DKVertexAttribute> vertexAttributes;
+				DKArray<DKShaderAttribute> stageInputAttributes;
             };
         }
     }

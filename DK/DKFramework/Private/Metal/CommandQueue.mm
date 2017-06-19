@@ -17,7 +17,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-CommandQueue::CommandQueue(id<MTLCommandQueue> q, DKGraphicsDevice* d)
+CommandQueue::CommandQueue(DKGraphicsDevice* d, id<MTLCommandQueue> q)
 : queue(nil)
 , device(d)
 {
