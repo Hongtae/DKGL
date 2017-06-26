@@ -189,7 +189,20 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
-	DKObject<DKRenderPipelineState> state = NULL;
+	MTLPrimitiveType primitiveType;
+	switch (desc.primitiveTopology)
+	{
+		case DKPrimitiveTopology::Points:			primitiveType = MTLPrimitiveTypePoint;			break;
+		case DKPrimitiveTopology::Lines:			primitiveType = MTLPrimitiveTypeLine;			break;
+		case DKPrimitiveTopology::LineStrips:		primitiveType = MTLPrimitiveTypeLineStrip;		break;
+		case DKPrimitiveTopology::Triangles:		primitiveType = MTLPrimitiveTypeTriangle;		break;
+		case DKPrimitiveTopology::TriangleStrips:	primitiveType = MTLPrimitiveTypeTriangleStrip;	break;
+		default:
+			DKLogE("Unsupported primitive topology: %d(0x%x)", (int)desc.primitiveTopology, (int)desc.primitiveTopology);
+			return NULL;
+	}
+
+	DKObject<RenderPipelineState> state = NULL;
 	@autoreleasepool {
 		NSError* error = nil;
 		MTLRenderPipelineDescriptor* descriptor = [[[MTLRenderPipelineDescriptor alloc] init] autorelease];
@@ -205,45 +218,45 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			switch (f)
 			{
-				case DKVertexFormat::UChar2:	return MTLVertexFormatUChar2;
-				case DKVertexFormat::UChar3:	return MTLVertexFormatUChar3;
-				case DKVertexFormat::UChar4:	return MTLVertexFormatUChar4;
-				case DKVertexFormat::Char2:		return MTLVertexFormatChar2;
-				case DKVertexFormat::Char3:		return MTLVertexFormatChar3;
-				case DKVertexFormat::Char4:		return MTLVertexFormatChar4;
-				case DKVertexFormat::UChar2Normalized:	return MTLVertexFormatUChar2Normalized;
-				case DKVertexFormat::UChar3Normalized:	return MTLVertexFormatUChar3Normalized;
-				case DKVertexFormat::UChar4Normalized:	return MTLVertexFormatUChar4Normalized;
-				case DKVertexFormat::Char2Normalized:	return MTLVertexFormatChar2Normalized;
-				case DKVertexFormat::Char3Normalized:	return MTLVertexFormatChar3Normalized;
-				case DKVertexFormat::Char4Normalized:	return MTLVertexFormatChar4Normalized;
-				case DKVertexFormat::UShort2:	return MTLVertexFormatUShort2;
-				case DKVertexFormat::UShort3:	return MTLVertexFormatUShort3;
-				case DKVertexFormat::UShort4:	return MTLVertexFormatUShort4;
-				case DKVertexFormat::Short2:	return MTLVertexFormatShort2;
-				case DKVertexFormat::Short3:	return MTLVertexFormatShort3;
-				case DKVertexFormat::Short4:	return MTLVertexFormatShort4;
-				case DKVertexFormat::UShort2Normalized:	return MTLVertexFormatUShort2Normalized;
-				case DKVertexFormat::UShort3Normalized:	return MTLVertexFormatUShort3Normalized;
-				case DKVertexFormat::UShort4Normalized:	return MTLVertexFormatUShort4Normalized;
-				case DKVertexFormat::Short2Normalized:	return MTLVertexFormatShort2Normalized;
-				case DKVertexFormat::Short3Normalized:	return MTLVertexFormatShort3Normalized;
-				case DKVertexFormat::Short4Normalized:	return MTLVertexFormatShort4Normalized;
-				case DKVertexFormat::Half2:		return MTLVertexFormatHalf2;
-				case DKVertexFormat::Half3:		return MTLVertexFormatHalf3;
-				case DKVertexFormat::Half4:		return MTLVertexFormatHalf4;
-				case DKVertexFormat::Float:		return MTLVertexFormatFloat;
-				case DKVertexFormat::Float2:	return MTLVertexFormatFloat2;
-				case DKVertexFormat::Float3:	return MTLVertexFormatFloat3;
-				case DKVertexFormat::Float4:	return MTLVertexFormatFloat4;
-				case DKVertexFormat::Int:		return MTLVertexFormatInt;
-				case DKVertexFormat::Int2:		return MTLVertexFormatInt2;
-				case DKVertexFormat::Int3:		return MTLVertexFormatInt3;
-				case DKVertexFormat::Int4:		return MTLVertexFormatInt4;
-				case DKVertexFormat::UInt:		return MTLVertexFormatUInt;
-				case DKVertexFormat::UInt2:		return MTLVertexFormatUInt2;
-				case DKVertexFormat::UInt3:		return MTLVertexFormatUInt3;
-				case DKVertexFormat::UInt4:		return MTLVertexFormatUInt4;
+				case DKVertexFormat::UChar2:				return MTLVertexFormatUChar2;
+				case DKVertexFormat::UChar3:				return MTLVertexFormatUChar3;
+				case DKVertexFormat::UChar4:				return MTLVertexFormatUChar4;
+				case DKVertexFormat::Char2:					return MTLVertexFormatChar2;
+				case DKVertexFormat::Char3:					return MTLVertexFormatChar3;
+				case DKVertexFormat::Char4:					return MTLVertexFormatChar4;
+				case DKVertexFormat::UChar2Normalized:		return MTLVertexFormatUChar2Normalized;
+				case DKVertexFormat::UChar3Normalized:		return MTLVertexFormatUChar3Normalized;
+				case DKVertexFormat::UChar4Normalized:		return MTLVertexFormatUChar4Normalized;
+				case DKVertexFormat::Char2Normalized:		return MTLVertexFormatChar2Normalized;
+				case DKVertexFormat::Char3Normalized:		return MTLVertexFormatChar3Normalized;
+				case DKVertexFormat::Char4Normalized:		return MTLVertexFormatChar4Normalized;
+				case DKVertexFormat::UShort2:				return MTLVertexFormatUShort2;
+				case DKVertexFormat::UShort3:				return MTLVertexFormatUShort3;
+				case DKVertexFormat::UShort4:				return MTLVertexFormatUShort4;
+				case DKVertexFormat::Short2:				return MTLVertexFormatShort2;
+				case DKVertexFormat::Short3:				return MTLVertexFormatShort3;
+				case DKVertexFormat::Short4:				return MTLVertexFormatShort4;
+				case DKVertexFormat::UShort2Normalized:		return MTLVertexFormatUShort2Normalized;
+				case DKVertexFormat::UShort3Normalized:		return MTLVertexFormatUShort3Normalized;
+				case DKVertexFormat::UShort4Normalized:		return MTLVertexFormatUShort4Normalized;
+				case DKVertexFormat::Short2Normalized:		return MTLVertexFormatShort2Normalized;
+				case DKVertexFormat::Short3Normalized:		return MTLVertexFormatShort3Normalized;
+				case DKVertexFormat::Short4Normalized:		return MTLVertexFormatShort4Normalized;
+				case DKVertexFormat::Half2:					return MTLVertexFormatHalf2;
+				case DKVertexFormat::Half3:					return MTLVertexFormatHalf3;
+				case DKVertexFormat::Half4:					return MTLVertexFormatHalf4;
+				case DKVertexFormat::Float:					return MTLVertexFormatFloat;
+				case DKVertexFormat::Float2:				return MTLVertexFormatFloat2;
+				case DKVertexFormat::Float3:				return MTLVertexFormatFloat3;
+				case DKVertexFormat::Float4:				return MTLVertexFormatFloat4;
+				case DKVertexFormat::Int:					return MTLVertexFormatInt;
+				case DKVertexFormat::Int2:					return MTLVertexFormatInt2;
+				case DKVertexFormat::Int3:					return MTLVertexFormatInt3;
+				case DKVertexFormat::Int4:					return MTLVertexFormatInt4;
+				case DKVertexFormat::UInt:					return MTLVertexFormatUInt;
+				case DKVertexFormat::UInt2:					return MTLVertexFormatUInt2;
+				case DKVertexFormat::UInt3:					return MTLVertexFormatUInt3;
+				case DKVertexFormat::UInt4:					return MTLVertexFormatUInt4;
 				case DKVertexFormat::Int1010102Normalized:	return MTLVertexFormatInt1010102Normalized;
 				case DKVertexFormat::UInt1010102Normalized:	return MTLVertexFormatUInt1010102Normalized;
 			}
@@ -254,10 +267,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			switch (fn)
 			{
-				case DKVertexStepFunction::Constant:	return MTLVertexStepFunctionConstant;
-				case DKVertexStepFunction::PerVertex:	return MTLVertexStepFunctionPerVertex;
-				case DKVertexStepFunction::PerInstance:	return MTLVertexStepFunctionPerInstance;
-				case DKVertexStepFunction::PerPatch:	return MTLVertexStepFunctionPerPatch;
+				case DKVertexStepFunction::Constant:		return MTLVertexStepFunctionConstant;
+				case DKVertexStepFunction::PerVertex:		return MTLVertexStepFunctionPerVertex;
+				case DKVertexStepFunction::PerInstance:		return MTLVertexStepFunctionPerInstance;
+				case DKVertexStepFunction::PerPatch:		return MTLVertexStepFunctionPerPatch;
 				case DKVertexStepFunction::PerPatchControlPoint:	return MTLVertexStepFunctionPerPatchControlPoint;
 			}
 			DKASSERT_DESC_DEBUG(0, "Unknown value!");
@@ -268,36 +281,21 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			switch (f)
 			{
-				case DKBlendFactor::Zero:
-					return MTLBlendFactorZero;
-				case DKBlendFactor::One:
-					return MTLBlendFactorOne;
-				case DKBlendFactor::SourceColor:
-					return MTLBlendFactorSourceColor;
-				case DKBlendFactor::OneMinusSourceColor:
-					return MTLBlendFactorOneMinusSourceColor;
-				case DKBlendFactor::SourceAlpha:
-					return MTLBlendFactorSourceAlpha;
-				case DKBlendFactor::OneMinusSourceAlpha:
-					return MTLBlendFactorOneMinusSourceAlpha;
-				case DKBlendFactor::DestinationColor:
-					return MTLBlendFactorDestinationColor;
-				case DKBlendFactor::OneMinusDestinationColor:
-					return MTLBlendFactorOneMinusDestinationColor;
-				case DKBlendFactor::DestinationAlpha:
-					return MTLBlendFactorDestinationAlpha;
-				case DKBlendFactor::OneMinusDestinationAlpha:
-					return MTLBlendFactorOneMinusDestinationAlpha;
-				case DKBlendFactor::SourceAlphaSaturated:
-					return MTLBlendFactorSourceAlphaSaturated;
-				case DKBlendFactor::BlendColor:
-					return MTLBlendFactorBlendColor;
-				case DKBlendFactor::OneMinusBlendColor:
-					return MTLBlendFactorOneMinusBlendColor;
-				case DKBlendFactor::BlendAlpha:
-					return MTLBlendFactorBlendAlpha;
-				case DKBlendFactor::OneMinusBlendAlpha:
-					return MTLBlendFactorOneMinusBlendAlpha;
+				case DKBlendFactor::Zero:						return MTLBlendFactorZero;
+				case DKBlendFactor::One:						return MTLBlendFactorOne;
+				case DKBlendFactor::SourceColor:				return MTLBlendFactorSourceColor;
+				case DKBlendFactor::OneMinusSourceColor:		return MTLBlendFactorOneMinusSourceColor;
+				case DKBlendFactor::SourceAlpha:				return MTLBlendFactorSourceAlpha;
+				case DKBlendFactor::OneMinusSourceAlpha:		return MTLBlendFactorOneMinusSourceAlpha;
+				case DKBlendFactor::DestinationColor:			return MTLBlendFactorDestinationColor;
+				case DKBlendFactor::OneMinusDestinationColor:	return MTLBlendFactorOneMinusDestinationColor;
+				case DKBlendFactor::DestinationAlpha:			return MTLBlendFactorDestinationAlpha;
+				case DKBlendFactor::OneMinusDestinationAlpha:	return MTLBlendFactorOneMinusDestinationAlpha;
+				case DKBlendFactor::SourceAlphaSaturated:		return MTLBlendFactorSourceAlphaSaturated;
+				case DKBlendFactor::BlendColor:					return MTLBlendFactorBlendColor;
+				case DKBlendFactor::OneMinusBlendColor:			return MTLBlendFactorOneMinusBlendColor;
+				case DKBlendFactor::BlendAlpha:					return MTLBlendFactorBlendAlpha;
+				case DKBlendFactor::OneMinusBlendAlpha:			return MTLBlendFactorOneMinusBlendAlpha;
 			}
 		};
 		auto GetBlendOperation = [](DKBlendOperation o)->MTLBlendOperation
@@ -314,7 +312,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		auto GetColorWriteMask = [](DKColorWriteMask mask)->MTLColorWriteMask
 		{
 			MTLColorWriteMask value = MTLColorWriteMaskNone;
-			if (mask & DKColorWriteMaskRed)	value |= MTLColorWriteMaskRed;
+			if (mask & DKColorWriteMaskRed)		value |= MTLColorWriteMaskRed;
 			if (mask & DKColorWriteMaskGreen)	value |= MTLColorWriteMaskGreen;
 			if (mask & DKColorWriteMaskBlue)	value |= MTLColorWriteMaskBlue;
 			if (mask & DKColorWriteMaskAlpha)	value |= MTLColorWriteMaskAlpha;
@@ -341,7 +339,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			for (NSUInteger index = 0; index < desc.vertexDescriptor.attributes.Count(); ++index)
 			{
 				const DKVertexAttributeDescriptor& attrDesc = desc.vertexDescriptor.attributes.Value(index);
-				MTLVertexAttributeDescriptor* attr = vertexDescriptor.attributes[index];
+				MTLVertexAttributeDescriptor* attr = [vertexDescriptor.attributes objectAtIndexedSubscript:index];
 				attr.format = GetVertexFormat(attrDesc.format);
 				attr.offset = attrDesc.offset;
 				attr.bufferIndex = attrDesc.bufferIndex;
@@ -349,7 +347,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			for (NSUInteger index = 0; index < desc.vertexDescriptor.layouts.Count(); ++index)
 			{
 				const DKVertexBufferLayoutDescriptor& layoutDesc = desc.vertexDescriptor.layouts.Value(index);
-				MTLVertexBufferLayoutDescriptor* layout = vertexDescriptor.layouts[index];
+				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:index];
 				layout.stepFunction = GetVertexStepFunction(layoutDesc.stepFunction);
 				layout.stepRate = layoutDesc.stepRate;
 				layout.stride = layoutDesc.stride;
@@ -378,10 +376,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		if (pipelineState)
 		{
 			state = DKOBJECT_NEW RenderPipelineState(dev, pipelineState);
+			state->primitiveType = primitiveType;
 			[pipelineState autorelease];
 		}
 	}
-	return state;
+	return state.SafeCast<DKRenderPipelineState>();
 }
 
 DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)

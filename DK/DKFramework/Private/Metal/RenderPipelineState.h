@@ -28,6 +28,7 @@ namespace DKFramework
 
 				DKGraphicsDevice* Device(void) override { return device;}
 
+				MTLPrimitiveType primitiveType;
 				DKObject<DKGraphicsDevice> device;
 				id<MTLRenderPipelineState> pipelineState;
 			};

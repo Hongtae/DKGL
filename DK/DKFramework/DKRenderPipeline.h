@@ -66,8 +66,18 @@ namespace DKFramework
 		DKBlendFactor destinationAlphaBlendFactor = DKBlendFactor::Zero;
 	};
 
+	enum class DKPrimitiveTopology
+	{
+		Points = 0,
+		Lines,
+		LineStrips,
+		Triangles,
+		TriangleStrips,
+	};
+
 	struct DKRenderPipelineDescriptor
 	{
+		DKPrimitiveTopology primitiveTopology = DKPrimitiveTopology::Points;
 		DKObject<DKShaderFunction> vertexFunction;
 		DKObject<DKShaderFunction> fragmentFunction;
 		DKVertexDescriptor vertexDescriptor;

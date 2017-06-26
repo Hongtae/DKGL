@@ -80,9 +80,9 @@ namespace DKFramework
 
 	struct DKVertexBufferLayoutDescriptor
 	{
-		DKVertexStepFunction stepFunction;
-		uint32_t stepRate;
-		uint32_t stride;
+		DKVertexStepFunction stepFunction = DKVertexStepFunction::PerVertex;
+		uint32_t stepRate = 1;
+		uint32_t stride = 0;
 	};
 
 	struct DKVertexAttributeDescriptor
