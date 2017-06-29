@@ -81,4 +81,15 @@ namespace DKFramework
 		// Depth Stencil
 		D32S8X24,
 	};
+
+	constexpr bool DKPixelFormatIsColorFormat(DKPixelFormat pf)
+	{
+		return pf > DKPixelFormat::Invalid &&
+			pf < DKPixelFormat::D32;
+	}
+	constexpr bool DKPixelFormatIsDepthFormat(DKPixelFormat pf)
+	{
+		return pf >= DKPixelFormat::D32 &&
+			pf <= DKPixelFormat::D32S8X24;
+	}
 }

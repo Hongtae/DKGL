@@ -136,9 +136,9 @@ bool SwapChain::Setup(void)
 		return false;
 	}
 
-	DKArray<VkSurfaceFormatKHR> surfaceFormats;
-	surfaceFormats.Resize(surfaceFormatCount);
-	err = iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, surfaceFormats);
+	availableSurfaceFormats.Clear();
+	availableSurfaceFormats.Resize(surfaceFormatCount);
+	err = iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, availableSurfaceFormats);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));
@@ -147,7 +147,7 @@ bool SwapChain::Setup(void)
 
 	// If the surface format list only includes one entry with VK_FORMAT_UNDEFINED,
 	// there is no preferered format, so we assume VK_FORMAT_B8G8R8A8_UNORM
-	if ((surfaceFormatCount == 1) && (surfaceFormats[0].format == VK_FORMAT_UNDEFINED))
+	if ((surfaceFormatCount == 1) && (availableSurfaceFormats[0].format == VK_FORMAT_UNDEFINED))
 	{
 		this->surfaceFormat.format = VK_FORMAT_B8G8R8A8_UNORM;
 	}
@@ -157,9 +157,9 @@ bool SwapChain::Setup(void)
 		// If you need a specific format (e.g. SRGB) you'd need to
 		// iterate over the list of available surface format and
 		// check for it's presence
-		this->surfaceFormat.format = surfaceFormats[0].format;
+		this->surfaceFormat.format = availableSurfaceFormats[0].format;
 	}
-	this->surfaceFormat.colorSpace = surfaceFormats[0].colorSpace;
+	this->surfaceFormat.colorSpace = availableSurfaceFormats[0].colorSpace;
 
 	// create swapchain
 	return this->Update();
@@ -400,13 +400,68 @@ bool SwapChain::Update(void)
 	return true;
 }
 
-void SwapChain::SetColorPixelFormat(DKPixelFormat)
+void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
 {
+	DKCriticalSection<DKSpinLock> guard(lock);
+	VkFormat format = PixelFormat::From(pf);
+
+	if (format != this->surfaceFormat.format)
+	{
+		if (DKPixelFormatIsColorFormat(pf))
+		{
+			bool formatChanged = false;
+			if (availableSurfaceFormats.Count() == 1 && availableSurfaceFormats[0].format == VK_FORMAT_UNDEFINED)
+			{
+				formatChanged = true;
+				this->surfaceFormat.format = format;
+				this->surfaceFormat.colorSpace = availableSurfaceFormats[0].colorSpace;
+			}
+			else
+			{
+				for (const VkSurfaceFormatKHR& fmt : availableSurfaceFormats)
+				{
+					if (fmt.format == format)
+					{
+						formatChanged = true;
+						this->surfaceFormat = fmt;
+						break;
+					}
+				}
+			}
+			if (formatChanged)
+			{
+				this->deviceReset = true;
+				DKLogW("SwapChain::SetColorPixelFormat value changed!");
+			}
+			else
+			{
+				DKLogE("SwapChain::SetDepthStencilPixelFormat failed! (not supported format)");
+			}
+		}
+		else
+		{
+			DKLogE("SwapChain::SetDepthStencilPixelFormat failed! (invalid format)");
+		}
+	}
 }
 
-void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
+void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
 {
+	DKLogW("SwapChain::SetDepthStencilPixelFormat not implemented!");
 }
+
+DKPixelFormat SwapChain::ColorPixelFormat(void) const
+{
+	DKCriticalSection<DKSpinLock> guard(lock);
+	return PixelFormat::To(this->surfaceFormat.format);
+}
+
+DKPixelFormat SwapChain::DepthStencilPixelFormat(void) const
+{
+	// not implemented yet..
+	return DKPixelFormat::Invalid;
+}
+
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 {

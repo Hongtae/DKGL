@@ -190,7 +190,10 @@
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="DKFramework\Private\Metal\PixelFormat.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
+    <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
     <None Include="DKFramework\Private\Metal\RenderTarget.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderDataType.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
     <None Include="DKFramework\Private\Metal\SwapChain.mm" />
     <None Include="DKFramework\Private\Metal\Texture.mm" />
     <None Include="Libs.props" />
@@ -333,7 +336,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp" />
-    <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
@@ -492,6 +495,7 @@
     <ClInclude Include="DKFramework\DKSerializer.h" />
     <ClInclude Include="DKFramework\DKShader.h" />
     <ClInclude Include="DKFramework\DKShaderConstant.h" />
+    <ClInclude Include="DKFramework\DKShaderFunction.h" />
     <ClInclude Include="DKFramework\DKShaderModule.h" />
     <ClInclude Include="DKFramework\DKSize.h" />
     <ClInclude Include="DKFramework\DKSliderConstraint.h" />
@@ -501,6 +505,7 @@
     <ClInclude Include="DKFramework\DKSpline.h" />
     <ClInclude Include="DKFramework\DKStaticPlaneShape.h" />
     <ClInclude Include="DKFramework\DKStaticTriangleMeshShape.h" />
+    <ClInclude Include="DKFramework\DKSwapChain.h" />
     <ClInclude Include="DKFramework\DKTexture.h" />
     <ClInclude Include="DKFramework\DKTransform.h" />
     <ClInclude Include="DKFramework\DKTriangle.h" />
@@ -511,6 +516,7 @@
     <ClInclude Include="DKFramework\DKVector2.h" />
     <ClInclude Include="DKFramework\DKVector3.h" />
     <ClInclude Include="DKFramework\DKVector4.h" />
+    <ClInclude Include="DKFramework\DKVertexDescriptor.h" />
     <ClInclude Include="DKFramework\DKVertexStream.h" />
     <ClInclude Include="DKFramework\DKVKey.h" />
     <ClInclude Include="DKFramework\DKWindow.h" />
@@ -553,7 +559,10 @@
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderTarget.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
     <ClInclude Include="DKFramework\Private\Metal\TextureBaseT.h" />
@@ -565,7 +574,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h" />
-    <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />

@@ -16,30 +16,34 @@
 
 namespace DKFramework
 {
-    namespace Private
-    {
-        namespace Metal
-        {
-            class ShaderFunction : public DKShaderFunction
-            {
-            public:
-                ShaderFunction(DKGraphicsDevice*, id<MTLLibrary>, id<MTLFunction>);
-                ~ShaderFunction(void);
+	namespace Private
+	{
+		namespace Metal
+		{
+			class ShaderFunction : public DKShaderFunction
+			{
+			public:
+				ShaderFunction(DKGraphicsDevice*, id<MTLLibrary>, id<MTLFunction>);
+				~ShaderFunction(void);
 
 				const DKArray<DKVertexAttribute> VertexAttributes(void) const override { return vertexAttributes;}
 				const DKArray<DKShaderAttribute> StageInputAttributes(void) const override { return stageInputAttributes;}
 
-                DKGraphicsDevice* Device(void) override { return device; }
+				const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap;}
+				DKObject<DKShaderFunction> CreateSpecializedFunction(const DKShaderSpecialization* values, size_t numValues) const override;
 
-                id<MTLLibrary> library;
-                id<MTLFunction> function;
-                DKObject<DKGraphicsDevice> device;
+				DKGraphicsDevice* Device(void) override { return device; }
+
+				id<MTLLibrary> library;
+				id<MTLFunction> function;
+				DKObject<DKGraphicsDevice> device;
 
 				DKArray<DKVertexAttribute> vertexAttributes;
 				DKArray<DKShaderAttribute> stageInputAttributes;
-            };
-        }
-    }
+				DKMap<DKString, Constant> functionConstantsMap;
+			};
+		}
+	}
 }
 
 #endif //#if DKGL_ENABLE_METAL

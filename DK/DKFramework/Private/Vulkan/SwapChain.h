@@ -36,11 +36,14 @@ namespace DKFramework
 
 				bool Present(void) override;
 
+				DKPixelFormat ColorPixelFormat(void) const override;
+				DKPixelFormat DepthStencilPixelFormat(void) const override;
 
 				bool enableVSync;
 				VkSurfaceFormatKHR surfaceFormat;
 				VkSurfaceKHR surface;
 				VkSwapchainKHR swapchain;
+				DKArray<VkSurfaceFormatKHR> availableSurfaceFormats;
 
 				VkSemaphore presentCompleteSemaphore;
 				VkSemaphore renderCompleteSemaphore;
@@ -51,9 +54,9 @@ namespace DKFramework
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;
 
-			private:
+
 				DKSpinLock lock;
-				bool deviceReset;
+				bool deviceReset;	// recreate swapchain
 
 				uint32_t frameIndex;
 				DKRenderPassDescriptor renderPassDescriptor;

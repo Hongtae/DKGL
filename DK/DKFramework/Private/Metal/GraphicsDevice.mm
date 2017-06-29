@@ -172,9 +172,6 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
                     id<MTLFunction> fn = [library newFunctionWithName:entryPoint];
                     if (fn)
                     {
-//                        NSDictionary<NSString*, MTLFunctionConstant*>* constants = fn.functionConstantsDictionary;
-//                        NSLog(@"functionConstantsDictionary: %@", constants);
-
                         function = DKOBJECT_NEW ShaderFunction(dev, library, fn);
                         [fn release];
                     }

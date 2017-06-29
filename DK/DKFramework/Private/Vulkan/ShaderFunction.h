@@ -10,7 +10,7 @@
 #if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
 
-#include "../../ShaderFunction.h"
+#include "../../DKShaderFunction.h"
 #include "../../DKGraphicsDevice.h"
 
 namespace DKFramework
@@ -19,7 +19,7 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			class ShaderFunction : public DKShaderModule
+			class ShaderFunction : public DKShaderFunction
 			{
 			public:
 				ShaderFunction(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType, const DKStringU8&);

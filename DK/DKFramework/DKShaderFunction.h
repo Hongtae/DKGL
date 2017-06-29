@@ -101,13 +101,32 @@ namespace DKFramework
 
 	using DKVertexAttribute = DKShaderAttribute;
 
+	struct DKShaderSpecialization
+	{
+		DKShaderDataType type;
+		const void* data;
+		uint32_t offset;
+		size_t size;
+	};
+
 	class DKShaderFunction
 	{
 	public:
+		struct Constant
+		{
+			DKString name;
+			DKShaderDataType type;
+			uint32_t index;
+			bool required;
+		};
+
 		virtual ~DKShaderFunction(void) {}
 
 		virtual const DKArray<DKVertexAttribute> VertexAttributes(void) const = 0;
 		virtual const DKArray<DKShaderAttribute> StageInputAttributes(void) const = 0;
+
+		virtual const DKMap<DKString, Constant>& FunctionConstants(void) const = 0;
+		virtual DKObject<DKShaderFunction> CreateSpecializedFunction(const DKShaderSpecialization* values, size_t numValues) const = 0;
 
 		virtual DKGraphicsDevice* Device(void) = 0;
 	};

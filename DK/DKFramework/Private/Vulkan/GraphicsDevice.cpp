@@ -567,7 +567,7 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
 			if (res == VK_SUCCESS)
 			{
 				DKObject<ShaderFunction> function = DKOBJECT_NEW ShaderFunction(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
-				return function.SafeCast<DKShaderModule>();
+				return function.SafeCast<DKShaderFunction>();
 			}
 		}
 	}
