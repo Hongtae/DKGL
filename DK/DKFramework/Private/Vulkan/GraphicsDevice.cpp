@@ -11,6 +11,8 @@
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
 #include "ShaderFunction.h"
+#include "PixelFormat.h"
+#include "RenderPipelineState.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework

@@ -335,6 +335,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
@@ -573,6 +574,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />

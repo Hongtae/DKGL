@@ -558,6 +558,9 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1276,6 +1279,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
