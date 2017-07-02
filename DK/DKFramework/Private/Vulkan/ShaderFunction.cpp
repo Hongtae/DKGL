@@ -15,11 +15,13 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st, const DKStringU8& entry, ShaderFunction* p)
+ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st, const DKStringU8& entry)
 	: device(d)
 	, module(s)
 	, entryPoint(entry)
-	, parent(p)
+	, parent(NULL)
+	, specializationData(NULL)
+	, specializationInfo({ 0 })
 {
 	switch (st)
 	{
@@ -62,6 +64,19 @@ ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void
 
 }
 
+ShaderFunction::ShaderFunction(ShaderFunction* p, const DKShaderSpecialization* values, size_t numValues)
+	: parent(p)
+	, specializationData(NULL)
+	, specializationInfo({ 0 })
+{
+	DKASSERT_DEBUG(parent != NULL);
+
+	device = parent->device;
+	module = parent->module;
+	entryPoint = parent->entryPoint;
+	stage = parent->stage;
+}
+
 ShaderFunction::~ShaderFunction(void)
 {
 	if (parent == NULL)
@@ -69,13 +84,24 @@ ShaderFunction::~ShaderFunction(void)
 		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 		vkDestroyShaderModule(dev->device, module, 0);
 	}
+
+	if (specializationData)
+		DKFree(specializationData);
 }
 
 DKObject<DKShaderFunction> ShaderFunction::CreateSpecializedFunction(const DKShaderSpecialization* values, size_t numValues) const
 {
+	const ShaderFunction* parentObject = this->parent;
+	if (parentObject == NULL)
+		parentObject = this;
+
 	if (values && numValues > 0)
 	{
+		// TODO: verify values with SPIR-V Cross reflection
 
+
+		DKObject<ShaderFunction> func = DKOBJECT_NEW ShaderFunction(const_cast<ShaderFunction*>(parentObject), values, numValues);
+		return func.SafeCast<DKShaderFunction>();
 	}
 	return NULL;
 }

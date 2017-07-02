@@ -22,7 +22,8 @@ namespace DKFramework
 			class ShaderFunction : public DKShaderFunction
 			{
 			public:
-				ShaderFunction(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType, const DKStringU8&, ShaderFunction* parent = NULL);
+				ShaderFunction(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType, const DKStringU8&);
+				ShaderFunction(ShaderFunction* parent, const DKShaderSpecialization* values, size_t numValues);
 				~ShaderFunction(void);
 
 				const DKArray<DKVertexAttribute> VertexAttributes(void) const override { return vertexAttributes;}
@@ -33,11 +34,15 @@ namespace DKFramework
 
 				DKGraphicsDevice* Device(void) override { return device; }
 
+				DKObject<ShaderFunction> parent;	// pointer to non-specialized function. NULL for non-specialized function.
+
 				DKObject<DKGraphicsDevice> device;
-				DKObject<ShaderFunction> parent;
 				VkShaderModule module;
 				VkShaderStageFlagBits stage;
 				DKStringU8 entryPoint;
+
+				VkSpecializationInfo specializationInfo;
+				void* specializationData;
 
 				DKArray<DKVertexAttribute> vertexAttributes;
 				DKArray<DKShaderAttribute> stageInputAttributes;

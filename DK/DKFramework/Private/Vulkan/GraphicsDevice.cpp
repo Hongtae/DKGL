@@ -566,19 +566,107 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
 
 			VkShaderModule shaderModule;
 			VkResult res = vkCreateShaderModule(device, &shaderModuleCreateInfo, NULL, &shaderModule);
-			if (res == VK_SUCCESS)
+			if (res != VK_SUCCESS)
 			{
-				DKObject<ShaderFunction> function = DKOBJECT_NEW ShaderFunction(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
-				return function.SafeCast<DKShaderFunction>();
+				DKLogE("ERROR: vkCreateShaderModule failed: %s", VkResultCStr(res));
+				return NULL;
 			}
+
+			switch (shader->stage)
+			{
+			case DKShader::StageType::Vertex:
+			case DKShader::StageType::TessellationControl:
+			case DKShader::StageType::TessellationEvaluation:
+			case DKShader::StageType::Geometry:
+			case DKShader::StageType::Fragment:
+			case DKShader::StageType::Compute:
+				break;
+			default:
+				DKLogE("ERROR: Invalid shader type");
+				return NULL;
+			}
+
+			DKObject<ShaderFunction> function = DKOBJECT_NEW ShaderFunction(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
+			return function.SafeCast<DKShaderFunction>();
 		}
 	}
 	return NULL;
 }
 
-DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
-	return NULL;
+	// setup layout
+	VkPipelineLayout pipelineLayout;
+	VkPipelineLayoutCreateInfo pPipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
+
+	VkResult result = vkCreatePipelineLayout(device, &pPipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+	if (result != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreatePipelineLayout failed: %s", VkResultCStr(result));
+		return NULL;
+	}
+
+
+	// shader stages
+	DKArray<VkPipelineShaderStageCreateInfo> shaderStageArray;
+	shaderStageArray.Resize(2);	// vertex-shader, fragment-shader
+
+	// vertex input state
+	VkPipelineVertexInputStateCreateInfo vertexInputState = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
+
+	// input assembly
+	VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
+
+	// setup viewport
+	VkPipelineViewportStateCreateInfo viewportState = { VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO };
+	viewportState.viewportCount = 1;
+
+	// rasterization state
+	VkPipelineRasterizationStateCreateInfo rasterizationState = { VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO };
+
+	// setup multisampling
+	VkPipelineMultisampleStateCreateInfo multisampleState = { VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO };
+	multisampleState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+	multisampleState.pSampleMask = nullptr;
+
+	// color blending
+	VkPipelineColorBlendStateCreateInfo colorBlendState = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO };
+
+	// setup depth-stencil
+	VkPipelineDepthStencilStateCreateInfo depthStencilState = { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO };
+
+	// dynamic states
+	VkDynamicState dynamicStateEnables[9] = {
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_SCISSOR,
+		VK_DYNAMIC_STATE_LINE_WIDTH,
+		VK_DYNAMIC_STATE_DEPTH_BIAS,
+		VK_DYNAMIC_STATE_BLEND_CONSTANTS,
+		VK_DYNAMIC_STATE_DEPTH_BOUNDS,
+		VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
+		VK_DYNAMIC_STATE_STENCIL_WRITE_MASK,
+		VK_DYNAMIC_STATE_STENCIL_REFERENCE,
+	};
+	VkPipelineDynamicStateCreateInfo dynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
+	dynamicState.pDynamicStates = dynamicStateEnables;
+	dynamicState.dynamicStateCount = 9;
+
+
+	VkGraphicsPipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
+
+
+
+	VkPipelineCache pipelineCache = VK_NULL_HANDLE;
+	VkPipeline pipeline = VK_NULL_HANDLE;
+	result = vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline);
+	if (result != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreateGraphicsPipelines failed: %s", VkResultCStr(result));
+		return NULL;
+	}
+
+	DKObject<RenderPipelineState> pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline);
+	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
 
 DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)

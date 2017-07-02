@@ -25,6 +25,8 @@ namespace DKFramework
 				RenderPipelineState(DKGraphicsDevice*, VkPipeline);
 				~RenderPipelineState(void);
 
+				DKGraphicsDevice* Device(void) override { return device; }
+
 				DKObject<DKGraphicsDevice> device;
 				VkPipeline pipeline;
 			};
