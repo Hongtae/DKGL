@@ -16,11 +16,11 @@
 #include "DKCondition.h"
 #include "DKLog.h"
 
-#ifdef _WIN32
 namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
 		class ConditionImpl
 		{
 		public:
@@ -68,13 +68,7 @@ namespace DKFoundation
 			mutable CRITICAL_SECTION section;
 			mutable CONDITION_VARIABLE cond;
 		};
-	}
-}
 #else
-namespace DKFoundation
-{
-	namespace Private
-	{
 		class ConditionImpl
 		{
 		public:
@@ -159,9 +153,9 @@ namespace DKFoundation
 			mutable pthread_mutex_t mutex;
 			mutable pthread_cond_t cond;
 		};
+#endif
 	}
 }
-#endif
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;

@@ -91,7 +91,6 @@ namespace DKFramework {}
 #include "DKFramework/DKVector2.h"
 #include "DKFramework/DKVector3.h"
 #include "DKFramework/DKVector4.h"
-#include "DKFramework/DKVertexStream.h"
 #include "DKFramework/DKVKey.h"
 #include "DKFramework/DKWindow.h"
 #include "DKFramework/DKWorld.h"

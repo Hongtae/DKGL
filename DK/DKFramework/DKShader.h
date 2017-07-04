@@ -26,12 +26,11 @@ namespace DKFramework
 		};
 
 		DKShader(void);
-		DKShader(DKData*, StageType stage, const DKString& entry = "main"); // share data
-		DKShader(const void*, size_t, StageType stage, const DKString& entry = "main"); // copy data
+		DKShader(DKData*, StageType stage); // share data
+		DKShader(const void*, size_t, StageType stage); // copy data
 		~DKShader(void);
 
 		StageType stage;
-		DKString entryPoint;
 		DKObject<DKData> codeData;
 	};
 }

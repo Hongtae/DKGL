@@ -15,11 +15,11 @@
 #include "DKLock.h"
 #include "DKLog.h"
 
-#ifdef _WIN32
 namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
 		class LockImpl
 		{
 		public:
@@ -47,13 +47,7 @@ namespace DKFoundation
 			}
 			mutable CRITICAL_SECTION section;
 		};
-	}
-}
 #else
-namespace DKFoundation
-{
-	namespace Private
-	{
 		class LockImpl
 		{
 		public:
@@ -96,9 +90,9 @@ namespace DKFoundation
 			mutable pthread_mutex_t mutex;
 			pthread_mutexattr_t attr;
 		};
+#endif
 	}
 }
-#endif
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;

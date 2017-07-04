@@ -17,11 +17,11 @@
 #include "DKMap.h"
 #include "DKSpinLock.h"
 
-#ifdef _WIN32
 namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
 		class SharedLockImpl
 		{
 		private:
@@ -148,13 +148,7 @@ namespace DKFoundation
 			}
 			mutable SRWLOCK lock;
 		};
-	}
-}
 #else
-namespace DKFoundation
-{
-	namespace Private
-	{
 		class SharedLockImpl
 		{
 		public:
@@ -223,9 +217,9 @@ namespace DKFoundation
 			mutable pthread_rwlock_t rwlock;
 			pthread_rwlockattr_t attr;
 		};
+#endif
 	}
 }
-#endif
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;

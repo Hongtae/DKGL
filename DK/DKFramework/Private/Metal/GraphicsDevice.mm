@@ -13,6 +13,7 @@
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
 #include "ShaderFunction.h"
+#include "ShaderModule.h"
 #include "PixelFormat.h"
 #include "RenderPipelineState.h"
 #include "../../DKPropertySet.h"
@@ -118,41 +119,44 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 	return queue.SafeCast<DKCommandQueue>();
 }
 
-DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice* dev, DKShader* shader)
+DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
 {
     DKASSERT_DEBUG(shader);
 
-    DKObject<DKShaderFunction> function = NULL;
     if (shader->codeData)
     {
         DKDataReader reader(shader->codeData);
         if (reader.Length() > 0)
         {
-            DKStringU8 spirvEntryPoint(shader->entryPoint);
+            const char* entryPointName = "main";
+			switch (shader->stage)
+			{
+				case DKShader::StageType::Vertex:	entryPointName = "vertex_shader_main"; break;
+				case DKShader::StageType::TessellationControl:		entryPointName = "tessellation_control_shader_main"; break;
+				case DKShader::StageType::TessellationEvaluation:	entryPointName = "tessellation_evaluation_shader_main"; break;
+				case DKShader::StageType::Geometry:	entryPointName = "geometry_shader_main"; break;
+				case DKShader::StageType::Fragment:	entryPointName = "fragment_shader_main"; break;
+				case DKShader::StageType::Compute:	entryPointName = "compute_shader_main"; break;
+				default:
+					DKLogE("Error: Invalid shader stage!");
+					return NULL;
+			}
 
-            class Compiler : public spirv_cross::CompilerMSL
-            {
-            public:
-                using Super = spirv_cross::CompilerMSL;
-                using Super::Options;
-                using Super::Super;
-                using Super::clean_func_name;
-                using Super::ensure_valid_name;
-            };
-            Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+			using Compiler = spirv_cross::CompilerMSL;
+
+			Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
             Compiler::Options options;
             options.flip_vert_y = false;
             options.is_rendering_points = true;
             options.pad_and_pack_uniform_structs = false;
-            options.entry_point_name = (const char*)spirvEntryPoint;
+            options.entry_point_name = entryPointName;
 
             compiler.set_options(options);
 
             @autoreleasepool {
-                NSString* entryPoint = [NSString stringWithUTF8String:compiler.clean_func_name((const char*)spirvEntryPoint).c_str()];
                 NSString* source = [NSString stringWithUTF8String:compiler.compile().c_str()];
 
-                NSLog(@"MSL Source: Entry-point:\"%@\" (spirv:\"%s\")\n%@\n", entryPoint, (const char*)spirvEntryPoint, source);
+                NSLog(@"MSL Source:\n%@\n", source);
 
                 NSError* compileError = nil;
                 MTLCompileOptions* compileOptions = [[[MTLCompileOptions alloc] init] autorelease];
@@ -169,19 +173,17 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
                 if (library)
                 {
                     NSLog(@"MTLLibrary: %@", library);
-                    id<MTLFunction> fn = [library newFunctionWithName:entryPoint];
-                    if (fn)
-                    {
-                        function = DKOBJECT_NEW ShaderFunction(dev, library, fn);
-                        [fn release];
-                    }
-                    NSLog(@"MTLFunction: %@", fn);
-                    [library release];
+
+					DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, library);
+
+					[library release];
+
+					return module.SafeCast<DKShaderModule>();
                 }
             }
         }
     }
-    return function;
+    return NULL;
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)

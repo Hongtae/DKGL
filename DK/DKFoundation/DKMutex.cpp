@@ -15,11 +15,11 @@
 #include "DKMutex.h"
 #include "DKLog.h"
 
-#ifdef _WIN32
 namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
 		class MutexImpl
 		{
 		public:
@@ -69,13 +69,7 @@ namespace DKFoundation
 			mutable DWORD ownerId;
 #endif
 		};
-	}
-}
 #else
-namespace DKFoundation
-{
-	namespace Private
-	{
 		class MutexImpl
 		{
 		public:
@@ -127,9 +121,9 @@ namespace DKFoundation
 			pthread_mutexattr_t attr;
 			mutable pthread_mutex_t mutex;
 		};
+#endif
 	}
 }
-#endif
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
