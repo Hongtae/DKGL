@@ -15,10 +15,11 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st, const DKStringU8& entry)
+ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st, const DKStringU8& entry, ShaderFunction* p)
 	: device(d)
 	, module(s)
 	, entryPoint(entry)
+	, parent(p)
 {
 	switch (st)
 	{
@@ -63,8 +64,20 @@ ShaderFunction::ShaderFunction(DKGraphicsDevice* d, VkShaderModule s, const void
 
 ShaderFunction::~ShaderFunction(void)
 {
-	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	vkDestroyShaderModule(dev->device, module, 0);
+	if (parent == NULL)
+	{
+		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+		vkDestroyShaderModule(dev->device, module, 0);
+	}
+}
+
+DKObject<DKShaderFunction> ShaderFunction::CreateSpecializedFunction(const DKShaderSpecialization* values, size_t numValues) const
+{
+	if (values && numValues > 0)
+	{
+
+	}
+	return NULL;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN
