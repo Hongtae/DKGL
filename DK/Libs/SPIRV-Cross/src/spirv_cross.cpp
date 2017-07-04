@@ -127,6 +127,7 @@ bool Compiler::block_is_pure(const SPIRBlock &block)
 		case OpAtomicStore:
 		case OpAtomicExchange:
 		case OpAtomicCompareExchange:
+		case OpAtomicCompareExchangeWeak:
 		case OpAtomicIIncrement:
 		case OpAtomicIDecrement:
 		case OpAtomicIAdd:
@@ -541,6 +542,7 @@ bool Compiler::InterfaceVariableAccessHandler::handle(Op opcode, const uint32_t 
 	case OpAtomicLoad:
 	case OpAtomicExchange:
 	case OpAtomicCompareExchange:
+	case OpAtomicCompareExchangeWeak:
 	case OpAtomicIIncrement:
 	case OpAtomicIDecrement:
 	case OpAtomicIAdd:
@@ -707,6 +709,7 @@ static bool is_valid_spirv_version(uint32_t version)
 	case 99:
 	case 0x10000: // SPIR-V 1.0
 	case 0x10100: // SPIR-V 1.1
+	case 0x10200: // SPIR-V 1.2
 		return true;
 
 	default:
@@ -920,8 +923,34 @@ const std::string &Compiler::get_member_name(uint32_t id, uint32_t index) const
 
 void Compiler::set_member_qualified_name(uint32_t id, uint32_t index, const std::string &name)
 {
-	meta.at(id).members.resize(max(meta[id].members.size(), size_t(index) + 1));
-	meta.at(id).members[index].qualified_alias = name;
+	// Tunnel through pointers to get to the base type
+	auto *p_type = &get<SPIRType>(id);
+	while (p_type->pointer)
+		p_type = &get<SPIRType>(p_type->parent_type);
+
+	uint32_t type_id = p_type->self;
+
+	meta.at(type_id).members.resize(max(meta[type_id].members.size(), size_t(index) + 1));
+	meta.at(type_id).members[index].qualified_alias = name;
+}
+
+const std::string &Compiler::get_member_qualified_name(uint32_t id, uint32_t index) const
+{
+	// Tunnel through pointers to get to the base type
+	auto *p_type = &get<SPIRType>(id);
+	while (p_type->pointer)
+		p_type = &get<SPIRType>(p_type->parent_type);
+
+	uint32_t type_id = p_type->self;
+
+	auto &m = meta.at(type_id);
+	if (index >= m.members.size())
+	{
+		static string empty;
+		return empty;
+	}
+
+	return m.members[index].qualified_alias;
 }
 
 uint32_t Compiler::get_member_decoration(uint32_t id, uint32_t index, Decoration decoration) const
@@ -1160,6 +1189,7 @@ void Compiler::parse(const Instruction &instruction)
 	case OpSourceExtension:
 	case OpNop:
 	case OpLine:
+	case OpString:
 		break;
 
 	case OpSource:
@@ -1439,6 +1469,11 @@ void Compiler::parse(const Instruction &instruction)
 		type.image.ms = ops[5] != 0;
 		type.image.sampled = ops[6];
 		type.image.format = static_cast<ImageFormat>(ops[7]);
+		type.image.access = (length >= 9) ? static_cast<AccessQualifier>(ops[8]) : AccessQualifierMax;
+
+		if (type.image.sampled == 0)
+			SPIRV_CROSS_THROW("OpTypeImage Sampled parameter must not be zero.");
+
 		break;
 	}
 
@@ -3378,6 +3413,25 @@ void Compiler::update_active_builtins()
 	active_output_builtins = 0;
 	ActiveBuiltinHandler handler(*this);
 	traverse_all_reachable_opcodes(get<SPIRFunction>(entry_point), handler);
+}
+
+// Returns whether this shader uses a builtin of the storage class
+bool Compiler::has_active_builtin(BuiltIn builtin, StorageClass storage)
+{
+	uint64_t flags;
+	switch (storage)
+	{
+	case StorageClassInput:
+		flags = active_input_builtins;
+		break;
+	case StorageClassOutput:
+		flags = active_output_builtins;
+		break;
+
+	default:
+		return false;
+	}
+	return flags & (1ull << builtin);
 }
 
 void Compiler::analyze_sampler_comparison_states()

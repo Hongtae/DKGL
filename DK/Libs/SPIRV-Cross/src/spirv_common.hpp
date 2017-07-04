@@ -298,6 +298,7 @@ struct SPIRType : IVariant
 		bool ms;
 		uint32_t sampled;
 		spv::ImageFormat format;
+		spv::AccessQualifier access;
 	} image;
 
 	// Structs can be declared multiple times if they are used as part of interface blocks.
@@ -392,9 +393,6 @@ struct SPIRExpression : IVariant
 	// An expression being immutable can be speculative,
 	// it is assumed that this is true almost always.
 	bool immutable = false;
-
-	// If this expression has been used while invalidated.
-	bool used_while_invalidated = false;
 
 	// Before use, this expression must be transposed.
 	// This is needed for targets which don't support row_major layouts.

@@ -192,7 +192,7 @@ static bool write_string_to_file(const char *path, const char *string)
 	FILE *file = fopen(path, "w");
 	if (!file)
 	{
-		fprintf(file, "Failed to write file: %s\n", path);
+		fprintf(stderr, "Failed to write file: %s\n", path);
 		return false;
 	}
 
@@ -417,6 +417,13 @@ struct VariableTypeRemap
 	string new_variable_type;
 };
 
+struct InterfaceVariableRename
+{
+	StorageClass storageClass;
+	uint32_t location;
+	string variable_name;
+};
+
 struct CLIArguments
 {
 	const char *input = nullptr;
@@ -432,20 +439,22 @@ struct CLIArguments
 	bool force_temporary = false;
 	bool flatten_ubo = false;
 	bool fixup = false;
+	bool sso = false;
 	vector<PLSArg> pls_in;
 	vector<PLSArg> pls_out;
 	vector<Remap> remaps;
 	vector<string> extensions;
 	vector<VariableTypeRemap> variable_type_remaps;
+	vector<InterfaceVariableRename> interface_variable_renames;
 	string entry;
 
 	uint32_t iterations = 1;
 	bool cpp = false;
 	bool msl = false;
-	bool msl_pack_ubos = true;
 	bool hlsl = false;
 	bool hlsl_compat = false;
 	bool vulkan_semantics = false;
+	bool flatten_multidimensional_arrays = false;
 	bool remove_unused = false;
 	bool cfg_analysis = true;
 };
@@ -456,11 +465,15 @@ static void print_help()
 	                "[--version <GLSL version>] [--dump-resources] [--help] [--force-temporary] "
 	                "[--vulkan-semantics] [--flatten-ubo] [--fixup-clipspace] [--iterations iter] "
 	                "[--cpp] [--cpp-interface-name <name>] "
-	                "[--msl] [--msl-no-pack-ubos] "
+	                "[--msl] "
 	                "[--hlsl] [--shader-model] [--hlsl-enable-compat] "
+	                "[--separate-shader-objects]"
 	                "[--pls-in format input-name] [--pls-out format output-name] [--remap source_name target_name "
 	                "components] [--extension ext] [--entry name] [--remove-unused-variables] "
-	                "[--remap-variable-type <variable_name> <new_variable_type>]\n");
+	                "[--flatten-multidimensional-arrays] "
+	                "[--remap-variable-type <variable_name> <new_variable_type>] "
+	                "[--rename-interface-variable <in|out> <location> <new_variable_name>] "
+					"\n");
 }
 
 static bool remap_generic(Compiler &compiler, const vector<Resource> &resources, const Remap &remap)
@@ -547,6 +560,21 @@ static PlsFormat pls_format(const char *str)
 		return PlsNone;
 }
 
+void rename_interface_variable(Compiler &compiler, const vector<Resource> &resources, const InterfaceVariableRename &rename)
+{
+	for (auto &v : resources)
+	{
+		if (!compiler.has_decoration(v.id, spv::DecorationLocation))
+			continue;
+
+		auto loc = compiler.get_decoration(v.id, spv::DecorationLocation);
+		if (loc != rename.location)
+			continue;
+
+		compiler.set_name(v.id, rename.variable_name);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	CLIArguments args;
@@ -579,12 +607,13 @@ int main(int argc, char *argv[])
 	cbs.add("--cpp-interface-name", [&args](CLIParser &parser) { args.cpp_interface_name = parser.next_string(); });
 	cbs.add("--metal", [&args](CLIParser &) { args.msl = true; }); // Legacy compatibility
 	cbs.add("--msl", [&args](CLIParser &) { args.msl = true; });
-	cbs.add("--msl-no-pack-ubos", [&args](CLIParser &) { args.msl_pack_ubos = false; });
 	cbs.add("--hlsl", [&args](CLIParser &) { args.hlsl = true; });
 	cbs.add("--hlsl-enable-compat", [&args](CLIParser &) { args.hlsl_compat = true; });
 	cbs.add("--vulkan-semantics", [&args](CLIParser &) { args.vulkan_semantics = true; });
+	cbs.add("--flatten-multidimensional-arrays", [&args](CLIParser &) { args.flatten_multidimensional_arrays = true; });
 	cbs.add("--extension", [&args](CLIParser &parser) { args.extensions.push_back(parser.next_string()); });
 	cbs.add("--entry", [&args](CLIParser &parser) { args.entry = parser.next_string(); });
+	cbs.add("--separate-shader-objects", [&args](CLIParser &) { args.sso = true; });
 	cbs.add("--remap", [&args](CLIParser &parser) {
 		string src = parser.next_string();
 		string dst = parser.next_string();
@@ -596,6 +625,19 @@ int main(int argc, char *argv[])
 		string var_name = parser.next_string();
 		string new_type = parser.next_string();
 		args.variable_type_remaps.push_back({ move(var_name), move(new_type) });
+	});
+
+	cbs.add("--rename-interface-variable", [&args](CLIParser &parser) {
+		StorageClass cls = StorageClassMax;
+		string clsStr = parser.next_string();
+		if (clsStr == "in")
+			cls = StorageClassInput;
+		else if (clsStr == "out")
+			cls = StorageClassOutput;
+
+		uint32_t loc = parser.next_uint();
+		string var_name = parser.next_string();
+		args.interface_variable_renames.push_back({ cls, loc, move(var_name) });
 	});
 
 	cbs.add("--pls-in", [&args](CLIParser &parser) {
@@ -651,7 +693,6 @@ int main(int argc, char *argv[])
 
 		auto *msl_comp = static_cast<CompilerMSL *>(compiler.get());
 		auto msl_opts = msl_comp->get_options();
-		msl_opts.pad_and_pack_uniform_structs = args.msl_pack_ubos;
 		msl_comp->set_options(msl_opts);
 	}
 	else if (args.hlsl)
@@ -689,6 +730,8 @@ int main(int argc, char *argv[])
 	if (args.set_es)
 		opts.es = args.es;
 	opts.force_temporary = args.force_temporary;
+	opts.separate_shader_objects = args.sso;
+	opts.flatten_multidimensional_arrays = args.flatten_multidimensional_arrays;
 	opts.vulkan_semantics = args.vulkan_semantics;
 	opts.vertex.fixup_clipspace = args.fixup;
 	opts.cfg_analysis = args.cfg_analysis;
@@ -751,6 +794,19 @@ int main(int argc, char *argv[])
 			continue;
 		if (remap_generic(*compiler, res.subpass_inputs, remap))
 			continue;
+	}
+
+	for (auto &rename : args.interface_variable_renames) 
+	{
+		if (rename.storageClass == StorageClassInput)
+			rename_interface_variable(*compiler, res.stage_inputs, rename);
+		else if (rename.storageClass == StorageClassOutput)
+			rename_interface_variable(*compiler, res.stage_outputs, rename);
+		else
+		{
+			fprintf(stderr, "error at --rename-interface-variable <in|out> ...\n");
+			return EXIT_FAILURE;
+		}
 	}
 
 	if (args.dump_resources)

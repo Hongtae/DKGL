@@ -154,7 +154,10 @@ string CompilerHLSL::image_type_hlsl(const SPIRType &type)
 		return image_type_hlsl_modern(type);
 }
 
-string CompilerHLSL::type_to_glsl(const SPIRType &type)
+// The optional id parameter indicates the object whose type we are trying
+// to find the description for. It is optional. Most type descriptions do not
+// depend on a specific object's use of that type.
+string CompilerHLSL::type_to_glsl(const SPIRType &type, uint32_t id)
 {
 	// Ignore the pointer type since GLSL doesn't have pointers.
 
@@ -172,7 +175,7 @@ string CompilerHLSL::type_to_glsl(const SPIRType &type)
 		return image_type_hlsl(type);
 
 	case SPIRType::Sampler:
-		return type.image.depth ? "SamplerComparisonState" : "SamplerState";
+		return comparison_samplers.count(id) ? "SamplerComparisonState" : "SamplerState";
 
 	case SPIRType::Void:
 		return "void";
@@ -431,12 +434,22 @@ void CompilerHLSL::emit_io_block(const SPIRVariable &var)
 	begin_scope();
 	type.member_name_cache.clear();
 
+	uint32_t base_location = get_decoration(var.self, DecorationLocation);
+
 	for (uint32_t i = 0; i < uint32_t(type.member_types.size()); i++)
 	{
 		string semantic;
 		if (has_member_decoration(type.self, i, DecorationLocation))
 		{
 			uint32_t location = get_member_decoration(type.self, i, DecorationLocation);
+			semantic = join(" : TEXCOORD", location);
+		}
+		else
+		{
+			// If the block itself has a location, but not its members, use the implicit location.
+			// There could be a conflict if the block members partially specialize the locations.
+			// It is unclear how SPIR-V deals with this. Assume this does not happen for now.
+			uint32_t location = base_location + i;
 			semantic = join(" : TEXCOORD", location);
 		}
 
@@ -866,9 +879,20 @@ void CompilerHLSL::emit_buffer_block(const SPIRVariable &var)
 {
 	auto &type = get<SPIRType>(var.basetype);
 
+	bool is_uav = has_decoration(type.self, DecorationBufferBlock);
+	if (is_uav)
+		SPIRV_CROSS_THROW("Buffer is SSBO (UAV). This is currently unsupported.");
+
 	add_resource_name(type.self);
 
-	statement("struct _", to_name(type.self));
+	string struct_name;
+	if (options.shader_model >= 51)
+		struct_name = to_name(type.self);
+	else
+		struct_name = join("_", to_name(type.self));
+
+	// First, declare the struct of the UBO.
+	statement("struct ", struct_name);
 	begin_scope();
 
 	type.member_name_cache.clear();
@@ -883,15 +907,22 @@ void CompilerHLSL::emit_buffer_block(const SPIRVariable &var)
 	end_scope_decl();
 	statement("");
 
-	statement("cbuffer ", to_name(type.self));
-	begin_scope();
-	statement("_", to_name(type.self), " ", to_name(var.self), ";");
-	end_scope_decl();
+	if (options.shader_model >= 51) // SM 5.1 uses ConstantBuffer<T> instead of cbuffer.
+	{
+		statement("ConstantBuffer<", struct_name, "> ", to_name(var.self), type_to_array_glsl(type), to_resource_binding(var), ";");
+	}
+	else
+	{
+		statement("cbuffer ", to_name(type.self), to_resource_binding(var));
+		begin_scope();
+		statement(struct_name, " ", to_name(var.self), type_to_array_glsl(type), ";");
+		end_scope_decl();
+	}
 }
 
-void CompilerHLSL::emit_push_constant_block(const SPIRVariable &)
+void CompilerHLSL::emit_push_constant_block(const SPIRVariable &var)
 {
-	statement("constant block");
+	emit_buffer_block(var);
 }
 
 string CompilerHLSL::to_sampler_expression(uint32_t id)
@@ -1398,7 +1429,13 @@ void CompilerHLSL::emit_texture_op(const Instruction &i)
 
 	expr += texop;
 	expr += "(";
-	if (op != OpImageFetch && (options.shader_model >= 40))
+	if (options.shader_model < 40)
+	{
+		if (combined_image)
+			SPIRV_CROSS_THROW("Separate images/samplers are not supported in HLSL shader model 2/3.");
+		expr += to_expression(img);
+	}
+	else if (op != OpImageFetch)
 	{
 		string sampler_expr;
 		if (combined_image)
@@ -1536,6 +1573,71 @@ void CompilerHLSL::emit_texture_op(const Instruction &i)
 	emit_op(result_type, id, expr, forward, false);
 }
 
+string CompilerHLSL::to_resource_binding(const SPIRVariable &var)
+{
+	// TODO: Basic implementation, might need special consideration for RW/RO structured buffers,
+	// RW/RO images, and so on.
+
+	if (!has_decoration(var.self, DecorationBinding))
+		return "";
+
+	auto &type = get<SPIRType>(var.basetype);
+	const char *space = nullptr;
+
+	switch (type.basetype)
+	{
+	case SPIRType::SampledImage:
+	case SPIRType::Image:
+		space = "t"; // SRV
+		break;
+
+	case SPIRType::Sampler:
+		space = "s";
+		break;
+
+	case SPIRType::Struct:
+	{
+		auto storage = type.storage;
+		if (storage == StorageClassUniform)
+		{
+			if (has_decoration(type.self, DecorationBufferBlock))
+				space = "u"; // UAV
+			else if (has_decoration(type.self, DecorationBlock))
+			{
+				if (options.shader_model >= 51)
+					space = "b"; // Constant buffers
+				else
+					space = "c"; // Constant buffers
+			}
+		}
+		else if (storage == StorageClassPushConstant)
+		{
+			if (options.shader_model >= 51)
+				space = "b"; // Constant buffers
+			else
+				space = "c"; // Constant buffers
+		}
+
+		break;
+	}
+	default:
+		break;
+	}
+
+	if (!space)
+		return "";
+
+	return join(" : register(", space, get_decoration(var.self, DecorationBinding), ")");
+}
+
+string CompilerHLSL::to_resource_binding_sampler(const SPIRVariable &var)
+{
+	// For combined image samplers.
+	if (!has_decoration(var.self, DecorationBinding))
+		return "";
+	return join(" : register(s", get_decoration(var.self, DecorationBinding), ")");
+}
+
 void CompilerHLSL::emit_modern_uniform(const SPIRVariable &var)
 {
 	auto &type = get<SPIRType>(var.basetype);
@@ -1544,28 +1646,29 @@ void CompilerHLSL::emit_modern_uniform(const SPIRVariable &var)
 	case SPIRType::SampledImage:
 	case SPIRType::Image:
 	{
-		statement(image_type_hlsl_modern(type), " ", to_name(var.self), ";");
+		statement(image_type_hlsl_modern(type), " ", to_name(var.self), to_resource_binding(var), ";");
 
 		if (type.basetype == SPIRType::SampledImage)
 		{
 			// For combined image samplers, also emit a combined image sampler.
 			if (type.image.depth)
-				statement("SamplerComparisonState ", to_sampler_expression(var.self), ";");
+				statement("SamplerComparisonState ", to_sampler_expression(var.self), to_resource_binding_sampler(var),
+				          ";");
 			else
-				statement("SamplerState ", to_sampler_expression(var.self), ";");
+				statement("SamplerState ", to_sampler_expression(var.self), to_resource_binding_sampler(var), ";");
 		}
 		break;
 	}
 
 	case SPIRType::Sampler:
 		if (comparison_samplers.count(var.self))
-			statement("SamplerComparisonState ", to_name(var.self), ";");
+			statement("SamplerComparisonState ", to_name(var.self), to_resource_binding(var), ";");
 		else
-			statement("SamplerState ", to_name(var.self), ";");
+			statement("SamplerState ", to_name(var.self), to_resource_binding(var), ";");
 		break;
 
 	default:
-		statement(variable_decl(var), ";");
+		statement(variable_decl(var), to_resource_binding(var), ";");
 		break;
 	}
 }
