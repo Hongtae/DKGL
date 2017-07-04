@@ -27,7 +27,7 @@ namespace DKFramework
 
 				DKString DeviceName(void) const override;
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
-                DKObject<DKShaderFunction> CreateShaderFunction(DKGraphicsDevice*, DKShader*) override;
+                DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) override;
                 DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*) override;
                 DKObject<DKComputePipelineState> CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*) override;
 

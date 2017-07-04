@@ -27,11 +27,11 @@ DKObject<DKCommandQueue> DKGraphicsDevice::CreateCommandQueue(void)
 	return impl->CreateCommandQueue(this);
 }
 
-DKObject<DKShaderFunction> DKGraphicsDevice::CreateShaderFunction(DKShader* shader)
+DKObject<DKShaderModule> DKGraphicsDevice::CreateShaderModule(DKShader* shader)
 {
 	if (shader)
 	{
-		return impl->CreateShaderFunction(this, shader);
+		return impl->CreateShaderModule(this, shader);
 	}
 	return NULL;
 }

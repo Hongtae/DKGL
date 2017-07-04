@@ -11,13 +11,11 @@ using namespace DKFramework;
 
 DKShader::DKShader(void)
 	: stage(StageType::Vertex)
-	, entryPoint("main")
 {
 }
 
-DKShader::DKShader(const void* data, size_t size, StageType st, const DKString& entry)
+DKShader::DKShader(const void* data, size_t size, StageType st)
 	: stage(st)
-	, entryPoint(entry)
 {
 	if (data && size > 0)
 	{
@@ -25,9 +23,8 @@ DKShader::DKShader(const void* data, size_t size, StageType st, const DKString& 
 	}
 }
 
-DKShader::DKShader(DKData* data, StageType st, const DKString& entry)
+DKShader::DKShader(DKData* data, StageType st)
 	: stage(st)
-	, entryPoint(entry)
 	, codeData(data)
 {
 }

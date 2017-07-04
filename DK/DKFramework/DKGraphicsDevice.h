@@ -8,7 +8,7 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKCommandQueue.h"
-#include "DKShaderFunction.h"
+#include "DKShaderModule.h"
 #include "DKShader.h"
 #include "DKRenderPipeline.h"
 #include "DKComputePipeline.h"
@@ -26,7 +26,7 @@ namespace DKFramework
 
 
 		DKObject<DKCommandQueue> CreateCommandQueue(void);
-		DKObject<DKShaderFunction> CreateShaderFunction(DKShader*);
+		DKObject<DKShaderModule> CreateShaderModule(DKShader*);
 
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKPipelineReflection* reflection = NULL);
