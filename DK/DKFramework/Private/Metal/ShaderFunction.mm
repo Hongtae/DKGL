@@ -71,7 +71,7 @@ DKString ShaderFunction::FunctionName(void) const
 	DKString name;
 	@autoreleasepool
 	{
-		name = [function functionName].UTF8String;
+		name = function.name.UTF8String;
 	}
 	return name;
 }

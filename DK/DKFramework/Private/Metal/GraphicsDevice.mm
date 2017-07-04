@@ -153,8 +153,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
             Compiler::Options options;
             options.flip_vert_y = false;
-            options.is_rendering_points = true;
-            options.pad_and_pack_uniform_structs = false;
+            options.enable_point_size_builtin = true;
             options.entry_point_name = entryPointNames.front();
 
             compiler.set_options(options);
@@ -212,10 +211,21 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		NSError* error = nil;
 		MTLRenderPipelineDescriptor* descriptor = [[[MTLRenderPipelineDescriptor alloc] init] autorelease];
 
-		const ShaderFunction* vertexFunction = desc.vertexFunction.SafeCast<ShaderFunction>();
+		if (desc.vertexFunction)
+		{
+			DKASSERT_DEBUG(desc.vertexFunction.SafeCast<ShaderFunction>());
+			DKASSERT_DEBUG(desc.vertexFunction.SafeCast<ShaderFunction>()->function.functionType == MTLFunctionTypeVertex);
+		}
+		if (desc.fragmentFunction)
+		{
+			DKASSERT_DEBUG(desc.fragmentFunction.SafeCast<ShaderFunction>());
+			DKASSERT_DEBUG(desc.fragmentFunction.SafeCast<ShaderFunction>()->function.functionType == MTLFunctionTypeFragment);
+		}
+
+		const ShaderFunction* vertexFunction = desc.vertexFunction.StaticCast<ShaderFunction>();
 		if (vertexFunction)
 			descriptor.vertexFunction = vertexFunction->function;
-		const ShaderFunction* fragmentFunction = desc.fragmentFunction.SafeCast<ShaderFunction>();
+		const ShaderFunction* fragmentFunction = desc.fragmentFunction.StaticCast<ShaderFunction>();
 		if (fragmentFunction)
 			descriptor.fragmentFunction = fragmentFunction->function;
 
