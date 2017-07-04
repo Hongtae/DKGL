@@ -31,6 +31,7 @@ namespace DKFramework
 				const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override { return stageInputAttributes;}
 
 				const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap;}
+				DKString FunctionName(void) const override;
 
 				DKGraphicsDevice* Device(void) override { return module->Device(); }
 

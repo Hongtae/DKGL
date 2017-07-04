@@ -159,14 +159,6 @@ namespace DKFoundation
 		{
 			return static_cast<const R*>(_target);
 		}
-		template <typename R> R* ReinterpretCast(void)
-		{
-			return reinterpret_cast<R*>(_target);
-		}
-		template <typename R> const R* ReinterpretCast(void) const
-		{
-			return reinterpret_cast<const R*>(_target);
-		}
 		DKObject& operator = (DKObject&& obj)
 		{
 			if (_target != obj._target)

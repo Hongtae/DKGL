@@ -22,13 +22,15 @@ namespace DKFramework
 			class RenderPipelineState : public DKRenderPipelineState
 			{
 			public:
-				RenderPipelineState(DKGraphicsDevice*, VkPipeline);
+				RenderPipelineState(DKGraphicsDevice*, VkPipeline, VkPipelineLayout, VkRenderPass);
 				~RenderPipelineState(void);
 
 				DKGraphicsDevice* Device(void) override { return device; }
 
 				DKObject<DKGraphicsDevice> device;
 				VkPipeline pipeline;
+				VkPipelineLayout layout;
+				VkRenderPass renderPass;
 			};
 		}
 	}

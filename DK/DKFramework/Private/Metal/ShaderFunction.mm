@@ -66,4 +66,14 @@ ShaderFunction::~ShaderFunction(void)
     [function release];
 }
 
+DKString ShaderFunction::FunctionName(void) const 
+{
+	DKString name;
+	@autoreleasepool
+	{
+		name = [function functionName].UTF8String;
+	}
+	return name;
+}
+
 #endif //#if DKGL_ENABLE_METAL

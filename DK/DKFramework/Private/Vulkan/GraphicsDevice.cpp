@@ -10,6 +10,7 @@
 
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
+#include "ShaderModule.h"
 #include "ShaderFunction.h"
 #include "PixelFormat.h"
 #include "RenderPipelineState.h"
@@ -552,7 +553,7 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 	return NULL;
 }
 
-DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice* dev, DKShader* shader)
+DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
 {
 	DKASSERT_DEBUG(shader);
 	if (shader->codeData)
@@ -586,8 +587,8 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
 				return NULL;
 			}
 
-			DKObject<ShaderFunction> function = DKOBJECT_NEW ShaderFunction(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage, (const DKStringU8&)shader->entryPoint);
-			return function.SafeCast<DKShaderFunction>();
+			DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage);
+			return module.SafeCast<DKShaderModule>();
 		}
 	}
 	return NULL;
@@ -595,45 +596,80 @@ DKObject<DKShaderFunction> GraphicsDevice::CreateShaderFunction(DKGraphicsDevice
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
+	VkResult result = VK_SUCCESS;
+	uint32_t index = 0;
+	VkGraphicsPipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
+
 	// setup layout
-	VkPipelineLayout pipelineLayout;
+	VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 	VkPipelineLayoutCreateInfo pPipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
 
-	VkResult result = vkCreatePipelineLayout(device, &pPipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+	// shader stages
+	DKArray<VkPipelineShaderStageCreateInfo> shaderStageArray;
+
+	std::initializer_list<const DKShaderFunction*> shaderFunctions = { desc.vertexFunction, desc.fragmentFunction };
+	shaderStageArray.Reserve(shaderFunctions.size());
+
+	for (const DKShaderFunction* fn : shaderFunctions)
+	{
+		if (fn)
+		{
+			DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn) != nullptr);
+			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+			const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+
+			// setup shader stage descriptor.
+			VkPipelineShaderStageCreateInfo shaderInfo = { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
+			shaderInfo.stage = module->stage;
+			shaderInfo.module = module->module;
+			shaderInfo.pName = func->functionName;
+			if (func->specializationInfo.mapEntryCount > 0)
+				shaderInfo.pSpecializationInfo = &func->specializationInfo;
+			shaderStageArray.Add(shaderInfo);
+		}
+	}
+	pipelineCreateInfo.stageCount = shaderStageArray.Count();
+	pipelineCreateInfo.pStages = shaderStageArray;
+
+	result = vkCreatePipelineLayout(device, &pPipelineLayoutCreateInfo, nullptr, &pipelineLayout);
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreatePipelineLayout failed: %s", VkResultCStr(result));
 		return NULL;
 	}
-
-
-	// shader stages
-	DKArray<VkPipelineShaderStageCreateInfo> shaderStageArray;
-	shaderStageArray.Resize(2);	// vertex-shader, fragment-shader
+	pipelineCreateInfo.layout = pipelineLayout;
 
 	// vertex input state
 	VkPipelineVertexInputStateCreateInfo vertexInputState = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
+	pipelineCreateInfo.pVertexInputState = &vertexInputState;
 
 	// input assembly
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
+	pipelineCreateInfo.pInputAssemblyState = &inputAssemblyState;
 
 	// setup viewport
 	VkPipelineViewportStateCreateInfo viewportState = { VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO };
-	viewportState.viewportCount = 1;
+	viewportState.viewportCount = viewportState.scissorCount = 1;
+	pipelineCreateInfo.pViewportState = &viewportState;
 
 	// rasterization state
 	VkPipelineRasterizationStateCreateInfo rasterizationState = { VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO };
+	pipelineCreateInfo.pRasterizationState = &rasterizationState;
 
 	// setup multisampling
 	VkPipelineMultisampleStateCreateInfo multisampleState = { VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO };
 	multisampleState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 	multisampleState.pSampleMask = nullptr;
+	pipelineCreateInfo.pMultisampleState = &multisampleState;
 
 	// color blending
 	VkPipelineColorBlendStateCreateInfo colorBlendState = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO };
+	pipelineCreateInfo.pColorBlendState = &colorBlendState;
 
 	// setup depth-stencil
 	VkPipelineDepthStencilStateCreateInfo depthStencilState = { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO };
+	pipelineCreateInfo.pDepthStencilState = &depthStencilState;
+
 
 	// dynamic states
 	VkDynamicState dynamicStateEnables[9] = {
@@ -650,11 +686,58 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	VkPipelineDynamicStateCreateInfo dynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
 	dynamicState.pDynamicStates = dynamicStateEnables;
 	dynamicState.dynamicStateCount = 9;
+	pipelineCreateInfo.pDynamicState = &dynamicState;
 
+	// render pass
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+	VkRenderPassCreateInfo  renderPassCreateInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
+	VkSubpassDescription subpassDesc = { 0, VK_PIPELINE_BIND_POINT_GRAPHICS };
+	DKArray<VkAttachmentDescription> attachmentDescriptionArray;
+	DKArray<VkAttachmentReference> subpassInputAttachmentArray;
+	DKArray<VkAttachmentReference> subpassColorAttachmentArray;
+	DKArray<VkAttachmentReference> subpassResolveAttachmentArray;
+	VkAttachmentReference subpassDepthStencilAttachment = { VK_ATTACHMENT_UNUSED };
 
-	VkGraphicsPipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
+	attachmentDescriptionArray.Reserve(desc.colorAttachments.Count() + 1);
+	subpassColorAttachmentArray.Reserve(desc.colorAttachments.Count());
 
+	index = 0;
+	for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
+	{
+		VkAttachmentDescription attachmentDesc = {};
+		attachmentDesc.format = PixelFormat::From(attachment.pixelFormat);
+		attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
+		attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachmentDescriptionArray.Add(attachmentDesc);
 
+		VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED };
+		attachmentRef.attachment = index;
+		attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		subpassColorAttachmentArray.Add(attachmentRef);
+
+		index++;
+	}
+	subpassDesc.colorAttachmentCount = subpassColorAttachmentArray.Count();
+	subpassDesc.pColorAttachments = subpassColorAttachmentArray;
+	subpassDesc.pResolveAttachments = subpassResolveAttachmentArray;
+	if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat))
+	{
+		subpassDesc.pDepthStencilAttachment = &subpassDepthStencilAttachment;
+	}
+
+	renderPassCreateInfo.attachmentCount = attachmentDescriptionArray.Count();
+	renderPassCreateInfo.pAttachments = attachmentDescriptionArray;
+	renderPassCreateInfo.subpassCount = 1;
+	renderPassCreateInfo.pSubpasses = &subpassDesc;
+
+	result = vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass);
+	if (result != VK_SUCCESS)
+	{
+		DKLogE("ERROR: vkCreateRenderPass failed: %s", VkResultCStr(result));
+		return NULL;
+	}
+	pipelineCreateInfo.renderPass = renderPass;
 
 	VkPipelineCache pipelineCache = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
@@ -665,7 +748,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		return NULL;
 	}
 
-	DKObject<RenderPipelineState> pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline);
+	DKObject<RenderPipelineState> pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
 	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
 

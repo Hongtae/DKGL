@@ -128,28 +128,34 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
         DKDataReader reader(shader->codeData);
         if (reader.Length() > 0)
         {
-            const char* entryPointName = "main";
 			switch (shader->stage)
 			{
-				case DKShader::StageType::Vertex:	entryPointName = "vertex_shader_main"; break;
-				case DKShader::StageType::TessellationControl:		entryPointName = "tessellation_control_shader_main"; break;
-				case DKShader::StageType::TessellationEvaluation:	entryPointName = "tessellation_evaluation_shader_main"; break;
-				case DKShader::StageType::Geometry:	entryPointName = "geometry_shader_main"; break;
-				case DKShader::StageType::Fragment:	entryPointName = "fragment_shader_main"; break;
-				case DKShader::StageType::Compute:	entryPointName = "compute_shader_main"; break;
+				case DKShader::StageType::Vertex:					
+				case DKShader::StageType::TessellationControl:		
+				case DKShader::StageType::TessellationEvaluation:	
+				case DKShader::StageType::Geometry:					
+				case DKShader::StageType::Fragment:					
+				case DKShader::StageType::Compute:		
+					break;
 				default:
 					DKLogE("Error: Invalid shader stage!");
 					return NULL;
 			}
 
 			using Compiler = spirv_cross::CompilerMSL;
-
 			Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+			std::vector<std::string> entryPointNames = compiler.get_entry_points();
+			if (entryPointNames.empty())
+			{
+					DKLogE("Error: No entry point function!");
+					return NULL;			
+			}
+
             Compiler::Options options;
             options.flip_vert_y = false;
             options.is_rendering_points = true;
             options.pad_and_pack_uniform_structs = false;
-            options.entry_point_name = entryPointName;
+            options.entry_point_name = entryPointNames.front();
 
             compiler.set_options(options);
 

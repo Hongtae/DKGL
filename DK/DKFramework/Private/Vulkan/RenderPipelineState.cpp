@@ -14,9 +14,11 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-RenderPipelineState::RenderPipelineState(DKGraphicsDevice* d, VkPipeline p)
+RenderPipelineState::RenderPipelineState(DKGraphicsDevice* d, VkPipeline p, VkPipelineLayout l, VkRenderPass r)
 	: device(d)
 	, pipeline(p)
+	, layout(l)
+	, renderPass(r)
 {
 }
 
@@ -24,6 +26,8 @@ RenderPipelineState::~RenderPipelineState(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	vkDestroyPipeline(dev->device, pipeline, nullptr);
+	vkDestroyPipelineLayout(dev->device, layout, nullptr);
+	vkDestroyRenderPass(dev->device, renderPass, nullptr);
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

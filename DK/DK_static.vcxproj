@@ -194,6 +194,7 @@
     <None Include="DKFramework\Private\Metal\RenderTarget.mm" />
     <None Include="DKFramework\Private\Metal\ShaderDataType.mm" />
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
     <None Include="DKFramework\Private\Metal\SwapChain.mm" />
     <None Include="DKFramework\Private\Metal\Texture.mm" />
     <None Include="Libs.props" />
@@ -338,6 +339,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
@@ -564,6 +566,7 @@
     <ClInclude Include="DKFramework\Private\Metal\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
     <ClInclude Include="DKFramework\Private\Metal\TextureBaseT.h" />
@@ -577,6 +580,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />

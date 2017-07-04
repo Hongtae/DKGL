@@ -22,24 +22,19 @@ namespace DKFramework
 			class ShaderFunction : public DKShaderFunction
 			{
 			public:
-				ShaderFunction(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType, const DKStringU8&);
-				ShaderFunction(ShaderFunction* parent, const DKShaderSpecialization* values, size_t numValues);
+				ShaderFunction(DKShaderModule* module, const DKStringU8& name, const DKShaderSpecialization* values, size_t numValues);
 				~ShaderFunction(void);
 
-				const DKArray<DKVertexAttribute> VertexAttributes(void) const override { return vertexAttributes;}
-				const DKArray<DKShaderAttribute> StageInputAttributes(void) const override { return stageInputAttributes;}
+				const DKArray<DKVertexAttribute>& VertexAttributes(void) const override { return vertexAttributes;}
+				const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override { return stageInputAttributes;}
 
 				const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap;}
-				DKObject<DKShaderFunction> CreateSpecializedFunction(const DKShaderSpecialization* values, size_t numValues) const override;
+				DKString FunctionName(void) const override { return DKString(functionName); }
 
-				DKGraphicsDevice* Device(void) override { return device; }
+				DKGraphicsDevice* Device(void) override { return module->Device(); }
 
-				DKObject<ShaderFunction> parent;	// pointer to non-specialized function. NULL for non-specialized function.
-
-				DKObject<DKGraphicsDevice> device;
-				VkShaderModule module;
-				VkShaderStageFlagBits stage;
-				DKStringU8 entryPoint;
+				DKObject<DKShaderModule> module;
+				DKStringU8 functionName;
 
 				VkSpecializationInfo specializationInfo;
 				void* specializationData;
