@@ -704,19 +704,25 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	index = 0;
 	for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 	{
-		VkAttachmentDescription attachmentDesc = {};
-		attachmentDesc.format = PixelFormat::From(attachment.pixelFormat);
-		attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
-		attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachmentDescriptionArray.Add(attachmentDesc);
+		if (DKPixelFormatIsColorFormat(attachment.pixelFormat))
+		{
+			VkAttachmentDescription attachmentDesc = {};
+			attachmentDesc.format = PixelFormat::From(attachment.pixelFormat);
+			attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
+			attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachmentDescriptionArray.Add(attachmentDesc);
 
-		VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED };
-		attachmentRef.attachment = index;
-		attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		subpassColorAttachmentArray.Add(attachmentRef);
+			VkAttachmentReference attachmentRef = { index,  VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL};
+			subpassColorAttachmentArray.Add(attachmentRef);
 
-		index++;
+			index++;
+		}
+		else
+		{
+			VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL };
+			subpassColorAttachmentArray.Add(attachmentRef);
+		}
 	}
 	subpassDesc.colorAttachmentCount = subpassColorAttachmentArray.Count();
 	subpassDesc.pColorAttachments = subpassColorAttachmentArray;

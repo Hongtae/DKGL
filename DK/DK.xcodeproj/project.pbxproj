@@ -1386,6 +1386,10 @@
 		84C3D8C21E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
 		84C3D8C31E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
 		84C3D8C41E9D09BE0003222C /* DKLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C3D8BC1E9D09BE0003222C /* DKLogger.h */; };
+		84C8CEC31F0BF727007D69C3 /* RenderPipelineState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C8CEBF1F0BF727007D69C3 /* RenderPipelineState.cpp */; };
+		84C8CEC41F0BF727007D69C3 /* RenderPipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C8CEC01F0BF727007D69C3 /* RenderPipelineState.h */; };
+		84C8CEC51F0BF727007D69C3 /* ShaderModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C8CEC11F0BF727007D69C3 /* ShaderModule.cpp */; };
+		84C8CEC61F0BF727007D69C3 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C8CEC21F0BF727007D69C3 /* ShaderModule.h */; };
 		84C907CF171445A500F62F3C /* DKGearConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C907CD171445A500F62F3C /* DKGearConstraint.cpp */; };
 		84C907D0171445A500F62F3C /* DKGearConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84C907CD171445A500F62F3C /* DKGearConstraint.cpp */; };
 		84C907D1171445A500F62F3C /* DKGearConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C907CE171445A500F62F3C /* DKGearConstraint.h */; };
@@ -2431,6 +2435,10 @@
 		84BBE62F164AD2D100B9B7F1 /* DKSliderConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSliderConstraint.h; sourceTree = "<group>"; };
 		84C3D8BB1E9D09BE0003222C /* DKLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKLogger.cpp; sourceTree = "<group>"; };
 		84C3D8BC1E9D09BE0003222C /* DKLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKLogger.h; sourceTree = "<group>"; };
+		84C8CEBF1F0BF727007D69C3 /* RenderPipelineState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderPipelineState.cpp; sourceTree = "<group>"; };
+		84C8CEC01F0BF727007D69C3 /* RenderPipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderPipelineState.h; sourceTree = "<group>"; };
+		84C8CEC11F0BF727007D69C3 /* ShaderModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderModule.cpp; sourceTree = "<group>"; };
+		84C8CEC21F0BF727007D69C3 /* ShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderModule.h; sourceTree = "<group>"; };
 		84C907CD171445A500F62F3C /* DKGearConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKGearConstraint.cpp; sourceTree = "<group>"; };
 		84C907CE171445A500F62F3C /* DKGearConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKGearConstraint.h; sourceTree = "<group>"; };
 		84D2C108146B6D2A006874C2 /* DKSpline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSpline.cpp; sourceTree = "<group>"; };
@@ -2813,10 +2821,14 @@
 				84FCF1661E3693B500DF9386 /* QueueFamily.h */,
 				84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */,
 				84F224B51EE503220053F08B /* RenderCommandEncoder.h */,
+				84C8CEBF1F0BF727007D69C3 /* RenderPipelineState.cpp */,
+				84C8CEC01F0BF727007D69C3 /* RenderPipelineState.h */,
 				8458E6C71E44582500871311 /* RenderTarget.cpp */,
 				8458E6C81E44582500871311 /* RenderTarget.h */,
 				84F224B61EE503220053F08B /* ShaderFunction.cpp */,
 				84F224B71EE503220053F08B /* ShaderFunction.h */,
+				84C8CEC11F0BF727007D69C3 /* ShaderModule.cpp */,
+				84C8CEC21F0BF727007D69C3 /* ShaderModule.h */,
 				84FCF1671E3693B500DF9386 /* SwapChain.cpp */,
 				84FCF1681E3693B500DF9386 /* SwapChain.h */,
 				8498FC331E4720E400E6A961 /* TextureBaseT.h */,
@@ -4047,6 +4059,7 @@
 				84211C5A1665E86300B9B9A2 /* DKUuid.h in Headers */,
 				84211C5B1665E86300B9B9A2 /* DKValue.h in Headers */,
 				84211C5C1665E86300B9B9A2 /* DKXmlDocument.h in Headers */,
+				84C8CEC41F0BF727007D69C3 /* RenderPipelineState.h in Headers */,
 				84211C5D1665E86300B9B9A2 /* DKXmlParser.h in Headers */,
 				84211C5E1665E86300B9B9A2 /* DKZipArchiver.h in Headers */,
 				84F970001B4C26C200BA24E4 /* DKTriangleMesh.h in Headers */,
@@ -4073,6 +4086,7 @@
 				84211CB21665E88E00B9B9A2 /* DKBoxShape.h in Headers */,
 				84211CB31665E88E00B9B9A2 /* DKCamera.h in Headers */,
 				84211CB41665E88E00B9B9A2 /* DKCapsuleShape.h in Headers */,
+				84C8CEC61F0BF727007D69C3 /* ShaderModule.h in Headers */,
 				84211CB61665E88E00B9B9A2 /* DKCollisionShape.h in Headers */,
 				84211CB71665E88E00B9B9A2 /* DKColor.h in Headers */,
 				84211CB81665E88E00B9B9A2 /* DKCompoundShape.h in Headers */,
@@ -5150,6 +5164,7 @@
 				84211ADB1665E7FC00B9B9A2 /* DKFixedConstraint.cpp in Sources */,
 				840C3E0D178D396D00F57A8D /* DKOperationQueue.cpp in Sources */,
 				84211ADD1665E7FC00B9B9A2 /* DKFont.cpp in Sources */,
+				84C8CEC51F0BF727007D69C3 /* ShaderModule.cpp in Sources */,
 				840C3E09178D396D00F57A8D /* DKLog.cpp in Sources */,
 				84211ADF1665E7FC00B9B9A2 /* DKFrame.cpp in Sources */,
 				84211AE11665E7FC00B9B9A2 /* DKGeneric6DofConstraint.cpp in Sources */,
@@ -5167,6 +5182,7 @@
 				8498FC461E47683B00E6A961 /* RenderCommandEncoder.mm in Sources */,
 				844C64D91C08B93600FB97B6 /* DKFloat16.cpp in Sources */,
 				84F970111B4D711A00BA24E4 /* DKTriangleMeshBvh.cpp in Sources */,
+				84C8CEC31F0BF727007D69C3 /* RenderPipelineState.cpp in Sources */,
 				84211AFD1665E7FC00B9B9A2 /* DKModel.cpp in Sources */,
 				846A2D551E40F29D009F117C /* QueueFamily.cpp in Sources */,
 				84211AFF1665E7FC00B9B9A2 /* DKMultiSphereShape.cpp in Sources */,
