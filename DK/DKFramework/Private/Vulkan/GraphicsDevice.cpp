@@ -22,6 +22,11 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
+			template <typename T, size_t n> FORCEINLINE size_t ArraySize(T (&)[n])
+			{
+				return n;
+			}
+
 			DKGraphicsDeviceInterface* CreateInterface(void)
 			{
 				return DKRawPtrNew<GraphicsDevice>();
@@ -672,7 +677,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 
 	// dynamic states
-	VkDynamicState dynamicStateEnables[9] = {
+	VkDynamicState dynamicStateEnables[] = {
 		VK_DYNAMIC_STATE_VIEWPORT,
 		VK_DYNAMIC_STATE_SCISSOR,
 		VK_DYNAMIC_STATE_LINE_WIDTH,
@@ -685,7 +690,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	};
 	VkPipelineDynamicStateCreateInfo dynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
 	dynamicState.pDynamicStates = dynamicStateEnables;
-	dynamicState.dynamicStateCount = 9;
+	dynamicState.dynamicStateCount = ArraySize(dynamicStateEnables);
 	pipelineCreateInfo.pDynamicState = &dynamicState;
 
 	// render pass
@@ -704,6 +709,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	index = 0;
 	for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 	{
+		VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL };
+
 		if (DKPixelFormatIsColorFormat(attachment.pixelFormat))
 		{
 			VkAttachmentDescription attachmentDesc = {};
@@ -713,16 +720,12 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachmentDescriptionArray.Add(attachmentDesc);
 
-			VkAttachmentReference attachmentRef = { index,  VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL};
-			subpassColorAttachmentArray.Add(attachmentRef);
+			attachmentRef.attachment = index;
+			attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 			index++;
 		}
-		else
-		{
-			VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL };
-			subpassColorAttachmentArray.Add(attachmentRef);
-		}
+		subpassColorAttachmentArray.Add(attachmentRef);
 	}
 	subpassDesc.colorAttachmentCount = subpassColorAttachmentArray.Count();
 	subpassDesc.pColorAttachments = subpassColorAttachmentArray;

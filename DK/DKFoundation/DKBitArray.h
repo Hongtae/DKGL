@@ -31,7 +31,7 @@ namespace DKFoundation
 		using Unit = size_t;
 		enum { BitsPerUnit = sizeof(Unit) * 8 };
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum : Index { IndexNotFound = ~Index(0) };
 
 		Lock lock;
 

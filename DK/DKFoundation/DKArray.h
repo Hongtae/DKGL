@@ -76,7 +76,7 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum : Index { IndexNotFound = ~Index(0) };
 
 		/// lock is public. (object can be locked from outside, to use modify element directly.)
 		/// in this case, You can use VALUE* casting-operator and CountNoLock() only.

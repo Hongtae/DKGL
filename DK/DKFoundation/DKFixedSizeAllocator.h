@@ -52,7 +52,7 @@ namespace DKFoundation
 		static_assert((sizeof(Unit) % Alignment) == 0, "Invalid unit alignment");
 
 		using Index = unsigned int;
-		enum : Index { EndOfUnits = (Index)-1 };
+		enum : Index { EndOfUnits = ~Index(0) };
 
 		struct ChunkInfo
 		{

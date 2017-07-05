@@ -99,7 +99,7 @@ namespace DKFoundation
 			static BackendAllocator* Instance();	// init by main allocator. (AllocatorPool)
 
 			using Index = short;
-			enum { IndexNotFound = (Index)-1 };
+			enum { IndexNotFound = ~Index(0) };
 
 #pragma pack(push, 2)
 			struct IndexedAddress
@@ -255,7 +255,7 @@ namespace DKFoundation
 				}
 				if (count > 0 && addr >= indexAddrs[start].address)
 					return start;
-				return (size_t)-1;
+				return ~size_t(0);
 			}
 
 			using Lock = DKSpinLock;
@@ -652,7 +652,7 @@ namespace DKFoundation
 		{
 			enum { SizeOffset = 64 };
 			using Index = size_t;
-			enum : Index { IndexNotFound = (Index)-1 };
+			enum : Index { IndexNotFound = ~Index(0) };
 
 			FORCEINLINE static bool Set(void* p, size_t s)
 			{

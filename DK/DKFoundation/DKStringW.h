@@ -38,8 +38,8 @@ namespace DKFoundation
 		DKStringW(void);
 		DKStringW(DKStringW&& str);
 		DKStringW(const DKStringW& str);
-		DKStringW(const DKUniCharW* str, size_t len = (size_t)-1);
-		DKStringW(const DKUniChar8* str, size_t len = (size_t)-1);
+		DKStringW(const DKUniCharW* str, size_t len = ~size_t(0));
+		DKStringW(const DKUniChar8* str, size_t len = ~size_t(0));
 		explicit DKStringW(const void* str, size_t len, DKStringEncoding e);
 		explicit DKStringW(DKUniCharW c);
 		explicit DKStringW(DKUniChar8 c);

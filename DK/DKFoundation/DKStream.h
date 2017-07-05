@@ -15,7 +15,7 @@ namespace DKFoundation
 	{
 	public:
 		using Position = uint64_t;
-		enum : Position { PositionError = (Position)-1 };
+		enum : Position { PositionError = ~Position(0) };
 
 		DKStream(void) {}
 		virtual ~DKStream(void) {}

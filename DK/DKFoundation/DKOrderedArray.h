@@ -42,7 +42,7 @@ namespace DKFoundation
 		/// EqualFunc, test items are equal. return true if both items are equal.
 		typedef bool (*EqualFunc)(const VALUE& lhs, const VALUE& rhs);
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum : Index { IndexNotFound = ~Index(0) };
 
 		/// lock is public. lock object from outside!
 		/// You can call type-casting operator and CountNoLock() only while object is locked.
