@@ -603,6 +603,26 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 {
 	VkResult result = VK_SUCCESS;
 	uint32_t index = 0;
+
+	auto VerifyShaderStage = [](const DKShaderFunction* fn, VkShaderStageFlagBits stage)->bool
+	{
+		if (fn)
+		{
+			DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn) != nullptr);
+			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+			return func->pipelineShaderStageCreateInfo.stage == stage;
+		}
+		return false;
+	};
+	if (desc.vertexFunction)
+	{
+		DKASSERT_DEBUG(VerifyShaderStage(desc.vertexFunction, VK_SHADER_STAGE_VERTEX_BIT));
+	}
+	if (desc.fragmentFunction)
+	{
+		DKASSERT_DEBUG(VerifyShaderStage(desc.fragmentFunction, VK_SHADER_STAGE_FRAGMENT_BIT));
+	}
+
 	VkGraphicsPipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
 
 	// setup layout
@@ -621,16 +641,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn) != nullptr);
 			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+			shaderStageArray.Add(func->pipelineShaderStageCreateInfo);
+
 			const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
-			// setup shader stage descriptor.
-			VkPipelineShaderStageCreateInfo shaderInfo = { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
-			shaderInfo.stage = module->stage;
-			shaderInfo.module = module->module;
-			shaderInfo.pName = func->functionName;
-			if (func->specializationInfo.mapEntryCount > 0)
-				shaderInfo.pSpecializationInfo = &func->specializationInfo;
-			shaderStageArray.Add(shaderInfo);
 		}
 	}
 	pipelineCreateInfo.stageCount = shaderStageArray.Count();
@@ -645,7 +659,92 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	pipelineCreateInfo.layout = pipelineLayout;
 
 	// vertex input state
+	DKArray<VkVertexInputBindingDescription> vertexBindingDescriptions;
+	vertexBindingDescriptions.Reserve(desc.vertexDescriptor.layouts.Count());
+	index = 0;
+	for (const DKVertexBufferLayoutDescriptor& bindingDesc : desc.vertexDescriptor.layouts)
+	{
+		VkVertexInputBindingDescription bind = {};
+		bind.binding = index;		// <-- is it valid??
+		bind.stride = bindingDesc.stride;
+		switch (bindingDesc.stepRate)
+		{
+		case DKVertexBufferLayoutDescriptor::StepRateVertex:
+			bind.inputRate = VK_VERTEX_INPUT_RATE_VERTEX; break;
+		case DKVertexBufferLayoutDescriptor::StepRateInstance:
+			bind.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE; break;
+		default:
+			DKASSERT_DEBUG(0);
+		}
+		vertexBindingDescriptions.Add(bind);
+		index++;
+	}
+	auto GetVertexFormat = [](DKVertexFormat fmt)->VkFormat
+	{
+		switch (fmt) {
+		case DKVertexFormat::UChar2:				return VK_FORMAT_R8G8_UINT;
+		case DKVertexFormat::UChar3: 				return VK_FORMAT_R8G8B8_UINT;
+		case DKVertexFormat::UChar4: 				return VK_FORMAT_R8G8B8A8_UINT;
+		case DKVertexFormat::Char2: 				return VK_FORMAT_R8G8_SINT;
+		case DKVertexFormat::Char3: 				return VK_FORMAT_R8G8B8_SINT;
+		case DKVertexFormat::Char4: 				return VK_FORMAT_R8G8B8A8_SINT;
+		case DKVertexFormat::UChar2Normalized: 		return VK_FORMAT_R8G8_UNORM;
+		case DKVertexFormat::UChar3Normalized: 		return VK_FORMAT_R8G8B8_UNORM;
+		case DKVertexFormat::UChar4Normalized: 		return VK_FORMAT_R8G8B8A8_UNORM;
+		case DKVertexFormat::Char2Normalized: 		return VK_FORMAT_R8G8_SNORM;
+		case DKVertexFormat::Char3Normalized: 		return VK_FORMAT_R8G8B8_SNORM;
+		case DKVertexFormat::Char4Normalized: 		return VK_FORMAT_R8G8B8A8_SNORM;
+		case DKVertexFormat::UShort2: 				return VK_FORMAT_R16G16_UINT;
+		case DKVertexFormat::UShort3: 				return VK_FORMAT_R16G16B16_UINT;
+		case DKVertexFormat::UShort4: 				return VK_FORMAT_R16G16B16A16_UINT;
+		case DKVertexFormat::Short2: 				return VK_FORMAT_R16G16_SINT;
+		case DKVertexFormat::Short3: 				return VK_FORMAT_R16G16B16_SINT;
+		case DKVertexFormat::Short4: 				return VK_FORMAT_R16G16B16A16_SINT;
+		case DKVertexFormat::UShort2Normalized: 	return VK_FORMAT_R16G16_UNORM;
+		case DKVertexFormat::UShort3Normalized: 	return VK_FORMAT_R16G16B16_UNORM;
+		case DKVertexFormat::UShort4Normalized: 	return VK_FORMAT_R16G16B16A16_UNORM;
+		case DKVertexFormat::Short2Normalized: 		return VK_FORMAT_R16G16_SNORM;
+		case DKVertexFormat::Short3Normalized: 		return VK_FORMAT_R16G16B16_SNORM;
+		case DKVertexFormat::Short4Normalized: 		return VK_FORMAT_R16G16B16A16_SNORM;
+		case DKVertexFormat::Half2: 				return VK_FORMAT_R16G16_SFLOAT;
+		case DKVertexFormat::Half3: 				return VK_FORMAT_R16G16B16_SFLOAT;
+		case DKVertexFormat::Half4: 				return VK_FORMAT_R16G16B16A16_SFLOAT;
+		case DKVertexFormat::Float: 				return VK_FORMAT_R32_SFLOAT;
+		case DKVertexFormat::Float2: 				return VK_FORMAT_R32G32_SFLOAT;
+		case DKVertexFormat::Float3: 				return VK_FORMAT_R32G32B32_SFLOAT;
+		case DKVertexFormat::Float4: 				return VK_FORMAT_R32G32B32A32_SFLOAT;
+		case DKVertexFormat::Int: 					return VK_FORMAT_R32_SINT;
+		case DKVertexFormat::Int2: 					return VK_FORMAT_R32G32_SINT;
+		case DKVertexFormat::Int3: 					return VK_FORMAT_R32G32B32_SINT;
+		case DKVertexFormat::Int4: 					return VK_FORMAT_R32G32B32A32_SINT;
+		case DKVertexFormat::UInt: 					return VK_FORMAT_R32_UINT;
+		case DKVertexFormat::UInt2: 				return VK_FORMAT_R32G32_UINT;
+		case DKVertexFormat::UInt3: 				return VK_FORMAT_R32G32B32_UINT;
+		case DKVertexFormat::UInt4: 				return VK_FORMAT_R32G32B32A32_UINT;
+		case DKVertexFormat::Int1010102Normalized: 	return VK_FORMAT_A2B10G10R10_SNORM_PACK32;
+		case DKVertexFormat::UInt1010102Normalized: return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
+		}
+		return VK_FORMAT_UNDEFINED;
+	};
+	DKArray<VkVertexInputAttributeDescription> vertexAttributeDescriptions;
+	vertexAttributeDescriptions.Reserve(desc.vertexDescriptor.attributes.Count());
+	index = 0;
+	for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
+	{
+		VkVertexInputAttributeDescription attr = {};
+		attr.location = 0; // <-- query location from vertex buffer!!
+		attr.binding = index;
+		attr.format = GetVertexFormat(attrDesc.format);
+		attr.offset = attrDesc.offset;
+		vertexAttributeDescriptions.Add(attr);
+		index++;
+	}
+
 	VkPipelineVertexInputStateCreateInfo vertexInputState = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
+	vertexInputState.vertexBindingDescriptionCount = vertexBindingDescriptions.Count();
+	vertexInputState.pVertexBindingDescriptions = vertexBindingDescriptions;
+	vertexInputState.vertexAttributeDescriptionCount = vertexAttributeDescriptions.Count();
+	vertexInputState.pVertexAttributeDescriptions = vertexAttributeDescriptions;
 	pipelineCreateInfo.pVertexInputState = &vertexInputState;
 
 	// input assembly

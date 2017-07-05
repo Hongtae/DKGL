@@ -15,7 +15,7 @@ namespace DKFramework
 	{
 		DKShaderDataType type;
 		const void* data;
-		uint32_t offset;
+		uint32_t index;
 		size_t size;
 	};
 

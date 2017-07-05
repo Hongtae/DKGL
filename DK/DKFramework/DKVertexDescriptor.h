@@ -69,19 +69,14 @@ namespace DKFramework
 		UInt1010102Normalized,
 	};
 
-	enum class DKVertexStepFunction
-	{
-		Constant = 0,
-		PerVertex,
-		PerInstance,
-		PerPatch,
-		PerPatchControlPoint,
-	};
-
 	struct DKVertexBufferLayoutDescriptor
 	{
-		DKVertexStepFunction stepFunction = DKVertexStepFunction::PerVertex;
-		uint32_t stepRate = 1;
+		enum StepRate
+		{
+			StepRateVertex = 0,
+			StepRateInstance,
+		};
+		StepRate stepRate = StepRateVertex;
 		uint32_t stride = 0;
 	};
 
