@@ -278,15 +278,12 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			return MTLVertexFormatInvalid;
 		};
 
-		auto GetVertexStepFunction = [](DKVertexStepFunction fn)->MTLVertexStepFunction
+		auto GetVertexStepFunction = [](DKVertexStepRate fn)->MTLVertexStepFunction
 		{
 			switch (fn)
 			{
-				case DKVertexStepFunction::Constant:		return MTLVertexStepFunctionConstant;
-				case DKVertexStepFunction::PerVertex:		return MTLVertexStepFunctionPerVertex;
-				case DKVertexStepFunction::PerInstance:		return MTLVertexStepFunctionPerInstance;
-				case DKVertexStepFunction::PerPatch:		return MTLVertexStepFunctionPerPatch;
-				case DKVertexStepFunction::PerPatchControlPoint:	return MTLVertexStepFunctionPerPatchControlPoint;
+				case DKVertexStepRate::Vertex:		return MTLVertexStepFunctionPerVertex;
+				case DKVertexStepRate::Instance:	return MTLVertexStepFunctionPerInstance;
 			}
 			DKASSERT_DESC_DEBUG(0, "Unknown value!");
 			return MTLVertexStepFunctionConstant;
@@ -363,8 +360,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			{
 				const DKVertexBufferLayoutDescriptor& layoutDesc = desc.vertexDescriptor.layouts.Value(index);
 				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:index];
-				layout.stepFunction = GetVertexStepFunction(layoutDesc.stepFunction);
-				layout.stepRate = layoutDesc.stepRate;
+				layout.stepFunction = GetVertexStepFunction(layoutDesc.step);
+				layout.stepRate = 1;
 				layout.stride = layoutDesc.stride;
 			}
 			descriptor.vertexDescriptor = vertexDescriptor;

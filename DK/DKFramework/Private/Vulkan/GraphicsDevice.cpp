@@ -641,10 +641,16 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn) != nullptr);
 			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
-			shaderStageArray.Add(func->pipelineShaderStageCreateInfo);
-
 			const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
+			VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
+			shaderStageCreateInfo.stage = module->stage;
+			shaderStageCreateInfo.module = module->module;
+			shaderStageCreateInfo.pName = func->functionName;
+			if (func->specializationInfo.mapEntryCount > 0)
+				shaderStageCreateInfo.pSpecializationInfo = &func->specializationInfo;
+
+			shaderStageArray.Add(shaderStageCreateInfo);
 		}
 	}
 	pipelineCreateInfo.stageCount = shaderStageArray.Count();

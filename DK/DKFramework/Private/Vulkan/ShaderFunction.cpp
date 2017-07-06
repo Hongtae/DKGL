@@ -19,13 +19,10 @@ ShaderFunction::ShaderFunction(DKShaderModule* m, const DKStringU8& name, const 
 	: module(m)
 	, functionName(name)
 	, specializationData(NULL)
-	, pipelineShaderStageCreateInfo({ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO })
+	, specializationInfo({ 0 })
 {
 	DKASSERT_DEBUG(module.SafeCast<ShaderModule>() != NULL);
-	ShaderModule* shaderModule = module.StaticCast<ShaderModule>();
-	pipelineShaderStageCreateInfo.stage = shaderModule->stage;
-	pipelineShaderStageCreateInfo.module = shaderModule->module;
-	pipelineShaderStageCreateInfo.pName = (const char*)functionName;
+
 	if (values && numValues)
 	{
 		size_t size = 0;
@@ -37,14 +34,13 @@ ShaderFunction::ShaderFunction(DKShaderModule* m, const DKStringU8& name, const 
 
 		if (size > 0)
 		{
-			specializationData = DKMalloc(size + sizeof(VkSpecializationInfo) + sizeof(VkSpecializationMapEntry) * numValues);
-			VkSpecializationInfo* specializationInfo = reinterpret_cast<VkSpecializationInfo*>(specializationData);
-			VkSpecializationMapEntry* mapEntries = reinterpret_cast<VkSpecializationMapEntry*>(&specializationInfo[1]);
+			specializationData = DKMalloc(size + sizeof(VkSpecializationMapEntry) * numValues);
+			VkSpecializationMapEntry* mapEntries = reinterpret_cast<VkSpecializationMapEntry*>(specializationData);
 			uint8_t* data = reinterpret_cast<uint8_t*>(&mapEntries[numValues]);
 
-			specializationInfo->mapEntryCount = numValues;
-			specializationInfo->pMapEntries = mapEntries;
-			specializationInfo->pData = data;
+			specializationInfo.mapEntryCount = numValues;
+			specializationInfo.pMapEntries = mapEntries;
+			specializationInfo.pData = data;
 
 			size_t offset = 0;
 			for (size_t i = 0; i < numValues; ++i)
@@ -57,7 +53,6 @@ ShaderFunction::ShaderFunction(DKShaderModule* m, const DKStringU8& name, const 
 				memcpy(&data[offset], sp.data, sp.size);
 				offset += sp.size;
 			}
-			pipelineShaderStageCreateInfo.pSpecializationInfo = specializationInfo;
 		}
 	}
 }

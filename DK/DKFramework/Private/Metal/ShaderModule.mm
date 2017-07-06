@@ -65,7 +65,7 @@ DKObject<DKShaderFunction> ShaderModule::CreateSpecializedFunction(const DKStrin
 				const DKShaderSpecialization& sp = values[i];
 				[constantValues setConstantValues:sp.data
 											 type:ShaderDataType::From(sp.type)
-										withRange:NSMakeRange(sp.offset, sp.size)];
+										withRange:NSMakeRange(sp.index, sp.size)];
 			}
 
 			id<MTLFunction> func = [library newFunctionWithName:funcName

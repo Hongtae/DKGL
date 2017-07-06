@@ -36,7 +36,7 @@ namespace DKFramework
 				DKObject<DKShaderModule> module;
 				DKStringU8 functionName;
 
-				VkPipelineShaderStageCreateInfo pipelineShaderStageCreateInfo;
+				VkSpecializationInfo specializationInfo;
 				void* specializationData;
 
 				DKArray<DKVertexAttribute> vertexAttributes;

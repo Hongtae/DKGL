@@ -69,14 +69,15 @@ namespace DKFramework
 		UInt1010102Normalized,
 	};
 
+	enum class DKVertexStepRate
+	{
+		Vertex = 0,
+		Instance,
+	};
+
 	struct DKVertexBufferLayoutDescriptor
 	{
-		enum StepRate
-		{
-			StepRateVertex = 0,
-			StepRateInstance,
-		};
-		StepRate stepRate = StepRateVertex;
+		DKVertexStepRate step = DKVertexStepRate::Vertex;
 		uint32_t stride = 0;
 	};
 
