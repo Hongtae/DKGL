@@ -610,7 +610,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn) != nullptr);
 			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
-			return func->pipelineShaderStageCreateInfo.stage == stage;
+			const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+			return module->stage == stage;
 		}
 		return false;
 	};
@@ -643,7 +644,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
 			const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
-			VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO};
+			VkPipelineShaderStageCreateInfo shaderStageCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
 			shaderStageCreateInfo.stage = module->stage;
 			shaderStageCreateInfo.module = module->module;
 			shaderStageCreateInfo.pName = func->functionName;
@@ -671,13 +672,13 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	for (const DKVertexBufferLayoutDescriptor& bindingDesc : desc.vertexDescriptor.layouts)
 	{
 		VkVertexInputBindingDescription bind = {};
-		bind.binding = index;		// <-- is it valid??
+		bind.binding = index;
 		bind.stride = bindingDesc.stride;
-		switch (bindingDesc.stepRate)
+		switch (bindingDesc.step)
 		{
-		case DKVertexBufferLayoutDescriptor::StepRateVertex:
+		case DKVertexStepRate::Vertex:
 			bind.inputRate = VK_VERTEX_INPUT_RATE_VERTEX; break;
-		case DKVertexBufferLayoutDescriptor::StepRateInstance:
+		case DKVertexStepRate::Instance:
 			bind.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE; break;
 		default:
 			DKASSERT_DEBUG(0);
@@ -738,8 +739,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
 	{
 		VkVertexInputAttributeDescription attr = {};
-		attr.location = 0; // <-- query location from vertex buffer!!
-		attr.binding = index;
+		attr.location = index;
+		attr.binding = attrDesc.bufferIndex;
 		attr.format = GetVertexFormat(attrDesc.format);
 		attr.offset = attrDesc.offset;
 		vertexAttributeDescriptions.Add(attr);

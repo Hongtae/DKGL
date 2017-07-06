@@ -59,6 +59,13 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	{
 		functionNames.Add(name.c_str());
 	}
+
+	// specialization constants
+	std::vector<spirv_cross::SpecializationConstant> spConsts = compiler.get_specialization_constants();
+	for (spirv_cross::SpecializationConstant& sc : spConsts)
+	{
+		// 
+	}
 }
 
 ShaderModule::~ShaderModule(void)

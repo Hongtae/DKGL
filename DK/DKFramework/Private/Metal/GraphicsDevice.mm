@@ -150,14 +150,13 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 					DKLogE("Error: No entry point function!");
 					return NULL;			
 			}
-
-            Compiler::Options options;
+#if 0
+            Compiler::Options options = compiler.get_options();
             options.flip_vert_y = false;
             options.enable_point_size_builtin = true;
-            options.entry_point_name = entryPointNames.front();
-
+            options.entry_point_name = nullptr;
             compiler.set_options(options);
-
+#endif
             @autoreleasepool {
                 NSString* source = [NSString stringWithUTF8String:compiler.compile().c_str()];
 
