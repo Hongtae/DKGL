@@ -53,6 +53,7 @@ namespace DKFramework
 
 	struct DKRenderPipelineColorAttachmentDescriptor
 	{
+		uint32_t index;
 		DKPixelFormat pixelFormat;
 		DKColorWriteMask writeMask = DKColorWriteMaskAll;
 

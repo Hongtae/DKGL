@@ -79,6 +79,7 @@ namespace DKFramework
 	{
 		DKVertexStepRate step = DKVertexStepRate::Vertex;
 		uint32_t stride = 0;
+		uint32_t bufferIndex;
 	};
 
 	struct DKVertexAttributeDescriptor
@@ -86,6 +87,7 @@ namespace DKFramework
 		DKVertexFormat format;
 		uint32_t offset;
 		uint32_t bufferIndex;
+		uint32_t location;
 	};
 
 	struct DKVertexDescriptor

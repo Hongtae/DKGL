@@ -92,7 +92,7 @@ namespace DKFramework
 	struct DKShaderAttribute
 	{
 		DKString name;
-		uint32_t index;
+		uint32_t location;
 		DKShaderDataType type;
 		bool active;
 		bool patchControlPointData;

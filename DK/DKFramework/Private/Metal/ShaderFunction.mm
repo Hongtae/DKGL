@@ -40,7 +40,7 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func)
 	{
 		DKVertexAttribute attr;
 		attr.name = DKString((const char*)inAttr.name.UTF8String);
-		attr.index = (uint32_t)inAttr.attributeIndex;
+		attr.location = (uint32_t)inAttr.attributeIndex;
 		attr.type = ShaderDataType::To(inAttr.attributeType);
 		attr.active = inAttr.active;
 		attr.patchControlPointData = inAttr.patchControlPointData;
@@ -52,7 +52,7 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func)
 	{
 		DKVertexAttribute attr;
 		attr.name = DKString((const char*)inAttr.name.UTF8String);
-		attr.index = (uint32_t)inAttr.attributeIndex;
+		attr.location = (uint32_t)inAttr.attributeIndex;
 		attr.type = ShaderDataType::To(inAttr.attributeType);
 		attr.active = inAttr.active;
 		attr.patchControlPointData = inAttr.patchControlPointData;

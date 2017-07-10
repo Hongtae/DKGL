@@ -602,7 +602,6 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	VkResult result = VK_SUCCESS;
-	uint32_t index = 0;
 
 	auto VerifyShaderStage = [](const DKShaderFunction* fn, VkShaderStageFlagBits stage)->bool
 	{
@@ -668,11 +667,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	// vertex input state
 	DKArray<VkVertexInputBindingDescription> vertexBindingDescriptions;
 	vertexBindingDescriptions.Reserve(desc.vertexDescriptor.layouts.Count());
-	index = 0;
 	for (const DKVertexBufferLayoutDescriptor& bindingDesc : desc.vertexDescriptor.layouts)
 	{
 		VkVertexInputBindingDescription bind = {};
-		bind.binding = index;
+		bind.binding = bindingDesc.bufferIndex;
 		bind.stride = bindingDesc.stride;
 		switch (bindingDesc.step)
 		{
@@ -684,7 +682,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			DKASSERT_DEBUG(0);
 		}
 		vertexBindingDescriptions.Add(bind);
-		index++;
 	}
 	auto GetVertexFormat = [](DKVertexFormat fmt)->VkFormat
 	{
@@ -735,16 +732,14 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	};
 	DKArray<VkVertexInputAttributeDescription> vertexAttributeDescriptions;
 	vertexAttributeDescriptions.Reserve(desc.vertexDescriptor.attributes.Count());
-	index = 0;
 	for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
 	{
 		VkVertexInputAttributeDescription attr = {};
-		attr.location = index;
+		attr.location = attrDesc.location;
 		attr.binding = attrDesc.bufferIndex;
 		attr.format = GetVertexFormat(attrDesc.format);
 		attr.offset = attrDesc.offset;
 		vertexAttributeDescriptions.Add(attr);
-		index++;
 	}
 
 	VkPipelineVertexInputStateCreateInfo vertexInputState = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
@@ -812,7 +807,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	attachmentDescriptionArray.Reserve(desc.colorAttachments.Count() + 1);
 	subpassColorAttachmentArray.Reserve(desc.colorAttachments.Count());
 
-	index = 0;
 	for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 	{
 		VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL };
@@ -826,10 +820,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachmentDescriptionArray.Add(attachmentDesc);
 
-			attachmentRef.attachment = index;
+			attachmentRef.attachment = attachment.index;
 			attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-			index++;
 		}
 		subpassColorAttachmentArray.Add(attachmentRef);
 	}

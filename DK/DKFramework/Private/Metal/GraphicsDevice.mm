@@ -330,10 +330,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			return value;
 		};
 
-		for (NSUInteger index = 0; index < desc.colorAttachments.Count(); ++index)
+		for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 		{
-			const DKRenderPipelineColorAttachmentDescriptor& attachment = desc.colorAttachments.Value(index);
-			MTLRenderPipelineColorAttachmentDescriptor* colorAttachmentDesc = [descriptor.colorAttachments objectAtIndexedSubscript:index];
+			MTLRenderPipelineColorAttachmentDescriptor* colorAttachmentDesc = [descriptor.colorAttachments objectAtIndexedSubscript:attachment.index];
 			colorAttachmentDesc.pixelFormat = PixelFormat::From(attachment.pixelFormat);
 			colorAttachmentDesc.writeMask = GetColorWriteMask(attachment.writeMask);
 			colorAttachmentDesc.blendingEnabled = attachment.blendingEnabled;
@@ -347,18 +346,16 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		if (desc.vertexDescriptor.attributes.Count() > 0 || desc.vertexDescriptor.layouts.Count() > 0)
 		{
 			MTLVertexDescriptor *vertexDescriptor = [MTLVertexDescriptor vertexDescriptor];
-			for (NSUInteger index = 0; index < desc.vertexDescriptor.attributes.Count(); ++index)
+			for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
 			{
-				const DKVertexAttributeDescriptor& attrDesc = desc.vertexDescriptor.attributes.Value(index);
-				MTLVertexAttributeDescriptor* attr = [vertexDescriptor.attributes objectAtIndexedSubscript:index];
+				MTLVertexAttributeDescriptor* attr = [vertexDescriptor.attributes objectAtIndexedSubscript:attrDesc.location];
 				attr.format = GetVertexFormat(attrDesc.format);
 				attr.offset = attrDesc.offset;
 				attr.bufferIndex = attrDesc.bufferIndex;
 			}
-			for (NSUInteger index = 0; index < desc.vertexDescriptor.layouts.Count(); ++index)
+			for (const DKVertexBufferLayoutDescriptor& layoutDesc : desc.vertexDescriptor.layouts)
 			{
-				const DKVertexBufferLayoutDescriptor& layoutDesc = desc.vertexDescriptor.layouts.Value(index);
-				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:index];
+				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:layoutDesc.bufferIndex];
 				layout.stepFunction = GetVertexStepFunction(layoutDesc.step);
 				layout.stepRate = 1;
 				layout.stride = layoutDesc.stride;
