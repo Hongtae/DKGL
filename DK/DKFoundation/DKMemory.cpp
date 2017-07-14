@@ -354,7 +354,7 @@ namespace DKFoundation
 
 			static int Init(AllocatorUnit* units)
 			{
-#ifdef DKGL_MEMORY_DEBUG
+#if DKGL_MEMORY_DEBUG
 				DKLog("Allocator[%d]: (size:%d, alignment:%d, units:%d, chunkSize:%d/%d usage:%.2f%%)\n",
 					  Index, UnitSize, Alignment, NumUnits, Wrapper::Allocator::AlignedChunkSize, MaxChunkSize,
 					  ((double)Wrapper::Allocator::AlignedChunkSize / (double)MaxChunkSize) * 100.0);
@@ -409,13 +409,13 @@ namespace DKFoundation
 				{
 					chunkSize += allocators[i].allocator->ChunkSize();
 				}
-
+#if DKGL_MEMORY_DEBUG
 				DKLog("AllocatorPool Initialized. (%lu - %lu, Units: %d, ChunkSize: %lu)\n",
 					  allocators[0].unitSize,
 					  allocators[NumAllocators-1].unitSize,
 					  NumAllocators,
 					  chunkSize);
-
+#endif
 				maxUnitSize = allocators[NumAllocators-1].unitSize;
 			}
 
