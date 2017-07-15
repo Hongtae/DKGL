@@ -520,7 +520,6 @@
     <ClInclude Include="DKFramework\DKVector3.h" />
     <ClInclude Include="DKFramework\DKVector4.h" />
     <ClInclude Include="DKFramework\DKVertexDescriptor.h" />
-    <ClInclude Include="DKFramework\DKVertexStream.h" />
     <ClInclude Include="DKFramework\DKVKey.h" />
     <ClInclude Include="DKFramework\DKWindow.h" />
     <ClInclude Include="DKFramework\DKWorld.h" />

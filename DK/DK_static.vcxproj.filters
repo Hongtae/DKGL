@@ -1229,9 +1229,6 @@
     <ClInclude Include="DKFramework\DKBlitCommandEncoder.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKVertexStream.h">
-      <Filter>DKFramework_WIP</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKShaderModule.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>

@@ -603,6 +603,29 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 {
 	VkResult result = VK_SUCCESS;
 
+	VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+	VkPipelineCache pipelineCache = VK_NULL_HANDLE;
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+	VkPipeline pipeline = VK_NULL_HANDLE;
+
+	DKArray<VkDescriptorSetLayout> descriptorSetLayouts;	// shader uniforms
+
+	auto CleanupAndReturnNull = [&]()-> DKRenderPipelineState* // cleanup operation, invoked if function failure.
+	{
+		if (pipelineLayout != VK_NULL_HANDLE)
+			vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+		if (renderPass != VK_NULL_HANDLE)
+			vkDestroyRenderPass(device, renderPass, nullptr);
+		if (pipeline != VK_NULL_HANDLE)
+			vkDestroyPipeline(device, pipeline, nullptr);
+		for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+		{
+			if (setLayout != VK_NULL_HANDLE)
+				vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+		}
+		return NULL;
+	};
+
 	auto VerifyShaderStage = [](const DKShaderFunction* fn, VkShaderStageFlagBits stage)->bool
 	{
 		if (fn)
@@ -625,15 +648,12 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	VkGraphicsPipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
 
-	// setup layout
-	VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-	VkPipelineLayoutCreateInfo pPipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
-
 	// shader stages
-	DKArray<VkPipelineShaderStageCreateInfo> shaderStageArray;
+	DKArray<VkPipelineShaderStageCreateInfo> shaderStageCreateInfos;
+	DKArray<VkPushConstantRange> pushConstantRanges;
 
 	std::initializer_list<const DKShaderFunction*> shaderFunctions = { desc.vertexFunction, desc.fragmentFunction };
-	shaderStageArray.Reserve(shaderFunctions.size());
+	shaderStageCreateInfos.Reserve(shaderFunctions.size());
 
 	for (const DKShaderFunction* fn : shaderFunctions)
 	{
@@ -650,17 +670,24 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			if (func->specializationInfo.mapEntryCount > 0)
 				shaderStageCreateInfo.pSpecializationInfo = &func->specializationInfo;
 
-			shaderStageArray.Add(shaderStageCreateInfo);
+			shaderStageCreateInfos.Add(shaderStageCreateInfo);
 		}
 	}
-	pipelineCreateInfo.stageCount = shaderStageArray.Count();
-	pipelineCreateInfo.pStages = shaderStageArray;
+	pipelineCreateInfo.stageCount = shaderStageCreateInfos.Count();
+	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
-	result = vkCreatePipelineLayout(device, &pPipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+	// setup layout	
+	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
+	pipelineLayoutCreateInfo.setLayoutCount = descriptorSetLayouts.Count();
+	pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts;
+	pipelineLayoutCreateInfo.pushConstantRangeCount = pushConstantRanges.Count();
+	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
+
+	result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreatePipelineLayout failed: %s", VkResultCStr(result));
-		return NULL;
+		return CleanupAndReturnNull();
 	}
 	pipelineCreateInfo.layout = pipelineLayout;
 
@@ -768,10 +795,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	multisampleState.pSampleMask = nullptr;
 	pipelineCreateInfo.pMultisampleState = &multisampleState;
 
-	// color blending
-	VkPipelineColorBlendStateCreateInfo colorBlendState = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO };
-	pipelineCreateInfo.pColorBlendState = &colorBlendState;
-
 	// setup depth-stencil
 	VkPipelineDepthStencilStateCreateInfo depthStencilState = { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO };
 	pipelineCreateInfo.pDepthStencilState = &depthStencilState;
@@ -795,46 +818,114 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	pipelineCreateInfo.pDynamicState = &dynamicState;
 
 	// render pass
-	VkRenderPass renderPass = VK_NULL_HANDLE;
 	VkRenderPassCreateInfo  renderPassCreateInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
 	VkSubpassDescription subpassDesc = { 0, VK_PIPELINE_BIND_POINT_GRAPHICS };
-	DKArray<VkAttachmentDescription> attachmentDescriptionArray;
-	DKArray<VkAttachmentReference> subpassInputAttachmentArray;
-	DKArray<VkAttachmentReference> subpassColorAttachmentArray;
-	DKArray<VkAttachmentReference> subpassResolveAttachmentArray;
+	DKArray<VkAttachmentDescription> attachmentDescriptions;
+	DKArray<VkAttachmentReference> subpassInputAttachmentRefs;
+	DKArray<VkAttachmentReference> subpassColorAttachmentRefs;
+	DKArray<VkAttachmentReference> subpassResolveAttachmentRefs;
+	DKArray<VkPipelineColorBlendAttachmentState> colorBlendAttachmentStates;
 	VkAttachmentReference subpassDepthStencilAttachment = { VK_ATTACHMENT_UNUSED };
 
-	attachmentDescriptionArray.Reserve(desc.colorAttachments.Count() + 1);
-	subpassColorAttachmentArray.Reserve(desc.colorAttachments.Count());
+	attachmentDescriptions.Reserve(desc.colorAttachments.Count() + 1);
+	subpassColorAttachmentRefs.Reserve(desc.colorAttachments.Count());
+	colorBlendAttachmentStates.Reserve(desc.colorAttachments.Count());
 
+
+	auto GetBlendOperation = [](DKBlendOperation o)->VkBlendOp
+	{
+		switch (o)
+		{
+		case DKBlendOperation::Add:					return VK_BLEND_OP_ADD;
+		case DKBlendOperation::Subtract:			return VK_BLEND_OP_SUBTRACT;
+		case DKBlendOperation::ReverseSubtract:		return VK_BLEND_OP_REVERSE_SUBTRACT;
+		case DKBlendOperation::Min:					return VK_BLEND_OP_MIN;
+		case DKBlendOperation::Max:					return VK_BLEND_OP_MAX;
+		}
+		DKASSERT_DEBUG(0);
+		return VkBlendOp(0);
+	};
+	auto GetBlendFactor = [](DKBlendFactor f)->VkBlendFactor
+	{
+		switch (f)
+		{
+		case DKBlendFactor::Zero:						return VK_BLEND_FACTOR_ZERO;
+		case DKBlendFactor::One:						return VK_BLEND_FACTOR_ONE;
+		case DKBlendFactor::SourceColor:				return VK_BLEND_FACTOR_SRC_COLOR;
+		case DKBlendFactor::OneMinusSourceColor:		return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+		case DKBlendFactor::SourceAlpha:				return VK_BLEND_FACTOR_SRC_ALPHA;
+		case DKBlendFactor::OneMinusSourceAlpha:		return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		case DKBlendFactor::DestinationColor:			return VK_BLEND_FACTOR_DST_COLOR;
+		case DKBlendFactor::OneMinusDestinationColor:	return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+		case DKBlendFactor::DestinationAlpha:			return VK_BLEND_FACTOR_DST_ALPHA;
+		case DKBlendFactor::OneMinusDestinationAlpha:	return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+		case DKBlendFactor::SourceAlphaSaturated:		return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
+		case DKBlendFactor::BlendColor:					return VK_BLEND_FACTOR_CONSTANT_COLOR;
+		case DKBlendFactor::OneMinusBlendColor:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
+		case DKBlendFactor::BlendAlpha:					return VK_BLEND_FACTOR_CONSTANT_ALPHA;
+		case DKBlendFactor::OneMinusBlendAlpha:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
+		}
+		DKASSERT_DEBUG(0);
+		return VkBlendFactor(0);
+	};
+
+	uint32_t colorAttachmentRefCount = 0;
 	for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 	{
-		VkAttachmentReference attachmentRef = { VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL };
-
-		if (DKPixelFormatIsColorFormat(attachment.pixelFormat))
-		{
-			VkAttachmentDescription attachmentDesc = {};
-			attachmentDesc.format = PixelFormat::From(attachment.pixelFormat);
-			attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
-			attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-			attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			attachmentDescriptionArray.Add(attachmentDesc);
-
-			attachmentRef.attachment = attachment.index;
-			attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		}
-		subpassColorAttachmentArray.Add(attachmentRef);
+		DKASSERT_DEBUG(DKPixelFormatIsColorFormat(attachment.pixelFormat));
+		colorAttachmentRefCount = Max(colorAttachmentRefCount, attachment.index + 1);
 	}
-	subpassDesc.colorAttachmentCount = subpassColorAttachmentArray.Count();
-	subpassDesc.pColorAttachments = subpassColorAttachmentArray;
-	subpassDesc.pResolveAttachments = subpassResolveAttachmentArray;
+	if (colorAttachmentRefCount > this->properties.limits.maxColorAttachments)
+	{
+		DKLogE("ERROR: The number of colors attached exceeds the device limit. (%u > %u)",
+			(uint32_t)colorAttachmentRefCount, (uint32_t)this->properties.limits.maxColorAttachments);
+		return CleanupAndReturnNull();
+	}
+	subpassColorAttachmentRefs.Add({ VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL }, colorAttachmentRefCount);
+	for (size_t index = 0; index < desc.colorAttachments.Count(); ++index)
+	{
+		const DKRenderPipelineColorAttachmentDescriptor& attachment = desc.colorAttachments.Value(index);
+
+		VkAttachmentDescription attachmentDesc = {};
+		attachmentDesc.format = PixelFormat::From(attachment.pixelFormat);
+		attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
+		attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachmentDescriptions.Add(attachmentDesc);
+
+		VkPipelineColorBlendAttachmentState blendState;
+		blendState.blendEnable = attachment.blendingEnabled;
+		blendState.srcColorBlendFactor = GetBlendFactor(attachment.sourceRGBBlendFactor);
+		blendState.dstColorBlendFactor = GetBlendFactor(attachment.destinationRGBBlendFactor);
+		blendState.colorBlendOp = GetBlendOperation(attachment.rgbBlendOperation);
+		blendState.srcAlphaBlendFactor = GetBlendFactor(attachment.sourceAlphaBlendFactor);
+		blendState.dstAlphaBlendFactor = GetBlendFactor(attachment.destinationAlphaBlendFactor);
+		blendState.alphaBlendOp = GetBlendOperation(attachment.alphaBlendOperation);
+
+		blendState.colorWriteMask = 0;
+		if (attachment.writeMask & DKColorWriteMaskRed)		blendState.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
+		if (attachment.writeMask & DKColorWriteMaskGreen)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
+		if (attachment.writeMask & DKColorWriteMaskBlue)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
+		if (attachment.writeMask & DKColorWriteMaskAlpha)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
+		colorBlendAttachmentStates.Add(blendState);
+
+		DKASSERT_DEBUG(subpassColorAttachmentRefs.Count() > attachment.index);
+		VkAttachmentReference& attachmentRef = subpassColorAttachmentRefs.Value(attachment.index);
+		attachmentRef.attachment = index; // index of render-pass-attachment 
+		attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	}
+	subpassDesc.colorAttachmentCount = subpassColorAttachmentRefs.Count();
+	subpassDesc.pColorAttachments = subpassColorAttachmentRefs;
+	subpassDesc.pResolveAttachments = subpassResolveAttachmentRefs;
+	subpassDesc.inputAttachmentCount = subpassInputAttachmentRefs.Count();
+	subpassDesc.pInputAttachments = subpassInputAttachmentRefs;
 	if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat))
 	{
 		subpassDesc.pDepthStencilAttachment = &subpassDepthStencilAttachment;
 	}
 
-	renderPassCreateInfo.attachmentCount = attachmentDescriptionArray.Count();
-	renderPassCreateInfo.pAttachments = attachmentDescriptionArray;
+	renderPassCreateInfo.attachmentCount = attachmentDescriptions.Count();
+	renderPassCreateInfo.pAttachments = attachmentDescriptions;
 	renderPassCreateInfo.subpassCount = 1;
 	renderPassCreateInfo.pSubpasses = &subpassDesc;
 
@@ -842,17 +933,21 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateRenderPass failed: %s", VkResultCStr(result));
-		return NULL;
+		return CleanupAndReturnNull();
 	}
 	pipelineCreateInfo.renderPass = renderPass;
 
-	VkPipelineCache pipelineCache = VK_NULL_HANDLE;
-	VkPipeline pipeline = VK_NULL_HANDLE;
+	// color blending
+	VkPipelineColorBlendStateCreateInfo colorBlendState = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO };
+	colorBlendState.attachmentCount = colorBlendAttachmentStates.Count();
+	colorBlendState.pAttachments = colorBlendAttachmentStates;
+	pipelineCreateInfo.pColorBlendState = &colorBlendState;
+
 	result = vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline);
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateGraphicsPipelines failed: %s", VkResultCStr(result));
-		return NULL;
+		return CleanupAndReturnNull();
 	}
 
 	DKObject<RenderPipelineState> pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);

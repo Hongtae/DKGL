@@ -38,7 +38,6 @@ namespace DKFramework
 				VkDevice device;
 				VkPhysicalDevice physicalDevice;
 
-			private:
 				DKAtomicNumber64 numberOfFences;
 				DKArray<QueueFamily*> queueFamilies;
 
@@ -47,6 +46,7 @@ namespace DKFramework
 				VkPhysicalDeviceFeatures features;
 				DKArray<VkExtensionProperties> extensionProperties;
 
+			private:
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
 

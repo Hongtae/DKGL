@@ -39,11 +39,47 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		break;
 	}
 
-	// SPIRV-Cross test!
 	spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(data), size / sizeof(uint32_t));
-
-	// The SPIR-V is now parsed, and we can perform reflection on it.
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+	 
+	auto GetLayout = [&compiler](const spirv_cross::Resource& resource, DKArray<DescriptorSetLayout>& layout)
+	{
+		uint32_t set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+		uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+		DKStringU8 name = "";
+		if (resource.name.size() > 0)
+			name = resource.name.c_str();
+		else
+			name = compiler.get_fallback_name(resource.id).c_str();
+
+		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+
+		DescriptorSetLayout& descriptorSet = layout.Value(set);
+		DescriptorSetLayout::Binding descriptor = { name, binding, 0 };
+	};
+
+	// get pushConstant range.
+	if (resources.push_constant_buffers.size() > 0)
+	{
+		const spirv_cross::Resource& resource = resources.push_constant_buffers[0];
+		std::vector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
+		this->pushConstantLayout.members.Reserve(ranges.size());
+		for (spirv_cross::BufferRange &range : ranges)
+		{
+			// get range.
+			PushConstantLayout::Member member;
+			member.name = compiler.get_member_name(resource.id, range.index).c_str();
+			member.offset = range.offset;
+			member.size = range.range;
+			this->pushConstantLayout.members.Add(std::move(member));
+		}
+		if (resource.name.size() > 0)
+			this->pushConstantLayout.name = resource.name.c_str();
+		else
+			this->pushConstantLayout.name = compiler.get_fallback_name(resource.id).c_str();
+
+		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+	}
 
 	// Get all sampled images in the shader.
 	for (auto &resource : resources.sampled_images)

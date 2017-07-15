@@ -19,6 +19,28 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
+			struct DescriptorSetLayout
+			{
+				struct Binding
+				{
+					DKStringU8 name;
+					uint32_t index;
+					uint32_t count;
+				};
+				DKArray<Binding> bindings; // bindings with descriptor-set (starting with set=0)
+			};
+			struct PushConstantLayout
+			{
+				DKStringU8 name;
+				struct Member
+				{
+					DKStringU8 name;
+					uint32_t offset;
+					uint32_t size;
+				};
+				DKArray<Member> members;
+			};
+
 			class ShaderModule : public DKShaderModule
 			{
 			public:
@@ -35,6 +57,10 @@ namespace DKFramework
 				DKObject<DKGraphicsDevice> device;
 				VkShaderModule module;
 				VkShaderStageFlagBits stage;
+				// descriptor set bindings
+				// descriptor set index starting with zero and should be continuous even if set is empty.
+				DKArray<DescriptorSetLayout> layouts[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
+				PushConstantLayout pushConstantLayout;
 			};
 		}
 	}
