@@ -48,6 +48,7 @@ namespace DKFoundation
 		struct Node
 		{
 			Node(const VALUE& v, Node* p, Node* n) : value(v), prev(p), next(n) {}
+			Node(VALUE&& v, Node* p, Node* n) : value(static_cast<VALUE&&>(v)), prev(p), next(n) {}
 			VALUE value;
 			Node* prev;
 			Node* next;
@@ -205,10 +206,20 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return AddHeadNL(v);
 		}
+		Iterator AddHead(VALUE&& v)
+		{
+			CriticalSection guard(lock);
+			return AddHeadNL(static_cast<VALUE&&>(v));
+		}
 		Iterator AddTail(const VALUE& v)
 		{
 			CriticalSection guard(lock);
 			return AddTailNL(v);
+		}
+		Iterator AddTail(VALUE&& v)
+		{
+			CriticalSection guard(lock);
+			return AddTailNL(static_cast<VALUE&&>(v));
 		}
 
 		Iterator begin(void)				{return firstNode;}	///< implemented for range-based for loop
@@ -417,9 +428,9 @@ namespace DKFoundation
 			for (Node* n = lastNode; n != NULL && !stop; n = n->prev)
 				enumerator(n->value, &stop);
 		}
-		Iterator AddHeadNL(const VALUE& v)
+		template <typename T> Iterator AddHeadNL(T&& v)
 		{
-			Node* n = new( Allocator::Alloc(sizeof(Node)) ) Node(v, NULL, firstNode);
+			Node* n = new( Allocator::Alloc(sizeof(Node)) ) Node(std::forward<T>(v), NULL, firstNode);
 			if (firstNode)
 				firstNode->prev = n;
 			firstNode = n;
@@ -429,9 +440,9 @@ namespace DKFoundation
 			count++;
 			return n;
 		}
-		Iterator AddTailNL(const VALUE& v)
+		template <typename T> Iterator AddTailNL(T&& v)
 		{
-			Node* n = new( Allocator::Alloc(sizeof(Node)) ) Node(v, lastNode, NULL);
+			Node* n = new( Allocator::Alloc(sizeof(Node)) ) Node(std::forward<T>(v), lastNode, NULL);
 			if (lastNode)
 				lastNode->next = n;
 			lastNode = n;

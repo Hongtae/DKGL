@@ -29,6 +29,7 @@ namespace DKFoundation
 		~DKStack(void) {}
 		
 		void Push(const VALUE& v)		{container.PushFront(v);}
+		void Push(VALUE&& v)			{container.PushFront(std::forward(v)); }
 		void Pop(VALUE& v)				{container.PopFront(v);}
 		void Pop(void)					{container.PopFront();}
 

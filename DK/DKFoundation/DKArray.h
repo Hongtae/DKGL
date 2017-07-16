@@ -158,6 +158,14 @@ namespace DKFoundation
 			new(std::addressof(data[count])) VALUE(value);
 			return count++;
 		}
+		/// move one item into array's tail
+		Index Add(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			ReserveItemCapsNL(1);
+			new(std::addressof(data[count])) VALUE(static_cast<VALUE&&>(value));
+			return count++;
+		}
 		/// append 's' length of value to tail.
 		Index Add(const VALUE* value, size_t s)
 		{
@@ -208,6 +216,19 @@ namespace DKFoundation
 			if (pos < count)
 				memmove(std::addressof(data[pos+1]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			new(std::addressof(data[pos])) VALUE(value);
+			count++;
+			return pos;
+		}
+		/// move one value into position 'pos'.
+		Index Insert(VALUE&& value, Index pos)
+		{
+			CriticalSection guard(lock);
+			ReserveItemCapsNL(1);
+			if (pos > count)
+				pos = count;
+			if (pos < count)
+				memmove(std::addressof(data[pos+1]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
+			new(std::addressof(data[pos])) VALUE(static_cast<VALUE&&>(value));
 			count++;
 			return pos;
 		}

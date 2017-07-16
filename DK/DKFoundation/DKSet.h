@@ -91,6 +91,11 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.Insert(v);
 		}
+		void Insert(Value&& v)
+		{
+			CriticalSection guard(lock);
+			container.Insert(static_cast<Value&&>(v));
+		}
 		void Insert(const Value* v, size_t n)
 		{
 			CriticalSection guard(lock);

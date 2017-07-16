@@ -143,7 +143,12 @@ namespace DKFoundation
 		size_t Insert(const VALUE& value)
 		{
 			CriticalSection guard(lock);
-			return InsertContainer(value, 1);
+			return InsertContainer(value);
+		}
+		size_t Insert(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			return InsertContainer(static_cast<VALUE&&>(value));
 		}
 		size_t Insert(const VALUE& value, size_t s)
 		{
@@ -354,7 +359,7 @@ namespace DKFoundation
 		}
 	private:
 		// Insert one value 'VALUE', 'c' times. (value x c)
-		size_t InsertContainer(const VALUE& value, size_t c)
+		FORCEINLINE size_t InsertContainer(const VALUE& value, size_t c)
 		{
 			Index index = 0;
 			size_t count = container.Count();
@@ -381,7 +386,34 @@ namespace DKFoundation
 			container.Insert(value, c, index);
 			return container.Count();
 		}
-
+		// Insert one value 'VALUE'
+		template <typename T> FORCEINLINE size_t InsertContainer(T&& value)
+		{
+			Index index = 0;
+			size_t count = container.Count();
+			while (count > 2)
+			{
+				Index middle = index + count /2;
+				if (orderFunc(value, container.Value(middle)))
+				{
+					count = middle - index;
+				}
+				else
+				{
+					Index right = middle+1;
+					count -= right - index;
+					index = right;
+				}
+			}
+			for (size_t i = 0; i < count; i++)
+			{
+				if (orderFunc(value, container.Value(index)))
+					break;
+				index++;
+			}
+			container.Insert(std::forward<T>(value), index);
+			return container.Count();
+		}
 		OrderFunc	orderFunc;
 		Container	container;
 	};

@@ -140,6 +140,15 @@ namespace DKFoundation
 		{
 			return PushFront(value, 1);
 		}
+		VALUE* PushFront(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			ReserveFront(1);
+			new(std::addressof(data[--begin])) VALUE(static_cast<VALUE&&>(value));
+			count++;
+			Balance();
+			return std::addressof(data[begin]);
+		}
 		VALUE* PushFront(std::initializer_list<VALUE> il)
 		{
 			CriticalSection guard(lock);
@@ -191,6 +200,15 @@ namespace DKFoundation
 		VALUE* PushBack(const VALUE& value)
 		{
 			return PushBack(value, 1);
+		}
+		VALUE* PushBack(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			ReserveBack(1);
+			new(std::addressof(data[begin + count])) VALUE(static_cast<VALUE&&>(value));
+			count++;
+			Balance();
+			return std::addressof(data[begin + count - 1]);
 		}
 		VALUE* PushBack(std::initializer_list<VALUE> il)
 		{

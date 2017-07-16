@@ -59,6 +59,7 @@ namespace DKFoundation
 		struct Node
 		{
 			Node(const Value& v) : value(v), left(NULL), right(NULL), leftHeight(0), rightHeight(0) {}
+			Node(Value&& v) : value(static_cast<Value&&>(v)), left(NULL), right(NULL), leftHeight(0), rightHeight(0) {}
 
 			Value		value;
 			Node*		left;
@@ -168,6 +169,22 @@ namespace DKFoundation
 			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(v);
 			return &(rootNode->value);
 		}
+		FORCEINLINE const Value* Update(Value&& v)
+		{
+			if (rootNode)
+			{
+				LocationContext ctxt = {&v};
+				LocateNodeForValue(rootNode, &ctxt);
+				if (ctxt.balancedNode)
+					rootNode = ctxt.balancedNode;
+				else
+					replacer(ctxt.locatedNode->value, v);
+				return &(ctxt.locatedNode->value);
+			}
+			count = 1;
+			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(static_cast<Value&&>(v));
+			return &(rootNode->value);
+		}
 		/// insert if not exist or fail if exists.
 		///  returns NULL if function failed. (already exists)
 		FORCEINLINE const Value* Insert(const Value& v)
@@ -186,6 +203,24 @@ namespace DKFoundation
 			}
 			count = 1;
 			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(v);
+			return &(rootNode->value);
+		}
+		FORCEINLINE const Value* Insert(Value&& v)
+		{
+			if (rootNode)
+			{
+				size_t c = this->count;
+				LocationContext ctxt = {&v};
+				LocateNodeForValue(rootNode, &ctxt);
+				if (ctxt.balancedNode)
+					rootNode = ctxt.balancedNode;
+
+				if (this->count != c)	// new item.
+					return &(ctxt.locatedNode->value);
+				return NULL;
+			}
+			count = 1;
+			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(static_cast<Value&&>(v));
 			return &(rootNode->value);
 		}
 		template <typename Key, typename KeyValueComparator>

@@ -20,6 +20,8 @@ namespace DKFoundation
 	public:
 		DKMapPair(const Key& k, const Value& v)
 			: key(k), value(v) {}
+		DKMapPair(const Key& k, Value&& v)
+			: key(k), value(static_cast<Value&&>(v)) {}
 		DKMapPair(const DKMapPair& p)
 			: key(p.key), value(p.value) {}
 		DKMapPair(DKMapPair&& p)
@@ -169,9 +171,18 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.Update(p);			
 		}
+		void Update(Pair&& p)
+		{
+			CriticalSection guard(lock);
+			container.Update(static_cast<Pair&&>(p));			
+		}
 		void Update(const Key& k, const ValueT& v)
 		{
 			Update(Pair(k,v));
+		}
+		void Update(const Key& k, ValueT&& v)
+		{
+			Update(Pair(k,static_cast<ValueT&&>(v)));
 		}
 		void Update(const Pair* p, size_t size)
 		{
@@ -216,9 +227,18 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Insert(p) != NULL;
 		}
+		bool Insert(Pair&& p)
+		{
+			CriticalSection guard(lock);
+			return container.Insert(static_cast<Pair&&>(p)) != NULL;
+		}
 		bool Insert(const Key& k, const ValueT& v)
 		{
 			return Insert(Pair(k, v));
+		}
+		bool Insert(const Key& k, ValueT&& v)
+		{
+			return Insert(Pair(k, static_cast<ValueT&&>(v)));
 		}
 		template <typename ...Args> size_t Insert(const DKMap<Key, ValueT, Args...>& m)
 		{

@@ -192,6 +192,12 @@ namespace DKFoundation
 			AppendNL(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
+		void Append(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			AppendNL(static_cast<VALUE&&>(value));
+			DKASSERT_DEBUG(container.Count() <= capacity);
+		}
 		/// prepend item, if length exceed to limit, last item will be truncated.
 		void Prepend(const VALUE& value)
 		{
@@ -199,7 +205,12 @@ namespace DKFoundation
 			PrependNL(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-
+		void Prepend(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			PrependNL(static_cast<VALUE&&>(value));
+			DKASSERT_DEBUG(container.Count() <= capacity);
+		}
 		void RemoveFront(void)
 		{
 			CriticalSection guard(lock);
@@ -416,24 +427,26 @@ namespace DKFoundation
 			}
 			return container.Value(index);
 		}
-		void AppendNL(const VALUE& value)
+		template <typename T>
+		void AppendNL(T&& value)
 		{
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
 			if (count == capacity)
 			{
-				container.Value(position) = value;
+				container.Value(position) = std::forward(value);
 				position = (position+1) % capacity;
 			}
 			else
 			{
-				container.Add(value);
+				container.Add(std::forward<T>(value));
 				count = container.Count();
 				position = (position+1) % capacity;
 			}
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-		void PrependNL(const VALUE& value)
+		template <typename T>
+		void PrependNL(T&& value)
 		{
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
@@ -443,11 +456,11 @@ namespace DKFoundation
 				position--;
 				else
 				position = count - 1;
-				container.Value(position) = value;
+				container.Value(position) = std::forward(value);
 			}
 			else
 			{
-				container.Insert(value, 0);
+				container.Insert(std::forward(value), 0);
 				count = container.Count();
 				position = (position+1) % capacity;
 			}
