@@ -19,6 +19,7 @@ using namespace DKFramework::Private::Vulkan;
 ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st)
 	: device(d)
 	, module(s)
+	, pushConstantLayout({})
 {
 	switch (st)
 	{
@@ -39,6 +40,8 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		break;
 	}
 
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+
 	spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(data), size / sizeof(uint32_t));
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 	 
@@ -54,9 +57,43 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 
 		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
 
+		if (layout.Count() <= set)
+		{
+			layout.Resize(set - layout.Count() + 1);
+		}
+		// get item count! (array size)
+		uint32_t count = 1;
+		if (spType.array.size() > 0)
+		{
+			for (auto i : spType.array)
+				count *= i;
+		}
+
 		DescriptorSetLayout& descriptorSet = layout.Value(set);
-		DescriptorSetLayout::Binding descriptor = { name, binding, 0 };
+		DescriptorSetLayout::Binding descriptor = { name, binding, count };
+		descriptorSet.bindings.Add(descriptor);
 	};
+
+	// uniform_buffers
+	for (const spirv_cross::Resource& resource : resources.uniform_buffers)
+	{
+		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
+	}
+	// storage_buffers
+	for (const spirv_cross::Resource& resource : resources.storage_buffers)
+	{
+		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
+	}
+	// storage_images
+	for (const spirv_cross::Resource& resource : resources.storage_images)
+	{
+		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_STORAGE_IMAGE - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
+	}
+	// sampled_images
+	for (const spirv_cross::Resource& resource : resources.sampled_images)
+	{
+		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
+	}
 
 	// get pushConstant range.
 	if (resources.push_constant_buffers.size() > 0)
@@ -64,6 +101,10 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		const spirv_cross::Resource& resource = resources.push_constant_buffers[0];
 		std::vector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
 		this->pushConstantLayout.members.Reserve(ranges.size());
+
+		uint32_t pushConstantOffset = (uint32_t)ranges[0].offset;
+		uint32_t pushConstantSize = 0;
+
 		for (spirv_cross::BufferRange &range : ranges)
 		{
 			// get range.
@@ -72,7 +113,25 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 			member.offset = range.offset;
 			member.size = range.range;
 			this->pushConstantLayout.members.Add(std::move(member));
-		}
+
+			pushConstantSize = (member.offset - pushConstantOffset) + member.size;
+		}
+
+		if (pushConstantSize % 4)	// size must be a multiple of 4
+		{
+			pushConstantSize += 4 - (pushConstantSize % 4);
+		}
+
+		DKASSERT_DEBUG((pushConstantOffset % 4) == 0);
+		DKASSERT_DEBUG((pushConstantSize % 4) == 0);
+		DKASSERT_DEBUG(pushConstantSize > 0);
+
+		DKASSERT_DEBUG(pushConstantOffset < dev->properties.limits.maxPushConstantsSize);
+		DKASSERT_DEBUG((pushConstantOffset + pushConstantSize) < dev->properties.limits.maxPushConstantsSize);
+
+		this->pushConstantLayout.offset = pushConstantOffset;
+		this->pushConstantLayout.size = pushConstantSize;
+
 		if (resource.name.size() > 0)
 			this->pushConstantLayout.name = resource.name.c_str();
 		else
@@ -81,14 +140,6 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
 	}
 
-	// Get all sampled images in the shader.
-	for (auto &resource : resources.sampled_images)
-	{
-		unsigned set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-		unsigned binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-		DKLog("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
-
-	}
 	std::vector<std::string> entryPointNames = compiler.get_entry_points();
 	functionNames.Reserve(entryPointNames.size());
 	for (std::string& name : entryPointNames)

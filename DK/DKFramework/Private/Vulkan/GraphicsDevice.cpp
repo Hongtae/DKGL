@@ -650,16 +650,17 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// shader stages
 	DKArray<VkPipelineShaderStageCreateInfo> shaderStageCreateInfos;
-	DKArray<VkPushConstantRange> pushConstantRanges;
 
 	std::initializer_list<const DKShaderFunction*> shaderFunctions = { desc.vertexFunction, desc.fragmentFunction };
 	shaderStageCreateInfos.Reserve(shaderFunctions.size());
-
+	size_t maxDescriptorBindings = 0; // max bindings
+	size_t maxDescriptorSets = 0; // max sets
+	DKArray<VkPushConstantRange> pushConstantRanges;
+	pushConstantRanges.Reserve(shaderFunctions.size());
 	for (const DKShaderFunction* fn : shaderFunctions)
 	{
 		if (fn)
 		{
-			DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn) != nullptr);
 			const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
 			const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
@@ -671,12 +672,100 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				shaderStageCreateInfo.pSpecializationInfo = &func->specializationInfo;
 
 			shaderStageCreateInfos.Add(shaderStageCreateInfo);
+
+			// get push constant range
+			if (module->pushConstantLayout.size > 0)
+			{
+				VkPushConstantRange range = {};
+				range.stageFlags = module->stage;
+				range.offset = module->pushConstantLayout.offset;
+				range.size = module->pushConstantLayout.size;
+				pushConstantRanges.Add(range);
+			}
+
+			// calculate max descriptor bindings a set
+			for (auto& descSet : module->layouts)
+			{
+				maxDescriptorSets = Max(maxDescriptorSets, descSet.Count());
+				for (auto& descBinding : descSet)
+				{
+					maxDescriptorBindings = Max(maxDescriptorBindings, descBinding.bindings.Count());
+				}
+			}
 		}
 	}
 	pipelineCreateInfo.stageCount = shaderStageCreateInfos.Count();
 	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
 	// setup layout	
+	DKArray<VkDescriptorSetLayoutBinding> descriptorBindings;
+	descriptorBindings.Reserve(maxDescriptorBindings);
+
+	for (auto setIndex = 0; setIndex < maxDescriptorSets; ++setIndex)
+	{
+		descriptorBindings.Clear();
+		for (const DKShaderFunction* fn : shaderFunctions)
+		{
+			if (fn)
+			{
+				const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+				const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+				
+				for (int descType = 0; descType < VK_DESCRIPTOR_TYPE_RANGE_SIZE; ++descType)
+				{
+					if (module->layouts[descType].Count() > setIndex)
+					{
+						auto& descSet = module->layouts[descType];
+						for (auto& descLayout : descSet.Value(setIndex).bindings)
+						{
+							VkDescriptorType type = (VkDescriptorType)(descType + VK_DESCRIPTOR_TYPE_BEGIN_RANGE);
+
+							bool found = false;
+							for (auto& b : descriptorBindings)
+							{
+								if (b.binding == descLayout.index)
+								{
+									if (b.descriptorType != type || b.descriptorCount != descLayout.count)
+									{
+										//TODO: rebind module's binding to other number.
+
+										DKLogE("ERROR: descriptor binding conflict! (set=%d, binding=%u)", setIndex, descLayout.index);
+										return CleanupAndReturnNull();
+									}
+									b.stageFlags |= module->stage;
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+							{
+								VkDescriptorSetLayoutBinding binding = {};
+								binding.binding = descLayout.index;
+								binding.descriptorCount = descLayout.count;
+								binding.descriptorType = type;
+								binding.stageFlags = module->stage;
+
+								descriptorBindings.Add(binding);
+							}
+						}
+					}
+				}
+			}
+		}
+		// create descriptor set (setIndex) layout
+		VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
+		setLayoutCreateInfo.bindingCount = descriptorBindings.Count();
+		setLayoutCreateInfo.pBindings = descriptorBindings;
+		VkDescriptorSetLayout setLayout = VK_NULL_HANDLE;
+		result = vkCreateDescriptorSetLayout(device, &setLayoutCreateInfo, nullptr, &setLayout);
+		if (result != VK_SUCCESS)
+		{
+			DKLogE("ERROR: vkCreateDescriptorSetLayout failed: %s", VkResultCStr(result));
+			return CleanupAndReturnNull();
+		}
+		descriptorSetLayouts.Add(setLayout);
+		descriptorBindings.Clear();
+	}
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
 	pipelineLayoutCreateInfo.setLayoutCount = descriptorSetLayouts.Count();
 	pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts;

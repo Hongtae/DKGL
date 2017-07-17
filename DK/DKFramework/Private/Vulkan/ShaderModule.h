@@ -38,6 +38,8 @@ namespace DKFramework
 					uint32_t offset;
 					uint32_t size;
 				};
+				uint32_t offset;
+				uint32_t size;
 				DKArray<Member> members;
 			};
 
