@@ -309,6 +309,7 @@
     <ClCompile Include="DKFramework\DKTriangle.cpp" />
     <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp" />
     <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp" />
+    <ClCompile Include="DKFramework\DKUpdateQueue.cpp" />
     <ClCompile Include="DKFramework\DKVariant.cpp" />
     <ClCompile Include="DKFramework\DKVector2.cpp" />
     <ClCompile Include="DKFramework\DKVector3.cpp" />
@@ -515,6 +516,7 @@
     <ClInclude Include="DKFramework\DKTriangleMesh.h" />
     <ClInclude Include="DKFramework\DKTriangleMeshBvh.h" />
     <ClInclude Include="DKFramework\DKTriangleMeshProxyShape.h" />
+    <ClInclude Include="DKFramework\DKUpdateQueue.h" />
     <ClInclude Include="DKFramework\DKVariant.h" />
     <ClInclude Include="DKFramework\DKVector2.h" />
     <ClInclude Include="DKFramework\DKVector3.h" />
