@@ -41,6 +41,13 @@ namespace DKFramework
 	};
 	using DKUpdateQueueSynchronizer = DKUpdateQueue::Synchronizer;
 
+	class DKAsynchronousUpdatable
+	{
+	public:
+		virtual ~DKAsynchronousUpdatable(void) {}
+		virtual void Update(DKUpdateQueueSynchronizer&) = 0;
+	};
+
 	/// @brief
 	/// serial update queue
 	class DKGL_API DKSerialUpdateQueue : public DKUpdateQueue
