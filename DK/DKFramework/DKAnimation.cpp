@@ -643,7 +643,7 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 
 			DKVariant frames(DKVariant::TypeStructData);
 			DKVariant::VStructuredData& data = frames.StructuredData();
-			data.data.SetContent((const DKTransformUnit*)sn.frames, sn.frames.Count() * sizeof(DKTransformUnit));
+			data.data = DKOBJECT_NEW DKBuffer((const DKTransformUnit*)sn.frames, sn.frames.Count() * sizeof(DKTransformUnit));
 			data.elementSize = sizeof(DKTransformUnit);
 			data.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(DKTransformUnit) / 4);
 			v.Pairs().Insert(L"frames", frames);
@@ -664,7 +664,7 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 					}
 					else if (pFrames->value.ValueType() == DKVariant::TypeStructData)
 					{
-						frameData = &(pFrames->value.StructuredData().data);
+						frameData = pFrames->value.StructuredData().data;
 					}
 					if (frameData)
 					{
@@ -692,15 +692,15 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 			DKVariant::VStructuredData& rotationData = rotationKeys.StructuredData();
 			DKVariant::VStructuredData& translationData = translationKeys.StructuredData();
 
-			scaleData.data.SetContent((const KeyframeNode::ScaleKey*)kn.scaleKeys, kn.scaleKeys.Count() * sizeof(KeyframeNode::ScaleKey));
+			scaleData.data = DKOBJECT_NEW DKBuffer((const KeyframeNode::ScaleKey*)kn.scaleKeys, kn.scaleKeys.Count() * sizeof(KeyframeNode::ScaleKey));
 			scaleData.elementSize = sizeof(KeyframeNode::ScaleKey);
 			scaleData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::ScaleKey) / 4);
 
-			rotationData.data.SetContent((const KeyframeNode::RotationKey*)kn.rotationKeys, kn.rotationKeys.Count() * sizeof(KeyframeNode::RotationKey));
+			rotationData.data = DKOBJECT_NEW DKBuffer((const KeyframeNode::RotationKey*)kn.rotationKeys, kn.rotationKeys.Count() * sizeof(KeyframeNode::RotationKey));
 			rotationData.elementSize = sizeof(KeyframeNode::RotationKey);
 			rotationData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::RotationKey) / 4);
 
-			translationData.data.SetContent((const KeyframeNode::TranslationKey*)kn.translationKeys, kn.translationKeys.Count() * sizeof(KeyframeNode::TranslationKey));
+			translationData.data = DKOBJECT_NEW DKBuffer((const KeyframeNode::TranslationKey*)kn.translationKeys, kn.translationKeys.Count() * sizeof(KeyframeNode::TranslationKey));
 			translationData.elementSize = sizeof(KeyframeNode::TranslationKey);
 			translationData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::TranslationKey) / 4);
 
@@ -727,17 +727,17 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 					if (pScaleKeys->value.ValueType() == DKVariant::TypeData)
 						scaleData = &(pScaleKeys->value.Data());
 					else if (pScaleKeys->value.ValueType() == DKVariant::TypeStructData)
-						scaleData = &(pScaleKeys->value.StructuredData().data);
+						scaleData = pScaleKeys->value.StructuredData().data;
 
 					if (pRotationKeys->value.ValueType() == DKVariant::TypeData)
 						rotationData = &(pRotationKeys->value.Data());
 					else if (pRotationKeys->value.ValueType() == DKVariant::TypeStructData)
-						rotationData = &(pRotationKeys->value.StructuredData().data);
+						rotationData = pRotationKeys->value.StructuredData().data;
 
 					if (pTranslationKeys->value.ValueType() == DKVariant::TypeData)
 						translationData = &(pTranslationKeys->value.Data());
 					else if (pTranslationKeys->value.ValueType() == DKVariant::TypeStructData)
-						translationData = &(pTranslationKeys->value.StructuredData().data);
+						translationData = pTranslationKeys->value.StructuredData().data;
 
 					if (scaleData && rotationData && translationData)
 					{

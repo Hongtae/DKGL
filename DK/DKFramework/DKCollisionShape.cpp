@@ -317,7 +317,7 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 						DKVariant::StructElem::Arithmetic4,
 						DKVariant::StructElem::Arithmetic4
 					};
-					vertsData.data.SetContent(vertices, numVertices * sizeof(DKVector3));
+					vertsData.data = DKOBJECT_NEW DKBuffer(vertices, numVertices * sizeof(DKVector3));
 					DKVariant::VStructuredData& indicesData = pairs.Value(L"indices").StructuredData();
 					indicesData.elementSize = meshShape->IndexSize();
 					if (meshShape->IndexSize() == 4)
@@ -328,7 +328,7 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 					{
 						indicesData.layout = { DKVariant::StructElem::Arithmetic2 };
 					}
-					indicesData.data.SetContent(indices, indexSize * numIndices);
+					indicesData.data = DKOBJECT_NEW DKBuffer(indices, indexSize * numIndices);
 					pairs.Insert(L"indexSize", (DKVariant::VInteger)indexSize);
 					pairs.Insert(L"aabbMin", (const DKVariant::VVector3&)aabb.positionMin);
 					pairs.Insert(L"aabbMax", (const DKVariant::VVector3&)aabb.positionMax);
@@ -570,16 +570,19 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 							{
 								const DKVariant::VStructuredData& vertexData = vertices->value.StructuredData();
 								const DKVariant::VStructuredData& indexData = indices->value.StructuredData();
-								if (idxSize == 4)
-								*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-									(const DKVector3*)vertexData.data.LockShared(), numVerts,
-									(const unsigned int*)indexData.data.LockShared(), numIndices, aabb);
-								else
-									*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-									(const DKVector3*)vertexData.data.LockShared(), numVerts,
-									(const unsigned short*)indexData.data.LockShared(), numIndices, aabb);
-								vertexData.data.UnlockShared();
-								indexData.data.UnlockShared();
+								if (vertexData.data && indexData.data)
+								{
+									if (idxSize == 4)
+										*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
+										(const DKVector3*)vertexData.data->LockShared(), numVerts,
+										(const unsigned int*)indexData.data->LockShared(), numIndices, aabb);
+									else
+										*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
+										(const DKVector3*)vertexData.data->LockShared(), numVerts,
+										(const unsigned short*)indexData.data->LockShared(), numIndices, aabb);
+									vertexData.data->UnlockShared();
+									indexData.data->UnlockShared();
+								}
 							}
 							break;
 						}

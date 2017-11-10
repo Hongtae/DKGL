@@ -100,6 +100,14 @@ DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperat
 		}
 		return output;
 	}
+	else if (readonly)
+	{
+		DKObject<ReadOnlyData> data = DKObject<ReadOnlyData>::New();
+		data->p = NULL;
+		data->len = 0;
+		data->cleanup = cleanup;
+		return data.SafeCast<DKData>();
+	}
 	return NULL;
 }
 
@@ -152,4 +160,45 @@ bool DKData::WriteToStream(DKStream* stream) const
 		return true;
 	}
 	return false;
+}
+
+DKObject<DKData> DKData::ImmutableData(void) const
+{
+	if (IsReadable())
+	{
+		if (IsWritable())
+		{
+			struct ReadOnlyData : public DKData
+			{
+				void* p;
+				size_t len;
+				ReadOnlyData(void) : p(NULL), len(0) {}
+				~ReadOnlyData(void)
+				{
+					if (p)
+						DKFree(p);
+				}
+				size_t Length(void) const { return len; }
+				bool IsReadable(void) const { return true; }
+				bool IsWritable(void) const { return false; }
+				bool IsExcutable(void) const { return false; }
+
+				const void* LockShared(void) const { return p; }
+				bool TryLockShared(const void** ptr) const { *ptr = p; return true; }
+				void UnlockShared(void) const {}
+			};
+			DKDataReader reader((DKData*)this);
+			DKObject<ReadOnlyData> target = DKOBJECT_NEW ReadOnlyData();
+			target->len = reader.Length();
+			if (target->len > 0)
+			{
+				target->p = DKMalloc(target->len);
+				memcpy(target->p, reader, target->len);
+			}
+			return target.SafeCast<DKData>();
+		}
+		else
+			return (DKData*)this;
+	}
+	return NULL;
 }

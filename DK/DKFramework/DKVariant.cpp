@@ -113,10 +113,12 @@ namespace DKFramework
 		}
 		static bool ConvertStructuredDataByteOrder(VStructuredData& sd, DKByteOrder bo)
 		{
-			size_t len = sd.data.Length();
+			size_t len = 0;
+			if (sd.data)
+				len = sd.data->Length();
 			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.elementSize <= len && sd.layout.Count() > 0)
 			{
-				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data.LockExclusive());
+				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data->LockExclusive());
 				if (p)
 				{
 					size_t pos = 0;
@@ -154,13 +156,18 @@ namespace DKFramework
 						}
 						pos += sd.elementSize;
 					}
-					sd.data.UnlockExclusive();
+					sd.data->UnlockExclusive();
 					return true;
 				}
 				return false;
 			}
 			return true;
 		}
+
+		struct DataProxy
+		{
+			DKObject<DKData> data;
+		};
 	}
 }
 
@@ -370,7 +377,7 @@ DKVariant& DKVariant::SetValueType(Type t)
 		VariantBlock<VString, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeData:
-		VariantBlock<VData, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<DataProxy, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeStructData:
 		VariantBlock<VStructuredData, sizeof(vblock)>::Dealloc(vblock);
@@ -424,7 +431,8 @@ DKVariant& DKVariant::SetValueType(Type t)
 		VariantBlock<VString, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeData:
-		VariantBlock<VData, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<DataProxy, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock).data = DKData::StaticData(0, 0);
 		break;
 	case TypeStructData:
 		VariantBlock<VStructuredData, sizeof(vblock)>::Alloc(vblock);
@@ -514,7 +522,10 @@ DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 	else if (valueType == TypeData)
 	{
 		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
-		DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
+		const VData& data = this->Data();
+		const void* p = data.LockShared();
+		DKObject<DKBuffer> compressed = DKBuffer::Compress(p, data.Length(), DKCompressor::Deflate);
+		data.UnlockShared();
 		if (compressed)
 			compressed->Base64Encode(cdata->value);
 		e->nodes.Add(cdata.SafeCast<DKXmlCData>());
@@ -555,13 +566,18 @@ DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 		}
 		e->nodes.Add(layout.SafeCast<DKXmlNode>());
 
-		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
-		DKObject<DKBuffer> compressed = stData.data.Compress(DKCompressor::Deflate);
-		if (compressed)
+		if (stData.data)
 		{
-			compressed->Base64Encode(cdata->value);
+			DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
+			const void* p = stData.data->LockShared();
+			DKObject<DKBuffer> compressed = DKBuffer::Compress(p, stData.data->Length(), DKCompressor::Deflate);
+			stData.data->UnlockShared();
+			if (compressed)
+			{
+				compressed->Base64Encode(cdata->value);
+			}
+			e->nodes.Add(cdata.SafeCast<DKXmlNode>());
 		}
-		e->nodes.Add(cdata.SafeCast<DKXmlNode>());
 	}
 	else
 	{
@@ -750,13 +766,14 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 					break;
 				}
 			}
-			DKObject<VData> compressed = VData::Base64Decode(value);
+			DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
 			if (compressed)
 			{
-				DKObject<VData> d = compressed->Decompress();
-				if (d)
-					this->Data() = static_cast<VData&&>(*d);
+				DKObject<DKBuffer> d = compressed->Decompress();
+				this->SetData(d);
 			}
+			else
+				this->SetData(0);
 		}
 		else if (this->ValueType() == TypeStructData)
 		{
@@ -828,7 +845,7 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 							DKObject<DKBuffer> data = compressed->Decompress();
 							if (data)
 							{
-								stData.data = static_cast<DKBuffer&&>(*data); // move!
+								stData.data = data;
 								if (!ConvertStructuredDataByteOrder(stData, dataByteOrder))
 								{
 									DKLogE("Error: DKVariant::VStructuredData data byte order error!\n");
@@ -1230,12 +1247,15 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeStructData)
 		{
 			const VStructuredData& stData = this->StructuredData();
+			size_t length = 0;
+			if (stData.data)
+				length = stData.data->Length();
 			struct
 			{
 				uint64_t elementSize;
 				uint64_t numLayouts;
 				uint64_t dataLength;
-			} stInfo = { stData.elementSize, stData.layout.Count(), stData.data.Length() };
+			} stInfo = { stData.elementSize, stData.layout.Count(), length };
 			if (stream->Write(&stInfo, sizeof(stInfo)) != sizeof(stInfo))
 			{
 				errorDesc = L"Failed to write to stream.";
@@ -1246,13 +1266,16 @@ bool DKVariant::ExportStream(DKStream* stream) const
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			if (stream->Write(stData.data.LockShared(), stInfo.dataLength) != stInfo.dataLength)
+			if (length > 0)
 			{
-				stData.data.UnlockShared();
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (stream->Write(stData.data->LockShared(), stInfo.dataLength) != stInfo.dataLength)
+				{
+					stData.data->UnlockShared();
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
+				stData.data->UnlockShared();
 			}
-			stData.data.UnlockShared();
 		}
 		else if (valueType == TypeArray)
 		{
@@ -1639,7 +1662,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					{
 						if (stream->RemainLength() >= len)
 						{
-							VData val;
+							DKBuffer val;
 							val.SetContent(0, len);
 							void* p = val.LockExclusive();
 							if (stream->Read(p, len) != len)
@@ -1649,7 +1672,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 								goto FAILED;
 							}
 							val.UnlockExclusive();
-							this->SetValueType(TypeData).Data() = static_cast<VData&&>(val);
+							this->SetData(val);
 						}
 						else
 						{
@@ -1658,7 +1681,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 						}
 					}
 					else
-						this->SetValueType(TypeData).Data().SetContent(0);
+						this->SetData(0);
 				}
 				else if (type == TypeStructData)
 				{
@@ -1706,15 +1729,15 @@ bool DKVariant::ImportStream(DKStream* stream)
 					{
 						if (stream->RemainLength() >= stInfo.dataLength)
 						{
-							stData.data.SetContent(0, stInfo.dataLength);
-							void* p = stData.data.LockExclusive();
+							stData.data = DKOBJECT_NEW DKBuffer(0, stInfo.dataLength);
+							void* p = stData.data->LockExclusive();
 							if (stream->Read(p, stInfo.dataLength) != stInfo.dataLength)
 							{
-								stData.data.UnlockExclusive();
+								stData.data->UnlockExclusive();
 								errorDesc = L"Failed to read from stream.";
 								goto FAILED;
 							}
-							stData.data.UnlockExclusive();
+							stData.data->UnlockExclusive();
 						}
 						else
 						{
@@ -1997,7 +2020,7 @@ DKVariant::VData& DKVariant::Data(void)
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeData);
 	DKASSERT_DEBUG(ValueType() == TypeData);
-	return VariantBlock<VData, sizeof(vblock)>::Value(vblock);
+	return *(VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock).data);
 }
 
 const DKVariant::VData& DKVariant::Data(void) const
@@ -2115,26 +2138,37 @@ DKVariant& DKVariant::SetDateTime(const VDateTime& v)
 
 DKVariant& DKVariant::SetData(const VData& v)
 {
-	SetValueType(TypeData).Data() = v;
+	return SetData(&v);
+}
+
+DKVariant& DKVariant::SetData(const VData* v)
+{
+	SetValueType(TypeData);
+	DataProxy& proxy = VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock);
+	if (v)
+		proxy.data = v->ImmutableData();
+	else
+		proxy.data = DKData::StaticData(0, 0);
 	return *this;
 }
 
 DKVariant& DKVariant::SetData(const void* p, size_t s)
 {
-	SetValueType(TypeData).Data().SetContent(p, s);
-	return *this;
+	return SetData(DKBuffer::Create(p, s));
 }
 
 DKVariant& DKVariant::SetStructuredData(const VStructuredData& v)
 {
 	SetValueType(TypeStructData).StructuredData() = v;
+	if (v.data)
+		StructuredData().data = v.data->ImmutableData();
 	return *this;
 }
 
 DKVariant& DKVariant::SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem> layout)
 {
 	VStructuredData& data = SetValueType(TypeStructData).StructuredData();
-	data.data.SetContent(p, elementSize * count);
+	data.data = DKOBJECT_NEW DKBuffer(p, elementSize * count);
 	data.elementSize = elementSize;
 	data.layout = layout;
 	return *this;
@@ -2199,6 +2233,8 @@ DKVariant& DKVariant::SetValue(const DKVariant& v)
 		break;
 	case TypeStructData:
 		this->StructuredData() = v.StructuredData();
+		if (v.StructuredData().data)
+			this->StructuredData().data = v.StructuredData().data->ImmutableData();
 		break;
 	case TypeArray:
 		this->Array() = v.Array();
@@ -2254,7 +2290,9 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 			result = this->DateTime() == v.DateTime();
 			break;
 		case TypeData:
-			if (this->Data().Length() == v.Data().Length())
+			if (&this->Data() == &v.Data())
+				result = true;
+			else if (this->Data().Length() == v.Data().Length())
 			{
 				size_t length = this->Data().Length();
 				const void* ptr1 = this->Data().LockShared();
@@ -2273,7 +2311,7 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 				const VStructuredData& s2 = v.StructuredData();
 				if (s1.elementSize == s2.elementSize &&
 					s1.layout.Count() == s2.layout.Count() &&
-					s1.data.Length() == s2.data.Length())
+					s1.data->Length() == s2.data->Length())
 				{
 					result = true;
 					for (size_t i = 0; i < s1.layout.Count(); ++i)
@@ -2286,14 +2324,14 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 					}
 					if (result)
 					{
-						size_t length = s1.data.Length();
-						const void* ptr1 = s1.data.LockShared();
-						const void* ptr2 = s2.data.LockShared();
+						size_t length = s1.data->Length();
+						const void* ptr1 = s1.data->LockShared();
+						const void* ptr2 = s2.data->LockShared();
 
 						result = memcmp(ptr1, ptr2, length) == 0;
 
-						s1.data.UnlockShared();
-						s2.data.UnlockShared();
+						s1.data->UnlockShared();
+						s2.data->UnlockShared();
 					}
 				}
 			}

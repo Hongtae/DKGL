@@ -76,7 +76,7 @@ namespace DKFramework
 		typedef DKRational VRational;
 		typedef DKString VString;
 		typedef DKDateTime VDateTime;
-		typedef DKBuffer VData;
+		typedef DKData VData;
 		typedef DKArray<DKVariant> VArray;
 		typedef DKMap<VString, DKVariant> VPairs;
 
@@ -99,7 +99,7 @@ namespace DKFramework
 		/// layout should be set properly. (describe item layout without padding)
 		struct VStructuredData
 		{
-			DKBuffer data;	///< buffer object
+			DKObject<DKData> data;		///< data object
 			size_t elementSize;			///< element size (include alignment padding)
 			DKArray<StructElem> layout; ///< structured-element layout
 		};
@@ -152,6 +152,7 @@ namespace DKFramework
 		DKVariant& SetString(const VString& v);
 		DKVariant& SetDateTime(const VDateTime& v);
 		DKVariant& SetData(const VData& v);
+		DKVariant& SetData(const VData* v);
 		DKVariant& SetData(const void* p, size_t s);
 		DKVariant& SetStructuredData(const VStructuredData& v);
 		DKVariant& SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem> layout);

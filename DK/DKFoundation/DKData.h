@@ -61,6 +61,9 @@ namespace DKFoundation
 		virtual void* LockExclusive(void)		{ return NULL; }
 		virtual bool TryLockExclusive(void**)	{ return false; }
 		virtual void UnlockExclusive(void)		{}
+
+		/// Clone immutable data object.
+		virtual DKObject<DKData> ImmutableData(void) const;
 	};
 
 	/// @brief scoped read accessor for DKData
