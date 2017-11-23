@@ -524,7 +524,7 @@ DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 		const VData& data = this->Data();
 		const void* p = data.LockShared();
-		DKObject<DKBuffer> compressed = DKBuffer::Compress(p, data.Length(), DKCompressor::Deflate);
+		DKObject<DKBuffer> compressed = DKBuffer::Compress(DKCompressor::Deflate, p, data.Length());
 		data.UnlockShared();
 		if (compressed)
 			compressed->Base64Encode(cdata->value);
@@ -570,7 +570,7 @@ DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 		{
 			DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 			const void* p = stData.data->LockShared();
-			DKObject<DKBuffer> compressed = DKBuffer::Compress(p, stData.data->Length(), DKCompressor::Deflate);
+			DKObject<DKBuffer> compressed = DKBuffer::Compress(DKCompressor::Deflate, p, stData.data->Length());
 			stData.data->UnlockShared();
 			if (compressed)
 			{

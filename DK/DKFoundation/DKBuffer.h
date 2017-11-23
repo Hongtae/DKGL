@@ -13,16 +13,10 @@
 #include "DKData.h"
 #include "DKStream.h"
 #include "DKAllocator.h"
+#include "DKCompressor.h"
 
 namespace DKFoundation
 {
-	enum class DKCompressor
-	{
-		Deflate,	///< good compression ratio.
-		LZ4,		///< fast compression, fast decompression.
-		LZ4HC,		///< fast decompression, better compression ratio than LZ4.
-	};
-
 	/// @brief Create writable memory object from URL or other stream, memory object.
 	/// provide compression, base64-encoding functionality.
 	/// thread safe.
@@ -43,10 +37,12 @@ namespace DKFoundation
 		size_t Length(void) const;
 		size_t CopyContent(void* p, size_t offset, size_t length) const;
 
+		bool SetLength(size_t);
+
 		/// compress / decompress data
-		DKObject<DKBuffer> Compress(DKCompressor, DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
+		DKObject<DKBuffer> Compress(const DKCompressor&, DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
 		DKObject<DKBuffer> Decompress(DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
-		static DKObject<DKBuffer> Compress(const void* p, size_t len, DKCompressor, DKAllocator& alloc = DKAllocator::DefaultAllocator());
+		static DKObject<DKBuffer> Compress(const DKCompressor&, const void* p, size_t len, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		static DKObject<DKBuffer> Decompress(const void* p, size_t len, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 
 		/// base64 encode / decode

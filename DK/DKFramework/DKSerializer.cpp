@@ -1124,7 +1124,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 
 					DKObject<DKData> compressedData = NULL;
 					if (compress)
-						compressedData = DKBuffer::Compress(ptr, length, DKCompressor::Deflate).SafeCast<DKData>();
+						compressedData = DKBuffer::Compress(DKCompressor::Deflate, ptr, length).SafeCast<DKData>();
 
 					rawData->UnlockShared();
 

@@ -36,7 +36,12 @@ DKStream::Position DKBufferStream::SetPos(Position p)
 	if (this->data)
 	{
 		size_t contentSize = this->data->Length();
-		this->offset = Clamp(p, 0, contentSize);
+		//this->offset = Clamp(p, 0, contentSize);
+		if (p > contentSize)
+		{
+			this->data->SetLength(p);
+		}
+		this->offset = p;
 	}
 	else
 	{
@@ -116,26 +121,15 @@ size_t DKBufferStream::Write(const void* p, size_t s)
 			size_t contentSize2 = this->offset + s;
 			if (contentSize2 > contentSize1) // extend
 			{
-				DKObject<DKBuffer> data2 = DKBuffer::Create(NULL, contentSize2);
-
-				const unsigned char* ptr1 = reinterpret_cast<const unsigned char*>(this->data->LockShared());
-				unsigned char* ptr2 = reinterpret_cast<unsigned char*>(data2->LockExclusive());
-
-				::memcpy(ptr2, ptr1, this->offset);
-				::memcpy(&ptr2[this->offset], p, s);
-
-				data2->UnlockExclusive();
-				this->data->UnlockShared();
-
-				//this->data->SetContent(data2);
-				this->data = data2;
+				if (!this->data->SetLength(contentSize2))
+				{
+					return PositionError;
+				}
 			}
-			else
-			{
-				unsigned char* ptr = reinterpret_cast<unsigned char*>(this->data->LockExclusive());
-				::memcpy(&ptr[this->offset], p, s);
-				this->data->UnlockExclusive();
-			}
+
+			unsigned char* ptr = reinterpret_cast<unsigned char*>(this->data->LockExclusive());
+			::memcpy(&ptr[this->offset], p, s);
+			this->data->UnlockExclusive();
 			this->offset = contentSize2;
 		}
 		else

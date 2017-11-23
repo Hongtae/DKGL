@@ -70,15 +70,20 @@ namespace DKFoundation {}
 #include "DKFoundation/DKThread.h"
 #include "DKFoundation/DKCondition.h"
 
-// stream, file, buffer, directory (file-system)
+// stream, buffer, compressor
 #include "DKFoundation/DKData.h"
 #include "DKFoundation/DKStream.h"
 #include "DKFoundation/DKDataStream.h"
 #include "DKFoundation/DKBuffer.h"
 #include "DKFoundation/DKBufferStream.h"
-#include "DKFoundation/DKDirectory.h"
+
+// file, file-map, and directory
 #include "DKFoundation/DKFile.h"
 #include "DKFoundation/DKFileMap.h"
+#include "DKFoundation/DKDirectory.h"
+
+// compressor, archiver
+#include "DKFoundation/DKCompressor.h"
 #include "DKFoundation/DKZipArchiver.h"
 #include "DKFoundation/DKZipUnarchiver.h"
 

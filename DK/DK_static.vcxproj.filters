@@ -570,6 +570,9 @@
     <ClCompile Include="DKFramework\DKUpdateQueue.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
+    <ClCompile Include="DKFoundation\DKCompressor.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1118,12 +1121,6 @@
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h">
       <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Direct3D12\d3d12_headers.h">
-      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Direct3D12\d3dx12.h">
-      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h">
       <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
@@ -1297,6 +1294,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\DKUpdateQueue.h">
       <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKCompressor.h">
+      <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

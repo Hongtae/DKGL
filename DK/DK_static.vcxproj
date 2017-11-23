@@ -206,6 +206,7 @@
     <ClCompile Include="DKFoundation\DKAtomicNumber64.cpp" />
     <ClCompile Include="DKFoundation\DKBuffer.cpp" />
     <ClCompile Include="DKFoundation\DKBufferStream.cpp" />
+    <ClCompile Include="DKFoundation\DKCompressor.cpp" />
     <ClCompile Include="DKFoundation\DKCondition.cpp" />
     <ClCompile Include="DKFoundation\DKData.cpp" />
     <ClCompile Include="DKFoundation\DKDataStream.cpp" />
@@ -363,6 +364,7 @@
     <ClInclude Include="DKFoundation\DKBuffer.h" />
     <ClInclude Include="DKFoundation\DKBufferStream.h" />
     <ClInclude Include="DKFoundation\DKCircularQueue.h" />
+    <ClInclude Include="DKFoundation\DKCompressor.h" />
     <ClInclude Include="DKFoundation\DKCondition.h" />
     <ClInclude Include="DKFoundation\DKCriticalSection.h" />
     <ClInclude Include="DKFoundation\DKData.h" />
@@ -544,8 +546,6 @@
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandAllocator.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\d3d12_headers.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\d3dx12.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.h" />
