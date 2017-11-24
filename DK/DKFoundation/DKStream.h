@@ -20,8 +20,8 @@ namespace DKFoundation
 		DKStream(void) {}
 		virtual ~DKStream(void) {}
 
-		virtual Position SetPos(Position p) = 0;
-		virtual Position GetPos(void) const = 0;
+		virtual Position SetCurrentPosition(Position p) = 0;
+		virtual Position CurrentPosition(void) const = 0;
 		virtual Position RemainLength(void) const = 0;
 		virtual Position TotalLength(void) const = 0;
 

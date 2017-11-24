@@ -24,24 +24,24 @@ namespace DKFoundation
 		DKBufferStream(DKBuffer*);
 		~DKBufferStream(void);
 
-		Position SetPos(Position p);
-		Position GetPos(void) const;
-		Position RemainLength(void) const;
-		Position TotalLength(void) const;
+		Position SetCurrentPosition(Position p) override;
+		Position CurrentPosition(void) const override;
+		Position RemainLength(void) const override;
+		Position TotalLength(void) const override;
 
-		size_t Read(void* p, size_t s);
-		size_t Write(const void* p, size_t s);
+		size_t Read(void* p, size_t s) override;
+		size_t Write(const void* p, size_t s) override;
 
-		bool IsReadable(void) const {return true;}
-		bool IsSeekable(void) const {return true;}
-		bool IsWritable(void) const {return true;}
+		bool IsReadable(void) const override { return true; }
+		bool IsSeekable(void) const override { return true; }
+		bool IsWritable(void) const override { return true; }
 
 		void ResetStream(const void* p, size_t s);
 		void ResetStream(DKBuffer*);
 
 		/// internal storage object. (DKData type)
-		DKData* Data(void);
-		const DKData* Data(void) const;
+		DKData* Data(void) override;
+		const DKData* Data(void) const override;
 		/// internal storage object. (DKBuffer type)
 		DKBuffer* Buffer(void);
 		const DKBuffer* Buffer(void) const;
@@ -49,8 +49,7 @@ namespace DKFoundation
 	private:
 		DKObject<DKBuffer> data;
 		size_t offset;
-
-		DKBufferStream(const DKBufferStream&);
-		DKBufferStream& operator = (const DKBufferStream&);
+		DKBufferStream(const DKBufferStream&) = delete;
+		DKBufferStream& operator = (const DKBufferStream&) = delete;
 	};
 }

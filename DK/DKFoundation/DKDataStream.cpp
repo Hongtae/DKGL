@@ -31,22 +31,16 @@ DKDataStream::~DKDataStream(void)
 {
 }
 
-DKStream::Position DKDataStream::SetPos(Position p)
+DKStream::Position DKDataStream::SetCurrentPosition(Position p)
 {
-	if (this->data)
-	{
-		size_t contentSize = this->data->Length();
-		this->offset = Clamp(p, 0, contentSize);
-	}
+	if (p < TotalLength())
+		this->offset = p;
 	else
-	{
-		this->offset = 0;
-	}
-
+		return PositionError;
 	return this->offset;
 }
 
-DKStream::Position DKDataStream::GetPos(void) const
+DKStream::Position DKDataStream::CurrentPosition(void) const
 {
 	if (this->data)
 	{

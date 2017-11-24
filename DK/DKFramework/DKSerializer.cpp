@@ -1741,12 +1741,12 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 			if (data)
 			{
-				DKStream::Position pos = s->GetPos();
+				DKStream::Position pos = s->CurrentPosition();
 				const char* ptr = (const char*)data->LockShared();
 				objectKey.SetValue(&ptr[pos], keyLen);
 				data->UnlockShared();
 				pos += keyLen;
-				s->SetPos(pos);
+				s->SetCurrentPosition(pos);
 			}
 			else
 			{
@@ -1770,12 +1770,12 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 			if (data)
 			{
-				DKStream::Position pos = s->GetPos();
+				DKStream::Position pos = s->CurrentPosition();
 				const char* ptr = (const char*)data->LockShared();
 				containerKey.SetValue(&ptr[pos], cKeyLen);
 				data->UnlockShared();
 				pos += cKeyLen;
-				s->SetPos(pos);
+				s->SetCurrentPosition(pos);
 			}
 			else
 			{
@@ -1803,7 +1803,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 			if (data)
 			{
-				DKStream::Position pos = s->GetPos();
+				DKStream::Position pos = s->CurrentPosition();
 				const char* ptr = (const char*)data->LockShared();
 				const void* p = &ptr[pos];
 
@@ -1811,7 +1811,7 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 
 				data->UnlockShared();
 				pos += dataLength;
-				s->SetPos(pos);
+				s->SetCurrentPosition(pos);
 			}
 			else
 			{
@@ -1877,7 +1877,7 @@ bool DKSerializer::Deserialize(DKStream* s, DKResourceLoader* p) const
 {
 	if (s->IsReadable())
 	{
-		DKStream::Position pos = s->GetPos();
+		DKStream::Position pos = s->CurrentPosition();
 		// determine file type, binary or XML.
 		size_t headerLen = strlen(DKSERIALIZER_HEADER_STRING);
 		char name[64];
@@ -1889,7 +1889,7 @@ bool DKSerializer::Deserialize(DKStream* s, DKResourceLoader* p) const
 				validHeader = true;
 		}
 
-		s->SetPos(pos);
+		s->SetCurrentPosition(pos);
 		if (validHeader)	// format is binary
 		{
 			return DeserializeBinary(s, p);
@@ -1947,7 +1947,7 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 	DKASSERT_DEBUG(sel != NULL);
 
 	DKObject<DKSerializer> serializer = NULL;
-	DKStream::Position pos = s->GetPos();
+	DKStream::Position pos = s->CurrentPosition();
 
 	size_t headerLen = strlen(DKSERIALIZER_HEADER_STRING);
 	char name[64];
@@ -2016,7 +2016,7 @@ bool DKSerializer::DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector*
 		}
 	}
 
-	s->SetPos(pos);
+	s->SetCurrentPosition(pos);
 	if (serializer)
 	{
 		return serializer->DeserializeBinary(s, p);
@@ -2046,7 +2046,7 @@ bool DKSerializer::RestoreObject(DKStream* s, DKResourceLoader* p, Selector* sel
 {
 	if (s && s->IsReadable() && sel)
 	{
-		DKStream::Position pos = s->GetPos();
+		DKStream::Position pos = s->CurrentPosition();
 		// determine file type, binary or XML.
 		size_t headerLen = strlen(DKSERIALIZER_HEADER_STRING);
 		char name[64];
@@ -2057,7 +2057,7 @@ bool DKSerializer::RestoreObject(DKStream* s, DKResourceLoader* p, Selector* sel
 						   strncmp(name, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0);
 		}
 
-		s->SetPos(pos);
+		s->SetCurrentPosition(pos);
 		if (validHeader)	// format is binary
 		{
 			return DeserializeBinary(s, p, sel);

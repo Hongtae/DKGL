@@ -59,13 +59,13 @@ DKObject<DKAudioStream> DKAudioStream::Create(DKStream* stream)
 {
 	if (stream && stream->IsReadable() && stream->IsSeekable())
 	{
-		stream->SetPos(0);
+		stream->SetCurrentPosition(0);
 
 		// reading file header.
 		char header[AUDIO_FORMAT_HEADER_LENGTH];
 		memset(header, 0, AUDIO_FORMAT_HEADER_LENGTH);
 		stream->Read(header, AUDIO_FORMAT_HEADER_LENGTH);
-		stream->SetPos(0);
+		stream->SetCurrentPosition(0);
 
 		FileType type = DetermineAudioType(header, AUDIO_FORMAT_HEADER_LENGTH);
 

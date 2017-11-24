@@ -58,7 +58,7 @@ namespace DKFramework
 			{
 				if (ctxt->stream->IsSeekable())
 				{
-					DKStream::Position pos = ctxt->stream->SetPos(absolute_byte_offset);
+					DKStream::Position pos = ctxt->stream->SetCurrentPosition(absolute_byte_offset);
 					if (pos == absolute_byte_offset)
 						return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
 					return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
@@ -75,7 +75,7 @@ namespace DKFramework
 			{
 				if (ctxt->stream->IsSeekable())
 				{
-					*absolute_byte_offset = (FLAC__uint64)ctxt->stream->GetPos();
+					*absolute_byte_offset = (FLAC__uint64)ctxt->stream->CurrentPosition();
 					return FLAC__STREAM_DECODER_TELL_STATUS_OK;
 				}
 				return FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED;

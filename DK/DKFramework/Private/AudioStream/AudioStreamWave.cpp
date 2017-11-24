@@ -207,22 +207,22 @@ bool AudioStreamWave::Open(DKStream* stream)
 					}
 					else
 					{
-						stream->SetPos(stream->GetPos() + chunk.size);
+						stream->SetCurrentPosition(stream->CurrentPosition() + chunk.size);
 					}
 				}
 				else if (strncasecmp(chunk.name, "data", 4) == 0)
 				{
 					context->dataSize = chunk.size;
-					context->dataOffset = stream->GetPos();
-					stream->SetPos(stream->GetPos() + chunk.size);
+					context->dataOffset = stream->CurrentPosition();
+					stream->SetCurrentPosition(stream->CurrentPosition() + chunk.size);
 				}
 				else
 				{
-					stream->SetPos(stream->GetPos() + chunk.size);
+					stream->SetCurrentPosition(stream->CurrentPosition() + chunk.size);
 				}
 
 				if (chunk.size & 1)	// byte align
-					stream->SetPos(stream->GetPos() + 1);
+					stream->SetCurrentPosition(stream->CurrentPosition() + 1);
 			}
 
 			//DKLog("AudioStreamWave: dataSize:%d", (int)context->dataSize);
@@ -253,7 +253,7 @@ size_t AudioStreamWave::Read(void* buffer, size_t size)
 {
 	if (context->stream)
 	{
-		size_t pos = context->stream->GetPos();
+		size_t pos = context->stream->CurrentPosition();
 		if (pos + size > context->dataSize)
 			size = context->dataSize - pos;
 
@@ -278,7 +278,7 @@ DKAudioStream::Position AudioStreamWave::SeekRaw(Position pos)
 		if (context->formatExt.format.blockAlign > 0)
 			pos = pos - (pos % context->formatExt.format.blockAlign);
 
-		pos = context->stream->SetPos(static_cast<Position>(context->dataOffset) + Clamp(pos, 0, context->dataSize));
+		pos = context->stream->SetCurrentPosition(static_cast<Position>(context->dataOffset) + Clamp(pos, 0, context->dataSize));
 		return Clamp<Position>(pos - context->dataOffset, 0, context->dataSize);
 	}
 	return 0;
@@ -303,7 +303,7 @@ DKAudioStream::Position AudioStreamWave::RawPos(void) const
 {
 	if (context->stream)
 	{
-		return context->stream->GetPos() - static_cast<Position>(context->dataOffset);
+		return context->stream->CurrentPosition() - static_cast<Position>(context->dataOffset);
 	}
 	return 0;
 }
@@ -317,7 +317,7 @@ double AudioStreamWave::TimePos(void) const
 {
 	if (context->stream)
 	{
-		Position pos = context->stream->GetPos() - static_cast<Position>(context->dataOffset);
+		Position pos = context->stream->CurrentPosition() - static_cast<Position>(context->dataOffset);
 		return static_cast<double>(pos) / static_cast<double>(context->formatExt.format.avgBytesPerSec);
 	}
 	return 0;

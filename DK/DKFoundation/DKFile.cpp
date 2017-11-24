@@ -319,7 +319,7 @@ DKObject<DKFile> DKFile::CreateTemporary(void)
 	return NULL;
 }
 
-DKFile::Position DKFile::SetPos(Position p)
+DKFile::Position DKFile::SetCurrentPosition(Position p)
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
@@ -347,7 +347,7 @@ DKFile::Position DKFile::SetPos(Position p)
 	return -1;
 }
 
-DKFile::Position DKFile::GetPos(void) const
+DKFile::Position DKFile::CurrentPosition(void) const
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
@@ -373,7 +373,7 @@ DKFile::Position DKFile::RemainLength(void) const
 {
 	FileInfo info;
 	if (GetInfo(info))
-		return info.size - GetPos();
+		return info.size - CurrentPosition();
 	return 0;
 }
 

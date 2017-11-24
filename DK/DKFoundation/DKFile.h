@@ -54,20 +54,20 @@ namespace DKFoundation
 		/// create temporary file. delete automatically when object destroyed.
 		static DKObject<DKFile> CreateTemporary(void);
 
-		Position SetPos(Position p);
-		Position GetPos(void) const;
-		Position RemainLength(void) const;
-		Position TotalLength(void) const;
+		Position SetCurrentPosition(Position p) override;
+		Position CurrentPosition(void) const override;
+		Position RemainLength(void) const override;
+		Position TotalLength(void) const override;
 
 		/// read file contents and returns DKBuffer object.
 		DKObject<DKBuffer> Read(size_t s, DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
 		/// read file contents and copy into p.
 		size_t Read(void* p, size_t s) const;
-		size_t Read(void* p, size_t s);
+		size_t Read(void* p, size_t s) override;
 		/// read file contents and write to other stream
 		size_t Read(DKStream* p, size_t s) const;
 
-		size_t Write(const void* p, size_t s);
+		size_t Write(const void* p, size_t s) override;
 		size_t Write(const DKData *p);
 		size_t Write(DKStream* s);
 
@@ -76,9 +76,9 @@ namespace DKFoundation
 
 		bool SetLength(size_t len);
 
-		bool IsReadable(void) const;
-		bool IsWritable(void) const;
-		bool IsSeekable(void) const;
+		bool IsReadable(void) const override;
+		bool IsWritable(void) const override;
+		bool IsSeekable(void) const override;
 
 		const DKString& Path(void) const;
 

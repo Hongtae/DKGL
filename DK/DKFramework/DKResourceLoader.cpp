@@ -301,7 +301,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 			}
 		}
 
-		DKStream::Position pos = stream->GetPos();
+		DKStream::Position pos = stream->CurrentPosition();
 		DKObject<DKXmlDocument> xmlDoc = DKXmlDocument::Open(DKXmlDocument::TypeXML, stream);
 		if (xmlDoc && xmlDoc->RootElement())
 		{
@@ -309,7 +309,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 		}
 		else
 		{
-			stream->SetPos(pos);
+			stream->SetCurrentPosition(pos);
 			// Open with DKSerializer.
 			DKAllocator& alloc = this->Allocator();
 			DKObject<DKResource> obj = NULL;

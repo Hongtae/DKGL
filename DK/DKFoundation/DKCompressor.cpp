@@ -347,7 +347,7 @@ bool DKCompressor::Decompress(DKStream* input, DKStream* output)
 						if (bytesToSkip > remains)
 						{
 							size_t offset = bytesToSkip - remains;
-							if (input->SetPos(input->GetPos() + offset) == DKStream::PositionError)
+							if (input->SetCurrentPosition(input->CurrentPosition() + offset) == DKStream::PositionError)
 							{
 								DKLog("DKCompressor Error: Lz4 input stream cannot process skip frame!\n");
 								decodeError = true;

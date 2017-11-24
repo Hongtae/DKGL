@@ -22,23 +22,24 @@ namespace DKFoundation
 		DKDataStream(DKData&);
 		~DKDataStream(void);
 
-		Position SetPos(Position p);
-		Position GetPos(void) const;
-		Position RemainLength(void) const;
-		Position TotalLength(void) const;
+		Position SetCurrentPosition(Position p) override;
+		Position CurrentPosition(void) const override;
+		Position RemainLength(void) const override;
+		Position TotalLength(void) const override;
 
-		size_t Read(void* p, size_t s);
-		size_t Write(const void* p, size_t s);
+		size_t Read(void* p, size_t s) override;
+		size_t Write(const void* p, size_t s) override;
 
-		bool IsReadable(void) const {return true;}
-		bool IsSeekable(void) const {return true;}
-		bool IsWritable(void) const {return false;}
+		bool IsReadable(void) const override { return true; }
+		bool IsSeekable(void) const override { return true; }
+		bool IsWritable(void) const override { return false; }
 
 		virtual DKData* Data(void);
 		virtual const DKData* Data(void) const;
+
 	private:
-		size_t offset;
 		DKObject<DKData> data;
+		size_t offset;
 		DKDataStream(const DKDataStream& ds) = delete;
 		DKDataStream& operator = (const DKDataStream& ds) = delete;
 	};

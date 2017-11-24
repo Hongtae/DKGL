@@ -91,9 +91,9 @@ namespace DKFoundation
 					password.Add(0);
 				}				
 			}
-			Position SetPos(Position p)
+			Position SetCurrentPosition(Position p) override
 			{
-				Position currentPos = GetPos();
+				Position currentPos = CurrentPosition();
 				if (p == currentPos)
 					return p;
 				if (p <= fileInfo.uncompressed_size)
@@ -117,23 +117,23 @@ namespace DKFoundation
 						unzReadCurrentFile(handle, tmp, readBytes);
 						DKFree(tmp);
 					}
-					return GetPos();
+					return CurrentPosition();
 				}
 				return -1;
 			}
-			Position GetPos(void) const
+			Position CurrentPosition(void) const override
 			{
 				return unztell64(handle);
 			}
-			Position RemainLength(void) const
+			Position RemainLength(void) const override
 			{
-				return fileInfo.uncompressed_size - GetPos();
+				return fileInfo.uncompressed_size - CurrentPosition();
 			}
-			Position TotalLength(void) const
+			Position TotalLength(void) const override
 			{
 				return fileInfo.uncompressed_size;
 			}
-			size_t Read(void* p, size_t s)
+			size_t Read(void* p, size_t s) override
 			{
 				if (s == 0)
 					return 0;
@@ -155,14 +155,14 @@ namespace DKFoundation
 				}
 				return totalRead;
 			}
-			size_t Write(const void* p, size_t s)
+			size_t Write(const void* p, size_t s) override
 			{
 				return 0;
 			}
 
-			bool IsReadable(void) const	{return true;}
-			bool IsWritable(void) const	{return false;}
-			bool IsSeekable(void) const	{return true;}
+			bool IsReadable(void) const override {return true;}
+			bool IsWritable(void) const override {return false;}
+			bool IsSeekable(void) const override {return true;}
 		private:
 			unzFile					handle;
 			const unz_file_info64	fileInfo;

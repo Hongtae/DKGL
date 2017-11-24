@@ -38,13 +38,13 @@ namespace DKFramework
 			switch (whence)
 			{
 				case SEEK_SET:
-					return pSource->stream->SetPos(offset);
+					return pSource->stream->SetCurrentPosition(offset);
 					break;
 				case SEEK_CUR:
-					return pSource->stream->SetPos(pSource->stream->GetPos() + offset);
+					return pSource->stream->SetCurrentPosition(pSource->stream->CurrentPosition() + offset);
 					break;
 				case SEEK_END:
-					return pSource->stream->SetPos(pSource->stream->TotalLength() + offset);
+					return pSource->stream->SetCurrentPosition(pSource->stream->TotalLength() + offset);
 					break;
 			}
 			return -1;
@@ -57,7 +57,7 @@ namespace DKFramework
 		}
 		long VorbisStreamTell(void *datasource)
 		{
-			return reinterpret_cast<VorbisStream*>(datasource)->stream->GetPos();
+			return reinterpret_cast<VorbisStream*>(datasource)->stream->CurrentPosition();
 		}
 		struct VorbisFileContext
 		{
