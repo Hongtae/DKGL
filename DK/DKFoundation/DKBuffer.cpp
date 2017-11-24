@@ -223,7 +223,7 @@ namespace DKFoundation
 
 			while (true)
 			{
-				int recv = xmlNanoFTPRead(ctxt, buffer + received, bufferSize - received);
+				int recv = xmlNanoFTPRead(ctxt, buffer + received, static_cast<int>(bufferSize - received));
 				received += recv;
 
 				if (recv < 0)		// error!
@@ -328,20 +328,27 @@ bool DKBuffer::SetLength(size_t len)
 	if (contentLength != len)
 	{
 		DKCriticalSection<DKSharedLock> guard(this->sharedLock);
-		DKBuffer buff;
-		buff.SetContent(0, len);
-		if (buff.contentPtr)
+		if (len > 0)
 		{
-			void* p = buff.contentPtr;
-			size_t n = buff.contentLength;
-			buff.contentPtr = this->contentPtr;
-			buff.contentLength = this->contentLength;
-			this->contentPtr = p;
-			this->contentLength = n;
-			memcpy(this->contentPtr, buff.contentPtr, Min(this->contentLength, buff.contentLength));
-			return true;
+			void* p = this->allocator->Realloc(contentPtr, len);
+			if (p)
+			{
+				contentPtr = p;
+				contentLength = len;
+			}
+			else
+			{
+				DKLog("DKBuffer error: Out of memory!");
+				return false;
+			}
 		}
-		return false;
+		else
+		{
+			if (contentPtr)
+				allocator->Dealloc(contentPtr);
+			contentPtr = NULL;
+			contentLength = 0;
+		}
 	}
 	return true;
 }

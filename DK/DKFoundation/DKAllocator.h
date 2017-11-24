@@ -17,8 +17,6 @@ namespace DKFoundation
 	{
 	public:
 		virtual ~DKAllocator(void) noexcept(!DKGL_MEMORY_DEBUG);
-		virtual void* Alloc(size_t) = 0;
-		virtual void Dealloc(void*) = 0;
 		virtual DKMemoryLocation Location(void) const = 0;
 
 		/// Default allocator instance for given location

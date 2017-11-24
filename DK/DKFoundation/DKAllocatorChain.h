@@ -34,6 +34,7 @@ namespace DKFoundation
 		virtual ~DKAllocatorChain(void) noexcept(!DKGL_MEMORY_DEBUG);
 
 		virtual void* Alloc(size_t) = 0;
+		virtual void* Realloc(void*, size_t) = 0;
 		virtual void Dealloc(void*) = 0;
 
 		virtual size_t Purge(void) { return 0; }

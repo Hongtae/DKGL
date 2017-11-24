@@ -36,12 +36,12 @@ DKStream::Position DKBufferStream::SetPos(Position p)
 	if (this->data)
 	{
 		size_t contentSize = this->data->Length();
-		//this->offset = Clamp(p, 0, contentSize);
-		if (p > contentSize)
+		if (p < contentSize)
 		{
-			this->data->SetLength(p);
+			this->offset = p;
+			return this->offset;
 		}
-		this->offset = p;
+		return PositionError;
 	}
 	else
 	{

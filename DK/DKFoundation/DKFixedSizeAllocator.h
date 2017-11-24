@@ -555,7 +555,16 @@ namespace DKFoundation
 		{
 			struct AllocatorWrapper : public AllocatorInterface
 			{
-				void* Alloc(size_t s) override				{ return allocator.Alloc(s); }
+				void* Alloc(size_t s) override				
+				{
+					DKASSERT_MEM_DEBUG(s <= FixedLength);
+					return allocator.Alloc(s);
+				}
+				void* Realloc(void* p, size_t s) override
+				{
+					DKASSERT_MEM_DEBUG(s <= FixedLength);
+					return p;
+				}
 				void Dealloc(void* p) override				{ return allocator.Dealloc(p); }
 				void Reserve(size_t s) override				{ return allocator.Reserve(s); }
 				size_t Purge(void) override					{ return allocator.Purge(); }

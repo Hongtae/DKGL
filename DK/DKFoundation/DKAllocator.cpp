@@ -27,21 +27,24 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 
 	struct HeapAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryHeapAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryHeapFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationHeap;}
+		void* Alloc(size_t s) override					{ return DKMemoryHeapAlloc(s); }
+		void* Realloc(void* p, size_t s) override		{ return DKMemoryHeapRealloc(p, s); }
+		void Dealloc(void* p) override					{ DKMemoryHeapFree(p); }
+		DKMemoryLocation Location(void) const override	{ return DKMemoryLocationHeap; }
 	};
 	struct VMemAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryVirtualAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryVirtualFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationVirtual;}
+		void* Alloc(size_t s)override					{ return DKMemoryVirtualAlloc(s); }
+		void* Realloc(void* p, size_t s) override		{ return DKMemoryVirtualRealloc(p, s); }
+		void Dealloc(void* p)override					{ DKMemoryVirtualFree(p); }
+		DKMemoryLocation Location(void) const override	{ return DKMemoryLocationVirtual; }
 	};
 	struct PoolAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryPoolAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryPoolFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationPool;}
+		void* Alloc(size_t s) override					{ return DKMemoryPoolAlloc(s); }
+		void* Realloc(void* p, size_t s) override		{ return DKMemoryPoolRealloc(p, s); }
+		void Dealloc(void* p) override					{ DKMemoryPoolFree(p); }
+		DKMemoryLocation Location(void) const override	{ return DKMemoryLocationPool; }
 	};
 
 	static bool initialized = false;
