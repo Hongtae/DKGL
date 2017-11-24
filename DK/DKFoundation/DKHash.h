@@ -10,7 +10,7 @@
 #include "DKObject.h"
 #include "DKEndianness.h"
 #include "DKString.h"
-
+#include "DKStream.h"
 
 namespace DKFoundation
 {
@@ -55,26 +55,47 @@ namespace DKFoundation
 	
 	/// Hash context for CRC32
 	typedef DKHashResult<uint32_t, 32>	DKHashResult32;
+	typedef DKHashResult<uint32_t, 32>	DKHashResultCRC32;
 	/// Hash context for MD5
 	typedef DKHashResult<uint32_t, 128>	DKHashResult128;
+	typedef DKHashResult<uint32_t, 128>	DKHashResultMD5;
 	/// Hash context for SHA1
 	typedef DKHashResult<uint32_t, 160>	DKHashResult160;
+	typedef DKHashResult<uint32_t, 160>	DKHashResultSHA1;
 	/// Hash context for SHA2 (SHA-224)
 	typedef DKHashResult<uint32_t, 224>	DKHashResult224;
+	typedef DKHashResult<uint32_t, 224>	DKHashResultSHA224;
 	/// Hash context for SHA2 (SHA-256)
 	typedef DKHashResult<uint32_t, 256>	DKHashResult256;
+	typedef DKHashResult<uint32_t, 256>	DKHashResultSHA256;
 	/// Hash context for SHA2 (SHA-384)
 	typedef DKHashResult<uint32_t, 384>	DKHashResult384;
+	typedef DKHashResult<uint32_t, 384>	DKHashResultSHA384;
 	/// Hash context for SHA2 (SHA-512)
 	typedef DKHashResult<uint32_t, 512>	DKHashResult512;
-	
-	DKGL_API DKHashResult32  DKHashCRC32(const void* p, size_t len);	///< CRC32
-	DKGL_API DKHashResult128 DKHashMD5(const void* p, size_t len);		///< MD5
-	DKGL_API DKHashResult160 DKHashSHA1(const void* p, size_t len);		///< SHA1
-	DKGL_API DKHashResult224 DKHashSHA224(const void* p, size_t len);	///< SHA2 (SHA-224)
-	DKGL_API DKHashResult256 DKHashSHA256(const void* p, size_t len);	///< SHA2 (SHA-256)
-	DKGL_API DKHashResult384 DKHashSHA384(const void* p, size_t len);	///< SHA2 (SHA-384)
-	DKGL_API DKHashResult512 DKHashSHA512(const void* p, size_t len);	///< SHA2 (SHA-512)
+	typedef DKHashResult<uint32_t, 512>	DKHashResultSHA512;
+
+	/// CRC32
+	DKGL_API DKHashResultCRC32 DKHashCRC32(const void* p, size_t len);
+	DKGL_API bool DKHashCRC32(DKStream*, DKHashResultCRC32&);
+	/// MD5
+	DKGL_API DKHashResultMD5 DKHashMD5(const void* p, size_t len);
+	DKGL_API bool DKHashMD5(DKStream*, DKHashResultMD5&);
+	/// SHA1
+	DKGL_API DKHashResultSHA1 DKHashSHA1(const void* p, size_t len);
+	DKGL_API bool DKHashSHA1(DKStream*, DKHashResultSHA1&);
+	/// SHA2 (SHA-224)
+	DKGL_API DKHashResultSHA224 DKHashSHA224(const void* p, size_t len);
+	DKGL_API bool DKHashSHA224(DKStream*, DKHashResultSHA224&);
+	/// SHA2 (SHA-256)
+	DKGL_API DKHashResultSHA256 DKHashSHA256(const void* p, size_t len);
+	DKGL_API bool DKHashSHA256(DKStream*, DKHashResultSHA256&);
+	/// SHA2 (SHA-384)
+	DKGL_API DKHashResultSHA384 DKHashSHA384(const void* p, size_t len);
+	DKGL_API bool DKHashSHA384(DKStream*, DKHashResultSHA384&);
+	/// SHA2 (SHA-512)
+	DKGL_API DKHashResultSHA512 DKHashSHA512(const void* p, size_t len);
+	DKGL_API bool DKHashSHA512(DKStream*, DKHashResultSHA512&);
 
 	/// @brief Hash calculation class
 	///

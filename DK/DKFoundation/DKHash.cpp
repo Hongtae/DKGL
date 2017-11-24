@@ -599,8 +599,9 @@ namespace DKFoundation
 namespace DKFoundation
 {
 #define DEBUG_CHECK_RUNTIME_ENDIANNESS	DKASSERT_DESC_DEBUG(DKVerifyByteOrder(), "System Byte-Order Mismatch!")
+#define STREAM_BUFFER_SIZE 0x1000
 
-	DKHashResult32 DKGL_API DKHashCRC32(const void* p, size_t len)
+	DKGL_API DKHashResultCRC32 DKHashCRC32(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -611,7 +612,27 @@ namespace DKFoundation
 		res.digest[0] = ctx.hash32[0];
 		return res;
 	}
-	DKHashResult128 DKGL_API DKHashMD5(const void* p, size_t len)
+	DKGL_API bool DKHashCRC32(DKStream* stream, DKHashResultCRC32& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit32(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate32(&ctx, buff, read);
+			} while (read);
+			result.digest[0] = ctx.hash32[0];
+			return true;
+		}
+		return false;
+	}
+	DKGL_API DKHashResultMD5 DKHashMD5(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -619,12 +640,34 @@ namespace DKFoundation
 		Private::HashUpdate(&ctx, 64, p, len, Private::HashDigest128);
 		Private::HashFinal(&ctx, 64, Private::HashDigest128, true);
 
-		DKHashResult128	res;
+		DKHashResultMD5	res;
 		for (int i = 0; i < 4; i++)
 			res.digest[i] = DKSwitchIntegralByteOrder(ctx.hash32[i]);
 		return res;
 	}
-	DKHashResult160 DKGL_API DKHashSHA1(const void* p, size_t len)
+	DKGL_API bool DKHashMD5(DKStream* stream, DKHashResultMD5& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit128(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate(&ctx, 64, buff, read, Private::HashDigest128);
+			} while (read);
+			Private::HashFinal(&ctx, 64, Private::HashDigest128, true);
+			for (int i = 0; i < 4; i++)
+				result.digest[i] = DKSwitchIntegralByteOrder(ctx.hash32[i]);
+			return true;
+		}
+		return false;
+	}
+	DKGL_API DKHashResultSHA1 DKHashSHA1(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -632,12 +675,34 @@ namespace DKFoundation
 		Private::HashUpdate(&ctx, 64, p, len, Private::HashDigest160);
 		Private::HashFinal(&ctx, 64, Private::HashDigest160, false);
 
-		DKHashResult160 res;
+		DKHashResultSHA1 res;
 		for (int i = 0; i < 5; i++)
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult224 DKGL_API DKHashSHA224(const void* p, size_t len)
+	DKGL_API bool DKHashSHA1(DKStream* stream, DKHashResultSHA1& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit160(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate(&ctx, 64, buff, read, Private::HashDigest160);
+			} while (read);
+			Private::HashFinal(&ctx, 64, Private::HashDigest160, false);
+			for (int i = 0; i < 5; i++)
+				result.digest[i] = ctx.hash32[i];
+			return true;
+		}
+		return false;
+	}
+	DKGL_API  DKHashResultSHA224 DKHashSHA224(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -645,12 +710,34 @@ namespace DKFoundation
 		Private::HashUpdate(&ctx, 64, p, len, Private::HashDigest256);
 		Private::HashFinal(&ctx, 64, Private::HashDigest256, false);
 
-		DKHashResult224 res;
+		DKHashResultSHA224 res;
 		for (int i = 0; i < 7; i++)
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult256 DKGL_API DKHashSHA256(const void* p, size_t len)
+	DKGL_API bool DKHashSHA224(DKStream* stream, DKHashResultSHA224& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit224(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate(&ctx, 64, buff, read, Private::HashDigest256);
+			} while (read);
+			Private::HashFinal(&ctx, 64, Private::HashDigest256, false);
+			for (int i = 0; i < 7; i++)
+				result.digest[i] = ctx.hash32[i];
+			return true;
+		}
+		return false;
+	}
+	DKGL_API DKHashResultSHA256 DKHashSHA256(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -658,12 +745,34 @@ namespace DKFoundation
 		Private::HashUpdate(&ctx, 64, p, len, Private::HashDigest256);
 		Private::HashFinal(&ctx, 64, Private::HashDigest256, false);
 
-		DKHashResult256 res;
+		DKHashResultSHA256 res;
 		for (int i = 0; i < 8; i++)
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult384 DKGL_API DKHashSHA384(const void* p, size_t len)
+	DKGL_API bool DKHashSHA256(DKStream* stream, DKHashResultSHA256& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit256(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate(&ctx, 64, buff, read, Private::HashDigest256);
+			} while (read);
+			Private::HashFinal(&ctx, 64, Private::HashDigest256, false);
+			for (int i = 0; i < 8; i++)
+				result.digest[i] = ctx.hash32[i];
+			return true;
+		}
+		return false;
+	}
+	DKGL_API DKHashResultSHA384 DKHashSHA384(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -671,12 +780,34 @@ namespace DKFoundation
 		Private::HashUpdate(&ctx, 128, p, len, Private::HashDigest512);
 		Private::HashFinal(&ctx, 128, Private::HashDigest512, false);
 
-		DKHashResult384 res;
+		DKHashResultSHA384 res;
 		for (int i = 0; i < 12; i++)
 			res.digest[i] = ctx.hash32[i];
 		return res;
 	}
-	DKHashResult512 DKGL_API DKHashSHA512(const void* p, size_t len)
+	DKGL_API bool DKHashSHA384(DKStream* stream, DKHashResultSHA384& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit384(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate(&ctx, 128, buff, read, Private::HashDigest512);
+			} while (read);
+			Private::HashFinal(&ctx, 128, Private::HashDigest512, false);
+			for (int i = 0; i < 12; i++)
+				result.digest[i] = ctx.hash32[i];
+			return true;
+		}
+		return false;
+	}
+	DKGL_API DKHashResultSHA512 DKHashSHA512(const void* p, size_t len)
 	{
 		DEBUG_CHECK_RUNTIME_ENDIANNESS;
 		Private::HashContext ctx;
@@ -684,10 +815,32 @@ namespace DKFoundation
 		Private::HashUpdate(&ctx, 128, p, len, Private::HashDigest512);
 		Private::HashFinal(&ctx, 128, Private::HashDigest512, false);
 
-		DKHashResult512 res;
+		DKHashResultSHA512 res;
 		for (int i = 0; i < 16; i++)
 			res.digest[i] = ctx.hash32[i];
 		return res;
+	}
+	DKGL_API bool DKHashSHA512(DKStream* stream, DKHashResultSHA512& result)
+	{
+		DEBUG_CHECK_RUNTIME_ENDIANNESS;
+		if (stream && stream->IsReadable())
+		{
+			char buff[STREAM_BUFFER_SIZE];
+			Private::HashContext ctx;
+			Private::HashInit512(&ctx);
+			size_t read = 0;
+			do {
+				read = stream->Read(buff, STREAM_BUFFER_SIZE);
+				if (read == DKStream::PositionError)
+					return false;
+				Private::HashUpdate(&ctx, 128, buff, read, Private::HashDigest512);
+			} while (read);
+			Private::HashFinal(&ctx, 128, Private::HashDigest512, false);
+			for (int i = 0; i < 16; i++)
+				result.digest[i] = ctx.hash32[i];
+			return true;
+		}
+		return false;
 	}
 }
 
