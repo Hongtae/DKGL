@@ -58,6 +58,7 @@
   #include <arpa/inet.h>
 #endif
 
+#include <algorithm>
 /////////////////////////////////////////////////////////////////////////////
 #include "xfile.h"
 #include "xiofile.h"

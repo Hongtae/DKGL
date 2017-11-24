@@ -884,6 +884,8 @@
 		843A688D17C6145D000DE61A /* DKApplicationInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688917C6145D000DE61A /* DKApplicationInterface.h */; };
 		843A689017C6145D000DE61A /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
 		843A689117C6145D000DE61A /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
+		8444171E1FC871E80082366E /* DKCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8444171C1FC871E70082366E /* DKCompressor.h */; };
+		8444171F1FC871E80082366E /* DKCompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8444171D1FC871E70082366E /* DKCompressor.cpp */; };
 		8447CB401E379C2200E02637 /* SwapChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 8447CB3E1E379C2200E02637 /* SwapChain.h */; };
 		8447CB411E379C2200E02637 /* SwapChain.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8447CB3F1E379C2200E02637 /* SwapChain.mm */; };
 		8447CB421E379C9300E02637 /* SwapChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 8447CB3E1E379C2200E02637 /* SwapChain.h */; };
@@ -2155,6 +2157,8 @@
 		844324021E1950D700FD6B53 /* CommandQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandQueue.h; sourceTree = "<group>"; };
 		844324051E19525D00FD6B53 /* CommandBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CommandBuffer.cpp; sourceTree = "<group>"; };
 		844324061E19525D00FD6B53 /* CommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandBuffer.h; sourceTree = "<group>"; };
+		8444171C1FC871E70082366E /* DKCompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCompressor.h; sourceTree = "<group>"; };
+		8444171D1FC871E70082366E /* DKCompressor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKCompressor.cpp; sourceTree = "<group>"; };
 		8447CB3E1E379C2200E02637 /* SwapChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwapChain.h; sourceTree = "<group>"; };
 		8447CB3F1E379C2200E02637 /* SwapChain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwapChain.mm; sourceTree = "<group>"; };
 		8447CB711E37B6DF00E02637 /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
@@ -3023,6 +3027,8 @@
 				84F03CE2145D3AF300EDFD66 /* DKBufferStream.cpp */,
 				84F03CE3145D3AF300EDFD66 /* DKBufferStream.h */,
 				845422C8159314B000A0431D /* DKCircularQueue.h */,
+				8444171D1FC871E70082366E /* DKCompressor.cpp */,
+				8444171C1FC871E70082366E /* DKCompressor.h */,
 				840349D7148FAFDB00032E1C /* DKCondition.cpp */,
 				840349D8148FAFDB00032E1C /* DKCondition.h */,
 				84A1E49B141DD4B70091D2C0 /* DKCriticalSection.h */,
@@ -4149,6 +4155,7 @@
 				84D883541E3A653B00478725 /* DKImage.h in Headers */,
 				84211CE71665E88E00B9B9A2 /* DKSerializer.h in Headers */,
 				84F16DD41E1592830013DD29 /* CommandQueue.h in Headers */,
+				8444171E1FC871E80082366E /* DKCompressor.h in Headers */,
 				840CA6531928957500689BB6 /* DKFoundation.h in Headers */,
 				848566A61E1FFC020011B53B /* DKRenderPass.h in Headers */,
 				840D5DCF1DDA1C69009DA369 /* Application.h in Headers */,
@@ -5205,6 +5212,7 @@
 				840C3E15178D396D00F57A8D /* DKStringW.cpp in Sources */,
 				840C3E1D178D396D00F57A8D /* DKZipUnarchiver.cpp in Sources */,
 				846A2D531E40F29D009F117C /* GraphicsDevice.cpp in Sources */,
+				8444171F1FC871E80082366E /* DKCompressor.cpp in Sources */,
 				666ECA651DB1703600354463 /* DKAudioDevice.cpp in Sources */,
 				84211B181665E7FC00B9B9A2 /* DKResource.cpp in Sources */,
 				840C3E08178D396D00F57A8D /* DKLock.cpp in Sources */,
