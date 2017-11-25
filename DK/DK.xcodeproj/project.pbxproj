@@ -886,6 +886,12 @@
 		843A689117C6145D000DE61A /* DKWindowInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 843A688B17C6145D000DE61A /* DKWindowInterface.h */; };
 		8444171E1FC871E80082366E /* DKCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8444171C1FC871E70082366E /* DKCompressor.h */; };
 		8444171F1FC871E80082366E /* DKCompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8444171D1FC871E70082366E /* DKCompressor.cpp */; };
+		8444172F1FC8FE9C0082366E /* DKCompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8444171D1FC871E70082366E /* DKCompressor.cpp */; };
+		844417301FC8FE9C0082366E /* DKCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8444171C1FC871E70082366E /* DKCompressor.h */; };
+		844417311FC8FE9D0082366E /* DKCompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8444171D1FC871E70082366E /* DKCompressor.cpp */; };
+		844417321FC8FE9D0082366E /* DKCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8444171C1FC871E70082366E /* DKCompressor.h */; };
+		844417331FC8FE9E0082366E /* DKCompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8444171D1FC871E70082366E /* DKCompressor.cpp */; };
+		844417341FC8FE9E0082366E /* DKCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8444171C1FC871E70082366E /* DKCompressor.h */; };
 		8447CB401E379C2200E02637 /* SwapChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 8447CB3E1E379C2200E02637 /* SwapChain.h */; };
 		8447CB411E379C2200E02637 /* SwapChain.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8447CB3F1E379C2200E02637 /* SwapChain.mm */; };
 		8447CB421E379C9300E02637 /* SwapChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 8447CB3E1E379C2200E02637 /* SwapChain.h */; };
@@ -3448,6 +3454,7 @@
 				8436CDF11928A78900F18892 /* DKOperationQueue.h in Headers */,
 				840CA6441928952800689BB6 /* DKWindow.h in Headers */,
 				8436CDC91928A78900F18892 /* DKCondition.h in Headers */,
+				844417321FC8FE9D0082366E /* DKCompressor.h in Headers */,
 				840CA61C1928952800689BB6 /* DKStaticPlaneShape.h in Headers */,
 				840CA5931928952800689BB6 /* DKAudioSource.h in Headers */,
 				8436CDFD1928A78900F18892 /* DKSharedLock.h in Headers */,
@@ -3647,6 +3654,7 @@
 				84798CA319E51E96009378A6 /* DKHash.h in Headers */,
 				8447CB581E37A6DD00E02637 /* DKCommandQueue.h in Headers */,
 				8498FC771E4783D500E6A961 /* TextureBaseT.h in Headers */,
+				844417341FC8FE9E0082366E /* DKCompressor.h in Headers */,
 				84798CAF19E51E96009378A6 /* DKOperationQueue.h in Headers */,
 				84798C9619E51E96009378A6 /* DKCondition.h in Headers */,
 				84798C7419E51E80009378A6 /* DKSpline.h in Headers */,
@@ -3857,6 +3865,7 @@
 				84211D071665E89700B9B9A2 /* DKAabb.h in Headers */,
 				8447CB6A1E37A6DF00E02637 /* DKCommandQueue.h in Headers */,
 				8498FC651E4783D300E6A961 /* TextureBaseT.h in Headers */,
+				844417301FC8FE9C0082366E /* DKCompressor.h in Headers */,
 				84211D081665E89700B9B9A2 /* DKAffineTransform2.h in Headers */,
 				84211D091665E89700B9B9A2 /* DKAffineTransform3.h in Headers */,
 				84211D0A1665E89700B9B9A2 /* DKAnimation.h in Headers */,
@@ -4704,6 +4713,7 @@
 				8436CDED1928A78900F18892 /* DKObjectRefCounter.cpp in Sources */,
 				840CA62D1928952800689BB6 /* DKVariant.cpp in Sources */,
 				8436CE0D1928A78900F18892 /* DKTimer.cpp in Sources */,
+				844417311FC8FE9D0082366E /* DKCompressor.cpp in Sources */,
 				846A2D641E40F29F009F117C /* CommandBuffer.cpp in Sources */,
 				840CA5FE1928952800689BB6 /* DKRigidBody.cpp in Sources */,
 				84FCF1831E3693D100DF9386 /* CommandBuffer.mm in Sources */,
@@ -4832,6 +4842,7 @@
 				84798BA819E51DFB009378A6 /* DKStringW.cpp in Sources */,
 				84990C1D1BF0DC0F00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84798BFB19E51E48009378A6 /* DKSoftBody.cpp in Sources */,
+				844417331FC8FE9E0082366E /* DKCompressor.cpp in Sources */,
 				84798BF119E51E48009378A6 /* DKResourcePool.cpp in Sources */,
 				84798B9019E51DFB009378A6 /* DKBufferStream.cpp in Sources */,
 				84798BBD19E51E48009378A6 /* DKAudioPlayer.cpp in Sources */,
@@ -4982,6 +4993,7 @@
 				840C3E22178D396E00F57A8D /* DKCondition.cpp in Sources */,
 				84211B6B1665E7FD00B9B9A2 /* DKApplication.cpp in Sources */,
 				840C3E23178D396E00F57A8D /* DKData.cpp in Sources */,
+				8444172F1FC8FE9C0082366E /* DKCompressor.cpp in Sources */,
 				84990C1B1BF0DC0D00D660EE /* DKTriangleMeshProxyShape.cpp in Sources */,
 				84211B6D1665E7FD00B9B9A2 /* DKAudioListener.cpp in Sources */,
 				840C3E1E178D396E00F57A8D /* DKAllocator.cpp in Sources */,

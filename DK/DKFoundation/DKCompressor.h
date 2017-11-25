@@ -12,6 +12,9 @@
 
 namespace DKFoundation
 {
+	/** @brief
+	 A compression utility class, supports ZLib, LZ4 compression.
+	 */
 	class DKCompressor
 	{
 	public:
