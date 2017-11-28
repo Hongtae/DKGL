@@ -5,15 +5,55 @@
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
+#include "../Libs/libpng/png.h"
+#include "../Libs/jpeg/jpeglib.h"
+
 #include "DKImage.h"
 
+namespace DKFramework
+{
+	namespace Private
+	{
+		enum {
+			FormatPNG,
+			FormatJPEG,
+			FormatTGA,
+			FormatBMP
+		};
+
+		inline size_t BytesPerPixel(DKImage::PixelFormat format)
+		{
+			switch (format)
+			{
+			case DKImage::R8:		return 1;
+			case DKImage::RG8:		return 2;
+			case DKImage::RGB8:		return 3;
+			case DKImage::RGBA8:	return 4;
+			case DKImage::R16:		return 2;
+			case DKImage::RG16:		return 4;
+			case DKImage::RGB16:	return 6;
+			case DKImage::RGBA16:	return 8;
+			case DKImage::R32:		return 4;
+			case DKImage::RG32:		return 8;
+			case DKImage::RGB32:	return 12;
+			case DKImage::RGBA32:	return 16;
+			case DKImage::R32F:		return 4;
+			case DKImage::RG32F:	return 8;
+			case DKImage::RGB32F:	return 12;
+			case DKImage::RGBA32F:	return 16;
+			}
+			return 0;
+		}
+	}
+}
 using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKImage::DKImage(void)
-: data(NULL)
-, width(0)
-, height(0)
-, format(R8)
+	: data(NULL)
+	, width(0)
+	, height(0)
+	, format(R8)
 {
 }
 
@@ -23,8 +63,42 @@ DKImage::~DKImage(void)
 		DKFree(data);
 }
 
-bool DKImage::LoadFromPixelData(uint32_t width, uint32_t height, PixelFormat format, const void* data)
+bool DKImage::LoadFromPixelData(uint32_t w, uint32_t h, PixelFormat fmt, const void* p)
 {
+	size_t bpp = Private::BytesPerPixel(fmt);
+	if (bpp && w && h)
+	{
+		size_t imageSize = w * h * bpp;
+
+		void* imageData = DKMalloc(imageSize);
+		if (imageData)
+		{
+			if (this->data)
+				DKFree(this->data);
+
+			this->data = imageData;
+			this->width = w;
+			this->height = h;
+
+			if (p)
+			{
+				memcpy(data, p, imageSize);
+			}
+			else
+			{
+				memset(data, 0, imageSize);
+			}
+			return true;
+		}
+		else
+		{
+			DKLogE("Out of memory!");
+		}
+	}
+	else
+	{
+		DKLogE("DKImage error: Invalid format!");
+	}
 	return false;
 }
 
@@ -33,16 +107,20 @@ bool DKImage::LoadFromFile(const DKString &path)
 	if (path.Length() == 0)
 		return false;
 
-
+	DKObject<DKFileMap> file = DKFileMap::Open(path, 0, false);
+	if (file)
+		return LoadFromData(file.SafeCast<DKData>());
 	return false;
 }
 
-bool DKImage::LoadFromData(const void *data, size_t length)
+bool DKImage::LoadFromData(const void *p, size_t length)
 {
-	if (data == NULL || length == 0)
+	if (p == NULL || length == 0)
 		return false;
 
-
+	DKObject<DKData> data = DKData::StaticData(p, length);
+	if (data)
+		return LoadFromData(data);
 	return false;
 }
 
@@ -74,7 +152,9 @@ DKObject<DKData> DKImage::EncodeData(const DKString& format) const
 
 size_t DKImage::BytesPerPixel(void) const
 {
-	return 1;
+	size_t bpp = Private::BytesPerPixel(format);
+	DKASSERT_DESC_DEBUG(bpp, "Invalid format");
+	return bpp;
 }
 
 DKObject<DKSerializer> DKImage::Serializer(void)

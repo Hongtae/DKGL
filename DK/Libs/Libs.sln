@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletPhysics", "BulletPhysics\BulletPhysics.vcxproj", "{E4C03A61-856A-4285-A734-EDE229C617F3}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAL_static", "OpenAL\OpenAL_static.vcxproj", "{7DBF836B-4AD8-4D89-84CC-ADAD79B8BB55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bzip2", "bzip2\bzip2.vcxproj", "{9EA18F12-E46F-47BA-9CCB-3516FC120E51}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CxImage", "CxImage\CxImage.vcxproj", "{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeType", "FreeType\FreeType.vcxproj", "{468DB90F-BB39-4513-9DB4-4A02AEB204CF}"
 EndProject
@@ -22,8 +20,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg", "libogg\libogg.vcxproj", "{1721C237-7B3B-4B64-8F66-E7579DA0A02D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng\libpng.vcxproj", "{816915C1-9AB2-4CFA-8D11-4192D927E248}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtiff", "libtiff\libtiff.vcxproj", "{72062708-2398-42A9-B935-AED90F9EE6B9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "libvorbis\libvorbis.vcxproj", "{EFA8A22D-C9E7-4CE7-BEBA-B476DE7CD09B}"
 EndProject
@@ -75,14 +71,6 @@ Global
 		{9EA18F12-E46F-47BA-9CCB-3516FC120E51}.Release|Win32.Build.0 = Release|Win32
 		{9EA18F12-E46F-47BA-9CCB-3516FC120E51}.Release|x64.ActiveCfg = Release|x64
 		{9EA18F12-E46F-47BA-9CCB-3516FC120E51}.Release|x64.Build.0 = Release|x64
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Debug|Win32.Build.0 = Debug|Win32
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Debug|x64.ActiveCfg = Debug|x64
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Debug|x64.Build.0 = Debug|x64
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Release|Win32.ActiveCfg = Release|Win32
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Release|Win32.Build.0 = Release|Win32
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Release|x64.ActiveCfg = Release|x64
-		{C6B99C7B-7F59-4C34-AC85-5DCC7DC3B86B}.Release|x64.Build.0 = Release|x64
 		{468DB90F-BB39-4513-9DB4-4A02AEB204CF}.Debug|Win32.ActiveCfg = Debug|Win32
 		{468DB90F-BB39-4513-9DB4-4A02AEB204CF}.Debug|Win32.Build.0 = Debug|Win32
 		{468DB90F-BB39-4513-9DB4-4A02AEB204CF}.Debug|x64.ActiveCfg = Debug|x64
@@ -123,14 +111,6 @@ Global
 		{816915C1-9AB2-4CFA-8D11-4192D927E248}.Release|Win32.Build.0 = Release|Win32
 		{816915C1-9AB2-4CFA-8D11-4192D927E248}.Release|x64.ActiveCfg = Release|x64
 		{816915C1-9AB2-4CFA-8D11-4192D927E248}.Release|x64.Build.0 = Release|x64
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Debug|Win32.ActiveCfg = Debug|Win32
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Debug|Win32.Build.0 = Debug|Win32
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Debug|x64.ActiveCfg = Debug|x64
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Debug|x64.Build.0 = Debug|x64
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Release|Win32.ActiveCfg = Release|Win32
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Release|Win32.Build.0 = Release|Win32
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Release|x64.ActiveCfg = Release|x64
-		{72062708-2398-42A9-B935-AED90F9EE6B9}.Release|x64.Build.0 = Release|x64
 		{EFA8A22D-C9E7-4CE7-BEBA-B476DE7CD09B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{EFA8A22D-C9E7-4CE7-BEBA-B476DE7CD09B}.Debug|Win32.Build.0 = Debug|Win32
 		{EFA8A22D-C9E7-4CE7-BEBA-B476DE7CD09B}.Debug|x64.ActiveCfg = Debug|x64
@@ -174,5 +154,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB82B038-24DE-46C4-9E48-6FF007BE49B6}
 	EndGlobalSection
 EndGlobal
