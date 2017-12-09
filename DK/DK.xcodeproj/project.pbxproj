@@ -52,13 +52,11 @@
 		666ECB2A1DB180EA00354463 /* DKGraphicsDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 666ECA631DB1703600354463 /* DKGraphicsDevice.cpp */; };
 		666ECB2B1DB180EA00354463 /* DKGraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA641DB1703600354463 /* DKGraphicsDevice.h */; };
 		66DA12951DADFD5A00B3056E /* libbzip2_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11EB1DAC7C4E00B3056E /* libbzip2_macOS.a */; };
-		66DA12961DADFD5A00B3056E /* libCxImage_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11F41DAC7C6300B3056E /* libCxImage_macOS.a */; };
 		66DA12971DADFD5A00B3056E /* libFreeType_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11FD1DAC7C6A00B3056E /* libFreeType_macOS.a */; };
 		66DA12981DADFD5A00B3056E /* libjpeg_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12061DAC7C7800B3056E /* libjpeg_macOS.a */; };
 		66DA12991DADFD5A00B3056E /* liblibFLAC_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA120F1DAC7C7E00B3056E /* liblibFLAC_macOS.a */; };
 		66DA129A1DADFD5A00B3056E /* liblibogg_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12181DAC7C8700B3056E /* liblibogg_macOS.a */; };
 		66DA129B1DADFD5A00B3056E /* liblibpng_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12211DAC7C8D00B3056E /* liblibpng_macOS.a */; };
-		66DA129C1DADFD5A00B3056E /* liblibtiff_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA122A1DAC7C9300B3056E /* liblibtiff_macOS.a */; };
 		66DA129D1DADFD5A00B3056E /* liblibvorbis_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12331DAC7C9900B3056E /* liblibvorbis_macOS.a */; };
 		66DA129E1DADFD5A00B3056E /* liblibxml2_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA123C1DAC7CA100B3056E /* liblibxml2_macOS.a */; };
 		66DA129F1DADFD5A00B3056E /* liblz4_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12451DAC7CA800B3056E /* liblz4_macOS.a */; };
@@ -66,39 +64,33 @@
 		66DA12A11DADFFAA00B3056E /* libBulletPhysics_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11E01DAC7C2900B3056E /* libBulletPhysics_macOS.a */; };
 		66DA12F01DAE05EF00B3056E /* libBulletPhysics_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11E21DAC7C2900B3056E /* libBulletPhysics_iOS.a */; };
 		66DA12F11DAE05EF00B3056E /* libbzip2_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11E91DAC7C4E00B3056E /* libbzip2_iOS.a */; };
-		66DA12F21DAE05EF00B3056E /* libCxImage_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11F21DAC7C6300B3056E /* libCxImage_iOS.a */; };
 		66DA12F31DAE05EF00B3056E /* libFreeType_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11FB1DAC7C6A00B3056E /* libFreeType_iOS.a */; };
 		66DA12F41DAE05EF00B3056E /* libjpeg_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12041DAC7C7800B3056E /* libjpeg_iOS.a */; };
 		66DA12F51DAE05EF00B3056E /* liblibFLAC_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA120D1DAC7C7E00B3056E /* liblibFLAC_iOS.a */; };
 		66DA12F61DAE05EF00B3056E /* liblibogg_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12161DAC7C8700B3056E /* liblibogg_iOS.a */; };
 		66DA12F71DAE05EF00B3056E /* liblibpng_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA121F1DAC7C8D00B3056E /* liblibpng_iOS.a */; };
-		66DA12F81DAE05EF00B3056E /* liblibtiff_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12281DAC7C9300B3056E /* liblibtiff_iOS.a */; };
 		66DA12F91DAE05EF00B3056E /* liblibvorbis_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12311DAC7C9900B3056E /* liblibvorbis_iOS.a */; };
 		66DA12FA1DAE05EF00B3056E /* liblibxml2_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA123A1DAC7CA100B3056E /* liblibxml2_iOS.a */; };
 		66DA12FB1DAE05EF00B3056E /* liblz4_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12431DAC7CA800B3056E /* liblz4_iOS.a */; };
 		66DA12FC1DAE05EF00B3056E /* libzlib_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA124C1DAC7CB300B3056E /* libzlib_iOS.a */; };
 		66DA12FD1DAE060E00B3056E /* libBulletPhysics_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11E21DAC7C2900B3056E /* libBulletPhysics_iOS.a */; };
 		66DA12FE1DAE060E00B3056E /* libbzip2_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11E91DAC7C4E00B3056E /* libbzip2_iOS.a */; };
-		66DA12FF1DAE060E00B3056E /* libCxImage_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11F21DAC7C6300B3056E /* libCxImage_iOS.a */; };
 		66DA13001DAE060E00B3056E /* libFreeType_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11FB1DAC7C6A00B3056E /* libFreeType_iOS.a */; };
 		66DA13011DAE060E00B3056E /* libjpeg_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12041DAC7C7800B3056E /* libjpeg_iOS.a */; };
 		66DA13021DAE060E00B3056E /* liblibFLAC_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA120D1DAC7C7E00B3056E /* liblibFLAC_iOS.a */; };
 		66DA13031DAE060E00B3056E /* liblibogg_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12161DAC7C8700B3056E /* liblibogg_iOS.a */; };
 		66DA13041DAE060E00B3056E /* liblibpng_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA121F1DAC7C8D00B3056E /* liblibpng_iOS.a */; };
-		66DA13051DAE060E00B3056E /* liblibtiff_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12281DAC7C9300B3056E /* liblibtiff_iOS.a */; };
 		66DA13061DAE060E00B3056E /* liblibvorbis_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12311DAC7C9900B3056E /* liblibvorbis_iOS.a */; };
 		66DA13071DAE060E00B3056E /* liblibxml2_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA123A1DAC7CA100B3056E /* liblibxml2_iOS.a */; };
 		66DA13081DAE060E00B3056E /* liblz4_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12431DAC7CA800B3056E /* liblz4_iOS.a */; };
 		66DA13091DAE060E00B3056E /* libzlib_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA124C1DAC7CB300B3056E /* libzlib_iOS.a */; };
 		66DA13241DAE063B00B3056E /* libBulletPhysics_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11E01DAC7C2900B3056E /* libBulletPhysics_macOS.a */; };
 		66DA13251DAE063B00B3056E /* libbzip2_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11EB1DAC7C4E00B3056E /* libbzip2_macOS.a */; };
-		66DA13261DAE063B00B3056E /* libCxImage_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11F41DAC7C6300B3056E /* libCxImage_macOS.a */; };
 		66DA13271DAE063B00B3056E /* libFreeType_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA11FD1DAC7C6A00B3056E /* libFreeType_macOS.a */; };
 		66DA13281DAE063B00B3056E /* libjpeg_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12061DAC7C7800B3056E /* libjpeg_macOS.a */; };
 		66DA13291DAE063B00B3056E /* liblibFLAC_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA120F1DAC7C7E00B3056E /* liblibFLAC_macOS.a */; };
 		66DA132A1DAE063B00B3056E /* liblibogg_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12181DAC7C8700B3056E /* liblibogg_macOS.a */; };
 		66DA132B1DAE063B00B3056E /* liblibpng_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12211DAC7C8D00B3056E /* liblibpng_macOS.a */; };
-		66DA132C1DAE063B00B3056E /* liblibtiff_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA122A1DAC7C9300B3056E /* liblibtiff_macOS.a */; };
 		66DA132D1DAE063B00B3056E /* liblibvorbis_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12331DAC7C9900B3056E /* liblibvorbis_macOS.a */; };
 		66DA132E1DAE063B00B3056E /* liblibxml2_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA123C1DAC7CA100B3056E /* liblibxml2_macOS.a */; };
 		66DA132F1DAE063B00B3056E /* liblz4_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66DA12451DAC7CA800B3056E /* liblz4_macOS.a */; };
@@ -1514,20 +1506,6 @@
 			remoteGlobalIDString = 66DA0CC71DA37FD800B3056E;
 			remoteInfo = bzip2_macOS;
 		};
-		66DA11F11DAC7C6300B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 66DA0CFC1DA3815100B3056E;
-			remoteInfo = CxImage_iOS;
-		};
-		66DA11F31DAC7C6300B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 66DA0D0A1DA3816700B3056E;
-			remoteInfo = CxImage_macOS;
-		};
 		66DA11FA1DAC7C6A00B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */;
@@ -1597,20 +1575,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 66DA0FA41DA3A96D00B3056E;
 			remoteInfo = libpng_macOS;
-		};
-		66DA12271DAC7C9300B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 66DA0FFB1DA3AEBF00B3056E;
-			remoteInfo = libtiff_iOS;
-		};
-		66DA12291DAC7C9300B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 66DA10091DA3AECB00B3056E;
-			remoteInfo = libtiff_macOS;
 		};
 		66DA12301DAC7C9900B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1682,13 +1646,6 @@
 			remoteGlobalIDString = 66DA0CC61DA37FD800B3056E;
 			remoteInfo = bzip2_macOS;
 		};
-		66DA12A61DAE005A00B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA0D091DA3816700B3056E;
-			remoteInfo = CxImage_macOS;
-		};
 		66DA12A81DAE005A00B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */;
@@ -1723,13 +1680,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 66DA0FA31DA3A96D00B3056E;
 			remoteInfo = libpng_macOS;
-		};
-		66DA12B21DAE005A00B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA10081DA3AECB00B3056E;
-			remoteInfo = libtiff_macOS;
 		};
 		66DA12B41DAE005A00B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1773,13 +1723,6 @@
 			remoteGlobalIDString = 66DA0CCF1DA3800900B3056E;
 			remoteInfo = bzip2_iOS;
 		};
-		66DA12C01DAE05B800B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA0CFB1DA3815100B3056E;
-			remoteInfo = CxImage_iOS;
-		};
 		66DA12C21DAE05B800B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */;
@@ -1814,13 +1757,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 66DA0FAC1DA3A97800B3056E;
 			remoteInfo = libpng_iOS;
-		};
-		66DA12CC1DAE05B800B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA0FFA1DA3AEBF00B3056E;
-			remoteInfo = libtiff_iOS;
 		};
 		66DA12CE1DAE05B800B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1864,13 +1800,6 @@
 			remoteGlobalIDString = 66DA0CCF1DA3800900B3056E;
 			remoteInfo = bzip2_iOS;
 		};
-		66DA12DA1DAE05D900B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA0CFB1DA3815100B3056E;
-			remoteInfo = CxImage_iOS;
-		};
 		66DA12DC1DAE05D900B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */;
@@ -1905,13 +1834,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 66DA0FAC1DA3A97800B3056E;
 			remoteInfo = libpng_iOS;
-		};
-		66DA12E61DAE05D900B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA0FFA1DA3AEBF00B3056E;
-			remoteInfo = libtiff_iOS;
 		};
 		66DA12E81DAE05D900B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1955,13 +1877,6 @@
 			remoteGlobalIDString = 66DA0CC61DA37FD800B3056E;
 			remoteInfo = bzip2_macOS;
 		};
-		66DA130E1DAE062700B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA0D091DA3816700B3056E;
-			remoteInfo = CxImage_macOS;
-		};
 		66DA13101DAE062700B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */;
@@ -1996,13 +1911,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 66DA0FA31DA3A96D00B3056E;
 			remoteInfo = libpng_macOS;
-		};
-		66DA131A1DAE062700B3056E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 66DA10081DA3AECB00B3056E;
-			remoteInfo = libtiff_macOS;
 		};
 		66DA131C1DAE062700B3056E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2089,18 +1997,15 @@
 		666ECA701DB1721F00354463 /* GraphicsDevice.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicsDevice.mm; sourceTree = "<group>"; };
 		666ECB0C1DB180A000354463 /* DKGraphicsDeviceInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKGraphicsDeviceInterface.h; sourceTree = "<group>"; };
 		66DA11E31DAC7C4E00B3056E /* bzip2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = bzip2.xcodeproj; path = bzip2/bzip2.xcodeproj; sourceTree = "<group>"; };
-		66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CxImage.xcodeproj; path = CxImage/CxImage.xcodeproj; sourceTree = "<group>"; };
 		66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FreeType.xcodeproj; path = FreeType/FreeType.xcodeproj; sourceTree = "<group>"; };
 		66DA11FE1DAC7C7800B3056E /* jpeg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = jpeg.xcodeproj; path = jpeg/jpeg.xcodeproj; sourceTree = "<group>"; };
 		66DA12071DAC7C7E00B3056E /* libFLAC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libFLAC.xcodeproj; path = libFLAC/libFLAC.xcodeproj; sourceTree = "<group>"; };
 		66DA12101DAC7C8700B3056E /* libogg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libogg.xcodeproj; path = libogg/libogg.xcodeproj; sourceTree = "<group>"; };
 		66DA12191DAC7C8D00B3056E /* libpng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libpng.xcodeproj; path = libpng/libpng.xcodeproj; sourceTree = "<group>"; };
-		66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libtiff.xcodeproj; path = libtiff/libtiff.xcodeproj; sourceTree = "<group>"; };
 		66DA122B1DAC7C9900B3056E /* libvorbis.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libvorbis.xcodeproj; path = libvorbis/libvorbis.xcodeproj; sourceTree = "<group>"; };
 		66DA12341DAC7CA100B3056E /* libxml2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libxml2.xcodeproj; path = libxml2/libxml2.xcodeproj; sourceTree = "<group>"; };
 		66DA123D1DAC7CA800B3056E /* lz4.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lz4.xcodeproj; path = lz4/lz4.xcodeproj; sourceTree = "<group>"; };
 		66DA12461DAC7CB300B3056E /* zlib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zlib.xcodeproj; path = zlib/zlib.xcodeproj; sourceTree = "<group>"; };
-		66DA12561DAC7D2600B3056E /* VERSION.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = VERSION.TXT; sourceTree = "<group>"; };
 		66DA89821DD30BC100338015 /* GraphicsDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsDevice.cpp; sourceTree = "<group>"; };
 		66DA89831DD30BC100338015 /* GraphicsDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicsDevice.h; sourceTree = "<group>"; };
 		840349D7148FAFDB00032E1C /* DKCondition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKCondition.cpp; sourceTree = "<group>"; };
@@ -2529,13 +2434,11 @@
 				849B240A1EB4C2CF0033C44C /* libSPIRV-Cross_macOS.a in Frameworks */,
 				66DA12A11DADFFAA00B3056E /* libBulletPhysics_macOS.a in Frameworks */,
 				66DA12951DADFD5A00B3056E /* libbzip2_macOS.a in Frameworks */,
-				66DA12961DADFD5A00B3056E /* libCxImage_macOS.a in Frameworks */,
 				66DA12971DADFD5A00B3056E /* libFreeType_macOS.a in Frameworks */,
 				66DA12981DADFD5A00B3056E /* libjpeg_macOS.a in Frameworks */,
 				66DA12991DADFD5A00B3056E /* liblibFLAC_macOS.a in Frameworks */,
 				66DA129A1DADFD5A00B3056E /* liblibogg_macOS.a in Frameworks */,
 				66DA129B1DADFD5A00B3056E /* liblibpng_macOS.a in Frameworks */,
-				66DA129C1DADFD5A00B3056E /* liblibtiff_macOS.a in Frameworks */,
 				66DA129D1DADFD5A00B3056E /* liblibvorbis_macOS.a in Frameworks */,
 				66DA129E1DADFD5A00B3056E /* liblibxml2_macOS.a in Frameworks */,
 				66DA129F1DADFD5A00B3056E /* liblz4_macOS.a in Frameworks */,
@@ -2553,14 +2456,12 @@
 				66DA12FD1DAE060E00B3056E /* libBulletPhysics_iOS.a in Frameworks */,
 				66DA12FE1DAE060E00B3056E /* libbzip2_iOS.a in Frameworks */,
 				84B673EC1EF7C3CA0058F553 /* OpenAL.framework in Frameworks */,
-				66DA12FF1DAE060E00B3056E /* libCxImage_iOS.a in Frameworks */,
 				66DA13001DAE060E00B3056E /* libFreeType_iOS.a in Frameworks */,
 				66DA13011DAE060E00B3056E /* libjpeg_iOS.a in Frameworks */,
 				66DA13021DAE060E00B3056E /* liblibFLAC_iOS.a in Frameworks */,
 				66DA13031DAE060E00B3056E /* liblibogg_iOS.a in Frameworks */,
 				66DA13041DAE060E00B3056E /* liblibpng_iOS.a in Frameworks */,
 				84B673EE1EF7C3FE0058F553 /* Metal.framework in Frameworks */,
-				66DA13051DAE060E00B3056E /* liblibtiff_iOS.a in Frameworks */,
 				66DA13061DAE060E00B3056E /* liblibvorbis_iOS.a in Frameworks */,
 				66DA13071DAE060E00B3056E /* liblibxml2_iOS.a in Frameworks */,
 				66DA13081DAE060E00B3056E /* liblz4_iOS.a in Frameworks */,
@@ -2575,13 +2476,11 @@
 				849B24031EB4C2A70033C44C /* libSPIRV-Cross_iOS.a in Frameworks */,
 				66DA12F01DAE05EF00B3056E /* libBulletPhysics_iOS.a in Frameworks */,
 				66DA12F11DAE05EF00B3056E /* libbzip2_iOS.a in Frameworks */,
-				66DA12F21DAE05EF00B3056E /* libCxImage_iOS.a in Frameworks */,
 				66DA12F31DAE05EF00B3056E /* libFreeType_iOS.a in Frameworks */,
 				66DA12F41DAE05EF00B3056E /* libjpeg_iOS.a in Frameworks */,
 				66DA12F51DAE05EF00B3056E /* liblibFLAC_iOS.a in Frameworks */,
 				66DA12F61DAE05EF00B3056E /* liblibogg_iOS.a in Frameworks */,
 				66DA12F71DAE05EF00B3056E /* liblibpng_iOS.a in Frameworks */,
-				66DA12F81DAE05EF00B3056E /* liblibtiff_iOS.a in Frameworks */,
 				66DA12F91DAE05EF00B3056E /* liblibvorbis_iOS.a in Frameworks */,
 				66DA12FA1DAE05EF00B3056E /* liblibxml2_iOS.a in Frameworks */,
 				66DA12FB1DAE05EF00B3056E /* liblz4_iOS.a in Frameworks */,
@@ -2596,13 +2495,11 @@
 				849B24021EB4C29E0033C44C /* libSPIRV-Cross_macOS.a in Frameworks */,
 				66DA13241DAE063B00B3056E /* libBulletPhysics_macOS.a in Frameworks */,
 				66DA13251DAE063B00B3056E /* libbzip2_macOS.a in Frameworks */,
-				66DA13261DAE063B00B3056E /* libCxImage_macOS.a in Frameworks */,
 				66DA13271DAE063B00B3056E /* libFreeType_macOS.a in Frameworks */,
 				66DA13281DAE063B00B3056E /* libjpeg_macOS.a in Frameworks */,
 				66DA13291DAE063B00B3056E /* liblibFLAC_macOS.a in Frameworks */,
 				66DA132A1DAE063B00B3056E /* liblibogg_macOS.a in Frameworks */,
 				66DA132B1DAE063B00B3056E /* liblibpng_macOS.a in Frameworks */,
-				66DA132C1DAE063B00B3056E /* liblibtiff_macOS.a in Frameworks */,
 				66DA132D1DAE063B00B3056E /* liblibvorbis_macOS.a in Frameworks */,
 				66DA132E1DAE063B00B3056E /* liblibxml2_macOS.a in Frameworks */,
 				66DA132F1DAE063B00B3056E /* liblz4_macOS.a in Frameworks */,
@@ -2712,15 +2609,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		66DA11ED1DAC7C6300B3056E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				66DA11F21DAC7C6300B3056E /* libCxImage_iOS.a */,
-				66DA11F41DAC7C6300B3056E /* libCxImage_macOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		66DA11F61DAC7C6A00B3056E /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2762,15 +2650,6 @@
 			children = (
 				66DA121F1DAC7C8D00B3056E /* liblibpng_iOS.a */,
 				66DA12211DAC7C8D00B3056E /* liblibpng_macOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		66DA12231DAC7C9300B3056E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				66DA12281DAC7C9300B3056E /* liblibtiff_iOS.a */,
-				66DA122A1DAC7C9300B3056E /* liblibtiff_macOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2849,16 +2728,13 @@
 		8405D34F15BEF5E300E91EEF /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				66DA12561DAC7D2600B3056E /* VERSION.TXT */,
 				8405EBDB15BEF75400E91EEF /* BulletPhysics.xcodeproj */,
 				66DA11E31DAC7C4E00B3056E /* bzip2.xcodeproj */,
-				66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */,
 				66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */,
 				66DA11FE1DAC7C7800B3056E /* jpeg.xcodeproj */,
 				66DA12071DAC7C7E00B3056E /* libFLAC.xcodeproj */,
 				66DA12101DAC7C8700B3056E /* libogg.xcodeproj */,
 				66DA12191DAC7C8D00B3056E /* libpng.xcodeproj */,
-				66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */,
 				66DA122B1DAC7C9900B3056E /* libvorbis.xcodeproj */,
 				66DA12341DAC7CA100B3056E /* libxml2.xcodeproj */,
 				66DA123D1DAC7CA800B3056E /* lz4.xcodeproj */,
@@ -4224,13 +4100,11 @@
 				849B24091EB4C2C70033C44C /* PBXTargetDependency */,
 				66DA12A31DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12A51DAE005A00B3056E /* PBXTargetDependency */,
-				66DA12A71DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12A91DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12AB1DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12AD1DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12AF1DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12B11DAE005A00B3056E /* PBXTargetDependency */,
-				66DA12B31DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12B51DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12B71DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12B91DAE005A00B3056E /* PBXTargetDependency */,
@@ -4257,13 +4131,11 @@
 				849B240C1EB4C2D80033C44C /* PBXTargetDependency */,
 				66DA12BD1DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12BF1DAE05B800B3056E /* PBXTargetDependency */,
-				66DA12C11DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12C31DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12C51DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12C71DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12C91DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12CB1DAE05B800B3056E /* PBXTargetDependency */,
-				66DA12CD1DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12CF1DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12D11DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12D31DAE05B800B3056E /* PBXTargetDependency */,
@@ -4288,13 +4160,11 @@
 				849B24071EB4C2BE0033C44C /* PBXTargetDependency */,
 				66DA12D71DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12D91DAE05D900B3056E /* PBXTargetDependency */,
-				66DA12DB1DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12DD1DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12DF1DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12E11DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12E31DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12E51DAE05D900B3056E /* PBXTargetDependency */,
-				66DA12E71DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12E91DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12EB1DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12ED1DAE05D900B3056E /* PBXTargetDependency */,
@@ -4319,13 +4189,11 @@
 				849B24051EB4C2B20033C44C /* PBXTargetDependency */,
 				66DA130B1DAE062700B3056E /* PBXTargetDependency */,
 				66DA130D1DAE062700B3056E /* PBXTargetDependency */,
-				66DA130F1DAE062700B3056E /* PBXTargetDependency */,
 				66DA13111DAE062700B3056E /* PBXTargetDependency */,
 				66DA13131DAE062700B3056E /* PBXTargetDependency */,
 				66DA13151DAE062700B3056E /* PBXTargetDependency */,
 				66DA13171DAE062700B3056E /* PBXTargetDependency */,
 				66DA13191DAE062700B3056E /* PBXTargetDependency */,
-				66DA131B1DAE062700B3056E /* PBXTargetDependency */,
 				66DA131D1DAE062700B3056E /* PBXTargetDependency */,
 				66DA131F1DAE062700B3056E /* PBXTargetDependency */,
 				66DA13211DAE062700B3056E /* PBXTargetDependency */,
@@ -4371,10 +4239,6 @@
 					ProjectRef = 66DA11E31DAC7C4E00B3056E /* bzip2.xcodeproj */;
 				},
 				{
-					ProductGroup = 66DA11ED1DAC7C6300B3056E /* Products */;
-					ProjectRef = 66DA11EC1DAC7C6300B3056E /* CxImage.xcodeproj */;
-				},
-				{
 					ProductGroup = 66DA11F61DAC7C6A00B3056E /* Products */;
 					ProjectRef = 66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */;
 				},
@@ -4393,10 +4257,6 @@
 				{
 					ProductGroup = 66DA121A1DAC7C8D00B3056E /* Products */;
 					ProjectRef = 66DA12191DAC7C8D00B3056E /* libpng.xcodeproj */;
-				},
-				{
-					ProductGroup = 66DA12231DAC7C9300B3056E /* Products */;
-					ProjectRef = 66DA12221DAC7C9300B3056E /* libtiff.xcodeproj */;
 				},
 				{
 					ProductGroup = 66DA122C1DAC7C9900B3056E /* Products */;
@@ -4456,20 +4316,6 @@
 			fileType = archive.ar;
 			path = libbzip2_macOS.a;
 			remoteRef = 66DA11EA1DAC7C4E00B3056E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		66DA11F21DAC7C6300B3056E /* libCxImage_iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libCxImage_iOS.a;
-			remoteRef = 66DA11F11DAC7C6300B3056E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		66DA11F41DAC7C6300B3056E /* libCxImage_macOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libCxImage_macOS.a;
-			remoteRef = 66DA11F31DAC7C6300B3056E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		66DA11FB1DAC7C6A00B3056E /* libFreeType_iOS.a */ = {
@@ -4540,20 +4386,6 @@
 			fileType = archive.ar;
 			path = liblibpng_macOS.a;
 			remoteRef = 66DA12201DAC7C8D00B3056E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		66DA12281DAC7C9300B3056E /* liblibtiff_iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = liblibtiff_iOS.a;
-			remoteRef = 66DA12271DAC7C9300B3056E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		66DA122A1DAC7C9300B3056E /* liblibtiff_macOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = liblibtiff_macOS.a;
-			remoteRef = 66DA12291DAC7C9300B3056E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		66DA12311DAC7C9900B3056E /* liblibvorbis_iOS.a */ = {
@@ -5299,11 +5131,6 @@
 			name = bzip2_macOS;
 			targetProxy = 66DA12A41DAE005A00B3056E /* PBXContainerItemProxy */;
 		};
-		66DA12A71DAE005A00B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CxImage_macOS;
-			targetProxy = 66DA12A61DAE005A00B3056E /* PBXContainerItemProxy */;
-		};
 		66DA12A91DAE005A00B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FreeType_macOS;
@@ -5328,11 +5155,6 @@
 			isa = PBXTargetDependency;
 			name = libpng_macOS;
 			targetProxy = 66DA12B01DAE005A00B3056E /* PBXContainerItemProxy */;
-		};
-		66DA12B31DAE005A00B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libtiff_macOS;
-			targetProxy = 66DA12B21DAE005A00B3056E /* PBXContainerItemProxy */;
 		};
 		66DA12B51DAE005A00B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -5364,11 +5186,6 @@
 			name = bzip2_iOS;
 			targetProxy = 66DA12BE1DAE05B800B3056E /* PBXContainerItemProxy */;
 		};
-		66DA12C11DAE05B800B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CxImage_iOS;
-			targetProxy = 66DA12C01DAE05B800B3056E /* PBXContainerItemProxy */;
-		};
 		66DA12C31DAE05B800B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FreeType_iOS;
@@ -5393,11 +5210,6 @@
 			isa = PBXTargetDependency;
 			name = libpng_iOS;
 			targetProxy = 66DA12CA1DAE05B800B3056E /* PBXContainerItemProxy */;
-		};
-		66DA12CD1DAE05B800B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libtiff_iOS;
-			targetProxy = 66DA12CC1DAE05B800B3056E /* PBXContainerItemProxy */;
 		};
 		66DA12CF1DAE05B800B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -5429,11 +5241,6 @@
 			name = bzip2_iOS;
 			targetProxy = 66DA12D81DAE05D900B3056E /* PBXContainerItemProxy */;
 		};
-		66DA12DB1DAE05D900B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CxImage_iOS;
-			targetProxy = 66DA12DA1DAE05D900B3056E /* PBXContainerItemProxy */;
-		};
 		66DA12DD1DAE05D900B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FreeType_iOS;
@@ -5458,11 +5265,6 @@
 			isa = PBXTargetDependency;
 			name = libpng_iOS;
 			targetProxy = 66DA12E41DAE05D900B3056E /* PBXContainerItemProxy */;
-		};
-		66DA12E71DAE05D900B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libtiff_iOS;
-			targetProxy = 66DA12E61DAE05D900B3056E /* PBXContainerItemProxy */;
 		};
 		66DA12E91DAE05D900B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -5494,11 +5296,6 @@
 			name = bzip2_macOS;
 			targetProxy = 66DA130C1DAE062700B3056E /* PBXContainerItemProxy */;
 		};
-		66DA130F1DAE062700B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CxImage_macOS;
-			targetProxy = 66DA130E1DAE062700B3056E /* PBXContainerItemProxy */;
-		};
 		66DA13111DAE062700B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FreeType_macOS;
@@ -5523,11 +5320,6 @@
 			isa = PBXTargetDependency;
 			name = libpng_macOS;
 			targetProxy = 66DA13181DAE062700B3056E /* PBXContainerItemProxy */;
-		};
-		66DA131B1DAE062700B3056E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libtiff_macOS;
-			targetProxy = 66DA131A1DAE062700B3056E /* PBXContainerItemProxy */;
 		};
 		66DA131D1DAE062700B3056E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

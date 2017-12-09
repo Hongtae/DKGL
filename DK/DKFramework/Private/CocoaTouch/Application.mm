@@ -39,7 +39,7 @@ DKLogger* Application::DefaultLogger(void)
 {
 	struct Logger : public DKLogger
 	{
-		void Log(Category, const DKString& msg) override
+		void Log(Category c, const DKString& msg) override
 		{
 			switch (c)
 			{
