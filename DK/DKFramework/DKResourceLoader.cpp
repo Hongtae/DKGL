@@ -16,6 +16,8 @@
 #include "DKSoftBody.h"
 #include "DKModel.h"
 
+#include "DKImage.h"
+
 // constraints
 #include "DKConeTwistConstraint.h"
 #include "DKFixedConstraint.h"
@@ -107,6 +109,7 @@ namespace DKFramework
 			static DKAllocator::Maintainer init;
 
 			REGISTER_RESOURCE_CLASS(DKAnimation);
+			REGISTER_RESOURCE_CLASS(DKImage);
 
 			// collision shape helper
 			REGISTER_RESOURCE_CLASS(DKCollisionShape::SerializeHelper);

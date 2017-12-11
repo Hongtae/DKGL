@@ -53,18 +53,20 @@ namespace DKFramework
 		uint32_t Width(void) const				{ return width; }
 		uint32_t Height(void) const				{ return height; }
 		size_t BytesPerPixel(void) const;
+		bool IsValid(void) const;
 
-		bool LoadFromFile(const DKString& path);
-		bool LoadFromStream(DKStream* stream);
-		bool LoadFromData(DKData* data);
-		bool LoadFromData(const void* data, size_t length);
-		bool LoadFromPixelData(uint32_t width, uint32_t height, PixelFormat format, const void* data);
+		static DKObject<DKImage> Create(const DKString& path);
+		static DKObject<DKImage> Create(DKStream* stream);
+		static DKObject<DKImage> Create(DKData* data);
+		static DKObject<DKImage> Create(const void* data, size_t length);
+		static DKObject<DKImage> Create(uint32_t width, uint32_t height, PixelFormat format, const void* data);
 
-		/// resize image using CPU
-		bool Resample(uint32_t width, uint32_t height, Interpolation);
+		/// Resize image using CPU.
+		/// If given operation-queue is valid, this operation will be processed with multi-threaded. 
+		DKObject<DKImage> Resample(uint32_t width, uint32_t height, PixelFormat format, Interpolation, DKOperationQueue*) const;
 
 		/// encode image data to export (eg, save to common image file formats like png, jpeg)
-		DKObject<DKData> EncodeData(const DKString& format) const;
+		DKObject<DKData> EncodeData(const DKString& format, DKOperationQueue*) const;
 
 		DKObject<DKSerializer> Serializer(void) override;
 

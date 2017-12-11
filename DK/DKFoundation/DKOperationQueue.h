@@ -27,6 +27,7 @@ namespace DKFoundation
 			{
                 StateUnknown = 0,
 				StatePending,	///< operation is pending and not processed yet.
+				StateExecuting, ///< operation is currently executing and cannot be cancelled.
 				StateProcessed,	///< operation has been processed.
 				StateCancelled,	///< operation was cancelled by system or user
 			};
@@ -64,6 +65,7 @@ namespace DKFoundation
 		bool Process(DKOperation* operation);	///< wait until done.
 		void CancelAllOperations(void);			///< cancel all operations.
 		void WaitForCompletion(void) const;		///< wait until all operations are done.
+		bool WaitForAnyOperation(double timeout) const; ///< wait for any single operation has done or time-out.
 
 		size_t QueueLength(void) const;			///< Number of operations in queue.
 		size_t RunningOperations(void) const;	///< Number of operations currently in process.

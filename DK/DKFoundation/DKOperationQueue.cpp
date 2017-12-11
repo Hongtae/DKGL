@@ -106,10 +106,8 @@ void DKOperationQueue::SetMaxConcurrentOperations(size_t maxConcurrent)
 
 size_t DKOperationQueue::MaxConcurrentOperations(void) const
 {
-	threadCond.Lock();
-	size_t ret = maxConcurrentOperations;
-	threadCond.Unlock();
-	return ret;
+	DKCriticalSection<DKCondition> guard(threadCond);
+	return maxConcurrentOperations;
 }
 
 void DKOperationQueue::Post(DKOperation* operation)
@@ -199,34 +197,35 @@ void DKOperationQueue::CancelAllOperations(void)
 
 void DKOperationQueue::WaitForCompletion(void) const
 {
-	threadCond.Lock();
+	DKCriticalSection<DKCondition> guard(threadCond);
 	while (operationQueue.Count() > 0 || activeThreads > 0)
 		threadCond.Wait();
-	threadCond.Unlock();
+}
+
+bool DKOperationQueue::WaitForAnyOperation(double timeout) const
+{
+	timeout = Max(timeout, 0.0);
+	DKCriticalSection<DKCondition> guard(threadCond);
+	return threadCond.WaitTimeout(timeout);
+
 }
 
 size_t DKOperationQueue::QueueLength(void) const
 {
-	threadCond.Lock();
-	size_t c = operationQueue.Count();
-	threadCond.Unlock();
-	return c;
+	DKCriticalSection<DKCondition> guard(threadCond);
+	return operationQueue.Count();
 }
 
 size_t DKOperationQueue::RunningOperations(void) const
 {
-	threadCond.Lock();
-	size_t c = activeThreads;
-	threadCond.Unlock();
-	return c;
+	DKCriticalSection<DKCondition> guard(threadCond);
+	return activeThreads;
 }
 
 size_t DKOperationQueue::RunningThreads(void) const
 {
-	threadCond.Lock();
-	size_t c = threadCount;
-	threadCond.Unlock();
-	return c;
+	DKCriticalSection<DKCondition> guard(threadCond);
+	return threadCount;
 }
 
 void DKOperationQueue::OperationProc(void)
@@ -284,8 +283,11 @@ void DKOperationQueue::OperationProc(void)
 				{
 					if (op.operation)
 					{
+						st->state = OperationSync::StateExecuting;
+						operationStateCond.Unlock();
 						PerformOperation(op.operation);
 						numOps++;
+						operationStateCond.Lock();
 						st->state = OperationSync::StateProcessed;
 					}
 					else
@@ -296,7 +298,7 @@ void DKOperationQueue::OperationProc(void)
 				}
 				operationStateCond.Unlock();
 			}
-			else  if (op.operation)
+			else if (op.operation)
 			{
 				PerformOperation(op.operation);
 				numOps++;
