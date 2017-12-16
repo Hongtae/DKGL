@@ -11,6 +11,7 @@
 #include "DKImage.h"
 #include "DKResourceLoader.h"
 
+#define JPEG_BUFFER_SIZE	4096
 #define BMP_DEFAULT_PPM		96
 
 namespace DKFramework
@@ -61,11 +62,17 @@ namespace DKFramework
 		};
 #pragma pack(pop)
 
+		struct JpegErrorMgr
+		{
+			struct jpeg_error_mgr pub;
+			jmp_buf setjmpBuffer;
+			char buffer[JMSG_LENGTH_MAX];
+		};
+
 		enum ImageFormat
 		{
 			FormatPNG,
 			FormatJPEG,
-			FormatTGA,
 			FormatBMP
 		};
 
@@ -107,7 +114,6 @@ namespace DKFramework
 				{ ".jpe", FormatJPEG },
 				{ ".jpeg", FormatJPEG },
 				{ ".bmp", FormatBMP },
-				{ ".tga", FormatTGA },
 			};
 			struct {
 				const char* ext;
@@ -119,11 +125,9 @@ namespace DKFramework
 				{ "jpe", FormatJPEG },
 				{ "jpeg", FormatJPEG },
 				{ "bmp", FormatBMP },
-				{ "tga", FormatTGA },
 				{ "image/png", FormatPNG },
 				{ "image/jpeg", FormatJPEG },
 				{ "image/bmp", FormatBMP },
-				{ "image/x-tga", FormatTGA },
 			};
 			for (auto& fmt : suffixFormats)
 			{
@@ -169,6 +173,14 @@ namespace DKFramework
 					if (png)
 					{
 						f = FormatPNG;
+						return true;
+					}
+				}
+				if (s > 3)
+				{
+					if (p[0] == 0xff && p[1] == 0xd8 && p[2] == 0xff)
+					{
+						f = FormatJPEG;
 						return true;
 					}
 				}
@@ -340,6 +352,214 @@ DKObject<DKImage> DKImage::Create(const void *p, size_t s)
 
 	switch (fmt)
 	{
+	case FormatPNG:
+		if (1)
+		{
+			png_image image = {};
+			image.version = PNG_IMAGE_VERSION;
+			if (png_image_begin_read_from_memory(&image, p, s))
+			{
+				PixelFormat pixelFormat;
+				switch (image.format)
+				{
+				case PNG_FORMAT_GRAY:
+					pixelFormat = R8;
+					break;
+				case PNG_FORMAT_AG:
+					image.format = PNG_FORMAT_GA;
+				case PNG_FORMAT_GA:
+					pixelFormat = RG8;
+					break;
+				case PNG_FORMAT_BGR:
+					image.format = PNG_FORMAT_RGB;
+				case PNG_FORMAT_RGB:
+					pixelFormat = RGB8;
+					break;
+				case PNG_FORMAT_ARGB:
+				case PNG_FORMAT_BGRA:
+				case PNG_FORMAT_ABGR:
+					image.format = PNG_FORMAT_RGBA;
+				case PNG_FORMAT_RGBA:
+					pixelFormat = RGBA8;
+					break;
+				case PNG_FORMAT_LINEAR_Y:
+					pixelFormat = R16;
+					break;
+				case PNG_FORMAT_LINEAR_Y_ALPHA:
+					pixelFormat = RG16;
+					break;
+				case PNG_FORMAT_LINEAR_RGB:
+					pixelFormat = RGB16;
+					break;
+				case PNG_FORMAT_LINEAR_RGB_ALPHA:
+					pixelFormat = RGBA16;
+					break;
+				default:
+					image.format = PNG_FORMAT_RGBA;
+					//png_image_free(&image);
+					//return false;
+				}
+
+				DKObject<DKImage> output = DKImage::Create(image.width, image.height, pixelFormat, nullptr);
+				if (output)
+				{
+					size_t imageSizeInBytes = PNG_IMAGE_SIZE(image);
+					if (imageSizeInBytes == output->BytesPerPixel() * output->width * output->height)
+					{
+						if (png_image_finish_read(&image, nullptr, output->data, 0, nullptr))
+							return output;
+					}
+					output = NULL;
+					DKLogE("[DKImage::Create] Error: PNG buffer error!");
+				}
+				else
+				{
+					DKLogE("[DKImage::Create] Error: Out of memory!");
+				}
+				// failed! (dealloc buffer and return)
+				png_image_free(&image);
+			}
+		}
+		break;
+	case FormatJPEG:
+		if (1)
+		{
+			jpeg_decompress_struct cinfo = {};
+			JpegErrorMgr err = {};
+			struct JpegSource
+			{
+				struct jpeg_source_mgr pub;
+				const uint8_t* data;
+				size_t length;
+				uint8_t eofMarker[2];
+			};
+			JpegSource source;
+			source.data = reinterpret_cast<const uint8_t*>(p);
+			source.length = s;
+			source.pub.bytes_in_buffer = 0;
+			source.pub.next_input_byte = NULL;
+			source.pub.init_source = [](j_decompress_ptr cinfo) {};
+			source.pub.fill_input_buffer = [](j_decompress_ptr cinfo)->boolean
+			{
+				JpegSource* src = reinterpret_cast<JpegSource*>(cinfo->src);
+				if (src->length > 0)
+				{
+					src->pub.next_input_byte = (const JOCTET*)src->data;
+					size_t s = Min(src->length, size_t(JPEG_BUFFER_SIZE));
+					src->pub.bytes_in_buffer = s;
+					src->length -= s;
+					src->data += s;
+				}
+				else
+				{
+					src->pub.next_input_byte = (const JOCTET*)src->eofMarker;
+					src->eofMarker[0] = 0xff;
+					src->eofMarker[1] = JPEG_EOI;
+					src->pub.bytes_in_buffer = 2;
+				}
+				return true;
+			};
+			source.pub.skip_input_data = [](j_decompress_ptr cinfo, long numBytes)
+			{
+				if (numBytes > 0)
+				{
+					JpegSource* src = reinterpret_cast<JpegSource*>(cinfo->src);
+					while (numBytes > (long)src->pub.bytes_in_buffer)
+					{
+						numBytes -= (long)src->pub.bytes_in_buffer;
+						src->pub.fill_input_buffer(cinfo);
+					}
+					src->pub.next_input_byte += (size_t)numBytes;
+					src->pub.bytes_in_buffer -= (size_t)numBytes;
+
+				}
+			};
+			source.pub.term_source = [](j_decompress_ptr cinfo) {};
+
+			cinfo.err = jpeg_std_error(&err.pub);
+			err.pub.error_exit = [](j_common_ptr cinfo)
+			{
+				JpegErrorMgr* err = (JpegErrorMgr*)cinfo->err;
+				err->pub.format_message(cinfo, err->buffer);
+				longjmp(err->setjmpBuffer, 1);
+			};
+
+			if (setjmp(err.setjmpBuffer))
+			{
+				DKLogE("[DKImage::Create] JPEG Error: %s", err.buffer);
+				jpeg_destroy_decompress(&cinfo);
+				return NULL;
+			}
+			jpeg_create_decompress(&cinfo);
+			cinfo.src = (jpeg_source_mgr*)&source;
+			jpeg_read_header(&cinfo, true);
+
+			int32_t bytesPerPixel;
+			if (cinfo.out_color_space == JCS_CMYK || cinfo.out_color_space == JCS_YCCK)
+			{
+				cinfo.out_color_space = JCS_CMYK;
+				bytesPerPixel = 4;
+			}
+			else
+			{
+				cinfo.out_color_space = JCS_RGB;
+				bytesPerPixel = 3;
+			}
+			jpeg_start_decompress(&cinfo);
+
+			DKObject<DKImage> output = DKImage::Create(cinfo.image_width, cinfo.image_height, RGB8, 0);
+			if (output)
+			{
+				uint32_t rowStride = output->width * 3;
+				uint8_t* data = (uint8_t*)output->data;
+
+				if (cinfo.out_color_space == JCS_RGB)
+				{
+					JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)
+						((j_common_ptr)&cinfo, JPOOL_IMAGE, rowStride, 1);
+					while (cinfo.output_scanline < cinfo.output_height)
+					{
+						jpeg_read_scanlines(&cinfo, buffer, 1);
+						memcpy(data, buffer[0], rowStride);
+						data += rowStride;
+					}
+				}
+				else
+				{
+					JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)
+						((j_common_ptr)&cinfo, JPOOL_IMAGE, output->width * 4, 1);
+					auto CmykToRgb = [](uint8_t* rgb, uint8_t* cmyk)
+					{
+						uint32_t k1 = 255 - cmyk[3];
+						uint32_t k2 = cmyk[3];
+						for (int i = 0; i < 3; ++i)
+						{
+							uint32_t c = k1 + k2 * (255 - cmyk[i]) / 255;
+							rgb[i] = (c > 255) ? 0 : (255 - c);
+						}
+					};
+					while (cinfo.output_scanline < cinfo.output_height)
+					{
+						jpeg_read_scanlines(&cinfo, buffer, 1);
+						uint8_t* input = (uint8_t*)buffer[0];
+						for (size_t i = 0; i < cinfo.output_width; ++i)
+						{
+							CmykToRgb(data, input);
+							data += 3;
+							input += 4;
+						}
+					}
+				}
+			}
+			else
+			{
+				DKLogE("[DKImage::Create] Error: Out of memory!");				
+			}
+			jpeg_finish_decompress(&cinfo);
+			jpeg_destroy_decompress(&cinfo);
+			return output;
+		}
+		break;
 	case FormatBMP:
 		if (s > sizeof(BMPFileHeader) + sizeof(BMPCoreHeader))
 		{
@@ -916,75 +1136,6 @@ DKObject<DKImage> DKImage::Create(const void *p, size_t s)
 			DKLogE("[DKImage::Create] Error: BMP data size is too small!");
 		}
 		break;
-	case FormatPNG:
-		if (1)
-		{
-			png_image image = {};
-			image.version = PNG_IMAGE_VERSION;
-			if (png_image_begin_read_from_memory(&image, p, s))
-			{
-				PixelFormat pixelFormat;
-				switch (image.format)
-				{
-				case PNG_FORMAT_GRAY:
-					pixelFormat = R8;
-					break;
-				case PNG_FORMAT_AG:
-					image.format = PNG_FORMAT_GA;
-				case PNG_FORMAT_GA:
-					pixelFormat = RG8;
-					break;
-				case PNG_FORMAT_BGR:
-					image.format = PNG_FORMAT_RGB;
-				case PNG_FORMAT_RGB:
-					pixelFormat = RGB8;
-					break;
-				case PNG_FORMAT_ARGB:
-				case PNG_FORMAT_BGRA:
-				case PNG_FORMAT_ABGR:
-					image.format = PNG_FORMAT_RGBA;
-				case PNG_FORMAT_RGBA:
-					pixelFormat = RGBA8;
-					break;
-				case PNG_FORMAT_LINEAR_Y:
-					pixelFormat = R16;
-					break;
-				case PNG_FORMAT_LINEAR_Y_ALPHA:
-					pixelFormat = RG16;
-					break;
-				case PNG_FORMAT_LINEAR_RGB:
-					pixelFormat = RGB16;
-					break;
-				case PNG_FORMAT_LINEAR_RGB_ALPHA:
-					pixelFormat = RGBA16;
-					break;
-				default:
-					image.format = PNG_FORMAT_RGBA;
-					//png_image_free(&image);
-					//return false;
-				}
-
-				DKObject<DKImage> output = DKImage::Create(image.width, image.height, pixelFormat, nullptr);
-				if (output)
-				{
-					size_t imageSizeInBytes = PNG_IMAGE_SIZE(image);
-					if (imageSizeInBytes == output->BytesPerPixel() * output->width * output->height)
-					{
-						if (png_image_finish_read(&image, nullptr, output->data, 0, nullptr))
-							return output;
-					}
-					output = NULL;
-					DKLogE("[DKImage::Create] Error: PNG buffer error!");
-				}
-				else
-				{
-					DKLogE("[DKImage::Create] Error: Out of memory!");
-				}
-				// failed! (dealloc buffer and return)
-				png_image_free(&image);
-			}
-		}
-		break;
 	}
 	return NULL;
 }
@@ -1010,6 +1161,206 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 	}
 	switch (fmt)
 	{
+	case FormatPNG:
+		if (1)
+		{
+			png_uint_32 pngFormat;
+			PixelFormat targetFormat = this->format;
+			switch (this->format)
+			{
+			case R8:
+				pngFormat = PNG_FORMAT_GRAY;
+				break;
+			case RG8:
+				pngFormat = PNG_FORMAT_GA;
+				break;
+			case RGB8:
+				pngFormat = PNG_FORMAT_RGB;
+				break;
+			case RGBA8:
+				pngFormat = PNG_FORMAT_RGBA;
+				break;
+			case R16:
+				pngFormat = PNG_FORMAT_LINEAR_Y;
+				break;
+			case RG16:
+				pngFormat = PNG_FORMAT_LINEAR_Y_ALPHA;
+				break;
+			case RGB16:
+				pngFormat = PNG_FORMAT_LINEAR_RGB;
+				break;
+			case RGBA16:
+				pngFormat = PNG_FORMAT_LINEAR_RGB_ALPHA;
+				break;
+				/* below formats are not able to encode directly, resample required */
+			case R32:
+			case R32F:
+				targetFormat = R8;
+				break;
+			case RG32:
+			case RG32F:
+				targetFormat = RG8;
+				break;
+			case RGB32:
+			case RGB32F:
+				targetFormat = RGB8;
+				break;
+			case RGBA32:
+			case RGBA32F:
+				targetFormat = RGBA8;
+				break;
+			default:
+				DKLogE("[DKImage::EncodedData] Error: Invalid pixel format!");
+				return NULL;
+			}
+			if (targetFormat != this->format) // resample required
+			{
+				DKObject<DKImage> resampledImage = this->Resample(this->width, this->height, targetFormat, Nearest, queue);
+				if (resampledImage)
+					return resampledImage->EncodeData(str, queue);
+				DKLogE("[DKImage::EncodeData] Error: Unable to resample format.");
+				return NULL;
+			}
+			png_image image = {};
+			image.version = PNG_IMAGE_VERSION;
+			image.width = this->width;
+			image.height = this->height;
+			image.format = pngFormat;
+
+			png_alloc_size_t bufferSize = 0;
+			if (png_image_write_get_memory_size(image, bufferSize, 0, this->data, 0, nullptr) && bufferSize > 0)
+			{
+				DKObject<DKBuffer> output = DKBuffer::Create(0, bufferSize);
+				if (output)
+				{
+					DKDataWriter writer(output);
+					bufferSize = writer.Length();
+					if (png_image_write_to_memory(&image, writer.Bytes(), &bufferSize, 0, this->data, 0, nullptr))
+					{
+						return output.SafeCast<DKData>();
+					}
+				}
+				else
+				{
+					DKLogE("[DKImage::EncodeData] Error: DKBuffer creation failure.");
+					return NULL;
+				}
+			}
+			DKLogE("[DKImage::EncodeData] Error: PNG write failed.");
+		}
+		break;
+	case FormatJPEG:
+		if (1)
+		{
+			PixelFormat targetFormat = this->format;
+			switch (this->format)
+			{
+			case R8:				
+			case R16:
+			case R32:
+			case R32F:
+				targetFormat = R8;
+				break;
+			default:
+				targetFormat = RGB8;
+				break;
+			}
+			if (targetFormat != this->format) // resample required
+			{
+				DKObject<DKImage> resampledImage = this->Resample(this->width, this->height, targetFormat, Nearest, queue);
+				if (resampledImage)
+					return resampledImage->EncodeData(str, queue);
+				DKLogE("[DKImage::EncodeData] Error: Unable to resample format.");
+				return NULL;
+			}
+			struct JpegDestination
+			{
+				struct jpeg_destination_mgr pub;
+				JOCTET* buffer;
+				DKBufferStream stream;
+			};
+
+			jpeg_compress_struct cinfo = {};
+			JpegErrorMgr err = {};
+			JpegDestination dest;
+
+			dest.pub.init_destination = [](j_compress_ptr cinfo)
+			{
+				JpegDestination* dest = reinterpret_cast<JpegDestination*>(cinfo->dest);
+				dest->buffer = (JOCTET*)(*cinfo->mem->alloc_small)((j_common_ptr)cinfo,
+																   JPOOL_IMAGE,
+																   JPEG_BUFFER_SIZE * sizeof(JOCTET));
+				dest->pub.next_output_byte = dest->buffer;
+				dest->pub.free_in_buffer = JPEG_BUFFER_SIZE;
+			};
+			dest.pub.empty_output_buffer = [](j_compress_ptr cinfo)->boolean
+			{
+				JpegDestination* dest = reinterpret_cast<JpegDestination*>(cinfo->dest);
+				dest->stream.Write(dest->buffer, JPEG_BUFFER_SIZE);
+				dest->pub.next_output_byte = dest->buffer;
+				dest->pub.free_in_buffer = JPEG_BUFFER_SIZE;
+				return true;
+			};
+			dest.pub.term_destination = [](j_compress_ptr cinfo)
+			{
+				JpegDestination* dest = reinterpret_cast<JpegDestination*>(cinfo->dest);
+				size_t length = JPEG_BUFFER_SIZE - dest->pub.free_in_buffer;
+				if (length > 0)
+					dest->stream.Write(dest->buffer, length);
+			};
+
+			JSAMPLE* buffer;
+			int32_t rowStride;
+
+			cinfo.err = jpeg_std_error(&err.pub);
+			err.pub.error_exit = [](j_common_ptr cinfo)
+			{
+				JpegErrorMgr* err = (JpegErrorMgr*)cinfo->err;
+				err->pub.format_message(cinfo, err->buffer);
+				longjmp(err->setjmpBuffer, 1);
+			};
+
+			if (setjmp(err.setjmpBuffer))
+			{
+				DKLogE("[DKImage::EncodeData] JPEG Error: %s", err.buffer);
+				jpeg_destroy_compress(&cinfo);
+				return NULL;
+			}
+
+			jpeg_create_compress(&cinfo);
+
+			cinfo.dest = (jpeg_destination_mgr*)&dest;
+
+			cinfo.image_width = this->width;
+			cinfo.image_height = this->height;
+			if (format == RGB8)
+			{
+				cinfo.input_components = 3;
+				cinfo.in_color_space = JCS_RGB;
+			}
+			else
+			{
+				cinfo.input_components = 1;
+				cinfo.in_color_space = JCS_GRAYSCALE;
+			}
+
+			jpeg_set_defaults(&cinfo);
+			//jpeg_set_quality(&cinfo, 75, true);
+
+			jpeg_start_compress(&cinfo, true);
+			rowStride = this->width * 3; // bytesPerPixel = 3
+			buffer = (JSAMPLE*)(this->data);
+			JSAMPROW row[1];
+			while (cinfo.next_scanline < cinfo.image_height)
+			{
+				row[0] = &buffer[cinfo.next_scanline * rowStride];
+				jpeg_write_scanlines(&cinfo, row, 1);
+			}
+			jpeg_finish_compress(&cinfo);
+			jpeg_destroy_compress(&cinfo);
+			return dest.stream.Buffer();
+		}
+		break;
 	case FormatBMP:
 		if (1)
 		{
@@ -1102,94 +1453,6 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 			{
 				DKLogE("[DKImage::EncodeData] Error: Out of memory!");
 			}
-		}
-		break;
-	case FormatPNG:
-		if (1)
-		{
-			png_uint_32 pngFormat;
-			PixelFormat targetFormat = this->format;
-			switch (this->format)
-			{
-			case R8:
-				pngFormat = PNG_FORMAT_GRAY;
-				break;
-			case RG8:
-				pngFormat = PNG_FORMAT_GA;
-				break;
-			case RGB8:
-				pngFormat = PNG_FORMAT_RGB;
-				break;
-			case RGBA8:
-				pngFormat = PNG_FORMAT_RGBA;
-				break;
-			case R16:
-				pngFormat = PNG_FORMAT_LINEAR_Y;
-				break;
-			case RG16:
-				pngFormat = PNG_FORMAT_LINEAR_Y_ALPHA;
-				break;
-			case RGB16:
-				pngFormat = PNG_FORMAT_LINEAR_RGB;
-				break;
-			case RGBA16:
-				pngFormat = PNG_FORMAT_LINEAR_RGB_ALPHA;
-				break;
-				/* below formats are not able to encode directly, resample required */
-			case R32:
-			case R32F:
-				targetFormat = R8;
-				break;
-			case RG32:
-			case RG32F:
-				targetFormat = RG8;
-				break;
-			case RGB32:
-			case RGB32F:
-				targetFormat = RGB8;
-				break;
-			case RGBA32:
-			case RGBA32F:
-				targetFormat = RGBA8;
-				break;
-			default:
-				DKLogE("[DKImage::EncodedData] Error: Invalid pixel format!");
-				return NULL;
-			}
-			if (targetFormat != this->format) // resample required
-			{
-				DKObject<DKImage> resampledImage = this->Resample(this->width, this->height, targetFormat, Nearest, queue);
-				if (resampledImage)
-					return resampledImage->EncodeData(str, queue);
-				DKLogE("[DKImage::EncodeData] Error: Unable to resample format.");
-				return NULL;
-			}
-			png_image image = {};
-			image.version = PNG_IMAGE_VERSION;
-			image.width = this->width;
-			image.height = this->height;
-			image.format = pngFormat;
-
-			png_alloc_size_t bufferSize = 0;
-			if (png_image_write_get_memory_size(image, bufferSize, 0, this->data, 0, nullptr) && bufferSize > 0)
-			{
-				DKObject<DKBuffer> output = DKBuffer::Create(0, bufferSize);
-				if (output)
-				{
-					DKDataWriter writer(output);
-					bufferSize = writer.Length();
-					if (png_image_write_to_memory(&image, writer.Bytes(), &bufferSize, 0, this->data, 0, nullptr))
-					{
-						return output.SafeCast<DKData>();
-					}
-				}
-				else
-				{
-					DKLogE("[DKImage::EncodeData] Error: DKBuffer creation failure.");
-					return NULL;
-				}
-			}
-			DKLogE("[DKImage::EncodeData] Error: PNG write failed.");
 		}
 		break;
 	}
