@@ -315,12 +315,12 @@ DKObject<DKImage> DKImage::Create(uint32_t w, uint32_t h, PixelFormat fmt, const
 DKObject<DKImage> DKImage::Create(const DKString &path)
 {
 	if (path.Length() == 0)
-		return false;
+		return NULL;
 
 	DKObject<DKFileMap> file = DKFileMap::Open(path, 0, false);
 	if (file)
 		return Create(file.SafeCast<DKData>());
-	return false;
+	return NULL;
 }
 
 DKObject<DKImage> DKImage::Create(DKStream* stream)
@@ -457,7 +457,7 @@ DKObject<DKImage> DKImage::Create(const void *p, size_t s)
 					src->eofMarker[1] = JPEG_EOI;
 					src->pub.bytes_in_buffer = 2;
 				}
-				return true;
+				return TRUE;
 			};
 			source.pub.skip_input_data = [](j_decompress_ptr cinfo, long numBytes)
 			{
@@ -492,7 +492,7 @@ DKObject<DKImage> DKImage::Create(const void *p, size_t s)
 			}
 			jpeg_create_decompress(&cinfo);
 			cinfo.src = (jpeg_source_mgr*)&source;
-			jpeg_read_header(&cinfo, true);
+			jpeg_read_header(&cinfo, TRUE);
 
 			int32_t bytesPerPixel;
 			if (cinfo.out_color_space == JCS_CMYK || cinfo.out_color_space == JCS_YCCK)
@@ -1299,7 +1299,7 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 				dest->stream.Write(dest->buffer, JPEG_BUFFER_SIZE);
 				dest->pub.next_output_byte = dest->buffer;
 				dest->pub.free_in_buffer = JPEG_BUFFER_SIZE;
-				return true;
+				return TRUE;
 			};
 			dest.pub.term_destination = [](j_compress_ptr cinfo)
 			{
@@ -1347,7 +1347,7 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 			jpeg_set_defaults(&cinfo);
 			//jpeg_set_quality(&cinfo, 75, true);
 
-			jpeg_start_compress(&cinfo, true);
+			jpeg_start_compress(&cinfo, TRUE);
 			rowStride = this->width * 3; // bytesPerPixel = 3
 			buffer = (JSAMPLE*)(this->data);
 			JSAMPROW row[1];

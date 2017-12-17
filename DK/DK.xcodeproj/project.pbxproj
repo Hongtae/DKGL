@@ -4281,10 +4281,10 @@
 			);
 			projectRoot = "";
 			targets = (
-				D2AAC045055464E500DB518D /* DK_macOS_static */,
 				84C5F9EC13013FDD005F4449 /* DK_iOS_static */,
-				840CA4EC1928946800689BB6 /* DK_macOS */,
+				D2AAC045055464E500DB518D /* DK_macOS_static */,
 				84798B7019E51CBA009378A6 /* DK_iOS */,
+				840CA4EC1928946800689BB6 /* DK_macOS */,
 			);
 		};
 /* End PBXProject section */

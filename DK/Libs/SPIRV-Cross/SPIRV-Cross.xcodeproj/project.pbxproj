@@ -200,8 +200,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				849B23B01EB4C1870033C44C /* SPIRV-Cross_macOS */,
 				849B23BB1EB4C19F0033C44C /* SPIRV-Cross_iOS */,
+				849B23B01EB4C1870033C44C /* SPIRV-Cross_macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -347,6 +347,7 @@
 		849B23C31EB4C19F0033C44C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				OTHER_LDFLAGS = "-ObjC";
@@ -359,6 +360,7 @@
 		849B23C41EB4C19F0033C44C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				OTHER_LDFLAGS = "-ObjC";
