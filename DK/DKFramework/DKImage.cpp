@@ -1506,6 +1506,56 @@ DKObject<DKSerializer> DKImage::Serializer(void)
 {
 	class LocalSerializer : public DKSerializer
 	{
+		size_t ComponentSize(PixelFormat pf)
+		{
+			switch (pf)
+			{
+			case R8:
+			case RG8:
+			case RGB8:
+			case RGBA8:
+				return 1;
+			case R16:
+			case RG16:
+			case RGB16:
+			case RGBA16:
+				return 2;
+			case R32:
+			case RG32:
+			case RGB32:
+			case RGBA32:
+			case R32F:
+			case RG32F:
+			case RGB32F:
+			case RGBA32F:
+				return 4;
+			}
+			return 1;
+		}
+		bool CheckPixelFormat(PixelFormat pf)
+		{
+			switch (pf)
+			{
+			case R8:
+			case RG8:
+			case RGB8:
+			case RGBA8:
+			case R16:
+			case RG16:
+			case RGB16:
+			case RGBA16:
+			case R32:
+			case RG32:
+			case RGB32:
+			case RGBA32:
+			case R32F:
+			case RG32F:
+			case RGB32F:
+			case RGBA32F:
+					return true;
+			}
+			return false;
+		}
 	public:
 		DKSerializer* Init(DKImage* p)
 		{
@@ -1515,7 +1565,63 @@ DKObject<DKSerializer> DKImage::Serializer(void)
 
 			this->SetResourceClass(L"DKImage");
 			this->Bind(L"super", target->DKResource::Serializer(), NULL);
+			this->Bind(L"width",
+					   DKFunction([this](DKVariant& v) {v.SetInteger(this->target->width);}),
+					   DKFunction([this](DKVariant& v) {this->target->width = v.Integer();}),
+					   DKFunction([](const DKVariant& v) { return v.ValueType() == DKVariant::TypeInteger;}),
+					   NULL);
+			this->Bind(L"height",
+					   DKFunction([this](DKVariant& v) {v.SetInteger(this->target->height);}),
+					   DKFunction([this](DKVariant& v) {this->target->height = v.Integer();}),
+					   DKFunction([](const DKVariant& v) { return v.ValueType() == DKVariant::TypeInteger;}),
+					   NULL);
+			this->Bind(L"pixelFormat",
+					   DKFunction([this](DKVariant& v) {v.SetInteger(this->target->format);}),
+					   DKFunction([this](DKVariant& v) {this->target->format = (PixelFormat)v.Integer();}),
+					   DKFunction([this](const DKVariant& v)
+					   {
+							return v.ValueType() == DKVariant::TypeInteger &&
+							CheckPixelFormat((PixelFormat)v.Integer());
+					   }),
+					   NULL);
+			this->Bind("data",
+					   DKFunction([this](DKVariant& v)
+					   {
+							size_t dataLength = target->width * target->height * target->BytesPerPixel();
+							DKVariant::VStructuredData& st = v.SetValueType(DKVariant::TypeStructData).StructuredData();
+							st.data = DKData::StaticData(this->target->data, dataLength);
+							st.elementSize = ComponentSize(this->target->format);
+							st.layout.Add((DKVariant::StructElem)ComponentSize(this->target->format));
+					   }),
+					   DKFunction([this](DKVariant& v)
+					   {
+						   if (target->data)
+							   DKFree(target->data);
+						   target->data = NULL;
 
+						   if (v.ValueType() == DKVariant::TypeData)
+						   {
+							   DKVariant::VData& data = v.Data();
+							   DKDataReader reader(&data);
+							   target->data = DKMalloc(reader.Length());
+							   if (target->data)
+								   memcpy(target->data, reader.Bytes(), reader.Length());
+						   }
+						   else if (v.ValueType() == DKVariant::TypeStructData)
+						   {
+							   DKVariant::VStructuredData& st = v.StructuredData();
+							   DKDataReader reader(st.data);
+							   target->data = DKMalloc(reader.Length());
+							   if (target->data)
+								   memcpy(target->data, reader.Bytes(), reader.Length());
+						   }
+					   }),
+					   DKFunction([this](const DKVariant& v)
+					   {
+							return v.ValueType() == DKVariant::TypeData ||
+								   v.ValueType() == DKVariant::TypeStructData;
+		       		   }),
+					   NULL);
 			return this;
 		}
 	private:
