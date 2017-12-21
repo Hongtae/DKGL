@@ -7,6 +7,9 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{f1847a34-f081-45b5-a908-30aa1be867cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SSE">
+      <UniqueIdentifier>{d81bde0e-5aa8-4fd2-8d1b-e5fe7e146549}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="png.h">
@@ -76,6 +79,12 @@
     </ClCompile>
     <ClCompile Include="pngwutil.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\filter_sse2_intrinsics.c">
+      <Filter>Source Files\SSE</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_init.c">
+      <Filter>Source Files\SSE</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
