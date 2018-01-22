@@ -405,6 +405,7 @@ bool DKDirectory::Reload(void) const
 				}
 			}
 			while (FindNextFileW(hFind, &findData));
+			FindClose(hFind);
 		}
 	}
 #else
