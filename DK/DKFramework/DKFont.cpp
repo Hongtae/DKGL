@@ -293,9 +293,9 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				unsigned int offsetX = (outer.width - inner.width)/2;
 				unsigned int offsetY = (outer.rows - inner.rows)/2;
 
-				for (int y = 0; y < inner.rows; y++)
+				for (unsigned int y = 0; y < inner.rows; y++)
 				{
-					for (int x = 0; x < inner.width; x++)
+					for (unsigned int x = 0; x < inner.width; x++)
 					{
 						int value1 = outer.buffer[ (y + offsetY) * outer.width + x + offsetX];
 						int value2 = inner.buffer[ y * inner.width + x];

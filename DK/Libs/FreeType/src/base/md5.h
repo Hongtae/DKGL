@@ -28,12 +28,6 @@
 #elif !defined(_MD5_H)
 #define _MD5_H
 
-/* symbol must be different name when we build without OpenSSL.
-   it cause a problem if we use prebuilt 'static' library with OpenSSL. */
-#define MD5_Init   MD5_Init_FT_Private
-#define MD5_Update MD5_Update_FT_Private
-#define MD5_Final  MD5_Final_FT_Private
-
 /* Any 32-bit or wider unsigned integer data type will do */
 typedef unsigned int MD5_u32plus;
 
