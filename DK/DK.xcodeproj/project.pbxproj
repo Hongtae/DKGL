@@ -1340,6 +1340,9 @@
 		849B24031EB4C2A70033C44C /* libSPIRV-Cross_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */; };
 		849B240A1EB4C2CF0033C44C /* libSPIRV-Cross_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23D81EB4C1E60033C44C /* libSPIRV-Cross_macOS.a */; };
 		849B240D1EB4C2E20033C44C /* libSPIRV-Cross_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */; };
+		849EF8952033453800160DD3 /* DKGpuBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 849EF8932033453700160DD3 /* DKGpuBuffer.h */; };
+		849EF8962033453800160DD3 /* DKGpuBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849EF8942033453800160DD3 /* DKGpuBuffer.cpp */; };
+		849EF898203346AC00160DD3 /* DKGpuResource.h in Headers */ = {isa = PBXBuildFile; fileRef = 849EF897203346AC00160DD3 /* DKGpuResource.h */; };
 		84A6A3A31ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A41ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
 		84A6A3A51ADFFBDE001C1778 /* DKAllocatorChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A6A3A11ADFFBDE001C1778 /* DKAllocatorChain.cpp */; };
@@ -2152,6 +2155,9 @@
 		849E2A9215634718000CBE79 /* DKFence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKFence.h; sourceTree = "<group>"; };
 		849E2A9315634719000CBE79 /* DKSharedLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSharedLock.cpp; sourceTree = "<group>"; };
 		849E2A9415634719000CBE79 /* DKSharedLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSharedLock.h; sourceTree = "<group>"; };
+		849EF8932033453700160DD3 /* DKGpuBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKGpuBuffer.h; sourceTree = "<group>"; };
+		849EF8942033453800160DD3 /* DKGpuBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKGpuBuffer.cpp; sourceTree = "<group>"; };
+		849EF897203346AC00160DD3 /* DKGpuResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKGpuResource.h; sourceTree = "<group>"; };
 		84A1E493141DD4B70091D2C0 /* DKAllocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAllocator.cpp; sourceTree = "<group>"; };
 		84A1E494141DD4B70091D2C0 /* DKAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAllocator.h; sourceTree = "<group>"; };
 		84A1E496141DD4B70091D2C0 /* DKArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKArray.h; sourceTree = "<group>"; };
@@ -2884,8 +2890,8 @@
 		849B23D31EB4C1E60033C44C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				849B23D81EB4C1E60033C44C /* libSPIRV-Cross_macOS.a */,
 				849B23DA1EB4C1E60033C44C /* libSPIRV-Cross_iOS.a */,
+				849B23D81EB4C1E60033C44C /* libSPIRV-Cross_macOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3172,6 +3178,7 @@
 		84F16DBD1E1581E60013DD29 /* DKFramework_WIP */ = {
 			isa = PBXGroup;
 			children = (
+				849EF897203346AC00160DD3 /* DKGpuResource.h */,
 				666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */,
 				666ECA5F1DB1703600354463 /* DKCommandBuffer.h */,
 				8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */,
@@ -3179,6 +3186,8 @@
 				666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */,
 				848566D01E214DCB0011B53B /* DKComputePipeline.h */,
 				848566AC1E2004580011B53B /* DKDepthStencil.h */,
+				849EF8942033453800160DD3 /* DKGpuBuffer.cpp */,
+				849EF8932033453700160DD3 /* DKGpuBuffer.h */,
 				666ECA631DB1703600354463 /* DKGraphicsDevice.cpp */,
 				666ECA641DB1703600354463 /* DKGraphicsDevice.h */,
 				84D883511E3A653B00478725 /* DKImage.cpp */,
@@ -3691,6 +3700,7 @@
 				84211C861665E86400B9B9A2 /* DKOperationQueue.h in Headers */,
 				8482B74A1DCE272D0079FD84 /* AudioStreamFLAC.h in Headers */,
 				846A2D631E40F29E009F117C /* SwapChain.h in Headers */,
+				849EF8952033453800160DD3 /* DKGpuBuffer.h in Headers */,
 				8498FC631E4783D300E6A961 /* RenderTarget.h in Headers */,
 				84211C871665E86400B9B9A2 /* DKOrderedArray.h in Headers */,
 				84211C891665E86400B9B9A2 /* DKQueue.h in Headers */,
@@ -3720,6 +3730,7 @@
 				8447CB701E37A6DF00E02637 /* DKTexture.h in Headers */,
 				8498FC5F1E4783D300E6A961 /* ComputeCommandEncoder.h in Headers */,
 				842BF1471E0AB206007D58B0 /* Window.h in Headers */,
+				849EF898203346AC00160DD3 /* DKGpuResource.h in Headers */,
 				84211C981665E86400B9B9A2 /* DKStringW.h in Headers */,
 				8447CB6F1E37A6DF00E02637 /* DKSampler.h in Headers */,
 				84211C991665E86400B9B9A2 /* DKThread.h in Headers */,
@@ -4916,6 +4927,7 @@
 				84211BEA1665E7FD00B9B9A2 /* DKSliderConstraint.cpp in Sources */,
 				84211BEC1665E7FD00B9B9A2 /* DKSoftBody.cpp in Sources */,
 				840C3E3A178D396E00F57A8D /* DKThread.cpp in Sources */,
+				849EF8962033453800160DD3 /* DKGpuBuffer.cpp in Sources */,
 				840C3E3F178D396E00F57A8D /* DKXmlParser.cpp in Sources */,
 				840EE96917C7800700AC2675 /* DKUtils.cpp in Sources */,
 				8482B7491DCE272D0079FD84 /* AudioStreamFLAC.cpp in Sources */,

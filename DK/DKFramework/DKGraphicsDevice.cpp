@@ -45,3 +45,13 @@ DKObject<DKComputePipelineState> DKGraphicsDevice::CreateComputePipeline(const D
 {
 	return impl->CreateComputePipeline(this, desc, reflection);
 }
+
+DKObject<DKGpuBuffer> DKGraphicsDevice::CreateBuffer(size_t s, DKGpuStorageMode g, DKCpuCacheMode c)
+{
+	return impl->CreateBuffer(s, g, c);
+}
+
+DKObject<DKTexture> DKGraphicsDevice::CreateTexture(const DKTextureDescriptor& d)
+{
+	return impl->CreateTexture(d);
+}

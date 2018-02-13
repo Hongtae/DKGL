@@ -11,6 +11,11 @@
 
 namespace DKFramework
 {
+	struct DKTextureDescriptor
+	{
+
+	};
+
 	class DKTexture
 	{
 	public:
@@ -23,6 +28,14 @@ namespace DKFramework
 			Type2DArray,
 			Type3D,
 			TypeCube,
+		};
+		enum Usage
+		{
+			UsageUnknown = 0x0,
+			UsageShaderRead = 0x1,
+			UsageShaderWrite = 0x2,
+			UsageRenderTarget = 0x4,
+			UsagePixelFormatVie = 0x10,
 		};
 
 

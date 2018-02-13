@@ -13,6 +13,9 @@
 #include "DKRenderPipeline.h"
 #include "DKComputePipeline.h"
 #include "DKPipelineReflection.h"
+#include "DKGpuBuffer.h"
+#include "DKTexture.h"
+#include "DKGpuResource.h"
 
 namespace DKFramework
 {
@@ -30,6 +33,9 @@ namespace DKFramework
 
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKPipelineReflection* reflection = NULL);
+
+		DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode);
+		DKObject<DKTexture> CreateTexture(const DKTextureDescriptor&);
 
 	private:
 		DKGraphicsDeviceInterface* impl;

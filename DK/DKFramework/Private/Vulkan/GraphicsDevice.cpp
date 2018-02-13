@@ -599,6 +599,16 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 	return NULL;
 }
 
+DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode)
+{
+	return NULL;
+}
+
+DKObject<DKTexture> GraphicsDevice::CreateTexture(const DKTextureDescriptor&)
+{
+	return NULL;
+}
+
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	VkResult result = VK_SUCCESS;

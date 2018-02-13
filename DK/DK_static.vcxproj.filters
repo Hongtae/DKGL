@@ -573,6 +573,9 @@
     <ClCompile Include="DKFoundation\DKCompressor.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\DKGpuBuffer.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1297,6 +1300,12 @@
     </ClInclude>
     <ClInclude Include="DKFoundation\DKCompressor.h">
       <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuBuffer.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGpuResource.h">
+      <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

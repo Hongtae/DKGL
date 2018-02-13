@@ -396,4 +396,14 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
     return NULL;
 }
 
+DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode)
+{
+	return NULL;
+}
+
+DKObject<DKTexture> GraphicsDevice::CreateTexture(const DKTextureDescriptor&)
+{
+	return NULL;
+}
+
 #endif //#if DKGL_ENABLE_METAL
