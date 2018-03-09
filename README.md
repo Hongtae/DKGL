@@ -57,7 +57,7 @@ any modifictations that platform dependent.
 You can use DK with other UI Tools also. (MFC, Cocoa, wxWidgets, etc.)
 
 ### Running platforms.
-- Windows 10 or later. (DirectX 12 Required)
+- Windows 10 or later. (DirectX12 or Vulkan Required)
 - Mac OS X 10.11 or later. (Metal Required)
 - iOS 9.0 or later. (Metal Required)
 
@@ -77,8 +77,7 @@ DK interfaces to use DK library with other GUI OSes.
     - Win32, Android only.
     - Mac OS X, iOS use Apple's OpenAL framework.
 - BulletPhysics-2.82 (svn rev: 2719)
-- CxImage-7.02
-- FreeType-2.5.3
+- FreeType-2.9
 - bzip2-1.0.6
 - jpeg-9
 - libFLAC-1.2.1
