@@ -56,11 +56,11 @@ SwapChain::~SwapChain(void)
 	VkInstance instance = dev->instance;
 	VkDevice device = dev->device;
 
-	for (RenderTarget* rt : renderTargets)
+	for (Texture* tex : renderTargets)
 	{
-		rt->image = VK_NULL_HANDLE;
-		rt->waitSemaphore = VK_NULL_HANDLE;
-		rt->signalSemaphore = VK_NULL_HANDLE;
+		tex->image = VK_NULL_HANDLE;
+		tex->waitSemaphore = VK_NULL_HANDLE;
+		tex->signalSemaphore = VK_NULL_HANDLE;
 	}
 	renderTargets.Clear();
 
@@ -330,11 +330,11 @@ bool SwapChain::Update(void)
 		vkDestroySwapchainKHR(device, swapchainOld, nullptr);
 	}
 
-	for (RenderTarget* rt : renderTargets)
+	for (Texture* tex : renderTargets)
 	{
-		rt->image = VK_NULL_HANDLE;
-		rt->waitSemaphore = VK_NULL_HANDLE;
-		rt->signalSemaphore = VK_NULL_HANDLE;
+		tex->image = VK_NULL_HANDLE;
+		tex->waitSemaphore = VK_NULL_HANDLE;
+		tex->signalSemaphore = VK_NULL_HANDLE;
 	}
 	renderTargets.Clear();
 
@@ -384,7 +384,7 @@ bool SwapChain::Update(void)
 			return false;
 		}
 
-		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(queue->Device(), imageView, image, nullptr);
+		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(queue->Device(), image, imageView, nullptr);
 		renderTarget->imageType = VK_IMAGE_TYPE_2D;
 		renderTarget->format = swapchainCI.imageFormat;
 		renderTarget->extent = { swapchainExtent.width, swapchainExtent.height, 1 };

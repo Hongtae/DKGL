@@ -14,26 +14,14 @@
 #  ifndef DKGL_ENABLE_VULKAN
 #    define DKGL_ENABLE_VULKAN 0
 #  endif
-#  ifndef DKGL_ENABLE_OPENGL
-#    define DKGL_ENABLE_OPENGL 0
-#  endif
-#ifndef DKGL_ENABLE_DIRECT3D12
-#    define DKGL_ENABLE_DIRECT3D12 0
-#  endif
 #endif
 
 #ifdef _WIN32
-#  ifndef DKGL_ENABLE_DIRECT3D12
-#    define DKGL_ENABLE_DIRECT3D12 1
-#  endif
 #  ifndef DKGL_ENABLE_VULKAN
 #    define DKGL_ENABLE_VULKAN 1
 #  endif
 #  ifndef DKGL_ENABLE_METAL
 #    define DKGL_ENABLE_METAL 0
-#  endif
-#  ifndef DKGL_ENABLE_OPENGL
-#    define DKGL_ENABLE_OPENGL 0
 #  endif
 #endif
 
@@ -41,14 +29,8 @@
 #  ifndef DKGL_ENABLE_VULKAN
 #    define DKGL_ENABLE_VULKAN 1
 #  endif
-#  ifndef DKGL_ENABLE_OPENGL
-#    define DKGL_ENABLE_OPENGL 1
-#  endif
 #  ifndef DKGL_ENABLE_METAL
 #    define DKGL_ENABLE_METAL 0
-#  endif
-#  ifndef DKGL_ENABLE_DIRECT3D12
-#    define DKGL_ENABLE_DIRECT3D12 0
 #  endif
 #endif
 

@@ -38,8 +38,6 @@ namespace DKFramework
 				void ReleaseEncodingBuffer(VkCommandBuffer cb);
 				VkCommandBuffer GetEncodingBuffer(void);
 
-			private:
-
 				VkCommandPool commandPool;
 				DKObject<DKCommandQueue> queue;
 

@@ -11,10 +11,10 @@
 #include <TargetConditionals.h>
 
 #include "CommandBuffer.h"
-#include "RenderTarget.h"
 #include "RenderCommandEncoder.h"
 #include "ComputeCommandEncoder.h"
 #include "BlitCommandEncoder.h"
+#include "Texture.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -75,7 +75,7 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 		const DKRenderPassColorAttachmentDescriptor& ca = rp.colorAttachments.Value(i);
 		MTLRenderPassColorAttachmentDescriptor* colorAttachment = nil;
 
-		const RenderTarget* rt = ca.renderTarget.SafeCast<RenderTarget>();
+		const Texture* rt = ca.renderTarget.SafeCast<Texture>();
 		if (rt)
 		{
 			colorAttachment = [[[MTLRenderPassColorAttachmentDescriptor alloc] init] autorelease];
@@ -89,7 +89,7 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 
 	if (rp.depthStencilAttachment.renderTarget)
 	{
-		const RenderTarget* rt = rp.depthStencilAttachment.renderTarget.SafeCast<RenderTarget>();
+		const Texture* rt = rp.depthStencilAttachment.renderTarget.SafeCast<Texture>();
 		if (rt)
 		{
 			bool hasDepth = false;

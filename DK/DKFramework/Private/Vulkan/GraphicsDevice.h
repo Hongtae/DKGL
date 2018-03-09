@@ -48,7 +48,6 @@ namespace DKFramework
 				VkPhysicalDeviceFeatures features;
 				DKArray<VkExtensionProperties> extensionProperties;
 
-			private:
 				bool enableValidation;
 				VkDebugReportCallbackEXT msgCallback;
 

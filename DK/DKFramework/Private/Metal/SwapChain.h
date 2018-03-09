@@ -15,7 +15,6 @@
 #include "../../DKWindow.h"
 #include "../../DKSwapChain.h"
 #include "CommandQueue.h"
-#include "RenderTarget.h"
 
 namespace DKFramework
 {

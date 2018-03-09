@@ -31,7 +31,6 @@ namespace DKFramework
 				bool IsSupportPresentation(void) const { return supportPresentation; }
 				uint32_t FamilyIndex(void) const { return familyIndex; }
 
-			private:
 				bool supportPresentation;
 				VkQueueFamilyProperties properties;
 				DKSpinLock lock;

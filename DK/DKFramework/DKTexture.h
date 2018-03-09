@@ -35,7 +35,7 @@ namespace DKFramework
 			UsageShaderRead = 0x1,
 			UsageShaderWrite = 0x2,
 			UsageRenderTarget = 0x4,
-			UsagePixelFormatVie = 0x10,
+			UsagePixelFormatView = 0x10,
 		};
 
 

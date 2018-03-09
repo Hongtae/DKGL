@@ -16,7 +16,7 @@
 #endif
 
 #include "SwapChain.h"
-#include "PixelFormat.h"
+#include "Texture.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -185,10 +185,10 @@ void SwapChain::SetupFrame(void)
 
 		// setup color-attachment
 		id<MTLTexture> texture = currentDrawable.texture;
-		DKObject<RenderTarget> renderTarget = DKOBJECT_NEW RenderTarget(texture, queue->Device());
+		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(texture, queue->Device());
 
 		DKRenderPassColorAttachmentDescriptor colorAttachment;
-		colorAttachment.renderTarget = renderTarget.SafeCast<DKRenderTarget>();
+		colorAttachment.renderTarget = renderTarget.SafeCast<DKTexture>();
 		colorAttachment.clearColor = DKColor(0,0,0,0);
 		colorAttachment.loadAction = colorAttachment.LoadActionClear;
 		colorAttachment.storeAction = colorAttachment.StoreActionStore; // default for color-attachment
@@ -205,7 +205,7 @@ void SwapChain::SetupFrame(void)
 				dsFormat = PixelFormat::From(depthStencilPixelFormat);
 				break;
 		}
-		DKObject<RenderTarget> depthStencilRT = nullptr;
+		DKObject<Texture> depthStencilRT = nullptr;
 		if (dsFormat != MTLPixelFormatInvalid)
 		{
 			NSUInteger width = texture.width;
@@ -219,7 +219,7 @@ void SwapChain::SetupFrame(void)
 			id<MTLTexture> depthTexture = [device newTextureWithDescriptor:depthTextureDesc];
 			if (depthTexture)
 			{
-				depthStencilRT = DKOBJECT_NEW RenderTarget(depthTexture, this->queue->Device());
+				depthStencilRT = DKOBJECT_NEW Texture(depthTexture, this->queue->Device());
 				[depthTexture autorelease];
 			}
 		}

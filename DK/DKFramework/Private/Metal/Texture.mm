@@ -16,7 +16,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
 Texture::Texture(id<MTLTexture> t, DKGraphicsDevice* d)
-: TextureBaseT(t)
+: texture([t retain])
 , device(d)
 {
 
@@ -24,8 +24,8 @@ Texture::Texture(id<MTLTexture> t, DKGraphicsDevice* d)
 
 Texture::~Texture(void)
 {
-	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-
+	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+	[texture release];
 }
 
 #endif //#if DKGL_ENABLE_METAL

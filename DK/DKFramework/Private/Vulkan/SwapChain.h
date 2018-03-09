@@ -12,7 +12,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
-#include "RenderTarget.h"
+#include "Texture.h"
 
 namespace DKFramework
 {
@@ -49,7 +49,7 @@ namespace DKFramework
 				VkSemaphore renderCompleteSemaphore;
 
 
-				DKArray<DKObject<RenderTarget>> renderTargets;
+				DKArray<DKObject<Texture>> renderTargets;
 
 				DKObject<DKWindow> window;
 				DKObject<CommandQueue> queue;

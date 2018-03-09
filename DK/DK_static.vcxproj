@@ -88,7 +88,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -112,7 +112,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -134,7 +134,7 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -158,7 +158,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DKGL_ENABLE_DIRECT3D12=0;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -321,17 +321,6 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\CommandAllocator.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\CommandBuffer.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\CommandQueue.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\PixelFormat.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\ComputeCommandEncoder.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\SwapChain.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\RenderTarget.cpp" />
-    <ClCompile Include="DKFramework\Private\Direct3D12\Texture.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\BlitCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
@@ -340,12 +329,12 @@
     <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
-    <ClCompile Include="DKFramework\Private\Vulkan\RenderTarget.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Texture.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
@@ -494,7 +483,6 @@
     <ClInclude Include="DKFramework\DKRenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKRenderPass.h" />
     <ClInclude Include="DKFramework\DKRenderPipeline.h" />
-    <ClInclude Include="DKFramework\DKRenderTarget.h" />
     <ClInclude Include="DKFramework\DKResource.h" />
     <ClInclude Include="DKFramework\DKResourceLoader.h" />
     <ClInclude Include="DKFramework\DKResourcePool.h" />
@@ -546,18 +534,6 @@
     <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\View.h" />
     <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\CommandAllocator.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\CommandBuffer.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\CommandQueue.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\GraphicsDevice.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\PixelFormat.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\BlitCommandEncoder.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\ComputeCommandEncoder.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\SwapChain.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\RenderTarget.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\Texture.h" />
-    <ClInclude Include="DKFramework\Private\Direct3D12\TextureBaseT.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
@@ -582,14 +558,13 @@
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
-    <ClInclude Include="DKFramework\Private\Vulkan\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
-    <ClInclude Include="DKFramework\Private\Vulkan\TextureBaseT.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Texture.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />

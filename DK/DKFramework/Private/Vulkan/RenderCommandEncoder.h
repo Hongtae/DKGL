@@ -49,8 +49,6 @@ namespace DKFramework
 				void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
 				void AddSignalSemaphore(VkSemaphore);
 
-			private:
-
 				DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
 				DKSet<VkSemaphore> signalSemaphores;
 

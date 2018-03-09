@@ -9,7 +9,7 @@
 #if DKGL_ENABLE_VULKAN
 
 #include "RenderCommandEncoder.h"
-#include "RenderTarget.h"
+#include "Texture.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
@@ -62,7 +62,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 
 	for (const DKRenderPassColorAttachmentDescriptor& colorAttachment : desc.colorAttachments)
 	{
-		const RenderTarget* rt = colorAttachment.renderTarget.SafeCast<RenderTarget>();
+		const Texture* rt = colorAttachment.renderTarget.SafeCast<Texture>();
 		if (rt)
 		{
 			AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
@@ -122,7 +122,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	if (desc.depthStencilAttachment.renderTarget)
 	{
 		const DKRenderPassDepthStencilAttachmentDescriptor& depthStencilAttachment = desc.depthStencilAttachment;
-		const RenderTarget* rt = depthStencilAttachment.renderTarget.SafeCast<RenderTarget>();
+		const Texture* rt = depthStencilAttachment.renderTarget.SafeCast<Texture>();
 		if (rt)
 		{
 			AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);

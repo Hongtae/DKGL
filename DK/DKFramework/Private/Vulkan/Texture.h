@@ -1,15 +1,15 @@
 //
-//  File: TextureBaseT.h
+//  File: Texture.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2018 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
-
+#include "../../DKGraphicsDevice.h"
 #include "../../DKTexture.h"
 #include "PixelFormat.h"
 
@@ -19,9 +19,11 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			template <typename BaseClassT> struct TextureBaseT : public BaseClassT
+			class Texture : public DKTexture
 			{
-				static_assert(DKTypeConversionTest<BaseClassT, DKTexture>(), "BaseClassT must be DKTexture or DKTexture subclass");
+			public:
+				Texture(DKGraphicsDevice*, VkImage, VkImageView, const VkImageCreateInfo*);
+				~Texture(void);
 
 				VkImage					image;
 				VkImageType				imageType;
@@ -30,28 +32,12 @@ namespace DKFramework
 				uint32_t				mipLevels;
 				uint32_t				arrayLayers;
 				VkImageUsageFlags		usage;
-				VkSemaphore				waitSemaphore;
 
-				TextureBaseT(VkImage i, const VkImageCreateInfo* ci)
-					: image(i)
-					, imageType(VK_IMAGE_TYPE_1D)
-					, format(VK_FORMAT_UNDEFINED)
-					, extent({ 0,0,0 })
-					, mipLevels(0)
-					, arrayLayers(0)
-					, usage(0)
-					, waitSemaphore(VK_NULL_HANDLE)
-				{
-					if (ci)
-					{
-						imageType = ci->imageType;
-						format = ci->format;
-						extent = ci->extent;
-						mipLevels = ci->mipLevels;
-						arrayLayers = ci->arrayLayers;
-						usage = ci->usage;
-					}
-				}
+				VkImageView				imageView;
+				VkSemaphore				waitSemaphore;
+				VkSemaphore				signalSemaphore;
+
+				DKObject<DKGraphicsDevice> device;
 
 				uint32_t Width(void) const override
 				{
@@ -79,11 +65,11 @@ namespace DKFramework
 				{
 					switch (imageType)
 					{
-					case VK_IMAGE_TYPE_1D :
+					case VK_IMAGE_TYPE_1D:
 						return arrayLayers > 1 ? DKTexture::Type1DArray : DKTexture::Type1D;
-					case VK_IMAGE_TYPE_2D :
+					case VK_IMAGE_TYPE_2D:
 						return arrayLayers > 1 ? DKTexture::Type2DArray : DKTexture::Type2D;
-					case VK_IMAGE_TYPE_3D :
+					case VK_IMAGE_TYPE_3D:
 						return DKTexture::Type3D;
 					}
 					return DKTexture::TypeUnknown;
