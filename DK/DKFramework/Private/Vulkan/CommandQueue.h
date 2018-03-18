@@ -34,6 +34,7 @@ namespace DKFramework
 
 				bool WaitIdle(void);
 
+				uint16_t Type(void) const override { return 0; }
 				DKGraphicsDevice* Device(void) override { return device; }
 
 				QueueFamily* family;

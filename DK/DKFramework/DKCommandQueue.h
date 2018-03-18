@@ -17,14 +17,22 @@ namespace DKFramework
 	class DKWindow;
 
 	/// @brief GPU command queue
+	/// every queues can perform blit commands by default
 	class DKCommandQueue
 	{
 	public:
+		enum TypeFlags : uint16_t
+		{
+			Graphics = 1,	// Graphics and blit(transfer) commands
+			Compute = 2,	// Compute and blit(transfer) commands
+		};
+
 		virtual ~DKCommandQueue(void) {}
 
 		virtual DKObject<DKCommandBuffer> CreateCommandBuffer(void) = 0;
 		virtual DKObject<DKSwapChain> CreateSwapChain(DKWindow*) = 0;
 
+		virtual uint16_t Type(void) const = 0;
 		virtual DKGraphicsDevice* Device(void) = 0;
 	};
 
