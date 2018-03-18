@@ -164,7 +164,7 @@ namespace DKFramework
 		///                  If you specify NULL, all event handlers are invoked directly.
 		/// @param cb Window callback
 		static DKObject<DKWindow> Create(const DKString& name,
-										 int style = StyleGenericWindow,
+										 uint32_t style = StyleGenericWindow,
 										 DKEventLoop* eventLoop = NULL,
 										 const WindowCallback& cb = WindowCallback());
 		/// Create proxy window. (can be used to interface of existing window)

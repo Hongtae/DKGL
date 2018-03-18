@@ -52,7 +52,7 @@ DKWindow::~DKWindow(void)
 }
 
 DKObject<DKWindow> DKWindow::Create(const DKString& name,
-									int style,
+									uint32_t style,
 									DKEventLoop* eventLoop,
 									const WindowCallback& cb)
 {
