@@ -370,12 +370,12 @@ GraphicsDevice::GraphicsDevice(void)
 			for (size_t j = 0; j < desc.queueFamilyProperties.Count(); ++j)
 			{
 				VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
-				DKLog(" -- Queue-Family[%llu] flag-bits:%c%c%c%c count:%d",
+				DKLog(" -- Queue-Family[%llu] SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c, Queues:%d",
 					j,
-					prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? '1' : '0',
-					prop.queueFlags & VK_QUEUE_TRANSFER_BIT ? '1' : '0',
-					prop.queueFlags & VK_QUEUE_COMPUTE_BIT ? '1' : '0',
-					prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ? '1' : '0',
+					prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? 'Y' : 'N',
+					prop.queueFlags & VK_QUEUE_TRANSFER_BIT ?		'Y' : 'N', // this is optional for Graphics, Compute queue.
+					prop.queueFlags & VK_QUEUE_COMPUTE_BIT ?		'Y' : 'N',
+					prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ?		'Y' : 'N',
 					prop.queueCount);
 			}
 
@@ -417,21 +417,20 @@ GraphicsDevice::GraphicsDevice(void)
 	for (PhysicalDeviceDesc& desc : physicalDeviceList)
 	{
 		VkPhysicalDevice pdevice = desc.physicalDevice;
-		size_t numQueues = 0; // total queues
-		size_t numGraphicsComputeQueues = 0;
-		size_t numGraphicsQueues = 0;
-		size_t numComputeQueues = 0;
 
 		DKArray<VkDeviceQueueCreateInfo> queueCreateInfos;
 		queueCreateInfos.Reserve(desc.queueFamilyProperties.Count());
 		for (uint32_t queueFamilyIndex = 0; queueFamilyIndex < desc.queueFamilyProperties.Count(); ++queueFamilyIndex)
 		{
 			VkQueueFamilyProperties& queueFamily = desc.queueFamilyProperties.Value(queueFamilyIndex);
-			VkDeviceQueueCreateInfo queueInfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
-			queueInfo.queueFamilyIndex = queueFamilyIndex;
-			queueInfo.queueCount = queueFamily.queueCount;
-			queueInfo.pQueuePriorities = (const float*)defaultQueuePriorities;
-			queueCreateInfos.Add(queueInfo);
+			if (queueFamily.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT))
+			{
+				VkDeviceQueueCreateInfo queueInfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+				queueInfo.queueFamilyIndex = queueFamilyIndex;
+				queueInfo.queueCount = queueFamily.queueCount;
+				queueInfo.pQueuePriorities = (const float*)defaultQueuePriorities;
+				queueCreateInfos.Add(queueInfo);
+			}
 		}
 		DKASSERT_DEBUG(queueCreateInfos.Count() > 0);
 

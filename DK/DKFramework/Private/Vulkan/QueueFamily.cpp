@@ -48,6 +48,7 @@ DKObject<DKCommandQueue> QueueFamily::CreateCommandQueue(DKGraphicsDevice* dev)
 		VkQueue queue = freeQueues.Value(freeQueues.Count() - 1);
 		freeQueues.Remove(freeQueues.Count() - 1);
 		DKObject<CommandQueue> commandQueue = DKOBJECT_NEW CommandQueue(dev, this, queue);
+		DKLogI("Vulkan Command-Queue with family-index:%d has been created.", this->familyIndex);
 		return commandQueue.SafeCast<DKCommandQueue>();
 	}
 	return NULL;
@@ -56,6 +57,7 @@ DKObject<DKCommandQueue> QueueFamily::CreateCommandQueue(DKGraphicsDevice* dev)
 void QueueFamily::RecycleQueue(VkQueue queue)
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
+	DKLogI("Vulakn Command-Queue with family-index:%d was reclaimed for recycling.", this->familyIndex);
 	freeQueues.Add(queue);
 }
 
