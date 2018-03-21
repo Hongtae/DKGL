@@ -22,9 +22,9 @@ DKGraphicsDevice::~DKGraphicsDevice(void)
 	DKRawPtrDelete(impl);
 }
 
-DKObject<DKCommandQueue> DKGraphicsDevice::CreateCommandQueue(void)
+DKObject<DKCommandQueue> DKGraphicsDevice::CreateCommandQueue(uint32_t queueTypeFlags)
 {
-	return impl->CreateCommandQueue(this);
+	return impl->CreateCommandQueue(this, queueTypeFlags);
 }
 
 DKObject<DKShaderModule> DKGraphicsDevice::CreateShaderModule(DKShader* shader)

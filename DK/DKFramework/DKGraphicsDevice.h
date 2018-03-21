@@ -27,8 +27,7 @@ namespace DKFramework
 		DKGraphicsDevice(void);
 		~DKGraphicsDevice(void);
 
-
-		DKObject<DKCommandQueue> CreateCommandQueue(void);
+		DKObject<DKCommandQueue> CreateCommandQueue(uint32_t queueTypeFlags);
 		DKObject<DKShaderModule> CreateShaderModule(DKShader*);
 
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);

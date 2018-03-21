@@ -102,4 +102,15 @@ bool CommandQueue::WaitIdle(void)
 	return vkQueueWaitIdle(queue) == VK_SUCCESS;
 }
 
+uint32_t CommandQueue::Type(void) const
+{
+	VkQueueFlags flags = family->properties.queueFlags;
+	uint32_t type = 0;
+	if (flags & VK_QUEUE_GRAPHICS_BIT)
+		type = type | Graphics;
+	if (flags & VK_QUEUE_COMPUTE_BIT)
+		type = type | Compute;
+	return type;
+}
+
 #endif //#if DKGL_ENABLE_VULKAN

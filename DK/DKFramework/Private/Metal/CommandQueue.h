@@ -29,7 +29,7 @@ namespace DKFramework
 				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
 				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 				
-				uint16_t Type(void) const override { return 0; }
+				uint32_t Type(void) const override { return Graphics|Compute; }
 				DKGraphicsDevice* Device(void) override { return device; }
 
 				DKObject<DKGraphicsDevice> device;

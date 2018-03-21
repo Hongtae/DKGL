@@ -417,21 +417,21 @@ GraphicsDevice::GraphicsDevice(void)
 	for (PhysicalDeviceDesc& desc : physicalDeviceList)
 	{
 		VkPhysicalDevice pdevice = desc.physicalDevice;
+		size_t numQueues = 0; // total queues
+		size_t numGraphicsComputeQueues = 0;
+		size_t numGraphicsQueues = 0;
+		size_t numComputeQueues = 0;
 
 		DKArray<VkDeviceQueueCreateInfo> queueCreateInfos;
 		queueCreateInfos.Reserve(desc.queueFamilyProperties.Count());
 		for (uint32_t queueFamilyIndex = 0; queueFamilyIndex < desc.queueFamilyProperties.Count(); ++queueFamilyIndex)
 		{
 			VkQueueFamilyProperties& queueFamily = desc.queueFamilyProperties.Value(queueFamilyIndex);
-			if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) &&
-				(queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
-			{
-				VkDeviceQueueCreateInfo queueInfo = {VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
-				queueInfo.queueFamilyIndex = queueFamilyIndex;
-				queueInfo.queueCount = queueFamily.queueCount;
-				queueInfo.pQueuePriorities = (const float*)defaultQueuePriorities;
-				queueCreateInfos.Add(queueInfo);
-			}
+			VkDeviceQueueCreateInfo queueInfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+			queueInfo.queueFamilyIndex = queueFamilyIndex;
+			queueInfo.queueCount = queueFamily.queueCount;
+			queueInfo.pQueuePriorities = (const float*)defaultQueuePriorities;
+			queueCreateInfos.Add(queueInfo);
 		}
 		DKASSERT_DEBUG(queueCreateInfos.Count() > 0);
 
@@ -547,14 +547,41 @@ DKString GraphicsDevice::DeviceName(void) const
 	return DKString(properties.deviceName);
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev, uint32_t flags)
 {
+	uint32_t queueFlags = 0;
+	if (flags & DKCommandQueue::Graphics)
+		queueFlags = queueFlags | VK_QUEUE_GRAPHICS_BIT;
+	if (flags & DKCommandQueue::Compute)
+		queueFlags = queueFlags | VK_QUEUE_COMPUTE_BIT;
+	uint32_t queueMask = ~uint32_t(0);
+	queueMask = queueMask ^ VK_QUEUE_TRANSFER_BIT;
+	queueMask = queueMask ^ VK_QUEUE_SPARSE_BINDING_BIT;
+	queueMask = queueMask ^ queueFlags;
+
+	// find the exact matching queue
 	for (QueueFamily* family : queueFamilies)
 	{
-		DKObject<DKCommandQueue> queue = family->CreateCommandQueue(dev);
-		if (queue)
-			return queue;
+		if ((family->properties.queueFlags & queueMask) == 0 &&
+			(family->properties.queueFlags & queueFlags) == queueFlags)
+		{
+			DKObject<DKCommandQueue> queue = family->CreateCommandQueue(dev);
+			if (queue)
+				return queue;
+		}
 	}
+
+	// find any queue that satisfies the condition.
+	for (QueueFamily* family : queueFamilies)
+	{
+		if ((family->properties.queueFlags & queueFlags) == queueFlags)
+		{
+			DKObject<DKCommandQueue> queue = family->CreateCommandQueue(dev);
+			if (queue)
+				return queue;
+		}
+	}
+	//TODO: share queue!
 	return NULL;
 }
 
@@ -704,7 +731,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			}
 		}
 	}
-	pipelineCreateInfo.stageCount = shaderStageCreateInfos.Count();
+	pipelineCreateInfo.stageCount = (uint32_t)shaderStageCreateInfos.Count();
 	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
 	// setup layout	
@@ -764,7 +791,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		}
 		// create descriptor set (setIndex) layout
 		VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
-		setLayoutCreateInfo.bindingCount = descriptorBindings.Count();
+		setLayoutCreateInfo.bindingCount = (uint32_t)descriptorBindings.Count();
 		setLayoutCreateInfo.pBindings = descriptorBindings;
 		VkDescriptorSetLayout setLayout = VK_NULL_HANDLE;
 		result = vkCreateDescriptorSetLayout(device, &setLayoutCreateInfo, nullptr, &setLayout);
@@ -777,9 +804,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		descriptorBindings.Clear();
 	}
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
-	pipelineLayoutCreateInfo.setLayoutCount = descriptorSetLayouts.Count();
+	pipelineLayoutCreateInfo.setLayoutCount = (uint32_t)descriptorSetLayouts.Count();
 	pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts;
-	pipelineLayoutCreateInfo.pushConstantRangeCount = pushConstantRanges.Count();
+	pipelineLayoutCreateInfo.pushConstantRangeCount = (uint32_t)pushConstantRanges.Count();
 	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
 
 	result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
@@ -869,9 +896,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	}
 
 	VkPipelineVertexInputStateCreateInfo vertexInputState = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
-	vertexInputState.vertexBindingDescriptionCount = vertexBindingDescriptions.Count();
+	vertexInputState.vertexBindingDescriptionCount = (uint32_t)vertexBindingDescriptions.Count();
 	vertexInputState.pVertexBindingDescriptions = vertexBindingDescriptions;
-	vertexInputState.vertexAttributeDescriptionCount = vertexAttributeDescriptions.Count();
+	vertexInputState.vertexAttributeDescriptionCount = (uint32_t)vertexAttributeDescriptions.Count();
 	vertexInputState.pVertexAttributeDescriptions = vertexAttributeDescriptions;
 	pipelineCreateInfo.pVertexInputState = &vertexInputState;
 
@@ -913,7 +940,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	};
 	VkPipelineDynamicStateCreateInfo dynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
 	dynamicState.pDynamicStates = dynamicStateEnables;
-	dynamicState.dynamicStateCount = ArraySize(dynamicStateEnables);
+	dynamicState.dynamicStateCount = (uint32_t)ArraySize(dynamicStateEnables);
 	pipelineCreateInfo.pDynamicState = &dynamicState;
 
 	// render pass
@@ -1010,20 +1037,20 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 		DKASSERT_DEBUG(subpassColorAttachmentRefs.Count() > attachment.index);
 		VkAttachmentReference& attachmentRef = subpassColorAttachmentRefs.Value(attachment.index);
-		attachmentRef.attachment = index; // index of render-pass-attachment 
+		attachmentRef.attachment = (uint32_t)index; // index of render-pass-attachment 
 		attachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 	}
-	subpassDesc.colorAttachmentCount = subpassColorAttachmentRefs.Count();
+	subpassDesc.colorAttachmentCount = (uint32_t)subpassColorAttachmentRefs.Count();
 	subpassDesc.pColorAttachments = subpassColorAttachmentRefs;
 	subpassDesc.pResolveAttachments = subpassResolveAttachmentRefs;
-	subpassDesc.inputAttachmentCount = subpassInputAttachmentRefs.Count();
+	subpassDesc.inputAttachmentCount = (uint32_t)subpassInputAttachmentRefs.Count();
 	subpassDesc.pInputAttachments = subpassInputAttachmentRefs;
 	if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat))
 	{
 		subpassDesc.pDepthStencilAttachment = &subpassDepthStencilAttachment;
 	}
 
-	renderPassCreateInfo.attachmentCount = attachmentDescriptions.Count();
+	renderPassCreateInfo.attachmentCount = (uint32_t)attachmentDescriptions.Count();
 	renderPassCreateInfo.pAttachments = attachmentDescriptions;
 	renderPassCreateInfo.subpassCount = 1;
 	renderPassCreateInfo.pSubpasses = &subpassDesc;
@@ -1038,7 +1065,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// color blending
 	VkPipelineColorBlendStateCreateInfo colorBlendState = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO };
-	colorBlendState.attachmentCount = colorBlendAttachmentStates.Count();
+	colorBlendState.attachmentCount = (uint32_t)colorBlendAttachmentStates.Count();
 	colorBlendState.pAttachments = colorBlendAttachmentStates;
 	pipelineCreateInfo.pColorBlendState = &colorBlendState;
 

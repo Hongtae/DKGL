@@ -112,7 +112,7 @@ DKString GraphicsDevice::DeviceName(void) const
 	return DKString( device.name.UTF8String );
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev, uint32_t)
 {
 	id<MTLCommandQueue> q = [device newCommandQueue];
 	DKObject<CommandQueue> queue = DKOBJECT_NEW CommandQueue(dev, [q autorelease]);

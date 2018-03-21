@@ -21,10 +21,10 @@ namespace DKFramework
 	class DKCommandQueue
 	{
 	public:
-		enum TypeFlags : uint16_t
+		enum TypeFlags : uint32_t
 		{
-			Graphics = 1,	// Graphics and blit(transfer) commands
-			Compute = 2,	// Compute and blit(transfer) commands
+			Graphics = 1,		// Graphics and Blit commands
+			Compute = 1 << 1,	// Compute and Blit commands
 		};
 
 		virtual ~DKCommandQueue(void) {}
@@ -32,7 +32,7 @@ namespace DKFramework
 		virtual DKObject<DKCommandBuffer> CreateCommandBuffer(void) = 0;
 		virtual DKObject<DKSwapChain> CreateSwapChain(DKWindow*) = 0;
 
-		virtual uint16_t Type(void) const = 0;
+		virtual uint32_t Type(void) const = 0;
 		virtual DKGraphicsDevice* Device(void) = 0;
 	};
 
