@@ -15,7 +15,7 @@ namespace DKFramework
 	class DKGL_API DKShader : public DKResource
 	{
 	public:
-		enum class StageType
+		enum StageType
 		{
 			Vertex,
 			TessellationControl,
