@@ -120,6 +120,7 @@ GraphicsDevice::GraphicsDevice(void)
 	this->enableValidation = true;
 #endif
 
+	DKMap<const char*, VkLayerProperties> supportingLayers;
 	// checking layers
 	if (1)
 	{
@@ -137,12 +138,16 @@ GraphicsDevice::GraphicsDevice(void)
 				  prop.description,
 				  prop.specVersion, 
 				  prop.implementationVersion);
+
+			supportingLayers.Update(prop.layerName, prop);
 		}
 	}
 
 	VkApplicationInfo appInfo = {VK_STRUCTURE_TYPE_APPLICATION_INFO};
 	appInfo.pApplicationName = "DKGL";
+	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.pEngineName = "DKGL";
+	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 
 	DKArray<const char*> enabledExtensions = { VK_KHR_SURFACE_EXTENSION_NAME };
@@ -451,7 +456,7 @@ GraphicsDevice::GraphicsDevice(void)
 				deviceExtensions.Add(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 		}
 
-		VkPhysicalDeviceFeatures enabledFeatures = {};
+		VkPhysicalDeviceFeatures enabledFeatures = desc.features; //enable all features supported by a device
 		VkDeviceCreateInfo deviceCreateInfo = {VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.Count());;
 		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos;
@@ -463,8 +468,7 @@ GraphicsDevice::GraphicsDevice(void)
 			deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions;
 		}
 
-		VkDevice logicalDevice;
-
+		VkDevice logicalDevice = nullptr;
 		err = vkCreateDevice(desc.physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice);
 		if (err == VK_SUCCESS)
 		{
