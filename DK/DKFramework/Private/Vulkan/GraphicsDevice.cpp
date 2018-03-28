@@ -1020,6 +1020,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
 		attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		attachmentDesc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		attachmentDescriptions.Add(attachmentDesc);
 
 		VkPipelineColorBlendAttachmentState blendState;
