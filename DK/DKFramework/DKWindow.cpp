@@ -47,7 +47,7 @@ DKWindow::~DKWindow(void)
 	if (impl)
 	{
 		impl->Destroy();
-		DKRawPtrDelete(impl);
+		delete impl;
 	}
 }
 
@@ -106,7 +106,7 @@ void DKWindow::Close(void)
 	if (impl)
 	{
 		impl->Destroy();
-		DKRawPtrDelete(impl);
+		delete impl;
 	}
 	impl = NULL;
 	this->callback = Callback();
@@ -178,7 +178,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 {
 	if (this->eventLoop)
 	{
-		MouseEvent* eventCopy = DKRawPtrNew<MouseEvent>(event);	
+		MouseEvent* eventCopy = new MouseEvent(event);	
 
 		DKCriticalSection<DKSpinLock> guard(handlerLock);
 		pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
@@ -197,7 +197,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 		DKObject<DKWindow> self = this;
 		this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
 		{
-			DKRawPtrDelete(eventCopy);
+			delete eventCopy;
 			self->ClearCompletedEvents();
 		})->Invocation());
 	}
@@ -242,7 +242,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 
 	if (this->eventLoop)
 	{
-		KeyboardEvent* eventCopy = DKRawPtrNew<KeyboardEvent>(event);
+		KeyboardEvent* eventCopy = new KeyboardEvent(event);
 
 		DKCriticalSection<DKSpinLock> guard(handlerLock);
 		pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
@@ -261,7 +261,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		DKObject<DKWindow> self = this;
 		this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
 		{
-			DKRawPtrDelete(eventCopy);
+			delete eventCopy;
 			self->ClearCompletedEvents();
 		})->Invocation());
 	}
@@ -342,7 +342,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 
 	if (this->eventLoop)
 	{
-		WindowEvent* eventCopy = DKRawPtrNew<WindowEvent>(event);
+		WindowEvent* eventCopy = new WindowEvent(event);
 
 		DKCriticalSection<DKSpinLock> guard(handlerLock);
 		pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
@@ -361,7 +361,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 		DKObject<DKWindow> self = this;
 		this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
 		{
-			DKRawPtrDelete(eventCopy);
+			delete eventCopy;
 			self->ClearCompletedEvents();
 		})->Invocation());
 	}

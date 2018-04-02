@@ -254,6 +254,10 @@ namespace DKFoundation
 		};
 
 	}
+
+	// disable custom memory functions:
+	// DKRawPtrNew, DKRawPtrNewArray, DKRawPtrDelete, DKRawPtrDeleteArray
+#if 0
 	template <typename T, typename... Args>
 	inline T* DKRawPtrNew(Args&&... args)
 	{
@@ -331,4 +335,5 @@ namespace DKFoundation
 			DKFree(p);
 		}
 	}
+#endif
 }

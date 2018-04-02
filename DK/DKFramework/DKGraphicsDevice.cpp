@@ -19,7 +19,7 @@ DKGraphicsDevice::DKGraphicsDevice(void)
 
 DKGraphicsDevice::~DKGraphicsDevice(void)
 {
-	DKRawPtrDelete(impl);
+	delete impl;
 }
 
 DKObject<DKCommandQueue> DKGraphicsDevice::CreateCommandQueue(uint32_t queueTypeFlags)

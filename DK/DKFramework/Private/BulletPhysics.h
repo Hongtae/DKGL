@@ -172,7 +172,7 @@ namespace DKFramework
 
 			template <typename... Args> static T* Create(Args&&... args)
 			{
-				return DKRawPtrNew<T>(CastArg(args)...);
+				return new T(CastArg(args)...);
 			}
 			template <typename... Args> static T* Reset(T* ptr, Args&&... args)
 			{

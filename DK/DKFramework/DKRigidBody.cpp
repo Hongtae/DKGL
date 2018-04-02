@@ -105,8 +105,8 @@ bool DKRigidBody::ResetObject(DKCollisionShape* shape, const ObjectData& data)
 }
 
 DKRigidBody::DKRigidBody(const DKString& name)
-: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
-, motionState(DKRawPtrNew<btDefaultMotionState>())
+: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0.0f, nullptr, nullptr))
+, motionState(new btDefaultMotionState())
 {
 	SetName(name);
 	btRigidBody* body = btRigidBody::upcast(this->impl);
@@ -117,8 +117,8 @@ DKRigidBody::DKRigidBody(const DKString& name)
 }
 
 DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass)
-: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
-, motionState(DKRawPtrNew<btDefaultMotionState>())
+: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0.0f, nullptr, nullptr))
+, motionState(new btDefaultMotionState())
 {
 	if (shape)
 	{
@@ -146,8 +146,8 @@ DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass)
 }
 
 DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass, const DKVector3& inertia)
-: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
-, motionState(DKRawPtrNew<btDefaultMotionState>())
+: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0.0f, nullptr, nullptr))
+, motionState(new btDefaultMotionState())
 {
 	btCollisionShape* cs = NULL;
 	if (shape)
@@ -164,8 +164,8 @@ DKRigidBody::DKRigidBody(DKCollisionShape* shape, float mass, const DKVector3& i
 }
 
 DKRigidBody::DKRigidBody(DKCollisionShape* shape, const ObjectData& data)
-: DKCollisionObject(ObjectType::RigidBody, DKRawPtrNew<btRigidBody>(0.0f, nullptr, nullptr))
-, motionState(DKRawPtrNew<btDefaultMotionState>())
+: DKCollisionObject(ObjectType::RigidBody, new btRigidBody(0.0f, nullptr, nullptr))
+, motionState(new btDefaultMotionState())
 {
 	bool b = ResetObject(shape, data);
 	DKASSERT_DEBUG(b);
@@ -178,10 +178,10 @@ DKRigidBody::~DKRigidBody(void)
 	DKASSERT_DEBUG(rb->getUserPointer() == this);
 	DKASSERT_DEBUG(rb->getNumConstraintRefs() == 0);
 
-	DKRawPtrDelete(impl);
+	delete impl;
 	impl = NULL;
 
-	DKRawPtrDelete(motionState);
+	delete motionState;
 	motionState = NULL;
 }
 

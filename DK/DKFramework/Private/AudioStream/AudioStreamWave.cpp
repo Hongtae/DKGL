@@ -120,14 +120,14 @@ static_assert(sizeof(WaveFormatExt) == 44, "sizeof(WaveFormatEX) == 44");
 
 AudioStreamWave::AudioStreamWave(void)
 	: DKAudioStream(DKAudioStream::FileTypeWave)
-	, context(DKRawPtrNew<WaveFileContext>())
+	, context(new WaveFileContext())
 {
 }
 
 AudioStreamWave::~AudioStreamWave(void)
 {
 	context->stream = NULL;
-	DKRawPtrDelete(context);
+	delete context;
 }
 
 bool AudioStreamWave::Open(const DKString& file)

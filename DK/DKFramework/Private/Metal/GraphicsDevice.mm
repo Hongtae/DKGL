@@ -26,7 +26,7 @@ namespace DKFramework
 		{
 			DKGraphicsDeviceInterface* CreateInterface(void)
 			{
-				return DKRawPtrNew<GraphicsDevice>();
+				return new GraphicsDevice();
 			}
 		}
 	}

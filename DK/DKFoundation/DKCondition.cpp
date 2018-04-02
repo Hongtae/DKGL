@@ -162,14 +162,14 @@ using namespace DKFoundation::Private;
 
 DKCondition::DKCondition(void)
 {
-	impl = reinterpret_cast<void*>(DKRawPtrNew<ConditionImpl>());
+	impl = reinterpret_cast<void*>(new ConditionImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
 DKCondition::~DKCondition(void)
 {
 	DKASSERT_DEBUG(impl != NULL);
-	DKRawPtrDelete(reinterpret_cast<ConditionImpl*>(impl));
+	delete reinterpret_cast<ConditionImpl*>(impl);
 }
 
 void DKCondition::Wait(void) const

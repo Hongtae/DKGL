@@ -31,7 +31,7 @@ DKConstraint::~DKConstraint(void)
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserConstraintPtr() == this);
-	DKRawPtrDelete(impl);
+	delete impl;
 
 	restoreInfo = NULL;
 }

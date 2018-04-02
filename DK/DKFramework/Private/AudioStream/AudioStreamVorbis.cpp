@@ -73,7 +73,7 @@ using namespace DKFramework::Private;
 
 AudioStreamVorbis::AudioStreamVorbis(void)
 	: DKAudioStream(DKAudioStream::FileTypeOggVorbis)
-	, context(DKRawPtrNew<VorbisFileContext>())
+	, context(new VorbisFileContext())
 {
 	memset(context, 0, sizeof(VorbisFileContext));
 }
@@ -82,15 +82,15 @@ AudioStreamVorbis::~AudioStreamVorbis(void)
 {
 	if (context->vorbis.datasource)
 		ov_clear(&context->vorbis);
-	DKRawPtrDelete(context->stream);
-	DKRawPtrDelete(context);
+	delete context->stream;
+	delete context;
 }
 
 bool AudioStreamVorbis::Open(const DKString& file)
 {
 	if (context->vorbis.datasource)
 		ov_clear(&context->vorbis);
-	DKRawPtrDelete(context->stream);
+	delete context->stream;
 	context->stream = NULL;
 
 	DKStringU8 tmp(file);
@@ -119,10 +119,10 @@ bool AudioStreamVorbis::Open(DKStream* stream)
 
 	if (context->vorbis.datasource)
 		ov_clear(&context->vorbis);
-	DKRawPtrDelete(context->stream);
+	delete context->stream;
 	context->stream = NULL;
 
-	VorbisStream *pSource = DKRawPtrNew<VorbisStream>();
+	VorbisStream *pSource = new VorbisStream();
 	pSource->stream = stream;
 	pSource->currentPos = 0;
 
@@ -145,7 +145,7 @@ bool AudioStreamVorbis::Open(DKStream* stream)
 			return true;
 		}
 	}
-	DKRawPtrDelete(pSource);
+	delete pSource;
 	return false;
 }
 

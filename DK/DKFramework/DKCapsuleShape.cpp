@@ -16,10 +16,10 @@ namespace DKFramework
 		{
 			switch (up)
 			{
-			case DKCapsuleShape::UpAxis::Left:		return DKRawPtrNew<btCapsuleShapeX>(radius, height); break;
-			case DKCapsuleShape::UpAxis::Forward:	return DKRawPtrNew<btCapsuleShapeZ>(radius, height); break;
+			case DKCapsuleShape::UpAxis::Left:		return new btCapsuleShapeX(radius, height); break;
+			case DKCapsuleShape::UpAxis::Forward:	return new btCapsuleShapeZ(radius, height); break;
 			}
-			return DKRawPtrNew<btCapsuleShape>(radius, height);
+			return new btCapsuleShape(radius, height);
 		}
 	}
 }

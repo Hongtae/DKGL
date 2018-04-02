@@ -29,7 +29,7 @@ namespace DKFramework
 
 			DKGraphicsDeviceInterface* CreateInterface(void)
 			{
-				return DKRawPtrNew<GraphicsDevice>();
+				return new GraphicsDevice();
 			}
 
 			const char *validationLayerNames[] =
@@ -486,7 +486,7 @@ GraphicsDevice::GraphicsDevice(void)
 
 			for (const VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
 			{
-				QueueFamily* qf = DKRawPtrNew<QueueFamily>(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex));
+				QueueFamily* qf = new QueueFamily(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex));
 				this->queueFamilies.Add(qf);
 			}
 			DKLogI("Vulkan device created with \"%s\"", desc.properties.deviceName);
@@ -535,7 +535,7 @@ GraphicsDevice::~GraphicsDevice(void)
 
 	for (QueueFamily* family : queueFamilies)
 	{
-		DKRawPtrDelete(family);
+		delete family;
 	}
 	queueFamilies.Clear();
 

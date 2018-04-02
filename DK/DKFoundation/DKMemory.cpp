@@ -1322,6 +1322,12 @@ namespace DKFoundation
 	}
 }
 
+#ifndef DKGL_OPERATOR_NEW
+#ifdef DKGL_DYNAMIC
+#define DKGL_OPERATOR_NEW 1
+#endif
+#endif
+
 #ifdef DKGL_OPERATOR_NEW
 void* operator new (std::size_t size)
 {

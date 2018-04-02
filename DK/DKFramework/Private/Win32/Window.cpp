@@ -41,7 +41,7 @@ using namespace DKFramework::Private::Win32;
 
 DKWindowInterface* DKWindowInterface::CreateInterface(DKWindow* win)
 {
-	return DKRawPtrNew<Window>(win);
+	return new Window(win);
 }
 
 using WindowEvent = DKWindow::WindowEvent;

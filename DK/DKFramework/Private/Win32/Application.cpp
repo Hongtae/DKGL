@@ -96,7 +96,7 @@ using namespace DKFramework::Private::Win32;
 
 DKApplicationInterface* DKApplicationInterface::CreateInterface(DKApplication* app, int argc, char* argv[])
 {
-	return DKRawPtrNew<Application>(app);
+	return new Application(app);
 }
 
 Application::Application(DKApplication* app)

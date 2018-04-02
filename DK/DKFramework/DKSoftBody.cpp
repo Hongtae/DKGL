@@ -12,7 +12,7 @@ using namespace DKFramework;
 
 
 DKSoftBody::DKSoftBody(void)
-: DKCollisionObject(ObjectType::SoftBody, DKRawPtrNew<btSoftBody>(nullptr))
+: DKCollisionObject(ObjectType::SoftBody, new btSoftBody(nullptr))
 {
 	DKERROR_THROW("Not Implemented");
 }

@@ -226,14 +226,14 @@ using namespace DKFoundation::Private;
 
 DKSharedLock::DKSharedLock(void)
 {
-	impl = reinterpret_cast<void*>(DKRawPtrNew<SharedLockImpl>());
+	impl = reinterpret_cast<void*>(new SharedLockImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
 DKSharedLock::~DKSharedLock(void)
 {
 	DKASSERT_DEBUG(impl != NULL);
-	DKRawPtrDelete(reinterpret_cast<SharedLockImpl*>(impl));
+	delete reinterpret_cast<SharedLockImpl*>(impl);
 }
 
 void DKSharedLock::LockShared(void) const

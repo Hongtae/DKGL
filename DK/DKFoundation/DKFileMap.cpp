@@ -114,7 +114,7 @@ DKFileMap::~DKFileMap(void)
 			}
 		}
 #endif
-		DKRawPtrDelete(ctxt);
+		delete ctxt;
 	}
 }
 
@@ -320,7 +320,7 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 				HANDLE hMap = ::CreateFileMappingW(hFile, NULL, flProtect, mapLength.HighPart, mapLength.LowPart, NULL);
 				if (hMap)
 				{
-					Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+					Private::FileMapContext* ctxt = new Private::FileMapContext();
 					ctxt->file = hFile;
 					ctxt->map = hMap;
 					ctxt->access = writable ? FILE_MAP_ALL_ACCESS : FILE_MAP_READ;
@@ -386,7 +386,7 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 			{
 				if (st.st_size >= size)
 				{
-					Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+					Private::FileMapContext* ctxt = new Private::FileMapContext();
 					ctxt->file = fd;
 					ctxt->prot = writable ? (PROT_READ|PROT_WRITE) : PROT_READ;
 					ctxt->flags = mmapFlags;
@@ -402,7 +402,7 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 				{
 					if (::ftruncate(fd, size) == 0)
 					{
-						Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+						Private::FileMapContext* ctxt = new Private::FileMapContext();
 						ctxt->file = fd;
 						ctxt->prot = PROT_READ|PROT_WRITE;
 						ctxt->flags = mmapFlags;
@@ -460,7 +460,7 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 		HANDLE hMap = ::CreateFileMappingW(hFile, NULL, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, NULL);
 		if (hMap)
 		{
-			Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+			Private::FileMapContext* ctxt = new Private::FileMapContext();
 			ctxt->file = hFile;
 			ctxt->map = hMap;
 			ctxt->access = FILE_MAP_ALL_ACCESS;
@@ -509,7 +509,7 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 
 		if (::ftruncate(fd, size) == 0)
 		{
-			Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+			Private::FileMapContext* ctxt = new Private::FileMapContext();
 			ctxt->file = fd;
 			ctxt->prot = PROT_READ|PROT_WRITE;
 			ctxt->flags = mmapFlags;
@@ -572,7 +572,7 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 			HANDLE hMap = ::CreateFileMappingW(hFile, NULL, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, NULL);
 			if (hMap)
 			{
-				Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+				Private::FileMapContext* ctxt = new Private::FileMapContext();
 				ctxt->file = hFile;
 				ctxt->map = hMap;
 				ctxt->access = FILE_MAP_ALL_ACCESS;
@@ -635,7 +635,7 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 #endif
 				if (::ftruncate(fd, size) == 0)
 				{
-					Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+					Private::FileMapContext* ctxt = new Private::FileMapContext();
 					ctxt->file = fd;
 					ctxt->prot = PROT_READ|PROT_WRITE;
 					ctxt->flags = mmapFlags;
@@ -677,7 +677,7 @@ DKObject<DKFileMap> DKFileMap::Virtual(size_t size)
 		HANDLE hMap = ::CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, NULL);
 		if (hMap)
 		{
-			Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+			Private::FileMapContext* ctxt = new Private::FileMapContext();
 			ctxt->file = INVALID_HANDLE_VALUE;
 			ctxt->map = hMap;
 			ctxt->access = FILE_MAP_ALL_ACCESS;
@@ -694,7 +694,7 @@ DKObject<DKFileMap> DKFileMap::Virtual(size_t size)
 			DKLog("CreateFileMapping(%lu) failed: %s\n", size, (const wchar_t*)Private::GetErrorString(::GetLastError()));
 		}
 #else
-		Private::FileMapContext* ctxt = DKRawPtrNew<Private::FileMapContext>();
+		Private::FileMapContext* ctxt = new Private::FileMapContext();
 		ctxt->file = -1;
 		ctxt->prot = PROT_READ|PROT_WRITE;
 		ctxt->flags = MAP_ANON|MAP_PRIVATE;

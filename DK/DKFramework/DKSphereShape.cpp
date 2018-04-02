@@ -12,7 +12,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKSphereShape::DKSphereShape(float radius)
-	: DKConvexShape(ShapeType::Sphere, DKRawPtrNew<btSphereShape>(radius))
+	: DKConvexShape(ShapeType::Sphere, new btSphereShape(radius))
 {
 }
 

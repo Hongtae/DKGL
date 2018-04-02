@@ -16,10 +16,10 @@ namespace DKFramework
 		{
 			switch (up)
 			{
-			case DKCylinderShape::UpAxis::Left:		return DKRawPtrNew<btCylinderShapeX>(halfExtents); break;
-			case DKCylinderShape::UpAxis::Forward:	return DKRawPtrNew<btCylinderShapeZ>(halfExtents); break;
+			case DKCylinderShape::UpAxis::Left:		return new btCylinderShapeX(halfExtents); break;
+			case DKCylinderShape::UpAxis::Forward:	return new btCylinderShapeZ(halfExtents); break;
 			}
-			return DKRawPtrNew<btCylinderShape>(halfExtents);
+			return new btCylinderShape(halfExtents);
 		}
 	}
 }

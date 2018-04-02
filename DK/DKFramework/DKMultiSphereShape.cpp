@@ -23,7 +23,7 @@ namespace DKFramework
 				positions.Add(btVector3(spheres[i].center.x, spheres[i].center.y, spheres[i].center.z));
 				radii.Add(spheres[i].radius);
 			}
-			return DKRawPtrNew<btMultiSphereShape>((const btVector3*)positions, radii, (int)numSpheres);
+			return new btMultiSphereShape((const btVector3*)positions, radii, (int)numSpheres);
 		}
 		inline btMultiSphereShape* CreateMultiSphereShape(const DKVector3* centers, const float* radii, size_t numSpheres)
 		{
@@ -31,7 +31,7 @@ namespace DKFramework
 			positions.Reserve(numSpheres);
 			for (size_t i = 0; i < numSpheres; ++i)
 				positions.Add(btVector3(centers[i].x, centers[i].y, centers[i].z));
-			return DKRawPtrNew<btMultiSphereShape>((const btVector3*)positions, radii, (int)numSpheres);
+			return new btMultiSphereShape((const btVector3*)positions, radii, (int)numSpheres);
 		}
 	}
 }

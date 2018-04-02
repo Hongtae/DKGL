@@ -69,7 +69,7 @@ DKApplication::~DKApplication(void)
 
 	DKCriticalSection<DKCondition> guard(Private::appCond);
 
-	DKRawPtrDelete(impl);
+	delete impl;
 
 	Private::application = NULL;
 	Private::appCond.Broadcast();

@@ -12,12 +12,12 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKBoxShape::DKBoxShape(float u, float v, float w)
-	: DKPolyhedralConvexShape(ShapeType::Box, DKRawPtrNew<btBoxShape>(btVector3(u,v,w)))
+	: DKPolyhedralConvexShape(ShapeType::Box, new btBoxShape(btVector3(u,v,w)))
 {
 }
 
 DKBoxShape::DKBoxShape(const DKVector3& v)
-	: DKPolyhedralConvexShape(ShapeType::Box, DKRawPtrNew<btBoxShape>(btVector3(v.x, v.y, v.z)))
+	: DKPolyhedralConvexShape(ShapeType::Box, new btBoxShape(btVector3(v.x, v.y, v.z)))
 {
 }
 

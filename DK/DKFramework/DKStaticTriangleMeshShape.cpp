@@ -132,7 +132,7 @@ DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(
 	const DKVector3* verts, size_t numVertices,
 	const unsigned int* indices, size_t numIndices,
 	const DKAabb& precalculatedAabb)
-	: DKStaticTriangleMeshShape(DKRawPtrNew<IndexedTriangleData>(verts, numVertices, indices, numIndices, precalculatedAabb))
+	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVertices, indices, numIndices, precalculatedAabb))
 {
 }
 
@@ -140,19 +140,19 @@ DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(
 	const DKVector3* verts, size_t numVertices,
 	const unsigned short* indices, size_t numIndices,
 	const DKAabb& precalculatedAabb)
-	: DKStaticTriangleMeshShape(DKRawPtrNew<IndexedTriangleData>(verts, numVertices, indices, numIndices, precalculatedAabb))
+	: DKStaticTriangleMeshShape(new IndexedTriangleData(verts, numVertices, indices, numIndices, precalculatedAabb))
 {
 }
 
 DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(IndexedTriangleData* data)
-	: DKConcaveShape(ShapeType::StaticTriangleMesh, DKRawPtrNew<btBvhTriangleMeshShape>(data, true, true))
+	: DKConcaveShape(ShapeType::StaticTriangleMesh, new btBvhTriangleMeshShape(data, true, true))
 	, meshData(data)
 {
 }
 
 DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape(void)
 {
-	DKRawPtrDelete(meshData);
+	delete meshData;
 }
 
 size_t DKStaticTriangleMeshShape::NumberOfVertices(void) const

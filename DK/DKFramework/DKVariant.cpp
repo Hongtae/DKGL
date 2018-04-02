@@ -36,13 +36,13 @@ namespace DKFramework
 				static T* Alloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
-					pptr[0] = DKRawPtrNew<T>();
+					pptr[0] = new T();
 					return pptr[0];
 				}
 				static void Dealloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
-					DKRawPtrDelete(pptr[0]);
+					delete pptr[0];
 				}
 				static T& Value(void* p)
 				{

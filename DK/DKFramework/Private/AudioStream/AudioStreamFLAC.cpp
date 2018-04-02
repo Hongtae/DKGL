@@ -167,13 +167,13 @@ using namespace DKFramework::Private;
 
 AudioStreamFLAC::AudioStreamFLAC(void)
 	: DKAudioStream(DKAudioStream::FileTypeFLAC)
-	, context(DKRawPtrNew<FLAC_Context>())
+	, context(new FLAC_Context())
 {
 }
 
 AudioStreamFLAC::AudioStreamFLAC(bool isOGG)
 	: DKAudioStream( isOGG ? DKAudioStream::FileTypeOggFLAC : DKAudioStream::FileTypeFLAC)
-	, context(DKRawPtrNew<FLAC_Context>())
+	, context(new FLAC_Context())
 {
 }
 
@@ -184,7 +184,7 @@ AudioStreamFLAC::~AudioStreamFLAC(void)
 		FLAC__stream_decoder_finish(context->decoder);
 		FLAC__stream_decoder_delete(context->decoder);
 	}
-	DKRawPtrDelete(context);
+	delete context;
 }
 
 bool AudioStreamFLAC::Open(const DKString& file)

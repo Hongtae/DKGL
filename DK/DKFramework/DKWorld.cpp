@@ -849,11 +849,11 @@ DKWorld::DKWorld(void)
 : context(NULL)
 , ambientColor(0, 0, 0)
 {
-	context = DKRawPtrNew<CollisionWorldContext>();
-	context->configuration = DKRawPtrNew<btDefaultCollisionConfiguration>();
-	context->dispatcher = DKRawPtrNew<btCollisionDispatcher>(context->configuration);
-	context->broadphase = DKRawPtrNew<btDbvtBroadphase>();
-	context->world = DKRawPtrNew<btCollisionWorld>(context->dispatcher, context->broadphase, context->configuration);
+	context = new CollisionWorldContext();
+	context->configuration = new btDefaultCollisionConfiguration();
+	context->dispatcher = new btCollisionDispatcher(context->configuration);
+	context->broadphase = new btDbvtBroadphase();
+	context->world = new btCollisionWorld(context->dispatcher, context->broadphase, context->configuration);
 	context->solver = NULL;
 	context->tick = 0;
 	context->internalTick = 0;
@@ -864,7 +864,7 @@ DKWorld::DKWorld(void)
 	DKASSERT_DEBUG(context->configuration);
 	DKASSERT_DEBUG(context->world);
 
-//	context->world->setDebugDrawer(DKRawPtrNew<ShapeDrawer>());
+//	context->world->setDebugDrawer(new ShapeDrawer());
 	context->world->setForceUpdateAllAabbs(false);
 }
 
@@ -879,7 +879,7 @@ DKWorld::DKWorld(CollisionWorldContext* ctxt)
 	DKASSERT_DEBUG(context->world);
 	context->tick = 0;
 	context->internalTick = 0;
-//	context->world->setDebugDrawer(DKRawPtrNew<ShapeDrawer>());
+//	context->world->setDebugDrawer(new ShapeDrawer());
 }
 
 DKWorld::~DKWorld(void)
@@ -892,14 +892,14 @@ DKWorld::~DKWorld(void)
 	btIDebugDraw* drawer = context->world->getDebugDrawer();
 	context->world->setDebugDrawer(NULL);
 
-	DKRawPtrDelete(context->world);
-	DKRawPtrDelete(context->solver);
-	DKRawPtrDelete(context->broadphase);
-	DKRawPtrDelete(context->dispatcher);
-	DKRawPtrDelete(context->configuration);
+	delete context->world;
+	delete context->solver;
+	delete context->broadphase;
+	delete context->dispatcher;
+	delete context->configuration;
 
-	DKRawPtrDelete(context);
-	DKRawPtrDelete(drawer);
+	delete context;
+	delete drawer;
 }
 
 void DKWorld::Update(double tickDelta, DKTimeTick tick)

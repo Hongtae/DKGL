@@ -856,13 +856,13 @@ DKHash::DKHash(Type t)
 
 DKHash::~DKHash(void)
 {
-	DKRawPtrDelete(ctxt);
+	delete ctxt;
 }
 
 void DKHash::Initialize(void)
 {
 	if (ctxt == NULL)
-		ctxt = DKRawPtrNew<Private::HashContext>();
+		ctxt = new Private::HashContext();
 
 	switch (type)
 	{

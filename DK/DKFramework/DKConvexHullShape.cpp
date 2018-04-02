@@ -16,7 +16,7 @@ static_assert( sizeof(DKVector3) == sizeof(float)*3, "DKVector3 must be float[3]
 
 DKConvexHullShape::DKConvexHullShape(const DKVector3* verts, size_t numVerts)
 	: DKPolyhedralConvexShape(ShapeType::ConvexHull,
-	(verts && numVerts > 0) ? DKRawPtrNew<btConvexHullShape>(&(verts[0].val[0]), numVerts, sizeof(DKVector3)) : DKRawPtrNew<btConvexHullShape>())
+	(verts && numVerts > 0) ? new btConvexHullShape(&(verts[0].val[0]), numVerts, sizeof(DKVector3)) : new btConvexHullShape())
 {
 }
 
@@ -57,7 +57,7 @@ DKObject<DKConvexHullShape> DKConvexHullShape::CreateHull(const DKTriangle* tri,
 	if (tri == NULL || num == 0)
 		return NULL;
 
-	btTriangleMesh* mesh = DKRawPtrNew<btTriangleMesh>();
+	btTriangleMesh* mesh = new btTriangleMesh();
 
 	for (size_t i = 0; i < num; ++i)
 	{
@@ -70,21 +70,21 @@ DKObject<DKConvexHullShape> DKConvexHullShape::CreateHull(const DKTriangle* tri,
 		mesh->addTriangle(v[0], v[1], v[2]);
 	}
 
-	btConvexShape* convexShape = DKRawPtrNew<btConvexTriangleMeshShape>(mesh);
-	btShapeHull* shapeHull = DKRawPtrNew<btShapeHull>(convexShape);
+	btConvexShape* convexShape = new btConvexTriangleMeshShape(mesh);
+	btShapeHull* shapeHull = new btShapeHull(convexShape);
 
 	btScalar margin = convexShape->getMargin();
 	shapeHull->buildHull(margin);
 
-	btConvexHullShape* convexHullShape = DKRawPtrNew<btConvexHullShape>();
+	btConvexHullShape* convexHullShape = new btConvexHullShape();
 	for (int i = 0; i < shapeHull->numVertices(); ++i)
 	{
 		convexHullShape->addPoint(shapeHull->getVertexPointer()[i]);
 	}
 
-	DKRawPtrDelete(shapeHull);
-	DKRawPtrDelete(convexShape);
-	DKRawPtrDelete(mesh);
+	delete shapeHull;
+	delete convexShape;
+	delete mesh;
 
 	return DKOBJECT_NEW DKConvexHullShape(ShapeType::ConvexHull, convexHullShape);
 }

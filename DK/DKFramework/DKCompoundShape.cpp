@@ -12,7 +12,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 DKCompoundShape::DKCompoundShape(void)
-	: DKCollisionShape(ShapeType::Compound, DKRawPtrNew<btCompoundShape>())
+	: DKCollisionShape(ShapeType::Compound, new btCompoundShape())
 {
 	DKASSERT_DEBUG( this->impl->isCompound() );
 }
