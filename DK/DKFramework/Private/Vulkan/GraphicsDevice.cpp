@@ -1135,7 +1135,7 @@ void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op, b
 
 void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 {
-	const double idleTimerValue = 0.1; // idle timer resolution
+	const double fenceWaitInterval = 0.002;
 
 	VkResult err = VK_SUCCESS;
 
@@ -1224,10 +1224,6 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 				}
 				availableCallbacks.Clear();
 			}
-			else
-			{
-				DKThread::Yield();
-			}
 
 			// lock condition (requires to reset fences mutually exclusive)
 			fenceCompletionCond.Lock();
@@ -1236,13 +1232,17 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 				reusableFences.Add(fences);
 				fences.Clear();
 			}
+			if (err == VK_TIMEOUT)
+			{
+				if (fenceWaitInterval > 0.0)
+					fenceCompletionCond.WaitTimeout(fenceWaitInterval);
+				else
+					DKThread::Yield();
+			}
 		}
 		else
 		{
-			if (idleTimerValue > 0.0)
-				fenceCompletionCond.WaitTimeout(idleTimerValue);
-			else
-				fenceCompletionCond.Wait();
+			fenceCompletionCond.Wait();
 		}
 	}
 
