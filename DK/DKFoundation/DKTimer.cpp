@@ -36,30 +36,24 @@ DKTimer::~DKTimer(void)
 
 double DKTimer::Reset(void)
 {
-	static double freq = static_cast<double>(SystemTickFrequency());
+	static double freq = 1.0 / static_cast<double>(SystemTickFrequency());
 	Tick t = timeStamp;
 	timeStamp = SystemTick();
-	return static_cast<double>(timeStamp - t) / freq;
+	return static_cast<double>(timeStamp - t) * freq;
 }
 
 double DKTimer::Elapsed(void) const
 {
-	static double freq = static_cast<double>(SystemTickFrequency());
-	return static_cast<double>(SystemTick() - timeStamp) / freq;
+	static double freq = 1.0 / static_cast<double>(SystemTickFrequency());
+	return static_cast<double>(SystemTick() - timeStamp) * freq;
 }
 
 DKTimer::Tick DKTimer::SystemTick(void)
 {
 #ifdef _WIN32
-	static LARGE_INTEGER frequency;
-	static BOOL counterEnabled = ::QueryPerformanceFrequency(&frequency);
-	if (counterEnabled)
-	{
-		LARGE_INTEGER count;
-		::QueryPerformanceCounter(&count);
-		return count.QuadPart;
-	}
-	return ::GetTickCount();
+	LARGE_INTEGER count;
+	::QueryPerformanceCounter(&count);
+	return count.QuadPart;
 #elif defined(__APPLE__) && defined(__MACH__)
 	return mach_absolute_time();
 #elif defined(__linux__)
@@ -78,25 +72,22 @@ DKTimer::Tick DKTimer::SystemTick(void)
 DKTimer::Tick DKTimer::SystemTickFrequency(void)
 {
 #ifdef _WIN32
-	static LARGE_INTEGER frequency;
-	static BOOL counterEnabled = ::QueryPerformanceFrequency(&frequency);
-	if (counterEnabled)
+	static LONGLONG frequency = []()->LONGLONG
 	{
+		LARGE_INTEGER frequency;
+		::QueryPerformanceFrequency(&frequency);
 		return frequency.QuadPart;
-	}
-	return 1000ULL;
+	}();
+	return frequency;
 #elif defined(__APPLE__) && defined(__MACH__)
-	static struct MachTimeBase
+	static uint64_t frequency = []()->uint64_t
 	{
-		MachTimeBase(void)
-		{
-			mach_timebase_info_data_t base;
-			mach_timebase_info(&base);
-			frequency = 1000000000ULL * base.denom / base.numer;
-		}
-		uint64_t frequency;
-	} machTime;
-	return machTime.frequency;
+		mach_timebase_info_data_t base;
+		mach_timebase_info(&base);
+		uint64_t frequency = 1000000000ULL * base.denom / base.numer;
+		return frequency;
+	}();
+	return frequency;
 #elif defined(__linux__)
 	return 1000000000ULL;
 #else
