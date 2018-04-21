@@ -323,6 +323,7 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\BlitCommandEncoder.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Buffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp" />
@@ -549,9 +550,9 @@
     <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
-    <ClInclude Include="DKFramework\Private\Metal\TextureBaseT.h" />
     <ClInclude Include="DKFramework\Private\OpenAL.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Buffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h" />

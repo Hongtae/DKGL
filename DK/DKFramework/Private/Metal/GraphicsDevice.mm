@@ -396,12 +396,12 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
     return NULL;
 }
 
-DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode)
+DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice*, size_t, DKGpuStorageMode, DKCpuCacheMode)
 {
 	return NULL;
 }
 
-DKObject<DKTexture> GraphicsDevice::CreateTexture(const DKTextureDescriptor&)
+DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&)
 {
 	return NULL;
 }

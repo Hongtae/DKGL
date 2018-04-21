@@ -14,6 +14,8 @@
 #include "ShaderFunction.h"
 #include "PixelFormat.h"
 #include "RenderPipelineState.h"
+#include "Buffer.h"
+#include "Texture.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework
@@ -629,14 +631,36 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 	return NULL;
 }
 
-DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode)
+DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t size, DKGpuStorageMode storage, DKCpuCacheMode cache)
 {
+	if (size > 0)
+	{
+		VkBufferCreateInfo bufferCI = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
+		bufferCI.size = size;
+		bufferCI.usage = 0xffff;
+		bufferCI.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		VkBuffer buffer = nullptr;
+		VkResult result = vkCreateBuffer(device, &bufferCI, nullptr, &buffer);
+		if (result == VK_SUCCESS)
+		{
+			VkBufferView view = nullptr;
+			DKObject<Buffer> ret = DKOBJECT_NEW Buffer(dev, buffer, view);
+			return ret.SafeCast<DKGpuBuffer>();
+		}
+		else
+		{
+			DKLogE("ERROR: vkCreateBuffer failed: %s", VkResultCStr(result));
+		}
+	}
 	return NULL;
 }
 
-DKObject<DKTexture> GraphicsDevice::CreateTexture(const DKTextureDescriptor&)
+DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const DKTextureDescriptor&)
 {
-	return NULL;
+	DKObject<Texture> texture = NULL;
+	//texture = DKOBJECT_NEW Texture();
+	return texture.SafeCast<DKTexture>();
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)

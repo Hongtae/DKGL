@@ -30,8 +30,8 @@ namespace DKFramework
                 DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) override;
                 DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*) override;
                 DKObject<DKComputePipelineState> CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*) override;
-				DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode);
-				DKObject<DKTexture> CreateTexture(const DKTextureDescriptor&);
+				DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuStorageMode, DKCpuCacheMode);
+				DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&);
 
 			private:
 				id<MTLDevice> device;

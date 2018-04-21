@@ -48,10 +48,10 @@ DKObject<DKComputePipelineState> DKGraphicsDevice::CreateComputePipeline(const D
 
 DKObject<DKGpuBuffer> DKGraphicsDevice::CreateBuffer(size_t s, DKGpuStorageMode g, DKCpuCacheMode c)
 {
-	return impl->CreateBuffer(s, g, c);
+	return impl->CreateBuffer(this, s, g, c);
 }
 
 DKObject<DKTexture> DKGraphicsDevice::CreateTexture(const DKTextureDescriptor& d)
 {
-	return impl->CreateTexture(d);
+	return impl->CreateTexture(this, d);
 }
