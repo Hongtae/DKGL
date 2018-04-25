@@ -184,6 +184,7 @@
     <None Include="DKFramework\Private\Cocoa\View.mm" />
     <None Include="DKFramework\Private\Cocoa\Window.mm" />
     <None Include="DKFramework\Private\Metal\BlitCommandEncoder.mm" />
+    <None Include="DKFramework\Private\Metal\Buffer.mm" />
     <None Include="DKFramework\Private\Metal\CommandBuffer.mm" />
     <None Include="DKFramework\Private\Metal\CommandQueue.mm" />
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm" />
@@ -191,7 +192,6 @@
     <None Include="DKFramework\Private\Metal\PixelFormat.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
-    <None Include="DKFramework\Private\Metal\RenderTarget.mm" />
     <None Include="DKFramework\Private\Metal\ShaderDataType.mm" />
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
     <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
@@ -537,6 +537,7 @@
     <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
     <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Buffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h" />
@@ -544,7 +545,6 @@
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
-    <ClInclude Include="DKFramework\Private\Metal\RenderTarget.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />

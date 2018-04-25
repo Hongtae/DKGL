@@ -5,15 +5,6 @@
     <None Include="DKFoundation\DKUtils.mm">
       <Filter>DKFoundation</Filter>
     </None>
-    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
-    <None Include="DKFramework\Private\Metal\CommandBuffer.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
-    <None Include="DKFramework\Private\Metal\CommandQueue.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
     <None Include="DKFramework\Private\Cocoa\AppEventLoop.mm">
       <Filter>DKFramework\Private\Cocoa</Filter>
     </None>
@@ -41,22 +32,25 @@
     <None Include="DKFramework\Private\CocoaTouch\Window.mm">
       <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
-    <None Include="DKFramework\Private\Metal\SwapChain.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
-    <None Include="DKFramework\Private\Metal\PixelFormat.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
-    <None Include="DKFramework\Private\Metal\Texture.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
-    <None Include="DKFramework\Private\Metal\RenderTarget.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
     <None Include="DKFramework\Private\Metal\BlitCommandEncoder.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
+    <None Include="DKFramework\Private\Metal\Buffer.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\CommandBuffer.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\CommandQueue.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\PixelFormat.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm">
@@ -72,6 +66,12 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
     <None Include="DKFramework\Private\Metal\ShaderModule.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\SwapChain.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\Texture.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
   </ItemGroup>
@@ -1016,15 +1016,6 @@
     <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Cocoa\AppEventLoop.h">
       <Filter>DKFramework\Private\Cocoa</Filter>
     </ClInclude>
@@ -1070,29 +1061,8 @@
     <ClInclude Include="DKFramework\Private\Win32\DropTarget.h">
       <Filter>DKFramework\Private\Win32</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\SwapChain.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\Texture.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\RenderTarget.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
@@ -1193,23 +1163,11 @@
     <ClInclude Include="DKFramework\DKVertexDescriptor.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKUpdateQueue.h">
       <Filter>DKFramework_WIP</Filter>
@@ -1231,6 +1189,48 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\Buffer.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Buffer.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\SwapChain.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Texture.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
