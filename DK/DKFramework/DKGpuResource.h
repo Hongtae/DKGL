@@ -15,11 +15,4 @@ namespace DKFramework
 		DKCpuCacheModeDefault = 0,
 		DKCpuCacheModeWriteCombined,
 	};
-	enum DKGpuStorageMode
-	{
-		DKGpuStorageShared = 0,
-		DKGpuStorageManaged,
-		DKGpuStoragePrivate,
-		DKGpuStorageMemoryless,
-	};
 }

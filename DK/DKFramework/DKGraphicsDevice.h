@@ -33,7 +33,7 @@ namespace DKFramework
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 
-		DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuStorageMode, DKCpuCacheMode);
+		DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode);
 		DKObject<DKTexture> CreateTexture(const DKTextureDescriptor&);
 
 	private:

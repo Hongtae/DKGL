@@ -24,7 +24,7 @@ namespace DKFramework
 			class Texture : public DKTexture
 			{
 			public:
-				Texture(id<MTLTexture>, DKGraphicsDevice*);
+				Texture(DKGraphicsDevice*, id<MTLTexture>);
 				~Texture(void);
 
 				uint32_t Width(void) const override

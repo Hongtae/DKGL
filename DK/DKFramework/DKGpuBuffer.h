@@ -14,6 +14,12 @@ namespace DKFramework
 	class DKGpuBuffer
 	{
 	public:
+		enum StorageMode
+		{
+			StorageModeShared = 0, // accessible to both the CPU and the GPU
+			StorageModePrivate, // only accessible to the GPU
+		};
+
 		virtual ~DKGpuBuffer(void);
 
 	protected:

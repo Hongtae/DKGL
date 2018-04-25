@@ -16,6 +16,8 @@
 #include "ShaderModule.h"
 #include "PixelFormat.h"
 #include "RenderPipelineState.h"
+#include "Buffer.h"
+#include "Texture.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework
@@ -396,8 +398,40 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
     return NULL;
 }
 
-DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice*, size_t, DKGpuStorageMode, DKCpuCacheMode)
+DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t size, DKGpuBuffer::StorageMode storage, DKCpuCacheMode cache)
 {
+	if (size > 0)
+	{
+		MTLResourceOptions options = 0;
+		switch (storage)
+		{
+			case DKGpuBuffer::StorageModeShared:
+				options |= MTLResourceStorageModeShared;
+				break;
+			case DKGpuBuffer::StorageModePrivate:
+				options |= MTLResourceStorageModePrivate;
+				break;
+		}
+		switch (cache)
+		{
+			case DKCpuCacheModeDefault:
+				options |= MTLResourceCPUCacheModeDefaultCache;
+				break;
+			case DKCpuCacheModeWriteCombined:
+				options |= MTLResourceCPUCacheModeWriteCombined;
+				break;
+		}
+
+		id<MTLBuffer> buffer = [device newBufferWithLength:size options:options];
+		if (buffer)
+		{
+			return DKOBJECT_NEW Buffer(dev, buffer);
+		}
+		else
+		{
+			DKLogE("GraphicsDevice::CreateBuffer Error!");
+		}
+	}
 	return NULL;
 }
 

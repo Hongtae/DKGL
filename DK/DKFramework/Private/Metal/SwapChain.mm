@@ -185,7 +185,7 @@ void SwapChain::SetupFrame(void)
 
 		// setup color-attachment
 		id<MTLTexture> texture = currentDrawable.texture;
-		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(texture, queue->Device());
+		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(queue->Device(), texture);
 
 		DKRenderPassColorAttachmentDescriptor colorAttachment;
 		colorAttachment.renderTarget = renderTarget.SafeCast<DKTexture>();
@@ -219,7 +219,7 @@ void SwapChain::SetupFrame(void)
 			id<MTLTexture> depthTexture = [device newTextureWithDescriptor:depthTextureDesc];
 			if (depthTexture)
 			{
-				depthStencilRT = DKOBJECT_NEW Texture(depthTexture, this->queue->Device());
+				depthStencilRT = DKOBJECT_NEW Texture(this->queue->Device(), depthTexture);
 				[depthTexture autorelease];
 			}
 		}

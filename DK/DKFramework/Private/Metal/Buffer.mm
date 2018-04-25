@@ -1,5 +1,5 @@
 //
-//  File: Texture.mm
+//  File: Buffer.mm
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -9,23 +9,22 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 
-#include "Texture.h"
+#include "Buffer.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-Texture::Texture(DKGraphicsDevice* d, id<MTLTexture> t)
+Buffer::Buffer(DKGraphicsDevice* d, id<MTLBuffer> b)
 : device(d)
-, texture([t retain])
+, buffer(b)
 {
-
 }
 
-Texture::~Texture(void)
+Buffer::~Buffer(void)
 {
 	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	[texture release];
+	[buffer release];
 }
 
 #endif //#if DKGL_ENABLE_METAL
