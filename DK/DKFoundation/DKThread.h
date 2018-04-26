@@ -32,6 +32,11 @@ namespace DKFoundation
 		/// determines thread is running(or sleeping).
 		bool IsAlive(void) const;
 
+		/// Set thread priority (from 0.0 to 1.0, 1.0 is highest priority)
+		bool SetPriority(double p);
+		/// Get thread priority
+		double Priority(void) const;
+
 		/// find thread specified by id.
 		static DKObject<DKThread> FindThread(ThreadId id);
 		/// get current thread as DKThread object.

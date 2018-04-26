@@ -320,3 +320,95 @@ bool DKThread::IsAlive(void) const
 	}
 	return false;
 }
+
+bool DKThread::SetPriority(double p)
+{
+	ThreadId tid = Id();
+#if _WIN32
+	HANDLE hThread = OpenThread(THREAD_SET_INFORMATION, FALSE, (DWORD)tid);
+	if (hThread)
+	{
+		const int priorities[5] = {
+			THREAD_PRIORITY_LOWEST,
+			THREAD_PRIORITY_BELOW_NORMAL,
+			THREAD_PRIORITY_NORMAL,
+			THREAD_PRIORITY_ABOVE_NORMAL,
+			THREAD_PRIORITY_HIGHEST
+		};
+		int prio = Clamp<int>(floor(p * 4.0 + 0.5), 0, 4);
+		bool ret = ::SetThreadPriority(hThread, priorities[prio]) != 0;
+		CloseHandle(hThread);
+		return ret;
+	}
+	else
+	{
+		DKLogE("DKThread::SetPriority Error: OpenThread Error");
+	}
+	return false;
+#else
+	int policy = SCHED_FIFO;
+	struct sched_param schedule;
+	if (pthread_getschedparam((pthread_t)tid, &policy, &schedule) != 0)
+	{
+		return false;
+	}
+
+	p = Clamp(p, 0.0, 1.0);
+
+	int min_priority = sched_get_priority_min(policy);
+	int max_priority = sched_get_priority_max(policy);
+
+	schedule.sched_priority = (int)p * (max_priority - min_priority) + min_priority;
+	return pthread_setschedparam((pthread_t)tid, policy, &schedule) == 0;
+#endif
+}
+
+double DKThread::Priority(void) const
+{
+	ThreadId tid = Id();
+#if _WIN32
+	HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION, FALSE, (DWORD)tid);
+	if (hThread)
+	{
+		int prio = ::GetThreadPriority(hThread);
+		CloseHandle(hThread);
+
+		if (prio == THREAD_PRIORITY_ERROR_RETURN)
+		{
+			DKLogE("DKThread::Priority Error: GetThreadPriority failed");
+		}
+		else
+		{
+			const int priorities[5] = {
+				THREAD_PRIORITY_LOWEST,
+				THREAD_PRIORITY_BELOW_NORMAL,
+				THREAD_PRIORITY_NORMAL,
+				THREAD_PRIORITY_ABOVE_NORMAL,
+				THREAD_PRIORITY_HIGHEST
+			};
+			for (int i = 0; i < 4; ++i)
+			{
+				if (prio < priorities[i+1])
+				{
+					return Clamp(double(i) / 4.0, 0.0, 1.0);
+				}
+			}
+		}
+	}
+	else
+	{
+		DKLogE("DKThread::SetPriority Error: OpenThread Error");
+	}
+	return 1.0;
+#else
+	int policy = SCHED_FIFO;
+	struct sched_param schedule;
+	if (pthread_getschedparam((pthread_t)tid, &policy, &schedule) != 0)
+	{
+		return 1.0;
+	}
+	int min_priority = sched_get_priority_min(policy);
+	int max_priority = sched_get_priority_max(policy);
+	return (double)(schedule.sched_priority - min_priority) / (double)(max_priority - min_priority);
+#endif
+}
