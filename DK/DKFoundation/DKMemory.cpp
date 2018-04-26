@@ -355,9 +355,9 @@ namespace DKFoundation
 			static int Init(AllocatorUnit* units)
 			{
 #if DKGL_MEMORY_DEBUG
-				DKLog("Allocator[%d]: (size:%d, alignment:%d, units:%d, chunkSize:%d/%d usage:%.2f%%)\n",
-					  Index, UnitSize, Alignment, NumUnits, Wrapper::Allocator::AlignedChunkSize, MaxChunkSize,
-					  ((double)Wrapper::Allocator::AlignedChunkSize / (double)MaxChunkSize) * 100.0);
+				//DKLog("Allocator[%d]: (size:%d, alignment:%d, units:%d, chunkSize:%d/%d usage:%.2f%%)\n",
+				//	  Index, UnitSize, Alignment, NumUnits, Wrapper::Allocator::AlignedChunkSize, MaxChunkSize,
+				//	  ((double)Wrapper::Allocator::AlignedChunkSize / (double)MaxChunkSize) * 100.0);
 #endif
 				units[Index].unitSize = UnitSize;
 				units[Index].allocator = ::new (SystemHeapAllocator::Alloc(sizeof(Wrapper))) Wrapper();

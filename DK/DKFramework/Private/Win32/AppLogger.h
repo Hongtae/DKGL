@@ -30,7 +30,9 @@ namespace DKFramework
 
 				void WriteLog(WORD, const char* str); // MBCS, not UTF-8
 				void WriteLog(WORD, const wchar_t* str);
-				HANDLE console;				
+				HANDLE console;	
+				WORD initialTextAttributes;
+				bool allocatedConsole;
 			};
 		}
 	}

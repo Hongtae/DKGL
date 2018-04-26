@@ -20,12 +20,14 @@ using namespace DKFramework::Private::Win32;
 
 AppLogger::AppLogger(void)
 	: console(NULL)
+	, allocatedConsole(false)
+	, initialTextAttributes(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED)
 {
 }
 
 AppLogger::~AppLogger(void)
 {
-	if (console)
+	if (console && allocatedConsole)
 	{
 		if (!::IsDebuggerPresent())
 			system("pause");
@@ -35,8 +37,10 @@ AppLogger::~AppLogger(void)
 
 void AppLogger::OnBind(void)
 {
-	if (console == NULL &&
-		AllocConsole())
+	if (console == NULL)
+		allocatedConsole = AllocConsole();
+
+	if (console == NULL && allocatedConsole)
 	{
 		HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
 		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -56,15 +60,31 @@ void AppLogger::OnBind(void)
 
 		console = hOut;
 	}
+	else // the process has it's own console already.
+	{
+		console = GetStdHandle(STD_OUTPUT_HANDLE);
+	}
+	if (console)
+	{
+		CONSOLE_SCREEN_BUFFER_INFO info;
+		if (GetConsoleScreenBufferInfo(console, &info))
+			initialTextAttributes = info.wAttributes;
+	}
 }
 
 void AppLogger::OnUnbind(void)
 {
-	//if (console)
-	//{
-	//	FreeConsole();
-	//	console = NULL;
-	//}
+	if (console)
+	{
+		SetConsoleTextAttribute(console, initialTextAttributes);
+
+		//if (allocatedConsole)
+		//{
+		//	FreeConsole();
+		//	allocatedConsole = false;
+		//}
+		//console = NULL;
+	}
 }
 
 void AppLogger::Log(Category cat, const DKString& msg)
