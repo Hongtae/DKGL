@@ -198,6 +198,7 @@
     <None Include="DKFramework\Private\Metal\SwapChain.mm" />
     <None Include="DKFramework\Private\Metal\Texture.mm" />
     <None Include="Libs.props" />
+    <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFoundation\DKAllocator.cpp" />

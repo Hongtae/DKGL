@@ -74,6 +74,7 @@
     <None Include="DKFramework\Private\Metal\Texture.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
+    <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
