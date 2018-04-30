@@ -70,7 +70,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 
 			VkAttachmentDescription attachment = {};
 			attachment.format = rt->format;
-			attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+			attachment.samples = VK_SAMPLE_COUNT_1_BIT; // 1 sample per pixel
 			switch (colorAttachment.loadAction)
 			{
 			case DKRenderPassAttachmentDescriptor::LoadActionLoad:
