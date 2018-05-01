@@ -357,23 +357,19 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 	DKStringU8 path(file.FilePathString());
 
 #if defined(__APPLE__) && defined(__MACH__)
-	int flags = writable ? (O_RDWR|O_EXLOCK) : (O_RDONLY|O_SHLOCK);
+	int flags = writable ? (O_RDWR | O_EXLOCK) : (O_RDONLY | O_SHLOCK);
 #else
-	int flags = writable ? O_RDWR|O_DIRECT|O_SYNC : O_RDONLY|O_DIRECT|O_SYNC;
+	int flags = writable ? O_RDWR : O_RDONLY;
 #endif
 	int fd = ::open((const char*)path, flags, 0);
 	if (fd != -1)
 	{
 #if defined(__APPLE__) && defined(__MACH__)
-		if (fcntl(fd, F_NOCACHE, 1) == -1)
-			DKLog("fcntl failed: %s\n", strerror(errno));
-		if (fcntl(fd, F_FULLFSYNC) == -1)
-			DKLog("fcntl failed: %s\n", strerror(errno));
-		int mmapFlags = MAP_FILE|MAP_SHARED|MAP_NOCACHE;
+		int mmapFlags = MAP_FILE | MAP_SHARED;
 #else
 		if (fcntl(fd, F_SETLK, writable ? F_WRLCK : F_RDLCK) == -1)
 			DKLog("fcntl failed: %s\n", strerror(errno));
-		int mmapFlags = MAP_FILE|MAP_SHARED;
+		int mmapFlags = MAP_FILE | MAP_SHARED;
 #endif
 
 		struct stat st;
@@ -452,7 +448,7 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 #ifdef _WIN32
 	DKString path(file.FilePathString());
 	DWORD dwCreationDisposition = overwrite ? CREATE_ALWAYS : CREATE_NEW;
-	HANDLE hFile = ::CreateFileW((const wchar_t*)path, GENERIC_READ | GENERIC_WRITE, 0, NULL, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL|FILE_FLAG_WRITE_THROUGH, NULL);
+	HANDLE hFile = ::CreateFileW((const wchar_t*)path, GENERIC_READ | GENERIC_WRITE, 0, NULL, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		LARGE_INTEGER mapLength;
@@ -486,9 +482,9 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 #else
 	DKStringU8 path(file.FilePathString());
 #if defined(__APPLE__) && defined(__MACH__)
-	int flags = O_RDWR|O_CREAT|O_EXLOCK;
+	int flags = O_RDWR | O_CREAT | O_EXLOCK;
 #else
-	int flags = O_RDWR|O_CREAT;
+	int flags = O_RDWR | O_CREAT;
 #endif
 	if (!overwrite)
 		flags |= O_EXCL;
@@ -497,14 +493,10 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 	if (fd != -1)
 	{
 #if defined(__APPLE__) && defined(__MACH__)
-		if (fcntl(fd, F_NOCACHE, 1) == -1)
-			DKLog("fcntl failed: %s\n", strerror(errno));
-		if (fcntl(fd, F_FULLFSYNC) == -1)
-			DKLog("fcntl failed: %s\n", strerror(errno));
-		int mmapFlags = MAP_FILE|MAP_SHARED|MAP_NOCACHE;
+		int mmapFlags = MAP_FILE | MAP_SHARED;
 #else
 		flock(fd, LOCK_EX);
-		int mmapFlags = MAP_FILE|MAP_SHARED;
+		int mmapFlags = MAP_FILE | MAP_SHARED;
 #endif
 
 		if (::ftruncate(fd, size) == 0)
@@ -554,8 +546,7 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 		}
 
 		hFile = ::CreateFileW((const wchar_t*)filePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW,
-			FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED /*| FILE_FLAG_WRITE_THROUGH*/ | FILE_FLAG_DELETE_ON_CLOSE, 
-			NULL);
+			FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_FLAG_DELETE_ON_CLOSE, NULL);
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
 			DWORD err = ::GetLastError();
@@ -605,13 +596,13 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 		}
 
 #if defined(__APPLE__) && defined(__MACH__)
-		fd = ::open((const char*)filePath, O_RDWR|O_CREAT|O_EXCL|O_EXLOCK);
-		int mmapFlags = MAP_FILE|MAP_SHARED|MAP_NOCACHE;
+		fd = ::open((const char*)filePath, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK);
+		int mmapFlags = MAP_FILE | MAP_SHARED;
 #else
-		fd = ::open((const char*)filePath, O_RDWR|O_CREAT|O_EXCL);
+		fd = ::open((const char*)filePath, O_RDWR | O_CREAT | O_EXCL);
 		if (fd != -1)
 			flock(fd, LOCK_EX);
-		int mmapFlags = MAP_FILE|MAP_SHARED;
+		int mmapFlags = MAP_FILE | MAP_SHARED;
 #endif
 		if (fd == -1)
 		{
@@ -627,12 +618,6 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 		{
 			if (::unlink((const char*)filePath) == 0)
 			{
-#if defined(__APPLE__) && defined(__MACH__)
-				if (fcntl(fd, F_NOCACHE, 1) == -1)
-					DKLog("fcntl failed: %s\n", strerror(errno));
-				if (fcntl(fd, F_FULLFSYNC) == -1)
-					DKLog("fcntl failed: %s\n", strerror(errno));
-#endif
 				if (::ftruncate(fd, size) == 0)
 				{
 					Private::FileMapContext* ctxt = new Private::FileMapContext();
