@@ -1361,6 +1361,11 @@ void* operator new[] (std::size_t size)
 	return ::operator new(size);
 }
 
+void* operator new[] (size_t size, const std::nothrow_t& tag) noexcept
+{
+	return ::operator new(size, tag);
+}
+
 void operator delete (void* ptr) noexcept
 {
 	if (ptr)
