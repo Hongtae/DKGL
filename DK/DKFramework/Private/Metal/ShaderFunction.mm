@@ -50,7 +50,7 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func)
 	stageInputAttributes.Reserve(function.stageInputAttributes.count);
 	for (MTLAttribute* inAttr in function.stageInputAttributes)
 	{
-		DKVertexAttribute attr;
+		DKShaderAttribute attr;
 		attr.name = DKString((const char*)inAttr.name.UTF8String);
 		attr.location = (uint32_t)inAttr.attributeIndex;
 		attr.type = ShaderDataType::To(inAttr.attributeType);

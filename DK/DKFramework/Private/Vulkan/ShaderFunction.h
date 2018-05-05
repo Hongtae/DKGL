@@ -25,8 +25,8 @@ namespace DKFramework
 				ShaderFunction(DKShaderModule* module, const DKStringU8& name, const DKShaderSpecialization* values, size_t numValues);
 				~ShaderFunction(void);
 
-				const DKArray<DKVertexAttribute>& VertexAttributes(void) const override { return vertexAttributes;}
-				const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override { return stageInputAttributes;}
+				const DKArray<DKVertexAttribute>& VertexAttributes(void) const override;
+				const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override;
 
 				const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap;}
 				DKString FunctionName(void) const override { return DKString(functionName); }
@@ -36,11 +36,10 @@ namespace DKFramework
 				DKObject<DKShaderModule> module;
 				DKStringU8 functionName;
 
+				DKArray<DKVertexAttribute> vertexAttributes;
 				VkSpecializationInfo specializationInfo;
 				void* specializationData;
 
-				DKArray<DKVertexAttribute> vertexAttributes;
-				DKArray<DKShaderAttribute> stageInputAttributes;
 				DKMap<DKString, Constant> functionConstantsMap;
 			};
 		}

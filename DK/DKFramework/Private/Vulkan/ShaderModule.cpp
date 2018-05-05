@@ -94,6 +94,200 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	{
 		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
 	}
+	// stage inputs
+	this->stageInputAttributes.Reserve(resources.stage_inputs.size());
+	for (const spirv_cross::Resource& resource : resources.stage_inputs)
+	{
+		uint32_t location = compiler.get_decoration(resource.id, spv::DecorationLocation);
+		DKStringU8 name = "";
+		if (resource.name.size() > 0)
+			name = resource.name.c_str();
+		else
+			name = compiler.get_fallback_name(resource.id).c_str();
+
+		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+
+		DKShaderDataType dataType = DKShaderDataType::None;
+
+		// get item type
+		switch (spType.basetype)
+		{
+		case spirv_cross::SPIRType::Void:
+			dataType = DKShaderDataType::None;
+			break;
+		case spirv_cross::SPIRType::Struct:
+			dataType = DKShaderDataType::Struct;
+			break;
+		case spirv_cross::SPIRType::Boolean:
+			switch (spType.vecsize)
+			{
+			case 2:		dataType = DKShaderDataType::Bool2;		break;
+			case 3:		dataType = DKShaderDataType::Bool3;		break;
+			case 4:		dataType = DKShaderDataType::Bool4;		break;
+			default:	dataType = DKShaderDataType::Bool;		break;
+			}
+			break;
+		case spirv_cross::SPIRType::Char:
+			switch (spType.vecsize)
+			{
+			case 2:		dataType = DKShaderDataType::Char2;		break;
+			case 3:		dataType = DKShaderDataType::Char3;		break;
+			case 4:		dataType = DKShaderDataType::Char4;		break;
+			default:	dataType = DKShaderDataType::Char;		break;
+			}
+			break;
+		case spirv_cross::SPIRType::Int:
+		case spirv_cross::SPIRType::Int64:
+			if (spType.width == 16)
+			{
+				switch (spType.vecsize)
+				{
+				case 2:		dataType = DKShaderDataType::Short2;	break;
+				case 3:		dataType = DKShaderDataType::Short3;	break;
+				case 4:		dataType = DKShaderDataType::Short4;	break;
+				default:	dataType = DKShaderDataType::Short;		break;
+				}
+			}
+			else if (spType.width == 32)
+			{
+				switch (spType.vecsize)
+				{
+				case 2:		dataType = DKShaderDataType::Int2;		break;
+				case 3:		dataType = DKShaderDataType::Int3;		break;
+				case 4:		dataType = DKShaderDataType::Int4;		break;
+				default:	dataType = DKShaderDataType::Int;		break;
+				}
+			}
+			else
+			{
+				DKLogE("ERROR: DKShaderModule Unsupported stage input attribute type! (Int %d bit)", spType.width);
+			}
+			break;
+		case spirv_cross::SPIRType::UInt:
+		case spirv_cross::SPIRType::UInt64:
+			if (spType.width == 16)
+			{
+				switch (spType.vecsize)
+				{
+				case 2:		dataType = DKShaderDataType::UShort2;	break;
+				case 3:		dataType = DKShaderDataType::UShort3;	break;
+				case 4:		dataType = DKShaderDataType::UShort4;	break;
+				default:	dataType = DKShaderDataType::UShort;	break;
+				}
+			}
+			else if (spType.width == 32)
+			{
+				switch (spType.vecsize)
+				{
+				case 2:		dataType = DKShaderDataType::UInt2;		break;
+				case 3:		dataType = DKShaderDataType::UInt3;		break;
+				case 4:		dataType = DKShaderDataType::UInt4;		break;
+				default:	dataType = DKShaderDataType::UInt;		break;
+				}
+			}
+			else
+			{
+				DKLogE("ERROR: DKShaderModule Unsupported stage input attribute type! (Int %d bit)", spType.width);
+			}
+			break;
+		case spirv_cross::SPIRType::Half:
+		case spirv_cross::SPIRType::Float:
+		case spirv_cross::SPIRType::Double:
+			if (spType.width == 16)
+			{
+				switch (spType.vecsize)
+				{
+				case 2:
+					switch (spType.columns)
+					{
+					case 2:		dataType = DKShaderDataType::Half2x2;	break;
+					case 3:		dataType = DKShaderDataType::Half2x3;	break;
+					case 4:		dataType = DKShaderDataType::Half2x4;	break;
+					default:	dataType = DKShaderDataType::Half2;		break;
+					}
+					break;
+				case 3:
+					switch (spType.columns)
+					{
+					case 2:		dataType = DKShaderDataType::Half3x2;	break;
+					case 3:		dataType = DKShaderDataType::Half3x3;	break;
+					case 4:		dataType = DKShaderDataType::Half3x4;	break;
+					default:	dataType = DKShaderDataType::Half3;		break;
+					}
+					break;
+				case 4:
+					switch (spType.columns)
+					{
+					case 2:		dataType = DKShaderDataType::Half4x2;	break;
+					case 3:		dataType = DKShaderDataType::Half4x3;	break;
+					case 4:		dataType = DKShaderDataType::Half4x4;	break;
+					default:	dataType = DKShaderDataType::Half4;		break;
+					}
+					break;
+				default:
+					dataType = DKShaderDataType::Half;		break;
+				}
+			}
+			else if (spType.width == 32)
+			{
+				switch (spType.vecsize)
+				{
+				case 2:
+					switch (spType.columns)
+					{
+					case 2:		dataType = DKShaderDataType::Float2x2;	break;
+					case 3:		dataType = DKShaderDataType::Float2x3;	break;
+					case 4:		dataType = DKShaderDataType::Float2x4;	break;
+					default:	dataType = DKShaderDataType::Float2;	break;
+					}
+					break;
+				case 3:
+					switch (spType.columns)
+					{
+					case 2:		dataType = DKShaderDataType::Float3x2;	break;
+					case 3:		dataType = DKShaderDataType::Float3x3;	break;
+					case 4:		dataType = DKShaderDataType::Float3x4;	break;
+					default:	dataType = DKShaderDataType::Float3;	break;
+					}
+					break;
+				case 4:
+					switch (spType.columns)
+					{
+					case 2:		dataType = DKShaderDataType::Float4x2;	break;
+					case 3:		dataType = DKShaderDataType::Float4x3;	break;
+					case 4:		dataType = DKShaderDataType::Float4x4;	break;
+					default:	dataType = DKShaderDataType::Float4;	break;
+					}
+					break;
+				default:
+					dataType = DKShaderDataType::Float;		break;
+				}
+			}
+			else
+			{
+				DKLogE("ERROR: DKShaderModule Unsupported stage input attribute type! (Float %d bit)", spType.width);
+			}
+			break;
+		default:
+			DKLogE("ERROR: DKShaderModule Unsupported stage input attribute type!");
+		}
+
+		// get item count! (array size)
+		uint32_t count = 1;
+		if (spType.array.size() > 0)
+		{
+			for (auto i : spType.array)
+				count *= i;
+		}
+
+		DKShaderAttribute attr = {};
+		attr.location = location;
+		attr.name = name;
+		attr.type = dataType;
+		attr.active = true;
+
+		this->stageInputAttributes.Add(attr);
+	}
 
 	// get pushConstant range.
 	if (resources.push_constant_buffers.size() > 0)
@@ -140,11 +334,11 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
 	}
 
-	std::vector<std::string> entryPointNames = compiler.get_entry_points();
-	functionNames.Reserve(entryPointNames.size());
-	for (std::string& name : entryPointNames)
+	// get module entry points
+	std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
+	for (spirv_cross::EntryPoint& ep : entryPoints)
 	{
-		functionNames.Add(name.c_str());
+		functionNames.Add(ep.name.c_str());
 	}
 
 	// specialization constants

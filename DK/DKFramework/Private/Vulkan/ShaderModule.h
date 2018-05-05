@@ -62,6 +62,7 @@ namespace DKFramework
 				// descriptor set bindings
 				// descriptor set index starting with zero and should be continuous even if set is empty.
 				DKArray<DescriptorSetLayout> layouts[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
+				DKArray<DKShaderAttribute> stageInputAttributes;
 				PushConstantLayout pushConstantLayout;
 			};
 		}
