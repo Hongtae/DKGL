@@ -31,6 +31,7 @@
     <ClInclude Include="src\spirv_common.hpp" />
     <ClInclude Include="src\spirv_cpp.hpp" />
     <ClInclude Include="src\spirv_cross.hpp" />
+    <ClInclude Include="src\spirv_cross_util.hpp" />
     <ClInclude Include="src\spirv_glsl.hpp" />
     <ClInclude Include="src\spirv_hlsl.hpp" />
     <ClInclude Include="src\spirv_msl.hpp" />
@@ -43,6 +44,7 @@
     <ClCompile Include="src\spirv_cfg.cpp" />
     <ClCompile Include="src\spirv_cpp.cpp" />
     <ClCompile Include="src\spirv_cross.cpp" />
+    <ClCompile Include="src\spirv_cross_util.cpp" />
     <ClCompile Include="src\spirv_glsl.cpp" />
     <ClCompile Include="src\spirv_hlsl.cpp" />
     <ClCompile Include="src\spirv_msl.cpp" />

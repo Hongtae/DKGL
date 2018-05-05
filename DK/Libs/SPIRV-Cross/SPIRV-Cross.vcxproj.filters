@@ -54,14 +54,13 @@
     <ClInclude Include="src\spirv_msl.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\spirv_cross_util.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\LICENSE">
-      <Filter>src</Filter>
-    </None>
-    <None Include="src\README.md">
-      <Filter>src</Filter>
-    </None>
+    <None Include="src\LICENSE" />
+    <None Include="src\README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\spirv_cfg.cpp">
@@ -80,6 +79,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\spirv_msl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cross_util.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
