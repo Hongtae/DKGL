@@ -931,6 +931,21 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// input assembly
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
+	switch (desc.primitiveTopology)
+	{
+	case DKPrimitiveTopology::Points:
+		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;	break;
+	case DKPrimitiveTopology::Lines:
+		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;	break;
+	case DKPrimitiveTopology::LineStrips:
+		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;	break;
+	case DKPrimitiveTopology::Triangles:
+		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;	break;
+	case DKPrimitiveTopology::TriangleStrips:
+		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;	break;
+	default:
+		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown PrimitiveTopology"); break;
+	}
 	pipelineCreateInfo.pInputAssemblyState = &inputAssemblyState;
 
 	// setup viewport
@@ -940,6 +955,14 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// rasterization state
 	VkPipelineRasterizationStateCreateInfo rasterizationState = { VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO };
+	rasterizationState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	rasterizationState.polygonMode = VK_POLYGON_MODE_FILL;
+	rasterizationState.cullMode = VK_CULL_MODE_NONE;
+	rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	rasterizationState.depthClampEnable = VK_FALSE;
+	rasterizationState.rasterizerDiscardEnable = desc.rasterizationEnabled ? VK_FALSE : VK_TRUE;
+	rasterizationState.depthBiasEnable = VK_FALSE;
+	rasterizationState.lineWidth = 1.0f;
 	pipelineCreateInfo.pRasterizationState = &rasterizationState;
 
 	// setup multisampling

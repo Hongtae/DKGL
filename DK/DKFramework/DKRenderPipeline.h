@@ -84,6 +84,7 @@ namespace DKFramework
 		DKVertexDescriptor vertexDescriptor;
 		DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
 		DKPixelFormat depthStencilAttachmentPixelFormat = DKPixelFormat::Invalid;
+		bool rasterizationEnabled; // Do we need this flag? What about use null-frag shader instead?
 	};
 
 	class DKGraphicsDevice;
