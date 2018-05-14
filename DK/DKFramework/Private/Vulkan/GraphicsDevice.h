@@ -46,6 +46,9 @@ namespace DKFramework
 				// device properties
 				VkPhysicalDeviceProperties properties;
 				VkPhysicalDeviceFeatures features;
+				DKArray<VkMemoryType> deviceMemoryTypes;
+				DKArray<VkMemoryHeap> deviceMemoryHeaps;
+				DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 				DKArray<VkExtensionProperties> extensionProperties;
 
 				bool enableValidation;

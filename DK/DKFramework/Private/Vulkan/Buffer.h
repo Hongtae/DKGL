@@ -24,6 +24,9 @@ namespace DKFramework
 				Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView);
 				~Buffer(void);
 
+				void* Lock(void) override;
+				void Unlock(void) override;
+
 				VkBuffer buffer;
 				VkBufferView view;
 				DKObject<DKGraphicsDevice> device;

@@ -481,6 +481,9 @@ GraphicsDevice::GraphicsDevice(void)
 			this->physicalDevice = desc.physicalDevice;
 			this->properties = desc.properties;
 			this->features = desc.features;
+			this->deviceMemoryTypes = DKArray<VkMemoryType>(desc.memoryProperties.memoryTypes, desc.memoryProperties.memoryTypeCount);
+			this->deviceMemoryHeaps = DKArray<VkMemoryHeap>(desc.memoryProperties.memoryHeaps, desc.memoryProperties.memoryHeapCount);
+			this->queueFamilyProperties = desc.queueFamilyProperties;
 			this->extensionProperties = desc.extensionProperties;
 
 			// get queues

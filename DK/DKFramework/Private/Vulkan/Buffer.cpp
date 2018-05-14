@@ -31,4 +31,14 @@ Buffer::~Buffer(void)
 		vkDestroyBuffer(dev->device, buffer, nullptr);
 }
 
+void* Buffer::Lock(void)
+{
+	return NULL;
+}
+
+void Buffer::Unlock(void)
+{
+
+}
+
 #endif //#if DKGL_ENABLE_VULKAN
