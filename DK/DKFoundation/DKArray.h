@@ -96,11 +96,13 @@ namespace DKFoundation
 		DKArray(const VALUE* v, size_t c)
 			: data(NULL), count(0), capacity(0)
 		{
+			ReserveNL(c);
 			Add(v, c);
 		}
 		DKArray(const VALUE& v, size_t c)
 			: data(NULL), count(0), capacity(0)
 		{
+			ReserveNL(c);
 			Add(v, c);
 		}
 		DKArray(DKArray&& v)
@@ -116,14 +118,24 @@ namespace DKFoundation
 		DKArray(const DKArray& v)
 			: data(NULL), count(0), capacity(0)
 		{
-			Add(v);
+			CriticalSection guard(v.lock);
+			ReserveNL(v.count);
+			Add((const VALUE*)v, v.count);
+		}
+		template <typename ...Args>
+		DKArray(const DKArray<VALUE, Args...>& v)
+			: data(NULL), count(0), capacity(0)
+		{
+			typename DKArray<VALUE, Args...>::CriticalSection guard(v.lock);
+			ReserveNL(v.count);
+			Add((const VALUE*)v, v.count);
 		}
 		DKArray(std::initializer_list<VALUE> il)
 			: data(NULL), count(0), capacity(0)
 		{
 			if (il.size() > 0)
 			{
-				ReserveItemCapsNL(il.size());
+				ReserveNL(il.size());
 				for (const VALUE& v : il)
 				{
 					new(std::addressof(data[count])) VALUE(v);
@@ -148,7 +160,7 @@ namespace DKFoundation
 		Index Add(const DKArray<VALUE, Args...>& value)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
-			return Add((const VALUE*)value, value.Count());
+			return Add((const VALUE*)value, value.count);
 		}
 		/// append one item to tail.
 		Index Add(const VALUE& value)
@@ -204,7 +216,7 @@ namespace DKFoundation
 		Index Insert(const DKArray<VALUE, Args...>& value, Index pos)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
-			return Insert((const VALUE*)value, pos);
+			return Insert((const VALUE*)value, value.count, pos);
 		}
 		/// insert one value into position 'pos'.
 		Index Insert(const VALUE& value, Index pos)
@@ -450,6 +462,7 @@ namespace DKFoundation
 				for (Index i = 0; i < count; i++)
 					data[i].~VALUE();
 
+				count = 0;
 				ReserveNL(value.count);
 				for (Index i = 0; i < value.count; i++)
 					new(std::addressof(data[i])) VALUE(value.data[i]);
@@ -463,13 +476,13 @@ namespace DKFoundation
 			for (Index i = 0; i < count; i++)
 				data[i].~VALUE();
 
-			size_t s = il.size();
-			ReserveNL(s);
+			count = 0;
+			ReserveNL(il.size());
 			for (const VALUE& v : il)
 			{
 				new(std::addressof(data[count])) VALUE(v);
+				count++;
 			}
-			count = s;
 			return *this;
 		}
 		DKArray operator + (const VALUE& v) const
