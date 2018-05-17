@@ -21,14 +21,19 @@ namespace DKFramework
 			class Buffer : public DKGpuBuffer
 			{
 			public:
-				Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView);
+				Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView, VkDeviceMemory, VkMemoryType, size_t);
 				~Buffer(void);
 
-				void* Lock(void) override;
+				void* Lock(size_t offset, size_t length) override;
 				void Unlock(void) override;
 
+				DKSpinLock lock;
+				void* mapped;
+				size_t length;
 				VkBuffer buffer;
 				VkBufferView view;
+				VkDeviceMemory memory;
+				VkMemoryType memoryType;
 				DKObject<DKGraphicsDevice> device;
 			};
 		}

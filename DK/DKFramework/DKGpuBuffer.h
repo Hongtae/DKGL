@@ -22,7 +22,7 @@ namespace DKFramework
 
 		virtual ~DKGpuBuffer(void);
 
-		virtual void* Lock(void) = 0;
+		virtual void* Lock(size_t offset = 0, size_t length = ~size_t(0)) = 0;
 		virtual void Unlock(void) = 0;
 
 	protected:

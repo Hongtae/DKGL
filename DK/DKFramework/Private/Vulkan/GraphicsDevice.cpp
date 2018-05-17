@@ -640,7 +640,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 	{
 		VkBufferCreateInfo bufferCI = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
 		bufferCI.size = size;
-		bufferCI.usage = 0xffff;
+		bufferCI.usage = 0x1ff;
 		bufferCI.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		VkBuffer buffer = nullptr;
@@ -648,8 +648,63 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 		if (result == VK_SUCCESS)
 		{
 			VkBufferView view = nullptr;
-			DKObject<Buffer> ret = DKOBJECT_NEW Buffer(dev, buffer, view);
-			return ret.SafeCast<DKGpuBuffer>();
+			VkDeviceMemory memory = nullptr;
+			VkMemoryRequirements memReqs;
+
+			auto getMemoryTypeIndex = [this](uint32_t typeBits, VkMemoryPropertyFlags properties)
+			{
+				for (uint32_t i = 0; i < deviceMemoryTypes.Count(); ++i)
+				{
+					if ((typeBits & (1U << i)) && (deviceMemoryTypes.Value(i).propertyFlags & properties) == properties)
+						return i;
+				}
+				DKASSERT_DEBUG(0);
+				return uint32_t(-1);
+			};
+
+			VkMemoryPropertyFlags memProperties;
+			switch (storage)
+			{
+			case DKGpuBuffer::StorageModeShared:
+				memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+				break;
+			default:
+				memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+				break;
+			}
+
+			VkMemoryAllocateInfo memAllocInfo = { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+			vkGetBufferMemoryRequirements(device, buffer, &memReqs);
+			memAllocInfo.allocationSize = memReqs.size;
+			memAllocInfo.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memProperties);
+
+			result = vkAllocateMemory(device, &memAllocInfo, nullptr, &memory);
+			if (result == VK_SUCCESS)
+			{
+				result = vkBindBufferMemory(device, buffer, memory, 0);
+				if (result == VK_SUCCESS)
+				{
+					VkMemoryType memType = deviceMemoryTypes.Value(memAllocInfo.memoryTypeIndex);
+					DKObject<Buffer> ret = DKOBJECT_NEW Buffer(dev, buffer, view, memory, memType, size);
+					return ret.SafeCast<DKGpuBuffer>();
+				}
+				else
+				{
+					DKLogE("ERROR: vkBindBufferMemory failed: %s", VkResultCStr(result));
+				}
+			}
+			else
+			{
+				DKLogE("ERROR: vkAllocateMemory failed: %s", VkResultCStr(result));
+			}
+
+			// clean up
+			if (view)
+				vkDestroyBufferView(device, view, nullptr);
+			if (buffer)
+				vkDestroyBuffer(device, buffer, nullptr);
+			if (memory)
+				vkFreeMemory(device, memory, nullptr);
 		}
 		else
 		{
