@@ -30,6 +30,9 @@ namespace DKFramework
 				void EndEncoding(void) override;
 				DKCommandBuffer* Buffer(void) override;
 
+				void SetRenderPipelineState(DKRenderPipelineState*) override;
+
+
 				struct Resources
 				{
 					VkFramebuffer		framebuffer;

@@ -11,6 +11,7 @@
 #include "RenderCommandEncoder.h"
 #include "Texture.h"
 #include "GraphicsDevice.h"
+#include "RenderPipelineState.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -308,6 +309,15 @@ void RenderCommandEncoder::EndEncoding(void)
 DKCommandBuffer* RenderCommandEncoder::Buffer(void)
 {
 	return commandBuffer;
+}
+
+void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
+{
+	DKASSERT_DEBUG(dynamic_cast<RenderPipelineState*>(ps));
+	RenderPipelineState* pipeline = static_cast<RenderPipelineState*>(ps);
+	vkCmdBindPipeline(resources->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
+
+	// bind descriptor set
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

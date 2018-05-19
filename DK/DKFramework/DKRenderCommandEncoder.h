@@ -8,6 +8,7 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKRenderPass.h"
+#include "DKRenderPipeline.h"
 #include "DKCommandEncoder.h"
 
 namespace DKFramework
@@ -64,5 +65,7 @@ namespace DKFramework
 	{
 	public:
 		virtual ~DKRenderCommandEncoder(void) {}
+
+		virtual void SetRenderPipelineState(DKRenderPipelineState*) = 0;
 	};
 }
