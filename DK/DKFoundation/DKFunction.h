@@ -91,6 +91,10 @@ namespace DKFoundation
 	{
 		template <typename T> constexpr DKAllocator& FunctionAllocator(void)
 		{
+			return DKAllocator::DefaultAllocator();
+		}
+		template <typename T> constexpr DKAllocator& FunctionSignatureAllocator(void)
+		{
 			return DKFixedSizeAllocator<sizeof(T), sizeof(void*), 1024>::AllocatorInstance();
 		}
 
@@ -408,8 +412,6 @@ namespace DKFoundation
 	template <typename T> using DKFunctionTest = Private::IdentifyFunction<T>;
 	/// Retrieve function type traits (return-type, parameter type, etc.)
 	template <typename T> using DKFunctionType = Private::FunctionTypeSelector<typename DKFunctionTest<T>::Callable>;
-	/// Allocator for DKFunctionSignature object
-	template <typename T> constexpr auto DKFunctionAllocator(void)->DKAllocator& { return Private::FunctionAllocator<T>(); }
 
 	/// Create DKFunctionSignature object from functor or function pointer
 	template <typename Func> auto DKFunction(Func&& fn)-> DKObject<typename DKFunctionType<Func>::Signature>
@@ -424,7 +426,7 @@ namespace DKFoundation
 		using Invoker = typename FunctionType::Invoker;
 		using Signature = typename FunctionType::Signature;
 
-		return new(DKFunctionAllocator<Invoker>()) Invoker(std::forward<Func>(fn));
+		return new(Private::FunctionSignatureAllocator<Invoker>()) Invoker(std::forward<Func>(fn));
 	}
 
 	template <typename T, typename Func> using DKFunctionMemberTest = Private::IdentifyMemberFunction<T, Func>;
@@ -444,6 +446,6 @@ namespace DKFoundation
 		using Invoker = typename FunctionType::Invoker;
 		using Signature = typename FunctionType::Signature;
 
-		return new(DKFunctionAllocator<Invoker>()) Invoker(std::forward<T>(obj), fn);
+		return new(Private::FunctionSignatureAllocator<Invoker>()) Invoker(std::forward<T>(obj), fn);
 	}
 }

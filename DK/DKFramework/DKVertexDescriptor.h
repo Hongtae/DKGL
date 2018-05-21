@@ -77,8 +77,8 @@ namespace DKFramework
 
 	struct DKVertexBufferLayoutDescriptor
 	{
-		DKVertexStepRate step = DKVertexStepRate::Vertex;
-		uint32_t stride = 0;
+		DKVertexStepRate step;
+		uint32_t stride;
 		uint32_t bufferIndex;
 	};
 

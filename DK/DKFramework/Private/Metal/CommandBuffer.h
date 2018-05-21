@@ -20,10 +20,18 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
+			struct ReusableCommandEncoder
+			{
+				enum { InitialNumberOfCommands = 128 };
+				virtual ~ReusableCommandEncoder(void) {}
+				virtual bool EncodeBuffer(id<MTLCommandBuffer>) = 0;
+				virtual void CompleteBuffer(void) = 0;
+			};
+
 			class CommandBuffer : public DKCommandBuffer
 			{
 			public:
-				CommandBuffer(id<MTLCommandBuffer>, DKCommandQueue*);
+				CommandBuffer(DKCommandQueue*);
 				~CommandBuffer(void);
 
 				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
@@ -31,7 +39,6 @@ namespace DKFramework
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
 				bool Commit(void) override;
-				bool WaitUntilCompleted(void) override;
 				DKCommandQueue* Queue(void) override { return queue; };
 
 				void EndEncoder(DKCommandEncoder*);
@@ -39,8 +46,7 @@ namespace DKFramework
 			private:
 				DKCommandEncoder* activeEncoder;
 				DKObject<DKCommandQueue> queue;
-				id<MTLCommandBuffer> buffer;
-				bool committed;
+				DKArray<DKObject<ReusableCommandEncoder>> completedEncoders;
 			};
 		}
 	}

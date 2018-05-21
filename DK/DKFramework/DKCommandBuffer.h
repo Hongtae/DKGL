@@ -36,7 +36,6 @@ namespace DKFramework
 		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
 
 		virtual bool Commit(void) = 0;
-		virtual bool WaitUntilCompleted(void) = 0;
 
 		virtual DKCommandQueue* Queue(void) = 0;
 

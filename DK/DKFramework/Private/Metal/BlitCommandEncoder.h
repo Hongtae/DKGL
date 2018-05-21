@@ -20,18 +20,29 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			class BlitCommandEncoder : public DKBlitCommandEncoder
+			class BlitCommandEncoder : public DKBlitCommandEncoder, public ReusableCommandEncoder
 			{
 			public:
-				BlitCommandEncoder(id<MTLBlitCommandEncoder>, CommandBuffer*);
+				BlitCommandEncoder(CommandBuffer*);
 				~BlitCommandEncoder(void);
 
+				// DKCommandEncoder overrides
 				void EndEncoding(void) override;
-				DKCommandBuffer* Buffer(void) override;
+				bool IsCompleted(void) const override { return buffer == nullptr; }
+				DKCommandBuffer* Buffer(void) override { return buffer; }
+
+				// DKBlitCommandEncoder
+
+
+				// ReusableCommandEncoder overrides
+				bool EncodeBuffer(id<MTLCommandBuffer>) override;
+				void CompleteBuffer(void) override { buffer = nullptr; }
 
 			private:
 				DKObject<CommandBuffer> buffer;
-				id<MTLBlitCommandEncoder> encoder;
+
+				using EncoderCommand = DKFunctionSignature<void (id<MTLBlitCommandEncoder>)>;
+				DKArray<DKObject<EncoderCommand>> encoderCommands;
 			};
 		}
 	}

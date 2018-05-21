@@ -14,34 +14,33 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-ComputeCommandEncoder::ComputeCommandEncoder(id<MTLComputeCommandEncoder> e, CommandBuffer* b)
+ComputeCommandEncoder::ComputeCommandEncoder(CommandBuffer* b)
 : buffer(b)
-, encoder(nil)
 {
-	encoder = [e retain];
+	encoderCommands.Reserve(InitialNumberOfCommands);
 }
 
 ComputeCommandEncoder::~ComputeCommandEncoder(void)
 {
-	if (encoder)
-		[encoder release];
 }
 
 void ComputeCommandEncoder::EndEncoding(void)
 {
-	if (encoder)
-	{
-		[encoder endEncoding];
-		[encoder release];
-		encoder = nil;
-
-		buffer->EndEncoder(this);
-	}
+	DKASSERT_DEBUG(!IsCompleted());
+	encoderCommands.ShrinkToFit();
+	buffer->EndEncoder(this);
 }
 
-DKCommandBuffer* ComputeCommandEncoder::Buffer(void)
+bool ComputeCommandEncoder::EncodeBuffer(id<MTLCommandBuffer> buffer)
 {
-	return buffer;
-}
+	DKASSERT_DEBUG(IsCompleted());
 
+	id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
+	for (EncoderCommand* command : encoderCommands )
+	{
+		command->Invoke(encoder);
+	}
+	[encoder endEncoding];
+	return true;
+}
 #endif //#if DKGL_ENABLE_METAL

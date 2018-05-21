@@ -20,18 +20,30 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			class RenderCommandEncoder : public DKRenderCommandEncoder
+			class RenderCommandEncoder : public DKRenderCommandEncoder, public ReusableCommandEncoder
 			{
 			public:
-				RenderCommandEncoder(id<MTLRenderCommandEncoder>, CommandBuffer*);
+				RenderCommandEncoder(MTLRenderPassDescriptor*, CommandBuffer*);
 				~RenderCommandEncoder(void);
 
+				// DKCommandEncoder overrides
 				void EndEncoding(void) override;
-				DKCommandBuffer* Buffer(void) override;
+				bool IsCompleted(void) const override { return buffer == nullptr; }
+				DKCommandBuffer* Buffer(void) override { return buffer; }
+
+				// DKRenderCommandEncoder overrides
+				void SetRenderPipelineState(DKRenderPipelineState*) override;
+
+				// ReusableCommandEncoder overrides
+				bool EncodeBuffer(id<MTLCommandBuffer>) override;
+				void CompleteBuffer(void) override { buffer = nullptr; }
 
 			private:
 				DKObject<CommandBuffer> buffer;
-				id<MTLRenderCommandEncoder> encoder;
+				MTLRenderPassDescriptor* renderPassDescriptor;
+
+				using EncoderCommand = DKFunctionSignature<void (id<MTLRenderCommandEncoder>)>;
+				DKArray<DKObject<EncoderCommand>> encoderCommands;
 			};
 		}
 	}

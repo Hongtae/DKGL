@@ -116,6 +116,21 @@ namespace DKFoundation
 		template <typename T> struct ConversionTest<void, T>	{enum {Result = false};};
 		template <typename T> struct ConversionTest<T, void>	{enum {Result = false};};
 		template <> struct ConversionTest<void, void>			{enum {Result = true};};
+
+		// conditional cast object.
+		// perform static_cast for convertible object (up cast)
+		// perform dynamic_cast for non-convertible object (down cast)
+		template <typename T, typename R, bool IsConvertible> struct SafeCaster;
+		template <typename T, typename R> struct SafeCaster<T, R, true>
+		{
+			static R* Cast(T* p)				{ return static_cast<R*>(p); }
+			static const R* Cast(const T* p)	{ return static_cast<const R*>(p); }
+		};
+		template <typename T, typename R> struct SafeCaster<T, R, false>
+		{
+			static R* Cast(T* p)				{ return dynamic_cast<R*>(p); }
+			static const R* Cast(const T* p)	{ return dynamic_cast<const R*>(p); }
+		};
 	}
 
 	/// conditional type definition, if C is true result is T, else U.

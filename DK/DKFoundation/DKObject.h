@@ -141,15 +141,11 @@ namespace DKFoundation
 		}
 		template <typename R> R* SafeCast(void)
 		{
-			if (IsConvertible<R>())					// up casting
-				return static_cast<R*>(_target);
-			return dynamic_cast<R*>(_target);		// else down casting
+			return Private::SafeCaster<T, R, IsConvertible<R>()>::Cast(_target);
 		}
 		template <typename R> const R* SafeCast(void) const
 		{
-			if (IsConvertible<R>())						// up casting
-				return static_cast<const R*>(_target);
-			return dynamic_cast<const R*>(_target);		// else down casting
+			return Private::SafeCaster<T, R, IsConvertible<R>()>::Cast(_target);
 		}
 		template <typename R> R* StaticCast(void)
 		{

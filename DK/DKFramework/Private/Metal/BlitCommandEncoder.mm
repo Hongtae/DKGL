@@ -14,34 +14,33 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-BlitCommandEncoder::BlitCommandEncoder(id<MTLBlitCommandEncoder> e, CommandBuffer* b)
+BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* b)
 : buffer(b)
-, encoder(nil)
 {
-	encoder = [e retain];
+	encoderCommands.Reserve(InitialNumberOfCommands);
 }
 
 BlitCommandEncoder::~BlitCommandEncoder(void)
 {
-	if (encoder)
-		[encoder release];
 }
 
 void BlitCommandEncoder::EndEncoding(void)
 {
-	if (encoder)
-	{
-		[encoder endEncoding];
-		[encoder release];
-		encoder = nil;
-
-		buffer->EndEncoder(this);
-	}
+	DKASSERT_DEBUG(!IsCompleted());
+	encoderCommands.ShrinkToFit();
+	buffer->EndEncoder(this);
 }
 
-DKCommandBuffer* BlitCommandEncoder::Buffer(void)
+bool BlitCommandEncoder::EncodeBuffer(id<MTLCommandBuffer> buffer)
 {
-	return buffer;
-}
+	DKASSERT_DEBUG(IsCompleted());
 
+	id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
+	for (EncoderCommand* command : encoderCommands )
+	{
+		command->Invoke(encoder);
+	}
+	[encoder endEncoding];
+	return true;
+}
 #endif //#if DKGL_ENABLE_METAL

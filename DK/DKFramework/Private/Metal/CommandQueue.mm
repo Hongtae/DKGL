@@ -31,7 +31,7 @@ CommandQueue::~CommandQueue(void)
 
 DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
 {
-	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer([queue commandBuffer], this);
+	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer(this);
 	return buffer.SafeCast<DKCommandBuffer>();
 }
 

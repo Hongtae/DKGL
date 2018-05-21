@@ -18,6 +18,7 @@ namespace DKFramework
 		virtual ~DKCommandEncoder(void) {}
 
 		virtual void EndEncoding(void) = 0;
+		virtual bool IsCompleted(void) const = 0;
 		virtual DKCommandBuffer* Buffer(void) = 0;
 	};
 }

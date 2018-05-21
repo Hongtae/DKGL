@@ -10,37 +10,64 @@
 #if DKGL_ENABLE_METAL
 
 #include "RenderCommandEncoder.h"
+#include "RenderPipelineState.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderCommandEncoder::RenderCommandEncoder(id<MTLRenderCommandEncoder> e, CommandBuffer* b)
+RenderCommandEncoder::RenderCommandEncoder(MTLRenderPassDescriptor* rpDesc, CommandBuffer* b)
 : buffer(b)
-, encoder(nil)
+, renderPassDescriptor(nil)
 {
-	encoder = [e retain];
+	renderPassDescriptor = [rpDesc retain];
+	encoderCommands.Reserve(InitialNumberOfCommands);
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
-    [encoder autorelease];
+	if (renderPassDescriptor)
+	{
+		[renderPassDescriptor release];
+	}
 }
 
 void RenderCommandEncoder::EndEncoding(void)
 {
-	if (encoder)
-	{
-		[encoder endEncoding];
-		[encoder autorelease];
-		encoder = nil;
-
-		buffer->EndEncoder(this);
-	}
+	DKASSERT_DEBUG(!IsCompleted());
+	encoderCommands.ShrinkToFit();
+	buffer->EndEncoder(this);
 }
 
-DKCommandBuffer* RenderCommandEncoder::Buffer(void)
+void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 {
-	return buffer;
+	DKASSERT_DEBUG(!IsCompleted());
+	DKASSERT_DEBUG(dynamic_cast<RenderPipelineState*>(ps));
+	DKObject<RenderPipelineState> pipeline = static_cast<RenderPipelineState*>(ps);
+
+	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder)
+	{
+		id<MTLRenderPipelineState> pipelineState = pipeline->pipelineState;
+		[encoder setRenderPipelineState:pipelineState];
+	});
+	encoderCommands.Add(command);
 }
 
+bool RenderCommandEncoder::EncodeBuffer(id<MTLCommandBuffer> buffer)
+{
+	DKASSERT_DEBUG(IsCompleted());
+	DKASSERT_DEBUG(renderPassDescriptor);
+
+	if (renderPassDescriptor)
+	{
+		id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+		for (EncoderCommand* command : encoderCommands )
+		{
+			command->Invoke(encoder);
+		}
+		[encoder endEncoding];
+		return true;
+	}
+
+	return false;
+}
 #endif //#if DKGL_ENABLE_METAL

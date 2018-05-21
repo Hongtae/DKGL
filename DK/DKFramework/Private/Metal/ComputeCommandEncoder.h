@@ -20,18 +20,28 @@ namespace DKFramework
 	{
 		namespace Metal
 		{
-			class ComputeCommandEncoder : public DKComputeCommandEncoder
+			class ComputeCommandEncoder : public DKComputeCommandEncoder, public ReusableCommandEncoder
 			{
 			public:
-				ComputeCommandEncoder(id<MTLComputeCommandEncoder>, CommandBuffer*);
+				ComputeCommandEncoder(CommandBuffer*);
 				~ComputeCommandEncoder(void);
 
+				// DKCommandEncoder overrides
 				void EndEncoding(void) override;
-				DKCommandBuffer* Buffer(void) override;
+				bool IsCompleted(void) const override { return buffer == nullptr; }
+				DKCommandBuffer* Buffer(void) override { return buffer; }
+
+				// DKComputeCommandEncoder
+
+				// ReusableCommandEncoder overrides
+				bool EncodeBuffer(id<MTLCommandBuffer>) override;
+				void CompleteBuffer(void) override { buffer = nullptr; }
 
 			private:
 				DKObject<CommandBuffer> buffer;
-				id<MTLComputeCommandEncoder> encoder;
+
+				using EncoderCommand = DKFunctionSignature<void (id<MTLComputeCommandEncoder>)>;
+				DKArray<DKObject<EncoderCommand>> encoderCommands;
 			};
 		}
 	}

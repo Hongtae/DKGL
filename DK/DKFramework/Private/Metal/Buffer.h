@@ -26,6 +26,9 @@ namespace DKFramework
 				Buffer(DKGraphicsDevice*, id<MTLBuffer>);
 				~Buffer(void);
 
+				void* Lock(size_t offset, size_t length) override;
+				void Unlock(void) override;
+
 				id<MTLBuffer> buffer;
 				DKObject<DKGraphicsDevice> device;
 			};
