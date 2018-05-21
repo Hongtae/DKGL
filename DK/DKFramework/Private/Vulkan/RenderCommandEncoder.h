@@ -28,6 +28,7 @@ namespace DKFramework
 				~RenderCommandEncoder(void);
 
 				void EndEncoding(void) override;
+				bool IsCompleted(void) const override { return resources == nullptr; }
 				DKCommandBuffer* Buffer(void) override;
 
 				void SetRenderPipelineState(DKRenderPipelineState*) override;

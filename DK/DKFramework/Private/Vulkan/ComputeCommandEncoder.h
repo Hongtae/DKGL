@@ -27,6 +27,7 @@ namespace DKFramework
 				~ComputeCommandEncoder(void);
 
 				void EndEncoding(void) override;
+				bool IsCompleted(void) const override { return false; }
 				DKCommandBuffer* Buffer(void) override;
 
 				VkCommandBuffer encodingBuffer;

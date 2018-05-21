@@ -93,11 +93,6 @@ bool CommandBuffer::Commit(void)
 	return result;
 }
 
-bool CommandBuffer::WaitUntilCompleted(void)
-{
-	return false;
-}
-
 VkCommandBuffer CommandBuffer::GetEncodingBuffer(void)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
