@@ -37,9 +37,11 @@ namespace DKFoundation
 	namespace Private
 	{
 #if defined(__APPLE__) && defined(__MACH__)
+		bool InitializeMultiThreadedEnvironment(void);
 		void PerformOperationInsidePool(DKOperation* op);
 #else
-		static inline void PerformOperationInsidePool(DKOperation* op) {op->Perform();}
+		FORCEINLINE bool InitializeMultiThreadedEnvironment(void) { return true; }
+		FORCEINLINE void PerformOperationInsidePool(DKOperation* op) {op->Perform();}
 #endif
 		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
 
@@ -120,6 +122,8 @@ namespace DKFoundation
 		{
 			if (op == NULL)
 				return NULL;
+
+			InitializeMultiThreadedEnvironment();
 
 			ThreadCreationInfo param;
 			param.id = DKThread::invalidId;

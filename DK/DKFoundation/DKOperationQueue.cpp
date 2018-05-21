@@ -20,7 +20,7 @@ namespace DKFoundation
 #if defined(__APPLE__) && defined(__MACH__)
 		void PerformOperationInsidePool(DKOperation* op);
 #else
-		static inline void PerformOperationInsidePool(DKOperation* op) {op->Perform();}
+		FORCEINLINE void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
 #endif
 
 		static DKCondition operationStateCond;

@@ -25,17 +25,22 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+		bool InitializeMultiThreadedEnvironment(void)
+		{
+			if ([NSThread isMultiThreaded] == NO)
+			{
+				@autoreleasepool
+				{
+					NSThread *thread = [[[NSThread alloc] init] autorelease];
+					[thread start];
+				}
+			}
+			return [NSThread isMultiThreaded] != NO;		
+		}
+
 		void PerformOperationInsidePool(DKOperation* op)
 		{
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-			// initialize multi-threading mode for Cocoa
-			if ([NSThread isMultiThreaded] == NO)
-			{
-				NSThread *thread = [[[NSThread alloc] init] autorelease];
-				[thread start];
-			}
-
 			op->Perform();
 			[pool release];
 		}
