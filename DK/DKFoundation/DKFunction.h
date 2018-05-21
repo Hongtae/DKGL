@@ -89,14 +89,21 @@ namespace DKFoundation
 
 	namespace Private
 	{
-		template <typename T> constexpr DKAllocator& FunctionAllocator(void)
+		template <typename T, bool SmallSize = (sizeof(T) < 16) > struct FunctionAllocator;
+		template <typename T> struct FunctionAllocator<T, true> // custom allocator for small size
 		{
-			return DKAllocator::DefaultAllocator();
-		}
-		template <typename T> constexpr DKAllocator& FunctionSignatureAllocator(void)
+			static DKAllocator& Instance(void)
+			{
+				return DKFixedSizeAllocator<sizeof(T), 4, 1024>::AllocatorInstance();
+			}
+		};
+		template <typename T> struct FunctionAllocator<T, false> // default allocator
 		{
-			return DKFixedSizeAllocator<sizeof(T), sizeof(void*), 1024>::AllocatorInstance();
-		}
+			static DKAllocator& Instance(void)
+			{
+				return DKAllocator::DefaultAllocator();
+			}
+		};
 
 		////////////////////////////////////////////////////////////////////////////////
 		// use tuple as function arguments (variadic templates)
@@ -164,19 +171,19 @@ namespace DKFoundation
 			DKObject<DKInvocation<R>> Invocation(Ps... vs) const override
 			{
 				Function& fn = const_cast<FunctionObjectInvoker&>(*this).function;
-				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>::Instance();
 				return new(alloc) _Invocation(fn, ParameterTuple(DKTupleValueSet(), std::forward<Ps>(vs)...));
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple& tuple) const override
 			{
 				Function& fn = const_cast<FunctionObjectInvoker&>(*this).function;
-				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>::Instance();
 				return new(alloc) _Invocation(fn, tuple);
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple&& tuple) const override
 			{
 				Function& fn = const_cast<FunctionObjectInvoker&>(*this).function;
-				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>::Instance();
 				return new(alloc) _Invocation(fn, static_cast<ParameterTuple&&>(tuple));
 			}
 
@@ -224,19 +231,19 @@ namespace DKFoundation
 			DKObject<DKInvocation<R>> Invocation(Ps... vs) const override
 			{
 				Object& obj = const_cast<FunctionMemberObjectInvoker&>(*this).object;
-				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>::Instance();
 				return new(alloc) _Invocation(obj, function, ParameterTuple(DKTupleValueSet(), std::forward<Ps>(vs)...));
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple& tuple) const override
 			{
 				Object& obj = const_cast<FunctionMemberObjectInvoker&>(*this).object;
-				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>::Instance();
 				return new(alloc) _Invocation(obj, function, tuple);
 			}
 			DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple&& tuple) const override
 			{
 				Object& obj = const_cast<FunctionMemberObjectInvoker&>(*this).object;
-				DKAllocator& alloc = FunctionAllocator<_Invocation>();
+				DKAllocator& alloc = FunctionAllocator<_Invocation>::Instance();
 				return new(alloc) _Invocation(obj, function, static_cast<ParameterTuple&&>(tuple));
 			}
 
@@ -426,7 +433,7 @@ namespace DKFoundation
 		using Invoker = typename FunctionType::Invoker;
 		using Signature = typename FunctionType::Signature;
 
-		return new(Private::FunctionSignatureAllocator<Invoker>()) Invoker(std::forward<Func>(fn));
+		return new(Private::FunctionAllocator<Invoker>::Instance()) Invoker(std::forward<Func>(fn));
 	}
 
 	template <typename T, typename Func> using DKFunctionMemberTest = Private::IdentifyMemberFunction<T, Func>;
@@ -446,6 +453,6 @@ namespace DKFoundation
 		using Invoker = typename FunctionType::Invoker;
 		using Signature = typename FunctionType::Signature;
 
-		return new(Private::FunctionSignatureAllocator<Invoker>()) Invoker(std::forward<T>(obj), fn);
+		return new(Private::FunctionAllocator<Invoker>::Instance()) Invoker(std::forward<T>(obj), fn);
 	}
 }
