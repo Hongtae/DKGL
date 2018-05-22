@@ -180,6 +180,7 @@ private:
 };
 
 DKSerializer::DKSerializer(void)
+	: outputStreamByteOrder(DKRuntimeByteOrder())
 {
 }
 
@@ -554,7 +555,7 @@ DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 					DKBufferStream stream;
 					DKObject<DKXmlElement> variantNode = NULL;
 
-					if (queryEntities.variant.ExportStream(&stream))
+					if (queryEntities.variant.ExportStream(&stream, outputStreamByteOrder))
 					{
 						const DKBuffer* buffer = stream.Buffer();
 						if (buffer && buffer->Length() > 0)
@@ -1180,7 +1181,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 
 	struct QueryEntities
 	{
-		bool operator () (const EntityMap& map, bool comp)
+		bool operator () (const EntityMap& map, bool comp, DKByteOrder byteOrder)
 		{
 			variant.SetValueType(DKVariant::TypePairs);
 			variant.Pairs().Clear();
@@ -1188,14 +1189,15 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 			chunks.Reserve(map.Count());
 			entityError = false;
 			compress = comp;
+			outputStreamByteOrder = byteOrder;
 
-			map.EnumerateForward( [this](const EntityMap::Pair& pair) {this->Enumerate(pair);});
+			map.EnumerateForward([this](const EntityMap::Pair& pair) {this->Enumerate(pair); });
 			if (!entityError)
 			{
 				if (variant.Pairs().Count() > 0)
 				{
 					DKBufferStream stream;
-					if (variant.ExportStream(&stream))
+					if (variant.ExportStream(&stream, outputStreamByteOrder))
 					{
 						DKBuffer* buffer = stream.Buffer();
 						EntityChunk chunk;
@@ -1212,6 +1214,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 		}
 		DKVariant variant;
 		DKArray<EntityChunk> chunks;
+		DKByteOrder outputStreamByteOrder;
 		bool compress;
 		bool entityError;
 	private:
@@ -1303,7 +1306,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 
 	if (this->resourceClass.Length() > 0)
 	{
-		if (queryEntities(this->entityMap, (sf == SerializeFormCompressedBinary)))
+		if (queryEntities(this->entityMap, (sf == SerializeFormCompressedBinary), outputStreamByteOrder))
 		{
 			size_t unpackedSize = 0;		// original length
 			size_t packedSize = 0;			// compressed length

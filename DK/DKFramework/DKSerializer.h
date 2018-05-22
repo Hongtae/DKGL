@@ -168,6 +168,8 @@ namespace DKFramework
 		static bool RestoreObject(DKStream* s, DKResourceLoader* p, Selector* sel);
 		static bool RestoreObject(const DKData* d, DKResourceLoader* p, Selector* sel);
 
+		DKByteOrder outputStreamByteOrder;	///< output binary byte-order
+
 	private:
 		struct VariantEntity;
 		struct SerializerEntity;
@@ -246,8 +248,8 @@ namespace DKFramework
 		static bool DeserializeBinary(DKStream* s, DKResourceLoader* p, Selector* sel);
 		
 		// copy constructor not allowed.
-		DKSerializer(const DKSerializer&);
-		DKSerializer& operator = (const DKSerializer&);
+		DKSerializer(const DKSerializer&) = delete;
+		DKSerializer& operator = (const DKSerializer&) = delete;
 
 		class EntityRestore;
 	};
