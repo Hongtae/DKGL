@@ -136,7 +136,7 @@ namespace DKFramework
 		DKObject<DKXmlElement> ExportXML(void) const; ///< generate XML
 		bool ImportXML(const DKXmlElement* e); ///< import from XML
 
-		bool ExportStream(DKStream* stream) const; ///< generate binary data
+		bool ExportStream(DKStream* stream, DKByteOrder byteOrder = DKByteOrder::Unknown) const; ///< generate binary data
 		bool ImportStream(DKStream* stream); ///< import from binary data
 
 		DKVariant& SetInteger(const VInteger& v);

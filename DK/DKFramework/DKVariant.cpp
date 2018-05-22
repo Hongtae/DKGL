@@ -130,16 +130,13 @@ namespace DKFramework
 						{
 							uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
 							n += fieldSize;
-							if (n >= sd.elementSize)
+							if (n > sd.elementSize)
 								break;
 
 							if ((static_cast<uint8_t>(e) & 0xf0) == 0)
 							{
 								switch (fieldSize)
 								{
-								case 1:
-									reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
-									break;
 								case 2:
 									reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
 									break;
@@ -1008,13 +1005,6 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 #define DKVARIANT_HEADER_STRING_BIG_ENDIAN		"DKVariantB"
 #define DKVARIANT_HEADER_STRING_LITTLE_ENDIAN	"DKVariantL"
 
-
-#if __LITTLE_ENDIAN__
-#define DKVARIANT_HEADER_STRING		DKVARIANT_HEADER_STRING_LITTLE_ENDIAN
-#else
-#define DKVARIANT_HEADER_STRING		DKVARIANT_HEADER_STRING_BIG_ENDIAN
-#endif
-
 #pragma pack(push, 4)
 
 static_assert(sizeof(uint32_t) == sizeof(float), "Size mismatch!");
@@ -1022,7 +1012,7 @@ static_assert(sizeof(uint64_t) == sizeof(DKVariant::VFloat), "Size mismatch!");
 static_assert(sizeof(uint64_t) == sizeof(DKVariant::VInteger), "Size mismatch!");
 
 
-bool DKVariant::ExportStream(DKStream* stream) const
+bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 {
 	DKString errorDesc = L"Unknown error";
 	bool validType = false;
@@ -1057,20 +1047,47 @@ bool DKVariant::ExportStream(DKStream* stream) const
 	}
 	if (validType)
 	{
-		size_t headerLen = strlen(DKVARIANT_HEADER_STRING);
-		if (stream->Write(DKVARIANT_HEADER_STRING, headerLen) != headerLen)
+		if (byteOrder == DKByteOrder::Unknown)
+			byteOrder = DKRuntimeByteOrder();
+
+		// write file header
+		const char* headerString = byteOrder == DKByteOrder::BigEndian ?
+			DKVARIANT_HEADER_STRING_BIG_ENDIAN : DKVARIANT_HEADER_STRING_LITTLE_ENDIAN;
+		size_t headerLen = strlen(headerString);
+		if (stream->Write(headerString, headerLen) != headerLen)
 		{
 			errorDesc = L"Failed to write to stream.";
 			goto FAILED;
 		}
-		const unsigned short version = DKVARIANT_VERSION;
-		if (stream->Write(&version, sizeof(version)) != sizeof(version))
+
+		struct ByteOrderedStream
+		{
+			DKStream* stream;
+			bool bigEndian;
+			bool Write(uint16_t v)
+			{
+				v = this->bigEndian ? DKSystemToBigEndian(v) : DKSystemToLittleEndian(v);
+				return stream->Write(&v, sizeof(uint16_t)) == sizeof(uint16_t);
+			}
+			bool Write(uint32_t v)
+			{
+				v = this->bigEndian ? DKSystemToBigEndian(v) : DKSystemToLittleEndian(v);
+				return stream->Write(&v, sizeof(uint32_t)) == sizeof(uint32_t);
+			}
+			bool Write(uint64_t v)
+			{
+				v = this->bigEndian ? DKSystemToBigEndian(v) : DKSystemToLittleEndian(v);
+				return stream->Write(&v, sizeof(uint64_t)) == sizeof(uint64_t);
+			}
+		} output = { stream, byteOrder == DKByteOrder::BigEndian };
+
+		// version
+		if (!output.Write(uint16_t(DKVARIANT_VERSION)))
 		{
 			errorDesc = L"Failed to write to stream.";
 			goto FAILED;
 		}
-		const unsigned int type = static_cast<unsigned int>(valueType);
-		if (stream->Write(&type, sizeof(type)) != sizeof(type))
+		if (!output.Write(uint32_t(valueType)))
 		{
 			errorDesc = L"Failed to write to stream.";
 			goto FAILED;
@@ -1080,8 +1097,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypeInteger)
 		{
-			uint64_t v = static_cast<uint64_t>(this->Integer());
-			if (stream->Write(&v, sizeof(v)) != sizeof(v))
+			if (!output.Write(uint64_t(this->Integer())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1090,8 +1106,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeFloat)
 		{
 			VFloat value = this->Float();
-			uint64_t v = (*reinterpret_cast<uint64_t*>(&value));
-			if (stream->Write(&v, sizeof(v)) != sizeof(v))
+			if (!output.Write(*reinterpret_cast<uint64_t*>(&value)))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1100,95 +1115,95 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeVector2)
 		{
 			VVector2 value = this->Vector2();
-			unsigned int v[2];
 			for (int i = 0; i < 2; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeVector3)
 		{
 			VVector3 value = this->Vector3();
-			unsigned int v[3];
 			for (int i = 0; i < 3; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeVector4)
 		{
 			VVector4 value = this->Vector4();
-			unsigned int v[4];
 			for (int i = 0; i < 4; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeMatrix2)
 		{
 			VMatrix2 value = this->Matrix2();
-			unsigned int v[4];
 			for (int i = 0; i < 4; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeMatrix3)
 		{
 			VMatrix3 value = this->Matrix3();
-			unsigned int v[9];
 			for (int i = 0; i < 9; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeMatrix4)
 		{
 			VMatrix4 value = this->Matrix4();
-			unsigned int v[16];
 			for (int i = 0; i < 16; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeQuaternion)
 		{
 			VQuaternion value = this->Quaternion();
-			unsigned int v[4];
 			for (int i = 0; i < 4; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeRational)
 		{
-			struct
+			if (!output.Write(uint64_t(this->Rational().Numerator())))
 			{
-				int64_t n, d;
-			} r = { this->Rational().Numerator(), this->Rational().Denominator() };
-
-			if (stream->Write(&r, sizeof(r)) != sizeof(r))
+				errorDesc = L"Failed to write to stream.";
+				goto FAILED;
+			}
+			if (!output.Write(uint64_t(this->Rational().Denominator())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1198,7 +1213,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			DKStringU8 str(this->String());
 			uint64_t len = str.Bytes();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1211,16 +1226,12 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypeDateTime)
 		{
-			struct
+			if (!output.Write(uint64_t(this->DateTime().SecondsSinceEpoch())))
 			{
-				int64_t s;
-				int32_t ms;
-			} dt = {
-				this->DateTime().SecondsSinceEpoch(),
-				this->DateTime().Microsecond()
-			};
-
-			if (stream->Write(&dt, sizeof(dt)) != sizeof(dt))
+				errorDesc = L"Failed to write to stream.";
+				goto FAILED;
+			}
+			if (!output.Write(uint32_t(this->DateTime().Microsecond())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1230,7 +1241,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			const void* ptr = this->Data().LockShared();
 			uint64_t len = this->Data().Length();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				this->Data().UnlockShared();
 				errorDesc = L"Failed to write to stream.";
@@ -1248,47 +1259,99 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			const VStructuredData& stData = this->StructuredData();
 			size_t length = 0;
+			size_t numLayouts = stData.layout.Count();
 			if (stData.data)
 				length = stData.data->Length();
-			struct
+			for (uint64_t hdr : { uint64_t(stData.elementSize), uint64_t(numLayouts), uint64_t(length)})
 			{
-				uint64_t elementSize;
-				uint64_t numLayouts;
-				uint64_t dataLength;
-			} stInfo = { stData.elementSize, stData.layout.Count(), length };
-			if (stream->Write(&stInfo, sizeof(stInfo)) != sizeof(stInfo))
-			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(hdr))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
-			if (stream->Write(stData.layout, stInfo.numLayouts) != stInfo.numLayouts)
+			if (stream->Write(stData.layout, numLayouts) != numLayouts)
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
 			if (length > 0)
 			{
-				if (stream->Write(stData.data->LockShared(), stInfo.dataLength) != stInfo.dataLength)
+				const uint8_t* dataPtr = reinterpret_cast<const uint8_t*>(stData.data->LockShared());
+				bool succeeded = true;
+
+				if (byteOrder != DKRuntimeByteOrder())
 				{
-					stData.data->UnlockShared();
+					size_t pos = 0;
+					while (pos < length && succeeded)
+					{
+						size_t n = 0;
+						const uint8_t* p2 = &(dataPtr[pos]);
+						for (StructElem e : stData.layout)
+						{
+							uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
+							if ((n + fieldSize) > stData.elementSize)
+								break;
+
+							if ((static_cast<uint8_t>(e) & 0xf0) == 0)
+							{
+								switch (fieldSize)
+								{
+								case 1:
+									succeeded = stream->Write(p2, 1) == 1;
+								case 2:
+									succeeded = output.Write(reinterpret_cast<const uint16_t*>(p2)[0]); break;
+								case 4:
+									succeeded = output.Write(reinterpret_cast<const uint32_t*>(p2)[0]); break;
+								case 8:
+									succeeded = output.Write(reinterpret_cast<const uint64_t*>(p2)[0]); break;
+								}
+							}
+							else
+							{
+								succeeded = stream->Write(p2, fieldSize) == fieldSize;
+							}
+							p2 += fieldSize;
+							n += fieldSize;
+
+							if (!succeeded)
+								break;
+						}
+						if (n < stData.elementSize && succeeded) // no entry in layout. (Raw-data)
+						{
+							size_t r = stData.elementSize - n;
+							succeeded = stream->Write(p2, r) == r;
+						}
+						pos += stData.elementSize;
+					}
+				}
+				else // same byte-order, just write data at once
+				{
+					succeeded = stream->Write(dataPtr, length) == length;
+				}
+
+				stData.data->UnlockShared();
+				if (!succeeded)
+				{
 					errorDesc = L"Failed to write to stream.";
 					goto FAILED;
 				}
-				stData.data->UnlockShared();
 			}
 		}
 		else if (valueType == TypeArray)
 		{
 			const VArray& a = this->Array();
+			VArray::CriticalSection gaurd(a.lock);
+
 			uint64_t len = a.Count();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			for (size_t i = 0; i < a.Count(); ++i)
+			for (size_t i = 0; i < len; ++i)
 			{
-				if (a.Value(i).ExportStream(stream) == false)
+				if (a.Value(i).ExportStream(stream, byteOrder) == false)
 				{
 					errorDesc = L"Failed to extract array into stream.";
 					goto FAILED;
@@ -1297,23 +1360,29 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypePairs)
 		{
+			const VPairs& pairs = this->Pairs();
+			VPairs::CriticalSection guard(pairs.lock);
+
 			DKArray<const VPairs::Pair*> a;
-			a.Reserve(this->Pairs().Count());
-			this->Pairs().EnumerateForward([&a](const VPairs::Pair& pair) {a.Add(&pair);});
+			a.Reserve(pairs.Count());
+			pairs.EnumerateForward([&a](const VPairs::Pair& pair)
+			{
+				a.Add(&pair); 
+			});
 
 			uint64_t len = a.Count();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			for (size_t i = 0; i < a.Count(); ++i)
+			for (size_t i = 0; i < len; ++i)
 			{
 				const VPairs::Pair* pair = a.Value(i);
 				DKStringU8 key(pair->key);
 
 				uint64_t keyLen = key.Bytes();
-				if (stream->Write(&keyLen, sizeof(keyLen)) != sizeof(keyLen))		// key length
+				if (!output.Write(keyLen))  // key length
 				{
 					errorDesc = L"Failed to write to stream.";
 					goto FAILED;
@@ -1323,7 +1392,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 					errorDesc = L"Failed to write to stream.";
 					goto FAILED;
 				}
-				if (pair->value.ExportStream(stream) == false)		// value (DKVariant)
+				if (pair->value.ExportStream(stream, byteOrder) == false)		// value (DKVariant)
 				{
 					errorDesc = L"Failed to extract array into stream.";
 					goto FAILED;
@@ -1350,7 +1419,8 @@ FAILED:
 
 bool DKVariant::ImportStream(DKStream* stream)
 {
-	size_t headerLen = strlen(DKVARIANT_HEADER_STRING);
+	size_t headerLen = strlen(DKVARIANT_HEADER_STRING_BIG_ENDIAN);
+	DKASSERT_DEBUG(headerLen == strlen(DKVARIANT_HEADER_STRING_LITTLE_ENDIAN));
 
 	DKString errorDesc = L"Unknown error";
 
