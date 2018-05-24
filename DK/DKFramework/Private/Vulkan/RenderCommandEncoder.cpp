@@ -9,6 +9,7 @@
 #if DKGL_ENABLE_VULKAN
 
 #include "RenderCommandEncoder.h"
+#include "Buffer.h"
 #include "Texture.h"
 #include "GraphicsDevice.h"
 #include "RenderPipelineState.h"
@@ -318,6 +319,70 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 	vkCmdBindPipeline(resources->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
 	// bind descriptor set
+}
+
+void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
+{
+	DKASSERT_DEBUG(buffer);
+	SetVertexBuffers(&buffer, &offset, index, 1);
+}
+
+void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
+{
+	if (count > 1)
+	{
+		uint8_t* tmp = new uint8_t[(sizeof(VkBuffer) + sizeof(VkDeviceSize)) * count];
+
+		VkBuffer* bufs = reinterpret_cast<VkBuffer*>(tmp);
+		VkDeviceSize* ofs = reinterpret_cast<VkDeviceSize*>(&tmp[sizeof(VkBuffer) * count]);
+
+		for (size_t i = 0; i < count; ++i)
+		{
+			DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffers[i]) != nullptr);
+			bufs[i] = static_cast<class Buffer*>(buffers[i])->buffer;
+			ofs[i] = offsets[i];
+		}
+		vkCmdBindVertexBuffers(resources->commandBuffer, index, count, bufs, ofs);
+		delete[] tmp;
+	}
+	else if (count > 0)
+	{
+		DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffers[0]) != nullptr);
+		class Buffer* buf = static_cast<class Buffer*>(buffers[0]);
+		VkDeviceSize of = offsets[0];
+		vkCmdBindVertexBuffers(resources->commandBuffer, index, count, &buf->buffer, &of);
+	}
+}
+void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type)
+{
+	DKASSERT_DEBUG(indexBuffer);
+	DKASSERT_DEBUG(dynamic_cast<class Buffer*>(indexBuffer) != nullptr);
+
+	VkIndexType indexType;
+	switch (type)
+	{
+	case DKIndexType::UInt16:	indexType = VK_INDEX_TYPE_UINT16; break;
+	case DKIndexType::UInt32:	indexType = VK_INDEX_TYPE_UINT32; break;
+	default:
+		DKASSERT_DESC_DEBUG(0, "Unknown Index Type");
+		DKLogE("ERROR: Unknown index type!");
+		return;
+	}
+	vkCmdBindIndexBuffer(resources->commandBuffer, static_cast<class Buffer*>(indexBuffer)->buffer, offset, indexType);
+}
+
+void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)
+{
+	if (numInstances > 0)
+		vkCmdDraw(resources->commandBuffer, numVertices, numInstances, baseVertex, baseInstance);
+}
+
+void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance)
+{
+	if (numInstances > 0)
+	{
+		vkCmdDrawIndexed(resources->commandBuffer, numIndices, numInstances, indexOffset, vertexOffset, baseInstance);
+	}
 }
 
 #endif //#if DKGL_ENABLE_VULKAN
