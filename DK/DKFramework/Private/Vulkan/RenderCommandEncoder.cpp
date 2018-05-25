@@ -231,12 +231,16 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	renderPassBeginInfo.framebuffer = resources->framebuffer;
 	vkCmdBeginRenderPass(resources->commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+	// setup viewport
 	VkViewport viewport = {};
 	viewport.height = (float)frameHeight;
 	viewport.width = (float)frameWidth;
 	viewport.minDepth = (float) 0.0f;
 	viewport.maxDepth = (float) 1.0f;
 	vkCmdSetViewport(resources->commandBuffer, 0, 1, &viewport);
+	// setup scissor
+	VkRect2D scissorRect = { {0, 0},{frameWidth,frameHeight} };
+	vkCmdSetScissor(resources->commandBuffer, 0, 1, &scissorRect);
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)

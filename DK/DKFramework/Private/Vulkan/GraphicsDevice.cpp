@@ -991,15 +991,15 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
 	switch (desc.primitiveTopology)
 	{
-	case DKPrimitiveTopology::Points:
+	case DKPrimitiveType::Point:
 		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;	break;
-	case DKPrimitiveTopology::Lines:
+	case DKPrimitiveType::Line:
 		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;	break;
-	case DKPrimitiveTopology::LineStrips:
+	case DKPrimitiveType::LineStrip:
 		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;	break;
-	case DKPrimitiveTopology::Triangles:
+	case DKPrimitiveType::Triangle:
 		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;	break;
-	case DKPrimitiveTopology::TriangleStrips:
+	case DKPrimitiveType::TriangleStrip:
 		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;	break;
 	default:
 		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown PrimitiveTopology"); break;
@@ -1015,9 +1015,41 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	VkPipelineRasterizationStateCreateInfo rasterizationState = { VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO };
 	rasterizationState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizationState.polygonMode = VK_POLYGON_MODE_FILL;
-	rasterizationState.cullMode = VK_CULL_MODE_NONE;
-	rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	if (desc.triangleFillMode == DKTriangleFillMode::Lines)
+	{
+		if (this->features.fillModeNonSolid)
+			rasterizationState.polygonMode = VK_POLYGON_MODE_LINE;
+		else
+			DKLogW("Warning: DKGraphicsDevice::CreateRenderPipiline: PolygonFillMode not supported for this hardware.");
+	}
+
+	switch (desc.cullMode)
+	{
+	case DKCullMode::None:	rasterizationState.cullMode = VK_CULL_MODE_NONE; break;
+	case DKCullMode::Front:	rasterizationState.cullMode = VK_CULL_MODE_FRONT_BIT; break;
+	case DKCullMode::Back:	rasterizationState.cullMode = VK_CULL_MODE_BACK_BIT; break;
+	default:
+		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown Cull-Mode"); break;
+		rasterizationState.cullMode = VK_CULL_MODE_FRONT_AND_BACK; break;
+	}
+
+	switch (desc.frontFace)
+	{
+	case DKFrontFace::CW:		rasterizationState.frontFace = VK_FRONT_FACE_CLOCKWISE; break;
+	case DKFrontFace::CCW:		rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE; break;
+	default:
+		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown FrontFace-Mode"); break;
+		rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	}
+
 	rasterizationState.depthClampEnable = VK_FALSE;
+	if (desc.depthClipMode == DKDepthClipMode::Clamp)
+	{
+		if (this->features.depthClamp)
+			rasterizationState.depthClampEnable = VK_TRUE;
+		else
+			DKLogW("Warning: DKGraphicsDevice::CreateRenderPipiline: DepthClamp not supported for this hardware.");
+	}
 	rasterizationState.rasterizerDiscardEnable = desc.rasterizationEnabled ? VK_FALSE : VK_TRUE;
 	rasterizationState.depthBiasEnable = VK_FALSE;
 	rasterizationState.lineWidth = 1.0f;

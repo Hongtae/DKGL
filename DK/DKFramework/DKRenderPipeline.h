@@ -67,23 +67,55 @@ namespace DKFramework
 		DKBlendFactor destinationAlphaBlendFactor = DKBlendFactor::Zero;
 	};
 
-	enum class DKPrimitiveTopology
+	enum class DKPrimitiveType
 	{
-		Points = 0,
+		Point,
+		Line,
+		LineStrip,
+		Triangle,
+		TriangleStrip,
+	};
+	enum class DKIndexType
+	{
+		UInt16,
+		UInt32,
+	};
+	enum class DKTriangleFillMode
+	{
+		Fill,
 		Lines,
-		LineStrips,
-		Triangles,
-		TriangleStrips,
+	};
+	enum class DKCullMode
+	{
+		None,
+		Front,
+		Back,
+	};
+	enum class DKFrontFace
+	{
+		CW,		///< Clockwise
+		CCW,	///< Counter Clockwise
+	};
+	enum class DKDepthClipMode
+	{
+		Clip,
+		Clamp,
 	};
 
 	struct DKRenderPipelineDescriptor
 	{
-		DKPrimitiveTopology primitiveTopology = DKPrimitiveTopology::Points;
 		DKObject<DKShaderFunction> vertexFunction;
 		DKObject<DKShaderFunction> fragmentFunction;
 		DKVertexDescriptor vertexDescriptor;
 		DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
-		DKPixelFormat depthStencilAttachmentPixelFormat = DKPixelFormat::Invalid;
+		DKPixelFormat depthStencilAttachmentPixelFormat;
+
+		DKPrimitiveType primitiveTopology;
+		DKTriangleFillMode triangleFillMode = DKTriangleFillMode::Fill;
+		DKDepthClipMode depthClipMode = DKDepthClipMode::Clip;
+		DKCullMode cullMode = DKCullMode::Back;
+		DKFrontFace frontFace = DKFrontFace::CCW;
+
 		bool rasterizationEnabled; // Do we need this flag? What about use null-frag shader instead?
 	};
 
