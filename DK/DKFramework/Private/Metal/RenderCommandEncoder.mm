@@ -38,6 +38,17 @@ void RenderCommandEncoder::EndEncoding(void)
 	buffer->EndEncoder(this);
 }
 
+void RenderCommandEncoder::SetViewport(const DKViewport& v)
+{
+	DKASSERT_DEBUG(!IsCompleted());
+	MTLViewport viewport = {v.x, v.y, v.width, v.height, v.nearZ, v.farZ};
+	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, Resources& res)
+	{
+		[encoder setViewport:viewport];
+	});
+	encoderCommands.Add(command);
+}
+
 void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 {
 	DKASSERT_DEBUG(!IsCompleted());

@@ -14,6 +14,8 @@
 #include "GraphicsDevice.h"
 #include "RenderPipelineState.h"
 
+#define FLIP_VIEWPORT_Y	1
+
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
@@ -232,11 +234,20 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	vkCmdBeginRenderPass(resources->commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 	// setup viewport
+	bool flipY = FLIP_VIEWPORT_Y;
 	VkViewport viewport = {};
-	viewport.height = (float)frameHeight;
-	viewport.width = (float)frameWidth;
-	viewport.minDepth = (float) 0.0f;
-	viewport.maxDepth = (float) 1.0f;
+	viewport.x = 0.0f;
+	viewport.y = 0.0f;
+	viewport.width = static_cast<float>(frameWidth);
+	viewport.height = static_cast<float>(frameHeight);
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+	if (flipY) // flip-Y-axis
+	{
+		viewport.y = viewport.y + viewport.height; // set origin to lower-left.
+		viewport.height = -(viewport.height); // negative height.
+	}
+
 	vkCmdSetViewport(resources->commandBuffer, 0, 1, &viewport);
 	// setup scissor
 	VkRect2D scissorRect = { {0, 0},{frameWidth,frameHeight} };
@@ -314,6 +325,18 @@ void RenderCommandEncoder::EndEncoding(void)
 DKCommandBuffer* RenderCommandEncoder::Buffer(void)
 {
 	return commandBuffer;
+}
+
+void RenderCommandEncoder::SetViewport(const DKViewport& v)
+{
+	bool flipY = FLIP_VIEWPORT_Y;
+	VkViewport viewport = {v.x, v.y, v.width, v.height, v.nearZ, v.farZ};
+	if (flipY) // flip-Y-axis
+	{
+		viewport.y = viewport.y + viewport.height; // set origin to lower-left.
+		viewport.height = -(viewport.height); // negative height.
+	}
+	vkCmdSetViewport(resources->commandBuffer, 0, 1, &viewport);
 }
 
 void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)

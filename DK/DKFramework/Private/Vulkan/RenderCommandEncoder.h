@@ -31,6 +31,7 @@ namespace DKFramework
 				bool IsCompleted(void) const override { return resources == nullptr; }
 				DKCommandBuffer* Buffer(void) override;
 
+				void SetViewport(const DKViewport&) override;
 				void SetRenderPipelineState(DKRenderPipelineState*) override;
 				void SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index) override;
 				void SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count) override;

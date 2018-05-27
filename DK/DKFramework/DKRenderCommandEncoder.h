@@ -20,6 +20,15 @@ namespace DKFramework
 		Boolean,
 		Counting,
 	};
+	struct DKViewport
+	{
+		float x;
+		float y;
+		float width;
+		float height;
+		float nearZ;
+		float farZ;
+	};
 
 	/// @brief Command encoder for GPU render operation.
 	class DKRenderCommandEncoder : public DKCommandEncoder
@@ -27,6 +36,7 @@ namespace DKFramework
 	public:
 		virtual ~DKRenderCommandEncoder(void) {}
 
+		virtual void SetViewport(const DKViewport&) = 0;
 		virtual void SetRenderPipelineState(DKRenderPipelineState* state) = 0;
 		virtual void SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index) = 0;
 		virtual void SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count) = 0;
