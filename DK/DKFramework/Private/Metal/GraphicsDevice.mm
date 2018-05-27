@@ -197,11 +197,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	MTLPrimitiveType primitiveType;
 	switch (desc.primitiveTopology)
 	{
-		case DKPrimitiveTopology::Points:			primitiveType = MTLPrimitiveTypePoint;			break;
-		case DKPrimitiveTopology::Lines:			primitiveType = MTLPrimitiveTypeLine;			break;
-		case DKPrimitiveTopology::LineStrips:		primitiveType = MTLPrimitiveTypeLineStrip;		break;
-		case DKPrimitiveTopology::Triangles:		primitiveType = MTLPrimitiveTypeTriangle;		break;
-		case DKPrimitiveTopology::TriangleStrips:	primitiveType = MTLPrimitiveTypeTriangleStrip;	break;
+		case DKPrimitiveType::Point:			primitiveType = MTLPrimitiveTypePoint;			break;
+		case DKPrimitiveType::Line:				primitiveType = MTLPrimitiveTypeLine;			break;
+		case DKPrimitiveType::LineStrip:		primitiveType = MTLPrimitiveTypeLineStrip;		break;
+		case DKPrimitiveType::Triangle:			primitiveType = MTLPrimitiveTypeTriangle;		break;
+		case DKPrimitiveType::TriangleStrip:	primitiveType = MTLPrimitiveTypeTriangleStrip;	break;
 		default:
 			DKLogE("Unsupported primitive topology: %d(0x%x)", (int)desc.primitiveTopology, (int)desc.primitiveTopology);
 			return NULL;
