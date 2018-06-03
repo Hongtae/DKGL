@@ -24,11 +24,6 @@ namespace DKFramework
 	{
 		namespace Vulkan
 		{
-			template <typename T, size_t n> FORCEINLINE size_t ArraySize(T (&)[n])
-			{
-				return n;
-			}
-
 			DKGraphicsDeviceInterface* CreateInterface(void)
 			{
 				return new GraphicsDevice();
@@ -616,9 +611,6 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 			switch (shader->stage)
 			{
 			case DKShader::StageType::Vertex:
-			case DKShader::StageType::TessellationControl:
-			case DKShader::StageType::TessellationEvaluation:
-			case DKShader::StageType::Geometry:
 			case DKShader::StageType::Fragment:
 			case DKShader::StageType::Compute:
 				break;
@@ -721,7 +713,7 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
 	return texture.SafeCast<DKTexture>();
 }
 
-DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKRenderPipelineReflection* ref)
 {
 	VkResult result = VK_SUCCESS;
 
@@ -807,7 +799,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 			// calculate max descriptor bindings a set
 			for (auto& descSet : module->layouts)
-			{
+			{ 
 				maxDescriptorSets = Max(maxDescriptorSets, descSet.Count());
 				for (auto& descBinding : descSet)
 				{
@@ -819,7 +811,12 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	pipelineCreateInfo.stageCount = (uint32_t)shaderStageCreateInfos.Count();
 	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
-	// setup layout	
+	// shader arguments reflection
+	DKRenderPipelineReflection reflection;
+	reflection.vertexArguments.Reserve(maxDescriptorBindings);
+	reflection.fragmentArguments.Reserve(maxDescriptorBindings);
+
+	// setup descriptor layout
 	DKArray<VkDescriptorSetLayoutBinding> descriptorBindings;
 	descriptorBindings.Reserve(maxDescriptorBindings);
 
@@ -837,21 +834,57 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				{
 					if (module->layouts[descType].Count() > setIndex)
 					{
-						auto& descSet = module->layouts[descType];
-						for (auto& descLayout : descSet.Value(setIndex).bindings)
-						{
-							VkDescriptorType type = (VkDescriptorType)(descType + VK_DESCRIPTOR_TYPE_BEGIN_RANGE);
+						VkDescriptorType type = (VkDescriptorType)(descType + VK_DESCRIPTOR_TYPE_BEGIN_RANGE);
 
+						bool reflectionType = true;
+						DKShaderArgument::Type argType;
+						switch (type)
+						{
+						case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+						case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+						case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+						case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+						case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+						case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+							argType = DKShaderArgument::TypeBuffer; break;
+						case VK_DESCRIPTOR_TYPE_SAMPLER:
+							argType = DKShaderArgument::TypeSampler; break;
+						case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+						case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+							argType = DKShaderArgument::TypeTexture; break;
+						case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:	// Texture or Sampler?
+							argType = DKShaderArgument::TypeTexture; break;
+						default:
+							reflectionType = false;
+						}
+
+						auto& descSet = module->layouts[descType];
+						for (auto& descriptor : descSet.Value(setIndex).bindings)
+						{
+							if (reflectionType)
+							{
+								DKShaderArgument arg;
+								arg.type = argType;
+								arg.name = descriptor.name;
+								arg.index = descriptor.index;
+								arg.arrayLength = descriptor.count;
+								if (module->stage == VK_SHADER_STAGE_VERTEX_BIT)
+									reflection.vertexArguments.Add(arg);
+								else if (module->stage == VK_SHADER_STAGE_FRAGMENT_BIT)
+									reflection.fragmentArguments.Add(arg);
+							}
+
+							// Look for a descriptor with the same index as the one already indexed.
 							bool found = false;
 							for (auto& b : descriptorBindings)
 							{
-								if (b.binding == descLayout.index)
+								if (b.binding == descriptor.index)
 								{
-									if (b.descriptorType != type || b.descriptorCount != descLayout.count)
+									if (b.descriptorType != type || b.descriptorCount != descriptor.count)
 									{
 										//TODO: rebind module's binding to other number.
 
-										DKLogE("ERROR: descriptor binding conflict! (set=%d, binding=%u)", setIndex, descLayout.index);
+										DKLogE("ERROR: descriptor binding conflict! (set=%d, binding=%u)", setIndex, descriptor.index);
 										return CleanupAndReturnNull();
 									}
 									b.stageFlags |= module->stage;
@@ -862,8 +895,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 							if (!found)
 							{
 								VkDescriptorSetLayoutBinding binding = {};
-								binding.binding = descLayout.index;
-								binding.descriptorCount = descLayout.count;
+								binding.binding = descriptor.index;
+								binding.descriptorCount = descriptor.count;
 								binding.descriptorType = type;
 								binding.stageFlags = module->stage;
 
@@ -1080,7 +1113,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	};
 	VkPipelineDynamicStateCreateInfo dynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
 	dynamicState.pDynamicStates = dynamicStateEnables;
-	dynamicState.dynamicStateCount = (uint32_t)ArraySize(dynamicStateEnables);
+	dynamicState.dynamicStateCount = (uint32_t)std::size(dynamicStateEnables);
 	pipelineCreateInfo.pDynamicState = &dynamicState;
 
 	// render pass
@@ -1217,12 +1250,18 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		DKLogE("ERROR: vkCreateGraphicsPipelines failed: %s", VkResultCStr(result));
 		return CleanupAndReturnNull();
 	}
+	if (ref)
+	{
+		reflection.vertexArguments.ShrinkToFit();
+		reflection.fragmentArguments.ShrinkToFit();
+		*ref = std::move(reflection);
+	}
 
 	DKObject<RenderPipelineState> pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
 	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
 
-DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKComputePipelineReflection*)
 {
 	return NULL;
 }

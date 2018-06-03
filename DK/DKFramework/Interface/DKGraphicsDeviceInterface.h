@@ -19,8 +19,8 @@ namespace DKFramework
 		virtual DKString DeviceName(void) const = 0;
 		virtual DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*, uint32_t) = 0;
 		virtual DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) = 0;
-		virtual DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*) = 0;
-		virtual DKObject<DKComputePipelineState> CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*) = 0;
+		virtual DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKRenderPipelineReflection*) = 0;
+		virtual DKObject<DKComputePipelineState> CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKComputePipelineReflection*) = 0;
 		virtual DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) = 0;
 		virtual DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) = 0;
 

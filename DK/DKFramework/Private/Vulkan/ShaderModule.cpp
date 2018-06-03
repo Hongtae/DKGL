@@ -25,12 +25,6 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	{
 	case DKShader::StageType::Vertex:
 		stage = VK_SHADER_STAGE_VERTEX_BIT; break;
-	case DKShader::StageType::TessellationControl:
-		stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT; break;
-	case DKShader::StageType::TessellationEvaluation:
-		stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT; break;
-	case DKShader::StageType::Geometry:
-		stage = VK_SHADER_STAGE_GEOMETRY_BIT; break;
 	case DKShader::StageType::Fragment:
 		stage = VK_SHADER_STAGE_FRAGMENT_BIT; break;
 	case DKShader::StageType::Compute:

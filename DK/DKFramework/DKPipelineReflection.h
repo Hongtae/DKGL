@@ -1,5 +1,5 @@
 //
-//  File: DKPipelineReflection.h
+//  File: DKRenderPipelineReflection.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -29,11 +29,17 @@ namespace DKFramework
 	};
 
 	/**
-	@brief Pipeline's shader reflection
+	@brief Render Pipeline's shader reflection
 	*/
-	struct DKPipelineReflection
+	struct DKRenderPipelineReflection
 	{
 		DKArray<DKShaderArgument> vertexArguments;
 		DKArray<DKShaderArgument> fragmentArguments;
+	};
+	/**
+	@brief Compute Pipeline's shader reflection
+	*/struct DKComputePipelineReflection
+	{
+		DKArray<DKShaderArgument> arguments;
 	};
 }
