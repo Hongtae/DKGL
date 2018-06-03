@@ -24,6 +24,8 @@ namespace DKFramework
 		DKString name;
 		uint32_t index;
 		Type type;
+		size_t arrayLength;
+		bool enabled;
 	};
 
 	/**
@@ -31,9 +33,7 @@ namespace DKFramework
 	*/
 	struct DKPipelineReflection
 	{
-		using ShaderArgumentArray = DKArray<DKShaderArgument>;
-		using StageArgumentMap = DKMap<DKShader::StageType, ShaderArgumentArray>;
-
-		StageArgumentMap argumentMap;
+		DKArray<DKShaderArgument> vertexArguments;
+		DKArray<DKShaderArgument> fragmentArguments;
 	};
 }

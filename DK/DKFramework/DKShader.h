@@ -18,9 +18,6 @@ namespace DKFramework
 		enum StageType
 		{
 			Vertex,
-			TessellationControl,
-			TessellationEvaluation,
-			Geometry,
 			Fragment,
 			Compute,
 		};

@@ -133,10 +133,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 			switch (shader->stage)
 			{
 				case DKShader::StageType::Vertex:					
-				case DKShader::StageType::TessellationControl:		
-				case DKShader::StageType::TessellationEvaluation:	
-				case DKShader::StageType::Geometry:					
-				case DKShader::StageType::Fragment:					
+				case DKShader::StageType::Fragment:
 				case DKShader::StageType::Compute:		
 					break;
 				default:
@@ -374,6 +371,44 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 																 options:options
 															  reflection:&pipelineReflection
 																   error:&error];
+			if (pipelineReflection)
+			{
+				auto copyArguments = [](DKArray<DKShaderArgument>& outArgs, NSArray<MTLArgument *>* inArgs)
+				{
+					outArgs.Clear();
+					outArgs.Reserve(inArgs.count);
+					for (MTLArgument* arg in inArgs)
+					{
+						switch (arg.type)
+						{
+							case MTLArgumentTypeBuffer:
+							case MTLArgumentTypeTexture:
+							case MTLArgumentTypeThreadgroupMemory:
+								NSLog(@"Warning!! Argument's detail query is not implemented: %@", arg);
+								break;
+						}
+						DKShaderArgument a;
+						a.name = DKStringU8(arg.name.UTF8String);
+						a.index = (uint32_t)arg.index;
+						a.arrayLength = arg.arrayLength;
+						a.enabled = arg.active;
+
+						switch (arg.type)
+						{
+							case MTLArgumentTypeBuffer:				a.type = DKShaderArgument::TypeBuffer; break;
+							case MTLArgumentTypeThreadgroupMemory:	a.type = DKShaderArgument::TypeThreadgroupMemory; break;
+							case MTLArgumentTypeTexture:			a.type = DKShaderArgument::TypeTexture; break;
+							case MTLArgumentTypeSampler:			a.type = DKShaderArgument::TypeSampler; break;
+							default:
+								NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
+						}
+						outArgs.Add(a);
+					}
+					outArgs.ShrinkToFit();
+				};
+				copyArguments(reflection->vertexArguments, pipelineReflection.vertexArguments);
+				copyArguments(reflection->fragmentArguments, pipelineReflection.fragmentArguments);
+			}
 		}
 		else
 			pipelineState = [device newRenderPipelineStateWithDescriptor:descriptor error:&error];
