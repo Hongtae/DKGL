@@ -864,17 +864,18 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 							if (reflectionType)
 							{
 								DKShaderArgument arg;
-								arg.type = argType;
+								arg.set = setIndex;
+								arg.binding = descriptor.index;
 								arg.name = descriptor.name;
-								arg.index = descriptor.index;
-								arg.arrayLength = descriptor.count;
+								arg.type = argType;
+								arg.count = descriptor.count;
 								if (module->stage == VK_SHADER_STAGE_VERTEX_BIT)
 									reflection.vertexArguments.Add(arg);
 								else if (module->stage == VK_SHADER_STAGE_FRAGMENT_BIT)
 									reflection.fragmentArguments.Add(arg);
 							}
 
-							// Look for a descriptor with the same index as the one already indexed.
+							// Find duplicated descriptors.
 							bool found = false;
 							for (auto& b : descriptorBindings)
 							{

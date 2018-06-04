@@ -388,9 +388,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 								break;
 						}
 						DKShaderArgument a;
+						a.set = 0;
+						a.binding = (uint32_t)arg.index;
 						a.name = DKStringU8(arg.name.UTF8String);
-						a.index = (uint32_t)arg.index;
-						a.arrayLength = arg.arrayLength;
+						a.count = arg.arrayLength;
 						a.enabled = arg.active;
 
 						switch (arg.type)

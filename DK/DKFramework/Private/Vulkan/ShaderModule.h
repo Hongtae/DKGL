@@ -24,7 +24,7 @@ namespace DKFramework
 				struct Binding
 				{
 					DKStringU8 name;
-					uint32_t index;
+					uint32_t index; // binding
 					uint32_t count; // array size
 				};
 				DKArray<Binding> bindings; // bindings with descriptor-set (starting with set=0)

@@ -21,10 +21,11 @@ namespace DKFramework
 			TypeThreadgroupMemory,
 		};
 
+		uint32_t set;
+		uint32_t binding;
 		DKString name;
-		uint32_t index;
 		Type type;
-		size_t arrayLength;
+		size_t count; // array length
 		bool enabled;
 	};
 
