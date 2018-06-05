@@ -122,7 +122,7 @@ struct CLIParser
 			THROW("Tried to parse uint, but nothing left in arguments");
 		}
 
-		uint32_t val = stoul(*argv);
+		uint64_t val = stoul(*argv);
 		if (val > numeric_limits<uint32_t>::max())
 		{
 			THROW("next_uint() out of range");
@@ -131,7 +131,7 @@ struct CLIParser
 		argc--;
 		argv++;
 
-		return val;
+		return uint32_t(val);
 	}
 
 	double next_double()
@@ -212,7 +212,6 @@ static void print_resources(const Compiler &compiler, const char *tag, const vec
 	for (auto &res : resources)
 	{
 		auto &type = compiler.get_type(res.type_id);
-		auto &mask = compiler.get_decoration_bitset(res.id);
 
 		if (print_ssbo && compiler.buffer_is_hlsl_counter_buffer(res.id))
 			continue;
@@ -230,6 +229,12 @@ static void print_resources(const Compiler &compiler, const char *tag, const vec
 		uint32_t block_size = 0;
 		if (is_sized_block)
 			block_size = uint32_t(compiler.get_declared_struct_size(compiler.get_type(res.base_type_id)));
+
+		Bitset mask;
+		if (print_ssbo)
+			mask = compiler.get_buffer_block_flags(res.id);
+		else
+			mask = compiler.get_decoration_bitset(res.id);
 
 		string array;
 		for (auto arr : type.array)
@@ -483,6 +488,7 @@ struct CLIArguments
 	bool flatten_multidimensional_arrays = false;
 	bool use_420pack_extension = true;
 	bool remove_unused = false;
+	bool combined_samplers_inherit_bindings = false;
 };
 
 static void print_help()
@@ -522,6 +528,7 @@ static void print_help()
 	                "\t[--rename-interface-variable <in|out> <location> <new_variable_name>]\n"
 	                "\t[--set-hlsl-vertex-input-semantic <location> <semantic>]\n"
 	                "\t[--rename-entry-point <old> <new> <stage>]\n"
+	                "\t[--combined-samplers-inherit-bindings]"
 	                "\n");
 }
 
@@ -727,6 +734,8 @@ static int main_inner(int argc, char *argv[])
 	});
 
 	cbs.add("--remove-unused-variables", [&args](CLIParser &) { args.remove_unused = true; });
+	cbs.add("--combined-samplers-inherit-bindings",
+	        [&args](CLIParser &) { args.combined_samplers_inherit_bindings = true; });
 
 	cbs.default_handler = [&args](const char *value) { args.input = value; };
 	cbs.error_handler = [] { print_help(); };
@@ -985,6 +994,9 @@ static int main_inner(int argc, char *argv[])
 	if (combined_image_samplers)
 	{
 		compiler->build_combined_image_samplers();
+		if (args.combined_samplers_inherit_bindings)
+			spirv_cross_util::inherit_combined_sampler_bindings(*compiler);
+
 		// Give the remapped combined samplers new names.
 		for (auto &remap : compiler->get_combined_image_samplers())
 		{

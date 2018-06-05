@@ -1265,11 +1265,11 @@ string CompilerGLSL::layout_for_variable(const SPIRVariable &var)
 	if (flags.get(DecorationIndex))
 		attr.push_back(join("index = ", dec.index));
 
-	// set = 0 is the default. Do not emit set = decoration in regular GLSL output, but
-	// we should preserve it in Vulkan GLSL mode.
+	// Do not emit set = decoration in regular GLSL output, but
+	// we need to preserve it in Vulkan GLSL mode.
 	if (var.storage != StorageClassPushConstant)
 	{
-		if (flags.get(DecorationDescriptorSet) && (dec.set != 0 || options.vulkan_semantics))
+		if (flags.get(DecorationDescriptorSet) && options.vulkan_semantics)
 			attr.push_back(join("set = ", dec.set));
 	}
 
@@ -1688,6 +1688,13 @@ void CompilerGLSL::emit_uniform(const SPIRVariable &var)
 	statement(layout_for_variable(var), variable_decl(var), ";");
 }
 
+void CompilerGLSL::emit_specialization_constant_op(const SPIRConstantOp &constant)
+{
+	auto &type = get<SPIRType>(constant.basetype);
+	auto name = to_name(constant.self);
+	statement("const ", variable_decl(type, name), " = ", constant_op_expression(constant), ";");
+}
+
 void CompilerGLSL::emit_specialization_constant(const SPIRConstant &constant)
 {
 	auto &type = get<SPIRType>(constant.constant_type);
@@ -1740,13 +1747,13 @@ void CompilerGLSL::replace_illegal_names()
 		"min", "mix", "mod", "modf", "noise", "noise1", "noise2", "noise3", "noise4", "normalize", "not", "notEqual",
 		"outerProduct", "packDouble2x32", "packHalf2x16", "packSnorm2x16", "packSnorm4x8", "packUnorm2x16", "packUnorm4x8", "pow",
 		"radians", "reflect", "refract", "round", "roundEven", "sign", "sin", "sinh", "smoothstep", "sqrt", "step",
-		"tan", "tanh", "texelFetch", "texelFetchOffset", "textureGather", "textureGatherOffset", "textureGatherOffsets",
+		"tan", "tanh", "texelFetch", "texelFetchOffset", "texture", "textureGather", "textureGatherOffset", "textureGatherOffsets",
 		"textureGrad", "textureGradOffset", "textureLod", "textureLodOffset", "textureOffset", "textureProj", "textureProjGrad",
 		"textureProjGradOffset", "textureProjLod", "textureProjLodOffset", "textureProjOffset", "textureQueryLevels", "textureQueryLod", "textureSamples", "textureSize",
 		"transpose", "trunc", "uaddCarry", "uintBitsToFloat", "umulExtended", "unpackDouble2x32", "unpackHalf2x16", "unpackSnorm2x16", "unpackSnorm4x8",
 		"unpackUnorm2x16", "unpackUnorm4x8", "usubBorrow",
 
-		"active", "asm", "atomic_uint", "attribute", "bool", "break",
+		"active", "asm", "atomic_uint", "attribute", "bool", "break", "buffer",
 		"bvec2", "bvec3", "bvec4", "case", "cast", "centroid", "class", "coherent", "common", "const", "continue", "default", "discard",
 		"dmat2", "dmat2x2", "dmat2x3", "dmat2x4", "dmat3", "dmat3x2", "dmat3x3", "dmat3x4", "dmat4", "dmat4x2", "dmat4x3", "dmat4x4",
 		"do", "double", "dvec2", "dvec3", "dvec4", "else", "enum", "extern", "external", "false", "filter", "fixed", "flat", "float",
@@ -1755,19 +1762,19 @@ void CompilerGLSL::replace_illegal_names()
 		"iimageCubeArray", "image1D", "image1DArray", "image2D", "image2DArray", "image2DMS", "image2DMSArray", "image2DRect",
 		"image3D", "imageBuffer", "imageCube", "imageCubeArray", "in", "inline", "inout", "input", "int", "interface", "invariant",
 		"isampler1D", "isampler1DArray", "isampler2D", "isampler2DArray", "isampler2DMS", "isampler2DMSArray", "isampler2DRect",
-		"isampler3D", "isamplerBuffer", "isamplerCube", "isamplerCubeArray", "ivec2", "ivec3", "ivec4", "layout", "line", "linear", "long", "lowp",
-		"mat2", "mat2x2", "mat2x3", "mat2x4", "mat3", "mat3x2", "mat3x3", "mat3x4", "mat4", "mat4x2", "mat4x3", "mat4x4", "matrix", "mediump",
-		"namespace", "noinline", "noperspective", "out", "output", "packed", "partition", "patch", "point", "precision", "public", "readonly",
-		"resource", "restrict", "return", "row_major", "sample", "sampler", "sampler1D", "sampler1DArray", "sampler1DArrayShadow",
+		"isampler3D", "isamplerBuffer", "isamplerCube", "isamplerCubeArray", "ivec2", "ivec3", "ivec4", "layout", "long", "lowp",
+		"mat2", "mat2x2", "mat2x3", "mat2x4", "mat3", "mat3x2", "mat3x3", "mat3x4", "mat4", "mat4x2", "mat4x3", "mat4x4", "mediump",
+		"namespace", "noinline", "noperspective", "out", "output", "packed", "partition", "patch", "precise", "precision", "public", "readonly",
+		"resource", "restrict", "return", "sample", "sampler1D", "sampler1DArray", "sampler1DArrayShadow",
 		"sampler1DShadow", "sampler2D", "sampler2DArray", "sampler2DArrayShadow", "sampler2DMS", "sampler2DMSArray",
 		"sampler2DRect", "sampler2DRectShadow", "sampler2DShadow", "sampler3D", "sampler3DRect", "samplerBuffer",
-		"samplerCube", "samplerCubeArray", "samplerCubeArrayShadow", "samplerCubeShadow", "short", "sizeof", "smooth", "static",
+		"samplerCube", "samplerCubeArray", "samplerCubeArrayShadow", "samplerCubeShadow", "shared", "short", "sizeof", "smooth", "static",
 		"struct", "subroutine", "superp", "switch", "template", "this", "true", "typedef", "uimage1D", "uimage1DArray", "uimage2D",
 		"uimage2DArray", "uimage2DMS", "uimage2DMSArray", "uimage2DRect", "uimage3D", "uimageBuffer", "uimageCube",
 		"uimageCubeArray", "uint", "uniform", "union", "unsigned", "usampler1D", "usampler1DArray", "usampler2D", "usampler2DArray",
 		"usampler2DMS", "usampler2DMSArray", "usampler2DRect", "usampler3D", "usamplerBuffer", "usamplerCube",
-		"usamplerCubeArray", "using", "uvec2", "uvec3", "uvec4", "varying", "vec2", "vec3", "vec4", "void", "volatile", "volatile",
-		"while", "writeonly", "texture",
+		"usamplerCubeArray", "using", "uvec2", "uvec3", "uvec4", "varying", "vec2", "vec3", "vec4", "void", "volatile",
+		"while", "writeonly",
 	};
 	// clang-format on
 
@@ -1848,6 +1855,7 @@ string CompilerGLSL::remap_swizzle(const SPIRType &out_type, uint32_t input_comp
 		return join(type_to_glsl(out_type), "(", expr, ")");
 	else
 	{
+		// FIXME: This will not work with packed expressions.
 		auto e = enclose_expression(expr) + ".";
 		// Just clamp the swizzle index if we have more outputs than inputs.
 		for (uint32_t c = 0; c < out_type.vecsize; c++)
@@ -2121,6 +2129,11 @@ void CompilerGLSL::emit_resources()
 				emit_specialization_constant(c);
 				emitted = true;
 			}
+			else if (id.get_type() == TypeConstantOp)
+			{
+				emit_specialization_constant_op(id.get<SPIRConstantOp>());
+				emitted = true;
+			}
 		}
 	}
 
@@ -2360,6 +2373,15 @@ string CompilerGLSL::to_enclosed_expression(uint32_t id)
 	return enclose_expression(to_expression(id));
 }
 
+string CompilerGLSL::to_extract_component_expression(uint32_t id, uint32_t index)
+{
+	auto expr = to_enclosed_expression(id);
+	if (has_decoration(id, DecorationCPacked))
+		return join(expr, "[", index, "]");
+	else
+		return join(expr, ".", index_to_swizzle(index));
+}
+
 string CompilerGLSL::to_expression(uint32_t id)
 {
 	auto itr = invalid_expressions.find(id);
@@ -2433,7 +2455,10 @@ string CompilerGLSL::to_expression(uint32_t id)
 	}
 
 	case TypeConstantOp:
-		return constant_op_expression(get<SPIRConstantOp>(id));
+		if (options.vulkan_semantics)
+			return to_name(id);
+		else
+			return constant_op_expression(get<SPIRConstantOp>(id));
 
 	case TypeVariable:
 	{
@@ -2558,6 +2583,41 @@ string CompilerGLSL::constant_op_expression(const SPIRConstantOp &cop)
 		}
 		break;
 	}
+
+	case OpVectorShuffle:
+	{
+		string expr = type_to_glsl_constructor(type);
+		expr += "(";
+
+		uint32_t left_components = expression_type(cop.arguments[0]).vecsize;
+		string left_arg = to_enclosed_expression(cop.arguments[0]);
+		string right_arg = to_enclosed_expression(cop.arguments[1]);
+
+		for (uint32_t i = 2; i < uint32_t(cop.arguments.size()); i++)
+		{
+			uint32_t index = cop.arguments[i];
+			if (index >= left_components)
+				expr += right_arg + "." + "xyzw"[index - left_components];
+			else
+				expr += left_arg + "." + "xyzw"[index];
+
+			if (i + 1 < uint32_t(cop.arguments.size()))
+				expr += ", ";
+		}
+
+		expr += ")";
+		return expr;
+	}
+
+	case OpCompositeExtract:
+	{
+		auto expr =
+		    access_chain_internal(cop.arguments[0], &cop.arguments[1], uint32_t(cop.arguments.size() - 1), true, false);
+		return expr;
+	}
+
+	case OpCompositeInsert:
+		SPIRV_CROSS_THROW("OpCompositeInsert spec constant op is not supported.");
 
 	default:
 		// Some opcodes are unimplemented here, these are currently not possible to test from glslang.
@@ -3228,9 +3288,7 @@ void CompilerGLSL::emit_unrolled_unary_op(uint32_t result_type, uint32_t result_
 		// Make sure to call to_expression multiple times to ensure
 		// that these expressions are properly flushed to temporaries if needed.
 		expr += op;
-		expr += to_enclosed_expression(operand);
-		expr += '.';
-		expr += index_to_swizzle(i);
+		expr += to_extract_component_expression(operand, i);
 
 		if (i + 1 < type.vecsize)
 			expr += ", ";
@@ -3251,15 +3309,11 @@ void CompilerGLSL::emit_unrolled_binary_op(uint32_t result_type, uint32_t result
 	{
 		// Make sure to call to_expression multiple times to ensure
 		// that these expressions are properly flushed to temporaries if needed.
-		expr += to_enclosed_expression(op0);
-		expr += '.';
-		expr += index_to_swizzle(i);
+		expr += to_extract_component_expression(op0, i);
 		expr += ' ';
 		expr += op;
 		expr += ' ';
-		expr += to_enclosed_expression(op1);
-		expr += '.';
-		expr += index_to_swizzle(i);
+		expr += to_extract_component_expression(op1, i);
 
 		if (i + 1 < type.vecsize)
 			expr += ", ";
@@ -3452,7 +3506,7 @@ string CompilerGLSL::legacy_tex_op(const std::string &op, const SPIRType &imgtyp
 
 	bool use_explicit_lod = check_explicit_lod_allowed(lod);
 
-	if (op == "textureLod" || op == "textureProjLod")
+	if (op == "textureLod" || op == "textureProjLod" || op == "textureGrad")
 	{
 		if (is_legacy_es())
 		{
@@ -3475,7 +3529,7 @@ string CompilerGLSL::legacy_tex_op(const std::string &op, const SPIRType &imgtyp
 	else if (op == "textureProj")
 		return join("texture", type, "Proj");
 	else if (op == "textureGrad")
-		return join("texture", type, "Grad");
+		return join("texture", type, is_legacy_es() ? "GradEXT" : is_legacy_desktop() ? "GradARB" : "Grad");
 	else if (op == "textureProjLod")
 	{
 		if (use_explicit_lod)
@@ -3580,7 +3634,7 @@ void CompilerGLSL::emit_mix_op(uint32_t result_type, uint32_t id, uint32_t left,
 		else
 		{
 			auto swiz = [this](uint32_t expression, uint32_t i) {
-				return join(to_enclosed_expression(expression), ".", index_to_swizzle(i));
+				return to_extract_component_expression(expression, i);
 			};
 
 			expr = type_to_glsl_constructor(restype);
@@ -5051,7 +5105,7 @@ string CompilerGLSL::access_chain_internal(uint32_t base, const uint32_t *indice
 		type = &get<SPIRType>(type->parent_type);
 	}
 
-	bool access_chain_is_arrayed = false;
+	bool access_chain_is_arrayed = expr.find_first_of('[') != string::npos;
 	bool row_major_matrix_needs_conversion = is_non_native_row_major_matrix(base);
 	bool is_packed = has_decoration(base, DecorationCPacked);
 	bool pending_array_enclose = false;
@@ -6073,7 +6127,9 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 		bool need_transpose, result_is_packed;
 		auto e = access_chain(ops[2], &ops[3], length - 3, get<SPIRType>(ops[0]), &need_transpose, &result_is_packed);
 		auto &expr = set<SPIRExpression>(ops[1], move(e), ops[0], should_forward(ops[2]));
-		expr.loaded_from = ops[2];
+
+		auto *backing_variable = maybe_get_backing_variable(ops[2]);
+		expr.loaded_from = backing_variable ? backing_variable->self : ops[2];
 		expr.need_transpose = need_transpose;
 
 		// Mark the result as being packed. Some platforms handled packed vectors differently than non-packed.
@@ -6486,6 +6542,10 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 			if (elems[i] >= type0.vecsize)
 				shuffle = true;
 
+		// Cannot use swizzles with packed expressions, force shuffle path.
+		if (!shuffle && has_decoration(vec0, DecorationCPacked))
+			shuffle = true;
+
 		string expr;
 		bool should_fwd, trivial_forward;
 
@@ -6499,9 +6559,9 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 			for (uint32_t i = 0; i < length; i++)
 			{
 				if (elems[i] >= type0.vecsize)
-					args.push_back(join(to_enclosed_expression(vec1), ".", index_to_swizzle(elems[i] - type0.vecsize)));
+					args.push_back(to_extract_component_expression(vec1, elems[i] - type0.vecsize));
 				else
-					args.push_back(join(to_enclosed_expression(vec0), ".", index_to_swizzle(elems[i])));
+					args.push_back(to_extract_component_expression(vec0, elems[i]));
 			}
 			expr += join(type_to_glsl_constructor(get<SPIRType>(result_type)), "(", merge(args), ")");
 		}
@@ -6611,6 +6671,24 @@ void CompilerGLSL::emit_instruction(const Instruction &instruction)
 	case OpTranspose:
 		UFOP(transpose);
 		break;
+
+	case OpSRem:
+	{
+		uint32_t result_type = ops[0];
+		uint32_t result_id = ops[1];
+		uint32_t op0 = ops[2];
+		uint32_t op1 = ops[3];
+
+		// Needs special handling.
+		bool forward = should_forward(op0) && should_forward(op1);
+		auto expr = join(to_enclosed_expression(op0), " - ", to_enclosed_expression(op1), " * ", "(",
+		                 to_enclosed_expression(op0), " / ", to_enclosed_expression(op1), ")");
+
+		emit_op(result_type, result_id, expr, forward);
+		inherit_expression_dependencies(result_id, op0);
+		inherit_expression_dependencies(result_id, op1);
+		break;
+	}
 
 	case OpSDiv:
 		BOP_CAST(/, SPIRType::Int);
@@ -8083,11 +8161,7 @@ const char *CompilerGLSL::flags_to_precision_qualifiers_glsl(const SPIRType &typ
 		// Vulkan GLSL supports precision qualifiers, even in desktop profiles, which is convenient.
 		// The default is highp however, so only emit mediump in the rare case that a shader has these.
 		if (flags.get(DecorationRelaxedPrecision))
-		{
-			bool can_use_mediump =
-			    type.basetype == SPIRType::Float || type.basetype == SPIRType::Int || type.basetype == SPIRType::UInt;
-			return can_use_mediump ? "mediump " : "";
-		}
+			return "mediump ";
 		else
 			return "";
 	}
@@ -8517,6 +8591,9 @@ void CompilerGLSL::add_variable(unordered_set<string> &variables, string &name)
 		return;
 	}
 
+	// Avoid double underscores.
+	name = sanitize_underscores(name);
+
 	update_name_cache(variables, name);
 }
 
@@ -8629,8 +8706,7 @@ void CompilerGLSL::add_function_overload(const SPIRFunction &func)
 			// Ignore these arguments, to make sure that functions need to differ in some other way
 			// to be considered different overloads.
 			if (type->basetype == SPIRType::SampledImage ||
-			    (type->basetype == SPIRType::Image && type->image.sampled == 1) ||
-			    type->basetype == SPIRType::Sampler)
+			    (type->basetype == SPIRType::Image && type->image.sampled == 1) || type->basetype == SPIRType::Sampler)
 			{
 				continue;
 			}
@@ -8806,7 +8882,30 @@ void CompilerGLSL::emit_function(SPIRFunction &func, const Bitset &return_flags)
 	for (auto &v : func.local_variables)
 	{
 		auto &var = get<SPIRVariable>(v);
-		if (expression_is_lvalue(v))
+		if (var.storage == StorageClassWorkgroup)
+		{
+			// Special variable type which cannot have initializer,
+			// need to be declared as standalone variables.
+			// Comes from MSL which can push global variables as local variables in main function.
+			add_local_variable_name(var.self);
+			statement(variable_decl(var), ";");
+			var.deferred_declaration = false;
+		}
+		else if (var.storage == StorageClassPrivate)
+		{
+			// These variables will not have had their CFG usage analyzed, so move it to the entry block.
+			// Comes from MSL which can push global variables as local variables in main function.
+			// We could just declare them right now, but we would miss out on an important initialization case which is
+			// LUT declaration in MSL.
+			// If we don't declare the variable when it is assigned we're forced to go through a helper function
+			// which copies elements one by one.
+			add_local_variable_name(var.self);
+			auto &dominated = entry_block.dominated_variables;
+			if (find(begin(dominated), end(dominated), var.self) == end(dominated))
+				entry_block.dominated_variables.push_back(var.self);
+			var.deferred_declaration = true;
+		}
+		else if (expression_is_lvalue(v))
 		{
 			add_local_variable_name(var.self);
 

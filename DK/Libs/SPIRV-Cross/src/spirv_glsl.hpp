@@ -371,6 +371,7 @@ protected:
 	void emit_block_chain(SPIRBlock &block);
 	void emit_hoisted_temporaries(std::vector<std::pair<uint32_t, uint32_t>> &temporaries);
 	void emit_specialization_constant(const SPIRConstant &constant);
+	void emit_specialization_constant_op(const SPIRConstantOp &constant);
 	std::string emit_continue_block(uint32_t continue_block);
 	bool attempt_emit_loop_header(SPIRBlock &block, SPIRBlock::Method method);
 	void propagate_loop_dominators(const SPIRBlock &block);
@@ -435,6 +436,7 @@ protected:
 	void append_global_func_args(const SPIRFunction &func, uint32_t index, std::vector<std::string> &arglist);
 	std::string to_expression(uint32_t id);
 	std::string to_enclosed_expression(uint32_t id);
+	std::string to_extract_component_expression(uint32_t id, uint32_t index);
 	std::string enclose_expression(const std::string &expr);
 	void strip_enclosed_expression(std::string &expr);
 	std::string to_member_name(const SPIRType &type, uint32_t index);

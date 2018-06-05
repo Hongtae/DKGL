@@ -867,6 +867,7 @@ struct SPIRConstant : IVariant
 		// Workaround for MSVC 2013, initializing an array breaks.
 		ConstantVector()
 		{
+			memset(r, 0, sizeof(r));
 			for (unsigned i = 0; i < 4; i++)
 				id[i] = 0;
 		}
@@ -1005,7 +1006,7 @@ struct SPIRConstant : IVariant
 
 	inline void make_null(const SPIRType &constant_type_)
 	{
-		std::memset(&m, 0, sizeof(m));
+		m = {};
 		m.columns = constant_type_.columns;
 		for (auto &c : m.c)
 			c.vecsize = constant_type_.vecsize;
@@ -1015,6 +1016,8 @@ struct SPIRConstant : IVariant
 	    : constant_type(constant_type_)
 	{
 	}
+
+	SPIRConstant() = default;
 
 	SPIRConstant(uint32_t constant_type_, const uint32_t *elements, uint32_t num_elements, bool specialized)
 	    : constant_type(constant_type_)
@@ -1079,9 +1082,11 @@ struct SPIRConstant : IVariant
 
 	uint32_t constant_type;
 	ConstantMatrix m;
-	bool specialization = false; // If this constant is a specialization constant (i.e. created with OpSpecConstant*).
-	bool is_used_as_array_length =
-	    false; // If this constant is used as an array length which creates specialization restrictions on some backends.
+
+	// If this constant is a specialization constant (i.e. created with OpSpecConstant*).
+	bool specialization = false;
+	// If this constant is used as an array length which creates specialization restrictions on some backends.
+	bool is_used_as_array_length = false;
 
 	// For composites which are constant arrays, etc.
 	std::vector<uint32_t> subconstants;
@@ -1110,9 +1115,10 @@ public:
 	void set(std::unique_ptr<IVariant> val, uint32_t new_type)
 	{
 		holder = std::move(val);
-		if (type != TypeNone && type != new_type)
+		if (!allow_type_rewrite && type != TypeNone && type != new_type)
 			SPIRV_CROSS_THROW("Overwriting a variant with new type.");
 		type = new_type;
+		allow_type_rewrite = false;
 	}
 
 	template <typename T>
@@ -1153,9 +1159,15 @@ public:
 		type = TypeNone;
 	}
 
+	void set_allow_type_rewrite()
+	{
+		allow_type_rewrite = true;
+	}
+
 private:
 	std::unique_ptr<IVariant> holder;
 	uint32_t type = TypeNone;
+	bool allow_type_rewrite = false;
 };
 
 template <typename T>

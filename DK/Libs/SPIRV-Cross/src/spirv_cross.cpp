@@ -104,7 +104,13 @@ bool Compiler::variable_storage_is_aliased(const SPIRVariable &v)
 	            meta[type.self].decoration.decoration_flags.get(DecorationBufferBlock);
 	bool image = type.basetype == SPIRType::Image;
 	bool counter = type.basetype == SPIRType::AtomicCounter;
-	bool is_restrict = meta[v.self].decoration.decoration_flags.get(DecorationRestrict);
+
+	bool is_restrict;
+	if (ssbo)
+		is_restrict = get_buffer_block_flags(v).get(DecorationRestrict);
+	else
+		is_restrict = has_decoration(v.self, DecorationRestrict);
+
 	return !is_restrict && (ssbo || image || counter);
 }
 
@@ -992,12 +998,27 @@ void Compiler::update_name_cache(unordered_set<string> &cache, string &name)
 	uint32_t counter = 0;
 	auto tmpname = name;
 
+	bool use_linked_underscore = true;
+
+	if (tmpname == "_")
+	{
+		// We cannot just append numbers, as we will end up creating internally reserved names.
+		// Make it like _0_<counter> instead.
+		tmpname += "0";
+	}
+	else if (tmpname.back() == '_')
+	{
+		// The last_character is an underscore, so we don't need to link in underscore.
+		// This would violate double underscore rules.
+		use_linked_underscore = false;
+	}
+
 	// If there is a collision (very rare),
 	// keep tacking on extra identifier until it's unique.
 	do
 	{
 		counter++;
-		name = tmpname + "_" + convert_to_string(counter);
+		name = tmpname + (use_linked_underscore ? "_" : "") + convert_to_string(counter);
 	} while (cache.find(name) != end(cache));
 	cache.insert(name);
 }
@@ -1186,7 +1207,7 @@ const Bitset &Compiler::get_member_decoration_bitset(uint32_t id, uint32_t index
 	auto &m = meta.at(id);
 	if (index >= m.members.size())
 	{
-		static const Bitset cleared;
+		static const Bitset cleared = {};
 		return cleared;
 	}
 
@@ -2017,9 +2038,28 @@ void Compiler::parse(const Instruction &instruction)
 			if (elements > 4)
 				SPIRV_CROSS_THROW("OpConstantComposite only supports 1, 2, 3 and 4 elements.");
 
+			SPIRConstant remapped_constant_ops[4];
 			const SPIRConstant *c[4];
 			for (uint32_t i = 0; i < elements; i++)
-				c[i] = &get<SPIRConstant>(ops[2 + i]);
+			{
+				// Specialization constants operations can also be part of this.
+				// We do not know their value, so any attempt to query SPIRConstant later
+				// will fail. We can only propagate the ID of the expression and use to_expression on it.
+				auto *constant_op = maybe_get<SPIRConstantOp>(ops[2 + i]);
+				if (constant_op)
+				{
+					if (op == OpConstantComposite)
+						SPIRV_CROSS_THROW("Specialization constant operation used in OpConstantComposite.");
+
+					remapped_constant_ops[i].make_null(get<SPIRType>(constant_op->basetype));
+					remapped_constant_ops[i].self = constant_op->self;
+					remapped_constant_ops[i].constant_type = constant_op->basetype;
+					remapped_constant_ops[i].specialization = true;
+					c[i] = &remapped_constant_ops[i];
+				}
+				else
+					c[i] = &get<SPIRConstant>(ops[2 + i]);
+			}
 			set<SPIRConstant>(id, type, c, elements, op == OpSpecConstantComposite);
 		}
 		break;
@@ -3191,6 +3231,9 @@ bool Compiler::DummySamplerForCombinedImageHandler::handle(Op opcode, const uint
 		uint32_t ptr = args[2];
 		compiler.set<SPIRExpression>(id, "", result_type, true);
 		compiler.register_read(id, ptr, true);
+
+		// Other backends might use SPIRAccessChain for this later.
+		compiler.ids[id].set_allow_type_rewrite();
 		break;
 	}
 
@@ -3443,10 +3486,8 @@ vector<SpecializationConstant> Compiler::get_specialization_constants() const
 		if (id.get_type() == TypeConstant)
 		{
 			auto &c = id.get<SPIRConstant>();
-			if (c.specialization)
-			{
+			if (c.specialization && has_decoration(c.self, DecorationSpecId))
 				spec_consts.push_back({ c.self, get_decoration(c.self, DecorationSpecId) });
-			}
 		}
 	}
 	return spec_consts;
@@ -3696,6 +3737,12 @@ void Compiler::analyze_variable_scope(SPIRFunction &entry)
 					notify_variable_access(args[i], current_block->self);
 
 				// The result of an access chain is a fixed expression and is not really considered a temporary.
+				auto &e = compiler.set<SPIRExpression>(args[1], "", args[0], true);
+				auto *backing_variable = compiler.maybe_get_backing_variable(ptr);
+				e.loaded_from = backing_variable ? backing_variable->self : 0;
+
+				// Other backends might use SPIRAccessChain for this later.
+				compiler.ids[args[1]].set_allow_type_rewrite();
 				break;
 			}
 
@@ -4046,7 +4093,12 @@ void Compiler::analyze_variable_scope(SPIRFunction &entry)
 	}
 }
 
-Bitset Compiler::get_buffer_block_flags(const SPIRVariable &var)
+Bitset Compiler::get_buffer_block_flags(uint32_t id) const
+{
+	return get_buffer_block_flags(get<SPIRVariable>(id));
+}
+
+Bitset Compiler::get_buffer_block_flags(const SPIRVariable &var) const
 {
 	auto &type = get<SPIRType>(var.basetype);
 	assert(type.basetype == SPIRType::Struct);

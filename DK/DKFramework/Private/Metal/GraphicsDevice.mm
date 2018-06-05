@@ -143,19 +143,27 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
 			using Compiler = spirv_cross::CompilerMSL;
 			Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
-			std::vector<std::string> entryPointNames = compiler.get_entry_points();
-			if (entryPointNames.empty())
+			std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
+			if (entryPoints.empty())
 			{
 					DKLogE("Error: No entry point function!");
 					return NULL;			
 			}
-#if 0
-            Compiler::Options options = compiler.get_options();
-            options.flip_vert_y = false;
-            options.enable_point_size_builtin = true;
-            options.entry_point_name = nullptr;
-            compiler.set_options(options);
+
+            Compiler::Options mslOptions = compiler.get_msl_options();
+#if TARGET_OS_IPHONE
+			mslOptions.platform = Compiler::Options::iOS;
+#else
+			mslOptions.platform = Compiler::Options::macOS;
 #endif
+			mslOptions.set_msl_version(2, 1);
+            mslOptions.enable_point_size_builtin = true;
+            mslOptions.resolve_specialized_array_lengths = true;
+            compiler.set_msl_options(mslOptions);
+
+//			auto commonOptions = compiler.get_common_options();
+//			compiler.set_common_options(commonOptions);
+
             @autoreleasepool {
                 NSString* source = [NSString stringWithUTF8String:compiler.compile().c_str()];
 

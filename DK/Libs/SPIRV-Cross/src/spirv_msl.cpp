@@ -389,7 +389,6 @@ void CompilerMSL::localize_global_variables()
 		auto &var = get<SPIRVariable>(v_id);
 		if (var.storage == StorageClassPrivate || var.storage == StorageClassWorkgroup)
 		{
-			var.storage = StorageClassFunction;
 			entry_func.add_local_variable(v_id);
 			iter = global_variables.erase(iter);
 		}
@@ -417,7 +416,6 @@ void CompilerMSL::resolve_specialized_array_lengths()
 // extract that variable and add it as an argument to that function.
 void CompilerMSL::extract_global_variables_from_functions()
 {
-
 	// Uniforms
 	unordered_set<uint32_t> global_var_ids;
 	for (auto &id : ids)
@@ -434,10 +432,11 @@ void CompilerMSL::extract_global_variables_from_functions()
 		}
 	}
 
-	// Local vars that are declared in the main function and accessed directy by a function
+	// Local vars that are declared in the main function and accessed directly by a function
 	auto &entry_func = get<SPIRFunction>(entry_point);
 	for (auto &var : entry_func.local_variables)
-		global_var_ids.insert(var);
+		if (get<SPIRVariable>(var).storage != StorageClassFunction)
+			global_var_ids.insert(var);
 
 	std::set<uint32_t> added_arg_ids;
 	unordered_set<uint32_t> processed_func_ids;
@@ -492,6 +491,7 @@ void CompilerMSL::extract_global_variables_from_function(uint32_t func_id, std::
 
 				break;
 			}
+
 			case OpFunctionCall:
 			{
 				// First see if any of the function call args are globals
@@ -511,9 +511,21 @@ void CompilerMSL::extract_global_variables_from_function(uint32_t func_id, std::
 				break;
 			}
 
+			case OpStore:
+			{
+				uint32_t base_id = ops[0];
+				if (global_var_ids.find(base_id) != global_var_ids.end())
+					added_arg_ids.insert(base_id);
+				break;
+			}
+
 			default:
 				break;
 			}
+
+			// TODO: Add all other operations which can affect memory.
+			// We should consider a more unified system here to reduce boiler-plate.
+			// This kind of analysis is done in several places ...
 		}
 	}
 
@@ -1559,35 +1571,49 @@ void CompilerMSL::emit_resources()
 // Emit declarations for the specialization Metal function constants
 void CompilerMSL::emit_specialization_constants()
 {
-	const vector<SpecializationConstant> spec_consts = get_specialization_constants();
-
 	SpecializationConstant wg_x, wg_y, wg_z;
 	uint32_t workgroup_size_id = get_work_group_size_specialization_constants(wg_x, wg_y, wg_z);
+	bool emitted = false;
 
-	for (auto &sc : spec_consts)
+	for (auto &id : ids)
 	{
-		// If WorkGroupSize is a specialization constant, it will be declared explicitly below.
-		if (sc.id == workgroup_size_id)
-			continue;
-
-		auto &type = expression_type(sc.id);
-		string sc_type_name = type_to_glsl(type);
-		string sc_name = to_name(sc.id);
-		string sc_tmp_name = to_name(sc.id) + "_tmp";
-
-		if (type.vecsize == 1 && type.columns == 1 && type.basetype != SPIRType::Struct && type.array.empty())
+		if (id.get_type() == TypeConstant)
 		{
-			// Only scalar, non-composite values can be function constants.
-			statement("constant ", sc_type_name, " ", sc_tmp_name, " [[function_constant(",
-			          convert_to_string(sc.constant_id), ")]];");
-			statement("constant ", sc_type_name, " ", sc_name, " = is_function_constant_defined(", sc_tmp_name, ") ? ",
-			          sc_tmp_name, " : ", constant_expression(get<SPIRConstant>(sc.id)), ";");
+			auto &c = id.get<SPIRConstant>();
+			if (!c.specialization)
+				continue;
+
+			// If WorkGroupSize is a specialization constant, it will be declared explicitly below.
+			if (c.self == workgroup_size_id)
+				continue;
+
+			auto &type = get<SPIRType>(c.constant_type);
+			string sc_type_name = type_to_glsl(type);
+			string sc_name = to_name(c.self);
+			string sc_tmp_name = sc_name + "_tmp";
+
+			if (has_decoration(c.self, DecorationSpecId))
+			{
+				uint32_t constant_id = get_decoration(c.self, DecorationSpecId);
+				// Only scalar, non-composite values can be function constants.
+				statement("constant ", sc_type_name, " ", sc_tmp_name, " [[function_constant(", constant_id, ")]];");
+				statement("constant ", sc_type_name, " ", sc_name, " = is_function_constant_defined(", sc_tmp_name,
+				          ") ? ", sc_tmp_name, " : ", constant_expression(c), ";");
+			}
+			else
+			{
+				// Composite specialization constants must be built from other specialization constants.
+				statement("constant ", sc_type_name, " ", sc_name, " = ", constant_expression(c), ";");
+			}
+			emitted = true;
 		}
-		else
+		else if (id.get_type() == TypeConstantOp)
 		{
-			// Composite specialization constants must be built from other specialization constants.
-			statement("constant ", sc_type_name, " ", sc_name, " = ", constant_expression(get<SPIRConstant>(sc.id)),
-			          ";");
+			auto &c = id.get<SPIRConstantOp>();
+			auto &type = get<SPIRType>(c.basetype);
+			auto name = to_name(c.self);
+			statement("constant ", variable_decl(type, name), " = ", constant_op_expression(c), ";");
+			emitted = true;
 		}
 	}
 
@@ -1595,10 +1621,13 @@ void CompilerMSL::emit_specialization_constants()
 	// the work group size at compile time in SPIR-V, and [[threads_per_threadgroup]] would need to be passed around as a global.
 	// The work group size may be a specialization constant.
 	if (workgroup_size_id)
+	{
 		statement("constant uint3 ", builtin_to_glsl(BuiltInWorkgroupSize, StorageClassWorkgroup), " = ",
 		          constant_expression(get<SPIRConstant>(workgroup_size_id)), ";");
+		emitted = true;
+	}
 
-	if (!spec_consts.empty() || workgroup_size_id)
+	if (emitted)
 		statement("");
 }
 
@@ -1717,7 +1746,6 @@ void CompilerMSL::emit_instruction(const Instruction &instruction)
 	}
 
 	case OpAtomicCompareExchange:
-	case OpAtomicCompareExchangeWeak:
 	{
 		uint32_t result_type = ops[0];
 		uint32_t id = ops[1];
@@ -1730,6 +1758,9 @@ void CompilerMSL::emit_instruction(const Instruction &instruction)
 		                    ptr, comp, true, val);
 		break;
 	}
+
+	case OpAtomicCompareExchangeWeak:
+		SPIRV_CROSS_THROW("OpAtomicCompareExchangeWeak is only supported in kernel profile.");
 
 	case OpAtomicLoad:
 	{
@@ -2190,52 +2221,62 @@ void CompilerMSL::emit_atomic_func_op(uint32_t result_type, uint32_t result_id, 
 {
 	forced_temporaries.insert(result_id);
 
-	bool fwd_obj = should_forward(obj);
-	bool fwd_op1 = op1 ? should_forward(op1) : true;
-	bool fwd_op2 = op2 ? should_forward(op2) : true;
-
-	bool forward = fwd_obj && fwd_op1 && fwd_op2;
-
 	string exp = string(op) + "(";
 
 	auto &type = expression_type(obj);
 	exp += "(volatile ";
-	exp += "device";
+	auto *var = maybe_get_backing_variable(obj);
+	if (!var)
+		SPIRV_CROSS_THROW("No backing variable for atomic operation.");
+	exp += get_argument_address_space(*var);
 	exp += " atomic_";
 	exp += type_to_glsl(type);
 	exp += "*)";
 
-	exp += "&(";
-	exp += to_expression(obj);
-	exp += ")";
+	exp += "&";
+	exp += to_enclosed_expression(obj);
 
-	if (op1)
+	bool is_atomic_compare_exchange_strong = op1_is_pointer && op1;
+
+	if (is_atomic_compare_exchange_strong)
 	{
-		if (op1_is_pointer)
-		{
-			statement(declare_temporary(expression_type(op2).self, op1), to_expression(op1), ";");
-			exp += ", &(" + to_name(op1) + ")";
-		}
-		else
-			exp += ", " + to_expression(op1);
+		assert(strcmp(op, "atomic_compare_exchange_weak_explicit") == 0);
+		assert(op2);
+		assert(has_mem_order_2);
+		exp += ", &";
+		exp += to_name(result_id);
+		exp += ", ";
+		exp += to_expression(op2);
+		exp += ", ";
+		exp += get_memory_order(mem_order_1);
+		exp += ", ";
+		exp += get_memory_order(mem_order_2);
+		exp += ")";
+
+		// MSL only supports the weak atomic compare exchange,
+		// so emit a CAS loop here.
+		statement(variable_decl(type, to_name(result_id)), ";");
+		statement("do");
+		begin_scope();
+		statement(to_name(result_id), " = ", to_expression(op1), ";");
+		end_scope_decl(join("while (!", exp, ")"));
+		set<SPIRExpression>(result_id, to_name(result_id), result_type, true);
 	}
+	else
+	{
+		assert(strcmp(op, "atomic_compare_exchange_weak_explicit") != 0);
+		if (op1)
+			exp += ", " + to_expression(op1);
+		if (op2)
+			exp += ", " + to_expression(op2);
 
-	if (op2)
-		exp += ", " + to_expression(op2);
+		exp += string(", ") + get_memory_order(mem_order_1);
+		if (has_mem_order_2)
+			exp += string(", ") + get_memory_order(mem_order_2);
 
-	exp += string(", ") + get_memory_order(mem_order_1);
-
-	if (has_mem_order_2)
-		exp += string(", ") + get_memory_order(mem_order_2);
-
-	exp += ")";
-	emit_op(result_type, result_id, exp, forward);
-
-	inherit_expression_dependencies(result_id, obj);
-	if (op1)
-		inherit_expression_dependencies(result_id, op1);
-	if (op2)
-		inherit_expression_dependencies(result_id, op2);
+		exp += ")";
+		emit_op(result_type, result_id, exp, false);
+	}
 
 	flush_all_atomic_capable_variables();
 }
@@ -2572,11 +2613,23 @@ string CompilerMSL::to_function_args(uint32_t img, const SPIRType &imgtype, bool
 
 	// If fetch from cube, add face explicitly
 	if (is_cube_fetch)
-		farg_str += ", uint(" + round_fp_tex_coords(coord_expr + ".z", coord_is_fp) + ")";
+	{
+		// Special case for cube arrays, face and layer are packed in one dimension.
+		if (imgtype.image.arrayed)
+			farg_str += ", uint(" + join(coord_expr, ".z) % 6u");
+		else
+			farg_str += ", uint(" + round_fp_tex_coords(coord_expr + ".z", coord_is_fp) + ")";
+	}
 
 	// If array, use alt coord
 	if (imgtype.image.arrayed)
-		farg_str += ", uint(" + round_fp_tex_coords(coord_expr + alt_coord, coord_is_fp) + ")";
+	{
+		// Special case for cube arrays, face and layer are packed in one dimension.
+		if (imgtype.image.dim == DimCube && is_fetch)
+			farg_str += ", uint(" + join(coord_expr, ".z) / 6u");
+		else
+			farg_str += ", uint(" + round_fp_tex_coords(coord_expr + alt_coord, coord_is_fp) + ")";
+	}
 
 	// Depth compare reference value
 	if (dref)
@@ -3149,17 +3202,25 @@ string CompilerMSL::get_argument_address_space(const SPIRVariable &argument)
 		return "threadgroup";
 
 	case StorageClassStorageBuffer:
-		return "device";
+	{
+		auto flags = get_buffer_block_flags(argument);
+		return flags.get(DecorationNonWritable) ? "const device" : "device";
+	}
 
 	case StorageClassUniform:
 	case StorageClassUniformConstant:
 	case StorageClassPushConstant:
 		if (type.basetype == SPIRType::Struct)
-			return (meta[type.self].decoration.decoration_flags.get(DecorationBufferBlock) &&
-			        !meta[argument.self].decoration.decoration_flags.get(DecorationNonWritable)) ?
-			           "device" :
-			           "constant";
-
+		{
+			bool ssbo = has_decoration(type.self, DecorationBufferBlock);
+			if (!ssbo)
+				return "constant";
+			else
+			{
+				bool readonly = get_buffer_block_flags(argument).get(DecorationNonWritable);
+				return readonly ? "const device" : "device";
+			}
+		}
 		break;
 
 	default:
