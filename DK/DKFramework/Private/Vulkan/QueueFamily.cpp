@@ -14,18 +14,11 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-QueueFamily::QueueFamily(VkPhysicalDevice phyDevice, VkDevice device, uint32_t index, uint32_t count, const VkQueueFamilyProperties& prop)
+QueueFamily::QueueFamily(VkPhysicalDevice phyDevice, VkDevice device, uint32_t index, uint32_t count, const VkQueueFamilyProperties& prop, bool presentationSupport)
 	: familyIndex(index)
-	, supportPresentation(false)
+	, supportPresentation(presentationSupport)
 	, properties(prop)
 {
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
-	supportPresentation = true;	// always true on Android
-#endif
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-	supportPresentation = iproc.vkGetPhysicalDeviceWin32PresentationSupportKHR(phyDevice, familyIndex) != VK_FALSE;
-#endif
-
 	freeQueues.Reserve(count);
 	for (uint32_t queueIndex = 0; queueIndex < count; ++queueIndex)
 	{

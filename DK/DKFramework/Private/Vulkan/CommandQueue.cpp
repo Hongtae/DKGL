@@ -56,11 +56,11 @@ DKObject<DKSwapChain> CommandQueue::CreateSwapChain(DKWindow* window)
 	{
 		if (!this->family->IsSupportPresentation())
 		{
-			GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-			VkPhysicalDevice physicalDevice = dc->physicalDevice;
+			GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+			VkPhysicalDevice physicalDevice = dev->physicalDevice;
 
 			VkBool32 supported = VK_FALSE;
-			VkResult err = iproc.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, this->family->FamilyIndex(), swapChain->surface, &supported);
+			VkResult err = dev->iproc.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, this->family->FamilyIndex(), swapChain->surface, &supported);
 			if (err != VK_SUCCESS)
 			{
 				DKLogE("ERROR: vkGetPhysicalDeviceSurfaceSupportKHR failed: %s", VkResultCStr(err));

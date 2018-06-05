@@ -66,6 +66,10 @@ namespace DKFramework
 				bool fenceCompletionThreadRunning;
 				DKObject<DKThread> fenceCompletionThread;
 				void FenceCompletionCallbackThreadProc(void);
+
+				// extensions
+				InstanceProc iproc; // instance procedure
+				DeviceProc dproc; // device procedure
 			};
 		}
 	}

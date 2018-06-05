@@ -165,9 +165,6 @@ namespace DKFramework
 				return "";
 			}
 
-			// declared in GraphicsDevice.cpp
-			extern InstanceProc iproc;
-			extern DeviceProc dproc;
 		}
 	}
 }

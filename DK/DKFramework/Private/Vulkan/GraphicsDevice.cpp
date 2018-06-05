@@ -34,10 +34,6 @@ namespace DKFramework
 				"VK_LAYER_LUNARG_standard_validation"
 			};
 
-			// extensions
-			InstanceProc iproc;
-			DeviceProc dproc;
-
 			VkBool32 DebugMessageCallback(
 				VkDebugReportFlagsEXT flags,
 				VkDebugReportObjectTypeEXT objType,
@@ -486,7 +482,15 @@ GraphicsDevice::GraphicsDevice(void)
 
 			for (const VkDeviceQueueCreateInfo& queueInfo : queueCreateInfos)
 			{
-				QueueFamily* qf = new QueueFamily(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex));
+				bool supportPresentation = false;
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+				supportPresentation = true;	// always true on Android
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+				supportPresentation = iproc.vkGetPhysicalDeviceWin32PresentationSupportKHR(desc.physicalDevice, queueInfo.queueFamilyIndex) != VK_FALSE;
+#endif
+
+				QueueFamily* qf = new QueueFamily(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex), supportPresentation);
 				this->queueFamilies.Add(qf);
 			}
 			DKLogI("Vulkan device created with \"%s\"", desc.properties.deviceName);

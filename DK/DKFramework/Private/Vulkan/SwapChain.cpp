@@ -100,7 +100,7 @@ bool SwapChain::Setup(void)
 	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
 	surfaceCreateInfo.hinstance = (HINSTANCE)GetModuleHandleW(NULL);
 	surfaceCreateInfo.hwnd = (HWND)window->PlatformHandle();
-	err = iproc.vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
+	err = dev->iproc.vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateWin32SurfaceKHR failed: %s", VkResultCStr(err));
@@ -124,7 +124,7 @@ bool SwapChain::Setup(void)
 	// get color format, color space
 	// Get list of supported surface formats
 	uint32_t surfaceFormatCount;
-	err = iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, NULL);
+	err = dev->iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, NULL);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));
@@ -138,7 +138,7 @@ bool SwapChain::Setup(void)
 
 	availableSurfaceFormats.Clear();
 	availableSurfaceFormats.Resize(surfaceFormatCount);
-	err = iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, availableSurfaceFormats);
+	err = dev->iproc.vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, availableSurfaceFormats);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkGetPhysicalDeviceSurfaceFormatsKHR failed: %s", VkResultCStr(err));

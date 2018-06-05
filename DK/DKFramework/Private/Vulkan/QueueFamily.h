@@ -21,7 +21,7 @@ namespace DKFramework
 			class QueueFamily
 			{
 			public:
-				QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop);
+				QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop, bool supportPresentation);
 				~QueueFamily(void);
 
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*);
