@@ -381,7 +381,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 																   error:&error];
 			if (pipelineReflection)
 			{
-				auto copyArguments = [](DKArray<DKShaderArgument>& outArgs, NSArray<MTLArgument *>* inArgs)
+				auto copyArguments = [](DKArray<DKShaderResource>& outArgs, NSArray<MTLArgument *>* inArgs)
 				{
 					outArgs.Clear();
 					outArgs.Reserve(inArgs.count);
@@ -395,7 +395,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 								NSLog(@"Warning!! Argument's detail query is not implemented: %@", arg);
 								break;
 						}
-						DKShaderArgument a;
+						DKShaderResource a;
 						a.set = 0;
 						a.binding = (uint32_t)arg.index;
 						a.name = DKStringU8(arg.name.UTF8String);
@@ -404,10 +404,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 						switch (arg.type)
 						{
-							case MTLArgumentTypeBuffer:				a.type = DKShaderArgument::TypeBuffer; break;
-							case MTLArgumentTypeThreadgroupMemory:	a.type = DKShaderArgument::TypeThreadgroupMemory; break;
-							case MTLArgumentTypeTexture:			a.type = DKShaderArgument::TypeTexture; break;
-							case MTLArgumentTypeSampler:			a.type = DKShaderArgument::TypeSampler; break;
+							case MTLArgumentTypeBuffer:				a.type = DKShaderResource::TypeBuffer; break;
+							case MTLArgumentTypeThreadgroupMemory:	a.type = DKShaderResource::TypeThreadgroupMemory; break;
+							case MTLArgumentTypeTexture:			a.type = DKShaderResource::TypeTexture; break;
+							case MTLArgumentTypeSampler:			a.type = DKShaderResource::TypeSampler; break;
 							default:
 								NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
 						}
@@ -415,8 +415,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 					}
 					outArgs.ShrinkToFit();
 				};
-				copyArguments(reflection->vertexArguments, pipelineReflection.vertexArguments);
-				copyArguments(reflection->fragmentArguments, pipelineReflection.fragmentArguments);
+				copyArguments(reflection->vertexResources, pipelineReflection.vertexArguments);
+				copyArguments(reflection->fragmentResources, pipelineReflection.fragmentArguments);
 			}
 		}
 		else

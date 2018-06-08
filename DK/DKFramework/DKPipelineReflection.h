@@ -8,10 +8,53 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKShader.h"
+#include "DKShaderFunction.h"
+#include "DKTexture.h"
 
 namespace DKFramework
 {
-	struct DKShaderArgument
+	struct DKShaderResourceBuffer
+	{
+		DKShaderDataType dataType;
+		uint32_t alignment;
+		uint32_t size;
+
+		struct DKShaderResourceStruct* structType;
+	};
+	struct DKShaderResourceTexture
+	{
+		DKShaderDataType dataType;
+		DKTexture::Type textureType;
+	};
+	struct DKShaderResourceThreadgroup
+	{
+		uint32_t alignment;
+		uint32_t size;
+	};
+	struct DKShaderResourceArray
+	{
+		DKShaderDataType elementType;
+		uint32_t arrayLength;
+		uint32_t stride;
+	};
+	struct DKShaderResourceStructMember
+	{
+		DKString name;
+		DKShaderDataType dataType;
+		uint32_t offset;
+		uint32_t binding; // shader binding location for single item.
+
+		union
+		{
+			struct DKShaderResourceArray* arrayType;   // for dataType == DKShaderDataType::Array
+			struct DKShaderResourceStruct* structType; // for dataType == DKShaderDataType::Struct
+		} typeInfo;
+	};
+	struct DKShaderResourceStruct
+	{
+		DKArray<DKShaderResourceStructMember> members;
+	};
+	struct DKShaderResource
 	{
 		enum Type
 		{
@@ -27,6 +70,18 @@ namespace DKFramework
 		Type type;
 		size_t count; // array length
 		bool enabled;
+
+		union
+		{
+			// only one of these is valid depending on the type.
+			DKShaderResourceBuffer buffer;
+			DKShaderResourceTexture texture;
+			DKShaderResourceThreadgroup threadgroup;
+		} typeInfo;
+
+		// type data for struct members
+		DKMap<DKString, DKShaderResourceArray> arrayTypeMemberMap;
+		DKMap<DKString, DKShaderResourceStruct> structTypeMemberMap;
 	};
 
 	/**
@@ -34,13 +89,13 @@ namespace DKFramework
 	*/
 	struct DKRenderPipelineReflection
 	{
-		DKArray<DKShaderArgument> vertexArguments;
-		DKArray<DKShaderArgument> fragmentArguments;
+		DKArray<DKShaderResource> vertexResources;
+		DKArray<DKShaderResource> fragmentResources;
 	};
 	/**
 	@brief Compute Pipeline's shader reflection
 	*/struct DKComputePipelineReflection
 	{
-		DKArray<DKShaderArgument> arguments;
+		DKArray<DKShaderResource> resources;
 	};
 }

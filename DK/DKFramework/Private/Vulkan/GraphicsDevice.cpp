@@ -817,8 +817,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// shader arguments reflection
 	DKRenderPipelineReflection reflection;
-	reflection.vertexArguments.Reserve(maxDescriptorBindings);
-	reflection.fragmentArguments.Reserve(maxDescriptorBindings);
+	reflection.vertexResources.Reserve(maxDescriptorBindings);
+	reflection.fragmentResources.Reserve(maxDescriptorBindings);
 
 	// setup descriptor layout
 	DKArray<VkDescriptorSetLayoutBinding> descriptorBindings;
@@ -841,7 +841,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 						VkDescriptorType type = (VkDescriptorType)(descType + VK_DESCRIPTOR_TYPE_BEGIN_RANGE);
 
 						bool reflectionType = true;
-						DKShaderArgument::Type argType;
+						DKShaderResource::Type resourceType;
 						switch (type)
 						{
 						case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
@@ -850,14 +850,14 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 						case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 						case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
 						case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
-							argType = DKShaderArgument::TypeBuffer; break;
+							resourceType = DKShaderResource::TypeBuffer; break;
 						case VK_DESCRIPTOR_TYPE_SAMPLER:
-							argType = DKShaderArgument::TypeSampler; break;
+							resourceType = DKShaderResource::TypeSampler; break;
 						case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
 						case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-							argType = DKShaderArgument::TypeTexture; break;
+							resourceType = DKShaderResource::TypeTexture; break;
 						case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:	// Texture or Sampler?
-							argType = DKShaderArgument::TypeTexture; break;
+							resourceType = DKShaderResource::TypeTexture; break;
 						default:
 							reflectionType = false;
 						}
@@ -867,16 +867,16 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 						{
 							if (reflectionType)
 							{
-								DKShaderArgument arg;
-								arg.set = setIndex;
-								arg.binding = descriptor.index;
-								arg.name = descriptor.name;
-								arg.type = argType;
-								arg.count = descriptor.count;
+								DKShaderResource resource;
+								resource.set = setIndex;
+								resource.binding = descriptor.index;
+								resource.name = descriptor.name;
+								resource.type = resourceType;
+								resource.count = descriptor.count;
 								if (module->stage == VK_SHADER_STAGE_VERTEX_BIT)
-									reflection.vertexArguments.Add(arg);
+									reflection.vertexResources.Add(resource);
 								else if (module->stage == VK_SHADER_STAGE_FRAGMENT_BIT)
-									reflection.fragmentArguments.Add(arg);
+									reflection.fragmentResources.Add(resource);
 							}
 
 							// Find duplicated descriptors.
@@ -1257,8 +1257,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	}
 	if (ref)
 	{
-		reflection.vertexArguments.ShrinkToFit();
-		reflection.fragmentArguments.ShrinkToFit();
+		reflection.vertexResources.ShrinkToFit();
+		reflection.fragmentResources.ShrinkToFit();
 		*ref = std::move(reflection);
 	}
 
