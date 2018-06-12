@@ -14,26 +14,19 @@
 #include "../../DKGpuBuffer.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class Buffer : public DKGpuBuffer
 	{
-		namespace Metal
-		{
-			class Buffer : public DKGpuBuffer
-			{
-			public:
-				Buffer(DKGraphicsDevice*, id<MTLBuffer>);
-				~Buffer(void);
+	public:
+		Buffer(DKGraphicsDevice*, id<MTLBuffer>);
+		~Buffer(void);
 
-				void* Lock(size_t offset, size_t length) override;
-				void Unlock(void) override;
+		void* Lock(size_t offset, size_t length) override;
+		void Unlock(void) override;
 
-				id<MTLBuffer> buffer;
-				DKObject<DKGraphicsDevice> device;
-			};
-		}
-	}
+		id<MTLBuffer> buffer;
+		DKObject<DKGraphicsDevice> device;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

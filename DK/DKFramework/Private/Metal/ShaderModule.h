@@ -14,31 +14,24 @@
 #include "../../DKShaderModule.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class ShaderModule : public DKShaderModule
 	{
-		namespace Metal
-		{
-			class ShaderModule : public DKShaderModule
-			{
-			public:
-				ShaderModule(DKGraphicsDevice*, id<MTLLibrary>);
-				~ShaderModule(void);
+	public:
+		ShaderModule(DKGraphicsDevice*, id<MTLLibrary>);
+		~ShaderModule(void);
 
-				const DKArray<DKString>& FunctionNames(void) const override { return functionNames; }
+		const DKArray<DKString>& FunctionNames(void) const override { return functionNames; }
 
-				DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
-				DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const override;
+		DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
+		DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const override;
 
-				DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device(void) override { return device; }
 
-				id<MTLLibrary> library;
-				DKObject<DKGraphicsDevice> device;
-				DKArray<DKString> functionNames;
-			};
-		}
-	}
+		id<MTLLibrary> library;
+		DKObject<DKGraphicsDevice> device;
+		DKArray<DKString> functionNames;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

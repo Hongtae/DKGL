@@ -12,32 +12,26 @@
 
 #include "../../DKCommandQueue.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class QueueFamily
 	{
-		namespace Vulkan
-		{
-			class QueueFamily
-			{
-			public:
-				QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop, bool supportPresentation);
-				~QueueFamily(void);
+	public:
+		QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop, bool supportPresentation);
+		~QueueFamily(void);
 
-				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*);
-				void RecycleQueue(VkQueue);
-				
-				// if presentation not supported, should check on the fly!
-				bool IsSupportPresentation(void) const { return supportPresentation; }
-				uint32_t FamilyIndex(void) const { return familyIndex; }
+		DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*);
+		void RecycleQueue(VkQueue);
 
-				bool supportPresentation;
-				VkQueueFamilyProperties properties;
-				DKSpinLock lock;
-				uint32_t familyIndex;
-				DKArray<VkQueue> freeQueues;
-			};
-		}
-	}
+		// if presentation not supported, should check on the fly!
+		bool IsSupportPresentation(void) const { return supportPresentation; }
+		uint32_t FamilyIndex(void) const { return familyIndex; }
+
+		bool supportPresentation;
+		VkQueueFamilyProperties properties;
+		DKSpinLock lock;
+		uint32_t familyIndex;
+		DKArray<VkQueue> freeQueues;
+	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

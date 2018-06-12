@@ -14,10 +14,12 @@ namespace DKFramework
 
 	enum class DKShaderDataType
 	{
+		Unknown = -1,
 		None = 0,
 
 		Struct,
-		Array,
+		Texture,
+		Sampler,
 
 		Float,
 		Float2,

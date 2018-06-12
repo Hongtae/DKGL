@@ -15,35 +15,28 @@
 #include "../../DKShaderModule.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class ShaderFunction : public DKShaderFunction
 	{
-		namespace Metal
-		{
-			class ShaderFunction : public DKShaderFunction
-			{
-			public:
-				ShaderFunction(DKShaderModule*, id<MTLFunction>);
-				~ShaderFunction(void);
+	public:
+		ShaderFunction(DKShaderModule*, id<MTLFunction>);
+		~ShaderFunction(void);
 
-				const DKArray<DKVertexAttribute>& VertexAttributes(void) const override { return vertexAttributes;}
-				const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override { return stageInputAttributes;}
+		const DKArray<DKVertexAttribute>& VertexAttributes(void) const override { return vertexAttributes; }
+		const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override { return stageInputAttributes; }
 
-				const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap;}
-				DKString FunctionName(void) const override;
+		const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap; }
+		DKString FunctionName(void) const override;
 
-				DKGraphicsDevice* Device(void) override { return module->Device(); }
+		DKGraphicsDevice* Device(void) override { return module->Device(); }
 
-				id<MTLFunction> function;
-				DKObject<DKShaderModule> module;
+		id<MTLFunction> function;
+		DKObject<DKShaderModule> module;
 
-				DKArray<DKVertexAttribute> vertexAttributes;
-				DKArray<DKShaderAttribute> stageInputAttributes;
-				DKMap<DKString, Constant> functionConstantsMap;
-			};
-		}
-	}
+		DKArray<DKVertexAttribute> vertexAttributes;
+		DKArray<DKShaderAttribute> stageInputAttributes;
+		DKMap<DKString, Constant> functionConstantsMap;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

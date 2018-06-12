@@ -14,26 +14,20 @@
 
 #include "CommandBuffer.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class ComputeCommandEncoder : public DKComputeCommandEncoder
 	{
-		namespace Vulkan
-		{
-			class ComputeCommandEncoder : public DKComputeCommandEncoder
-			{
-			public:
-				ComputeCommandEncoder(VkCommandBuffer, CommandBuffer*);
-				~ComputeCommandEncoder(void);
+	public:
+		ComputeCommandEncoder(VkCommandBuffer, CommandBuffer*);
+		~ComputeCommandEncoder(void);
 
-				void EndEncoding(void) override;
-				bool IsCompleted(void) const override { return false; }
-				DKCommandBuffer* Buffer(void) override;
+		void EndEncoding(void) override;
+		bool IsCompleted(void) const override { return false; }
+		DKCommandBuffer* Buffer(void) override;
 
-				VkCommandBuffer encodingBuffer;
-				DKObject<CommandBuffer> commandBuffer;
-			};
-		}
-	}
+		VkCommandBuffer encodingBuffer;
+		DKObject<CommandBuffer> commandBuffer;
+	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

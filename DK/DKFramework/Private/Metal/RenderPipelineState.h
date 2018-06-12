@@ -14,26 +14,19 @@
 #include "../../DKRenderPipeline.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class RenderPipelineState : public DKRenderPipelineState
 	{
-		namespace Metal
-		{
-			class RenderPipelineState : public DKRenderPipelineState
-			{
-			public:
-				RenderPipelineState(DKGraphicsDevice*, id<MTLRenderPipelineState>);
-				~RenderPipelineState(void);
+	public:
+		RenderPipelineState(DKGraphicsDevice*, id<MTLRenderPipelineState>);
+		~RenderPipelineState(void);
 
-				DKGraphicsDevice* Device(void) override { return device;}
+		DKGraphicsDevice* Device(void) override { return device; }
 
-				MTLPrimitiveType primitiveType;
-				DKObject<DKGraphicsDevice> device;
-				id<MTLRenderPipelineState> pipelineState;
-			};
-		}
-	}
+		MTLPrimitiveType primitiveType;
+		DKObject<DKGraphicsDevice> device;
+		id<MTLRenderPipelineState> pipelineState;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

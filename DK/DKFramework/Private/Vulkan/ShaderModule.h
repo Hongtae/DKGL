@@ -13,60 +13,56 @@
 #include "../../DKShaderModule.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	struct DescriptorSetLayout
 	{
-		namespace Vulkan
+		struct Binding
 		{
-			struct DescriptorSetLayout
-			{
-				struct Binding
-				{
-					DKStringU8 name;
-					uint32_t index; // binding
-					uint32_t count; // array size
-				};
-				DKArray<Binding> bindings; // bindings with descriptor-set (starting with set=0)
-			};
-			struct PushConstantLayout
-			{
-				DKStringU8 name;
-				struct Member
-				{
-					DKStringU8 name;
-					uint32_t offset;
-					uint32_t size;
-				};
-				uint32_t offset;
-				uint32_t size;
-				DKArray<Member> members;
-			};
+			DKStringU8 name;
+			uint32_t index; // binding
+			uint32_t count; // array size
+		};
+		DKArray<Binding> bindings; // bindings with descriptor-set (starting with set=0)
+	};
+	struct PushConstantLayout
+	{
+		DKStringU8 name;
+		struct Member
+		{
+			DKStringU8 name;
+			uint32_t offset;
+			uint32_t size;
+		};
+		uint32_t offset;
+		uint32_t size;
+		DKArray<Member> members;
+	};
 
-			class ShaderModule : public DKShaderModule
-			{
-			public:
-				ShaderModule(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType);
-				~ShaderModule(void);
+	class ShaderModule : public DKShaderModule
+	{
+	public:
+		ShaderModule(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType);
+		~ShaderModule(void);
 
-				DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
-				DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const override;
-				const DKArray<DKString>& FunctionNames(void) const override { return functionNames; }
+		DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
+		DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const override;
+		const DKArray<DKString>& FunctionNames(void) const override { return functionNames; }
 
-				DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device(void) override { return device; }
 
-				DKArray<DKString> functionNames;
-				DKObject<DKGraphicsDevice> device;
-				VkShaderModule module;
-				VkShaderStageFlagBits stage;
-				// descriptor set bindings
-				// descriptor set index starting with zero and should be continuous even if set is empty.
-				DKArray<DescriptorSetLayout> layouts[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
-				DKArray<DKShaderAttribute> stageInputAttributes;
-				PushConstantLayout pushConstantLayout;
-			};
-		}
-	}
+		DKArray<DKString> functionNames;
+		DKObject<DKGraphicsDevice> device;
+		VkShaderModule module;
+		VkShaderStageFlagBits stage;
+		// descriptor set bindings
+		// descriptor set index starting with zero and should be continuous even if set is empty.
+		DKArray<DescriptorSetLayout> layouts[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
+		DKArray<DKShaderAttribute> stageInputAttributes;
+		PushConstantLayout pushConstantLayout;
+
+		// reflection data
+		DKArray<DKShaderResource> resources;
+	};
 }
-
 #endif //#if DKGL_ENABLE_VULKAN

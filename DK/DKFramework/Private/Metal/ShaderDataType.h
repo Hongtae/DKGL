@@ -13,20 +13,13 @@
 
 #include "../../DKShaderFunction.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	struct ShaderDataType
 	{
-		namespace Metal
-		{
-			struct ShaderDataType
-			{
-				static MTLDataType From(DKShaderDataType);
-				static DKShaderDataType To(MTLDataType);
-			};
-		}
-	}
+		static MTLDataType From(DKShaderDataType);
+		static DKShaderDataType To(MTLDataType);
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL
 

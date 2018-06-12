@@ -12,32 +12,25 @@
 #include "../../DKGraphicsDevice.h"
 #include "../../DKGpuBuffer.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class Buffer : public DKGpuBuffer
 	{
-		namespace Vulkan
-		{
-			class Buffer : public DKGpuBuffer
-			{
-			public:
-				Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView, VkDeviceMemory, VkMemoryType, size_t);
-				~Buffer(void);
+	public:
+		Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView, VkDeviceMemory, VkMemoryType, size_t);
+		~Buffer(void);
 
-				void* Lock(size_t offset, size_t length) override;
-				void Unlock(void) override;
+		void* Lock(size_t offset, size_t length) override;
+		void Unlock(void) override;
 
-				DKSpinLock lock;
-				void* mapped;
-				size_t length;
-				VkBuffer buffer;
-				VkBufferView view;
-				VkDeviceMemory memory;
-				VkMemoryType memoryType;
-				DKObject<DKGraphicsDevice> device;
-			};
-		}
-	}
+		DKSpinLock lock;
+		void* mapped;
+		size_t length;
+		VkBuffer buffer;
+		VkBufferView view;
+		VkDeviceMemory memory;
+		VkMemoryType memoryType;
+		DKObject<DKGraphicsDevice> device;
+	};
 }
-
 #endif //#if DKGL_ENABLE_VULKAN

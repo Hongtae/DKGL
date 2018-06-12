@@ -14,38 +14,31 @@
 #include "../../DKBlitCommandEncoder.h"
 #include "CommandBuffer.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class BlitCommandEncoder : public DKBlitCommandEncoder, public ReusableCommandEncoder
 	{
-		namespace Metal
-		{
-			class BlitCommandEncoder : public DKBlitCommandEncoder, public ReusableCommandEncoder
-			{
-			public:
-				BlitCommandEncoder(CommandBuffer*);
-				~BlitCommandEncoder(void);
+	public:
+		BlitCommandEncoder(CommandBuffer*);
+		~BlitCommandEncoder(void);
 
-				// DKCommandEncoder overrides
-				void EndEncoding(void) override;
-				bool IsCompleted(void) const override { return buffer == nullptr; }
-				DKCommandBuffer* Buffer(void) override { return buffer; }
+		// DKCommandEncoder overrides
+		void EndEncoding(void) override;
+		bool IsCompleted(void) const override { return buffer == nullptr; }
+		DKCommandBuffer* Buffer(void) override { return buffer; }
 
-				// DKBlitCommandEncoder
+		// DKBlitCommandEncoder
 
 
-				// ReusableCommandEncoder overrides
-				bool EncodeBuffer(id<MTLCommandBuffer>) override;
-				void CompleteBuffer(void) override { buffer = nullptr; }
+		// ReusableCommandEncoder overrides
+		bool EncodeBuffer(id<MTLCommandBuffer>) override;
+		void CompleteBuffer(void) override { buffer = nullptr; }
 
-			private:
-				DKObject<CommandBuffer> buffer;
+	private:
+		DKObject<CommandBuffer> buffer;
 
-				using EncoderCommand = DKFunctionSignature<void (id<MTLBlitCommandEncoder>)>;
-				DKArray<DKObject<EncoderCommand>> encoderCommands;
-			};
-		}
-	}
+		using EncoderCommand = DKFunctionSignature<void(id<MTLBlitCommandEncoder>)>;
+		DKArray<DKObject<EncoderCommand>> encoderCommands;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

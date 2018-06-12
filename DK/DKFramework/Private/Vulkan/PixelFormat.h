@@ -12,19 +12,12 @@
 
 #include "../../DKPixelFormat.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	struct PixelFormat
 	{
-		namespace Vulkan
-		{
-			struct PixelFormat
-			{
-				static VkFormat From(DKPixelFormat);
-				static DKPixelFormat To(VkFormat);
-			};
-		}
-	}
+		static VkFormat From(DKPixelFormat);
+		static DKPixelFormat To(VkFormat);
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

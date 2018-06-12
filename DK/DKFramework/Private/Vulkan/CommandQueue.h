@@ -15,34 +15,28 @@
 
 #include "QueueFamily.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class CommandQueue : public DKCommandQueue
 	{
-		namespace Vulkan
-		{
-			class CommandQueue : public DKCommandQueue
-			{
-			public:
-				CommandQueue(DKGraphicsDevice*, QueueFamily*, VkQueue);
-				~CommandQueue(void);
+	public:
+		CommandQueue(DKGraphicsDevice*, QueueFamily*, VkQueue);
+		~CommandQueue(void);
 
-				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
-				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
+		DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
+		DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 
-				bool Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKOperation* callback);
+		bool Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKOperation* callback);
 
-				bool WaitIdle(void);
+		bool WaitIdle(void);
 
-				uint32_t Type(void) const override;
-				DKGraphicsDevice* Device(void) override { return device; }
+		uint32_t Type(void) const override;
+		DKGraphicsDevice* Device(void) override { return device; }
 
-				QueueFamily* family;
-				VkQueue queue;
+		QueueFamily* family;
+		VkQueue queue;
 
-				DKObject<DKGraphicsDevice> device;
-			};
-		}
-	}
+		DKObject<DKGraphicsDevice> device;
+	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

@@ -14,42 +14,35 @@
 #include "../../DKCommandBuffer.h"
 #include "../../DKCommandQueue.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	struct ReusableCommandEncoder
 	{
-		namespace Metal
-		{
-			struct ReusableCommandEncoder
-			{
-				enum { InitialNumberOfCommands = 128 };
-				virtual ~ReusableCommandEncoder(void) {}
-				virtual bool EncodeBuffer(id<MTLCommandBuffer>) = 0;
-				virtual void CompleteBuffer(void) = 0;
-			};
+		enum { InitialNumberOfCommands = 128 };
+		virtual ~ReusableCommandEncoder(void) {}
+		virtual bool EncodeBuffer(id<MTLCommandBuffer>) = 0;
+		virtual void CompleteBuffer(void) = 0;
+	};
 
-			class CommandBuffer : public DKCommandBuffer
-			{
-			public:
-				CommandBuffer(DKCommandQueue*);
-				~CommandBuffer(void);
+	class CommandBuffer : public DKCommandBuffer
+	{
+	public:
+		CommandBuffer(DKCommandQueue*);
+		~CommandBuffer(void);
 
-				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
-				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
-				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
+		DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
+		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
+		DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
-				bool Commit(void) override;
-				DKCommandQueue* Queue(void) override { return queue; };
+		bool Commit(void) override;
+		DKCommandQueue* Queue(void) override { return queue; };
 
-				void EndEncoder(DKCommandEncoder*);
+		void EndEncoder(DKCommandEncoder*);
 
-			private:
-				DKCommandEncoder* activeEncoder;
-				DKObject<DKCommandQueue> queue;
-				DKArray<DKObject<ReusableCommandEncoder>> completedEncoders;
-			};
-		}
-	}
+	private:
+		DKCommandEncoder * activeEncoder;
+		DKObject<DKCommandQueue> queue;
+		DKArray<DKObject<ReusableCommandEncoder>> completedEncoders;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

@@ -11,29 +11,22 @@
 #include <vulkan/vulkan.h>
 
 #include "../../DKBlitCommandEncoder.h"
-
 #include "CommandBuffer.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class BlitCommandEncoder : public DKBlitCommandEncoder
 	{
-		namespace Vulkan
-		{
-			class BlitCommandEncoder : public DKBlitCommandEncoder
-			{
-			public:
-				BlitCommandEncoder(VkCommandBuffer, CommandBuffer*);
-				~BlitCommandEncoder(void);
+	public:
+		BlitCommandEncoder(VkCommandBuffer, CommandBuffer*);
+		~BlitCommandEncoder(void);
 
-				void EndEncoding(void) override;
-				bool IsCompleted(void) const override { return false; }
-				DKCommandBuffer* Buffer(void) override;
+		void EndEncoding(void) override;
+		bool IsCompleted(void) const override { return false; }
+		DKCommandBuffer* Buffer(void) override;
 
-				VkCommandBuffer encodingBuffer;
-				DKObject<CommandBuffer> commandBuffer;
-			};
-		}
-	}
+		VkCommandBuffer encodingBuffer;
+		DKObject<CommandBuffer> commandBuffer;
+	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

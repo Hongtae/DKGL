@@ -13,38 +13,31 @@
 #include "../../DKCommandBuffer.h"
 #include "../../DKCommandQueue.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class CommandBuffer : public DKCommandBuffer
 	{
-		namespace Vulkan
-		{
-			class CommandBuffer : public DKCommandBuffer
-			{
-			public:
-				CommandBuffer(VkCommandPool, DKCommandQueue*);
-				~CommandBuffer(void);
+	public:
+		CommandBuffer(VkCommandPool, DKCommandQueue*);
+		~CommandBuffer(void);
 
-				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
-				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
-				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
+		DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
+		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
+		DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
 
-				bool Commit(void) override;
+		bool Commit(void) override;
 
-				DKCommandQueue* Queue(void) override { return queue; };
+		DKCommandQueue* Queue(void) override { return queue; };
 
-				void Submit(const VkSubmitInfo&, DKOperation*);
-				void ReleaseEncodingBuffer(VkCommandBuffer cb);
-				VkCommandBuffer GetEncodingBuffer(void);
+		void Submit(const VkSubmitInfo&, DKOperation*);
+		void ReleaseEncodingBuffer(VkCommandBuffer cb);
+		VkCommandBuffer GetEncodingBuffer(void);
 
-				VkCommandPool commandPool;
-				DKObject<DKCommandQueue> queue;
+		VkCommandPool commandPool;
+		DKObject<DKCommandQueue> queue;
 
-				DKArray<VkSubmitInfo> submitInfos;
-				DKArray<DKObject<DKOperation>> callbacks;
-			};
-		}
-	}
+		DKArray<VkSubmitInfo> submitInfos;
+		DKArray<DKObject<DKOperation>> callbacks;
+	};
 }
-
 #endif //#if DKGL_ENABLE_VULKAN

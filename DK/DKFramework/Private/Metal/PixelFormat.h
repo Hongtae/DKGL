@@ -13,20 +13,13 @@
 
 #include "../../DKPixelFormat.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	struct PixelFormat
 	{
-		namespace Metal
-		{
-			struct PixelFormat
-			{
-				static MTLPixelFormat From(DKPixelFormat);
-				static DKPixelFormat To(MTLPixelFormat);
-			};
-		}
-	}
+		static MTLPixelFormat From(DKPixelFormat);
+		static DKPixelFormat To(MTLPixelFormat);
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL
 

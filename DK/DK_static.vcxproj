@@ -567,6 +567,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Texture.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Types.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />

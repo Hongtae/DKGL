@@ -14,29 +14,22 @@
 #include "../../DKCommandQueue.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class CommandQueue : public DKCommandQueue
 	{
-		namespace Metal
-		{
-			class CommandQueue : public DKCommandQueue
-			{
-			public:
-				CommandQueue(DKGraphicsDevice*, id<MTLCommandQueue>);
-				~CommandQueue(void);
+	public:
+		CommandQueue(DKGraphicsDevice*, id<MTLCommandQueue>);
+		~CommandQueue(void);
 
-				DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
-				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
-				
-				uint32_t Type(void) const override { return Graphics|Compute; }
-				DKGraphicsDevice* Device(void) override { return device; }
+		DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
+		DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 
-				DKObject<DKGraphicsDevice> device;
-				id<MTLCommandQueue> queue;
-			};
-		}
-	}
+		uint32_t Type(void) const override { return Graphics | Compute; }
+		DKGraphicsDevice* Device(void) override { return device; }
+
+		DKObject<DKGraphicsDevice> device;
+		id<MTLCommandQueue> queue;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

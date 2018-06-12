@@ -14,55 +14,49 @@
 #include "CommandQueue.h"
 #include "Texture.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class SwapChain : public DKSwapChain
 	{
-		namespace Vulkan
-		{
-			class SwapChain : public DKSwapChain
-			{
-			public:
-				SwapChain(CommandQueue*, DKWindow*);
-				~SwapChain(void);
+	public:
+		SwapChain(CommandQueue*, DKWindow*);
+		~SwapChain(void);
 
-				bool Setup(void);
-				bool Update(void);
-				void SetupFrame(void);
+		bool Setup(void);
+		bool Update(void);
+		void SetupFrame(void);
 
-				void SetColorPixelFormat(DKPixelFormat) override;
-				void SetDepthStencilPixelFormat(DKPixelFormat) override;
-				DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
+		void SetColorPixelFormat(DKPixelFormat) override;
+		void SetDepthStencilPixelFormat(DKPixelFormat) override;
+		DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
 
-				bool Present(void) override;
+		bool Present(void) override;
 
-				DKPixelFormat ColorPixelFormat(void) const override;
-				DKPixelFormat DepthStencilPixelFormat(void) const override;
+		DKPixelFormat ColorPixelFormat(void) const override;
+		DKPixelFormat DepthStencilPixelFormat(void) const override;
 
-				bool enableVSync;
-				VkSurfaceFormatKHR surfaceFormat;
-				VkSurfaceKHR surface;
-				VkSwapchainKHR swapchain;
-				DKArray<VkSurfaceFormatKHR> availableSurfaceFormats;
+		bool enableVSync;
+		VkSurfaceFormatKHR surfaceFormat;
+		VkSurfaceKHR surface;
+		VkSwapchainKHR swapchain;
+		DKArray<VkSurfaceFormatKHR> availableSurfaceFormats;
 
-				VkSemaphore presentCompleteSemaphore;
-				VkSemaphore renderCompleteSemaphore;
+		VkSemaphore presentCompleteSemaphore;
+		VkSemaphore renderCompleteSemaphore;
 
 
-				DKArray<DKObject<Texture>> renderTargets;
+		DKArray<DKObject<Texture>> renderTargets;
 
-				DKObject<DKWindow> window;
-				DKObject<CommandQueue> queue;
+		DKObject<DKWindow> window;
+		DKObject<CommandQueue> queue;
 
 
-				DKSpinLock lock;
-				bool deviceReset;	// recreate swapchain
+		DKSpinLock lock;
+		bool deviceReset;	// recreate swapchain
 
-				uint32_t frameIndex;
-				DKRenderPassDescriptor renderPassDescriptor;
-				void OnWindowEvent(const DKWindow::WindowEvent&);
-			};
-		}
-	}
+		uint32_t frameIndex;
+		DKRenderPassDescriptor renderPassDescriptor;
+		void OnWindowEvent(const DKWindow::WindowEvent&);
+	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

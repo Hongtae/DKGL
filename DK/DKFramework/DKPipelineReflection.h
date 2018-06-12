@@ -18,8 +18,6 @@ namespace DKFramework
 		DKShaderDataType dataType;
 		uint32_t alignment;
 		uint32_t size;
-
-		struct DKShaderResourceStruct* structType;
 	};
 	struct DKShaderResourceTexture
 	{
@@ -31,24 +29,16 @@ namespace DKFramework
 		uint32_t alignment;
 		uint32_t size;
 	};
-	struct DKShaderResourceArray
-	{
-		DKShaderDataType elementType;
-		uint32_t arrayLength;
-		uint32_t stride;
-	};
 	struct DKShaderResourceStructMember
 	{
-		DKString name;
 		DKShaderDataType dataType;
+		DKString name;
 		uint32_t offset;
-		uint32_t binding; // shader binding location for single item.
+		uint32_t size;
+		uint32_t count; // array length
+		uint32_t stride; // stride between array elements
 
-		union
-		{
-			struct DKShaderResourceArray* arrayType;   // for dataType == DKShaderDataType::Array
-			struct DKShaderResourceStruct* structType; // for dataType == DKShaderDataType::Struct
-		} typeInfo;
+		DKString typeInfoKey; // arrayType or structType key
 	};
 	struct DKShaderResourceStruct
 	{
@@ -68,7 +58,11 @@ namespace DKFramework
 		uint32_t binding;
 		DKString name;
 		Type type;
-		size_t count; // array length
+
+		uint32_t count; // array length
+		uint32_t stride; // stride between array elements
+
+		bool writable;
 		bool enabled;
 
 		union
@@ -79,8 +73,9 @@ namespace DKFramework
 			DKShaderResourceThreadgroup threadgroup;
 		} typeInfo;
 
+		DKString typeInfoKey; // structType key
+
 		// type data for struct members
-		DKMap<DKString, DKShaderResourceArray> arrayTypeMemberMap;
 		DKMap<DKString, DKShaderResourceStruct> structTypeMemberMap;
 	};
 

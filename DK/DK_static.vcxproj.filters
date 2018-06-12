@@ -1233,5 +1233,8 @@
     <ClInclude Include="DKFramework\Private\Metal\Texture.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\Types.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

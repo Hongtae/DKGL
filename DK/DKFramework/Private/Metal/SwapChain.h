@@ -16,47 +16,40 @@
 #include "../../DKSwapChain.h"
 #include "CommandQueue.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class SwapChain : public DKSwapChain
 	{
-		namespace Metal
-		{
-			class SwapChain : public DKSwapChain
-			{
-			public:
-				SwapChain(CommandQueue*, DKWindow*);
-				~SwapChain(void);
+	public:
+		SwapChain(CommandQueue*, DKWindow*);
+		~SwapChain(void);
 
-				bool Setup(void);
+		bool Setup(void);
 
-				void SetColorPixelFormat(DKPixelFormat) override;
-				void SetDepthStencilPixelFormat(DKPixelFormat) override;
+		void SetColorPixelFormat(DKPixelFormat) override;
+		void SetDepthStencilPixelFormat(DKPixelFormat) override;
 
-				DKPixelFormat ColorPixelFormat(void) const override { return colorPixelFormat;}
-				DKPixelFormat DepthStencilPixelFormat(void) const override {return depthStencilPixelFormat;}
+		DKPixelFormat ColorPixelFormat(void) const override { return colorPixelFormat; }
+		DKPixelFormat DepthStencilPixelFormat(void) const override { return depthStencilPixelFormat; }
 
 
-				DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
+		DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
 
-				bool Present(void) override;
+		bool Present(void) override;
 
-				void SetupFrame(void);
+		void SetupFrame(void);
 
-				DKObject<DKWindow> window;
-				DKObject<CommandQueue> queue;
+		DKObject<DKWindow> window;
+		DKObject<CommandQueue> queue;
 
-				CAMetalLayer* metalLayer;
+		CAMetalLayer* metalLayer;
 
-				DKPixelFormat colorPixelFormat;
-				DKPixelFormat depthStencilPixelFormat;
-				id<CAMetalDrawable> currentDrawable;
-				DKRenderPassDescriptor renderPassDescriptor;
+		DKPixelFormat colorPixelFormat;
+		DKPixelFormat depthStencilPixelFormat;
+		id<CAMetalDrawable> currentDrawable;
+		DKRenderPassDescriptor renderPassDescriptor;
 
-				void OnWindowEvent(const DKWindow::WindowEvent&);
-			};
-		}
-	}
+		void OnWindowEvent(const DKWindow::WindowEvent&);
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

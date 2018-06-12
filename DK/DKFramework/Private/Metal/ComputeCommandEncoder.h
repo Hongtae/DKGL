@@ -14,37 +14,30 @@
 #include "../../DKComputeCommandEncoder.h"
 #include "CommandBuffer.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	class ComputeCommandEncoder : public DKComputeCommandEncoder, public ReusableCommandEncoder
 	{
-		namespace Metal
-		{
-			class ComputeCommandEncoder : public DKComputeCommandEncoder, public ReusableCommandEncoder
-			{
-			public:
-				ComputeCommandEncoder(CommandBuffer*);
-				~ComputeCommandEncoder(void);
+	public:
+		ComputeCommandEncoder(CommandBuffer*);
+		~ComputeCommandEncoder(void);
 
-				// DKCommandEncoder overrides
-				void EndEncoding(void) override;
-				bool IsCompleted(void) const override { return buffer == nullptr; }
-				DKCommandBuffer* Buffer(void) override { return buffer; }
+		// DKCommandEncoder overrides
+		void EndEncoding(void) override;
+		bool IsCompleted(void) const override { return buffer == nullptr; }
+		DKCommandBuffer* Buffer(void) override { return buffer; }
 
-				// DKComputeCommandEncoder
+		// DKComputeCommandEncoder
 
-				// ReusableCommandEncoder overrides
-				bool EncodeBuffer(id<MTLCommandBuffer>) override;
-				void CompleteBuffer(void) override { buffer = nullptr; }
+		// ReusableCommandEncoder overrides
+		bool EncodeBuffer(id<MTLCommandBuffer>) override;
+		void CompleteBuffer(void) override { buffer = nullptr; }
 
-			private:
-				DKObject<CommandBuffer> buffer;
+	private:
+		DKObject<CommandBuffer> buffer;
 
-				using EncoderCommand = DKFunctionSignature<void (id<MTLComputeCommandEncoder>)>;
-				DKArray<DKObject<EncoderCommand>> encoderCommands;
-			};
-		}
-	}
+		using EncoderCommand = DKFunctionSignature<void(id<MTLComputeCommandEncoder>)>;
+		DKArray<DKObject<EncoderCommand>> encoderCommands;
+	};
 }
-
 #endif //#if DKGL_ENABLE_METAL

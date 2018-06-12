@@ -13,27 +13,20 @@
 #include "../../DKRenderPipeline.h"
 #include "../../DKGraphicsDevice.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	class RenderPipelineState : public DKRenderPipelineState
 	{
-		namespace Vulkan
-		{
-			class RenderPipelineState : public DKRenderPipelineState
-			{
-			public:
-				RenderPipelineState(DKGraphicsDevice*, VkPipeline, VkPipelineLayout, VkRenderPass);
-				~RenderPipelineState(void);
+	public:
+		RenderPipelineState(DKGraphicsDevice*, VkPipeline, VkPipelineLayout, VkRenderPass);
+		~RenderPipelineState(void);
 
-				DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device(void) override { return device; }
 
-				DKObject<DKGraphicsDevice> device;
-				VkPipeline pipeline;
-				VkPipelineLayout layout;
-				VkRenderPass renderPass;
-			};
-		}
-	}
+		DKObject<DKGraphicsDevice> device;
+		VkPipeline pipeline;
+		VkPipelineLayout layout;
+		VkRenderPass renderPass;
+	};
 }
-
 #endif //#if DKGL_ENABLE_VULKAN
