@@ -53,7 +53,7 @@ namespace DKFoundation
 
 		explicit DKCircularQueue(size_t capacity_)
 			: position(0)
-			, capacity(Max<size_t>(capacity_, MinimumCapacity))
+			, capacity(Max(capacity_, size_t(MinimumCapacity)))
 		{
 			DKASSERT_DEBUG(capacity_ >= MinimumCapacity);
 			container.Reserve(capacity);
@@ -434,7 +434,7 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count <= capacity);
 			if (count == capacity)
 			{
-				container.Value(position) = std::forward(value);
+				container.Value(position) = std::forward<T>(value);
 				position = (position+1) % capacity;
 			}
 			else
@@ -456,11 +456,11 @@ namespace DKFoundation
 				position--;
 				else
 				position = count - 1;
-				container.Value(position) = std::forward(value);
+				container.Value(position) = std::forward<T>(value);
 			}
 			else
 			{
-				container.Insert(std::forward(value), 0);
+				container.Insert(std::forward<T>(value), 0);
 				count = container.Count();
 				position = (position+1) % capacity;
 			}
