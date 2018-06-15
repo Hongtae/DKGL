@@ -15,28 +15,19 @@
 
 namespace DKFramework::Private::Vulkan
 {
-	struct DescriptorSetLayout
+	struct DescriptorBinding
 	{
-		struct Binding
-		{
-			DKStringU8 name;
-			uint32_t index; // binding
-			uint32_t count; // array size
-		};
-		DKArray<Binding> bindings; // bindings with descriptor-set (starting with set=0)
+		uint32_t set;
+		uint32_t binding;
+		uint32_t count; // array size
+		VkDescriptorType type;
 	};
 	struct PushConstantLayout
 	{
 		DKStringU8 name;
-		struct Member
-		{
-			DKStringU8 name;
-			uint32_t offset;
-			uint32_t size;
-		};
 		uint32_t offset;
 		uint32_t size;
-		DKArray<Member> members;
+		DKArray<PushConstantLayout> memberLayouts;
 	};
 
 	class ShaderModule : public DKShaderModule
@@ -55,14 +46,14 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKGraphicsDevice> device;
 		VkShaderModule module;
 		VkShaderStageFlagBits stage;
-		// descriptor set bindings
-		// descriptor set index starting with zero and should be continuous even if set is empty.
-		DKArray<DescriptorSetLayout> layouts[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
+
 		DKArray<DKShaderAttribute> stageInputAttributes;
 		PushConstantLayout pushConstantLayout;
 
 		// reflection data
 		DKArray<DKShaderResource> resources;
+		// descriptor set layout bindings
+		DKArray<DescriptorBinding> descriptorBindings;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

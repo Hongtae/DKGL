@@ -40,35 +40,6 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	auto active = compiler.get_active_interface_variables();
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 
-	auto GetLayout = [&compiler](const spirv_cross::Resource& resource, DKArray<DescriptorSetLayout>& layout)
-	{
-		uint32_t set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-		uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-		DKStringU8 name = "";
-		if (resource.name.size() > 0)
-			name = resource.name.c_str();
-		else
-			name = compiler.get_fallback_name(resource.id).c_str();
-
-		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
-
-		if (layout.Count() <= set)
-		{
-			layout.Resize(set - layout.Count() + 1);
-		}
-		// get item count! (array size)
-		uint32_t count = 1;
-		if (spType.array.size() > 0)
-		{
-			for (auto i : spType.array)
-				count *= i;
-		}
-
-		DescriptorSetLayout& descriptorSet = layout.Value(set);
-		DescriptorSetLayout::Binding descriptor = { name, binding, count };
-		descriptorSet.bindings.Add(descriptor);
-	};
-
 	auto GetResource = [&compiler, &active](const spirv_cross::Resource& resource, bool writable)->DKShaderResource
 	{
 		DKShaderResource out = {};
@@ -95,6 +66,9 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 			break;
 		case spirv_cross::SPIRType::Struct:
 			out.type = DKShaderResource::TypeBuffer;
+			out.typeInfo.buffer.dataType = DKShaderDataType::Struct;
+			out.typeInfo.buffer.alignment = compiler.get_decoration(resource.id, spv::DecorationAlignment);
+			out.typeInfo.buffer.size = compiler.get_declared_struct_size(type);
 			break;
 		default:
 			DKASSERT_DESC_DEBUG(0, "Should implement this!");
@@ -135,12 +109,14 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 
 						member.name = compiler.get_member_name(spType.self, i).c_str();
 						member.offset = compiler.type_struct_member_offset(spType, i);
-						if (member.count > 1)
-							member.stride = compiler.type_struct_member_array_stride(spType, i);
-						//	member.size = (memberType.width >> 3) * memberType.vecsize * memberType.columns;
+						//member.size = (memberType.width >> 3) * memberType.vecsize * memberType.columns;
 						member.size = compiler.get_declared_struct_member_size(spType, i);
 						DKASSERT_DEBUG(member.size > 0);
 
+						if (member.count > 1)
+							member.stride = compiler.type_struct_member_array_stride(spType, i);
+						else
+							member.stride = 0;
 						rst.members.Add(member);
 					}
 					rst.members.ShrinkToFit();
@@ -155,50 +131,67 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		return out;
 	};
 
+	auto GetDescriptorBinding = [&compiler](const spirv_cross::Resource& resource, VkDescriptorType type)->DescriptorBinding
+	{
+		DescriptorBinding binding = {};
+		binding.type = type;
+		binding.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+		binding.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+
+		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+
+		// get item count! (array size)
+		binding.count = 1;
+		if (spType.array.size() > 0)
+		{
+			for (auto i : spType.array)
+				binding.count *= i;
+		}
+		return binding;
+	};
+
 	// https://github.com/KhronosGroup/SPIRV-Cross/wiki/Reflection-API-user-guide
 	// uniform_buffers
 	for (const spirv_cross::Resource& resource : resources.uniform_buffers)
 	{
-		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
 		this->resources.Add(GetResource(resource, false));
+		this->descriptorBindings.Add(GetDescriptorBinding(resource, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER));
 	}
 	// storage_buffers
 	for (const spirv_cross::Resource& resource : resources.storage_buffers)
 	{
-		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
 		this->resources.Add(GetResource(resource, true));
+		this->descriptorBindings.Add(GetDescriptorBinding(resource, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER));
 	}
 	// storage_images
 	for (const spirv_cross::Resource& resource : resources.storage_images)
 	{
-		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_STORAGE_IMAGE - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
 		this->resources.Add(GetResource(resource, true));
+		this->descriptorBindings.Add(GetDescriptorBinding(resource, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE));
 	}
 	// sampled_images (sampler2D)
 	for (const spirv_cross::Resource& resource : resources.sampled_images)
 	{
-		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
 		this->resources.Add(GetResource(resource, false));
+		this->descriptorBindings.Add(GetDescriptorBinding(resource, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER));
 	}
 	// separate_images
 	for (const spirv_cross::Resource& resource : resources.separate_images)
 	{
 		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+		VkDescriptorType type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		if (spType.image.dim == spv::DimBuffer)
 		{
-			GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
-		}
-		else
-		{
-			GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
+			type = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
 		}
 		this->resources.Add(GetResource(resource, false));
+		this->descriptorBindings.Add(GetDescriptorBinding(resource, type));
 	}
 	// separate_samplers
 	for (const spirv_cross::Resource& resource : resources.separate_samplers)
 	{
-		GetLayout(resource, this->layouts[VK_DESCRIPTOR_TYPE_SAMPLER - VK_DESCRIPTOR_TYPE_BEGIN_RANGE]);
 		this->resources.Add(GetResource(resource, false));
+		this->descriptorBindings.Add(GetDescriptorBinding(resource, VK_DESCRIPTOR_TYPE_SAMPLER));
 	}
 	// stage inputs
 	this->stageInputAttributes.Reserve(resources.stage_inputs.size());
@@ -238,7 +231,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	{
 		const spirv_cross::Resource& resource = resources.push_constant_buffers[0];
 		std::vector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
-		this->pushConstantLayout.members.Reserve(ranges.size());
+		this->pushConstantLayout.memberLayouts.Reserve(ranges.size());
 
 		uint32_t pushConstantOffset = (uint32_t)ranges[0].offset;
 		uint32_t pushConstantSize = 0;
@@ -246,13 +239,13 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		for (spirv_cross::BufferRange &range : ranges)
 		{
 			// get range.
-			PushConstantLayout::Member member;
-			member.name = compiler.get_member_name(resource.id, range.index).c_str();
-			member.offset = range.offset;
-			member.size = range.range;
-			this->pushConstantLayout.members.Add(std::move(member));
+			PushConstantLayout layout;
+			layout.name = compiler.get_member_name(resource.id, range.index).c_str();
+			layout.offset = range.offset;
+			layout.size = range.range;
+			pushConstantSize = (layout.offset - pushConstantOffset) + layout.size;
 
-			pushConstantSize = (member.offset - pushConstantOffset) + member.size;
+			this->pushConstantLayout.memberLayouts.Add(std::move(layout));
 		}
 
 		if (pushConstantSize % 4)	// size must be a multiple of 4
@@ -269,13 +262,9 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 
 		this->pushConstantLayout.offset = pushConstantOffset;
 		this->pushConstantLayout.size = pushConstantSize;
+		this->pushConstantLayout.name = compiler.get_name(resource.id).c_str();
 
-		if (resource.name.size() > 0)
-			this->pushConstantLayout.name = resource.name.c_str();
-		else
-			this->pushConstantLayout.name = compiler.get_fallback_name(resource.id).c_str();
-
-		const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+		//const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
 	}
 
 	// get module entry points
@@ -291,6 +280,17 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	{
 		// 
 	}
+
+	// sort bindings
+	this->descriptorBindings.Sort([](const DescriptorBinding& a, const DescriptorBinding& b)
+	{
+		if (a.set == b.set)
+			return a.binding < b.binding;
+		return a.set < b.set;
+	});
+	this->descriptorBindings.ShrinkToFit();
+	this->resources.ShrinkToFit();
+	this->stageInputAttributes.ShrinkToFit();
 }
 
 ShaderModule::~ShaderModule(void)

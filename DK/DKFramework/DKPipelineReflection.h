@@ -38,7 +38,7 @@ namespace DKFramework
 		uint32_t count; // array length
 		uint32_t stride; // stride between array elements
 
-		DKString typeInfoKey; // arrayType or structType key
+		DKString typeInfoKey; // structType key
 	};
 	struct DKShaderResourceStruct
 	{
