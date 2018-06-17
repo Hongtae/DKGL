@@ -47,8 +47,11 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		out.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 		out.name = compiler.get_name(resource.id).c_str();
 		out.stride = compiler.get_decoration(resource.id, spv::DecorationArrayStride);
-		out.writable = writable;
 		out.enabled = active.find(resource.id) != active.end();
+		if (writable)
+			out.access = DKShaderResource::AccessReadWrite;
+		else
+			out.access = DKShaderResource::AccessReadOnly;
 
 		const spirv_cross::SPIRType& type = compiler.get_type(resource.type_id);
 		out.count = 1;

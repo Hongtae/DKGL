@@ -192,11 +192,11 @@
     <None Include="DKFramework\Private\Metal\PixelFormat.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
-    <None Include="DKFramework\Private\Metal\ShaderDataType.mm" />
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
     <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
     <None Include="DKFramework\Private\Metal\SwapChain.mm" />
     <None Include="DKFramework\Private\Metal\Texture.mm" />
+    <None Include="DKFramework\Private\Metal\Types.mm" />
     <None Include="Libs.props" />
     <None Include="LICENSE" />
   </ItemGroup>
@@ -496,6 +496,7 @@
     <ClInclude Include="DKFramework\DKShaderConstant.h" />
     <ClInclude Include="DKFramework\DKShaderFunction.h" />
     <ClInclude Include="DKFramework\DKShaderModule.h" />
+    <ClInclude Include="DKFramework\DKShaderResource.h" />
     <ClInclude Include="DKFramework\DKSize.h" />
     <ClInclude Include="DKFramework\DKSliderConstraint.h" />
     <ClInclude Include="DKFramework\DKSoftBody.h" />
@@ -546,11 +547,11 @@
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
-    <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
     <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Types.h" />
     <ClInclude Include="DKFramework\Private\OpenAL.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Buffer.h" />

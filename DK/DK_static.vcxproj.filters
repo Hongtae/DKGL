@@ -59,9 +59,6 @@
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
-    <None Include="DKFramework\Private\Metal\ShaderDataType.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
@@ -75,6 +72,9 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
     <None Include="LICENSE" />
+    <None Include="DKFramework\Private\Metal\Types.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
@@ -1218,9 +1218,6 @@
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\ShaderDataType.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
@@ -1235,6 +1232,12 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\Types.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKShaderResource.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Types.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
