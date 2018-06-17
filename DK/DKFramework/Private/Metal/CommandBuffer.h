@@ -21,7 +21,6 @@ namespace DKFramework::Private::Metal
 		enum { InitialNumberOfCommands = 128 };
 		virtual ~ReusableCommandEncoder(void) {}
 		virtual bool EncodeBuffer(id<MTLCommandBuffer>) = 0;
-		virtual void CompleteBuffer(void) = 0;
 	};
 
 	class CommandBuffer : public DKCommandBuffer
@@ -37,7 +36,7 @@ namespace DKFramework::Private::Metal
 		bool Commit(void) override;
 		DKCommandQueue* Queue(void) override { return queue; };
 
-		void EndEncoder(DKCommandEncoder*);
+		void EndEncoder(DKCommandEncoder*, ReusableCommandEncoder*);
 
 	private:
 		DKCommandEncoder * activeEncoder;

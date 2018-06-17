@@ -1,5 +1,5 @@
 //
-//  File: ShaderDataType.h
+//  File: Types.h
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -22,4 +22,3 @@ namespace DKFramework::Private::Metal
 	};
 }
 #endif //#if DKGL_ENABLE_METAL
-

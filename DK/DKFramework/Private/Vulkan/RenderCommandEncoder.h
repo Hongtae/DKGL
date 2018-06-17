@@ -25,7 +25,7 @@ namespace DKFramework::Private::Vulkan
 
 		void EndEncoding(void) override;
 		bool IsCompleted(void) const override { return resources == nullptr; }
-		DKCommandBuffer* Buffer(void) override;
+		DKCommandBuffer* Buffer(void) override { return commandBuffer; }
 
 		void SetViewport(const DKViewport&) override;
 		void SetRenderPipelineState(DKRenderPipelineState*) override;

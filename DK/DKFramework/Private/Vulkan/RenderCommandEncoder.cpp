@@ -322,11 +322,6 @@ void RenderCommandEncoder::EndEncoding(void)
 	signalSemaphores.Clear();
 }
 
-DKCommandBuffer* RenderCommandEncoder::Buffer(void)
-{
-	return commandBuffer;
-}
-
 void RenderCommandEncoder::SetViewport(const DKViewport& v)
 {
 	bool flipY = FLIP_VIEWPORT_Y;

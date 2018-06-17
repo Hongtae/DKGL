@@ -18,84 +18,77 @@
 #include "Texture.h"
 #include "../../DKPropertySet.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Vulkan
 {
-	namespace Private
+	DKGraphicsDeviceInterface* CreateInterface(void)
 	{
-		namespace Vulkan
+		return new GraphicsDevice();
+	}
+
+	const char *validationLayerNames[] =
+	{
+		"VK_LAYER_LUNARG_standard_validation"
+	};
+
+	VkBool32 DebugMessageCallback(
+								  VkDebugReportFlagsEXT flags,
+								  VkDebugReportObjectTypeEXT objType,
+								  uint64_t srcObject,
+								  size_t location,
+								  int32_t msgCode,
+								  const char* pLayerPrefix,
+								  const char* pMsg,
+								  void* pUserData)
+	{
+		DKStringU8 prefix = "";
+		DKLogCategory cat = DKLogCategory::Info;
+
+		// Error that may result in undefined behaviour
+		if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void)
-			{
-				return new GraphicsDevice();
-			}
-
-			const char *validationLayerNames[] =
-			{
-				"VK_LAYER_LUNARG_standard_validation"
-			};
-
-			VkBool32 DebugMessageCallback(
-				VkDebugReportFlagsEXT flags,
-				VkDebugReportObjectTypeEXT objType,
-				uint64_t srcObject,
-				size_t location,
-				int32_t msgCode,
-				const char* pLayerPrefix,
-				const char* pMsg,
-				void* pUserData)
-			{
-				DKStringU8 prefix = "";
-				DKLogCategory cat = DKLogCategory::Info;
-
-				// Error that may result in undefined behaviour
-				if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-				{
-					prefix += "ERROR:";
-					cat = DKLogCategory::Error;
-				};
-				// Warnings may hint at unexpected / non-spec API usage
-				if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-				{
-					prefix += "WARNING:";
-					cat = DKLogCategory::Warning;
-				};
-				// May indicate sub-optimal usage of the API
-				if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-				{
-					prefix += "PERFORMANCE:";
-				};
-				// Informal messages that may become handy during debugging
-				if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-				{
-					prefix += "INFO:";
-				}
-				// Diagnostic info from the Vulkan loader and layers
-				// Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
-				if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-				{
-					prefix += "DEBUG:";
-				}
-
-				// Display message to default output (console if activated)
-				DKLog(cat, "[Vulkan-Debug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
-
-				// The return value of this callback controls wether the Vulkan call that caused
-				// the validation message will be aborted or not
-				// We return VK_FALSE as we DON'T want Vulkan calls that cause a validation message 
-				// (and return a VkResult) to abort
-				// If you instead want to have calls abort, pass in VK_TRUE and the function will 
-				// return VK_ERROR_VALIDATION_FAILED_EXT 
-				
-#ifdef DKGL_DEBUG_ENABLED
-				if (!DKIsDebuggerPresent())
-					return VK_TRUE;
-#endif
-				return VK_FALSE;
-			}
+			prefix += "ERROR:";
+			cat = DKLogCategory::Error;
+		};
+		// Warnings may hint at unexpected / non-spec API usage
+		if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+		{
+			prefix += "WARNING:";
+			cat = DKLogCategory::Warning;
+		};
+		// May indicate sub-optimal usage of the API
+		if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
+		{
+			prefix += "PERFORMANCE:";
+		};
+		// Informal messages that may become handy during debugging
+		if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
+		{
+			prefix += "INFO:";
 		}
+		// Diagnostic info from the Vulkan loader and layers
+		// Usually not helpful in terms of API usage, but may help to debug layer and loader problems
+		if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
+		{
+			prefix += "DEBUG:";
+		}
+
+		// Display message to default output (console if activated)
+		DKLog(cat, "[Vulkan-Debug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
+
+		// The return value of this callback controls wether the Vulkan call that caused
+		// the validation message will be aborted or not
+		// We return VK_FALSE as we DON'T want Vulkan calls that cause a validation message
+		// (and return a VkResult) to abort
+		// If you instead want to have calls abort, pass in VK_TRUE and the function will
+		// return VK_ERROR_VALIDATION_FAILED_EXT
+
+#ifdef DKGL_DEBUG_ENABLED
+		if (!DKIsDebuggerPresent())
+			return VK_TRUE;
+#endif
+		return VK_FALSE;
 	}
 }
-
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 

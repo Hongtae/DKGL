@@ -7,89 +7,11 @@
 
 #pragma once
 #include "../DKFoundation.h"
+#include "DKShaderResource.h"
 
 namespace DKFramework
 {
 	class DKGraphicsDevice;
-
-	enum class DKShaderDataType
-	{
-		Unknown = -1,
-		None = 0,
-
-		Struct,
-		Texture,
-		Sampler,
-
-		Float,
-		Float2,
-		Float3,
-		Float4,
-
-		Float2x2,
-		Float2x3,
-		Float2x4,
-
-		Float3x2,
-		Float3x3,
-		Float3x4,
-
-		Float4x2,
-		Float4x3,
-		Float4x4,
-
-		Half,
-		Half2,
-		Half3,
-		Half4,
-
-		Half2x2,
-		Half2x3,
-		Half2x4,
-
-		Half3x2,
-		Half3x3,
-		Half3x4,
-
-		Half4x2,
-		Half4x3,
-		Half4x4,
-
-		Int,
-		Int2,
-		Int3,
-		Int4,
-
-		UInt,
-		UInt2,
-		UInt3,
-		UInt4,
-
-		Short,
-		Short2,
-		Short3,
-		Short4,
-
-		UShort,
-		UShort2,
-		UShort3,
-		UShort4,
-		
-		Char,
-		Char2,
-		Char3,
-		Char4,
-		
-		UChar,
-		UChar2,
-		UChar3,
-		UChar4,
-		
-		Bool,
-		Bool2,
-		Bool3,
-		Bool4,
-	};
 
 	struct DKShaderAttribute
 	{

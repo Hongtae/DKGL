@@ -18,19 +18,14 @@
 #include "RenderPipelineState.h"
 #include "Buffer.h"
 #include "Texture.h"
+#include "Types.h"
 #include "../../DKPropertySet.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Metal
 {
-	namespace Private
+	DKGraphicsDeviceInterface* CreateInterface(void)
 	{
-		namespace Metal
-		{
-			DKGraphicsDeviceInterface* CreateInterface(void)
-			{
-				return new GraphicsDevice();
-			}
-		}
+		return new GraphicsDevice();
 	}
 }
 
@@ -350,6 +345,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			colorAttachmentDesc.destinationRGBBlendFactor = GetBlendFactor(attachment.destinationRGBBlendFactor);
 			colorAttachmentDesc.destinationAlphaBlendFactor = GetBlendFactor(attachment.destinationAlphaBlendFactor);
 		}
+		DKSet<NSUInteger> vertexAttributeIndices; // buffer index converted for device
 		if (desc.vertexDescriptor.attributes.Count() > 0 || desc.vertexDescriptor.layouts.Count() > 0)
 		{
 			MTLVertexDescriptor *vertexDescriptor = [MTLVertexDescriptor vertexDescriptor];
@@ -358,11 +354,14 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				MTLVertexAttributeDescriptor* attr = [vertexDescriptor.attributes objectAtIndexedSubscript:attrDesc.location];
 				attr.format = GetVertexFormat(attrDesc.format);
 				attr.offset = attrDesc.offset;
-				attr.bufferIndex = attrDesc.bufferIndex;
+				NSUInteger bufferIndex = VertexAttributeIndexForDevice(attrDesc.bufferIndex);
+				attr.bufferIndex = bufferIndex;
+				vertexAttributeIndices.Insert(bufferIndex);
 			}
 			for (const DKVertexBufferLayoutDescriptor& layoutDesc : desc.vertexDescriptor.layouts)
 			{
-				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:layoutDesc.bufferIndex];
+				NSUInteger bufferIndex = VertexAttributeIndexForDevice(layoutDesc.bufferIndex);
+				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:bufferIndex];
 				layout.stepFunction = GetVertexStepFunction(layoutDesc.step);
 				layout.stepRate = 1;
 				layout.stride = layoutDesc.stride;
@@ -381,42 +380,114 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 																   error:&error];
 			if (pipelineReflection)
 			{
-				auto copyArguments = [](DKArray<DKShaderResource>& outArgs, NSArray<MTLArgument *>* inArgs)
+				struct GetStructTypeData
 				{
-					outArgs.Clear();
-					outArgs.Reserve(inArgs.count);
-					for (MTLArgument* arg in inArgs)
+					DKString name;
+					DKShaderResource& base;
+					DKString operator () (MTLStructType* st)
 					{
-						switch (arg.type)
+						DKShaderResourceStruct output;
+						output.members.Reserve(st.members.count);
+						for (MTLStructMember* member in st.members)
 						{
-							case MTLArgumentTypeBuffer:
-							case MTLArgumentTypeTexture:
-							case MTLArgumentTypeThreadgroupMemory:
-								NSLog(@"Warning!! Argument's detail query is not implemented: %@", arg);
-								break;
-						}
-						DKShaderResource a;
-						a.set = 0;
-						a.binding = (uint32_t)arg.index;
-						a.name = DKStringU8(arg.name.UTF8String);
-						a.count = arg.arrayLength;
-						a.enabled = arg.active;
+							DKShaderResourceStructMember mb;
+							MTLDataType type = member.dataType;
+							if (type == MTLDataTypeArray)
+							{
+								MTLArrayType* arrayType = member.arrayType;
+								type = arrayType.elementType;
+								mb.count = arrayType.arrayLength;
+								mb.stride = arrayType.stride;
+							}
+							else
+							{
+								mb.count = 1;
+							}
+							mb.dataType = ShaderDataType::To(type);
+							mb.name = member.name.UTF8String;
+							mb.offset = member.offset;
 
-						switch (arg.type)
-						{
-							case MTLArgumentTypeBuffer:				a.type = DKShaderResource::TypeBuffer; break;
-							case MTLArgumentTypeThreadgroupMemory:	a.type = DKShaderResource::TypeThreadgroupMemory; break;
-							case MTLArgumentTypeTexture:			a.type = DKShaderResource::TypeTexture; break;
-							case MTLArgumentTypeSampler:			a.type = DKShaderResource::TypeSampler; break;
-							default:
-								NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
+							if (type == MTLDataTypeStruct)
+							{
+								DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
+								mb.typeInfoKey = GetStructTypeData{ typeKey, base }.operator() (member.structType);
+							}
+							output.members.Add(mb);
 						}
-						outArgs.Add(a);
+						base.structTypeMemberMap.Update(name, output);
+						return name;
 					}
-					outArgs.ShrinkToFit();
 				};
-				copyArguments(reflection->vertexResources, pipelineReflection.vertexArguments);
-				copyArguments(reflection->fragmentResources, pipelineReflection.fragmentArguments);
+
+				auto shaderResourceFromArgument = [&vertexAttributeIndices](MTLArgument* arg, DKShaderResource& res)->bool
+				{
+					if (arg.type == MTLArgumentTypeBuffer && vertexAttributeIndices.Contains(arg.index))
+						return false;
+
+					res.set = 0;
+					res.binding = (uint32_t)arg.index;
+					res.name = DKStringU8(arg.name.UTF8String);
+					res.count = arg.arrayLength;
+					res.enabled = arg.active;
+					switch (arg.access)
+					{
+						case MTLArgumentAccessReadOnly:
+							res.access = DKShaderResource::AccessReadOnly; break;
+						case MTLArgumentAccessWriteOnly:
+							res.access = DKShaderResource::AccessWriteOnly; break;
+						case MTLArgumentAccessReadWrite:
+							res.access = DKShaderResource::AccessReadWrite; break;
+						default:
+							NSLog(@"ERROR: Unknown access type!");
+							return false;
+					}
+
+					switch (arg.type)
+					{
+						case MTLArgumentTypeBuffer:
+							res.type = DKShaderResource::TypeBuffer;
+							res.typeInfo.buffer.size = arg.bufferDataSize;
+							res.typeInfo.buffer.alignment = arg.bufferAlignment;
+							res.typeInfo.buffer.dataType = ShaderDataType::To(arg.bufferDataType);
+							if (arg.bufferDataType == MTLDataTypeStruct)
+							{
+								res.typeInfoKey = GetStructTypeData{res.name, res}.operator()(arg.bufferStructType);
+							}
+							else
+							{
+								NSLog(@"WARNING: Unsupported buffer type: %@", arg);
+							}
+							break;
+						case MTLArgumentTypeThreadgroupMemory:	res.type = DKShaderResource::TypeThreadgroupMemory; break;
+						case MTLArgumentTypeTexture:			res.type = DKShaderResource::TypeTexture; break;
+						case MTLArgumentTypeSampler:			res.type = DKShaderResource::TypeSampler; break;
+						default:
+							NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
+							return false;
+					}
+					return true;
+				};
+
+				NSLog(@"RenderPipelineReflection: %@", pipelineReflection);
+				reflection->vertexResources.Clear();
+				reflection->vertexResources.Reserve(pipelineReflection.vertexArguments.count);
+				for (MTLArgument* arg in pipelineReflection.vertexArguments)
+				{
+					DKShaderResource res;
+					if (shaderResourceFromArgument(arg, res))
+						reflection->vertexResources.Add(res);
+				}
+
+				reflection->fragmentResources.Clear();
+				reflection->fragmentResources.Reserve(pipelineReflection.fragmentArguments.count);
+				for (MTLArgument* arg in pipelineReflection.fragmentArguments)
+				{
+					DKShaderResource res;
+					if (shaderResourceFromArgument(arg, res))
+						reflection->fragmentResources.Add(res);
+				}
+				reflection->vertexResources.ShrinkToFit();
+				reflection->fragmentResources.ShrinkToFit();
 			}
 		}
 		else

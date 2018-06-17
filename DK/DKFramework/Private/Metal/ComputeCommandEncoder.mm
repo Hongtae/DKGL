@@ -17,7 +17,8 @@ using namespace DKFramework::Private::Metal;
 ComputeCommandEncoder::ComputeCommandEncoder(CommandBuffer* b)
 : buffer(b)
 {
-	encoderCommands.Reserve(InitialNumberOfCommands);
+	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
+	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
 ComputeCommandEncoder::~ComputeCommandEncoder(void)
@@ -27,20 +28,8 @@ ComputeCommandEncoder::~ComputeCommandEncoder(void)
 void ComputeCommandEncoder::EndEncoding(void)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	encoderCommands.ShrinkToFit();
-	buffer->EndEncoder(this);
-}
-
-bool ComputeCommandEncoder::EncodeBuffer(id<MTLCommandBuffer> buffer)
-{
-	DKASSERT_DEBUG(IsCompleted());
-
-	id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
-	for (EncoderCommand* command : encoderCommands )
-	{
-		command->Invoke(encoder);
-	}
-	[encoder endEncoding];
-	return true;
+	reusableEncoder->encoderCommands.ShrinkToFit();
+	buffer->EndEncoder(this, reusableEncoder);
+	reusableEncoder = NULL;
 }
 #endif //#if DKGL_ENABLE_METAL

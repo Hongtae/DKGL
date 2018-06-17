@@ -188,15 +188,12 @@ bool CommandBuffer::Commit(void)
 	return true;
 }
 
-void CommandBuffer::EndEncoder(DKCommandEncoder* enc)
+void CommandBuffer::EndEncoder(DKCommandEncoder* enc, ReusableCommandEncoder* reusableEncoder)
 {
 	DKASSERT_DEBUG(activeEncoder == enc);
-
-	ReusableCommandEncoder* reusableEncoder = DKObject<DKCommandEncoder>(enc).SafeCast<ReusableCommandEncoder>();
 	DKASSERT_DEBUG(reusableEncoder);
 
 	completedEncoders.Add(reusableEncoder);
-	reusableEncoder->CompleteBuffer(); // release buffer
 	activeEncoder = NULL;
 }
 

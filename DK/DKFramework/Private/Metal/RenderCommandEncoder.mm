@@ -11,31 +11,29 @@
 
 #include "RenderCommandEncoder.h"
 #include "RenderPipelineState.h"
+#include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
 RenderCommandEncoder::RenderCommandEncoder(MTLRenderPassDescriptor* rpDesc, CommandBuffer* b)
 : buffer(b)
-, renderPassDescriptor(nil)
 {
-	renderPassDescriptor = [rpDesc retain];
-	encoderCommands.Reserve(InitialNumberOfCommands);
+	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
+	reusableEncoder->renderPassDescriptor = [rpDesc retain];
+	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
 RenderCommandEncoder::~RenderCommandEncoder(void)
 {
-	if (renderPassDescriptor)
-	{
-		[renderPassDescriptor release];
-	}
 }
 
 void RenderCommandEncoder::EndEncoding(void)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	encoderCommands.ShrinkToFit();
-	buffer->EndEncoder(this);
+	reusableEncoder->encoderCommands.ShrinkToFit();
+	buffer->EndEncoder(this, reusableEncoder);
+	reusableEncoder = NULL; // release data
 }
 
 void RenderCommandEncoder::SetViewport(const DKViewport& v)
@@ -46,7 +44,7 @@ void RenderCommandEncoder::SetViewport(const DKViewport& v)
 	{
 		[encoder setViewport:viewport];
 	});
-	encoderCommands.Add(command);
+	reusableEncoder->encoderCommands.Add(command);
 }
 
 void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
@@ -61,7 +59,7 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 		[encoder setRenderPipelineState:pipelineState];
 		res.pipelineState = pipeline;
 	});
-	encoderCommands.Add(command);
+	reusableEncoder->encoderCommands.Add(command);
 }
 
 void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
@@ -70,11 +68,13 @@ void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, u
 	DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffer));
 	DKObject<class Buffer> vertexBuffer = static_cast<class Buffer*>(buffer);
 
+	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->buffer->Queue()->Device());
+	NSUInteger bufferIndex = dev->VertexAttributeIndexForDevice(index);
 	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, Resources& res)
 	{
-		[encoder setVertexBuffer:vertexBuffer->buffer offset:offset atIndex:index];
+		[encoder setVertexBuffer:vertexBuffer->buffer offset:offset atIndex:bufferIndex];
 	});
-	encoderCommands.Add(command);
+	reusableEncoder->encoderCommands.Add(command);
 }
 
 void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
@@ -100,7 +100,7 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 		{
 			[encoder setVertexBuffers:vertexBuffers offsets:bufferOffsets withRange:NSMakeRange(index, objects.Count())];
 		});
-		encoderCommands.Add(command);
+		reusableEncoder->encoderCommands.Add(command);
 	}
 }
 
@@ -123,7 +123,7 @@ void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* buffer, size_t offset, DK
 		res.indexBufferOffset = offset;
 		res.indexBufferType = indexType;
 	});
-	encoderCommands.Add(command);
+	reusableEncoder->encoderCommands.Add(command);
 }
 
 void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)
@@ -138,7 +138,7 @@ void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uin
 				  instanceCount:numInstances
 				   baseInstance:baseInstance];
 	});
-	encoderCommands.Add(command);
+	reusableEncoder->encoderCommands.Add(command);
 }
 
 void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance)
@@ -155,28 +155,7 @@ void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstance
 						 instanceCount:numInstances
 							baseVertex:vertexOffset
 						  baseInstance:baseInstance];
-
 	});
-	encoderCommands.Add(command);
-}
-
-bool RenderCommandEncoder::EncodeBuffer(id<MTLCommandBuffer> buffer)
-{
-	DKASSERT_DEBUG(IsCompleted());
-	DKASSERT_DEBUG(renderPassDescriptor);
-
-	if (renderPassDescriptor)
-	{
-		id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-		Resources res = {};
-		for (EncoderCommand* command : encoderCommands )
-		{
-			command->Invoke(encoder, res);
-		}
-		[encoder endEncoding];
-		return true;
-	}
-
-	return false;
+	reusableEncoder->encoderCommands.Add(command);
 }
 #endif //#if DKGL_ENABLE_METAL

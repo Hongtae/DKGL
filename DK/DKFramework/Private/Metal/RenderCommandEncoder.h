@@ -18,7 +18,7 @@
 
 namespace DKFramework::Private::Metal
 {
-	class RenderCommandEncoder : public DKRenderCommandEncoder, public ReusableCommandEncoder
+	class RenderCommandEncoder : public DKRenderCommandEncoder
 	{
 	public:
 		RenderCommandEncoder(MTLRenderPassDescriptor*, CommandBuffer*);
@@ -26,7 +26,7 @@ namespace DKFramework::Private::Metal
 
 		// DKCommandEncoder overrides
 		void EndEncoding(void) override;
-		bool IsCompleted(void) const override { return buffer == nullptr; }
+		bool IsCompleted(void) const override { return reusableEncoder == nullptr; }
 		DKCommandBuffer* Buffer(void) override { return buffer; }
 
 		// DKRenderCommandEncoder overrides
@@ -39,10 +39,6 @@ namespace DKFramework::Private::Metal
 		void Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance) override;
 		void DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance) override;
 
-		// ReusableCommandEncoder overrides
-		bool EncodeBuffer(id<MTLCommandBuffer>) override;
-		void CompleteBuffer(void) override { buffer = nullptr; }
-
 	private:
 		struct Resources
 		{
@@ -51,12 +47,38 @@ namespace DKFramework::Private::Metal
 			size_t indexBufferOffset;
 			MTLIndexType indexBufferType;
 		};
-
-		DKObject<CommandBuffer> buffer;
-		MTLRenderPassDescriptor* renderPassDescriptor;
-
 		using EncoderCommand = DKFunctionSignature<void(id<MTLRenderCommandEncoder>, Resources&)>;
-		DKArray<DKObject<EncoderCommand>> encoderCommands;
+
+		struct ReusableEncoder : public ReusableCommandEncoder
+		{
+			~ReusableEncoder(void)
+			{
+				[renderPassDescriptor autorelease];
+			}
+
+			bool EncodeBuffer(id<MTLCommandBuffer> buffer) override
+			{
+				DKASSERT_DEBUG(renderPassDescriptor);
+				if (renderPassDescriptor)
+				{
+					id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+					Resources res = {};
+					for (EncoderCommand* command : encoderCommands )
+					{
+						command->Invoke(encoder, res);
+					}
+					[encoder endEncoding];
+					return true;
+				}
+				return false;
+			}
+
+			DKArray<DKObject<EncoderCommand>> encoderCommands;
+			MTLRenderPassDescriptor* renderPassDescriptor;
+		};
+
+		DKObject<ReusableEncoder> reusableEncoder;
+		DKObject<CommandBuffer> buffer;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

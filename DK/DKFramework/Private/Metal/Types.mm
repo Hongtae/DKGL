@@ -1,5 +1,5 @@
 //
-//  File: ShaderDataType.mm
+//  File: Types.mm
 //  Platform: macOS: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -9,7 +9,7 @@
 #pragma once
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
-#include "ShaderDataType.h"
+#include "Types.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -19,7 +19,8 @@ MTLDataType ShaderDataType::From(DKShaderDataType t)
 	switch (t)
 	{
 		case DKShaderDataType::Struct:	return MTLDataTypeStruct;
-		case DKShaderDataType::Array:	return MTLDataTypeArray;
+		case DKShaderDataType::Texture:	return MTLDataTypeTexture;
+		case DKShaderDataType::Sampler:	return MTLDataTypeSampler;
 
 		case DKShaderDataType::Float:	return MTLDataTypeFloat;
 		case DKShaderDataType::Float2:	return MTLDataTypeFloat2;
@@ -98,7 +99,8 @@ DKShaderDataType ShaderDataType::To(MTLDataType t)
 	switch (t)
 	{
 		case MTLDataTypeStruct:	return DKShaderDataType::Struct;
-		case MTLDataTypeArray:	return DKShaderDataType::Array;
+		case MTLDataTypeTexture:	return DKShaderDataType::Texture;
+		case MTLDataTypeSampler:	return DKShaderDataType::Sampler;
 
 		case MTLDataTypeFloat:	return DKShaderDataType::Float;
 		case MTLDataTypeFloat2:	return DKShaderDataType::Float2;

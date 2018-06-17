@@ -17,7 +17,8 @@ using namespace DKFramework::Private::Metal;
 BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* b)
 : buffer(b)
 {
-	encoderCommands.Reserve(InitialNumberOfCommands);
+	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
+	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
 BlitCommandEncoder::~BlitCommandEncoder(void)
@@ -27,20 +28,8 @@ BlitCommandEncoder::~BlitCommandEncoder(void)
 void BlitCommandEncoder::EndEncoding(void)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	encoderCommands.ShrinkToFit();
-	buffer->EndEncoder(this);
-}
-
-bool BlitCommandEncoder::EncodeBuffer(id<MTLCommandBuffer> buffer)
-{
-	DKASSERT_DEBUG(IsCompleted());
-
-	id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
-	for (EncoderCommand* command : encoderCommands )
-	{
-		command->Invoke(encoder);
-	}
-	[encoder endEncoding];
-	return true;
+	reusableEncoder->encoderCommands.ShrinkToFit();
+	buffer->EndEncoder(this, reusableEncoder);
+	reusableEncoder = NULL;
 }
 #endif //#if DKGL_ENABLE_METAL
