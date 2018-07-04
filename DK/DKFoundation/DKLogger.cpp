@@ -13,8 +13,16 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKSpinLock lock;
-		static DKArray<DKObject<DKLogger>> loggers;
+		static DKSpinLock& LoggerLock(void)
+		{
+			static DKSpinLock lock;
+			return lock;
+		}
+		static DKArray<DKObject<DKLogger>>& LoggerArray(void)
+		{
+			static DKArray<DKObject<DKLogger>> loggers;
+			return loggers;
+		}
 	}
 }
 
@@ -31,7 +39,8 @@ DKLogger::~DKLogger(void)
 
 void DKLogger::Bind(void)
 {
-	DKCriticalSection<DKSpinLock> guard(lock);
+	DKCriticalSection<DKSpinLock> guard(LoggerLock());
+	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();
 	for (size_t i = 0; i < loggers.Count(); ++i)
 	{
 		DKLogger* logger = loggers.Value(i);
@@ -46,7 +55,8 @@ void DKLogger::Bind(void)
 
 void DKLogger::Unbind(void)
 {
-	DKCriticalSection<DKSpinLock> guard(lock);
+	DKCriticalSection<DKSpinLock> guard(LoggerLock());
+	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();
 	for (size_t i = 0; i < loggers.Count(); ++i)
 	{
 		DKLogger* logger = loggers.Value(i);
@@ -61,7 +71,8 @@ void DKLogger::Unbind(void)
 
 bool DKLogger::IsBound(void) const
 {
-	DKCriticalSection<DKSpinLock> guard(lock);
+	DKCriticalSection<DKSpinLock> guard(LoggerLock());
+	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();
 	for (size_t i = 0; i < loggers.Count(); ++i)
 	{
 		DKLogger* logger = loggers.Value(i);
@@ -76,7 +87,9 @@ bool DKLogger::IsBound(void) const
 size_t DKLogger::Broadcast(Category c, const DKString& str)
 {
 	size_t num = 0;
-	DKCriticalSection<DKSpinLock> guard(lock);
+
+	DKCriticalSection<DKSpinLock> guard(LoggerLock());
+	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();
 	for (size_t i = 0; i < loggers.Count(); ++i)
 	{
 		DKLogger* logger = loggers.Value(i);
