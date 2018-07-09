@@ -2549,7 +2549,7 @@ bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bo
 
 DKVariant* DKVariant::NewValueAtKeyPath(const DKString& path, const DKVariant& value)
 {
-	if (this->ValueType() == TypePairs)
+	if (this->ValueType() == TypePairs || this->ValueType() == TypeUndefined)
 	{
 		VPairs& pair = this->Pairs();
 		for (long findResult = path.Find(KEY_PATH_DELIMITER, 0);

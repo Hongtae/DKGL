@@ -41,4 +41,6 @@ namespace DKFramework
 	constexpr const char* graphicsDeviceListKey = "GraphicsDeviceList";
 	constexpr const char* preferredGraphicsAPIKey = "GraphicsAPI";
 	constexpr const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
+
+	constexpr const char* vulkanPipelineCacheFilePath = "Vulkan.pipelineCacheFilePath";
 }

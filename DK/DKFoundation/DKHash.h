@@ -24,13 +24,22 @@ namespace DKFoundation
 			Length = BIT / (sizeof(BASE) * 8),
 		};
 		BASE digest[Length]; ///< hash digest in unit size (usually uint32_t)
+		int Compare(const DKHashResult& r) const
+		{
+			int d = 0;
+			for (int i = 0; d == 0 && i < Length; ++i)
+			{
+				d = static_cast<int>(this->digest[i] - r.digest[i]);
+			}
+			return d;
+		}
 
-		bool operator == (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) == 0;}
-		bool operator != (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) != 0;}
-		bool operator > (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) > 0;}
-		bool operator < (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) < 0;}
-		bool operator >= (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) >= 0;}
-		bool operator <= (const DKHashResult& r) const		{return memcmp(digest, r.digest, sizeof(digest)) <= 0;}
+		bool operator == (const DKHashResult& r) const		{return Compare(r) == 0;}
+		bool operator != (const DKHashResult& r) const		{return Compare(r) != 0;}
+		bool operator > (const DKHashResult& r) const		{return Compare(r) > 0;}
+		bool operator < (const DKHashResult& r) const		{return Compare(r) < 0;}
+		bool operator >= (const DKHashResult& r) const		{return Compare(r) >= 0;}
+		bool operator <= (const DKHashResult& r) const		{return Compare(r) <= 0;}
 
 		DKString String(void) const ///< represent hash digest as a string
 		{
