@@ -47,18 +47,19 @@ namespace DKFoundation
 		/// using virtual memory (page memory)
 		static DKObject<DKFileMap> Virtual(size_t size);
 
-		bool IsReadable(void) const;
-		bool IsWritable(void) const;
-		bool IsExcutable(void) const;
-		size_t Length(void) const;
+		bool IsReadable(void) const override;
+		bool IsWritable(void) const override;
+		bool IsExcutable(void) const override;
+		bool IsTransient(void) const override;
+		size_t Length(void) const override;
 
-		const void* LockShared(void) const;
-		bool TryLockShared(const void** ptr) const;
-		void UnlockShared(void) const;
+		const void* LockShared(void) const override;
+		bool TryLockShared(const void** ptr) const override;
+		void UnlockShared(void) const override;
 
-		void* LockExclusive(void);
-		bool TryLockExclusive(void** ptr);
-		void UnlockExclusive(void);
+		void* LockExclusive(void) override;
+		bool TryLockExclusive(void** ptr) override;
+		void UnlockExclusive(void) override;
 
 	private:
 		void* MapContent(void) const;

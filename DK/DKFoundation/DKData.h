@@ -31,6 +31,7 @@ namespace DKFoundation
 		virtual bool IsReadable(void) const = 0;
 		virtual bool IsWritable(void) const = 0;
 		virtual bool IsExcutable(void) const = 0;		///< program code image
+		virtual bool IsTransient(void) const = 0;
 
 		/// Cast an existing buffer to DKData (writable).
 		/// You can provide cleanup operation which will be invoked on finished.
@@ -64,6 +65,12 @@ namespace DKFoundation
 
 		/// Clone immutable data object.
 		virtual DKObject<DKData> ImmutableData(void) const;
+
+
+		DKData(DKData&&) = delete;
+		DKData(const DKData&) = delete;
+		DKData& operator = (DKData&&) = delete;
+		DKData& operator = (const DKData&) = delete;
 	};
 
 	/// @brief scoped read accessor for DKData

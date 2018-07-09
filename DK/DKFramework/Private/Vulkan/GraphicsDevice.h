@@ -63,14 +63,9 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKThread> fenceCompletionThread;
 		void FenceCompletionCallbackThreadProc(void);
 
-		struct
-		{
-			VkPipelineCache handle;
-			size_t length;
-			DKHashResultSHA1 hash; // saved contents hash
-		} pipelineCache;
+		VkPipelineCache pipelineCache;
 		void LoadPipelineCache(void);
-		void SavePipelineCache(bool overwriteAlways = false);
+		void SavePipelineCache(void);
 
 		// extensions
 		InstanceProc iproc; // instance procedure

@@ -792,13 +792,14 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const { return length; }
-			virtual bool IsReadable(void) const { return readable; }
-			virtual bool IsWritable(void) const { return writable; }
-			virtual bool IsExcutable(void) const { return false; }
+			size_t Length(void) const override { return length; }
+			bool IsReadable(void) const override { return readable; }
+			bool IsWritable(void) const override { return writable; }
+			bool IsExcutable(void) const override { return false; }
+			bool IsTransient(void) const override { return false; }
 
-			const void* LockShared(void) const { lock.LockShared(); return &ptr[offset]; }
-			bool TryLockShared(const void** ptr) const
+			const void* LockShared(void) const override { lock.LockShared(); return &ptr[offset]; }
+			bool TryLockShared(const void** ptr) const override
 			{
 				if (lock.TryLockShared())
 				{
@@ -808,9 +809,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const { lock.UnlockShared(); }
+			void UnlockShared(void) const override { lock.UnlockShared(); }
 
-			void* LockExclusive(void) { lock.Lock(); return &ptr[offset]; }
+			void* LockExclusive(void) override { lock.Lock(); return &ptr[offset]; }
 			bool TryLockExclusive(void** ptr)
 			{
 				if (lock.TryLock())
@@ -821,7 +822,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void) { lock.Unlock(); }
+			void UnlockExclusive(void) override { lock.Unlock(); }
 
 			size_t length;
 			size_t offset;
@@ -894,12 +895,13 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const { return length; }
-			bool IsReadable(void) const { return (prot & PROT_READ) != 0; }
-			bool IsWritable(void) const { return (prot & PROT_WRITE) != 0; }
-			bool IsExcutable(void) const { return false; }
+			size_t Length(void) const override { return length; }
+			bool IsReadable(void) const override { return (prot & PROT_READ) != 0; }
+			bool IsWritable(void) const override { return (prot & PROT_WRITE) != 0; }
+			bool IsExcutable(void) const override { return false; }
+			bool IsTransient(void) const override { return false; }
 
-			const void* LockShared(void) const { lock.LockShared(); return &ptr[offset]; }
+			const void* LockShared(void) const override { lock.LockShared(); return &ptr[offset]; }
 			bool TryLockShared(const void** ptr) const
 			{
 				if (lock.TryLockShared())
@@ -910,10 +912,10 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const { lock.UnlockShared(); }
+			void UnlockShared(void) const override { lock.UnlockShared(); }
 
-			void* LockExclusive(void) { lock.Lock(); return &ptr[offset]; }
-			bool TryLockExclusive(void** ptr)
+			void* LockExclusive(void) override { lock.Lock(); return &ptr[offset]; }
+			bool TryLockExclusive(void** ptr) override
 			{
 				if (lock.TryLock())
 				{
@@ -923,7 +925,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void) { lock.Unlock(); }
+			void UnlockExclusive(void) override { lock.Unlock(); }
 
 			int prot;
 			size_t length;

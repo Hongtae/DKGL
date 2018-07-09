@@ -33,6 +33,7 @@ namespace DKFramework
 		using DeletionCallback = DKFunctionSignature<DeletionFunc>;
 
 		using Enumerator = DKFunctionSignature<void (const DKString&, const DKVariant&)>;
+		using Replacer = DKFunctionSignature<DKVariant (const DKVariant&)>;
 
 		DKPropertySet(void);
 		~DKPropertySet(void);
@@ -53,6 +54,11 @@ namespace DKFramework
 		bool SetInitialValue(const DKString& key, const DKVariant& value);
 
 		void SetValue(const DKString& key, const DKVariant& value);
+		/// Atomically examine and update value.
+		/// Returning DKVariant::TypeUndefined the matching key will be removed.
+		/// Never call DKPropertySet member functions inside callback!
+		void ReplaceValue(const DKString& key, Replacer* replacer);
+
 		const DKVariant& Value(const DKString& key) const;
 		bool HasValue(const DKString& key) const;
 		void Remove(const DKString& key);

@@ -2258,61 +2258,69 @@ DKVariant& DKVariant::SetPairs(const VPairs& v)
 
 DKVariant& DKVariant::SetValue(const DKVariant& v)
 {
-	SetValueType(v.ValueType());
-
-	switch (valueType)
+	switch (v.ValueType())
 	{
 	case TypeInteger:
-		this->Integer() = v.Integer();
+		this->SetInteger(v.Integer());
 		break;
 	case TypeFloat:
-		this->Float() = v.Float();
+		this->SetFloat(v.Float());
 		break;
 	case TypeVector2:
-		this->Vector2() = v.Vector2();
+		this->SetVector2(v.Vector2());
 		break;
 	case TypeVector3:
-		this->Vector3() = v.Vector3();
+		this->SetVector3(v.Vector3());
 		break;
 	case TypeVector4:
-		this->Vector4() = v.Vector4();
+		this->SetVector4(v.Vector4());
 		break;
 	case TypeMatrix2:
-		this->Matrix2() = v.Matrix2();
+		this->SetMatrix2(v.Matrix2());
 		break;
 	case TypeMatrix3:
-		this->Matrix3() = v.Matrix3();
+		this->SetMatrix3(v.Matrix3());
 		break;
 	case TypeMatrix4:
-		this->Matrix4() = v.Matrix4();
+		this->SetMatrix4(v.Matrix4());
 		break;
 	case TypeQuaternion:
-		this->Quaternion() = v.Quaternion();
+		this->SetQuaternion(v.Quaternion());
 		break;
 	case TypeRational:
-		this->Rational() = v.Rational();
+		this->SetRational(v.Rational());
 		break;
 	case TypeString:
-		this->String() = v.String();
+		this->SetString(v.String());
 		break;
 	case TypeDateTime:
-		this->DateTime() = v.DateTime();
+		this->SetDateTime(v.DateTime());
 		break;
 	case TypeData:
-		this->Data() = v.Data();
+		this->SetData(v.Data());
 		break;
 	case TypeStructData:
-		this->StructuredData() = v.StructuredData();
-		if (v.StructuredData().data)
-			this->StructuredData().data = v.StructuredData().data->ImmutableData();
+		this->SetStructuredData(v.StructuredData());
 		break;
 	case TypeArray:
-		this->Array() = v.Array();
+		this->SetArray(v.Array());
 		break;
 	case TypePairs:
-		this->Pairs() = v.Pairs();
+		this->SetPairs(v.Pairs());
 		break;
 	}
+	return *this;
+}
+
+DKVariant& DKVariant::SetValue(DKVariant&& v)
+{
+	SetValueType(TypeUndefined);
+
+	valueType = v.valueType;
+	memcpy(vblock, v.vblock, sizeof(vblock));
+	memset(v.vblock, 0, sizeof(v.vblock));
+	v.valueType = TypeUndefined;
+
 	return *this;
 }
 
@@ -2463,7 +2471,7 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 
 #define KEY_PATH_DELIMITER	'.'
 
-bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bool(DKVariant&)>* callback)
+bool DKVariant::FindObjectAtKeyPath(const DKString& path, KeyPathEnumerator* callback)
 {
 	if (path.Length() > 0)
 	{
@@ -2505,7 +2513,7 @@ bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bo
 	return true;
 }
 
-bool DKVariant::FindObjectAtKeyPath(const DKString& path, DKFunctionSignature<bool(const DKVariant&)>* callback) const
+bool DKVariant::FindObjectAtKeyPath(const DKString& path, ConstKeyPathEnumerator* callback) const
 {
 	if (path.Length() > 0)
 	{

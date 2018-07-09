@@ -101,7 +101,7 @@ GraphicsDevice::GraphicsDevice(void)
 	, enableValidation(false)
 	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
-	, pipelineCache({})
+	, pipelineCache(VK_NULL_HANDLE)
 {
 #ifdef DKGL_DEBUG_ENABLED
 	this->enableValidation = true;
@@ -509,8 +509,6 @@ GraphicsDevice::GraphicsDevice(void)
 	});
 	queueFamilies.ShrinkToFit();
 
-	pipelineCache = { 0 };
-	pipelineCache.hash = DKHashSHA1(0, 0);
 	LoadPipelineCache();
 
 	fenceCompletionThread = DKThread::Create(
@@ -544,10 +542,10 @@ GraphicsDevice::~GraphicsDevice(void)
 	vkDeviceWaitIdle(device);
 
 	// destroy pipeline cache
-	if (this->pipelineCache.handle != VK_NULL_HANDLE)
+	if (pipelineCache != VK_NULL_HANDLE)
 	{
-		vkDestroyPipelineCache(this->device, this->pipelineCache.handle, nullptr);
-		this->pipelineCache.handle = nullptr;
+		vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
+		this->pipelineCache = VK_NULL_HANDLE;
 	}
 
 	vkDestroyDevice(device, nullptr);
@@ -1211,7 +1209,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	colorBlendState.pAttachments = colorBlendAttachmentStates;
 	pipelineCreateInfo.pColorBlendState = &colorBlendState;
 
-	result = vkCreateGraphicsPipelines(device, pipelineCache.handle, 1, &pipelineCreateInfo, nullptr, &pipeline);
+	result = vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline);
 	if (result == VK_SUCCESS)
 		SavePipelineCache();
 
@@ -1421,144 +1419,96 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 
 void GraphicsDevice::LoadPipelineCache(void)
 {
-	if (this->pipelineCache.handle != VK_NULL_HANDLE)
+	if (this->pipelineCache != VK_NULL_HANDLE)
 	{
-		vkDestroyPipelineCache(this->device, this->pipelineCache.handle, nullptr);
-		this->pipelineCache.handle = nullptr;
+		vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
+		this->pipelineCache = VK_NULL_HANDLE;
 	}
-	VkPipelineCacheCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO };
+
 	DKArray<unsigned char> buffer;
-	// load cached data from file.
-	DKString cacheFilePath;
-	DKPropertySet::SystemConfig().LookUpValueForKeyPath(vulkanPipelineCacheFilePath,
-														DKFunction([&](const DKVariant& var)->bool
+	VkPipelineCacheCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO };
+
+	DKPropertySet& defaultSet = DKPropertySet::DefaultSet();
+	defaultSet.LookUpValueForKeyPath(DKString(savedSystemStates).Append(".").Append(savedPipelineCacheDataKey),
+									 DKFunction([&](const DKVariant& var)->bool
 	{
-		if (var.ValueType() == DKVariant::TypeString)
+		if (var.ValueType() == DKVariant::TypeData)
 		{
-			DKString path = var.String();
-			DKObject<DKFileMap> fm = DKFileMap::Open(path, 0, false);
-			if (fm)
+			const DKVariant::VData& data = var.Data();
+			buffer.Clear();
+			if (data.Length() > 0)
 			{
-				const void* p = fm->LockShared();
-				size_t length = fm->Length();
-				buffer.Resize(length + 4);
-				if (fm->Length() > 0)
-				{
-					memcpy((void*)buffer, p, buffer.Count());
-					pipelineCreateInfo.initialDataSize = length;
-					pipelineCreateInfo.pInitialData = (const void*)buffer;
-					cacheFilePath = path;
-				}
-				fm->UnlockShared();
+				const void* p = data.LockShared();
+				buffer.Resize(data.Length());
+				memcpy((void*)buffer, p, data.Length());
+				data.UnlockShared();
+
+				pipelineCreateInfo.initialDataSize = buffer.Count();
+				pipelineCreateInfo.pInitialData = buffer;
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}));
 	
-	VkResult result = vkCreatePipelineCache(this->device, &pipelineCreateInfo, nullptr, &(this->pipelineCache.handle));
-	if (result == VK_SUCCESS)
+	VkResult result = vkCreatePipelineCache(this->device, &pipelineCreateInfo, nullptr, &this->pipelineCache);
+	if (result != VK_SUCCESS)
 	{
+		DKLogE("ERROR: vkCreatePipelineCache failed: %s", VkResultCStr(result));
+	}
+}
+
+void GraphicsDevice::SavePipelineCache(void)
+{
+	if (this->pipelineCache != VK_NULL_HANDLE)
+	{
+		DKArray<unsigned char> buffer;
+		VkResult result = VK_SUCCESS;
 		do
 		{
 			size_t dataLength = 0;
-			result = vkGetPipelineCacheData(this->device, this->pipelineCache.handle, &dataLength, 0);
+			result = vkGetPipelineCacheData(this->device, this->pipelineCache, &dataLength, 0);
 			if (result != VK_SUCCESS)
 				break;
 
 			buffer.Resize(dataLength + 4);
 			if (dataLength > 0)
 			{
-				result = vkGetPipelineCacheData(this->device, this->pipelineCache.handle, &dataLength, (void*)buffer);
+				result = vkGetPipelineCacheData(this->device, this->pipelineCache, &dataLength, (void*)buffer);
 				if (result != VK_SUCCESS)
 					break;
 			}
 
-			this->pipelineCache.length = dataLength;
-			this->pipelineCache.hash = DKHashSHA1((const void*)buffer, dataLength);
-			if (cacheFilePath.Length() > 0) // loaded from file.
-				DKLogI("Vulkan.pipelineCache.path: \"%ls\"", (const wchar_t*)cacheFilePath);
-			DKLogI("Vulkan.PipelineCache.hash: %ls (%llu bytes)",
-				(const wchar_t*)this->pipelineCache.hash.String(),
-				   this->pipelineCache.length);
+			buffer.Resize(dataLength);
+			DKASSERT_DEBUG(buffer.Count() == dataLength);
+
 		} while (0);
-		if (result != VK_SUCCESS)
+		if (result == VK_SUCCESS)
+		{
+			DKPropertySet& defaultSet = DKPropertySet::DefaultSet();
+			defaultSet.ReplaceValue(savedSystemStates, DKFunction([&](const DKVariant& v)->DKVariant
+			{
+				DKVariant var;
+				if (v.ValueType() == DKVariant::TypePairs)
+					var.SetValue(v.Pairs());
+				else
+					var.SetValueType(DKVariant::TypePairs);
+
+				DKVariant cachedData(DKVariant::TypeData);
+				cachedData.SetData((const void*)buffer, buffer.Count());
+				DKVariant::VPairs& pairs = var.Pairs();
+				pairs.Update(savedPipelineCacheDataKey, cachedData);
+				return var;
+			}));
+		}
+		else
 		{
 			DKLogE("ERROR: vkGetPipelineCacheData failed: %s", VkResultCStr(result));
 		}
 	}
 	else
 	{
-		DKLogE("ERROR: vkCreatePipelineCache failed: %s", VkResultCStr(result));
-	}
-}
-
-void GraphicsDevice::SavePipelineCache(bool overwriteAlways)
-{
-	if (this->pipelineCache.handle != VK_NULL_HANDLE)
-	{
-		DKHashResultSHA1 hash = this->pipelineCache.hash;
-		DKArray<unsigned char> buffer;
-
-		DKPropertySet::SystemConfig().LookUpValueForKeyPath(vulkanPipelineCacheFilePath,
-															DKFunction([&](const DKVariant& var)->bool
-		{
-			if (var.ValueType() == DKVariant::TypeString)
-			{
-				DKString path = var.String();
-
-				VkResult result = VK_SUCCESS;
-				do
-				{
-					size_t dataLength = 0;
-					result = vkGetPipelineCacheData(this->device, this->pipelineCache.handle, &dataLength, 0);
-					if (result != VK_SUCCESS)
-						break;
-
-					buffer.Resize(dataLength + 4);
-					if (dataLength > 0)
-					{
-						result = vkGetPipelineCacheData(this->device, this->pipelineCache.handle, &dataLength, (void*)buffer);
-						if (result != VK_SUCCESS)
-							break;
-					}
-
-					buffer.Resize(dataLength);
-					hash = DKHashSHA1((const void*)buffer, dataLength);
-					DKASSERT_DEBUG(buffer.Count() == dataLength);
-
-				} while (0);
-				if (result == VK_SUCCESS)
-				{
-					if (this->pipelineCache.hash != hash || overwriteAlways)
-					{
-						// write to file and update hash.
-						DKObject<DKFile> file = DKFile::Create(path, DKFile::ModeOpenNew, DKFile::ModeShareExclusive);
-						if (file)
-						{
-							if (file->Write((const void*)buffer, buffer.Count()) == buffer.Count())
-							{
-								this->pipelineCache.hash = hash; // update hash.
-								DKLogI("Vulkan.pipelineCache.path: \"%ls\"", (const wchar_t*)path);
-								DKLogI("Vulkan.PipelineCache.hash: %ls (%llu bytes)",
-									(const wchar_t*)this->pipelineCache.hash.String(),
-									   this->pipelineCache.length);
-							}
-						}
-						else
-						{
-							DKLogE("ERROR: GraphicsDevice::SavePipelineCache() Error: Failed to write a file.");
-						}
-					}
-				}
-				else
-				{
-					DKLogE("ERROR: vkGetPipelineCacheData failed: %s", VkResultCStr(result));
-				}
-				return true;
-			}
-			return false;
-		}));
+		DKLogE("ERROR: VkPipelineCache is NULL");
 	}
 }
 

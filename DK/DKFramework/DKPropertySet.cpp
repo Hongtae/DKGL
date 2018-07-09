@@ -313,6 +313,41 @@ void DKPropertySet::SetValue(const DKString& key, const DKVariant& value)
 	}
 }
 
+void DKPropertySet::ReplaceValue(const DKString& key, Replacer* replacer)
+{
+	lock.Lock();
+
+	DKVariant oldValue;
+	bool modification = false;
+	bool removed = false;
+
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
+	if (p)
+	{
+		oldValue = p->value;
+		modification = true;
+	}
+	DKVariant value = replacer->Invoke(oldValue);
+	removed = value.ValueType() == DKVariant::TypeUndefined;
+	if (removed)
+		dataSet.Pairs().Remove(key);
+	else
+		dataSet.Pairs().Update(key, value);
+	lock.Unlock();
+
+	if (modification)
+	{
+		if (removed)
+			CallbackObservers(key, deletionCallbacks, oldValue);
+		else
+			CallbackObservers(key, modificationCallbacks, oldValue, value);
+	}
+	else if (!removed)
+	{
+		CallbackObservers(key, insertionCallbacks, value);
+	}
+}
+
 void DKPropertySet::Remove(const DKString& key)
 {
 	lock.Lock();

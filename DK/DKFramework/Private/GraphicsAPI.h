@@ -42,5 +42,7 @@ namespace DKFramework
 	constexpr const char* preferredGraphicsAPIKey = "GraphicsAPI";
 	constexpr const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
 
-	constexpr const char* vulkanPipelineCacheFilePath = "Vulkan.pipelineCacheFilePath";
+	// saved states key (DKPropertySet::DefaultSet)
+	constexpr const char* savedSystemStates = "_SavedSystemStates"; // root
+	constexpr const char* savedPipelineCacheDataKey = "PipelineCacheData";
 }

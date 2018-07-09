@@ -62,21 +62,22 @@ namespace DKFoundation
 		
 		DKBuffer& operator = (const DKBuffer&);
 		DKBuffer& operator = (DKBuffer&&);
-		
-		bool IsReadable(void) const		{return true;}
-		bool IsWritable(void) const		{return true;}
-		bool IsExcutable(void) const	{return false;}
+
+		bool IsReadable(void) const override { return true; }
+		bool IsWritable(void) const	override { return true; }
+		bool IsExcutable(void) const override { return false; }
+		bool IsTransient(void) const override { return false; }
 	
 		void SwitchAllocator(DKAllocator& alloc);
 		DKAllocator& Allocator(void) const;
 
-		const void* LockShared(void) const;
-		bool TryLockShared(const void**) const;
-		void UnlockShared(void) const;
+		const void* LockShared(void) const override;
+		bool TryLockShared(const void**) const override;
+		void UnlockShared(void) const override;
 
-		void* LockExclusive(void);
-		bool TryLockExclusive(void**);
-		void UnlockExclusive(void);
+		void* LockExclusive(void) override;
+		bool TryLockExclusive(void**) override;
+		void UnlockExclusive(void) override;
 
 	protected:
 		void* LockContent(void);

@@ -294,6 +294,16 @@ bool DKFileMap::IsExcutable(void) const
 	return false;
 }
 
+bool DKFileMap::IsTransient(void) const
+{
+	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
+	if (ctxt)
+	{
+		return false;
+	}
+	return true;
+}
+
 DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writable)
 {
 	if (file.Length() == 0)
