@@ -20,15 +20,15 @@ namespace DKFoundation
 {
 	/**
 	 @brief
-	 Installs Event-Loop system into current thread which called DKEventLoop::Run(),
-	 and provides control interfaces.
+	 Install the Event-Loop system on the thread that called DKEventLoop::Run().
 	 The Event-Loop is running loops and invoke operations.
-	 Operations can be scheduled by specifed date or delayed by specified delay value.
+	 Operations can be scheduled by specified date or delayed by specified delay
+	 value.
 
 	 If you call 'Run()', the EventLoop enter infinite loop and dispatch messages.
 	 You can post termination message with DKEventLoop::Stop() to terminate loop.
 
-	 On main thread, application should waits EventLoop's beging terminated by
+	 On main thread, application should waits EventLoop's being terminated by
 	 calling 'Terminate()' on application exits.
 
 	 You can control individual operation would be process or not by overrides in
