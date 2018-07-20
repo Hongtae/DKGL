@@ -98,15 +98,42 @@ namespace DKFoundation
 		return result;
 	}
 
+	DKGL_API uint32_t DKNumberOfCpuCores(void)
+	{
+		static int ncpu = []()
+		{
+			int num = 0;
+			size_t len = sizeof(num);
+			if (!sysctlbyname("hw.physicalcpu", &num, &len, nullptr, 0))
+				return num;
+			if (!sysctlbyname("hw.physicalcpu_max", &num, &len, nullptr, 0))
+				return num;
+			return 1;
+		}();
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
+	}
+
 	DKGL_API uint32_t DKNumberOfProcessors(void)
 	{
-		int ncpu = 0;
-		int mib[2];
-		size_t len = sizeof(ncpu);
-		mib[0] = CTL_HW;
-		mib[1] = HW_NCPU;
-		if (sysctl(mib, 2, &ncpu, &len, NULL, 0) != 0)
-			ncpu = 0;
+		static int ncpu = []()
+		{
+			int num = 0;
+			int mib[2] = { CTL_HW, HW_AVAILCPU };
+			size_t len = sizeof(num);
+			if (!sysctl(mib, 2, &num, &len, NULL, 0))
+				return num;
+			mib[1] = HW_NCPU;
+			if (!sysctl(mib, 2, &num, &len, NULL, 0))
+				return num;
+			if (!sysctlbyname("hw.logicalcpu", &num, &len, nullptr, 0))
+				return num;
+			if (!sysctlbyname("hw.logicalcpu_max", &num, &len, nullptr, 0))
+				return num;
+			return 1;
+		}();
 
 		if (ncpu >= 1)
 			return ncpu;

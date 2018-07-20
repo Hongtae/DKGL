@@ -10,9 +10,16 @@
 #define _CRT_RAND_S
 #include <windows.h>
 #include <shlobj.h>
-#else
+#elif defined(__linux__)
 #include <time.h>
 #include <stdlib.h>
+#include <dirent.h>
+#include <fnmatch.h>
+#include <iostream>
+#include <fstream>
+#elif defined(__APPLE__) && defined(__MACH__)
+#else
+#error "Unknown OS"
 #endif
 
 #include "DKUtils.h"
@@ -126,6 +133,46 @@ namespace DKFoundation
 		return env;
 	}
 
+	DKGL_API uint32_t DKNumberOfCpuCores(void)
+	{
+		static int ncpu = []()->int
+		{
+			SYSTEM_INFO sysInfo;
+			GetSystemInfo(&sysInfo);
+			uint32_t numLogicalProcessors = sysInfo.dwNumberOfProcessors;
+			uint32_t numPhysicalProcessors = numLogicalProcessors;
+
+			DWORD buffSize = 0;
+			if (!GetLogicalProcessorInformationEx(RelationProcessorCore, 0, &buffSize) &&
+				GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+			{
+				uint8_t* buffer = new uint8_t[buffSize];
+
+				if (GetLogicalProcessorInformationEx(RelationProcessorCore, (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)buffer, &buffSize))
+				{
+					uint32_t numCores = 0;
+					DWORD offset = 0;
+					do
+					{
+						SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX* processorInfo = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)&buffer[offset];
+						offset += processorInfo->Size;
+						numCores += processorInfo->Processor.GroupCount;
+					} while (offset < buffSize);
+					if (numCores > 0 && numCores < numLogicalProcessors)
+					{
+						numPhysicalProcessors = numCores;
+					}
+				}
+				delete[] buffer;
+			}
+			return numPhysicalProcessors;
+		}();
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
+	}
+
 	DKGL_API uint32_t DKNumberOfProcessors(void)
 	{
 		int ncpu = 0;
@@ -156,8 +203,26 @@ namespace DKFoundation
 	
 	DKGL_API DKArray<DKString> DKProcessArguments(void)
 	{
-		// TODO: read content from file: /proc/self/cmdline
-		return DKArray<DKString>();
+		DKArray<DKString> args;
+
+		std::string line;
+		std::ifstream file("/proc/self/cmdline");
+		if (file.is_open())
+		{
+			while (getline(file, line))
+			{
+				DKString s(line);
+				DKString::StringArray sa = s.SplitByWhitespace();
+				while (DKString& str : sa)
+				{
+					str.TrimWhitespaces();
+					if (str.Length() > 0)
+						args.Add(str);
+				}
+			}
+			file.close();
+		}
+		return args;
 	}
 	
 	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
@@ -180,10 +245,34 @@ namespace DKFoundation
 		return env;
 	}
 
+	DKGL_API uint32_t DKNumberOfCpuCores(void)
+	{
+		static int ncpu = []()->int
+		{
+			int count = 0;
+			DIR* cpuDir = opendir("/sys/devices/system/cpu"); // linux only
+			if (cpuDir)
+			{
+				const struct dirent* dirEntry;
+				while ((dirEntry = readdir(cpuDir)))
+				{
+					if (fnmatch("cpu[0-9]*", dirEntry->d_name, 0) == 0)
+						count++;
+				}
+				closedir(cpuDir);
+				return count;
+			}
+			return -1;
+		}();
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
+	}
+
 	DKGL_API uint32_t DKNumberOfProcessors(void)
 	{
-		int ncpu = 0;
-		ncpu = sysconf(_SC_NPROCESSORS_ONLN);
+		static int ncpu = sysconf(_SC_NPROCESSORS_CONF);
 
 		if (ncpu >= 1)
 			return ncpu;
