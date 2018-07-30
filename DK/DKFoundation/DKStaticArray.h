@@ -16,12 +16,6 @@
 #define DKSTATICARRAY_USE_STL_SORT	0
 #endif
 
-#ifndef DKSTATICARRAY_USE_STATIC_ROTATE
-/// Set 1 if you don't want additional memory allocation for item rotation.
-/// For lots of elements, memory allocated rotation is faster normally.
-#define DKSTATICARRAY_USE_STATIC_ROTATE	0
-#endif
-
 #if DKSTATICARRAY_USE_STL_SORT
 #include <algorithm>
 #endif
@@ -58,7 +52,7 @@ namespace DKFoundation
 		}
 	};
 
-	/// A simple array with fixed length (non-allocationg).
+	/// A simple array with fixed length (static).
 	/// This class provides sorting algorithm.
 	/// You can use std::sort for default sorting algorithm
 	/// by defining DKSTATICARRAY_USE_STL_SORT=1
@@ -72,6 +66,7 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
+		enum { SwapMethod = sizeof(VALUE) > 256 };
 		enum : Index { IndexNotFound = ~Index(0) };
 
 		/// Iterator class for range-based for loop
@@ -159,43 +154,7 @@ namespace DKFoundation
 		{
 			if (count > 1)
 			{
-				size_t left = n % count;
-				if (left > 0)
-				{
-#if DKSTATICARRAY_USE_STATIC_ROTATE
-					size_t first = 0;
-					size_t next = left;
-					size_t mid = left;
-					while (first != next)
-					{
-						Swap(first, next);
-						++first;
-						++next;
-						if (next == count)
-							next = mid;
-						else if (first == mid)
-							mid = next;						
-					}
-#else
-					size_t right = count - left;
-					if (right < left)
-					{
-						void* tmp = DKMalloc(sizeof(VALUE) * right);
-						memcpy(tmp, std::addressof(data[left]), sizeof(VALUE) * right);
-						memmove(std::addressof(data[right]), data, sizeof(VALUE) * left);
-						memcpy(data, tmp, sizeof(VALUE) * right);
-						DKFree(tmp);
-					}
-					else
-					{
-						void* tmp = DKMalloc(sizeof(VALUE) * left);
-						memcpy(tmp, data, sizeof(VALUE) * left);
-						memmove(data, std::addressof(data[left]), sizeof(VALUE) * right);
-						memcpy(std::addressof(data[right]), tmp, sizeof(VALUE) * left);
-						DKFree(tmp);
-					}
-#endif
-				}
+				LeftRotate(n, DKNumber<SwapMethod>());
 			}
 		}
 		void RightRotate(size_t n)
@@ -250,14 +209,7 @@ namespace DKFoundation
 
 			if (v1 != v2)
 			{
-				unsigned char* p1 = reinterpret_cast<unsigned char*>(std::addressof(data[v1]));
-				unsigned char* p2 = reinterpret_cast<unsigned char*>(std::addressof(data[v2]));
-				for (int i = 0; i < sizeof(VALUE); ++i)
-				{
-					unsigned char tmp = p1[i];
-					p1[i] = p2[i];
-					p2[i] = tmp;
-				}
+				Swap(v1, v2, DKNumber<SwapMethod>());
 			}
 		}
 		void Sort(const DKFunctionSignature<bool (const VALUE&, const VALUE&)>* cmp)
@@ -269,9 +221,14 @@ namespace DKFoundation
 			if (count > 1)
 			{
 #if DKSTATICARRAY_USE_STL_SORT
-			std::sort(std::addressof(data[0]), std::addressof(data[count]), cmp);
+				std::sort(std::addressof(data[0]), std::addressof(data[count]), cmp);
 #else
-			SortLoop<CompareFunc>(0, count, cmp);
+				//SortLoop<CompareFunc>(0, count, cmp);
+				size_t depth = 1;
+				for (size_t n = count; n; n >>= 1)
+					++depth;
+				depth = (depth << 1);
+				SortLoop<CompareFunc>(0, count, depth, cmp);
 #endif
 			}
 		}
@@ -365,6 +322,52 @@ namespace DKFoundation
 			for (Index i = 1; i <= count && !stop; ++i)
 				enumerator(data[count - i], &stop);
 		}
+
+		FORCEINLINE void LeftRotate(size_t n, const DKNumber<0>&)
+		{
+			size_t left = n % count;
+			if (left > 0)
+			{
+				size_t first = 0;
+				size_t next = left;
+				size_t mid = left;
+				while (first != next)
+				{
+					Swap(first, next, DKNumber<SwapMethod>());
+					++first;
+					++next;
+					if (next == count)
+						next = mid;
+					else if (first == mid)
+						mid = next;
+				}
+			}
+		}
+		FORCEINLINE void LeftRotate(size_t n, const DKNumber<1>&)
+		{
+			size_t left = n % count;
+			if (left > 0)
+			{
+				size_t right = count - left;
+				if (right < left)
+				{
+					void* tmp = DKMalloc(sizeof(VALUE) * right);
+					memcpy(tmp, std::addressof(data[left]), sizeof(VALUE) * right);
+					memmove(std::addressof(data[right]), data, sizeof(VALUE) * left);
+					memcpy(data, tmp, sizeof(VALUE) * right);
+					DKFree(tmp);
+				}
+				else
+				{
+					void* tmp = DKMalloc(sizeof(VALUE) * left);
+					memcpy(tmp, data, sizeof(VALUE) * left);
+					memmove(data, std::addressof(data[left]), sizeof(VALUE) * right);
+					memcpy(std::addressof(data[right]), tmp, sizeof(VALUE) * left);
+					DKFree(tmp);
+				}
+			}
+		}
+
 		struct Comparator
 		{
 			typedef DKFunctionSignature<bool (const VALUE&, const VALUE&)> Function;
@@ -375,39 +378,59 @@ namespace DKFoundation
 			}
 			const Function* func;
 		};
-		template <typename CompareFunc> Index Partition(Index begin, Index end, Index pivot, CompareFunc cmp)
+
+		FORCEINLINE void Swap(Index v1, Index v2, const DKNumber<0>&)
 		{
+			DKASSERT_DEBUG(v1 < count);
+			DKASSERT_DEBUG(v2 < count);
+			DKASSERT_DEBUG(v1 != v2);
+
+			VALUE tmp = std::move(data[v1]);
+			data[v1] = std::move(data[v2]);
+			data[v2] = std::move(tmp);
+		}
+		FORCEINLINE void Swap(Index v1, Index v2, const DKNumber<1>&)
+		{
+			DKASSERT_DEBUG(v1 < count);
+			DKASSERT_DEBUG(v2 < count);
+			DKASSERT_DEBUG(v1 != v2);
+
+			uint8_t tmp[sizeof(VALUE)];
+			memcpy(tmp, std::addressof(data[v1]), sizeof(VALUE));
+			memcpy(std::addressof(data[v1]), std::addressof(data[v2]), sizeof(VALUE));
+			memcpy(std::addressof(data[v2]), tmp, sizeof(VALUE));
+
+		}
+
+		template <typename CompareFunc> Index Partition(Index begin, Index end, CompareFunc cmp)
+		{
+			Index pivot = begin + ((end - begin) >> 1);
 			Index store = begin;
-			Swap(pivot, end);
-			for (Index i = begin; i < end; i++)
+
+			if (cmp(data[begin], data[pivot]))
+				Swap(begin, pivot, DKNumber<SwapMethod>());
+			if (cmp(data[pivot], data[end]))
+				Swap(pivot, end, DKNumber<SwapMethod>());
+
+			for (Index i = begin; i < end; ++i)
 			{
 				if (cmp(data[i], data[end]))
 				{
-					Swap(store, i);
-					store++;
+					if (i != store)
+						Swap(store, i, DKNumber<SwapMethod>());
+					++store;
 				}
 			}
-			Swap(end, store);
+			if (end != store)
+				Swap(end, store, DKNumber<SwapMethod>());
 			return store;
-		}
-		// determines position of sorting pivot.
-		// TODO: a better algorithm needed.
-		template <typename CompareFunc> Index PivotMedian(Index begin, Index end, CompareFunc cmp)
-		{
-			Index pivot = begin + (end - begin)/2;
-
-			if (cmp(data[begin], data[pivot]) && cmp(data[end], data[begin]))
-				pivot = begin;
-			else if (cmp(data[end], data[pivot]) && cmp(data[begin], data[end]))
-				pivot = end;
-			return pivot;
 		}
 		template <typename CompareFunc> void InsertionSort(Index begin, Index end, CompareFunc cmp)
 		{
-			for (Index i = begin + 1; i < end; i++)
+			for (Index i = begin + 1; i < end; ++i)
 			{
-				for (Index k = i ; k > begin && cmp(data[k], data[k-1]); k--)
-					Swap(k, k-1);
+				for (Index k = i ; k > begin && cmp(data[k], data[k-1]); --k)
+					Swap(k, k-1, DKNumber<SwapMethod>());
 			}
 		}
 		template <typename CompareFunc> void Heapify(Index begin, Index pos, size_t size, CompareFunc cmp)
@@ -426,49 +449,74 @@ namespace DKFoundation
 			}
 			if (great != pos)
 			{
-				Swap(pos, great);
+				Swap(pos, great, DKNumber<SwapMethod>());
 				Heapify<CompareFunc>(begin, great, size, cmp);
 			}
 		}
 		template <typename CompareFunc> void BuildHeap(Index begin, size_t size, CompareFunc cmp)
 		{
-			for (size_t i = ((size - 1) / 2) + 1; i > 0; --i)
+			for (size_t i = ((size - 1) >> 1) + 1; i > 0; --i)
 				Heapify<CompareFunc>(begin, begin+(i-1), size, cmp);
 		}
 		template <typename CompareFunc> void HeapSort(Index begin, Index end, CompareFunc cmp)
 		{
 			size_t size = end - begin;
 			BuildHeap<CompareFunc>(begin, size, cmp);
-			for (size_t i = size; i > 0; i--)
+			while (--size)
 			{
-				Swap(begin, begin+size-1);
-				size--;
+				Swap(begin, begin + size, DKNumber<SwapMethod>());
 				Heapify<CompareFunc>(begin, begin, size, cmp);
+			}
+		}
+		template <typename CompareFunc> void SortLoop(Index begin, Index end, size_t depth, CompareFunc cmp)
+		{
+			Index c = end - begin;
+			if (c > 16)
+			{
+				if (depth)
+				{
+					Index pivot = Partition<CompareFunc>(begin, end - 1, cmp);
+
+					SortLoop<CompareFunc>(begin, pivot, depth - 1, cmp);
+					SortLoop<CompareFunc>(pivot + 1, end, depth - 1, cmp);
+				}
+				else
+				{
+					HeapSort<CompareFunc>(begin, end, cmp);
+				}
+			}
+			else if (c > 2)
+			{
+				InsertionSort<CompareFunc>(begin, end, cmp);
+			}
+			else if (c > 1)
+			{
+				if (cmp(data[begin + 1], data[begin]))
+					Swap(begin, begin + 1, DKNumber<SwapMethod>());
 			}
 		}
 		template <typename CompareFunc> void SortLoop(Index begin, Index end, CompareFunc cmp)
 		{
-			Index factor = end - begin;
-			if (factor > 32)
+			Index c = end - begin;
+			if (c > 32)
 			{
-				Index pivot = PivotMedian<CompareFunc>(begin, end-1, cmp);
-				pivot = Partition<CompareFunc>(begin, end-1, pivot, cmp);
+				Index pivot = Partition<CompareFunc>(begin, end - 1, cmp);
 
 				SortLoop<CompareFunc>(begin, pivot, cmp);
 				SortLoop<CompareFunc>(pivot+1, end, cmp);
 			}
-			else if (factor > 16)
-			{
-				HeapSort<CompareFunc>(begin, end, cmp);
-			}
-			else if (factor > 2)
+			//else if (c > 32)
+			//{
+			//	HeapSort<CompareFunc>(begin, end, cmp);
+			//}
+			else if (c > 2)
 			{
 				InsertionSort<CompareFunc>(begin, end, cmp);
 			}
-			else if (factor > 1)
+			else if (c > 1)
 			{
 				if (cmp(data[begin+1], data[begin]))
-					Swap(begin, begin+1);
+					Swap(begin, begin+1, DKNumber<SwapMethod>());
 			}
 		}
 
