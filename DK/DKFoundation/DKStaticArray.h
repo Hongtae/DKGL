@@ -404,25 +404,22 @@ namespace DKFoundation
 
 		template <typename CompareFunc> Index Partition(Index begin, Index end, CompareFunc cmp)
 		{
-			Index pivot = begin + ((end - begin) >> 1);
+			Index medium = begin + ((end - begin) >> 1);
 			Index store = begin;
 
-			if (cmp(data[begin], data[pivot]))
-				Swap(begin, pivot, DKNumber<SwapMethod>());
-			if (cmp(data[pivot], data[end]))
-				Swap(pivot, end, DKNumber<SwapMethod>());
 
-			for (Index i = begin; i < end; ++i)
+			if (cmp(data[begin], data[end]))
+				Swap(begin, end, DKNumber<SwapMethod>());
+
+			for (Index i = begin+1; i < end; ++i)
 			{
 				if (cmp(data[i], data[end]))
 				{
-					if (i != store)
-						Swap(store, i, DKNumber<SwapMethod>());
+					Swap(store, i, DKNumber<SwapMethod>());
 					++store;
 				}
 			}
-			if (end != store)
-				Swap(end, store, DKNumber<SwapMethod>());
+			Swap(end, store, DKNumber<SwapMethod>());
 			return store;
 		}
 		template <typename CompareFunc> void InsertionSort(Index begin, Index end, CompareFunc cmp)

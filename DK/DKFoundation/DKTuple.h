@@ -298,6 +298,11 @@ namespace DKFoundation
 				dataUnits = static_cast<DataUnitType&&>(t.dataUnits);
 			return *this;
 		}
+
+		template <typename... Ts> static DKTuple Make(Ts&&... vs)
+		{
+			return DKTuple(DKTupleValueSet(), std::forward<Ts>(vs)...);
+		}
 	};
 
 	/// DKTuple helper function. Make tuple with given variadic arguments
