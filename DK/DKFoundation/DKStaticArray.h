@@ -66,7 +66,9 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
-		enum { SwapMethod = sizeof(VALUE) > 256 };
+		enum { UseMemoryCopy = sizeof(VALUE) > 256 };
+		using SwapMethod = DKNumber<UseMemoryCopy>;
+
 		enum : Index { IndexNotFound = ~Index(0) };
 
 		/// Iterator class for range-based for loop
@@ -154,7 +156,7 @@ namespace DKFoundation
 		{
 			if (count > 1)
 			{
-				LeftRotate(n, DKNumber<SwapMethod>());
+				LeftRotate(n, SwapMethod());
 			}
 		}
 		void RightRotate(size_t n)
@@ -209,7 +211,7 @@ namespace DKFoundation
 
 			if (v1 != v2)
 			{
-				Swap(v1, v2, DKNumber<SwapMethod>());
+				Swap(v1, v2, SwapMethod());
 			}
 		}
 		void Sort(const DKFunctionSignature<bool (const VALUE&, const VALUE&)>* cmp)
@@ -228,7 +230,7 @@ namespace DKFoundation
 				for (size_t n = count; n; n >>= 1)
 					++depth;
 				depth = (depth << 1);
-				SortLoop<CompareFunc>(0, count, depth, cmp);
+				SortLoop<CompareFunc>(0, count-1, depth, cmp);
 #endif
 			}
 		}
@@ -333,7 +335,7 @@ namespace DKFoundation
 				size_t mid = left;
 				while (first != next)
 				{
-					Swap(first, next, DKNumber<SwapMethod>());
+					Swap(first, next, SwapMethod());
 					++first;
 					++next;
 					if (next == count)
@@ -399,35 +401,53 @@ namespace DKFoundation
 			memcpy(tmp, std::addressof(data[v1]), sizeof(VALUE));
 			memcpy(std::addressof(data[v1]), std::addressof(data[v2]), sizeof(VALUE));
 			memcpy(std::addressof(data[v2]), tmp, sizeof(VALUE));
-
 		}
 
 		template <typename CompareFunc> Index Partition(Index begin, Index end, CompareFunc cmp)
 		{
-			Index medium = begin + ((end - begin) >> 1);
-			Index store = begin;
+			Index medium = begin + ((end - begin + 1) >> 1);
 
-
-			if (cmp(data[begin], data[end]))
-				Swap(begin, end, DKNumber<SwapMethod>());
-
-			for (Index i = begin+1; i < end; ++i)
+			Index pivotIndex;
+			if (cmp(data[begin], data[medium]))
 			{
-				if (cmp(data[i], data[end]))
-				{
-					Swap(store, i, DKNumber<SwapMethod>());
-					++store;
-				}
+				if (cmp(data[medium], data[end]))
+					pivotIndex = medium;
+				else if (cmp(data[begin], data[end]))
+					pivotIndex = end;
+				else
+					pivotIndex = begin;
 			}
-			Swap(end, store, DKNumber<SwapMethod>());
-			return store;
+			else if (cmp(data[begin], data[end]))
+				pivotIndex = begin;
+			else if (cmp(data[medium], data[end]))
+				pivotIndex = end;
+			else
+				pivotIndex = medium;
+
+			VALUE pivot = data[pivotIndex];
+
+			while (true)
+			{
+				while (cmp(data[begin], pivot))
+					++begin;
+				while (cmp(pivot, data[end]))
+					--end;
+				if (!(begin < end))
+					break;
+
+				Swap(begin, end, SwapMethod());
+
+				++begin;
+				--end;
+			}
+			return begin;
 		}
 		template <typename CompareFunc> void InsertionSort(Index begin, Index end, CompareFunc cmp)
 		{
-			for (Index i = begin + 1; i < end; ++i)
+			for (Index i = begin + 1; i <= end; ++i)
 			{
 				for (Index k = i ; k > begin && cmp(data[k], data[k-1]); --k)
-					Swap(k, k-1, DKNumber<SwapMethod>());
+					Swap(k, k-1, SwapMethod());
 			}
 		}
 		template <typename CompareFunc> void Heapify(Index begin, Index pos, size_t size, CompareFunc cmp)
@@ -446,7 +466,7 @@ namespace DKFoundation
 			}
 			if (great != pos)
 			{
-				Swap(pos, great, DKNumber<SwapMethod>());
+				Swap(pos, great, SwapMethod());
 				Heapify<CompareFunc>(begin, great, size, cmp);
 			}
 		}
@@ -457,63 +477,59 @@ namespace DKFoundation
 		}
 		template <typename CompareFunc> void HeapSort(Index begin, Index end, CompareFunc cmp)
 		{
-			size_t size = end - begin;
+			size_t size = end - begin + 1;
 			BuildHeap<CompareFunc>(begin, size, cmp);
 			while (--size)
 			{
-				Swap(begin, begin + size, DKNumber<SwapMethod>());
+				Swap(begin, begin + size, SwapMethod());
 				Heapify<CompareFunc>(begin, begin, size, cmp);
 			}
-		}
+		} 
+
 		template <typename CompareFunc> void SortLoop(Index begin, Index end, size_t depth, CompareFunc cmp)
 		{
-			Index c = end - begin;
+			Index c = end - begin + 1;
+#if 0
+			while (c > 16)
+			{
+				--depth;
+				if (depth)
+				{
+					Index pivot = Partition<CompareFunc>(begin, end, cmp);
+					SortLoop<CompareFunc>(pivot, end, depth, cmp);
+					end = pivot - 1;
+					c = end - begin + 1;
+				}
+				else
+				{
+					HeapSort<CompareFunc>(begin, end, cmp);
+					return;
+				}
+			}
+#else
 			if (c > 16)
 			{
 				if (depth)
 				{
-					Index pivot = Partition<CompareFunc>(begin, end - 1, cmp);
-
-					SortLoop<CompareFunc>(begin, pivot, depth - 1, cmp);
-					SortLoop<CompareFunc>(pivot + 1, end, depth - 1, cmp);
+					Index pivot = Partition<CompareFunc>(begin, end, cmp);
+					SortLoop<CompareFunc>(begin, pivot-1, depth-1, cmp);
+					SortLoop<CompareFunc>(pivot, end, depth-1, cmp);
 				}
 				else
 				{
 					HeapSort<CompareFunc>(begin, end, cmp);
 				}
 			}
-			else if (c > 2)
+			else
+#endif
+			if (c > 2)
 			{
 				InsertionSort<CompareFunc>(begin, end, cmp);
 			}
 			else if (c > 1)
 			{
 				if (cmp(data[begin + 1], data[begin]))
-					Swap(begin, begin + 1, DKNumber<SwapMethod>());
-			}
-		}
-		template <typename CompareFunc> void SortLoop(Index begin, Index end, CompareFunc cmp)
-		{
-			Index c = end - begin;
-			if (c > 32)
-			{
-				Index pivot = Partition<CompareFunc>(begin, end - 1, cmp);
-
-				SortLoop<CompareFunc>(begin, pivot, cmp);
-				SortLoop<CompareFunc>(pivot+1, end, cmp);
-			}
-			//else if (c > 32)
-			//{
-			//	HeapSort<CompareFunc>(begin, end, cmp);
-			//}
-			else if (c > 2)
-			{
-				InsertionSort<CompareFunc>(begin, end, cmp);
-			}
-			else if (c > 1)
-			{
-				if (cmp(data[begin+1], data[begin]))
-					Swap(begin, begin+1, DKNumber<SwapMethod>());
+					Swap(begin, begin + 1, SwapMethod());
 			}
 		}
 
