@@ -34,7 +34,7 @@ namespace DKFoundation
 		DKBuffer(DKBuffer&&);
 		~DKBuffer(void);
 		
-		size_t Length(void) const;
+		size_t Length(void) const override;
 		size_t CopyContent(void* p, size_t offset, size_t length) const;
 
 		bool SetLength(size_t);

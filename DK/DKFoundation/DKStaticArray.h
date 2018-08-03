@@ -66,7 +66,7 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
 
-		enum { UseMemoryCopy = sizeof(VALUE) > 256 };
+		enum { UseMemoryCopy = 0 };
 		using SwapMethod = DKNumber<UseMemoryCopy>;
 
 		enum : Index { IndexNotFound = ~Index(0) };
@@ -225,12 +225,13 @@ namespace DKFoundation
 #if DKSTATICARRAY_USE_STL_SORT
 				std::sort(std::addressof(data[0]), std::addressof(data[count]), cmp);
 #else
-				//SortLoop<CompareFunc>(0, count, cmp);
 				size_t depth = 1;
 				for (size_t n = count; n; n >>= 1)
 					++depth;
 				depth = (depth << 1);
-				SortLoop<CompareFunc>(0, count-1, depth, cmp);
+
+				using CompareFuncRef = typename DKTypeTraits<CompareFunc>::ReferredType&;
+				SortLoop<CompareFuncRef>(0, count-1, depth, cmp);
 #endif
 			}
 		}
@@ -492,9 +493,9 @@ namespace DKFoundation
 #if 0
 			while (c > 16)
 			{
-				--depth;
 				if (depth)
 				{
+					--depth;
 					Index pivot = Partition<CompareFunc>(begin, end, cmp);
 					SortLoop<CompareFunc>(pivot, end, depth, cmp);
 					end = pivot - 1;
@@ -511,9 +512,10 @@ namespace DKFoundation
 			{
 				if (depth)
 				{
+					--depth;
 					Index pivot = Partition<CompareFunc>(begin, end, cmp);
-					SortLoop<CompareFunc>(begin, pivot-1, depth-1, cmp);
-					SortLoop<CompareFunc>(pivot, end, depth-1, cmp);
+					SortLoop<CompareFunc>(begin, pivot-1, depth, cmp);
+					SortLoop<CompareFunc>(pivot, end, depth, cmp);
 				}
 				else
 				{
@@ -528,8 +530,8 @@ namespace DKFoundation
 			}
 			else if (c > 1)
 			{
-				if (cmp(data[begin + 1], data[begin]))
-					Swap(begin, begin + 1, SwapMethod());
+				if (cmp(data[end], data[begin]))
+					Swap(begin, end, SwapMethod());
 			}
 		}
 
