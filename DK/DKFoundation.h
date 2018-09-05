@@ -97,7 +97,7 @@ namespace DKFoundation {}
 
 // math types
 #include "DKFoundation/DKFloat16.h"
-#include "DKFoundation/DKRational.h"
+#include "DKFoundation/DKRationalNumber.h"
 
 // operation, invocation (function utilities)
 #include "DKFoundation/DKFunction.h"

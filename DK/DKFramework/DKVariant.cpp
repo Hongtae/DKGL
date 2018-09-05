@@ -256,11 +256,11 @@ DKVariant::DKVariant(const VQuaternion& v)
 	this->SetQuaternion(v);
 }
 
-DKVariant::DKVariant(const VRational& v)
-	: valueType(TypeRational)
+DKVariant::DKVariant(const VRationalNumber& v)
+	: valueType(TypeRationalNumber)
 {
 	memset(vblock, 0, sizeof(vblock));
-	this->SetRational(v);
+	this->SetRationalNumber(v);
 }
 
 DKVariant::DKVariant(const VString& v)
@@ -367,8 +367,8 @@ DKVariant& DKVariant::SetValueType(Type t)
 	case TypeQuaternion:
 		VariantBlock<VQuaternion, sizeof(vblock)>::Dealloc(vblock);
 		break;
-	case TypeRational:
-		VariantBlock<VRational, sizeof(vblock)>::Dealloc(vblock);
+	case TypeRationalNumber:
+		VariantBlock<VRationalNumber, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeString:
 		VariantBlock<VString, sizeof(vblock)>::Dealloc(vblock);
@@ -421,8 +421,8 @@ DKVariant& DKVariant::SetValueType(Type t)
 	case TypeQuaternion:
 		VariantBlock<VQuaternion, sizeof(vblock)>::Alloc(vblock);
 		break;
-	case TypeRational:
-		VariantBlock<VRational, sizeof(vblock)>::Alloc(vblock);
+	case TypeRationalNumber:
+		VariantBlock<VRationalNumber, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeString:
 		VariantBlock<VString, sizeof(vblock)>::Alloc(vblock);
@@ -472,7 +472,7 @@ DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 	case TypeMatrix3:			attrType.value = L"matrix3";		break;
 	case TypeMatrix4:			attrType.value = L"matrix4";		break;
 	case TypeQuaternion:		attrType.value = L"quaternion";		break;
-	case TypeRational:			attrType.value = L"rational";		break;
+	case TypeRationalNumber:	attrType.value = L"rationalnumber";	break;
 	case TypeString:			attrType.value = L"string";			break;
 	case TypeDateTime:			attrType.value = L"datetime";		break;
 	case TypeData:				attrType.value = L"data";			break;
@@ -624,9 +624,9 @@ DKObject<DKXmlElement> DKVariant::ExportXML(void) const
 		{
 			data = DKString::Format("%.16g, %.16g, %.16g, %.16g", this->Quaternion().val[0], this->Quaternion().val[1], this->Quaternion().val[2], this->Quaternion().val[3]);
 		}
-		else if (valueType == TypeRational)
+		else if (valueType == TypeRationalNumber)
 		{
-			data = DKString::Format("%lld/%lld", this->Rational().Numerator(), this->Rational().Denominator());
+			data = DKString::Format("%lld/%lld", this->RationalNumber().Numerator(), this->RationalNumber().Denominator());
 		}
 		else if (valueType == TypeString)
 		{
@@ -676,8 +676,8 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 					this->SetValueType(TypeMatrix4);
 				else if (attr.value.CompareNoCase(L"quaternion") == 0)
 					this->SetValueType(TypeQuaternion);
-				else if (attr.value.CompareNoCase(L"rational") == 0)
-					this->SetValueType(TypeRational);
+				else if (attr.value.CompareNoCase(L"rationalnumber") == 0)
+					this->SetValueType(TypeRationalNumber);
 				else if (attr.value.CompareNoCase(L"string") == 0)
 					this->SetValueType(TypeString);
 				else if (attr.value.CompareNoCase(L"datetime") == 0)
@@ -868,13 +868,13 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 			{
 				this->String() = static_cast<DKString&&>(value);
 			}
-			else if (this->ValueType() == TypeRational)
+			else if (this->ValueType() == TypeRationalNumber)
 			{
 				DKString::IntegerArray intArray = value.ToIntegerArray(L"/");
-				VRational::Integer val[2] = { 0LL, 1LL };
+				VRationalNumber::Integer val[2] = { 0LL, 1LL };
 				for (size_t i = 0; i < 2 && i < intArray.Count(); ++i)
 					val[i] = intArray.Value(i);
-				this->Rational() = VRational(val[0], val[1]);
+				this->RationalNumber() = VRationalNumber(val[0], val[1]);
 			}
 			else if (this->ValueType() == TypeDateTime)
 			{
@@ -1035,7 +1035,7 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 	case TypeMatrix3:
 	case TypeMatrix4:
 	case TypeQuaternion:
-	case TypeRational:
+	case TypeRationalNumber:
 	case TypeString:
 	case TypeDateTime:
 	case TypeData:
@@ -1196,14 +1196,14 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 				}
 			}
 		}
-		else if (valueType == TypeRational)
+		else if (valueType == TypeRationalNumber)
 		{
-			if (!output.Write(uint64_t(this->Rational().Numerator())))
+			if (!output.Write(uint64_t(this->RationalNumber().Numerator())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			if (!output.Write(uint64_t(this->Rational().Denominator())))
+			if (!output.Write(uint64_t(this->RationalNumber().Denominator())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1509,7 +1509,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 			case TypeMatrix3:
 			case TypeMatrix4:
 			case TypeQuaternion:
-			case TypeRational:
+			case TypeRationalNumber:
 			case TypeString:
 			case TypeDateTime:
 			case TypeData:
@@ -1658,7 +1658,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					}
 					this->SetValueType(TypeQuaternion).Quaternion() = val;
 				}
-				else if (type == TypeRational)
+				else if (type == TypeRationalNumber)
 				{
 					struct
 					{
@@ -1674,7 +1674,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					r.n = byteorder(static_cast<uint64_t>(r.n));
 					r.d = byteorder(static_cast<uint64_t>(r.d));
 
-					this->SetValueType(TypeRational).Rational() = VRational(r.n, r.d);
+					this->SetValueType(TypeRationalNumber).RationalNumber() = VRationalNumber(r.n, r.d);
 				}
 				else if (type == TypeString)
 				{
@@ -2050,16 +2050,16 @@ const DKVariant::VQuaternion& DKVariant::Quaternion(void) const
 	return const_cast<DKVariant*>(this)->Quaternion();
 }
 
-DKVariant::VRational& DKVariant::Rational(void)
+DKVariant::VRationalNumber& DKVariant::RationalNumber(void)
 {
-	if (ValueType() == TypeUndefined)	SetValueType(TypeRational);
-	DKASSERT_DEBUG(ValueType() == TypeRational);
-	return VariantBlock<VRational, sizeof(vblock)>::Value(vblock);
+	if (ValueType() == TypeUndefined)	SetValueType(TypeRationalNumber);
+	DKASSERT_DEBUG(ValueType() == TypeRationalNumber);
+	return VariantBlock<VRationalNumber, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VRational& DKVariant::Rational(void) const
+const DKVariant::VRationalNumber& DKVariant::RationalNumber(void) const
 {
-	return const_cast<DKVariant*>(this)->Rational();
+	return const_cast<DKVariant*>(this)->RationalNumber();
 }
 
 DKVariant::VString& DKVariant::String(void)
@@ -2188,9 +2188,9 @@ DKVariant& DKVariant::SetQuaternion(const VQuaternion& v)
 	return *this;
 }
 
-DKVariant& DKVariant::SetRational(const VRational& v)
+DKVariant& DKVariant::SetRationalNumber(const VRationalNumber& v)
 {
-	SetValueType(TypeRational).Rational() = v;
+	SetValueType(TypeRationalNumber).RationalNumber() = v;
 	return *this;
 }
 
@@ -2287,8 +2287,8 @@ DKVariant& DKVariant::SetValue(const DKVariant& v)
 	case TypeQuaternion:
 		this->SetQuaternion(v.Quaternion());
 		break;
-	case TypeRational:
-		this->SetRational(v.Rational());
+	case TypeRationalNumber:
+		this->SetRationalNumber(v.RationalNumber());
 		break;
 	case TypeString:
 		this->SetString(v.String());

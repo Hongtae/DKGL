@@ -1,5 +1,5 @@
 //
-//  File: DKRational.cpp
+//  File: DKRationalNumber.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
@@ -8,7 +8,7 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
-#include "DKRational.h"
+#include "DKRationalNumber.h"
 
 namespace DKFoundation
 {
@@ -61,81 +61,81 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKRational::DKRational(void)
+DKRationalNumber::DKRationalNumber(void)
 	: numerator(0), denominator(1)
 {
 }
 
-DKRational::DKRational(Integer n, Integer d)
+DKRationalNumber::DKRationalNumber(Integer n, Integer d)
 	: numerator(n), denominator(d)
 {
 	Normalize();
 }
 
-bool DKRational::IsInfinity(void) const
+bool DKRationalNumber::IsInfinity(void) const
 {
 	return numerator != 0 && denominator == 0;
 }
 
-bool DKRational::IsPositiveInfinity(void) const
+bool DKRationalNumber::IsPositiveInfinity(void) const
 {
 	return numerator > 0 && denominator == 0;
 }
 
-bool DKRational::IsNegativeInfinity(void) const
+bool DKRationalNumber::IsNegativeInfinity(void) const
 {
 	return numerator < 0 && denominator == 0;
 }
 
-bool DKRational::IsIndeterminate(void) const
+bool DKRationalNumber::IsIndeterminate(void) const
 {
 	return numerator == 0 && denominator == 0;
 }
 
-bool DKRational::IsNumeric(void) const
+bool DKRationalNumber::IsNumeric(void) const
 {
 	return denominator != 0;
 }
 
-DKRational::Integer DKRational::Numerator(void) const
+DKRationalNumber::Integer DKRationalNumber::Numerator(void) const
 {
 	return numerator;
 }
 
-DKRational::Integer DKRational::Denominator(void) const
+DKRationalNumber::Integer DKRationalNumber::Denominator(void) const
 {
 	return denominator;
 }
 
-DKRational DKRational::operator + (const DKRational& r) const
+DKRationalNumber DKRationalNumber::operator + (const DKRationalNumber& r) const
 {
-	DKRational ret(this->numerator, this->denominator);
+	DKRationalNumber ret(this->numerator, this->denominator);
 	ret += r;
 	return ret;
 }
 
-DKRational DKRational::operator - (const DKRational& r) const
+DKRationalNumber DKRationalNumber::operator - (const DKRationalNumber& r) const
 {
-	DKRational ret(this->numerator, this->denominator);
+	DKRationalNumber ret(this->numerator, this->denominator);
 	ret -= r;
 	return ret;
 }
 
-DKRational DKRational::operator * (const DKRational& r) const
+DKRationalNumber DKRationalNumber::operator * (const DKRationalNumber& r) const
 {
-	DKRational ret(this->numerator, this->denominator);
+	DKRationalNumber ret(this->numerator, this->denominator);
 	ret *= r;
 	return ret;
 }
 
-DKRational DKRational::operator / (const DKRational& r) const
+DKRationalNumber DKRationalNumber::operator / (const DKRationalNumber& r) const
 {
-	DKRational ret(this->numerator, this->denominator);
+	DKRationalNumber ret(this->numerator, this->denominator);
 	ret /= r;
 	return ret;
 }
 
-DKRational& DKRational::operator += (const DKRational& r)
+DKRationalNumber& DKRationalNumber::operator += (const DKRationalNumber& r)
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -170,7 +170,7 @@ DKRational& DKRational::operator += (const DKRational& r)
 	return *this;
 }
 
-DKRational& DKRational::operator -= (const DKRational& r)
+DKRationalNumber& DKRationalNumber::operator -= (const DKRationalNumber& r)
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -205,7 +205,7 @@ DKRational& DKRational::operator -= (const DKRational& r)
 	return *this;
 }
 
-DKRational& DKRational::operator *= (const DKRational& r)
+DKRationalNumber& DKRationalNumber::operator *= (const DKRationalNumber& r)
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -237,7 +237,7 @@ DKRational& DKRational::operator *= (const DKRational& r)
 	return *this;
 }
 
-DKRational& DKRational::operator /= (const DKRational& r)
+DKRationalNumber& DKRationalNumber::operator /= (const DKRationalNumber& r)
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -300,7 +300,7 @@ DKRational& DKRational::operator /= (const DKRational& r)
 	return *this;
 }
 
-DKRational& DKRational::operator = (const DKRational& r)
+DKRationalNumber& DKRationalNumber::operator = (const DKRationalNumber& r)
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -310,7 +310,7 @@ DKRational& DKRational::operator = (const DKRational& r)
 	return *this;
 }
 
-bool DKRational::operator == (const DKRational& r) const
+bool DKRationalNumber::operator == (const DKRationalNumber& r) const
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -320,7 +320,7 @@ bool DKRational::operator == (const DKRational& r) const
 	return false;
 }
 
-bool DKRational::operator != (const DKRational& r) const
+bool DKRationalNumber::operator != (const DKRationalNumber& r) const
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -330,7 +330,7 @@ bool DKRational::operator != (const DKRational& r) const
 	return true;
 }
 
-bool DKRational::operator < (const DKRational& r) const
+bool DKRationalNumber::operator < (const DKRationalNumber& r) const
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -396,7 +396,7 @@ bool DKRational::operator < (const DKRational& r) const
 	return false;
 }
 
-bool DKRational::operator <= (const DKRational& r) const
+bool DKRationalNumber::operator <= (const DKRationalNumber& r) const
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 	DKASSERT_DEBUG(r.denominator >= 0);
@@ -426,19 +426,19 @@ bool DKRational::operator <= (const DKRational& r) const
 	return false;
 }
 
-bool DKRational::operator > (const DKRational& r) const
+bool DKRationalNumber::operator > (const DKRationalNumber& r) const
 {
 	if (this->operator!=(r))
 		return r.operator < (*this);
 	return false;
 }
 
-bool DKRational::operator >= (const DKRational& r) const
+bool DKRationalNumber::operator >= (const DKRationalNumber& r) const
 {
 	return r.operator <= (*this);
 }
 
-DKRational& DKRational::Inverse(void)
+DKRationalNumber& DKRationalNumber::Inverse(void)
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 
@@ -448,14 +448,14 @@ DKRational& DKRational::Inverse(void)
 	return *this;
 }
 
-double DKRational::RealNumber(void) const
+double DKRationalNumber::RealNumber(void) const
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 
 	return static_cast<double>(Numerator()) / static_cast<double>(Denominator());
 }
 
-void DKRational::Normalize(void)
+void DKRationalNumber::Normalize(void)
 {
 	if (this->denominator == 0)
 	{

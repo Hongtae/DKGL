@@ -228,7 +228,7 @@
     <ClCompile Include="DKFoundation\DKMutex.cpp" />
     <ClCompile Include="DKFoundation\DKObjectRefCounter.cpp" />
     <ClCompile Include="DKFoundation\DKOperationQueue.cpp" />
-    <ClCompile Include="DKFoundation\DKRational.cpp" />
+    <ClCompile Include="DKFoundation\DKRationalNumber.cpp" />
     <ClCompile Include="DKFoundation\DKSharedLock.cpp" />
     <ClCompile Include="DKFoundation\DKSpinLock.cpp" />
     <ClCompile Include="DKFoundation\DKStringU8.cpp" />
@@ -389,7 +389,7 @@
     <ClInclude Include="DKFoundation\DKOperationQueue.h" />
     <ClInclude Include="DKFoundation\DKOrderedArray.h" />
     <ClInclude Include="DKFoundation\DKQueue.h" />
-    <ClInclude Include="DKFoundation\DKRational.h" />
+    <ClInclude Include="DKFoundation\DKRationalNumber.h" />
     <ClInclude Include="DKFoundation\DKSet.h" />
     <ClInclude Include="DKFoundation\DKSharedInstance.h" />
     <ClInclude Include="DKFoundation\DKSharedLock.h" />

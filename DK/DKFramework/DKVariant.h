@@ -30,7 +30,7 @@ namespace DKFramework
 	///   - Matrix3 (DKMatrix3)
 	///   - Matrix4 (DKMatrix4)
 	///   - Quaternion (DKQuaternion)
-	///   - Rational (DKRational)
+	///   - RationalNumber (DKRationalNumber)
 	///   - String (DKString)
 	///   - DateTime (DKDateTime)
 	///   - Data (DKBuffer)
@@ -45,23 +45,23 @@ namespace DKFramework
 	public:
 		enum Type : int
 		{
-			TypeUndefined	= 0,
-			TypeInteger		= 'intg',
-			TypeFloat		= 'flot',
-			TypeVector2		= 'vec2',
-			TypeVector3		= 'vec3',
-			TypeVector4		= 'vec4',
-			TypeMatrix2		= 'mat2',
-			TypeMatrix3		= 'mat3',
-			TypeMatrix4		= 'mat4',
-			TypeQuaternion	= 'quat',
-			TypeRational	= 'ratl',
-			TypeString		= 'strn',
-			TypeDateTime	= 'time',
-			TypeData		= 'data',
-			TypeStructData	= 'stdt',
-			TypeArray		= 'arry',
-			TypePairs		= 'pair',
+			TypeUndefined		= 0,
+			TypeInteger			= 'intg',
+			TypeFloat			= 'flot',
+			TypeVector2			= 'vec2',
+			TypeVector3			= 'vec3',
+			TypeVector4			= 'vec4',
+			TypeMatrix2			= 'mat2',
+			TypeMatrix3			= 'mat3',
+			TypeMatrix4			= 'mat4',
+			TypeQuaternion		= 'quat',
+			TypeRationalNumber	= 'ratl',
+			TypeString			= 'strn',
+			TypeDateTime		= 'time',
+			TypeData			= 'data',
+			TypeStructData		= 'stdt',
+			TypeArray			= 'arry',
+			TypePairs			= 'pair',
 		};
 
 		typedef int64_t VInteger;
@@ -73,7 +73,7 @@ namespace DKFramework
 		typedef DKMatrix3 VMatrix3;
 		typedef DKMatrix4 VMatrix4;
 		typedef DKQuaternion VQuaternion;
-		typedef DKRational VRational;
+		typedef DKRationalNumber VRationalNumber;
 		typedef DKString VString;
 		typedef DKDateTime VDateTime;
 		typedef DKData VData;
@@ -117,7 +117,7 @@ namespace DKFramework
 		DKVariant(const VMatrix3& v);
 		DKVariant(const VMatrix4& v);
 		DKVariant(const VQuaternion& v);
-		DKVariant(const VRational& v);
+		DKVariant(const VRationalNumber& v);
 		DKVariant(const VString& v);
 		DKVariant(const VDateTime& v);
 		DKVariant(const VData& v);
@@ -148,7 +148,7 @@ namespace DKFramework
 		DKVariant& SetMatrix3(const VMatrix3& v);
 		DKVariant& SetMatrix4(const VMatrix4& v);
 		DKVariant& SetQuaternion(const VQuaternion& v);
-		DKVariant& SetRational(const VRational& v);
+		DKVariant& SetRationalNumber(const VRationalNumber& v);
 		DKVariant& SetString(const VString& v);
 		DKVariant& SetDateTime(const VDateTime& v);
 		DKVariant& SetData(const VData& v);
@@ -182,8 +182,8 @@ namespace DKFramework
 		const VMatrix4& Matrix4(void) const;
 		VQuaternion& Quaternion(void);
 		const VQuaternion& Quaternion(void) const;
-		VRational& Rational(void);
-		const VRational& Rational(void) const;
+		VRationalNumber& RationalNumber(void);
+		const VRationalNumber& RationalNumber(void) const;
 		VString& String(void);
 		const VString& String(void) const;
 		VDateTime& DateTime(void);
