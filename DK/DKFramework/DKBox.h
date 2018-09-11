@@ -29,9 +29,6 @@ namespace DKFramework
 		/// box from matrix
 		DKBox(const DKMatrix4& m);
 
-		static DKBox Intersection(const DKBox& b1, const DKBox& b2);
-		static DKBox Union(const DKBox& b1, const DKBox& b2);
-
 		bool IsValid() const;
 		bool IsPointInside(const DKVector3& pos) const;
 
