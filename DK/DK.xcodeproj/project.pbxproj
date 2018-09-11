@@ -530,7 +530,7 @@
 		84211C2F1665E86300B9B9A2 /* DKFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4A7141DD4B70091D2C0 /* DKFunction.h */; };
 		84211C311665E86300B9B9A2 /* DKHash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AA141DD4B70091D2C0 /* DKHash.h */; };
 		84211C321665E86300B9B9A2 /* DKInvocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AB141DD4B70091D2C0 /* DKInvocation.h */; };
-		84211C371665E86300B9B9A2 /* DKList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKList.h */; };
+		84211C371665E86300B9B9A2 /* DKLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKLinkedList.h */; };
 		84211C381665E86300B9B9A2 /* DKLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B2141DD4B70091D2C0 /* DKLock.h */; };
 		84211C391665E86300B9B9A2 /* DKLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B4141DD4B70091D2C0 /* DKLog.h */; };
 		84211C3A1665E86300B9B9A2 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
@@ -591,7 +591,7 @@
 		84211C751665E86400B9B9A2 /* DKFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4A7141DD4B70091D2C0 /* DKFunction.h */; };
 		84211C771665E86400B9B9A2 /* DKHash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AA141DD4B70091D2C0 /* DKHash.h */; };
 		84211C781665E86400B9B9A2 /* DKInvocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AB141DD4B70091D2C0 /* DKInvocation.h */; };
-		84211C7D1665E86400B9B9A2 /* DKList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKList.h */; };
+		84211C7D1665E86400B9B9A2 /* DKLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKLinkedList.h */; };
 		84211C7E1665E86400B9B9A2 /* DKLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B2141DD4B70091D2C0 /* DKLock.h */; };
 		84211C7F1665E86400B9B9A2 /* DKLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B4141DD4B70091D2C0 /* DKLog.h */; };
 		84211C801665E86400B9B9A2 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
@@ -841,7 +841,7 @@
 		8436CDDE1928A78900F18892 /* DKHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4A9141DD4B70091D2C0 /* DKHash.cpp */; };
 		8436CDDF1928A78900F18892 /* DKHash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AA141DD4B70091D2C0 /* DKHash.h */; };
 		8436CDE01928A78900F18892 /* DKInvocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AB141DD4B70091D2C0 /* DKInvocation.h */; };
-		8436CDE11928A78900F18892 /* DKList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKList.h */; };
+		8436CDE11928A78900F18892 /* DKLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKLinkedList.h */; };
 		8436CDE21928A78900F18892 /* DKLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4B1141DD4B70091D2C0 /* DKLock.cpp */; };
 		8436CDE31928A78900F18892 /* DKLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B2141DD4B70091D2C0 /* DKLock.h */; };
 		8436CDE41928A78900F18892 /* DKLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A1E4B3141DD4B70091D2C0 /* DKLog.cpp */; };
@@ -1244,7 +1244,7 @@
 		84798CA219E51E96009378A6 /* DKFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4A7141DD4B70091D2C0 /* DKFunction.h */; };
 		84798CA319E51E96009378A6 /* DKHash.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AA141DD4B70091D2C0 /* DKHash.h */; };
 		84798CA419E51E96009378A6 /* DKInvocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4AB141DD4B70091D2C0 /* DKInvocation.h */; };
-		84798CA519E51E96009378A6 /* DKList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKList.h */; };
+		84798CA519E51E96009378A6 /* DKLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = 844FA8ED155DBF0700344694 /* DKLinkedList.h */; };
 		84798CA619E51E96009378A6 /* DKLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B2141DD4B70091D2C0 /* DKLock.h */; };
 		84798CA719E51E96009378A6 /* DKLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B4141DD4B70091D2C0 /* DKLog.h */; };
 		84798CA819E51E96009378A6 /* DKMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4B5141DD4B70091D2C0 /* DKMap.h */; };
@@ -2169,7 +2169,7 @@
 		844FA8EA155DBF0700344694 /* DKData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKData.cpp; sourceTree = "<group>"; };
 		844FA8EB155DBF0700344694 /* DKDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKDataStream.cpp; sourceTree = "<group>"; };
 		844FA8EC155DBF0700344694 /* DKDataStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKDataStream.h; sourceTree = "<group>"; };
-		844FA8ED155DBF0700344694 /* DKList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKList.h; sourceTree = "<group>"; };
+		844FA8ED155DBF0700344694 /* DKLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKLinkedList.h; sourceTree = "<group>"; };
 		845422C8159314B000A0431D /* DKCircularQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKCircularQueue.h; sourceTree = "<group>"; };
 		8463F696148266B300CEA51E /* DKAudioListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKAudioListener.cpp; sourceTree = "<group>"; };
 		8463F697148266B300CEA51E /* DKAudioListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKAudioListener.h; sourceTree = "<group>"; };
@@ -2987,7 +2987,7 @@
 				84A1E4A9141DD4B70091D2C0 /* DKHash.cpp */,
 				84A1E4AA141DD4B70091D2C0 /* DKHash.h */,
 				84A1E4AB141DD4B70091D2C0 /* DKInvocation.h */,
-				844FA8ED155DBF0700344694 /* DKList.h */,
+				844FA8ED155DBF0700344694 /* DKLinkedList.h */,
 				84A1E4B1141DD4B70091D2C0 /* DKLock.cpp */,
 				84A1E4B2141DD4B70091D2C0 /* DKLock.h */,
 				84A1E4B3141DD4B70091D2C0 /* DKLog.cpp */,
@@ -3421,7 +3421,7 @@
 				840CA5A11928952800689BB6 /* DKCollisionObject.h in Headers */,
 				8436CDCE1928A78900F18892 /* DKDataStream.h in Headers */,
 				840CA61E1928952800689BB6 /* DKStaticTriangleMeshShape.h in Headers */,
-				8436CDE11928A78900F18892 /* DKList.h in Headers */,
+				8436CDE11928A78900F18892 /* DKLinkedList.h in Headers */,
 				8436CE021928A78900F18892 /* DKStaticArray.h in Headers */,
 				8436CDE31928A78900F18892 /* DKLock.h in Headers */,
 				847A4FBD2052D7CE001225B0 /* ShaderFunction.h in Headers */,
@@ -3637,7 +3637,7 @@
 				847A4FCC2052D86E001225B0 /* ShaderModule.h in Headers */,
 				84798C9919E51E96009378A6 /* DKDataStream.h in Headers */,
 				84798C3B19E51E7F009378A6 /* DKConeTwistConstraint.h in Headers */,
-				84798CA519E51E96009378A6 /* DKList.h in Headers */,
+				84798CA519E51E96009378A6 /* DKLinkedList.h in Headers */,
 				84798CBB19E51E96009378A6 /* DKStaticArray.h in Headers */,
 				84798CA619E51E96009378A6 /* DKLock.h in Headers */,
 				84F970181B4D711C00BA24E4 /* DKTriangleMeshBvh.h in Headers */,
@@ -3757,7 +3757,7 @@
 				84211C751665E86400B9B9A2 /* DKFunction.h in Headers */,
 				84211C771665E86400B9B9A2 /* DKHash.h in Headers */,
 				84211C781665E86400B9B9A2 /* DKInvocation.h in Headers */,
-				84211C7D1665E86400B9B9A2 /* DKList.h in Headers */,
+				84211C7D1665E86400B9B9A2 /* DKLinkedList.h in Headers */,
 				84211C7E1665E86400B9B9A2 /* DKLock.h in Headers */,
 				8482B74C1DCE272D0079FD84 /* AudioStreamVorbis.h in Headers */,
 				84211C7F1665E86400B9B9A2 /* DKLog.h in Headers */,
@@ -3991,7 +3991,7 @@
 				84211C2F1665E86300B9B9A2 /* DKFunction.h in Headers */,
 				84211C311665E86300B9B9A2 /* DKHash.h in Headers */,
 				84211C321665E86300B9B9A2 /* DKInvocation.h in Headers */,
-				84211C371665E86300B9B9A2 /* DKList.h in Headers */,
+				84211C371665E86300B9B9A2 /* DKLinkedList.h in Headers */,
 				8482B7381DCE27230079FD84 /* AudioStreamFLAC.h in Headers */,
 				84211C381665E86300B9B9A2 /* DKLock.h in Headers */,
 				84211C391665E86300B9B9A2 /* DKLog.h in Headers */,

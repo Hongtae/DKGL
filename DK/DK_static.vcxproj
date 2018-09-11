@@ -376,7 +376,7 @@
     <ClInclude Include="DKFoundation\DKFunction.h" />
     <ClInclude Include="DKFoundation\DKHash.h" />
     <ClInclude Include="DKFoundation\DKInvocation.h" />
-    <ClInclude Include="DKFoundation\DKList.h" />
+    <ClInclude Include="DKFoundation\DKLinkedList.h" />
     <ClInclude Include="DKFoundation\DKLock.h" />
     <ClInclude Include="DKFoundation\DKLog.h" />
     <ClInclude Include="DKFoundation\DKLogger.h" />

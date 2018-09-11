@@ -1,5 +1,5 @@
 //
-//  File: DKList.h
+//  File: DKLinkedList.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
@@ -24,14 +24,14 @@ namespace DKFoundation
 
 	 @code
 	 Range based for loop example:
-	  DKList<MyObject> myList;
+	  DKLinkedList<MyObject> myList;
 	  // lock within current scope for range-based-for-loop
-	  DKList<MyObject>::CriticalSection(myList.lock);
+	  DKLinkedList<MyObject>::CriticalSection(myList.lock);
 	  for (MyObject& obj : myList)
 		 // do something with obj..
 
 	 Iterator iteration example:
-	  DKList<MyObject> myList;
+	  DKLinkedList<MyObject> myList;
 	  for (auto it = myList.LockHead(); it.IsValid(); ++it)
 	  {
 		   MyObject& obj = it.Value();
@@ -42,7 +42,7 @@ namespace DKFoundation
 	 @note
 	  This class does not tested fully. (may have bugs?)
 	 */
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator> class DKList
+	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator> class DKLinkedList
 	{
 	private:
 		struct Node
@@ -77,7 +77,7 @@ namespace DKFoundation
 		private:
 			IteratorT(NodeT* n) : node(n) {}
 			NodeT* node;
-			friend class DKList;
+			friend class DKLinkedList;
 		};
 		typedef IteratorT<Node, VALUE&> Iterator;
 		typedef IteratorT<const Node, const VALUE&> ConstIterator;
@@ -87,10 +87,10 @@ namespace DKFoundation
 		/// lock is public. to provde lock object from outside!
 		Lock lock;
 
-		DKList(void) : firstNode(NULL), lastNode(NULL), count(0)
+		DKLinkedList(void) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 		}
-		DKList(DKList&& list) : firstNode(NULL), lastNode(NULL), count(0)
+		DKLinkedList(DKLinkedList&& list) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 			firstNode = list.firstNode;
 			lastNode = list.lastNode;
@@ -99,24 +99,24 @@ namespace DKFoundation
 			list.lastNode = NULL;
 			list.count = 0;
 		}
-		DKList(const DKList& list) : firstNode(NULL), lastNode(NULL), count(0)
+		DKLinkedList(const DKLinkedList& list) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 			CriticalSection guard(list.lock);
 
 			for (const Node* n = list.firstNode; n != NULL; n = n->next)
 				AddTailNL(n->value);
 		}
-		DKList(const VALUE* values, size_t num) : firstNode(NULL), lastNode(NULL), count(0)
+		DKLinkedList(const VALUE* values, size_t num) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 			for (size_t i = 0; i < num; ++i)
 				AddTailNL(values[i]);
 		}
-		DKList(std::initializer_list<VALUE> il) : firstNode(NULL), lastNode(NULL), count(0)
+		DKLinkedList(std::initializer_list<VALUE> il) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 			for (const VALUE& v : il)
 				AddTailNL(il);
 		}
-		~DKList(void)
+		~DKLinkedList(void)
 		{
 			Clear();
 		}
@@ -253,7 +253,7 @@ namespace DKFoundation
 			}
 			return true;
 		}
-		DKList& operator = (DKList&& list)
+		DKLinkedList& operator = (DKLinkedList&& list)
 		{
 			if (this != &list)
 			{
@@ -275,7 +275,7 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		DKList& operator = (const DKList& list)
+		DKLinkedList& operator = (const DKLinkedList& list)
 		{
 			if (this != &list)
 			{
@@ -284,37 +284,37 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		DKList& operator = (std::initializer_list<VALUE> il)
+		DKLinkedList& operator = (std::initializer_list<VALUE> il)
 		{
 			Clear();
 			for (const VALUE& v : il)
 				AddTail(v);
 			return *this;
 		}
-		DKList operator + (const VALUE& v) const
+		DKLinkedList operator + (const VALUE& v) const
 		{
-			DKList	ret(*this);
+			DKLinkedList	ret(*this);
 			ret.AddTail(v);
 			return ret;
 		}
-		DKList operator + (const DKList& v) const
+		DKLinkedList operator + (const DKLinkedList& v) const
 		{
-			DKList ret(*this);
+			DKLinkedList ret(*this);
 			return ret + v;
 		}
-		DKList operator + (std::initializer_list<VALUE> il)
+		DKLinkedList operator + (std::initializer_list<VALUE> il)
 		{
-			DKList ret(*this);
+			DKLinkedList ret(*this);
 			for (const VALUE& v : il)
 				ret.AddTailNL(v);
 			return ret;
 		}
-		DKList& operator += (const VALUE& v) const
+		DKLinkedList& operator += (const VALUE& v) const
 		{
 			AddTail(v);
 			return *this;
 		}
-		DKList& operator += (const DKList& v)
+		DKLinkedList& operator += (const DKLinkedList& v)
 		{
 			CriticalSection guard1(lock);
 			CriticalSection guard2(v.lock);
@@ -322,7 +322,7 @@ namespace DKFoundation
 				AddTailNL(n->value);
 			return *this;
 		}
-		DKList& operator += (std::initializer_list<VALUE> il)
+		DKLinkedList& operator += (std::initializer_list<VALUE> il)
 		{
 			CriticalSection guard(lock);
 			for (const VALUE& v : il)

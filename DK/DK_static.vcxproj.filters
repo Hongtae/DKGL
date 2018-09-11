@@ -633,9 +633,6 @@
     <ClInclude Include="DKFoundation\DKInvocation.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKList.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
     <ClInclude Include="DKFoundation\DKLock.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
@@ -1237,6 +1234,9 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKRationalNumber.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKLinkedList.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
