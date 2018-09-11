@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKAtomicNumber32.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,7 +16,7 @@
 
 using namespace DKFoundation;
 
-DKAtomicNumber32::Value DKAtomicNumber32::Increment(void)
+DKAtomicNumber32::Value DKAtomicNumber32::Increment()
 {
 	Value prev;
 #ifdef _WIN32
@@ -31,7 +31,7 @@ DKAtomicNumber32::Value DKAtomicNumber32::Increment(void)
 	return prev;
 }
 
-DKAtomicNumber32::Value DKAtomicNumber32::Decrement(void)
+DKAtomicNumber32::Value DKAtomicNumber32::Decrement()
 {
 	Value prev;
 #ifdef _WIN32
@@ -93,7 +93,7 @@ DKAtomicNumber32::DKAtomicNumber32(Value initialValue)
 {
 }
 
-DKAtomicNumber32::~DKAtomicNumber32(void)
+DKAtomicNumber32::~DKAtomicNumber32()
 {
 }
 
@@ -109,7 +109,7 @@ DKAtomicNumber32& DKAtomicNumber32::operator += (Value value)
 	return *this;
 }
 
-DKAtomicNumber32::operator Value (void) const
+DKAtomicNumber32::operator Value () const
 {
 	return (int)atomic;
 }

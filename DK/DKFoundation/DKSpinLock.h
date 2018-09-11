@@ -18,11 +18,11 @@ namespace DKFoundation
 	class DKGL_API DKSpinLock
 	{
 	public:
-		DKSpinLock(void);
-		~DKSpinLock(void);
-		void Lock(void) const;
-		bool TryLock(void) const;
-		void Unlock(void) const;
+		DKSpinLock();
+		~DKSpinLock();
+		void Lock() const;
+		bool TryLock() const;
+		void Unlock() const;
 
 	private:
 		DKSpinLock(const DKSpinLock&) = delete;

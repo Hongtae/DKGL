@@ -23,23 +23,23 @@ namespace DKFoundation
 		class LockImpl
 		{
 		public:
-			LockImpl(void)
+			LockImpl()
 			{
 				::InitializeCriticalSectionAndSpinCount(&section, 1024);
 			}
-			~LockImpl(void)
+			~LockImpl()
 			{
 				::DeleteCriticalSection(&section);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				::EnterCriticalSection(&section);
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				return ::TryEnterCriticalSection(&section) != 0;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 				DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock on mutex.");
 				::LeaveCriticalSection(&section);
@@ -51,18 +51,18 @@ namespace DKFoundation
 		class LockImpl
 		{
 		public:
-			LockImpl(void)
+			LockImpl()
 			{
 				pthread_mutexattr_init(&attr);
 				pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
 				pthread_mutex_init(&mutex, &attr);
 			}
-			~LockImpl(void)
+			~LockImpl()
 			{
 				pthread_mutex_destroy(&mutex);
 				pthread_mutexattr_destroy(&attr);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				int ret = pthread_mutex_lock(&mutex);
 				if (ret == EINVAL)
@@ -71,11 +71,11 @@ namespace DKFoundation
 					DKERROR_THROW_DEBUG("resource is invalid.");
 				}
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				return pthread_mutex_trylock(&mutex) == 0;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 				int ret = pthread_mutex_unlock(&mutex);
 				if (ret == EPERM)
@@ -97,31 +97,31 @@ namespace DKFoundation
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKLock::DKLock(void)
+DKLock::DKLock()
 {
 	impl = reinterpret_cast<void*>(new LockImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
-DKLock::~DKLock(void)
+DKLock::~DKLock()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	delete reinterpret_cast<LockImpl*>(impl);
 }
 
-void DKLock::Lock(void) const
+void DKLock::Lock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<LockImpl*>(impl)->Lock();
 }
 
-bool DKLock::TryLock(void) const
+bool DKLock::TryLock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<LockImpl*>(impl)->TryLock();
 }
 
-void DKLock::Unlock(void) const
+void DKLock::Unlock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<LockImpl*>(impl)->Unlock();

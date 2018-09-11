@@ -20,17 +20,17 @@ namespace DKFramework
 			{
 			public:
 				CommandAllocator(ID3D12CommandAllocator*, D3D12_COMMAND_LIST_TYPE);
-				~CommandAllocator(void);
+				~CommandAllocator();
 
 				ComPtr<ID3D12CommandAllocator> allocator;
 				D3D12_COMMAND_LIST_TYPE type;
 
 				void SetPendingState(ID3D12Fence* fence, UINT64 enqueued);
-				bool Reset(void);
-				bool IsCompleted(void);
+				bool Reset();
+				bool IsCompleted();
 				bool WaitUntilCompleted(DWORD timeout);
 
-				UINT64 PendingCounter(void) { return enqueuedCounter; }
+				UINT64 PendingCounter() { return enqueuedCounter; }
 
 			private:
 				// for enqueued allocator

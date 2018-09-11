@@ -18,10 +18,10 @@ namespace DKFoundation
 	public:
 		typedef int32_t Value;
 		DKAtomicNumber32(Value initialValue = 0);
-		~DKAtomicNumber32(void);
+		~DKAtomicNumber32();
 
-		Value Increment(void);			///< +1, returns previous value.
-		Value Decrement(void);			///< -1, returns previous value.
+		Value Increment();			///< +1, returns previous value.
+		Value Decrement();			///< -1, returns previous value.
 		Value Add(Value addend);		///< +addend, returns previous value.
 		Value Exchange(Value value);	///< set value, returns previous value.
 
@@ -30,7 +30,7 @@ namespace DKFoundation
 
 		DKAtomicNumber32& operator = (Value value);
 		DKAtomicNumber32& operator += (Value value);
-		operator Value (void) const;
+		operator Value () const;
 	private:
 		volatile Value atomic;
 	};

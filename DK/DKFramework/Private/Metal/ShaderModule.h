@@ -20,14 +20,14 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		ShaderModule(DKGraphicsDevice*, id<MTLLibrary>);
-		~ShaderModule(void);
+		~ShaderModule();
 
-		const DKArray<DKString>& FunctionNames(void) const override { return functionNames; }
+		const DKArray<DKString>& FunctionNames() const override { return functionNames; }
 
 		DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
 		DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const override;
 
-		DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device() override { return device; }
 
 		id<MTLLibrary> library;
 		DKObject<DKGraphicsDevice> device;

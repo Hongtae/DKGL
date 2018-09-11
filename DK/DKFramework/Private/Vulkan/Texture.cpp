@@ -38,7 +38,7 @@ Texture::Texture(DKGraphicsDevice* d, VkImage i, VkImageView v, const VkImageCre
 	}
 }
 
-Texture::~Texture(void)
+Texture::~Texture()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (imageView)

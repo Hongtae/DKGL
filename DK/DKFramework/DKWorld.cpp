@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKWorld.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -20,7 +20,7 @@ namespace DKFramework
 		public:
 			struct ObjectColorCallback
 			{
-				virtual ~ObjectColorCallback(void) {}
+				virtual ~ObjectColorCallback() {}
 				virtual bool GetObjectColors(const DKCollisionObject*, DKColor&, DKColor&) = 0;
 			};
 
@@ -794,14 +794,14 @@ namespace DKFramework
 			void setDebugMode(int mode)		{ debugMode = mode; }
 			int getDebugMode() const		{ return debugMode; }
 
-			ShapeDrawer(void)
+			ShapeDrawer()
 				: debugMode(0)
 				, drawShapes(false)
 				, tick(0)
 				, purgeChcheTickCount(10)
 			{
 			}
-			~ShapeDrawer(void)
+			~ShapeDrawer()
 			{
 				this->shapeCaches.EnumerateForward([](ShapeCacheMap::Pair& p)
 				{
@@ -845,7 +845,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-DKWorld::DKWorld(void)
+DKWorld::DKWorld()
 : context(NULL)
 , ambientColor(0, 0, 0)
 {
@@ -882,7 +882,7 @@ DKWorld::DKWorld(CollisionWorldContext* ctxt)
 //	context->world->setDebugDrawer(new ShapeDrawer());
 }
 
-DKWorld::~DKWorld(void)
+DKWorld::~DKWorld()
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -953,7 +953,7 @@ void DKWorld::Update(double tickDelta, DKTimeTick tick)
 	CleanupUpdateNode();
 }
 
-void DKWorld::PrepareUpdateNode(void)
+void DKWorld::PrepareUpdateNode()
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -971,7 +971,7 @@ void DKWorld::PrepareUpdateNode(void)
 	});
 }
 
-void DKWorld::CleanupUpdateNode(void)
+void DKWorld::CleanupUpdateNode()
 {
 	updatePendingObjects.Clear();
 }
@@ -984,7 +984,7 @@ void DKWorld::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
 	}
 }
 
-void DKWorld::UpdateObjectSceneStates(void)
+void DKWorld::UpdateObjectSceneStates()
 {
 	for (DKModel* m : updatePendingObjects)
 	{
@@ -1452,7 +1452,7 @@ void DKWorld::RemoveSingleObject(DKModel* obj)
 	}
 }
 
-void DKWorld::RemoveAllObjects(void)
+void DKWorld::RemoveAllObjects()
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1474,7 +1474,7 @@ void DKWorld::RemoveAllObjects(void)
 //	this->meshes.Clear();
 }
 
-size_t DKWorld::NumberOfSceneObjects(void) const
+size_t DKWorld::NumberOfSceneObjects() const
 {
 	return this->sceneObjects.Count();
 }

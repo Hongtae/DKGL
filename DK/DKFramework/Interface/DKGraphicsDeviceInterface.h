@@ -14,9 +14,9 @@ namespace DKFramework
 	class DKGraphicsDeviceInterface
 	{
 	public:
-		virtual ~DKGraphicsDeviceInterface(void) {}
+		virtual ~DKGraphicsDeviceInterface() {}
 
-		virtual DKString DeviceName(void) const = 0;
+		virtual DKString DeviceName() const = 0;
 		virtual DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*, uint32_t) = 0;
 		virtual DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) = 0;
 		virtual DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKRenderPipelineReflection*) = 0;
@@ -24,7 +24,7 @@ namespace DKFramework
 		virtual DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) = 0;
 		virtual DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) = 0;
 
-		static DKGraphicsDeviceInterface* CreateInterface(void);
+		static DKGraphicsDeviceInterface* CreateInterface();
 		static DKGraphicsDeviceInterface* Instance(DKGraphicsDevice* p) { return p->impl; }
 	};
 }

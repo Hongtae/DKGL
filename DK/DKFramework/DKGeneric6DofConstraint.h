@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKGeneric6DofConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -35,8 +35,8 @@ namespace DKFramework
 		/// DKNSTransform is rigid body's local transform.
 		DKGeneric6DofConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKGeneric6DofConstraint(DKRigidBody* bodyB, const DKNSTransform& frameB);
-		DKGeneric6DofConstraint(void);
-		~DKGeneric6DofConstraint(void);
+		DKGeneric6DofConstraint();
+		~DKGeneric6DofConstraint();
 
 		void SetLimit(ParamAxis axis, float lower, float upper);
 		float LowerLimit(ParamAxis axis) const;
@@ -46,18 +46,18 @@ namespace DKFramework
 		void SetLinearUpperLimit(const DKVector3& v);
 		void SetAngularLowerLimit(const DKVector3& v);
 		void SetAngularUpperLimit(const DKVector3& v);
-		DKVector3 LinearLowerLimit(void) const;
-		DKVector3 LinearUpperLimit(void) const;
-		DKVector3 AngularLowerLimit(void) const;
-		DKVector3 AngularUpperLimit(void) const;
+		DKVector3 LinearLowerLimit() const;
+		DKVector3 LinearUpperLimit() const;
+		DKVector3 AngularLowerLimit() const;
+		DKVector3 AngularUpperLimit() const;
 
 		DKVector3 Axis(ParamAxis axis) const;
 		float Angle(ParamAxis axis) const;
 		float RelativePivotPosition(ParamAxis axis) const;
 		AxisState State(ParamAxis axis) const;
 
-		DKNSTransform FrameA(void) const;
-		DKNSTransform FrameB(void) const;
+		DKNSTransform FrameA() const;
+		DKNSTransform FrameB() const;
 		void SetFrameA(const DKNSTransform& t);
 		void SetFrameB(const DKNSTransform& t);
 		void SetFrames(const DKNSTransform& ta, const DKNSTransform& tb);
@@ -65,12 +65,12 @@ namespace DKFramework
 		bool IsValidParam(ParamType type, ParamAxis axis) const override;
 		bool HasParam(ParamType type, ParamAxis axis) const override;
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
 		DKGeneric6DofConstraint(LinkType type, DKRigidBody* bodyA, DKRigidBody* bodyB, class btGeneric6DofConstraint* ctxt);
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGeneric6DofConstraint* Copy(UUIDObjectMap&, const DKGeneric6DofConstraint*);

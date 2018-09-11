@@ -20,9 +20,9 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		RenderPipelineState(DKGraphicsDevice*, id<MTLRenderPipelineState>);
-		~RenderPipelineState(void);
+		~RenderPipelineState();
 
-		DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device() override { return device; }
 
 		MTLPrimitiveType primitiveType;
 		DKObject<DKGraphicsDevice> device;

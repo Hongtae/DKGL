@@ -20,20 +20,20 @@ namespace DKFramework
 	class DKGL_API DKMatrix3
 	{
 	public:
-		DKMatrix3(void);
+		DKMatrix3();
 		DKMatrix3(const DKVector3& row1, const DKVector3& row2, const DKVector3& row3);
 		DKMatrix3(float e11, float e12, float e13, float e21, float e22, float e23, float e31, float e32, float e33);
 
-		DKMatrix3& Zero(void);
-		DKMatrix3& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKMatrix3& Zero();
+		DKMatrix3& Identity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
-		DKMatrix3& Inverse(void);
-		DKMatrix3& Transpose(void);
+		DKMatrix3& Inverse();
+		DKMatrix3& Transpose();
 		DKMatrix3& Multiply(const DKMatrix3& m);
 
-		float Determinant(void) const;
+		float Determinant() const;
 		bool GetInverseMatrix(DKMatrix3& matOut, float *pDeterminant) const;
 
 		DKMatrix3 operator * (const DKMatrix3& m) const;
@@ -51,12 +51,12 @@ namespace DKFramework
 		bool operator == (const DKMatrix3& m) const;
 		bool operator != (const DKMatrix3& m) const;
 
-		DKVector3 Row1(void) const;
-		DKVector3 Row2(void) const;
-		DKVector3 Row3(void) const;
-		DKVector3 Column1(void) const;
-		DKVector3 Column2(void) const;
-		DKVector3 Column3(void) const;
+		DKVector3 Row1() const;
+		DKVector3 Row2() const;
+		DKVector3 Row3() const;
+		DKVector3 Column1() const;
+		DKVector3 Column2() const;
+		DKVector3 Column3() const;
 
 		union
 		{

@@ -35,8 +35,8 @@ namespace DKFoundation
 	class DKGL_API DKFileMap : public DKData
 	{
 	public:
-		DKFileMap(void);
-		~DKFileMap(void);
+		DKFileMap();
+		~DKFileMap();
 
 		/// open and map existing file. if size is 0, map entire contents.
 		static DKObject<DKFileMap> Open(const DKString& file, size_t size, bool writable);
@@ -47,23 +47,23 @@ namespace DKFoundation
 		/// using virtual memory (page memory)
 		static DKObject<DKFileMap> Virtual(size_t size);
 
-		bool IsReadable(void) const override;
-		bool IsWritable(void) const override;
-		bool IsExcutable(void) const override;
-		bool IsTransient(void) const override;
-		size_t Length(void) const override;
+		bool IsReadable() const override;
+		bool IsWritable() const override;
+		bool IsExcutable() const override;
+		bool IsTransient() const override;
+		size_t Length() const override;
 
-		const void* LockShared(void) const override;
+		const void* LockShared() const override;
 		bool TryLockShared(const void** ptr) const override;
-		void UnlockShared(void) const override;
+		void UnlockShared() const override;
 
-		void* LockExclusive(void) override;
+		void* LockExclusive() override;
 		bool TryLockExclusive(void** ptr) override;
-		void UnlockExclusive(void) override;
+		void UnlockExclusive() override;
 
 	private:
-		void* MapContent(void) const;
-		void UnmapContent(void) const;
+		void* MapContent() const;
+		void UnmapContent() const;
 		mutable void* mappedPtr;
 
 		void* mapContext;

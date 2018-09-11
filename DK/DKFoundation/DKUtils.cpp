@@ -24,11 +24,11 @@
 
 #include "DKUtils.h"
 
-extern "C" DKGL_API const char* DKVersion(void)
+extern "C" DKGL_API const char* DKVersion()
 {
 	return "DK 2.0.0";
 }
-extern "C" DKGL_API const char* DKCopyright(void)
+extern "C" DKGL_API const char* DKCopyright()
 {
 	return "Copyright (c) 2004-2016 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
 }
@@ -36,7 +36,7 @@ extern "C" DKGL_API const char* DKCopyright(void)
 namespace DKFoundation
 {
 #ifdef _WIN32
-	DKGL_API uint32_t DKRandom(void)
+	DKGL_API uint32_t DKRandom()
 	{
 		uint32_t value;
 		if (rand_s(&value) == 0)
@@ -46,7 +46,7 @@ namespace DKFoundation
 		// rand_s error??
 		static struct _Rand_init
 		{
-			_Rand_init(void)
+			_Rand_init()
 			{
 				DWORD tick = ::GetTickCount();
 				srand((unsigned int)tick);
@@ -58,11 +58,11 @@ namespace DKFoundation
 		return ((h << 16) & 0xffff0000) | ( l & 0x0000ffff);
 	}
 #elif defined(__linux__)
-	DKGL_API uint32_t DKRandom(void)
+	DKGL_API uint32_t DKRandom()
 	{
 		static struct InitSeed
 		{
-			InitSeed(void) { srandom(time(0)); }
+			InitSeed() { srandom(time(0)); }
 		} init;
 
 		return random();
@@ -71,7 +71,7 @@ namespace DKFoundation
 
 #ifdef _WIN32
 	// temporary folder for current user.
-	DKGL_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory()
 	{
 		wchar_t path[MAX_PATH];
 		DWORD ret = ::GetTempPathW(MAX_PATH, path);
@@ -90,7 +90,7 @@ namespace DKFoundation
 		return DKString(path);
 	}
 	
-	DKGL_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments()
 	{
 		DKArray<DKString> args;
 		int numArgs = 0;
@@ -106,7 +106,7 @@ namespace DKFoundation
 		return args;
 	}
 	
-	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments()
 	{
 		DKMap<DKString, DKString> env;
 		LPWSTR str = (LPWSTR)GetEnvironmentStringsW();
@@ -133,7 +133,7 @@ namespace DKFoundation
 		return env;
 	}
 
-	DKGL_API uint32_t DKNumberOfCpuCores(void)
+	DKGL_API uint32_t DKNumberOfCpuCores()
 	{
 		static int ncpu = []()->int
 		{
@@ -173,7 +173,7 @@ namespace DKFoundation
 		return 1;
 	}
 
-	DKGL_API uint32_t DKNumberOfProcessors(void)
+	DKGL_API uint32_t DKNumberOfProcessors()
 	{
 		int ncpu = 0;
 		SYSTEM_INFO sysinfo;
@@ -185,7 +185,7 @@ namespace DKFoundation
 		return 1;
 	}
 #elif defined(__linux__)
-	DKGL_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory()
 	{
 		std::initializer_list<const char*> tmpKeys = {"TMPDIR", "TMP", "TEMP", "TEMPDIR"};
 		const char* tmpDir = NULL;
@@ -201,7 +201,7 @@ namespace DKFoundation
 		return DKString(tmpDir);
 	}
 	
-	DKGL_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments()
 	{
 		DKArray<DKString> args;
 
@@ -225,7 +225,7 @@ namespace DKFoundation
 		return args;
 	}
 	
-	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments()
 	{
 		extern char **environ;
 
@@ -245,7 +245,7 @@ namespace DKFoundation
 		return env;
 	}
 
-	DKGL_API uint32_t DKNumberOfCpuCores(void)
+	DKGL_API uint32_t DKNumberOfCpuCores()
 	{
 		static int ncpu = []()->int
 		{
@@ -270,7 +270,7 @@ namespace DKFoundation
 		return 1;
 	}
 
-	DKGL_API uint32_t DKNumberOfProcessors(void)
+	DKGL_API uint32_t DKNumberOfProcessors()
 	{
 		static int ncpu = sysconf(_SC_NPROCESSORS_CONF);
 

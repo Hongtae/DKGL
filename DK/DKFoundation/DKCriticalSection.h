@@ -40,7 +40,7 @@ namespace DKFoundation
 		{
 			lock.Lock();
 		}
-		~DKCriticalSection(void)
+		~DKCriticalSection()
 		{
 			lock.Unlock();
 		}

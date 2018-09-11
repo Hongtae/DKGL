@@ -21,11 +21,11 @@ BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* b)
 	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
-BlitCommandEncoder::~BlitCommandEncoder(void)
+BlitCommandEncoder::~BlitCommandEncoder()
 {
 }
 
-void BlitCommandEncoder::EndEncoding(void)
+void BlitCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	reusableEncoder->encoderCommands.ShrinkToFit();

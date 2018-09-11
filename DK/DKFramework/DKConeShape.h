@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConeShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,14 +18,14 @@ namespace DKFramework
 	{
 	public:
 		DKConeShape(float radius, float height, UpAxis up = UpAxis::Top);
-		~DKConeShape(void);
+		~DKConeShape();
 
-		float Radius(void) const;
-		float Height(void) const;
+		float Radius() const;
+		float Height() const;
 
-		float ScaledRadius(void) const;
-		float ScaledHeight(void) const;
+		float ScaledRadius() const;
+		float ScaledHeight() const;
 
-		UpAxis BaseAxis(void) const;
+		UpAxis BaseAxis() const;
 	};
 }

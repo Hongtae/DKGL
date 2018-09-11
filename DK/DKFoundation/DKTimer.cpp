@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKTimer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -24,17 +24,17 @@
 
 using namespace DKFoundation;
 
-DKTimer::DKTimer(void)
+DKTimer::DKTimer()
 	: timeStamp(0)
 {
 	Reset();
 }
 
-DKTimer::~DKTimer(void)
+DKTimer::~DKTimer()
 {
 }
 
-double DKTimer::Reset(void)
+double DKTimer::Reset()
 {
 	static double freq = 1.0 / static_cast<double>(SystemTickFrequency());
 	Tick t = timeStamp;
@@ -42,13 +42,13 @@ double DKTimer::Reset(void)
 	return static_cast<double>(timeStamp - t) * freq;
 }
 
-double DKTimer::Elapsed(void) const
+double DKTimer::Elapsed() const
 {
 	static double freq = 1.0 / static_cast<double>(SystemTickFrequency());
 	return static_cast<double>(SystemTick() - timeStamp) * freq;
 }
 
-DKTimer::Tick DKTimer::SystemTick(void)
+DKTimer::Tick DKTimer::SystemTick()
 {
 #ifdef _WIN32
 	LARGE_INTEGER count;
@@ -69,7 +69,7 @@ DKTimer::Tick DKTimer::SystemTick(void)
 #endif
 }
 
-DKTimer::Tick DKTimer::SystemTickFrequency(void)
+DKTimer::Tick DKTimer::SystemTickFrequency()
 {
 #ifdef _WIN32
 	static LONGLONG frequency = []()->LONGLONG

@@ -296,7 +296,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 	this->stageInputAttributes.ShrinkToFit();
 }
 
-ShaderModule::~ShaderModule(void)
+ShaderModule::~ShaderModule()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	vkDestroyShaderModule(dev->device, module, 0);

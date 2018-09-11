@@ -20,11 +20,11 @@ namespace DKFramework
 			class AppLogger : public DKLogger
 			{
 			public:
-				AppLogger(void);
-				~AppLogger(void);
+				AppLogger();
+				~AppLogger();
 
-				void OnBind(void) override;
-				void OnUnbind(void) override;
+				void OnBind() override;
+				void OnUnbind() override;
 
 				void Log(Category, const DKString&) override;
 

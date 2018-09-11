@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKCompoundShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,10 +16,10 @@ namespace DKFramework
 	class DKGL_API DKCompoundShape : public DKCollisionShape
 	{
 	public:
-		DKCompoundShape(void);
-		~DKCompoundShape(void);
+		DKCompoundShape();
+		~DKCompoundShape();
 
-		size_t NumberOfShapes(void) const;
+		size_t NumberOfShapes() const;
 		void AddShape(DKCollisionShape* shape, const DKNSTransform& transform);
 		void RemoveShapeAtIndex(long index);
 		void RemoveShape(DKCollisionShape* shape);

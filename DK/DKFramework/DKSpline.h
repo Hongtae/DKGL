@@ -55,7 +55,7 @@ namespace DKFramework
 			Bezier,
 		};
 
-		DKSpline(void);
+		DKSpline();
 		DKSpline(float p0, float p1, float p2, float p3);
 
 		float Interpolate(float t, Type c) const;
@@ -76,7 +76,7 @@ namespace DKFramework
 	class DKSpline2
 	{
 	public:
-		DKSpline2(void)
+		DKSpline2()
 			:point0(0, 0), point1(0, 0), point2(0, 0), point3(0, 0)
 		{
 		}
@@ -102,7 +102,7 @@ namespace DKFramework
 	class DKSpline3
 	{
 	public:
-		DKSpline3(void)
+		DKSpline3()
 			:point0(0, 0, 0), point1(0, 0, 0), point2(0, 0, 0), point3(0, 0, 0)
 		{
 		}

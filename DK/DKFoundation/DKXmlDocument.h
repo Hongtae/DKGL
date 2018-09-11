@@ -39,7 +39,7 @@ namespace DKFoundation
 		class Node
 		{
 		public:
-			virtual ~Node(void) {}
+			virtual ~Node() {}
 			enum NodeType
 			{
 				NodeTypeUnknown = 0,
@@ -52,8 +52,8 @@ namespace DKFoundation
 				NodeTypeCData,  ///< CDATA section strings ignored by parser.
 				NodeTypePCData, ///< Parsed Character Data. (some symbols will be translated.)
 			};
-			NodeType			Type(void) const;
-			virtual DKString	Export(void) const = 0;
+			NodeType			Type() const;
+			virtual DKString	Export() const = 0;
 		protected:
 			Node(NodeType t) : type(t) {}
 		private:
@@ -61,67 +61,67 @@ namespace DKFoundation
 		};
 		struct CData : public Node
 		{
-			CData(void) : Node(NodeTypeCData) {}
+			CData() : Node(NodeTypeCData) {}
 			DKStringU8 value;		///< UTF-8 string
-			DKString Export(void) const;
+			DKString Export() const;
 		};
 		struct PCData : public Node
 		{
-			PCData(void) : Node(NodeTypePCData) {}
+			PCData() : Node(NodeTypePCData) {}
 			DKString value;
-			DKString Export(void) const;
+			DKString Export() const;
 		};
 		struct Comment : public Node
 		{
-			Comment(void) : Node(NodeTypeComment) {}
+			Comment() : Node(NodeTypeComment) {}
 			DKString value;
-			DKString Export(void) const;
+			DKString Export() const;
 		};
 		struct Element : public Node
 		{
-			Element(void) : Node(NodeTypeElement) {}
+			Element() : Node(NodeTypeElement) {}
 			DKObject<Namespace>				ns;
 			DKString						name;
 			DKArray<Attribute>				attributes;
 			DKArray<Namespace> 				namespaces;
 			DKArray<DKObject<Node>>		nodes;
-			DKString Export(void) const;
+			DKString Export() const;
 			DKString Export(DKArray<Namespace>& writtenNS) const;
 		};
 		struct Instruction : public Node
 		{
-			Instruction(void) : Node(NodeTypeInstruction) {}
+			Instruction() : Node(NodeTypeInstruction) {}
 			DKString						target;
 			DKString						data;
-			DKString Export(void) const;
+			DKString Export() const;
 		};
 		struct ElementDecl : public Node		///< DTD Element
 		{
-			ElementDecl(void) : Node(NodeTypeElementDecl) {}
+			ElementDecl() : Node(NodeTypeElementDecl) {}
 			DKXmlParser::ElementDecl		decl;
 			DKXmlParser::ElementContentDecl	contents;
-			DKString Export(void) const;
+			DKString Export() const;
 		};
 		struct AttributeDecl : public Node	///< DTD
 		{
-			AttributeDecl(void) : Node(NodeTypeAttributeDecl) {}
+			AttributeDecl() : Node(NodeTypeAttributeDecl) {}
 			DKXmlParser::AttributeDecl		decl;
 			DKArray<DKString>				enumeratedValues;
-			DKString Export(void) const;
+			DKString Export() const;
 		};
 		struct DocTypeDecl : public Node
 		{
-			DocTypeDecl(void) : Node(NodeTypeDocTypeDecl) {}
+			DocTypeDecl() : Node(NodeTypeDocTypeDecl) {}
 			DKString					name;
 			DKString					externalID;
 			DKString					systemID;
 			DKArray<DKObject<Node>>		nodes;
-			DKString Export(void) const;
+			DKString Export() const;
 		};
-		DKXmlDocument(void);
+		DKXmlDocument();
 		DKXmlDocument(DocTypeDecl* dtd, Element* root);
 		DKXmlDocument(Element* root);
-		~DKXmlDocument(void);
+		~DKXmlDocument();
 
 		/// open and create object with URL or file.
 		static DKObject<DKXmlDocument> Open(Type t, const DKString& fileOrURL, DKString* desc = NULL);
@@ -135,13 +135,13 @@ namespace DKFoundation
 		size_t Export(DKStringEncoding e, DKStream* output) const;
 
 		////////////////////////////////////////////////////////////////////////////////
-		Element*			RootElement(void);
-		const Element*		RootElement(void) const;
+		Element*			RootElement();
+		const Element*		RootElement() const;
 		void				SetRootElement(Element* e);				
 		// DTD subset
 		void				SetDtd(DocTypeDecl* d);				
-		DocTypeDecl*		Dtd(void);
-		const DocTypeDecl*	Dtd(void) const;
+		DocTypeDecl*		Dtd();
+		const DocTypeDecl*	Dtd() const;
 
 	private:
 		DKArray<DKObject<Node>> nodes; // all nodes of DOM.

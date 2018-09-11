@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKTypeInfo.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,16 +17,16 @@ namespace DKFoundation
 	class DKGL_API DKTypeInfo
 	{
 	public:
-		DKTypeInfo(void);
+		DKTypeInfo();
 		DKTypeInfo(const DKTypeInfo& ti);
 		DKTypeInfo(const std::type_info&);
-		~DKTypeInfo(void);
+		~DKTypeInfo();
 
-		bool IsValid(void) const;
+		bool IsValid() const;
 
-		DKString Name(void) const;
+		DKString Name() const;
 		bool Before(const DKTypeInfo& rhs) const;
-		operator const std::type_info& (void) const;
+		operator const std::type_info& () const;
 
 		DKTypeInfo& operator = (const DKTypeInfo& ti);
 

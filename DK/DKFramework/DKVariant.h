@@ -128,12 +128,12 @@ namespace DKFramework
 		DKVariant(DKVariant&& v);
 
 		explicit DKVariant(const DKXmlElement* e);
-		~DKVariant(void);
+		~DKVariant();
 
 		DKVariant& SetValueType(Type t);
-		Type ValueType(void) const;
+		Type ValueType() const;
 
-		DKObject<DKXmlElement> ExportXML(void) const; ///< generate XML
+		DKObject<DKXmlElement> ExportXML() const; ///< generate XML
 		bool ImportXML(const DKXmlElement* e); ///< import from XML
 
 		bool ExportStream(DKStream* stream, DKByteOrder byteOrder = DKByteOrder::Unknown) const; ///< generate binary data
@@ -164,38 +164,38 @@ namespace DKFramework
 		DKVariant& operator = (const DKVariant& v);
 		DKVariant& operator = (DKVariant&& v);
 
-		VInteger& Integer(void);
-		const VInteger& Integer(void) const;
-		VFloat& Float(void);
-		const VFloat& Float(void) const;
-		VVector2& Vector2(void);
-		const VVector2& Vector2(void) const;
-		VVector3& Vector3(void);
-		const VVector3& Vector3(void) const;
-		VVector4& Vector4(void);
-		const VVector4& Vector4(void) const;
-		VMatrix2& Matrix2(void);
-		const VMatrix2& Matrix2(void) const;
-		VMatrix3& Matrix3(void);
-		const VMatrix3& Matrix3(void) const;
-		VMatrix4& Matrix4(void);
-		const VMatrix4& Matrix4(void) const;
-		VQuaternion& Quaternion(void);
-		const VQuaternion& Quaternion(void) const;
-		VRationalNumber& RationalNumber(void);
-		const VRationalNumber& RationalNumber(void) const;
-		VString& String(void);
-		const VString& String(void) const;
-		VDateTime& DateTime(void);
-		const VDateTime& DateTime(void) const;
-		VData& Data(void);
-		const VData& Data(void) const;
-		VStructuredData& StructuredData(void);
-		const VStructuredData& StructuredData(void) const;
-		VArray& Array(void);
-		const VArray& Array(void) const;
-		VPairs& Pairs(void);
-		const VPairs& Pairs(void) const;
+		VInteger& Integer();
+		const VInteger& Integer() const;
+		VFloat& Float();
+		const VFloat& Float() const;
+		VVector2& Vector2();
+		const VVector2& Vector2() const;
+		VVector3& Vector3();
+		const VVector3& Vector3() const;
+		VVector4& Vector4();
+		const VVector4& Vector4() const;
+		VMatrix2& Matrix2();
+		const VMatrix2& Matrix2() const;
+		VMatrix3& Matrix3();
+		const VMatrix3& Matrix3() const;
+		VMatrix4& Matrix4();
+		const VMatrix4& Matrix4() const;
+		VQuaternion& Quaternion();
+		const VQuaternion& Quaternion() const;
+		VRationalNumber& RationalNumber();
+		const VRationalNumber& RationalNumber() const;
+		VString& String();
+		const VString& String() const;
+		VDateTime& DateTime();
+		const VDateTime& DateTime() const;
+		VData& Data();
+		const VData& Data() const;
+		VStructuredData& StructuredData();
+		const VStructuredData& StructuredData() const;
+		VArray& Array();
+		const VArray& Array() const;
+		VPairs& Pairs();
+		const VPairs& Pairs() const;
 
 		bool IsEqual(const DKVariant& v) const;
 

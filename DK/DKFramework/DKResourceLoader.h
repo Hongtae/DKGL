@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKResourceLoader.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -35,8 +35,8 @@ namespace DKFramework
 	class DKGL_API DKResourceLoader
 	{
 	public:
-		DKResourceLoader(void);
-		virtual ~DKResourceLoader(void);
+		DKResourceLoader();
+		virtual ~DKResourceLoader();
 
 		DKObject<DKResource> ResourceFromXML(const DKXmlElement* element);
 		DKObject<DKResource> ResourceFromData(const DKData* data, const DKString& name);
@@ -50,7 +50,7 @@ namespace DKFramework
 		virtual DKObject<DKStream> OpenResourceStream(const DKString& name) const = 0;
 
 		/// resource memory location (Memory-Allocator)
-		virtual DKAllocator& Allocator(void) const;
+		virtual DKAllocator& Allocator() const;
 
 		/// allocate DKResource object. (or subclass of DKResource)
 		typedef DKFunctionSignature<DKObject<DKResource>(DKAllocator&)> ResourceAllocator;

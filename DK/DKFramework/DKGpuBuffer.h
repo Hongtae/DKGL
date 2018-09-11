@@ -20,12 +20,12 @@ namespace DKFramework
 			StorageModePrivate, // only accessible to the GPU
 		};
 
-		virtual ~DKGpuBuffer(void);
+		virtual ~DKGpuBuffer();
 
 		virtual void* Lock(size_t offset = 0, size_t length = ~size_t(0)) = 0;
-		virtual void Unlock(void) = 0;
+		virtual void Unlock() = 0;
 
 	protected:
-		DKGpuBuffer(void);
+		DKGpuBuffer();
 	};
 }

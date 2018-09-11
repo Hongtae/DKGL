@@ -33,7 +33,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 
 }
 
-SwapChain::~SwapChain(void)
+SwapChain::~SwapChain()
 {
 	window->RemoveEventHandler(this);
 
@@ -44,7 +44,7 @@ SwapChain::~SwapChain(void)
 	[metalLayer release];
 }
 
-bool SwapChain::Setup(void)
+bool SwapChain::Setup()
 {
 	id handle = (id)window->PlatformHandle();
 #if TARGET_OS_IPHONE
@@ -133,7 +133,7 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
 	}
 }
 
-DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
+DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 {
 	if (currentDrawable == nil)
 	{
@@ -146,7 +146,7 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 	return renderPassDescriptor;
 }
 
-bool SwapChain::Present(void)
+bool SwapChain::Present()
 {
 	if (currentDrawable)
 	{
@@ -161,7 +161,7 @@ bool SwapChain::Present(void)
 	return false;
 }
 
-void SwapChain::SetupFrame(void)
+void SwapChain::SetupFrame()
 {
 	if (currentDrawable == nil)
 	{

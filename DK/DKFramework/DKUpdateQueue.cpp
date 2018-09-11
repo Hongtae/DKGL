@@ -9,18 +9,18 @@
 
 using namespace DKFramework;
 
-DKSerialUpdateQueue::DKSerialUpdateQueue(void)
+DKSerialUpdateQueue::DKSerialUpdateQueue()
 {
 }
 
-DKSerialUpdateQueue::~DKSerialUpdateQueue(void)
+DKSerialUpdateQueue::~DKSerialUpdateQueue()
 {
 }
 
-DKParallelUpdateQueue::DKParallelUpdateQueue(void)
+DKParallelUpdateQueue::DKParallelUpdateQueue()
 {
 }
 
-DKParallelUpdateQueue::~DKParallelUpdateQueue(void)
+DKParallelUpdateQueue::~DKParallelUpdateQueue()
 {
 }

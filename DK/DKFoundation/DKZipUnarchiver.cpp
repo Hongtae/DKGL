@@ -70,7 +70,7 @@ namespace DKFoundation
 				}
 				return NULL;
 			}
-			~UnZipFile(void)
+			~UnZipFile()
 			{
 				if (unzCloseCurrentFile(handle) != UNZ_OK)
 					DKERROR_THROW_DEBUG("unzCloseCurrentFile failed!");
@@ -121,15 +121,15 @@ namespace DKFoundation
 				}
 				return -1;
 			}
-			Position CurrentPosition(void) const override
+			Position CurrentPosition() const override
 			{
 				return unztell64(handle);
 			}
-			Position RemainLength(void) const override
+			Position RemainLength() const override
 			{
 				return fileInfo.uncompressed_size - CurrentPosition();
 			}
-			Position TotalLength(void) const override
+			Position TotalLength() const override
 			{
 				return fileInfo.uncompressed_size;
 			}
@@ -160,9 +160,9 @@ namespace DKFoundation
 				return 0;
 			}
 
-			bool IsReadable(void) const override {return true;}
-			bool IsWritable(void) const override {return false;}
-			bool IsSeekable(void) const override {return true;}
+			bool IsReadable() const override {return true;}
+			bool IsWritable() const override {return false;}
+			bool IsSeekable() const override {return true;}
 		private:
 			unzFile					handle;
 			const unz_file_info64	fileInfo;
@@ -173,12 +173,12 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKZipUnarchiver::DKZipUnarchiver(void)
+DKZipUnarchiver::DKZipUnarchiver()
 : zipHandle(NULL)
 {
 }
 
-DKZipUnarchiver::~DKZipUnarchiver(void)
+DKZipUnarchiver::~DKZipUnarchiver()
 {
 	if (zipHandle)
 	{

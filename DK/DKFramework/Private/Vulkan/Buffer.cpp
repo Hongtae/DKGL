@@ -26,7 +26,7 @@ Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b, VkBufferView v, VkDeviceMemory
 	DKASSERT_DEBUG(length > 0);
 }
 
-Buffer::~Buffer(void)
+Buffer::~Buffer()
 {
 	DKASSERT_DEBUG(mapped == nullptr);
 
@@ -69,7 +69,7 @@ void* Buffer::Lock(size_t offset, size_t size)
 	return NULL;
 }
 
-void Buffer::Unlock(void)
+void Buffer::Unlock()
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	if (mapped)

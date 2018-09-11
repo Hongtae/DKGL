@@ -49,7 +49,7 @@ namespace DKFoundation
 		typedef typename Container::Index Index;
 		typedef typename Container::Allocator Allocator;
 
-		constexpr static size_t NodeSize(void)	{ return Allocator::NodeSize(); }
+		constexpr static size_t NodeSize()	{ return Allocator::NodeSize(); }
 
 		explicit DKCircularQueue(size_t capacity_)
 			: position(0)
@@ -91,7 +91,7 @@ namespace DKFoundation
 				AppendNL(v);
 		}
 
-		~DKCircularQueue(void)
+		~DKCircularQueue()
 		{
 		}
 
@@ -150,25 +150,25 @@ namespace DKFoundation
 			return *this;
 		}
 
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.IsEmpty();
 		}
 
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return capacity;
 		}
 
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
 
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
@@ -211,7 +211,7 @@ namespace DKFoundation
 			PrependNL(static_cast<VALUE&&>(value));
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-		void RemoveFront(void)
+		void RemoveFront()
 		{
 			CriticalSection guard(lock);
 			size_t count = container.Count();
@@ -230,7 +230,7 @@ namespace DKFoundation
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
 
-		void RemoveBack(void)
+		void RemoveBack()
 		{
 			CriticalSection guard(lock);
 			size_t count = container.Count();
@@ -273,23 +273,23 @@ namespace DKFoundation
 			return ValueNL(index);
 		}
 
-		VALUE& Front(void)
+		VALUE& Front()
 		{
 			return Value(0);
 		}
 
-		const VALUE& Front(void) const
+		const VALUE& Front() const
 		{
 			return Value(0);
 		}
 
-		VALUE& Back(void)
+		VALUE& Back()
 		{
 			CriticalSection guard(lock);
 			return ValueNL(container.Count() - 1);
 		}
 
-		const VALUE& Back(void) const
+		const VALUE& Back() const
 		{
 			CriticalSection guard(lock);
 			return ValueNL(container.Count() - 1);

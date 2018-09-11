@@ -26,21 +26,21 @@ namespace DKFoundation
 	class DKGL_API DKFloat16
 	{
 	public:
-		DKFloat16(void);
+		DKFloat16();
 		DKFloat16(const DKFloat16&);
 		explicit DKFloat16(float);
 
-		operator float(void) const;
+		operator float() const;
 		DKFloat16& operator = (const DKFloat16&);
 
-		DKFloat16 Abs(void) const;
-		bool IsInfinity(void) const;
-		bool IsPositiveInfinity(void) const;
-		bool IsNegativeInfinity(void) const;
-		bool IsNumeric(void) const;	///< false if NaN
-		bool IsSubnormalNumber(void) const;
-		bool IsPositive(void) const;
-		bool IsZero(void) const;
+		DKFloat16 Abs() const;
+		bool IsInfinity() const;
+		bool IsPositiveInfinity() const;
+		bool IsNegativeInfinity() const;
+		bool IsNumeric() const;	///< false if NaN
+		bool IsSubnormalNumber() const;
+		bool IsPositive() const;
+		bool IsZero() const;
 
 		/// @warning
 		/// Compare function does not check Inf,NaN

@@ -31,20 +31,20 @@ namespace DKFoundation
 			mutable ThreadCountMap readerThreads;
 			mutable DWORD writerThread;
 
-			size_t SharedCount(void) const
+			size_t SharedCount() const
 			{
 				size_t num = 0;
 				readerThreads.EnumerateForward([&num](const ThreadCountMap::Pair& p){ num += p.value; });
 				return num;
 			}
-			size_t SharedCountForCurrentThread(void) const
+			size_t SharedCountForCurrentThread() const
 			{
 				size_t num = 0;
 				DWORD tid = ::GetCurrentThreadId();
 				readerThreads.EnumerateForward([&num, tid](const ThreadCountMap::Pair& p){ if (p.key == tid) num += p.value; });
 				return num;
 			}
-			void IncrementShareCount(void) const
+			void IncrementShareCount() const
 			{
 				DWORD tid = ::GetCurrentThreadId();
 				ThreadCountMap::Pair* p = readerThreads.Find(tid);
@@ -57,7 +57,7 @@ namespace DKFoundation
 					readerThreads.Insert(tid, 1);
 				}
 			}
-			bool DecrementShareCount(void) const
+			bool DecrementShareCount() const
 			{
 				DWORD tid = ::GetCurrentThreadId();
 				ThreadCountMap::Pair* p = readerThreads.Find(tid);
@@ -70,7 +70,7 @@ namespace DKFoundation
 			}
 #endif
 		public:
-			SharedLockImpl(void)
+			SharedLockImpl()
 			{
 				::InitializeSRWLock(&lock);
 #ifdef DKGL_DEBUG_ENABLED
@@ -78,10 +78,10 @@ namespace DKFoundation
 				this->writerThread = 0;
 #endif
 			}
-			~SharedLockImpl(void)
+			~SharedLockImpl()
 			{
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				::AcquireSRWLockExclusive(&lock);
 #ifdef DKGL_DEBUG_ENABLED
@@ -91,7 +91,7 @@ namespace DKFoundation
 				this->writerThread = ::GetCurrentThreadId();
 #endif
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				if (::TryAcquireSRWLockExclusive(&lock))
 				{
@@ -105,7 +105,7 @@ namespace DKFoundation
 				}
 				return false;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 #ifdef DKGL_DEBUG_ENABLED
 				DKCriticalSection<DKSpinLock> guard(this->spinLock);
@@ -115,7 +115,7 @@ namespace DKFoundation
 #endif
 				::ReleaseSRWLockExclusive(&lock);
 			}
-			void LockShared(void) const
+			void LockShared() const
 			{
 				::AcquireSRWLockShared(&lock);
 #ifdef DKGL_DEBUG_ENABLED
@@ -124,7 +124,7 @@ namespace DKFoundation
 				this->IncrementShareCount();
 #endif
 			}
-			bool TryLockShared(void) const
+			bool TryLockShared() const
 			{
 				if (::TryAcquireSRWLockShared(&lock))
 				{
@@ -137,7 +137,7 @@ namespace DKFoundation
 				}
 				return false;
 			}
-			void UnlockShared(void) const
+			void UnlockShared() const
 			{
 #ifdef DKGL_DEBUG_ENABLED
 				DKCriticalSection<DKSpinLock> guard(this->spinLock);
@@ -152,18 +152,18 @@ namespace DKFoundation
 		class SharedLockImpl
 		{
 		public:
-			SharedLockImpl(void)
+			SharedLockImpl()
 			{
 				pthread_rwlockattr_init(&attr);
 				pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_PRIVATE);
 				pthread_rwlock_init(&rwlock, &attr);
 			}
-			~SharedLockImpl(void)
+			~SharedLockImpl()
 			{
 				pthread_rwlock_destroy(&rwlock);
 				pthread_rwlockattr_destroy(&attr);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				int ret = pthread_rwlock_wrlock(&rwlock);
 
@@ -171,7 +171,7 @@ namespace DKFoundation
 				DKASSERT_DESC_DEBUG(ret != EINVAL, "The value specified by rwlock is invalid.");
 				DKASSERT_DESC_DEBUG(ret != ENOMEM, "Insufficient memory?");
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				int ret = pthread_rwlock_trywrlock(&rwlock);
 
@@ -180,13 +180,13 @@ namespace DKFoundation
 				DKASSERT_DESC_DEBUG(ret != ENOMEM, "Insufficient memory?");
 				return ret == 0;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 				int ret = pthread_rwlock_unlock(&rwlock);
 				DKASSERT_DESC_DEBUG(ret != EINVAL, "The value specified by rwlock is invalid.");
 				DKASSERT_DESC_DEBUG(ret != EPERM, "The current thread does not own the lock.");
 			}
-			void LockShared(void) const
+			void LockShared() const
 			{
 				int ret = pthread_rwlock_rdlock(&rwlock);
 				while (ret == EAGAIN) // waiting queue is full.
@@ -199,7 +199,7 @@ namespace DKFoundation
 				DKASSERT_DESC_DEBUG(ret != EINVAL, "The value specified by rwlock is invalid.");
 				DKASSERT_DESC_DEBUG(ret != ENOMEM, "Insufficient memory?");
 			}
-			bool TryLockShared(void) const
+			bool TryLockShared() const
 			{
 				int ret = pthread_rwlock_tryrdlock(&rwlock);
 
@@ -208,7 +208,7 @@ namespace DKFoundation
 				DKASSERT_DESC_DEBUG(ret != ENOMEM, "Insufficient memory?");
 				return ret == 0;
 			}
-			void UnlockShared(void) const
+			void UnlockShared() const
 			{
 				int ret = pthread_rwlock_unlock(&rwlock);
 				DKASSERT_DESC_DEBUG(ret != EINVAL, "The value specified by rwlock is invalid.");
@@ -224,49 +224,49 @@ namespace DKFoundation
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKSharedLock::DKSharedLock(void)
+DKSharedLock::DKSharedLock()
 {
 	impl = reinterpret_cast<void*>(new SharedLockImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
-DKSharedLock::~DKSharedLock(void)
+DKSharedLock::~DKSharedLock()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	delete reinterpret_cast<SharedLockImpl*>(impl);
 }
 
-void DKSharedLock::LockShared(void) const
+void DKSharedLock::LockShared() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<SharedLockImpl*>(impl)->LockShared();
 }
 
-bool DKSharedLock::TryLockShared(void) const
+bool DKSharedLock::TryLockShared() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<SharedLockImpl*>(impl)->TryLockShared();
 }
 
-void DKSharedLock::UnlockShared(void) const
+void DKSharedLock::UnlockShared() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<SharedLockImpl*>(impl)->UnlockShared();
 }
 
-void DKSharedLock::Lock(void) const
+void DKSharedLock::Lock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<SharedLockImpl*>(impl)->Lock();
 }
 
-bool DKSharedLock::TryLock(void) const
+bool DKSharedLock::TryLock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<SharedLockImpl*>(impl)->TryLock();
 }
 
-void DKSharedLock::Unlock(void) const
+void DKSharedLock::Unlock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<SharedLockImpl*>(impl)->Unlock();

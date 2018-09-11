@@ -19,32 +19,32 @@ namespace DKFoundation
 	class DKGL_API DKBufferStream : public DKDataStream
 	{
 	public:
-		DKBufferStream(void);
+		DKBufferStream();
 		DKBufferStream(DKBuffer&);
 		DKBufferStream(DKBuffer*);
-		~DKBufferStream(void);
+		~DKBufferStream();
 
 		Position SetCurrentPosition(Position p) override;
-		Position CurrentPosition(void) const override;
-		Position RemainLength(void) const override;
-		Position TotalLength(void) const override;
+		Position CurrentPosition() const override;
+		Position RemainLength() const override;
+		Position TotalLength() const override;
 
 		size_t Read(void* p, size_t s) override;
 		size_t Write(const void* p, size_t s) override;
 
-		bool IsReadable(void) const override { return true; }
-		bool IsSeekable(void) const override { return true; }
-		bool IsWritable(void) const override { return true; }
+		bool IsReadable() const override { return true; }
+		bool IsSeekable() const override { return true; }
+		bool IsWritable() const override { return true; }
 
 		void ResetStream(const void* p, size_t s);
 		void ResetStream(DKBuffer*);
 
 		/// internal storage object. (DKData type)
-		DKData* Data(void) override;
-		const DKData* Data(void) const override;
+		DKData* Data() override;
+		const DKData* Data() const override;
 		/// internal storage object. (DKBuffer type)
-		DKBuffer* Buffer(void);
-		const DKBuffer* Buffer(void) const;
+		DKBuffer* Buffer();
+		const DKBuffer* Buffer() const;
 
 	private:
 		DKObject<DKBuffer> data;

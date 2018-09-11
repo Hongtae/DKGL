@@ -18,10 +18,10 @@ namespace DKFoundation
 	typedef DKFunctionSignature<void (class DKError&)> DKCriticalErrorHandler;
 
 	/// test debugger attached or not. (may not works on some platforms)
-	DKGL_API bool DKIsDebuggerPresent(void);
+	DKGL_API bool DKIsDebuggerPresent();
 
 	/// test build configuration
-	DKGL_API bool DKIsDebugBuild(void);
+	DKGL_API bool DKIsDebugBuild();
 
 	/// set critical error handler. (may not works on some platforms)
 	DKGL_API void DKSetCriticalErrorHandler(DKCriticalErrorHandler*);
@@ -63,7 +63,7 @@ namespace DKFoundation
 	class DKGL_API DKError
 	{
 	public:
-		constexpr static int DefaultCallstackTraceDepth(void) {return 1024;} ///< call stack trace depth
+		constexpr static int DefaultCallstackTraceDepth() {return 1024;} ///< call stack trace depth
 
 		struct StackFrame
 		{
@@ -78,12 +78,12 @@ namespace DKFoundation
 		typedef DKFunctionSignature<void (const void*, size_t)> Descriptor;
 		typedef DKFunctionSignature<void (const DKString&)> StringOutput;
 
-		DKError(void);
+		DKError();
 		DKError(const DKString& desc);
 		DKError(int errorCode, const DKString& desc);
 		DKError(DKError&&);
 		DKError(const DKError&);
-		~DKError(void);
+		~DKError();
 
 		DKError& operator = (DKError&&);
 		DKError& operator = (const DKError&);
@@ -97,13 +97,13 @@ namespace DKFoundation
 		/// Raises an exception with the specified description.
 		static void RaiseException(const DKString& desc);
 
-		int Code(void) const;
-		const DKString& Function(void) const;
-		const DKString& File(void) const;
-		int Line(void) const;
-		const DKString& Description(void) const;
+		int Code() const;
+		const DKString& Function() const;
+		const DKString& File() const;
+		int Line() const;
+		const DKString& Description() const;
 
-		size_t NumberOfStackFrames(void) const;
+		size_t NumberOfStackFrames() const;
 		const StackFrame* StackFrameAtIndex(unsigned int index) const;
 		size_t CopyStackFrames(StackFrame* s, size_t maxCount) const;
 
@@ -111,16 +111,16 @@ namespace DKFoundation
 		size_t RetraceStackFrames(int skip = 0, int maxDepth = DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
 
 		/// writing error info
-		void PrintDescription(void) const;
+		void PrintDescription() const;
 		void PrintDescription(const StringOutput*) const;
-		void PrintStackFrames(void) const;
+		void PrintStackFrames() const;
 		void PrintStackFrames(const StringOutput*) const;
-		void PrintDescriptionWithStackFrames(void) const;
+		void PrintDescriptionWithStackFrames() const;
 		void PrintDescriptionWithStackFrames(const StringOutput*) const;
 
 		/// writing error info into file or stream
 		void WriteToDescriptor(const Descriptor*) const;
-		void WriteToDefaultDescriptor(void) const;
+		void WriteToDefaultDescriptor() const;
 		bool WriteToFile(const DKString& file) const;
 		bool WriteToStream(DKStream* stream) const;
 

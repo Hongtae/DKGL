@@ -24,7 +24,7 @@ namespace DKFramework
 			{
 			public:
 				Texture(DKGraphicsDevice*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE);
-				~Texture(void);
+				~Texture();
 
 			private:
 				DKObject<DKGraphicsDevice> device;

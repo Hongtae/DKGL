@@ -21,21 +21,21 @@ namespace DKFoundation
 	public:
 		using Category = DKLogCategory;
 
-		DKLogger(void);
-		virtual ~DKLogger(void);
+		DKLogger();
+		virtual ~DKLogger();
 
 		/// Should override this function, Never call Unbind() in this function!
 		virtual void Log(Category, const DKString&) = 0;
 
-		void Bind(void);	/// bind to system, share ownership with system.
-		void Unbind(void);
-		bool IsBound(void) const;
+		void Bind();	/// bind to system, share ownership with system.
+		void Unbind();
+		bool IsBound() const;
 
 		static size_t Broadcast(Category, const DKString&);
 
 		static DKObject<DKLogger> CreateSimpleLogger(void(*)(Category, const DKString&));
 	protected:
-		virtual void OnBind(void) {}
-		virtual void OnUnbind(void) {}
+		virtual void OnBind() {}
+		virtual void OnUnbind() {}
 	};
 }

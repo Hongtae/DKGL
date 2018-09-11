@@ -20,16 +20,16 @@ namespace DKFramework
 	class DKGL_API DKRect
 	{
 	public:
-		DKRect(void);
+		DKRect();
 		DKRect(const DKPoint& p, const DKSize& s);
 		DKRect(float x, float y, float width, float height);
 
-		DKPoint Center(void) const;
+		DKPoint Center() const;
 		DKRect& SetCenter(const DKPoint& p);
 		DKRect& SetCenter(float x, float y);
 		
 		bool IsPointInside(const DKPoint& pt) const;
-		bool IsValid(void) const;
+		bool IsValid() const;
 		bool Intersect(const DKRect& rc) const;
 		bool IntersectLine(const DKPoint& pt1, const DKPoint& pt2) const;
 		bool IntersectTriangle(const DKPoint& pt1, const DKPoint& pt2, const DKPoint& pt3) const;

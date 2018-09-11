@@ -20,11 +20,11 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		ComputeCommandEncoder(VkCommandBuffer, CommandBuffer*);
-		~ComputeCommandEncoder(void);
+		~ComputeCommandEncoder();
 
-		void EndEncoding(void) override;
-		bool IsCompleted(void) const override { return false; }
-		DKCommandBuffer* Buffer(void) override;
+		void EndEncoding() override;
+		bool IsCompleted() const override { return false; }
+		DKCommandBuffer* Buffer() override;
 
 		VkCommandBuffer encodingBuffer;
 		DKObject<CommandBuffer> commandBuffer;

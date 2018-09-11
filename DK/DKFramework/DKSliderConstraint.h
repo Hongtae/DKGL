@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSliderConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,8 +18,8 @@ namespace DKFramework
 	public:
 		DKSliderConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameInA, const DKNSTransform& frameInB);
 		DKSliderConstraint(DKRigidBody* bodyB, const DKNSTransform& frameInB);
-		DKSliderConstraint(void);
-		~DKSliderConstraint(void);
+		DKSliderConstraint();
+		~DKSliderConstraint();
 
 		void SetLinearLimit(float lower, float upper);
 		void SetAngularLimit(float lower, float upper);
@@ -27,13 +27,13 @@ namespace DKFramework
 		void SetLinearUpperLimit(float limit);
 		void SetAngularLowerLimit(float limit);
 		void SetAngularUpperLimit(float limit);
-		float LinearLowerLimit(void) const;
-		float LinearUpperLimit(void) const;
-		float AngularLowerLimit(void) const;
-		float AngularUpperLimit(void) const;
+		float LinearLowerLimit() const;
+		float LinearUpperLimit() const;
+		float AngularLowerLimit() const;
+		float AngularUpperLimit() const;
 
-		DKNSTransform FrameA(void) const;
-		DKNSTransform FrameB(void) const;
+		DKNSTransform FrameA() const;
+		DKNSTransform FrameB() const;
 		void SetFrameA(const DKNSTransform&);
 		void SetFrameB(const DKNSTransform&);
 		void SetFrames(const DKNSTransform&, const DKNSTransform&);
@@ -41,11 +41,11 @@ namespace DKFramework
 		bool IsValidParam(ParamType type, ParamAxis axis) const override;
 		bool HasParam(ParamType type, ParamAxis axis) const override;
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKSliderConstraint* Copy(UUIDObjectMap&, const DKSliderConstraint*);

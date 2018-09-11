@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSoftBody.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -15,13 +15,13 @@ namespace DKFramework
 	class DKGL_API DKSoftBody : public DKCollisionObject
 	{
 	public:
-		DKSoftBody(void);
-		~DKSoftBody(void);
+		DKSoftBody();
+		~DKSoftBody();
 
-		DKCollisionShape* CollisionShape(void)				{return NULL;}
-		const DKCollisionShape* CollisionShape(void) const	{return NULL;}
+		DKCollisionShape* CollisionShape()				{return NULL;}
+		const DKCollisionShape* CollisionShape() const	{return NULL;}
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;

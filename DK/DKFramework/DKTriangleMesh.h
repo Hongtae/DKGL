@@ -15,12 +15,12 @@ namespace DKFramework
 	/// @brief triangle mesh interface
 	struct DKTriangleMesh
 	{
-		virtual ~DKTriangleMesh(void) {}
+		virtual ~DKTriangleMesh() {}
 
-		virtual int NumberOfTriangles(void) const = 0;
+		virtual int NumberOfTriangles() const = 0;
 		virtual bool GetTriangleAtIndex(int index, DKTriangle&) const = 0;
 
-		virtual void Lock(void) {}
-		virtual void Unlock(void) {}
+		virtual void Lock() {}
+		virtual void Unlock() {}
 	};
 }

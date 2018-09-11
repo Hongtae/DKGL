@@ -28,7 +28,7 @@ namespace DKFoundation
 		template <typename BaseCharT> struct Base64;
 		template <> struct Base64<char>
 		{
-			static const char* Base64Chars(void)
+			static const char* Base64Chars()
 			{
 				return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 			}
@@ -39,7 +39,7 @@ namespace DKFoundation
 		};
 		template <> struct Base64<wchar_t>
 		{
-			static const wchar_t* Base64Chars(void)
+			static const wchar_t* Base64Chars()
 			{
 				return L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 			}
@@ -287,7 +287,7 @@ DKBuffer::DKBuffer(DKBuffer&& b)
 	b.contentLength = 0;
 }
 
-DKBuffer::~DKBuffer(void)
+DKBuffer::~DKBuffer()
 {
 #ifdef DKGL_DEBUG_ENABLED
 	if (sharedLock.TryLock())
@@ -304,7 +304,7 @@ DKBuffer::~DKBuffer(void)
 		allocator->Dealloc(contentPtr);
 }
 
-size_t DKBuffer::Length(void) const
+size_t DKBuffer::Length() const
 {
 	return contentLength;
 }
@@ -632,21 +632,21 @@ void DKBuffer::SwitchAllocator(DKAllocator& alloc)
 	}
 }
 
-DKAllocator& DKBuffer::Allocator(void) const
+DKAllocator& DKBuffer::Allocator() const
 {
 	return *this->allocator;
 }
 
-void* DKBuffer::LockContent(void)
+void* DKBuffer::LockContent()
 {
 	return contentPtr;
 }
 
-void DKBuffer::UnlockContent(void)
+void DKBuffer::UnlockContent()
 {
 }
 
-const void* DKBuffer::LockShared(void) const
+const void* DKBuffer::LockShared() const
 {
 	sharedLock.LockShared();
 	return contentPtr;
@@ -663,12 +663,12 @@ bool DKBuffer::TryLockShared(const void ** ptr) const
 	return false;
 }
 
-void DKBuffer::UnlockShared(void) const
+void DKBuffer::UnlockShared() const
 {
 	sharedLock.UnlockShared();
 }
 
-void* DKBuffer::LockExclusive(void)
+void* DKBuffer::LockExclusive()
 {
 	sharedLock.Lock();
 	return contentPtr;
@@ -685,7 +685,7 @@ bool DKBuffer::TryLockExclusive(void ** ptr)
 	return false;
 }
 
-void DKBuffer::UnlockExclusive(void)
+void DKBuffer::UnlockExclusive()
 {
 	sharedLock.Unlock();
 }

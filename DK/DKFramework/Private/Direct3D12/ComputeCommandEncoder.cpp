@@ -21,11 +21,11 @@ ComputeCommandEncoder::ComputeCommandEncoder(ID3D12GraphicsCommandList* cm, Comm
 	DKASSERT_DEBUG(commandList != nullptr);
 }
 
-ComputeCommandEncoder::~ComputeCommandEncoder(void)
+ComputeCommandEncoder::~ComputeCommandEncoder()
 {
 }
 
-void ComputeCommandEncoder::EndEncoding(void)
+void ComputeCommandEncoder::EndEncoding()
 {
 	if (commandList)
 	{
@@ -36,7 +36,7 @@ void ComputeCommandEncoder::EndEncoding(void)
 	}
 }
 
-DKCommandBuffer* ComputeCommandEncoder::Buffer(void)
+DKCommandBuffer* ComputeCommandEncoder::Buffer()
 {
 	return commandBuffer;
 }

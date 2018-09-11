@@ -18,13 +18,13 @@ namespace DKFramework
 	class DKApplicationInterface
 	{
 	public:
-		virtual ~DKApplicationInterface(void) {}
+		virtual ~DKApplicationInterface() {}
 
 		using SystemPath = DKApplication::SystemPath;
 		using ProcessInfo = DKApplication::ProcessInfo;
 
-		virtual DKEventLoop* EventLoop(void) = 0;
-		virtual DKLogger* DefaultLogger(void) = 0;
+		virtual DKEventLoop* EventLoop() = 0;
+		virtual DKLogger* DefaultLogger() = 0;
 
 		virtual DKString DefaultPath(SystemPath) = 0;
 		virtual DKString ProcessInfoString(ProcessInfo) = 0;

@@ -29,7 +29,7 @@ QueueFamily::QueueFamily(VkPhysicalDevice phyDevice, VkDevice device, uint32_t i
 	}
 }
 
-QueueFamily::~QueueFamily(void)
+QueueFamily::~QueueFamily()
 {
 }
 

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKPolyhedralConvexShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,11 +17,11 @@ namespace DKFramework
 	class DKGL_API DKPolyhedralConvexShape : public DKConvexShape
 	{
 	public:
-		~DKPolyhedralConvexShape(void);
+		~DKPolyhedralConvexShape();
 		
-		size_t NumberOfVertices(void) const;
-		size_t NumberOfEdges(void) const;
-		size_t NumberOfPlanes(void) const;
+		size_t NumberOfVertices() const;
+		size_t NumberOfEdges() const;
+		size_t NumberOfPlanes() const;
 
 		DKLine EdgeAtIndex(unsigned int index) const;
 		DKVector3 VertexAtIndex(unsigned int index) const;

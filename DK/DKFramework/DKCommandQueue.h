@@ -27,16 +27,16 @@ namespace DKFramework
 			Compute = 1 << 1,	// Compute and Blit commands
 		};
 
-		virtual ~DKCommandQueue(void) {}
+		virtual ~DKCommandQueue() {}
 
-		virtual DKObject<DKCommandBuffer> CreateCommandBuffer(void) = 0;
+		virtual DKObject<DKCommandBuffer> CreateCommandBuffer() = 0;
 		virtual DKObject<DKSwapChain> CreateSwapChain(DKWindow*) = 0;
 
-		virtual uint32_t Type(void) const = 0;
-		virtual DKGraphicsDevice* Device(void) = 0;
+		virtual uint32_t Type() const = 0;
+		virtual DKGraphicsDevice* Device() = 0;
 	};
 
-	inline DKGraphicsDevice* DKCommandBuffer::Device(void)
+	inline DKGraphicsDevice* DKCommandBuffer::Device()
 	{
 		return Queue()->Device();
 	}

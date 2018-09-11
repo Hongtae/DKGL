@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKMultiSphereShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -48,11 +48,11 @@ DKMultiSphereShape::DKMultiSphereShape(const DKVector3* centers, const float* ra
 {
 }
 
-DKMultiSphereShape::~DKMultiSphereShape(void)
+DKMultiSphereShape::~DKMultiSphereShape()
 {
 }
 
-size_t DKMultiSphereShape::NumberOfSpheres(void) const
+size_t DKMultiSphereShape::NumberOfSpheres() const
 {
 	btMultiSphereShape* shape = static_cast<btMultiSphereShape*>(this->impl);
 	int c = shape->getSphereCount();

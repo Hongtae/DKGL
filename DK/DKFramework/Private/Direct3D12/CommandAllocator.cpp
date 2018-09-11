@@ -22,7 +22,7 @@ CommandAllocator::CommandAllocator(ID3D12CommandAllocator* a, D3D12_COMMAND_LIST
 {
 }
 
-CommandAllocator::~CommandAllocator(void)
+CommandAllocator::~CommandAllocator()
 {
 	if (fenceEvent)
 		CloseHandle(fenceEvent);
@@ -37,7 +37,7 @@ void CommandAllocator::SetPendingState(ID3D12Fence* f, UINT64 v)
 	enqueuedCounter = v;
 }
 
-bool CommandAllocator::Reset(void)
+bool CommandAllocator::Reset()
 {
 	HRESULT hr = allocator->Reset();
 	if (SUCCEEDED(allocator->Reset()))
@@ -50,7 +50,7 @@ bool CommandAllocator::Reset(void)
 	return false;
 }
 
-bool CommandAllocator::IsCompleted(void)
+bool CommandAllocator::IsCompleted()
 {
 	if (this->fence)
 	{

@@ -47,7 +47,7 @@ namespace DKFoundation
 		typedef DKTypeTraits<Value>			ValueTraits;
 		typedef DKAVLTree<Value, Comparator, DKTreeItemReplacer<Value>, Allocator>	Container;
 
-		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
+		constexpr static size_t NodeSize() { return Container::NodeSize(); }
 
 		Comparator& comparator;
 
@@ -55,7 +55,7 @@ namespace DKFoundation
 		/// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
 
-		DKSet(void)
+		DKSet()
 			: comparator(container.comparator)
 		{
 		}
@@ -83,7 +83,7 @@ namespace DKFoundation
 			for (const Value& v : il)
 				container.Insert(v);
 		}
-		~DKSet(void)
+		~DKSet()
 		{
 		}
 		void Insert(const Value& v)
@@ -134,7 +134,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.Remove(il);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
@@ -148,17 +148,17 @@ namespace DKFoundation
 		{
 			return container.Find(v) != NULL;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.Count() == 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return container.Count();
 		}

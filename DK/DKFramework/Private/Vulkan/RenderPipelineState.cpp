@@ -22,7 +22,7 @@ RenderPipelineState::RenderPipelineState(DKGraphicsDevice* d, VkPipeline p, VkPi
 {
 }
 
-RenderPipelineState::~RenderPipelineState(void)
+RenderPipelineState::~RenderPipelineState()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	vkDestroyPipeline(dev->device, pipeline, nullptr);

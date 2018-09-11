@@ -21,17 +21,17 @@ namespace DKFramework
 			{
 			public:
 				DropTarget(DKWindow* target);
-				~DropTarget(void);
+				~DropTarget();
 
 				// *** IUnknown ***
 				STDMETHODIMP QueryInterface(REFIID riid, void **ppv);
-				STDMETHODIMP_(ULONG) AddRef(void);
-				STDMETHODIMP_(ULONG) Release(void);
+				STDMETHODIMP_(ULONG) AddRef();
+				STDMETHODIMP_(ULONG) Release();
 
 				// *** IDropTarget ***
 				STDMETHODIMP DragEnter(IDataObject *pdto, DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
 				STDMETHODIMP DragOver(DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
-				STDMETHODIMP DragLeave(void);
+				STDMETHODIMP DragLeave();
 				STDMETHODIMP Drop(IDataObject *pdto, DWORD grfKeyState, POINTL ptl, DWORD *pdwEffect);
 
 				DKStringArray FilesFromDataObject(IDataObject*);

@@ -20,21 +20,21 @@ namespace DKFramework
 	class DKGL_API DKMatrix4
 	{
 	public:
-		DKMatrix4(void);
+		DKMatrix4();
 		DKMatrix4(const DKVector4& row1, const DKVector4& row2, const DKVector4& row3, const DKVector4& row4);
 		DKMatrix4(float e11, float e12, float e13, float e14, float e21, float e22, float e23, float e24,
 			float e31, float e32, float e33, float e34, float e41, float e42, float e43, float e44);
 
-		DKMatrix4& Zero(void);
-		DKMatrix4& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKMatrix4& Zero();
+		DKMatrix4& Identity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
-		DKMatrix4& Inverse(void);
-		DKMatrix4& Transpose(void);
+		DKMatrix4& Inverse();
+		DKMatrix4& Transpose();
 		DKMatrix4& Multiply(const DKMatrix4& m);
 
-		float Determinant(void) const;
+		float Determinant() const;
 		bool GetInverseMatrix(DKMatrix4& matOut, float *pDeterminant) const;
 
 		DKMatrix4 operator * (const DKMatrix4& m) const;
@@ -52,14 +52,14 @@ namespace DKFramework
 		bool operator == (const DKMatrix4& m) const;
 		bool operator != (const DKMatrix4& m) const;
 
-		DKVector4 Row1(void) const;
-		DKVector4 Row2(void) const;
-		DKVector4 Row3(void) const;
-		DKVector4 Row4(void) const;
-		DKVector4 Column1(void) const;
-		DKVector4 Column2(void) const;
-		DKVector4 Column3(void) const;
-		DKVector4 Column4(void) const;
+		DKVector4 Row1() const;
+		DKVector4 Row2() const;
+		DKVector4 Row3() const;
+		DKVector4 Row4() const;
+		DKVector4 Column1() const;
+		DKVector4 Column2() const;
+		DKVector4 Column3() const;
+		DKVector4 Column4() const;
 
 		union
 		{

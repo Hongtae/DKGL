@@ -10,14 +10,14 @@
 
 using namespace DKFramework;
 
-DKGraphicsDevice::DKGraphicsDevice(void)
+DKGraphicsDevice::DKGraphicsDevice()
 {
 	impl = DKGraphicsDeviceInterface::CreateInterface();
 	if (impl == NULL)
 		DKError::RaiseException("FATAL ERROR: Cannot create graphics device!");
 }
 
-DKGraphicsDevice::~DKGraphicsDevice(void)
+DKGraphicsDevice::~DKGraphicsDevice()
 {
 	delete impl;
 }

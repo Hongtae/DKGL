@@ -14,11 +14,11 @@ namespace DKFoundation
 	class DKGL_API DKLock
 	{
 	public:
-		DKLock(void);
-		~DKLock(void);
-		void Lock(void) const;
-		bool TryLock(void) const;
-		void Unlock(void) const;
+		DKLock();
+		~DKLock();
+		void Lock() const;
+		bool TryLock() const;
+		void Unlock() const;
 
 	private:
 		DKLock(const DKLock&) = delete;

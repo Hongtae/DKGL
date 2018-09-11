@@ -14,11 +14,11 @@
 
 using namespace DKFramework;
 
-DKBvh::DKBvh(void) : volume(NULL)
+DKBvh::DKBvh() : volume(NULL)
 {
 }
 
-DKBvh::~DKBvh(void)
+DKBvh::~DKBvh()
 {
 }
 
@@ -28,12 +28,12 @@ void DKBvh::Build(VolumeInterface* vi)
 	BuildInternal();
 }
 
-void DKBvh::Rebuild(void)
+void DKBvh::Rebuild()
 {
 	BuildInternal();
 }
 
-void DKBvh::BuildInternal(void)
+void DKBvh::BuildInternal()
 {
 	if (this->volume)
 	{
@@ -115,7 +115,7 @@ void DKBvh::BuildInternal(void)
 		nodes.Clear();
 }
 
-DKAabb DKBvh::Aabb(void) const
+DKAabb DKBvh::Aabb() const
 {
 	if (volume)
 	{

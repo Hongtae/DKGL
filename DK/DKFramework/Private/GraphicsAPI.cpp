@@ -17,18 +17,18 @@ namespace DKFramework
 #if DKGL_ENABLE_METAL
 		namespace Metal
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void);
+			DKGraphicsDeviceInterface* CreateInterface();
 		}
 #endif
 #if DKGL_ENABLE_VULKAN
 		namespace Vulkan
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void);
+			DKGraphicsDeviceInterface* CreateInterface();
 		}
 #endif
 	}
 
-	DKGraphicsDeviceInterface* DKGraphicsDeviceInterface::CreateInterface(void)
+	DKGraphicsDeviceInterface* DKGraphicsDeviceInterface::CreateInterface()
 	{
 		DKString defaultAPI =
 #if DKGL_ENABLE_METAL
@@ -40,7 +40,7 @@ namespace DKFramework
 		struct APISet
 		{
 			const char* name;
-			DKGraphicsDeviceInterface* (*fn)(void);
+			DKGraphicsDeviceInterface* (*fn)();
 			bool preferred;
 		};
 

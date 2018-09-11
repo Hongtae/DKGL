@@ -30,7 +30,7 @@ namespace DKFoundation
 	DKGL_API size_t  DKMemoryVirtualSize(void*);
 
 	/// query system page size (default allocation size)
-	DKGL_API size_t DKMemoryPageSize(void);
+	DKGL_API size_t DKMemoryPageSize();
 	/// reserve page memory with given location if available.
 	/// address should be aligned with value returned by DKMemoryPageSize or NULL
 	DKGL_API void* DKMemoryPageReserve(void*, size_t);
@@ -53,9 +53,9 @@ namespace DKFoundation
 	/// @note
 	///   If you run out of memory, call DKAllocatorChain::Cleanup
 	///   instead of calling DKMemoryPoolPurge, which purges memory pool only.
-	DKGL_API size_t DKMemoryPoolPurge(void);
+	DKGL_API size_t DKMemoryPoolPurge();
 	/// query memory pool size
-	DKGL_API size_t DKMemoryPoolSize(void);
+	DKGL_API size_t DKMemoryPoolSize();
 
 	/**
 	 @brief
@@ -87,7 +87,7 @@ namespace DKFoundation
 	};
 	/// Get number of buckets, a bucket is a unit of sub-allocator in memory pool.
 	/// this value does not change during run-time.
-	DKGL_API size_t DKMemoryPoolNumberOfBuckets(void);
+	DKGL_API size_t DKMemoryPoolNumberOfBuckets();
 	/// Query allocation status of Memory-Pool.
 	/// Do not call this function at exiting.
 	/// @see DKMemoryPoolBucketStatus

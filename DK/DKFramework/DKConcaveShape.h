@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConcaveShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,7 +16,7 @@ namespace DKFramework
 	class DKGL_API DKConcaveShape : public DKCollisionShape
 	{
 	public:
-		~DKConcaveShape(void);
+		~DKConcaveShape();
 
 		struct Triangle
 		{

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKUuid.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,17 +16,17 @@ namespace DKFoundation
 	class DKGL_API DKUuid
 	{
 	public:
-		DKUuid(void);
+		DKUuid();
 		DKUuid(const DKUuid&);
 		DKUuid(const DKString&);
-		static DKUuid Create(void);
+		static DKUuid Create();
 		
-		DKString String(void) const;
+		DKString String() const;
 
 		DKUuid& operator = (const DKUuid&);
 
-		bool IsValid(void) const;
-		bool IsZero(void) const;
+		bool IsValid() const;
+		bool IsZero() const;
 		int Compare(const DKUuid&) const;
 
 		bool operator == (const DKUuid& rhs) const	{return Compare(rhs) == 0;}
@@ -36,7 +36,7 @@ namespace DKFoundation
 		bool operator < (const DKUuid& rhs) const	{return Compare(rhs) < 0;}
 		bool operator <= (const DKUuid& rhs) const	{return Compare(rhs) <= 0;}
 
-		void SetZero(void);
+		void SetZero();
 
 	private:
 		unsigned char data[16];

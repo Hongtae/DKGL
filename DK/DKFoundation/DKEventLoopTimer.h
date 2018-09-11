@@ -19,29 +19,29 @@ namespace DKFoundation
 	class DKGL_API DKEventLoopTimer
 	{
 	public:
-		~DKEventLoopTimer(void);
+		~DKEventLoopTimer();
 
 		static DKObject<DKEventLoopTimer> Create(const DKOperation* operation, double interval, DKEventLoop* eventLoop = NULL);
 
-		size_t Count(void) const;		   ///< number of timer did fired
-		DKEventLoop* EventLoop(void) const;	///< return event-loop that the timer installed on
-		double Interval(void) const;
-		bool IsRunning(void) const;
+		size_t Count() const;		   ///< number of timer did fired
+		DKEventLoop* EventLoop() const;	///< return event-loop that the timer installed on
+		double Interval() const;
+		bool IsRunning() const;
 
-		void Invalidate(void);
+		void Invalidate();
 
 	private:
 		struct Invoker : public DKOperation
 		{
-			virtual void Invalidate(void) = 0;
-			virtual size_t Count(void) const = 0;
-			virtual DKEventLoop* EventLoop(void) const = 0;
-			virtual bool IsRunning(void) const = 0;
-			virtual double Interval(void) const = 0;
+			virtual void Invalidate() = 0;
+			virtual size_t Count() const = 0;
+			virtual DKEventLoop* EventLoop() const = 0;
+			virtual bool IsRunning() const = 0;
+			virtual double Interval() const = 0;
 		};
 		DKObject<Invoker> invoker;
 
-		DKEventLoopTimer(void);
+		DKEventLoopTimer();
 		friend class DKObject<DKEventLoopTimer>;
 	};
 }

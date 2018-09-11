@@ -10,12 +10,12 @@
 
 using namespace DKFramework;
 
-DKResourcePool::DKResourcePool(void)
+DKResourcePool::DKResourcePool()
 	: allocator(NULL)
 {
 }
 
-DKResourcePool::~DKResourcePool(void)
+DKResourcePool::~DKResourcePool()
 {
 }
 
@@ -142,13 +142,13 @@ void DKResourcePool::RemoveLocator(const DKString& name)
 	}
 }
 
-void DKResourcePool::RemoveAllLocators(void)
+void DKResourcePool::RemoveAllLocators()
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	locators.Clear();
 }
 
-DKString::StringArray DKResourcePool::AllLocatorNames(void) const
+DKString::StringArray DKResourcePool::AllLocatorNames() const
 {
 	DKString::StringArray names;
 	DKCriticalSection<DKSpinLock> guard(this->lock);
@@ -222,26 +222,26 @@ void DKResourcePool::RemoveResourceData(const DKString& name)
 	resourceData.Remove(name);
 }
 
-void DKResourcePool::RemoveAllResourceData(void)
+void DKResourcePool::RemoveAllResourceData()
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	resourceData.Clear();
 }
 
-void DKResourcePool::RemoveAllResources(void)
+void DKResourcePool::RemoveAllResources()
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	resources.Clear();
 }
 
-void DKResourcePool::RemoveAll(void)
+void DKResourcePool::RemoveAll()
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	resources.Clear();
 	resourceData.Clear();
 }
 
-void DKResourcePool::ClearUnreferencedObjects(void)
+void DKResourcePool::ClearUnreferencedObjects()
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	using ResInfo = DKMapPair<DKString, DKObject<DKResource>::Ref>;
@@ -395,7 +395,7 @@ DKObject<DKData> DKResourcePool::LoadResourceData(const DKString& name, bool map
 	return ret;
 }
 
-DKObject<DKResourcePool> DKResourcePool::Clone(void) const
+DKObject<DKResourcePool> DKResourcePool::Clone() const
 {	
 	DKObject<DKResourcePool> pool = DKObject<DKResourcePool>::New();
 
@@ -420,7 +420,7 @@ void DKResourcePool::SetAllocator(DKAllocator* alloc)
 	this->allocator = alloc;
 }
 
-DKAllocator& DKResourcePool::Allocator(void) const
+DKAllocator& DKResourcePool::Allocator() const
 {
 	DKCriticalSection<DKSpinLock> guard(this->lock);
 	

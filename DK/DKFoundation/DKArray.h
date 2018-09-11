@@ -74,7 +74,7 @@ namespace DKFoundation
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 		typedef ALLOC					Allocator;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
 		enum : Index { IndexNotFound = ~Index(0) };
 
@@ -84,12 +84,12 @@ namespace DKFoundation
 
 		typedef DKArrayRBIterator<DKArray, VALUE&>				RBIterator;					///< implemented for range-based loop
 		typedef DKArrayRBIterator<const DKArray, const VALUE&>	ConstRBIterator;			///< implemented for range-based loop
-		RBIterator begin(void)				{return RBIterator(*this, 0);}					///< implemented for range-based loop
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}				///< implemented for range-based loop
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}		///< implemented for range-based loop
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}	///< implemented for range-based loop
+		RBIterator begin()				{return RBIterator(*this, 0);}					///< implemented for range-based loop
+		ConstRBIterator begin() const	{return ConstRBIterator(*this, 0);}				///< implemented for range-based loop
+		RBIterator end()				{return RBIterator(*this, this->Count());}		///< implemented for range-based loop
+		ConstRBIterator end() const		{return ConstRBIterator(*this, this->Count());}	///< implemented for range-based loop
 
-		DKArray(void)
+		DKArray()
 			: data(NULL), count(0), capacity(0)
 		{
 		}
@@ -143,14 +143,14 @@ namespace DKFoundation
 				}
 			}
 		}
-		~DKArray(void)
+		~DKArray()
 		{
 			Clear();
 
 			if (data)
 				Allocator::Free(data);
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return count == 0;
@@ -318,7 +318,7 @@ namespace DKFoundation
 			}
 			return count;
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			for (Index i = 0; i < count; i++)
@@ -326,17 +326,17 @@ namespace DKFoundation
 
 			count = 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return capacity;
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			if (count < capacity)
@@ -422,13 +422,13 @@ namespace DKFoundation
 			return data[index];
 		}
 		/// To use items directly (You may need lock array.)
-		operator VALUE* (void)
+		operator VALUE* ()
 		{
 			if (count > 0)
 				return data;
 			return NULL;
 		}
-		operator const VALUE* (void) const
+		operator const VALUE* () const
 		{
 			if (count > 0)
 				return data;

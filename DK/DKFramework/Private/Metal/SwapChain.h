@@ -22,22 +22,22 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		SwapChain(CommandQueue*, DKWindow*);
-		~SwapChain(void);
+		~SwapChain();
 
-		bool Setup(void);
+		bool Setup();
 
 		void SetColorPixelFormat(DKPixelFormat) override;
 		void SetDepthStencilPixelFormat(DKPixelFormat) override;
 
-		DKPixelFormat ColorPixelFormat(void) const override { return colorPixelFormat; }
-		DKPixelFormat DepthStencilPixelFormat(void) const override { return depthStencilPixelFormat; }
+		DKPixelFormat ColorPixelFormat() const override { return colorPixelFormat; }
+		DKPixelFormat DepthStencilPixelFormat() const override { return depthStencilPixelFormat; }
 
 
-		DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
+		DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
 
-		bool Present(void) override;
+		bool Present() override;
 
-		void SetupFrame(void);
+		void SetupFrame();
 
 		DKObject<DKWindow> window;
 		DKObject<CommandQueue> queue;

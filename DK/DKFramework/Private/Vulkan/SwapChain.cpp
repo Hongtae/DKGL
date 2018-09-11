@@ -46,7 +46,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	}
 }
 
-SwapChain::~SwapChain(void)
+SwapChain::~SwapChain()
 {
 	window->RemoveEventHandler(this);
 
@@ -74,7 +74,7 @@ SwapChain::~SwapChain(void)
 	vkDestroySemaphore(device, renderCompleteSemaphore, nullptr);
 }
 
-bool SwapChain::Setup(void)
+bool SwapChain::Setup()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkInstance instance = dev->instance;
@@ -165,7 +165,7 @@ bool SwapChain::Setup(void)
 	return this->Update();
 }
 
-bool SwapChain::Update(void)
+bool SwapChain::Update()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkPhysicalDevice physicalDevice = dev->physicalDevice;
@@ -450,20 +450,20 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
 	DKLogW("SwapChain::SetDepthStencilPixelFormat not implemented!");
 }
 
-DKPixelFormat SwapChain::ColorPixelFormat(void) const
+DKPixelFormat SwapChain::ColorPixelFormat() const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	return PixelFormat::To(this->surfaceFormat.format);
 }
 
-DKPixelFormat SwapChain::DepthStencilPixelFormat(void) const
+DKPixelFormat SwapChain::DepthStencilPixelFormat() const
 {
 	// not implemented yet..
 	return DKPixelFormat::Invalid;
 }
 
 
-DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
+DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 {
 	if (renderPassDescriptor.colorAttachments.Count() == 0)
 		this->SetupFrame();
@@ -471,7 +471,7 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 	return renderPassDescriptor;
 }
 
-void SwapChain::SetupFrame(void)
+void SwapChain::SetupFrame()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
@@ -504,7 +504,7 @@ void SwapChain::SetupFrame(void)
 	this->renderPassDescriptor.colorAttachments.Add(colorAttachment);
 }
 
-bool SwapChain::Present(void)
+bool SwapChain::Present()
 {
 	VkSemaphore waitSemaphore = renderCompleteSemaphore;
 

@@ -71,14 +71,14 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-AudioStreamVorbis::AudioStreamVorbis(void)
+AudioStreamVorbis::AudioStreamVorbis()
 	: DKAudioStream(DKAudioStream::FileTypeOggVorbis)
 	, context(new VorbisFileContext())
 {
 	memset(context, 0, sizeof(VorbisFileContext));
 }
 
-AudioStreamVorbis::~AudioStreamVorbis(void)
+AudioStreamVorbis::~AudioStreamVorbis()
 {
 	if (context->vorbis.datasource)
 		ov_clear(&context->vorbis);
@@ -209,7 +209,7 @@ double AudioStreamVorbis::SeekTime(double s)
 	return ov_time_tell(&context->vorbis);
 }
 
-DKAudioStream::Position AudioStreamVorbis::RawPos(void) const
+DKAudioStream::Position AudioStreamVorbis::RawPos() const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -217,7 +217,7 @@ DKAudioStream::Position AudioStreamVorbis::RawPos(void) const
 	return ov_raw_tell(&context->vorbis);
 }
 
-DKAudioStream::Position AudioStreamVorbis::PcmPos(void) const
+DKAudioStream::Position AudioStreamVorbis::PcmPos() const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -225,7 +225,7 @@ DKAudioStream::Position AudioStreamVorbis::PcmPos(void) const
 	return ov_pcm_tell(&context->vorbis);
 }
 
-double AudioStreamVorbis::TimePos(void) const
+double AudioStreamVorbis::TimePos() const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -233,7 +233,7 @@ double AudioStreamVorbis::TimePos(void) const
 	return ov_time_tell(&context->vorbis);
 }
 
-DKAudioStream::Position AudioStreamVorbis::RawTotal(void) const
+DKAudioStream::Position AudioStreamVorbis::RawTotal() const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -241,7 +241,7 @@ DKAudioStream::Position AudioStreamVorbis::RawTotal(void) const
 	return ov_raw_total(&context->vorbis, -1);
 }
 
-DKAudioStream::Position AudioStreamVorbis::PcmTotal(void) const
+DKAudioStream::Position AudioStreamVorbis::PcmTotal() const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;
@@ -249,7 +249,7 @@ DKAudioStream::Position AudioStreamVorbis::PcmTotal(void) const
 	return ov_pcm_total(&context->vorbis, -1);
 }
 
-double AudioStreamVorbis::TimeTotal(void) const
+double AudioStreamVorbis::TimeTotal() const
 {
 	if (context->vorbis.datasource == NULL)
 		return -1;

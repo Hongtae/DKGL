@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKPoint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,7 +16,7 @@ namespace DKFramework
 	class DKGL_API DKPoint
 	{
 	public:
-		DKPoint(void)
+		DKPoint()
 			: x(0), y(0)
 		{
 		}
@@ -116,7 +116,7 @@ namespace DKFramework
 			y /= p;
 			return *this;
 		}
-		DKVector2 Vector(void) const
+		DKVector2 Vector() const
 		{
 			return DKVector2(x, y);
 		}

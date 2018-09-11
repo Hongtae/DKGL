@@ -25,14 +25,14 @@ namespace DKFramework
 		DKAffineTransform2(float x, float y);
 		DKAffineTransform2(const DKMatrix3& m);
 
-		DKAffineTransform2& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKAffineTransform2& Identity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
 		DKAffineTransform2& Translate(float x, float y);
 		DKAffineTransform2& Translate(const DKVector2& v);
 
-		DKAffineTransform2& Inverse(void);
+		DKAffineTransform2& Inverse();
 		DKAffineTransform2& Multiply(const DKLinearTransform2& t);
 		DKAffineTransform2& Multiply(const DKAffineTransform2& t);
 
@@ -44,8 +44,8 @@ namespace DKFramework
 		bool operator == (const DKAffineTransform2& t) const;
 		bool operator != (const DKAffineTransform2& t) const;
 
-		DKMatrix3 Matrix3(void) const;
-		const DKMatrix2 Matrix2(void) const		{return matrix2;}
+		DKMatrix3 Matrix3() const;
+		const DKMatrix2 Matrix2() const		{return matrix2;}
 
 		DKMatrix2	matrix2;
 		DKVector2	translation;

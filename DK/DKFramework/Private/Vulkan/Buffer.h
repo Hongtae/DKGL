@@ -18,10 +18,10 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView, VkDeviceMemory, VkMemoryType, size_t);
-		~Buffer(void);
+		~Buffer();
 
 		void* Lock(size_t offset, size_t length) override;
-		void Unlock(void) override;
+		void Unlock() override;
 
 		DKSpinLock lock;
 		void* mapped;

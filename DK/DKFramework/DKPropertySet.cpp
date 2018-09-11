@@ -9,12 +9,12 @@
 
 using namespace DKFramework;
 
-DKPropertySet::DKPropertySet(void)
+DKPropertySet::DKPropertySet()
 	: dataSet(DKVariant::TypePairs)
 {
 }
 
-DKPropertySet::~DKPropertySet(void)
+DKPropertySet::~DKPropertySet()
 {
 }
 
@@ -372,7 +372,7 @@ void DKPropertySet::Remove(const DKString& key)
 	}
 }
 
-size_t DKPropertySet::NumberOfEntries(void) const
+size_t DKPropertySet::NumberOfEntries() const
 {
 	return dataSet.Pairs().Count();
 }
@@ -383,13 +383,13 @@ bool DKPropertySet::LookUpValueForKeyPath(const DKString& path, DKVariant::Const
 	return dataSet.FindObjectAtKeyPath(path, callback);
 }
 
-DKPropertySet& DKPropertySet::DefaultSet(void)
+DKPropertySet& DKPropertySet::DefaultSet()
 {
 	static DKPropertySet ps;
 	return ps;
 }
 
-DKPropertySet& DKPropertySet::SystemConfig(void)
+DKPropertySet& DKPropertySet::SystemConfig()
 {
 	static DKPropertySet ps;
 	return ps;

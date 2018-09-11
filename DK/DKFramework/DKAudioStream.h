@@ -32,14 +32,14 @@ namespace DKFramework
 		static DKObject<DKAudioStream>	Create(const DKString& file);
 
 		DKAudioStream(FileType t);
-		virtual ~DKAudioStream(void);
+		virtual ~DKAudioStream();
 
 		// media info.
-		bool IsSeekable(void) const				{return seekable;}
-		unsigned int Frequency(void) const		{return frequency;} ///< bitrate
-		unsigned int Channels(void) const		{return channels;}  ///< audio channels
-		unsigned int Bits(void) const			{return bits;}      ///< format bits
-		FileType MediaType(void) const			{return type;}
+		bool IsSeekable() const				{return seekable;}
+		unsigned int Frequency() const		{return frequency;} ///< bitrate
+		unsigned int Channels() const		{return channels;}  ///< audio channels
+		unsigned int Bits() const			{return bits;}      ///< format bits
+		FileType MediaType() const			{return type;}
 
 		////////////////////////////////////////////////////////////////////////////////
 		// following functions should be overridden for decoding.
@@ -49,13 +49,13 @@ namespace DKFramework
 		virtual Position SeekPcm(Position) = 0; ///< seek by PCM
 		virtual double SeekTime(double) = 0;    ///< seek by time
 		// get media position
-		virtual Position RawPos(void) const = 0; ///< stream position
-		virtual Position PcmPos(void) const = 0; ///< PCM position (big size)
-		virtual double TimePos(void) const = 0;  ///< time position
+		virtual Position RawPos() const = 0; ///< stream position
+		virtual Position PcmPos() const = 0; ///< PCM position (big size)
+		virtual double TimePos() const = 0;  ///< time position
 		// get media length
-		virtual Position RawTotal(void) const = 0; ///< entire stream length
-		virtual Position PcmTotal(void) const = 0; ///< entire PCM length (in bytes)
-		virtual double TimeTotal(void) const = 0;  ///< entire length in time
+		virtual Position RawTotal() const = 0; ///< entire stream length
+		virtual Position PcmTotal() const = 0; ///< entire PCM length (in bytes)
+		virtual double TimeTotal() const = 0;  ///< entire length in time
 
 	protected:
 		void SetSeekable(bool s)					{seekable = s;}

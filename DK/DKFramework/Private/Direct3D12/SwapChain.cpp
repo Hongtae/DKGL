@@ -21,7 +21,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
 }
 
-SwapChain::~SwapChain(void)
+SwapChain::~SwapChain()
 {
 	window->RemoveEventHandler(this);
 
@@ -42,7 +42,7 @@ SwapChain::~SwapChain(void)
 #endif
 }
 
-bool SwapChain::Setup(void)
+bool SwapChain::Setup()
 {
 	GraphicsDevice* dc = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	IDXGIFactory5* factory = dc->factory.Get();
@@ -120,7 +120,7 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat)
 {
 }
 
-DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
+DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 {
 	if (renderPassDescriptor.colorAttachments.Count() == 0)
 		this->SetupFrame();
@@ -128,7 +128,7 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor(void)
 	return renderPassDescriptor;
 }
 
-void SwapChain::SetupFrame(void)
+void SwapChain::SetupFrame()
 {
 	UINT frameIndex = swapChain->GetCurrentBackBufferIndex();
 
@@ -142,7 +142,7 @@ void SwapChain::SetupFrame(void)
 	this->renderPassDescriptor.colorAttachments.Add(colorAttachment);
 }
 
-bool SwapChain::Present(void)
+bool SwapChain::Present()
 {
 	UINT syncInterval = enableVerticalSync ? 1 : 0;
 	swapChain->Present(syncInterval, 0);

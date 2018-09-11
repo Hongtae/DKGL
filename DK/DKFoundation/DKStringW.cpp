@@ -40,11 +40,11 @@ namespace DKFoundation
 	{
 		namespace
 		{
-			const DKStringW::CharacterSet& WhitespaceCharacterSet(void)
+			const DKStringW::CharacterSet& WhitespaceCharacterSet()
 			{
 				static const struct WCSet
 				{
-					WCSet(void)
+					WCSet()
 					{
 						const DKUniCharW whitespaces[] = {
 							0x0009, 0x000a, 0x000b, 0x000c, 0x000d, 0x0020, 0x0085, 0x00a0,
@@ -116,13 +116,13 @@ using namespace DKFoundation;
 
 const DKStringW DKStringW::empty = L"";
 
-DKStringEncoding DKStringW::SystemEncoding(void)
+DKStringEncoding DKStringW::SystemEncoding()
 {
 	return DKStringWEncoding();
 }
 
 // DKStringW class
-DKStringW::DKStringW(void)
+DKStringW::DKStringW()
 	: stringData(NULL)
 {
 }
@@ -170,7 +170,7 @@ DKStringW::DKStringW(DKUniChar8 c)
 	this->SetValue(&c, 1);
 }
 
-DKStringW::~DKStringW(void)
+DKStringW::~DKStringW()
 {
 	if (stringData)
 		DKFree(stringData);
@@ -236,7 +236,7 @@ DKStringW DKStringW::FormatV(const DKUniCharW* fmt, va_list v)
 	return ret;
 }
 
-size_t DKStringW::Length(void) const
+size_t DKStringW::Length() const
 {
 	size_t len = 0;
 	if (stringData)
@@ -247,7 +247,7 @@ size_t DKStringW::Length(void) const
 	return len;
 }
 
-size_t DKStringW::Bytes(void) const
+size_t DKStringW::Bytes() const
 {
 	return Length() * sizeof(DKUniCharW);
 }
@@ -377,7 +377,7 @@ DKStringW DKStringW::Mid(long index, size_t count) const
 	return string;
 }
 
-DKStringW DKStringW::LowercaseString(void) const
+DKStringW DKStringW::LowercaseString() const
 {
 	if (stringData)
 	{
@@ -396,7 +396,7 @@ DKStringW DKStringW::LowercaseString(void) const
 	return DKStringW(L"");			
 }
 
-DKStringW DKStringW::UppercaseString(void) const
+DKStringW DKStringW::UppercaseString() const
 {
 	if (stringData)
 	{
@@ -544,7 +544,7 @@ DKStringW& DKStringW::Insert(long index, DKUniCharW ch)
 	return Insert(index, (const DKUniCharW*)DKStringW(ch));
 }
 
-DKStringW DKStringW::FilePathString(void) const
+DKStringW DKStringW::FilePathString() const
 {
 	DKStringW str(*this);
 #ifdef _WIN32
@@ -587,7 +587,7 @@ DKStringW DKStringW::FilePathStringByAppendingPath(const DKStringW& path) const
 	return str.FilePathString();
 }
 
-DKStringW DKStringW::LastPathComponent(void) const
+DKStringW DKStringW::LastPathComponent() const
 {
 	DKStringW result = L"/";
 	StringArray strs = PathComponents();
@@ -597,7 +597,7 @@ DKStringW DKStringW::LastPathComponent(void) const
 	return result;
 }
 
-DKStringW::StringArray DKStringW::PathComponents(void) const
+DKStringW::StringArray DKStringW::PathComponents() const
 {
 	CharacterSet cs = {L'/', L'\\'};
 	return SplitByCharactersInSet(cs, true);
@@ -609,7 +609,7 @@ bool DKStringW::IsWhitespaceCharacterAtIndex(long index) const
 	return Private::WhitespaceCharacterSet().Contains(stringData[index]);
 }
 
-DKStringW& DKStringW::TrimWhitespaces(void)
+DKStringW& DKStringW::TrimWhitespaces()
 {
 	size_t len = Length();
 	if (len == 0)
@@ -871,7 +871,7 @@ DKStringW& DKStringW::operator = (DKUniChar8 ch)
 }
 
 // conversion operators
-DKStringW::operator const DKUniCharW*(void) const
+DKStringW::operator const DKUniCharW*() const
 {
 	if (this && this->stringData)
 		return (const DKUniCharW*)this->stringData;
@@ -936,21 +936,21 @@ DKObject<DKData> DKStringW::Encode(DKStringEncoding e) const
 	return data.SafeCast<DKData>();
 }
 
-int64_t DKStringW::ToInteger(void) const
+int64_t DKStringW::ToInteger() const
 {
 	if (stringData && stringData[0])
 		return wcstoll(stringData, 0, 0);
 	return 0LL;
 }
 
-uint64_t DKStringW::ToUnsignedInteger(void) const
+uint64_t DKStringW::ToUnsignedInteger() const
 {
 	if (stringData && stringData[0])
 		return wcstoull(stringData, 0, 0);
 	return 0ULL;
 }
 
-double DKStringW::ToRealNumber(void) const
+double DKStringW::ToRealNumber() const
 {
 	if (stringData && stringData[0])
 		return wcstod(stringData, 0);
@@ -1056,7 +1056,7 @@ DKStringW::StringArray DKStringW::SplitByCharactersInSet(const CharacterSet& cs,
 	return strings;
 }
 
-DKStringW::StringArray DKStringW::SplitByWhitespace(void) const
+DKStringW::StringArray DKStringW::SplitByWhitespace() const
 {
 	return SplitByCharactersInSet(Private::WhitespaceCharacterSet(), true);
 }

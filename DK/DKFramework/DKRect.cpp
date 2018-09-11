@@ -14,7 +14,7 @@ const DKPoint DKPoint::zero = DKPoint(0,0);
 const DKSize DKSize::zero = DKSize(0,0);
 const DKRect DKRect::zero = DKRect(0,0,0,0);
 
-DKRect::DKRect(void)
+DKRect::DKRect()
 	: origin(DKPoint(0,0))
 	, size(-FLT_MAX, -FLT_MAX)
 {
@@ -42,7 +42,7 @@ bool DKRect::operator != (const DKRect& rc) const
 	return origin != rc.origin || size != rc.size;
 }
 
-DKPoint DKRect::Center(void) const
+DKPoint DKRect::Center() const
 {
 	if (IsValid())
 	{
@@ -76,7 +76,7 @@ bool DKRect::IsPointInside(const DKPoint& pt) const
 	return (pt.x >= origin.x && pt.x <= origin.x + size.width && pt.y >= origin.y && pt.y <= origin.y + size.height);
 }
 
-bool DKRect::IsValid(void) const
+bool DKRect::IsValid() const
 {
 	return size.width >= 0 && size.height >= 0;
 }

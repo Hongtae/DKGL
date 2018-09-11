@@ -21,11 +21,11 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		RenderCommandEncoder(VkCommandBuffer, CommandBuffer*, const DKRenderPassDescriptor&);
-		~RenderCommandEncoder(void);
+		~RenderCommandEncoder();
 
-		void EndEncoding(void) override;
-		bool IsCompleted(void) const override { return resources == nullptr; }
-		DKCommandBuffer* Buffer(void) override { return commandBuffer; }
+		void EndEncoding() override;
+		bool IsCompleted() const override { return resources == nullptr; }
+		DKCommandBuffer* Buffer() override { return commandBuffer; }
 
 		void SetViewport(const DKViewport&) override;
 		void SetRenderPipelineState(DKRenderPipelineState*) override;
@@ -49,7 +49,7 @@ namespace DKFramework::Private::Vulkan
 			VkCommandBuffer commandBuffer;
 
 			Resources(CommandBuffer*);
-			~Resources(void);
+			~Resources();
 		};
 
 		void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);

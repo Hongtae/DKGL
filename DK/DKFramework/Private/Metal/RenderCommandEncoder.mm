@@ -24,11 +24,11 @@ RenderCommandEncoder::RenderCommandEncoder(MTLRenderPassDescriptor* rpDesc, Comm
 	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
-RenderCommandEncoder::~RenderCommandEncoder(void)
+RenderCommandEncoder::~RenderCommandEncoder()
 {
 }
 
-void RenderCommandEncoder::EndEncoding(void)
+void RenderCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	reusableEncoder->encoderCommands.ShrinkToFit();

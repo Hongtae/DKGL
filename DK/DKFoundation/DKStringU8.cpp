@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKStringU8.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -76,12 +76,12 @@ using namespace DKFoundation;
 
 const DKStringU8 DKStringU8::empty = "";
 
-DKStringEncoding DKStringU8::SystemEncoding(void)
+DKStringEncoding DKStringU8::SystemEncoding()
 {
 	return DKStringU8Encoding();
 }
 
-DKStringU8::DKStringU8(void)
+DKStringU8::DKStringU8()
 	: stringData(NULL)
 {
 }
@@ -129,7 +129,7 @@ DKStringU8::DKStringU8(DKUniChar8 c)
 	this->SetValue(&c, 1);
 }
 
-DKStringU8::~DKStringU8(void)
+DKStringU8::~DKStringU8()
 {
 	if (stringData)
 		DKFree(stringData);
@@ -328,12 +328,12 @@ DKObject<DKData> DKStringU8::Encode(DKStringEncoding e) const
 	return data.SafeCast<DKData>();
 }
 
-size_t DKStringU8::Length(void) const
+size_t DKStringU8::Length() const
 {
 	return Private::NumberOfCharactersInUTF8(stringData, Bytes());
 }
 
-size_t DKStringU8::Bytes(void) const
+size_t DKStringU8::Bytes() const
 {
 	size_t len = 0;
 	if (stringData)
@@ -406,7 +406,7 @@ DKStringU8& DKStringU8::operator = (DKUniChar8 ch)
 }
 
 // conversion operators
-DKStringU8::operator const DKUniChar8* (void) const
+DKStringU8::operator const DKUniChar8* () const
 {
 	if (stringData)
 		return stringData;
@@ -467,21 +467,21 @@ DKStringU8 DKStringU8::operator + (DKUniChar8 c) const
 }
 
 // convert numeric values.
-int64_t DKStringU8::ToInteger(void) const
+int64_t DKStringU8::ToInteger() const
 {
 	if (stringData && stringData[0])
 		return strtoll(stringData, 0, 0);
 	return 0LL;
 }
 
-uint64_t DKStringU8::ToUnsignedInteger(void) const
+uint64_t DKStringU8::ToUnsignedInteger() const
 {
 	if (stringData && stringData[0])
 		return strtoull(stringData, 0, 0);
 	return 0ULL;
 }
 
-double DKStringU8::ToRealNumber(void) const
+double DKStringU8::ToRealNumber() const
 {
 	if (stringData && stringData[0])
 		return strtod(stringData, 0);

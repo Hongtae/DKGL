@@ -29,16 +29,16 @@ namespace DKFramework
 			Error,
 		};
 
-		virtual ~DKCommandBuffer(void) {}
+		virtual ~DKCommandBuffer() {}
 
 		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) = 0;
-		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) = 0;
-		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) = 0;
+		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() = 0;
+		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() = 0;
 
-		virtual bool Commit(void) = 0;
+		virtual bool Commit() = 0;
 
-		virtual DKCommandQueue* Queue(void) = 0;
+		virtual DKCommandQueue* Queue() = 0;
 
-		DKGraphicsDevice* Device(void);
+		DKGraphicsDevice* Device();
 	};
 }

@@ -24,16 +24,16 @@ namespace DKFramework
 			{
 			public:
 				SwapChain(CommandQueue*, DKWindow*);
-				~SwapChain(void);
+				~SwapChain();
 
-				bool Setup(void);
-				void SetupFrame(void);
+				bool Setup();
+				void SetupFrame();
 
 				void SetColorPixelFormat(DKPixelFormat) override;
 				void SetDepthStencilPixelFormat(DKPixelFormat) override;
-				DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
+				DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
 
-				bool Present(void) override;
+				bool Present() override;
 
 
 				DKObject<DKWindow> window;

@@ -61,7 +61,7 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKRationalNumber::DKRationalNumber(void)
+DKRationalNumber::DKRationalNumber()
 	: numerator(0), denominator(1)
 {
 }
@@ -72,37 +72,37 @@ DKRationalNumber::DKRationalNumber(Integer n, Integer d)
 	Normalize();
 }
 
-bool DKRationalNumber::IsInfinity(void) const
+bool DKRationalNumber::IsInfinity() const
 {
 	return numerator != 0 && denominator == 0;
 }
 
-bool DKRationalNumber::IsPositiveInfinity(void) const
+bool DKRationalNumber::IsPositiveInfinity() const
 {
 	return numerator > 0 && denominator == 0;
 }
 
-bool DKRationalNumber::IsNegativeInfinity(void) const
+bool DKRationalNumber::IsNegativeInfinity() const
 {
 	return numerator < 0 && denominator == 0;
 }
 
-bool DKRationalNumber::IsIndeterminate(void) const
+bool DKRationalNumber::IsIndeterminate() const
 {
 	return numerator == 0 && denominator == 0;
 }
 
-bool DKRationalNumber::IsNumeric(void) const
+bool DKRationalNumber::IsNumeric() const
 {
 	return denominator != 0;
 }
 
-DKRationalNumber::Integer DKRationalNumber::Numerator(void) const
+DKRationalNumber::Integer DKRationalNumber::Numerator() const
 {
 	return numerator;
 }
 
-DKRationalNumber::Integer DKRationalNumber::Denominator(void) const
+DKRationalNumber::Integer DKRationalNumber::Denominator() const
 {
 	return denominator;
 }
@@ -438,7 +438,7 @@ bool DKRationalNumber::operator >= (const DKRationalNumber& r) const
 	return r.operator <= (*this);
 }
 
-DKRationalNumber& DKRationalNumber::Inverse(void)
+DKRationalNumber& DKRationalNumber::Inverse()
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 
@@ -448,14 +448,14 @@ DKRationalNumber& DKRationalNumber::Inverse(void)
 	return *this;
 }
 
-double DKRationalNumber::RealNumber(void) const
+double DKRationalNumber::RealNumber() const
 {
 	DKASSERT_DEBUG(this->denominator >= 0);
 
 	return static_cast<double>(Numerator()) / static_cast<double>(Denominator());
 }
 
-void DKRationalNumber::Normalize(void)
+void DKRationalNumber::Normalize()
 {
 	if (this->denominator == 0)
 	{

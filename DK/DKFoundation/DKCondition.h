@@ -50,26 +50,26 @@ namespace DKFoundation
 	class DKGL_API DKCondition
 	{
 	public:
-		DKCondition(void);
-		~DKCondition(void);
+		DKCondition();
+		~DKCondition();
 
 		/// wait until signal
-		void Wait(void) const;
+		void Wait() const;
 
 		/// wait until signal or timed-out
 		/// return true if signal state else return false (timed-out)
 		bool WaitTimeout(double t) const;
 
 		/// Signals the condition, waking up one thread waiting on it.
-		void Signal(void) const;
+		void Signal() const;
 		/// Signals the condition, waking up all threads waiting on it.
-		void Broadcast(void) const;
+		void Broadcast() const;
 
 		/// lock context
-		void Lock(void) const;
+		void Lock() const;
 		/// try lock context, return true if lock succeeded.
-		bool TryLock(void) const;
-		void Unlock(void) const;
+		bool TryLock() const;
+		void Unlock() const;
 
 	private:
 		DKCondition(const DKCondition&) = delete;

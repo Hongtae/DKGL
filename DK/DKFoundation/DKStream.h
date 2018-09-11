@@ -17,19 +17,19 @@ namespace DKFoundation
 		using Position = uint64_t;
 		enum : Position { PositionError = ~Position(0) };
 
-		DKStream(void) {}
-		virtual ~DKStream(void) {}
+		DKStream() {}
+		virtual ~DKStream() {}
 
 		virtual Position SetCurrentPosition(Position p) = 0;
-		virtual Position CurrentPosition(void) const = 0;
-		virtual Position RemainLength(void) const = 0;
-		virtual Position TotalLength(void) const = 0;
+		virtual Position CurrentPosition() const = 0;
+		virtual Position RemainLength() const = 0;
+		virtual Position TotalLength() const = 0;
 
 		virtual size_t Read(void* p, size_t s) = 0;
 		virtual size_t Write(const void* p, size_t s) = 0;
 		
-		virtual bool IsReadable(void) const = 0;
-		virtual bool IsWritable(void) const = 0;
-		virtual bool IsSeekable(void) const = 0;
+		virtual bool IsReadable() const = 0;
+		virtual bool IsWritable() const = 0;
+		virtual bool IsSeekable() const = 0;
 	};
 }

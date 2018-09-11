@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKActionController.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -19,8 +19,8 @@ namespace DKFramework
 	class DKActionController : public DKModel
 	{
 	public:
-		DKActionController(void) : DKModel(TypeAction) {}
-		virtual ~DKActionController(void) {}
+		DKActionController() : DKModel(TypeAction) {}
+		virtual ~DKActionController() {}
 		virtual void Update(double timeDelta, DKTimeTick tick) = 0;
 	};
 }

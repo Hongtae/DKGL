@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKResourceLoader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -36,24 +36,24 @@ namespace DKFramework
 		typedef DKMap<DKString, AllocatorMap, DKDummyLock>		AllocatorURIMap;
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceLoader>>		LoaderMap;
 
-		DKSpinLock& GetAllocatorURIMapLock(void)
+		DKSpinLock& GetAllocatorURIMapLock()
 		{
 			static DKSpinLock lock;
 			return lock;
 		}
-		AllocatorURIMap& GetAllocatorURIMap(void)
+		AllocatorURIMap& GetAllocatorURIMap()
 		{
 			static DKAllocator::Maintainer init;
 
 			static AllocatorURIMap map;
 			return map;
 		}
-		DKSpinLock& GetLoaderMapLock(void)
+		DKSpinLock& GetLoaderMapLock()
 		{
 			static DKSpinLock lock;
 			return lock;
 		}
-		LoaderMap& GetLoaderMap(void)
+		LoaderMap& GetLoaderMap()
 		{
 			static DKAllocator::Maintainer init;
 
@@ -101,7 +101,7 @@ namespace DKFramework
 			return NULL;
 		}
 
-		bool InitBuiltinResourceTypes(void)
+		bool InitBuiltinResourceTypes()
 		{
 #define REGISTER_RESOURCE_CLASS(CLASS)		DKResourceLoader::SetResourceAllocator(L"", #CLASS, DKFunction(DKResourceAlloc<CLASS>))
 
@@ -137,11 +137,11 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKResourceLoader::DKResourceLoader(void)
+DKResourceLoader::DKResourceLoader()
 {
 }
 
-DKResourceLoader::~DKResourceLoader(void)
+DKResourceLoader::~DKResourceLoader()
 {
 }
 
@@ -358,7 +358,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromFile(const DKString& path, co
 	return NULL;
 }
 
-DKAllocator& DKResourceLoader::Allocator(void) const
+DKAllocator& DKResourceLoader::Allocator() const
 {
 	return DKAllocator::DefaultAllocator();
 }

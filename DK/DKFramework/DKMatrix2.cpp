@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKMatrix2.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -13,7 +13,7 @@ using namespace DKFramework;
 
 const DKMatrix2 DKMatrix2::identity = DKMatrix2().Identity();
 
-DKMatrix2::DKMatrix2(void)
+DKMatrix2::DKMatrix2()
 	: _11(1), _12(0)
 	, _21(0), _22(1)
 {
@@ -31,32 +31,32 @@ DKMatrix2::DKMatrix2(float e11, float e12, float e21, float e22)
 {
 }
 
-DKMatrix2& DKMatrix2::Zero(void)
+DKMatrix2& DKMatrix2::Zero()
 {
 	m[0][0] = m[0][1] = m[1][0] = m[1][1] = 0.0f;
 	return *this;
 }
 
-DKMatrix2& DKMatrix2::Identity(void)
+DKMatrix2& DKMatrix2::Identity()
 {
 	m[0][0] = m[1][1] = 1.0f;
 	m[0][1] = m[1][0] = 0.0f;
 	return *this;
 }
 
-bool DKMatrix2::IsIdentity(void) const
+bool DKMatrix2::IsIdentity() const
 {
 	return
 		m[0][0] == 1.0f && m[0][1] == 0.0f &&
 		m[1][0] == 0.0f && m[1][1] == 1.0f;
 }
 
-bool DKMatrix2::IsDiagonal(void) const
+bool DKMatrix2::IsDiagonal() const
 {
 	return m[0][1] == 0.0f && m[1][0] == 0.0f;
 }
 
-float DKMatrix2::Determinant(void) const
+float DKMatrix2::Determinant() const
 {
 	return m[0][0] * m[1][1] - m[0][1] * m[1][0];
 }
@@ -81,7 +81,7 @@ bool DKMatrix2::GetInverseMatrix(DKMatrix2& matOut, float *pDeterminant) const
 	return false;
 }
 
-DKMatrix2& DKMatrix2::Inverse(void)
+DKMatrix2& DKMatrix2::Inverse()
 {
 	DKMatrix2 mat;
 	mat.Identity();
@@ -90,7 +90,7 @@ DKMatrix2& DKMatrix2::Inverse(void)
 	return *this;
 }
 
-DKMatrix2& DKMatrix2::Transpose(void)
+DKMatrix2& DKMatrix2::Transpose()
 {
 	float tmp = this->m[0][1];
 	this->m[0][1] = this->m[1][0];
@@ -220,22 +220,22 @@ bool DKMatrix2::operator != (const DKMatrix2& m) const
 		this->val[2] != m.val[2] || this->val[3] != m.val[3];
 }
 
-DKVector2 DKMatrix2::Row1(void) const
+DKVector2 DKMatrix2::Row1() const
 {
 	return DKVector2(m[0][0], m[0][1]);
 }
 
-DKVector2 DKMatrix2::Row2(void) const
+DKVector2 DKMatrix2::Row2() const
 {
 	return DKVector2(m[1][0], m[1][1]);
 }
 
-DKVector2 DKMatrix2::Column1(void) const
+DKVector2 DKMatrix2::Column1() const
 {
 	return DKVector2(m[0][0], m[1][0]);
 }
 
-DKVector2 DKMatrix2::Column2(void) const
+DKVector2 DKMatrix2::Column2() const
 {
 	return DKVector2(m[0][1], m[1][1]);
 }

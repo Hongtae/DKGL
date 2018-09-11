@@ -92,7 +92,7 @@ namespace DKFoundation
 		class Ref
 		{
 		public:
-			Ref(void) : ptr(NULL), refId(0) {}
+			Ref() : ptr(NULL), refId(0) {}
 			Ref(const Ref& r) : ptr(r.ptr), refId(r.refId) {}
 			Ref& operator = (const Ref& ref)
 			{
@@ -119,39 +119,39 @@ namespace DKFoundation
 		DKObject(const Ref& ref) : _target(_RetainObject(ref))
 		{
 		}
-		~DKObject(void)
+		~DKObject()
 		{
 			_ReleaseObject(_target);
 		}
 		// pointer operators
-		T* operator ->(void)						{return _target;}
-		const T* operator ->(void) const			{return _target;}
-		T& operator * (void)						{return *_target;}
-		const T& operator * (void) const			{return *_target;}
+		T* operator ->()						{return _target;}
+		const T* operator ->() const			{return _target;}
+		T& operator * ()						{return *_target;}
+		const T& operator * () const			{return *_target;}
 		// type-casting operators
-		operator T* (void)							{return _target;}
-		operator const T* (void) const				{return _target;}
+		operator T* ()							{return _target;}
+		operator const T* () const				{return _target;}
 		// get raw-pointer
-		T* Ptr(void)								{return _target;}
-		const T* Ptr(void) const					{return _target;}
+		T* Ptr()								{return _target;}
+		const T* Ptr() const					{return _target;}
 
-		template <typename R> constexpr static bool IsConvertible(void)
+		template <typename R> constexpr static bool IsConvertible()
 		{
 			return DKTypeConversionTest<T, R>();
 		}
-		template <typename R> R* SafeCast(void)
+		template <typename R> R* SafeCast()
 		{
 			return Private::SafeCaster<T, R, IsConvertible<R>()>::Cast(_target);
 		}
-		template <typename R> const R* SafeCast(void) const
+		template <typename R> const R* SafeCast() const
 		{
 			return Private::SafeCaster<T, R, IsConvertible<R>()>::Cast(_target);
 		}
-		template <typename R> R* StaticCast(void)
+		template <typename R> R* StaticCast()
 		{
 			return static_cast<R*>(_target);
 		}
-		template <typename R> const R* StaticCast(void) const
+		template <typename R> const R* StaticCast() const
 		{
 			return static_cast<const R*>(_target);
 		}
@@ -191,7 +191,7 @@ namespace DKFoundation
 			return *this;
 		}
 		/// casting Ref (weak-ref)
-		operator Ref (void) const
+		operator Ref () const
 		{
 			Ref ref;
 			RefCounter::RefIdValue refId;
@@ -211,26 +211,26 @@ namespace DKFoundation
 		{
 			return new(DKAllocator::DefaultAllocator()) T(std::forward<Args>(args)...);
 		}
-		DKAllocator* Allocator(void) const
+		DKAllocator* Allocator() const
 		{
 			if (_target)
 				return RefCounter::Allocator(BaseAddress(_target));
 			return NULL;
 		}
-		bool IsManaged(void) const
+		bool IsManaged() const
 		{
 			if (_target && RefCounter::RefId(BaseAddress(_target), NULL))
 				return true;
 			return false;
 		}
-		bool IsShared(void) const
+		bool IsShared() const
 		{
 			RefCounter::RefCountValue ref = 0;
 			if (_target && RefCounter::RefCount(BaseAddress(_target), &ref))
 				return ref > 1;
 			return false;
 		}
-		RefCounter::RefCountValue SharingCount(void) const
+		RefCounter::RefCountValue SharingCount() const
 		{
 			RefCounter::RefCountValue ref = 0;
 			if (_target && RefCounter::RefCount(BaseAddress(_target), &ref))
@@ -239,7 +239,7 @@ namespace DKFoundation
 		}
 		/// determine base address of polymorphic type.
 		/// For an object have multiple inheritance, it returns starting address.
-		void* BaseAddress(void) const
+		void* BaseAddress() const
 		{
 			return BaseAddress(_target);
 		}
@@ -294,6 +294,6 @@ namespace DKFoundation
 	class DKUnknown
 	{
 	public:
-		virtual ~DKUnknown(void) {}
+		virtual ~DKUnknown() {}
 	};
 }

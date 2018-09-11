@@ -21,11 +21,11 @@ ComputeCommandEncoder::ComputeCommandEncoder(CommandBuffer* b)
 	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
-ComputeCommandEncoder::~ComputeCommandEncoder(void)
+ComputeCommandEncoder::~ComputeCommandEncoder()
 {
 }
 
-void ComputeCommandEncoder::EndEncoding(void)
+void ComputeCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	reusableEncoder->encoderCommands.ShrinkToFit();

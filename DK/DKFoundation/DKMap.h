@@ -120,7 +120,7 @@ namespace DKFoundation
 			ValueReplacer replacer;
 		};
 		typedef DKAVLTree<Pair, PairComparator, PairValueReplacer, Allocator> Container;
-		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
+		constexpr static size_t NodeSize() { return Container::NodeSize(); }
 
 		KeyComparator comparator;
 
@@ -128,7 +128,7 @@ namespace DKFoundation
 		/// FindNoLock, CountNoLock is usable regardless of locking.
 		Lock	lock;
 
-		DKMap(void)
+		DKMap()
 		{
 		}
 		DKMap(DKMap&& m)
@@ -161,7 +161,7 @@ namespace DKFoundation
 				++k; ++v;
 			}
 		}
-		~DKMap(void)
+		~DKMap()
 		{
 			Clear();
 		}
@@ -295,7 +295,7 @@ namespace DKFoundation
 			for (const Key& k : il)
 				container.Remove(k);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
@@ -331,17 +331,17 @@ namespace DKFoundation
 				p = const_cast<Pair*>(container.Insert(Pair(k, ValueT())));
 			return p->value;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.Count() == 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return container.Count();
 		}

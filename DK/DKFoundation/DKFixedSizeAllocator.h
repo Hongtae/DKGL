@@ -88,7 +88,7 @@ namespace DKFoundation
 		};
 
 		/// DKAllocator instance (shared), with alignment
-		static DKAllocator& AllocatorInstance(void)
+		static DKAllocator& AllocatorInstance()
 		{
 			// shared instance located in RebindAlignment<BaseAlignment>
 			return RebindAlignment<BaseAlignment>::StaticAllocatorInstance();
@@ -297,20 +297,20 @@ namespace DKFoundation
 		}
 
 		/// delete unoccupied chunks
-		size_t Purge(void)	
+		size_t Purge()	
 		{
 			CriticalSection guard(lock);
 			return PurgeInternal();
 		}
 
 		/// Total allocation size, including reserved space, in bytes
-		size_t Size(void) const
+		size_t Size() const
 		{
 			CriticalSection guard(lock);
 			return numChunks * (MaxUnitsPerChunkSize + sizeof(ChunkInfo));
 		}
 
-		size_t NumberOfAllocatedUnits(void) const
+		size_t NumberOfAllocatedUnits() const
 		{
 			CriticalSection guard(lock);
 			return numAllocated;
@@ -318,13 +318,13 @@ namespace DKFoundation
 
 		/// total units in this container.
 		/// reserved = num_units - allocated_units(NumberOfAllocatedUnits)
-		size_t NumberOfUnits(void) const
+		size_t NumberOfUnits() const
 		{
 			CriticalSection guard(lock);
 			return numChunks * MaxUnitsPerChunk;
 		}
 
-		DKFixedSizeAllocator(void)
+		DKFixedSizeAllocator()
 			: chunkTable(NULL)
 			, cachedChunk(NULL)
 			, numAllocated(0)
@@ -333,7 +333,7 @@ namespace DKFoundation
 		{
 		}
 
-		~DKFixedSizeAllocator(void) noexcept(!DKGL_MEMORY_DEBUG)
+		~DKFixedSizeAllocator() noexcept(!DKGL_MEMORY_DEBUG)
 		{
 			DKASSERT_MEM_DEBUG(numAllocated == 0);
 			if (numChunks > 0)
@@ -447,7 +447,7 @@ namespace DKFoundation
 			DKASSERT_MEM_DEBUG(numAllocated > 0);
 			numAllocated--;
 		}
-		FORCEINLINE void SortChunkTable(void)
+		FORCEINLINE void SortChunkTable()
 		{
 			if (numChunks > 1)
 			{
@@ -483,7 +483,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		FORCEINLINE size_t PurgeInternal(void)	// delete unoccupied chunks
+		FORCEINLINE size_t PurgeInternal()	// delete unoccupied chunks
 		{
 			if (emptyChunks > 0)
 			{
@@ -551,7 +551,7 @@ namespace DKFoundation
 		// Create static instance. (shared)
 		// This function was declared as private, to prevent each other template
 		// argumented classes creates it's own instance. Use AllocatorInstance().
-		static AllocatorInterface& StaticAllocatorInstance(void)
+		static AllocatorInterface& StaticAllocatorInstance()
 		{
 			struct AllocatorWrapper : public AllocatorInterface
 			{
@@ -567,11 +567,11 @@ namespace DKFoundation
 				}
 				void Dealloc(void* p) override				{ return allocator.Dealloc(p); }
 				void Reserve(size_t s) override				{ return allocator.Reserve(s); }
-				size_t Purge(void) override					{ return allocator.Purge(); }
+				size_t Purge() override					{ return allocator.Purge(); }
 				void* AlignedChunkAddress(void* p) const override	{ return allocator.AlignedChunkAddress(p); }
 
 
-				DKMemoryLocation Location(void) const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
+				DKMemoryLocation Location() const override	{ return (DKMemoryLocation)BaseAllocator::Location; }
 				DKFixedSizeAllocator allocator;
 			};
 			static DKAllocatorChain::Maintainer init; // extend allocator life cycle.

@@ -13,11 +13,11 @@
 
 using namespace DKFoundation;
 
-DKAllocator::DKAllocator(void)
+DKAllocator::DKAllocator()
 {
 }
 
-DKAllocator::~DKAllocator(void) noexcept(!DKGL_MEMORY_DEBUG)
+DKAllocator::~DKAllocator() noexcept(!DKGL_MEMORY_DEBUG)
 {
 }
 
@@ -30,21 +30,21 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 		void* Alloc(size_t s) override					{ return DKMemoryHeapAlloc(s); }
 		void* Realloc(void* p, size_t s) override		{ return DKMemoryHeapRealloc(p, s); }
 		void Dealloc(void* p) override					{ DKMemoryHeapFree(p); }
-		DKMemoryLocation Location(void) const override	{ return DKMemoryLocationHeap; }
+		DKMemoryLocation Location() const override	{ return DKMemoryLocationHeap; }
 	};
 	struct VMemAllocator : public DKAllocator
 	{
 		void* Alloc(size_t s)override					{ return DKMemoryVirtualAlloc(s); }
 		void* Realloc(void* p, size_t s) override		{ return DKMemoryVirtualRealloc(p, s); }
 		void Dealloc(void* p)override					{ DKMemoryVirtualFree(p); }
-		DKMemoryLocation Location(void) const override	{ return DKMemoryLocationVirtual; }
+		DKMemoryLocation Location() const override	{ return DKMemoryLocationVirtual; }
 	};
 	struct PoolAllocator : public DKAllocator
 	{
 		void* Alloc(size_t s) override					{ return DKMemoryPoolAlloc(s); }
 		void* Realloc(void* p, size_t s) override		{ return DKMemoryPoolRealloc(p, s); }
 		void Dealloc(void* p) override					{ DKMemoryPoolFree(p); }
-		DKMemoryLocation Location(void) const override	{ return DKMemoryLocationPool; }
+		DKMemoryLocation Location() const override	{ return DKMemoryLocationPool; }
 	};
 
 	static bool initialized = false;

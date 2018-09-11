@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConcaveShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,7 +17,7 @@ DKConcaveShape::DKConcaveShape(ShapeType t, btConcaveShape* impl)
 	DKASSERT_DEBUG( this->impl->isConcave() );
 }
 
-DKConcaveShape::~DKConcaveShape(void)
+DKConcaveShape::~DKConcaveShape()
 {
 	DKASSERT_DEBUG( this->impl->isConcave() );
 }

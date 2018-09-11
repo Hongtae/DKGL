@@ -10,7 +10,7 @@
 
 using namespace DKFoundation;
 
-DKBufferStream::DKBufferStream(void)
+DKBufferStream::DKBufferStream()
 	: offset(0)
 {
 }
@@ -27,7 +27,7 @@ DKBufferStream::DKBufferStream(DKBuffer* b)
 {
 }
 
-DKBufferStream::~DKBufferStream(void)
+DKBufferStream::~DKBufferStream()
 {
 }
 
@@ -40,7 +40,7 @@ DKStream::Position DKBufferStream::SetCurrentPosition(Position p)
 	return this->offset;
 }
 
-DKStream::Position DKBufferStream::CurrentPosition(void) const
+DKStream::Position DKBufferStream::CurrentPosition() const
 {
 	if (this->data)
 	{
@@ -52,7 +52,7 @@ DKStream::Position DKBufferStream::CurrentPosition(void) const
 	return 0;
 }
 
-DKStream::Position DKBufferStream::RemainLength(void) const
+DKStream::Position DKBufferStream::RemainLength() const
 {
 	if (this->data)
 	{
@@ -64,7 +64,7 @@ DKStream::Position DKBufferStream::RemainLength(void) const
 	return 0;
 }
 
-DKStream::Position DKBufferStream::TotalLength(void) const
+DKStream::Position DKBufferStream::TotalLength() const
 {
 	if (this->data)
 	{
@@ -151,22 +151,22 @@ void DKBufferStream::ResetStream(DKBuffer* d)
 	this->offset = 0;
 }
 
-DKData* DKBufferStream::Data(void)
+DKData* DKBufferStream::Data()
 {
 	return Buffer();
 }
 
-const DKData* DKBufferStream::Data(void) const
+const DKData* DKBufferStream::Data() const
 {
 	return Buffer();
 }
 
-DKBuffer* DKBufferStream::Buffer(void)
+DKBuffer* DKBufferStream::Buffer()
 {
 	return this->data;
 }
 
-const DKBuffer* DKBufferStream::Buffer(void) const
+const DKBuffer* DKBufferStream::Buffer() const
 {
 	return this->data;
 }

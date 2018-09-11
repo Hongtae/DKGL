@@ -18,7 +18,7 @@ namespace DKFramework
 	{
 	public:
 		typedef DKString NodeId;
-		virtual ~DKAnimatedTransform(void) {}
+		virtual ~DKAnimatedTransform() {}
 		virtual void Update(double timeDelta, DKTimeTick tick) {}
 		virtual bool GetTransform(const NodeId& key, DKTransformUnit& out) = 0;
 	};
@@ -30,23 +30,23 @@ namespace DKFramework
 	class DKGL_API DKAnimationController : public DKAnimatedTransform
 	{
 	public:
-		DKAnimationController(void);
-		virtual ~DKAnimationController(void);
+		DKAnimationController();
+		virtual ~DKAnimationController();
 
 		void Update(double timeDelta, DKTimeTick tick);
 
 		virtual bool GetTransform(const NodeId& key, DKTransformUnit& out) = 0;
 
-		virtual bool IsPlaying(void) const = 0;
-		virtual float Duration(void) const = 0;
+		virtual bool IsPlaying() const = 0;
+		virtual float Duration() const = 0;
 
-		virtual void Play(void) = 0;
-		virtual void Stop(void) = 0;
+		virtual void Play() = 0;
+		virtual void Stop() = 0;
 
 		void SetFrame(float frame);	 ///< set animation frame (in time unit)
 		void SetSpeed(float speed);  ///< animation speed
-		float Frame(void) const				{return frame;}
-		float Speed(void) const				{return speed;}
+		float Frame() const				{return frame;}
+		float Speed() const				{return speed;}
 
 	protected:
 		virtual void UpdateFrame(float frame) = 0;

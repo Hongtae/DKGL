@@ -20,12 +20,12 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		ComputeCommandEncoder(CommandBuffer*);
-		~ComputeCommandEncoder(void);
+		~ComputeCommandEncoder();
 
 		// DKCommandEncoder overrides
-		void EndEncoding(void) override;
-		bool IsCompleted(void) const override { return reusableEncoder == nullptr; }
-		DKCommandBuffer* Buffer(void) override { return buffer; }
+		void EndEncoding() override;
+		bool IsCompleted() const override { return reusableEncoder == nullptr; }
+		DKCommandBuffer* Buffer() override { return buffer; }
 
 		// DKComputeCommandEncoder
 

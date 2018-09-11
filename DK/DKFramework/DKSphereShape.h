@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSphereShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,9 +17,9 @@ namespace DKFramework
 	{
 	public:
 		DKSphereShape(float radius);
-		~DKSphereShape(void);
+		~DKSphereShape();
 
-		float Radius(void) const;
-		float ScaledRadius(void) const;
+		float Radius() const;
+		float ScaledRadius() const;
 	};
 }

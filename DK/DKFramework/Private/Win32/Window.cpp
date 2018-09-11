@@ -88,7 +88,7 @@ Window::Window(DKWindow* userInstance)
 	memset(keyboardStates, 0, 256);
 }
 
-Window::~Window(void)
+Window::~Window()
 {
 	DKASSERT_DESC_DEBUG(hWnd == NULL,
 		"Window must be destroyed before instance being released.");
@@ -223,12 +223,12 @@ bool Window::CreateProxy(void* systemHandle)
 	return false;
 }
 
-bool Window::IsProxy(void) const
+bool Window::IsProxy() const
 {
 	return proxyWindow;
 }
 
-void Window::UpdateProxy(void)
+void Window::UpdateProxy()
 {
 	DKASSERT_DEBUG(hWnd);
 	if (proxyWindow)
@@ -270,7 +270,7 @@ void Window::UpdateProxy(void)
 	}
 }
 
-void Window::Destroy(void)
+void Window::Destroy()
 {
 	activated = false;
 	if (hWnd)
@@ -320,12 +320,12 @@ void Window::Destroy(void)
 	}
 }
 
-void* Window::PlatformHandle(void) const
+void* Window::PlatformHandle() const
 {
 	return hWnd;
 }
 
-bool Window::IsValid(void) const
+bool Window::IsValid() const
 {
 	if (hWnd && ::IsWindow(hWnd))
 		return true;
@@ -385,7 +385,7 @@ bool Window::IsMouseHeld(int deviceId) const
 	return false;
 }
 
-void Window::Show(void)
+void Window::Show()
 {
 	if (hWnd)
 	{
@@ -396,13 +396,13 @@ void Window::Show(void)
 	}
 }
 
-void Window::Hide(void)
+void Window::Hide()
 {
 	if (hWnd)
 		::ShowWindow(hWnd, SW_HIDE);
 }
 
-void Window::Activate(void)
+void Window::Activate()
 {
 	if (hWnd)
 	{
@@ -415,7 +415,7 @@ void Window::Activate(void)
 	}
 }
 
-void Window::Minimize(void)
+void Window::Minimize()
 {
 	if (hWnd)
 		::ShowWindow(hWnd, SW_MINIMIZE);
@@ -460,7 +460,7 @@ void Window::Resize(DKSize s, const DKPoint* pt)
 	}
 }
 
-double Window::ContentScaleFactor(void) const
+double Window::ContentScaleFactor() const
 {
 	return contentScaleFactor;
 }
@@ -470,7 +470,7 @@ void Window::SetTitle(const DKString& title)
 	::SetWindowTextW(hWnd, (const wchar_t*)title);
 }
 
-DKString Window::Title(void) const
+DKString Window::Title() const
 {
 	DKString ret = "";
 	int len = ::GetWindowTextLengthW(hWnd);
@@ -527,7 +527,7 @@ bool Window::IsTextInputEnabled(int deviceId)
 	return false;
 }
 
-void Window::UpdateKeyboard(void)
+void Window::UpdateKeyboard()
 {
 	if (!activated)
 		return;
@@ -576,7 +576,7 @@ void Window::UpdateKeyboard(void)
 	memcpy(keyboardStates, keyStateCurrent, 256);
 }
 
-void Window::UpdateMouse(void)
+void Window::UpdateMouse()
 {
 	if (!activated)
 		return;
@@ -595,7 +595,7 @@ void Window::UpdateMouse(void)
 	}
 }
 
-void Window::ResetKeyboard(void)
+void Window::ResetKeyboard()
 {
 	for (int i = 0; i < 256; i++)
 	{
@@ -621,7 +621,7 @@ void Window::ResetKeyboard(void)
 	memset(keyboardStates, 0, sizeof(keyboardStates));
 }
 
-void Window::ResetMouse(void)
+void Window::ResetMouse()
 {
 	POINT ptMouse;
 	::GetCursorPos(&ptMouse);

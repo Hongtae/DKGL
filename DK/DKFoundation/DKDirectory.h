@@ -59,8 +59,8 @@ namespace DKFoundation
 	class DKGL_API DKDirectory
 	{
 	public:
-		DKDirectory(void);
-		~DKDirectory(void);
+		DKDirectory();
+		~DKDirectory();
 
 		static DKObject<DKDirectory> OpenDir(const DKString& path);
 		static bool IsDirExist(const DKString& path); ///< should be absolute-path
@@ -69,7 +69,7 @@ namespace DKFoundation
 		bool operator != (const DKDirectory& dir) const;
 
 		/// retrieve current path, absolute-path
-		const DKString& AbsolutePath(void) const;
+		const DKString& AbsolutePath() const;
 
 		/// return absolute-path if file exists, or return empty string otherwise.
 		DKString AbsolutePathOfFile(const DKString& name) const;
@@ -90,20 +90,20 @@ namespace DKFoundation
 		DKObject<DKDirectory> OpenSubdir(const DKString& name) const;
 		DKObject<DKDirectory> OpenSubdirAtIndex(unsigned int index) const;
 		/// open parent-directory
-		DKObject<DKDirectory> OpenParent(void) const;
+		DKObject<DKDirectory> OpenParent() const;
 		/// create new sub-directory
 		DKObject<DKDirectory> CreateDir(const DKString& name) const;
 
 		bool IsFileExist(const DKString& name) const;
 		bool IsSubdirExist(const DKString& name) const;
-		bool IsValid(void) const;	///< test directory validation whether or not
-		bool IsReadable(void) const;
-		bool IsWritable(void) const;
+		bool IsValid() const;	///< test directory validation whether or not
+		bool IsReadable() const;
+		bool IsWritable() const;
 
-		bool Reload(void) const; ///< reload contents
+		bool Reload() const; ///< reload contents
 
-		size_t NumberOfFiles(void) const;
-		size_t NumberOfSubdirs(void) const;
+		size_t NumberOfFiles() const;
+		size_t NumberOfSubdirs() const;
 		const DKString& FileNameAtIndex(unsigned int index) const;
 		const DKString& SubdirNameAtIndex(unsigned int index) const;
 
@@ -111,7 +111,7 @@ namespace DKFoundation
 
 	private:
 		typedef DKArray<DKString> StringList;
-		void ReloadIfNeeded(void) const;
+		void ReloadIfNeeded() const;
 
 		DKString currentPath;   // absolute path of current object.
 		StringList files;       // directory contents (files)

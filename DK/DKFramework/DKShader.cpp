@@ -9,7 +9,7 @@
 
 using namespace DKFramework;
 
-DKShader::DKShader(void)
+DKShader::DKShader()
 	: stage(StageType::Vertex)
 {
 }
@@ -29,6 +29,6 @@ DKShader::DKShader(DKData* data, StageType st)
 {
 }
 
-DKShader::~DKShader(void)
+DKShader::~DKShader()
 {
 }

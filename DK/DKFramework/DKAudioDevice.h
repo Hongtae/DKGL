@@ -15,11 +15,11 @@ namespace DKFramework
 	class DKGL_API DKAudioDevice : public DKSharedInstance<DKAudioDevice>
 	{
 	public:
-		~DKAudioDevice(void);
+		~DKAudioDevice();
 
-		bool IsBound(void) const;
-		void Bind(void) const;
-		void Unbind(void) const;
+		bool IsBound() const;
+		void Bind() const;
+		void Unbind() const;
 
 		struct DeviceList
 		{
@@ -37,7 +37,7 @@ namespace DKFramework
 	private:
 		friend class DKObject<DKAudioDevice>;
 		friend class DKSharedInstance<DKAudioDevice>;
-		DKAudioDevice(void);
+		DKAudioDevice();
 		DKAudioDevice(const DKAudioDevice&);
 		DKAudioDevice& operator = (const DKAudioDevice&) = delete;
 

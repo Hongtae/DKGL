@@ -71,12 +71,12 @@ AppEventLoop::AppEventLoop(DKApplication* app)
 
 }
 
-AppEventLoop::~AppEventLoop(void)
+AppEventLoop::~AppEventLoop()
 {
 
 }
 
-bool AppEventLoop::Run(void)
+bool AppEventLoop::Run()
 {
 	if (BindThread())
 	{
@@ -170,7 +170,7 @@ bool AppEventLoop::Run(void)
 	return false;
 }
 
-void AppEventLoop::Stop(void)
+void AppEventLoop::Stop()
 {
 	// Don't use PostQuitMessage here
 	if (threadId)

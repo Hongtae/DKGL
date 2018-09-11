@@ -18,14 +18,14 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Win32;
 
-AppLogger::AppLogger(void)
+AppLogger::AppLogger()
 	: console(NULL)
 	, allocatedConsole(false)
 	, initialTextAttributes(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED)
 {
 }
 
-AppLogger::~AppLogger(void)
+AppLogger::~AppLogger()
 {
 	if (console && allocatedConsole)
 	{
@@ -35,7 +35,7 @@ AppLogger::~AppLogger(void)
 	}
 }
 
-void AppLogger::OnBind(void)
+void AppLogger::OnBind()
 {
 	if (console == NULL)
 		allocatedConsole = AllocConsole();
@@ -72,7 +72,7 @@ void AppLogger::OnBind(void)
 	}
 }
 
-void AppLogger::OnUnbind(void)
+void AppLogger::OnUnbind()
 {
 	if (console)
 	{

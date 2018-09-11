@@ -21,14 +21,14 @@ namespace DKFramework
 	/// You can use DKAffineTransform3 for Non-uniform scale.
 	struct DKGL_API DKTransformUnit
 	{
-		DKTransformUnit(void);
+		DKTransformUnit();
 		DKTransformUnit(const DKVector3& s, const DKQuaternion& r, const DKVector3& t);
 
-		DKMatrix3			Matrix3(void) const;	///< scale * rotation
-		DKMatrix4			Matrix4(void) const;	///< scale * rotation * translation
+		DKMatrix3			Matrix3() const;	///< scale * rotation
+		DKMatrix4			Matrix4() const;	///< scale * rotation * translation
 
 		DKTransformUnit			Interpolate(const DKTransformUnit& target, float t) const;
-		DKTransformUnit&		Identity(void);
+		DKTransformUnit&		Identity();
 
 		bool operator == (const DKTransformUnit& t) const;
 		bool operator != (const DKTransformUnit& t) const;
@@ -52,15 +52,15 @@ namespace DKFramework
 	/// @details transform class for uniform-scale transform.
 	struct DKGL_API DKUSTransform
 	{
-		DKUSTransform(void);
+		DKUSTransform();
 		DKUSTransform(float s, const DKQuaternion& r, const DKVector3& t);
 
-		DKMatrix3			Matrix3(void) const;
-		DKMatrix4			Matrix4(void) const;
+		DKMatrix3			Matrix3() const;
+		DKMatrix4			Matrix4() const;
 
 		DKUSTransform		Interpolate(const DKUSTransform& target, float t) const;
-		DKUSTransform&		Identity(void);
-		DKUSTransform&		Inverse(void);
+		DKUSTransform&		Identity();
+		DKUSTransform&		Inverse();
 
 		DKUSTransform operator * (const DKUSTransform& t) const;
 		DKUSTransform& operator *= (const DKUSTransform& t);
@@ -94,13 +94,13 @@ namespace DKFramework
 		DKNSTransform(const DKMatrix3& r, const DKVector3& t = DKVector3::zero);
 		DKNSTransform(const DKVector3& t = DKVector3::zero);
 
-		DKNSTransform& Identity(void);
-		DKNSTransform& Inverse(void);
+		DKNSTransform& Identity();
+		DKNSTransform& Inverse();
 
 		DKNSTransform Interpolate(const DKNSTransform& target, float t) const;
 
-		DKMatrix3 Matrix3(void) const;
-		DKMatrix4 Matrix4(void) const;
+		DKMatrix3 Matrix3() const;
+		DKMatrix4 Matrix4() const;
 
 		DKNSTransform operator * (const DKNSTransform& t) const;
 		DKNSTransform& operator *= (const DKNSTransform& t);

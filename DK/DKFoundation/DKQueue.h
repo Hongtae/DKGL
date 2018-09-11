@@ -31,13 +31,13 @@ namespace DKFoundation
 		typedef DKCriticalSection<Lock>		CriticalSection;
 		typedef ALLOC						Allocator;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
 		/// lock is public. enables object could be locked from outside.
 		/// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
 		Lock	lock;
 
-		DKQueue(void)
+		DKQueue()
 			: begin(0)
 			, count(0)
 			, maxSize(0)
@@ -84,13 +84,13 @@ namespace DKFoundation
 		{
 			PushBack(queue);
 		}
-		~DKQueue(void)
+		~DKQueue()
 		{
 			Clear();
 			if (data)
 				Allocator::Free(data);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			if (data && count)
@@ -224,7 +224,7 @@ namespace DKFoundation
 				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return count == 0;
@@ -244,7 +244,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		VALUE PopFront(void)
+		VALUE PopFront()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -270,7 +270,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		VALUE PopBack(void)
+		VALUE PopBack()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -281,13 +281,13 @@ namespace DKFoundation
 			Balance();
 			return ret;
 		}
-		VALUE& Front(void)
+		VALUE& Front()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin];
 		}
-		const VALUE& Front(void) const
+		const VALUE& Front() const
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -303,13 +303,13 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		VALUE& Back(void)
+		VALUE& Back()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin+count-1];
 		}
-		const VALUE& Back(void) const
+		const VALUE& Back() const
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -352,31 +352,31 @@ namespace DKFoundation
 			return data[begin+index];
 		}
 		/// type-casting, object should be locked before calling this operator.
-		operator VALUE* (void)
+		operator VALUE* ()
 		{
 			if (count > 0)
 				return std::addressof(data[begin]);
 			return NULL;
 		}
 		/// type-casting, object should be locked before calling this operator.
-		operator const VALUE* (void) const
+		operator const VALUE* () const
 		{
 			if (count > 0)
 				return std::addressof(data[begin]);
 			return NULL;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
 		/// counting objects without locking.
 		/// Usable when objects has been locked.
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return count;
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			if (begin > 0 || (begin + count) < maxSize)
@@ -612,7 +612,7 @@ namespace DKFoundation
 			maxSize = newSize;
 			data = dataNew;
 		}
-		void Balance(void)
+		void Balance()
 		{
 			size_t frontSpace = begin;
 			size_t backSpace = maxSize - (begin+count);

@@ -20,16 +20,16 @@ namespace DKFramework
 	class DKGL_API DKTriangleMeshBvh
 	{
 	public:
-		DKTriangleMeshBvh(void);
-		~DKTriangleMeshBvh(void);
+		DKTriangleMeshBvh();
+		~DKTriangleMeshBvh();
 		
 		void Build(DKTriangleMesh* mesh);
-		void Rebuild(void);
+		void Rebuild();
 
-		DKAabb Aabb(void) const;
+		DKAabb Aabb() const;
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 
-		const DKBvh& Bvh(void) const { return bvh; }
+		const DKBvh& Bvh() const { return bvh; }
 
 	private:
 		DKObject<DKTriangleMesh> mesh;

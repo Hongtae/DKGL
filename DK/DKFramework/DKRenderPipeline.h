@@ -124,6 +124,6 @@ namespace DKFramework
 	{
 	public:
 		virtual ~DKRenderPipelineState() {}
-		virtual DKGraphicsDevice* Device(void) = 0;
+		virtual DKGraphicsDevice* Device() = 0;
 	};
 }

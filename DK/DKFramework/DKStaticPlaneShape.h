@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKStaticPlaneShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,9 +16,9 @@ namespace DKFramework
 	{
 	public:
 		DKStaticPlaneShape(const DKVector3& planeNormal, float planeConstant);
-		~DKStaticPlaneShape(void);
+		~DKStaticPlaneShape();
 
-		DKVector3 PlaneNormal(void) const;
-		float PlaneConstant(void) const;
+		DKVector3 PlaneNormal() const;
+		float PlaneConstant() const;
 	};
 }

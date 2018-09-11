@@ -74,7 +74,7 @@ namespace DKFoundation
 			{
 				AllocationNode node[AllocatorTableLength];
 				DKSpinLock lock;
-				static AllocationTable*& Instance(void)
+				static AllocationTable*& Instance()
 				{
 					static AllocationTable* table = NULL;
 					return table;
@@ -98,7 +98,7 @@ namespace DKFoundation
 				DKCriticalSection<DKSpinLock> guard(table->lock);
 				return table->node[reinterpret_cast<uintptr_t>(ptr) % AllocatorTableLength];
 			}
-			DKObjectRefCounter::RefIdValue GenerateRefId(void)
+			DKObjectRefCounter::RefIdValue GenerateRefId()
 			{
 				// Maintainer will initialize AllocationTable (see DKAllocatorChain.cpp)
 				static DKAllocator::Maintainer init;
@@ -112,7 +112,7 @@ namespace DKFoundation
 			}
 		}
 
-		void CreateAllocationTable(void) // called by Maintainer
+		void CreateAllocationTable() // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			if (table == NULL)
@@ -121,7 +121,7 @@ namespace DKFoundation
 				AllocationTable::Instance() = table;
 			}
 		}
-		void DestroyAllocationTable(void) // called by Maintainer
+		void DestroyAllocationTable() // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			AllocationTable::Instance() = NULL;
@@ -345,7 +345,7 @@ DKAllocator* DKObjectRefCounter::Allocator(void* p)
 	return NULL;	
 }
 
-size_t DKObjectRefCounter::TableSize(void)
+size_t DKObjectRefCounter::TableSize()
 {
 	return Private::AllocatorTableLength;	
 }

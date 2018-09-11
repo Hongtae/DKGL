@@ -19,15 +19,15 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		ShaderFunction(DKShaderModule* module, const DKStringU8& name, const DKShaderSpecialization* values, size_t numValues);
-		~ShaderFunction(void);
+		~ShaderFunction();
 
-		const DKArray<DKVertexAttribute>& VertexAttributes(void) const override;
-		const DKArray<DKShaderAttribute>& StageInputAttributes(void) const override;
+		const DKArray<DKVertexAttribute>& VertexAttributes() const override;
+		const DKArray<DKShaderAttribute>& StageInputAttributes() const override;
 
-		const DKMap<DKString, Constant>& FunctionConstants(void) const override { return functionConstantsMap; }
-		DKString FunctionName(void) const override { return DKString(functionName); }
+		const DKMap<DKString, Constant>& FunctionConstants() const override { return functionConstantsMap; }
+		DKString FunctionName() const override { return DKString(functionName); }
 
-		DKGraphicsDevice* Device(void) override { return module->Device(); }
+		DKGraphicsDevice* Device() override { return module->Device(); }
 
 		DKObject<DKShaderModule> module;
 		DKStringU8 functionName;

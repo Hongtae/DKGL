@@ -22,22 +22,22 @@ namespace DKFramework
 	class DKGL_API DKAudioListener : public DKSharedInstance<DKAudioListener>
 	{
 	public:
-		~DKAudioListener(void);
+		~DKAudioListener();
 
 		void SetGain(float f);
-		float Gain(void) const;
+		float Gain() const;
 		
 		void SetPosition(const DKVector3& v);
-		const DKVector3& Position(void) const;
+		const DKVector3& Position() const;
 		
 		void SetOrientation(const DKVector3& forward, const DKVector3& up);
 		void SetOrientation(const DKMatrix3& m);
 		
-		const DKVector3& Forward(void) const;
-		const DKVector3& Up(void) const;
+		const DKVector3& Forward() const;
+		const DKVector3& Up() const;
 		
 		void SetVelocity(const DKVector3& v);
-		const DKVector3& Velocity(void) const;
+		const DKVector3& Velocity() const;
 				
 	private:
 		DKVector3 position;
@@ -48,7 +48,7 @@ namespace DKFramework
 		
 		friend class DKObject<DKAudioListener>;
 		friend class DKSharedInstance<DKAudioListener>;		
-		DKAudioListener(void);
+		DKAudioListener();
 		DKAudioListener(const DKAudioListener&) = delete;
 		DKAudioListener& operator = (const DKAudioListener&) = delete;		
 

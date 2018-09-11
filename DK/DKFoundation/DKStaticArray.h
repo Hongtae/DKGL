@@ -40,12 +40,12 @@ namespace DKFoundation
 		{
 			return this->position != it.position;
 		}
-		DKArrayRBIterator& operator ++ (void)	// prefix++
+		DKArrayRBIterator& operator ++ ()	// prefix++
 		{
 			++position;
 			return *this;
 		}
-		ITEMREF operator * (void)
+		ITEMREF operator * ()
 		{
 			DKASSERT_DEBUG(container.Count() >= position);
 			return container.Value(position);
@@ -64,7 +64,7 @@ namespace DKFoundation
 		typedef size_t					Index;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
 		enum { UseMemoryCopy = 0 };
 		using SwapMethod = DKNumber<UseMemoryCopy>;
@@ -74,12 +74,12 @@ namespace DKFoundation
 		/// Iterator class for range-based for loop
 		typedef DKArrayRBIterator<DKStaticArray, VALUE&>				RBIterator;
 		typedef DKArrayRBIterator<const DKStaticArray, const VALUE&>	ConstRBIterator;
-		RBIterator begin(void)				{return RBIterator(*this, 0);}
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}
+		RBIterator begin()				{return RBIterator(*this, 0);}
+		ConstRBIterator begin() const	{return ConstRBIterator(*this, 0);}
+		RBIterator end()				{return RBIterator(*this, this->Count());}
+		ConstRBIterator end() const		{return ConstRBIterator(*this, this->Count());}
 
-		DKStaticArray(void)
+		DKStaticArray()
 			: data(NULL), count(0)
 		{
 		}
@@ -93,18 +93,18 @@ namespace DKFoundation
 		{
 			Reset(v);
 		}
-		~DKStaticArray(void)
+		~DKStaticArray()
 		{
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			return count == 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			return count;
 		}
-		void Clear(void)
+		void Clear()
 		{
 			Reset(NULL, 0);
 		}
@@ -118,13 +118,13 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count > index);
 			return data[index];
 		}
-		operator VALUE* (void)
+		operator VALUE* ()
 		{
 			if (count > 0)
 				return data;
 			return NULL;
 		}
-		operator const VALUE* (void) const
+		operator const VALUE* () const
 		{
 			if (count > 0)
 				return data;

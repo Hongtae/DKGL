@@ -25,7 +25,7 @@ CommandBuffer::CommandBuffer(CommandAllocator* a, DKCommandQueue* q)
 {
 }
 
-CommandBuffer::~CommandBuffer(void)
+CommandBuffer::~CommandBuffer()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	dev->ReleaseCommandAllocator(this->commandAllocator);
@@ -46,7 +46,7 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 	return encoder.SafeCast<DKRenderCommandEncoder>();
 }
 
-DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(void)
+DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12GraphicsCommandList> cm = dev->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
@@ -56,7 +56,7 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(voi
 	return encoder.SafeCast<DKComputeCommandEncoder>();
 }
 
-DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
+DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12GraphicsCommandList> cm = dev->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
@@ -71,7 +71,7 @@ void CommandBuffer::FinishCommandList(ID3D12GraphicsCommandList* list)
 	commandLists.Add(list);
 }
 
-bool CommandBuffer::Commit(void)
+bool CommandBuffer::Commit()
 {
 	if (commandLists.Count() > 0 && commandAllocator->IsCompleted())
 	{
@@ -88,7 +88,7 @@ bool CommandBuffer::Commit(void)
 	return false;
 }
 
-bool CommandBuffer::WaitUntilCompleted(void)
+bool CommandBuffer::WaitUntilCompleted()
 {
 	return commandAllocator->WaitUntilCompleted(INFINITE);
 }

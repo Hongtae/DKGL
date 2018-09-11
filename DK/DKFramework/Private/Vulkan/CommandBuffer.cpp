@@ -25,7 +25,7 @@ CommandBuffer::CommandBuffer(VkCommandPool p, DKCommandQueue* q)
 	DKASSERT_DEBUG(commandPool);
 }
 
-CommandBuffer::~CommandBuffer(void)
+CommandBuffer::~CommandBuffer()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
@@ -44,7 +44,7 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 	return nullptr;
 }
 
-DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(void)
+DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 {
 	VkCommandBuffer buffer = GetEncodingBuffer();
 	if (buffer)
@@ -55,7 +55,7 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(voi
 	return nullptr;
 }
 
-DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
+DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
 {
 	VkCommandBuffer buffer = GetEncodingBuffer();
 	if (buffer)
@@ -66,7 +66,7 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 	return nullptr;
 }
 
-bool CommandBuffer::Commit(void)
+bool CommandBuffer::Commit()
 {
 	bool result = false;
 	if (submitInfos.Count() > 0)
@@ -93,7 +93,7 @@ bool CommandBuffer::Commit(void)
 	return result;
 }
 
-VkCommandBuffer CommandBuffer::GetEncodingBuffer(void)
+VkCommandBuffer CommandBuffer::GetEncodingBuffer()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;

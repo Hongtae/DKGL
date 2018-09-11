@@ -854,12 +854,12 @@ DKHash::DKHash(Type t)
 	DEBUG_CHECK_RUNTIME_ENDIANNESS;
 }
 
-DKHash::~DKHash(void)
+DKHash::~DKHash()
 {
 	delete ctxt;
 }
 
-void DKHash::Initialize(void)
+void DKHash::Initialize()
 {
 	if (ctxt == NULL)
 		ctxt = new Private::HashContext();
@@ -927,7 +927,7 @@ void DKHash::Update(const void* p, size_t len)
 	}
 }
 
-void DKHash::Finalize(void)
+void DKHash::Finalize()
 {
 	if (!finalized)
 	{
@@ -961,7 +961,7 @@ void DKHash::Finalize(void)
 	}
 }
 
-DKHashResult32 DKHash32::Result(void) const
+DKHashResult32 DKHash32::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type32, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized");
@@ -971,7 +971,7 @@ DKHashResult32 DKHash32::Result(void) const
 	return res;
 }
 
-DKHashResult128 DKHash128::Result(void) const
+DKHashResult128 DKHash128::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type128, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized.");
@@ -983,7 +983,7 @@ DKHashResult128 DKHash128::Result(void) const
 	return res;
 }
 
-DKHashResult160 DKHash160::Result(void) const
+DKHashResult160 DKHash160::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type160, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized.");
@@ -995,7 +995,7 @@ DKHashResult160 DKHash160::Result(void) const
 	return res;
 }
 
-DKHashResult224 DKHash224::Result(void) const
+DKHashResult224 DKHash224::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type224, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized.");
@@ -1007,7 +1007,7 @@ DKHashResult224 DKHash224::Result(void) const
 	return res;
 }
 
-DKHashResult256 DKHash256::Result(void) const
+DKHashResult256 DKHash256::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type256, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized.");
@@ -1019,7 +1019,7 @@ DKHashResult256 DKHash256::Result(void) const
 	return res;
 }
 
-DKHashResult384 DKHash384::Result(void) const
+DKHashResult384 DKHash384::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type384, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized.");
@@ -1031,7 +1031,7 @@ DKHashResult384 DKHash384::Result(void) const
 	return res;
 }
 
-DKHashResult512 DKHash512::Result(void) const
+DKHashResult512 DKHash512::Result() const
 {
 	DKASSERT_DESC_DEBUG(type == Type512, "Invalid Hash Type");
 	DKASSERT_DESC_DEBUG(ctxt != NULL, "Object not initialized.");

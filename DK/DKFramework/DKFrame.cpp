@@ -11,10 +11,10 @@
 
 using namespace DKFramework;
 
-DKFrame::DKFrame(void)
+DKFrame::DKFrame()
 {
 }
 
-DKFrame::~DKFrame(void)
+DKFrame::~DKFrame()
 {
 }

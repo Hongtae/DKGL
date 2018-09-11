@@ -30,7 +30,7 @@ namespace DKFoundation
 	public:
 		/// anything can be a key, but should be unique.
 		DKFence(const void* key, bool exclusive = false);
-		~DKFence(void);
+		~DKFence();
 		
 	private:
 		DKFence(const DKFence&) = delete;

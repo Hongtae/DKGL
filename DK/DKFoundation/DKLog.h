@@ -52,5 +52,5 @@ namespace DKFoundation
 #ifdef DKGL_DEBUG_ENABLED
 #define DKLOG_DEBUG(...)	DKLog(__VA_ARGS__)
 #else
-#define DKLOG_DEBUG(...)	(void)0
+#define DKLOG_DEBUG(...)	()0
 #endif

@@ -50,12 +50,12 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKFile::DKFile(void)
+DKFile::DKFile()
 	: file(DKFILE_INVALID_FILE_HANDLE)
 {
 }
 
-DKFile::~DKFile(void)
+DKFile::~DKFile()
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
@@ -232,7 +232,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 	return NULL;
 }
 
-DKObject<DKFile> DKFile::CreateTemporary(void)
+DKObject<DKFile> DKFile::CreateTemporary()
 {
 #ifdef _WIN32
 	DKString tmpPath = DKTemporaryDirectory();
@@ -347,7 +347,7 @@ DKFile::Position DKFile::SetCurrentPosition(Position p)
 	return -1;
 }
 
-DKFile::Position DKFile::CurrentPosition(void) const
+DKFile::Position DKFile::CurrentPosition() const
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
@@ -369,7 +369,7 @@ DKFile::Position DKFile::CurrentPosition(void) const
 	return -1;
 }
 
-DKFile::Position DKFile::RemainLength(void) const
+DKFile::Position DKFile::RemainLength() const
 {
 	FileInfo info;
 	if (GetInfo(info))
@@ -377,7 +377,7 @@ DKFile::Position DKFile::RemainLength(void) const
 	return 0;
 }
 
-DKFile::Position DKFile::TotalLength(void) const
+DKFile::Position DKFile::TotalLength() const
 {
 	FileInfo info;
 	if (GetInfo(info))
@@ -672,7 +672,7 @@ bool DKFile::GetInfo(DKFile::FileInfo& info) const
 	return true;
 }
 
-DKFile::FileInfo DKFile::GetInfo(void) const
+DKFile::FileInfo DKFile::GetInfo() const
 {
 	FileInfo info;
 	if (GetInfo(info) == false)
@@ -753,22 +753,22 @@ bool DKFile::SetLength(size_t len)
 	return false;
 }
 
-bool DKFile::IsReadable(void) const
+bool DKFile::IsReadable() const
 {
 	return (this->file != DKFILE_INVALID_FILE_HANDLE);
 }
 
-bool DKFile::IsWritable(void) const
+bool DKFile::IsWritable() const
 {
 	return (this->file != DKFILE_INVALID_FILE_HANDLE) && (this->modeOpen != ModeOpenReadOnly);
 }
 
-bool DKFile::IsSeekable(void) const
+bool DKFile::IsSeekable() const
 {
 	return IsReadable();
 }
 
-const DKString& DKFile::Path(void) const
+const DKString& DKFile::Path() const
 {
 	return this->path;
 }
@@ -780,7 +780,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 #ifdef _WIN32
 		struct MappedContent : public DKData
 		{
-			~MappedContent(void)
+			~MappedContent()
 			{
 				if (::UnmapViewOfFile(ptr) == 0)
 				{
@@ -792,13 +792,13 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const override { return length; }
-			bool IsReadable(void) const override { return readable; }
-			bool IsWritable(void) const override { return writable; }
-			bool IsExcutable(void) const override { return false; }
-			bool IsTransient(void) const override { return false; }
+			size_t Length() const override { return length; }
+			bool IsReadable() const override { return readable; }
+			bool IsWritable() const override { return writable; }
+			bool IsExcutable() const override { return false; }
+			bool IsTransient() const override { return false; }
 
-			const void* LockShared(void) const override { lock.LockShared(); return &ptr[offset]; }
+			const void* LockShared() const override { lock.LockShared(); return &ptr[offset]; }
 			bool TryLockShared(const void** ptr) const override
 			{
 				if (lock.TryLockShared())
@@ -809,9 +809,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const override { lock.UnlockShared(); }
+			void UnlockShared() const override { lock.UnlockShared(); }
 
-			void* LockExclusive(void) override { lock.Lock(); return &ptr[offset]; }
+			void* LockExclusive() override { lock.Lock(); return &ptr[offset]; }
 			bool TryLockExclusive(void** ptr)
 			{
 				if (lock.TryLock())
@@ -822,7 +822,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void) override { lock.Unlock(); }
+			void UnlockExclusive() override { lock.Unlock(); }
 
 			size_t length;
 			size_t offset;
@@ -887,7 +887,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 #else
 		struct MappedContent : public DKData
 		{
-			~MappedContent(void)
+			~MappedContent()
 			{
 				if (::munmap(ptr, length + offset) != 0)
 				{
@@ -895,13 +895,13 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const override { return length; }
-			bool IsReadable(void) const override { return (prot & PROT_READ) != 0; }
-			bool IsWritable(void) const override { return (prot & PROT_WRITE) != 0; }
-			bool IsExcutable(void) const override { return false; }
-			bool IsTransient(void) const override { return false; }
+			size_t Length() const override { return length; }
+			bool IsReadable() const override { return (prot & PROT_READ) != 0; }
+			bool IsWritable() const override { return (prot & PROT_WRITE) != 0; }
+			bool IsExcutable() const override { return false; }
+			bool IsTransient() const override { return false; }
 
-			const void* LockShared(void) const override { lock.LockShared(); return &ptr[offset]; }
+			const void* LockShared() const override { lock.LockShared(); return &ptr[offset]; }
 			bool TryLockShared(const void** ptr) const
 			{
 				if (lock.TryLockShared())
@@ -912,9 +912,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const override { lock.UnlockShared(); }
+			void UnlockShared() const override { lock.UnlockShared(); }
 
-			void* LockExclusive(void) override { lock.Lock(); return &ptr[offset]; }
+			void* LockExclusive() override { lock.Lock(); return &ptr[offset]; }
 			bool TryLockExclusive(void** ptr) override
 			{
 				if (lock.TryLock())
@@ -925,7 +925,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void) override { lock.Unlock(); }
+			void UnlockExclusive() override { lock.Unlock(); }
 
 			int prot;
 			size_t length;

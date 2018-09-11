@@ -22,7 +22,7 @@ const DKFloat16 DKFloat16::posInfinity = UInt16ToFloat16(0x7c00U);
 const DKFloat16 DKFloat16::negInfinity = UInt16ToFloat16(0xfc00U);
 
 
-DKFloat16::DKFloat16(void)
+DKFloat16::DKFloat16()
 	: binary16(0U)
 {
 }
@@ -77,7 +77,7 @@ DKFloat16::DKFloat16(float val)
 	}
 }
 
-DKFloat16::operator float(void) const
+DKFloat16::operator float() const
 {
 	uint32_t sign = (binary16 >> 15) & 0x1U;
 	uint32_t exponent = (binary16 >> 10) & 0x1fU;
@@ -121,33 +121,33 @@ DKFloat16& DKFloat16::operator = (const DKFloat16& v)
 	return *this;
 }
 
-DKFloat16 DKFloat16::Abs(void) const
+DKFloat16 DKFloat16::Abs() const
 {
 	return static_cast<DKFloat16>(uint16_t(binary16 & 0x7fffU));
 }
 
-bool DKFloat16::IsInfinity(void) const
+bool DKFloat16::IsInfinity() const
 {
 	uint32_t exponent = (binary16 >> 10) & 0x1fU;
 	uint32_t mantissa = binary16 & 0x3ffU;
 	return exponent == 0x1fU && mantissa == 0U;
 }
 
-bool DKFloat16::IsPositiveInfinity(void) const
+bool DKFloat16::IsPositiveInfinity() const
 {
 	if (IsInfinity())
 		return IsPositive();
 	return false;
 }
 
-bool DKFloat16::IsNegativeInfinity(void) const
+bool DKFloat16::IsNegativeInfinity() const
 {
 	if (IsInfinity())
 		return !IsPositive();
 	return false;
 }
 
-bool DKFloat16::IsNumeric(void) const
+bool DKFloat16::IsNumeric() const
 {
 	uint32_t exponent = (binary16 >> 10) & 0x1fU;
 	if (exponent == 0x1fU)
@@ -159,7 +159,7 @@ bool DKFloat16::IsNumeric(void) const
 	return true;
 }
 
-bool DKFloat16::IsSubnormalNumber(void) const
+bool DKFloat16::IsSubnormalNumber() const
 {
 	uint32_t exponent = (binary16 >> 10) & 0x1fU;
 	if (exponent == 0U)
@@ -171,12 +171,12 @@ bool DKFloat16::IsSubnormalNumber(void) const
 	return false;
 }
 
-bool DKFloat16::IsPositive(void) const
+bool DKFloat16::IsPositive() const
 {
 	return ((binary16 >> 15) & 0x1U) == 0;
 }
 
-bool DKFloat16::IsZero(void) const
+bool DKFloat16::IsZero() const
 {
 	return (binary16 & 0x7fffU) == 0;
 }

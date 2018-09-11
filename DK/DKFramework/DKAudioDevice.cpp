@@ -10,7 +10,7 @@
 
 using namespace DKFramework;
 
-DKAudioDevice::DKAudioDevice(void)
+DKAudioDevice::DKAudioDevice()
 	: device(NULL)
 	, context(NULL)
 {	
@@ -81,7 +81,7 @@ DKAudioDevice::DKAudioDevice(void)
 	DKLog("DKAudioDevice:0x%x Created.\n", this);
 }
 
-DKAudioDevice::~DKAudioDevice(void)
+DKAudioDevice::~DKAudioDevice()
 {
 	if (alcGetCurrentContext() == (ALCcontext*)context)
 		alcMakeContextCurrent(NULL);
@@ -95,17 +95,17 @@ DKAudioDevice::~DKAudioDevice(void)
 	DKLog("DKAudioDevice:0x%x Destroyed.\n", this);
 }
 
-bool DKAudioDevice::IsBound(void) const
+bool DKAudioDevice::IsBound() const
 {
 	return alcGetCurrentContext() == (ALCcontext*)context;
 }
 
-void DKAudioDevice::Bind(void) const
+void DKAudioDevice::Bind() const
 {
 	alcMakeContextCurrent((ALCcontext*)context);
 }
 
-void DKAudioDevice::Unbind(void) const
+void DKAudioDevice::Unbind() const
 {
 		alcMakeContextCurrent(NULL);
 }

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKStaticTriangleMeshShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -34,21 +34,21 @@ namespace DKFramework
 								  size_t numIndices,
 								  const DKAabb& precalculatedAabb = DKAabb());
 
-		~DKStaticTriangleMeshShape(void);
+		~DKStaticTriangleMeshShape();
 
 
-		size_t NumberOfVertices(void) const;
-		size_t NumberOfIndices(void) const;
-		size_t IndexSize(void) const;	///< Index size in bytes
-		size_t NumberOfTriangles(void) const;
+		size_t NumberOfVertices() const;
+		size_t NumberOfIndices() const;
+		size_t IndexSize() const;	///< Index size in bytes
+		size_t NumberOfTriangles() const;
 
 		const DKVector3& VertexAtIndex(int index) const;
 		DKTriangle TriangleAtIndex(int index) const;
 
-		DKAabb Aabb(void) const;
+		DKAabb Aabb() const;
 
-		const DKVector3* VertexData(void) const;
-		const void* IndexData(void) const;
+		const DKVector3* VertexData() const;
+		const void* IndexData() const;
 
 	private:
 		class IndexedTriangleData;

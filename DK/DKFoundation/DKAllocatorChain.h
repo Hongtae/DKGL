@@ -30,19 +30,19 @@ namespace DKFoundation
 	class DKGL_API DKAllocatorChain
 	{
 	public:
-		DKAllocatorChain(void);
-		virtual ~DKAllocatorChain(void) noexcept(!DKGL_MEMORY_DEBUG);
+		DKAllocatorChain();
+		virtual ~DKAllocatorChain() noexcept(!DKGL_MEMORY_DEBUG);
 
 		virtual void* Alloc(size_t) = 0;
 		virtual void* Realloc(void*, size_t) = 0;
 		virtual void Dealloc(void*) = 0;
 
-		virtual size_t Purge(void) { return 0; }
-		virtual void Description(void) {}
+		virtual size_t Purge() { return 0; }
+		virtual void Description() {}
 
-		static size_t Cleanup(void);
-		static DKAllocatorChain* FirstAllocator(void);
-		DKAllocatorChain* NextAllocator(void);
+		static size_t Cleanup();
+		static DKAllocatorChain* FirstAllocator();
+		DKAllocatorChain* NextAllocator();
 
 		/// @brief Prevent destruction of allocator-chain of located in static
 		///  storage at application is being terminated
@@ -50,8 +50,8 @@ namespace DKFoundation
 		///  DKAllocator, it should have Maintainer instance with static storage.
 		struct DKGL_API Maintainer
 		{
-			Maintainer(void);
-			~Maintainer(void) noexcept(!DKGL_MEMORY_DEBUG);
+			Maintainer();
+			~Maintainer() noexcept(!DKGL_MEMORY_DEBUG);
 		};
 
 		void* operator new (size_t);

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConvexShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,7 +16,7 @@ namespace DKFramework
 	class DKGL_API DKConvexShape : public DKCollisionShape
 	{
 	public:
-		~DKConvexShape(void);
+		~DKConvexShape();
 
 		void Project(const DKNSTransform& t, const DKVector3& dir, float& min, float& max) const;
 

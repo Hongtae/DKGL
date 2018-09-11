@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKAnimationController.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -11,14 +11,14 @@
 
 using namespace DKFramework;
 
-DKAnimationController::DKAnimationController(void)
+DKAnimationController::DKAnimationController()
 	: lastUpdatedTick(0)
 	, frame(0)
 	, speed(1.0)
 {
 }
 
-DKAnimationController::~DKAnimationController(void)
+DKAnimationController::~DKAnimationController()
 {
 }
 

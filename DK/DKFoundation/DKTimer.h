@@ -31,16 +31,16 @@ namespace DKFoundation
 	{
 	public:
 		typedef DKTimeTick64 Tick; ///< using 64 bit counter.
-		DKTimer(void);
-		~DKTimer(void);
+		DKTimer();
+		~DKTimer();
 
 		/// reset timer, returns time elapsed since previous reset.
-		double Reset(void);
+		double Reset();
 		/// returns elapsed timer since time since last reset.
-		double Elapsed(void) const;
+		double Elapsed() const;
 
-		static Tick SystemTick(void);          ///< system tick
-		static Tick SystemTickFrequency(void); ///< tick frequency (a sec)
+		static Tick SystemTick();          ///< system tick
+		static Tick SystemTickFrequency(); ///< tick frequency (a sec)
 	private:
 		Tick timeStamp;
 	};

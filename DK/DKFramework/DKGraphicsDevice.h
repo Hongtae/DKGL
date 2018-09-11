@@ -24,8 +24,8 @@ namespace DKFramework
 	class DKGL_API DKGraphicsDevice : public DKSharedInstance<DKGraphicsDevice>
 	{
 	public:
-		DKGraphicsDevice(void);
-		~DKGraphicsDevice(void);
+		DKGraphicsDevice();
+		~DKGraphicsDevice();
 
 		DKObject<DKCommandQueue> CreateCommandQueue(uint32_t queueTypeFlags);
 		DKObject<DKShaderModule> CreateShaderModule(DKShader*);

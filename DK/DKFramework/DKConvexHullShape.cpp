@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConvexHullShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -26,7 +26,7 @@ DKConvexHullShape::DKConvexHullShape(ShapeType t, class btConvexHullShape* impl)
 	DKASSERT_DEBUG(impl);
 }
 
-DKConvexHullShape::~DKConvexHullShape(void)
+DKConvexHullShape::~DKConvexHullShape()
 {
 }
 
@@ -35,7 +35,7 @@ void DKConvexHullShape::AddPoint(const DKVector3& p)
 	static_cast<btConvexHullShape*>(this->impl)->addPoint(BulletVector3(p));
 }
 
-size_t DKConvexHullShape::NumberOfPoints(void) const
+size_t DKConvexHullShape::NumberOfPoints() const
 {
 	return static_cast<btConvexHullShape*>(this->impl)->getNumPoints();
 }

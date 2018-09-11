@@ -19,7 +19,7 @@ namespace DKFramework
 	{
 		struct FLAC_Context
 		{
-			FLAC_Context(void) : decoder(NULL), stream(NULL), totalSamples(0), sampleNumber(0), sampleRate(0), channels(0), bps(0) {}
+			FLAC_Context() : decoder(NULL), stream(NULL), totalSamples(0), sampleNumber(0), sampleRate(0), channels(0), bps(0) {}
 			FLAC__StreamDecoder* decoder;
 			DKObject<DKStream> stream;
 
@@ -165,7 +165,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-AudioStreamFLAC::AudioStreamFLAC(void)
+AudioStreamFLAC::AudioStreamFLAC()
 	: DKAudioStream(DKAudioStream::FileTypeFLAC)
 	, context(new FLAC_Context())
 {
@@ -177,7 +177,7 @@ AudioStreamFLAC::AudioStreamFLAC(bool isOGG)
 {
 }
 
-AudioStreamFLAC::~AudioStreamFLAC(void)
+AudioStreamFLAC::~AudioStreamFLAC()
 {
 	if (context->decoder)
 	{
@@ -237,7 +237,7 @@ bool AudioStreamFLAC::Open(DKStream* stream)
 	return false;
 }
 
-bool AudioStreamFLAC::InitMetadata(void)
+bool AudioStreamFLAC::InitMetadata()
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->decoder);
@@ -420,7 +420,7 @@ double AudioStreamFLAC::SeekTime(double s)
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamFLAC::RawPos(void) const
+DKAudioStream::Position AudioStreamFLAC::RawPos() const
 {
 	if (context->decoder)
 	{
@@ -433,7 +433,7 @@ DKAudioStream::Position AudioStreamFLAC::RawPos(void) const
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamFLAC::PcmPos(void) const
+DKAudioStream::Position AudioStreamFLAC::PcmPos() const
 {
 	if (context->decoder)
 	{
@@ -446,7 +446,7 @@ DKAudioStream::Position AudioStreamFLAC::PcmPos(void) const
 	return 0;
 }
 
-double AudioStreamFLAC::TimePos(void) const
+double AudioStreamFLAC::TimePos() const
 {
 	if (context->decoder)
 	{
@@ -459,7 +459,7 @@ double AudioStreamFLAC::TimePos(void) const
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamFLAC::RawTotal(void) const
+DKAudioStream::Position AudioStreamFLAC::RawTotal() const
 {
 	if (context->decoder)
 	{
@@ -468,7 +468,7 @@ DKAudioStream::Position AudioStreamFLAC::RawTotal(void) const
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamFLAC::PcmTotal(void) const
+DKAudioStream::Position AudioStreamFLAC::PcmTotal() const
 {
 	if (context->decoder)
 	{
@@ -477,7 +477,7 @@ DKAudioStream::Position AudioStreamFLAC::PcmTotal(void) const
 	return 0;
 }
 
-double AudioStreamFLAC::TimeTotal(void) const
+double AudioStreamFLAC::TimeTotal() const
 {
 	if (context->decoder)
 	{
@@ -486,12 +486,12 @@ double AudioStreamFLAC::TimeTotal(void) const
 	return 0;
 }
 
-AudioStreamOggFLAC::AudioStreamOggFLAC(void)
+AudioStreamOggFLAC::AudioStreamOggFLAC()
 	: AudioStreamFLAC(true)
 {
 }
 
-AudioStreamOggFLAC::~AudioStreamOggFLAC(void)
+AudioStreamOggFLAC::~AudioStreamOggFLAC()
 {
 }
 

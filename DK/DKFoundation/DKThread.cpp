@@ -37,10 +37,10 @@ namespace DKFoundation
 	namespace Private
 	{
 #if defined(__APPLE__) && defined(__MACH__)
-		bool InitializeMultiThreadedEnvironment(void);
+		bool InitializeMultiThreadedEnvironment();
 		void PerformOperationInsidePool(DKOperation* op);
 #else
-		FORCEINLINE bool InitializeMultiThreadedEnvironment(void) { return true; }
+		FORCEINLINE bool InitializeMultiThreadedEnvironment() { return true; }
 		FORCEINLINE void PerformOperationInsidePool(DKOperation* op) {op->Perform();}
 #endif
 		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
@@ -94,7 +94,7 @@ namespace DKFoundation
 				{
 					OpWrapper(DKOperation* o) : op(o) {}
 					DKOperation* op;
-					void Perform(void) const override
+					void Perform() const override
 					{
 						PerformOperationWithErrorHandler(op, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
 					}
@@ -187,12 +187,12 @@ using namespace DKFoundation::Private;
 
 const DKThread::ThreadId DKThread::invalidId = (DKThread::ThreadId)0;
 
-DKThread::DKThread(void)
+DKThread::DKThread()
 	: threadId(invalidId)
 {
 }
 
-DKThread::~DKThread(void)
+DKThread::~DKThread()
 {
 }
 
@@ -208,12 +208,12 @@ DKObject<DKThread> DKThread::FindThread(ThreadId id)
 	return NULL;
 }
 
-DKObject<DKThread> DKThread::CurrentThread(void)
+DKObject<DKThread> DKThread::CurrentThread()
 {
 	return FindThread(CurrentThreadId());
 }
 
-DKThread::ThreadId DKThread::CurrentThreadId(void)
+DKThread::ThreadId DKThread::CurrentThreadId()
 {
 #ifdef _WIN32
 	return (ThreadId)::GetCurrentThreadId();
@@ -222,7 +222,7 @@ DKThread::ThreadId DKThread::CurrentThreadId(void)
 #endif
 }
 
-void DKThread::Yield(void)
+void DKThread::Yield()
 {
 #ifdef _WIN32
 	if (SwitchToThread() == 0)
@@ -283,7 +283,7 @@ DKObject<DKThread> DKThread::Create(const DKOperation* operation, size_t stackSi
 	return NULL;
 }
 
-void DKThread::WaitTerminate(void) const
+void DKThread::WaitTerminate() const
 {
 	if (threadId != invalidId)
 	{
@@ -298,7 +298,7 @@ void DKThread::WaitTerminate(void) const
 	}
 }
 
-DKThread::ThreadId DKThread::Id(void) const
+DKThread::ThreadId DKThread::Id() const
 {
 	if (threadId != invalidId)
 	{
@@ -310,7 +310,7 @@ DKThread::ThreadId DKThread::Id(void) const
 	return invalidId;
 }
 
-bool DKThread::IsAlive(void) const
+bool DKThread::IsAlive() const
 {
 	if (threadId != invalidId)
 	{
@@ -367,7 +367,7 @@ bool DKThread::SetPriority(double p)
 #endif
 }
 
-double DKThread::Priority(void) const
+double DKThread::Priority() const
 {
 	ThreadId tid = Id();
 #if _WIN32

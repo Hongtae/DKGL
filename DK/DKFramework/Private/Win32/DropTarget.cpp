@@ -21,7 +21,7 @@ DropTarget::DropTarget(DKWindow* win)
 {
 }
 
-DropTarget::~DropTarget(void)
+DropTarget::~DropTarget()
 {
 }
 
@@ -161,7 +161,7 @@ HRESULT DropTarget::DragOver(DWORD grfKeyState, POINTL pt, DWORD * pdwEffect)
 	return S_OK;
 }
 
-HRESULT DropTarget::DragLeave(void)
+HRESULT DropTarget::DragLeave()
 {
 	if (dropAllowed)
 	{

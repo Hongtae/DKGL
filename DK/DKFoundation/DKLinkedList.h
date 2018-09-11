@@ -65,14 +65,14 @@ namespace DKFoundation
 		{
 		public:
 			IteratorT(const IteratorT& it) : node(it.node) {}
-			ValueT Value(void)				{return node->value;}
-			bool IsValid(void) const		{return node != NULL;}
-			IteratorT Next(void)			{return IteratorT(node->next);}
-			IteratorT Prev(void)			{return IteratorT(node->prev);}
+			ValueT Value()				{return node->value;}
+			bool IsValid() const		{return node != NULL;}
+			IteratorT Next()			{return IteratorT(node->next);}
+			IteratorT Prev()			{return IteratorT(node->prev);}
 
 			/// member functions for RB-loop
-			IteratorT& operator ++ (void)					{node = node->next; return *this;}	// prefix++
-			ValueT operator * (void)						{return node->value;};
+			IteratorT& operator ++ ()					{node = node->next; return *this;}	// prefix++
+			ValueT operator * ()						{return node->value;};
 			bool operator != (const IteratorT& it) const	{return node != it.node;}
 		private:
 			IteratorT(NodeT* n) : node(n) {}
@@ -82,12 +82,12 @@ namespace DKFoundation
 		typedef IteratorT<Node, VALUE&> Iterator;
 		typedef IteratorT<const Node, const VALUE&> ConstIterator;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
+		constexpr static size_t NodeSize()	{ return sizeof(Node); }
 
 		/// lock is public. to provde lock object from outside!
 		Lock lock;
 
-		DKLinkedList(void) : firstNode(NULL), lastNode(NULL), count(0)
+		DKLinkedList() : firstNode(NULL), lastNode(NULL), count(0)
 		{
 		}
 		DKLinkedList(DKLinkedList&& list) : firstNode(NULL), lastNode(NULL), count(0)
@@ -116,20 +116,20 @@ namespace DKFoundation
 			for (const VALUE& v : il)
 				AddTailNL(il);
 		}
-		~DKLinkedList(void)
+		~DKLinkedList()
 		{
 			Clear();
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return count;
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			Node* n = firstNode;
@@ -143,22 +143,22 @@ namespace DKFoundation
 			lastNode = NULL;
 			count = 0;
 		}
-		Iterator LockHead(void)
+		Iterator LockHead()
 		{
 			lock.Lock();
 			return firstNode;
 		}
-		ConstIterator LockHead(void) const
+		ConstIterator LockHead() const
 		{
 			lock.Lock();
 			return firstNode;
 		}
-		Iterator LockTail(void)
+		Iterator LockTail()
 		{
 			lock.Lock();
 			return lastNode;
 		}
-		ConstIterator LockTail(void) const
+		ConstIterator LockTail() const
 		{
 			lock.Lock();
 			return lastNode;
@@ -196,7 +196,7 @@ namespace DKFoundation
 				count--;
 			}
 		}
-		void Unlock(void)
+		void Unlock()
 		{
 			DKASSERT_DESC_DEBUG(lock.TryLock() == false, "List does not locked");
 			lock.Unlock();
@@ -222,10 +222,10 @@ namespace DKFoundation
 			return AddTailNL(static_cast<VALUE&&>(v));
 		}
 
-		Iterator begin(void)				{return firstNode;}	///< implemented for range-based for loop
-		ConstIterator begin(void) const		{return firstNode;}	///< implemented for range-based for loop
-		Iterator end(void)					{return NULL;}	///< implemented for range-based for loop
-		ConstIterator end(void) const		{return NULL;}	///< implemented for range-based for loop
+		Iterator begin()				{return firstNode;}	///< implemented for range-based for loop
+		ConstIterator begin() const		{return firstNode;}	///< implemented for range-based for loop
+		Iterator end()					{return NULL;}	///< implemented for range-based for loop
+		ConstIterator end() const		{return NULL;}	///< implemented for range-based for loop
 
 		bool CheckIterator(const Iterator& it) const
 		{

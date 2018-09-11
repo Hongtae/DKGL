@@ -137,19 +137,19 @@ namespace DKFoundation
 	template <bool C, typename T, typename U> using DKCondType = typename Private::CondType<C, T, U>::Result;
 
 	/// returns sum of integers in Ns...
-	template <int... Ns> constexpr int DKSum(void)
+	template <int... Ns> constexpr int DKSum()
 	{
 		return Private::Sum<Ns...>::Result;
 	}
 
 	/// count number of matches with first integer(Num) in Ns
-	template <int Num, int... Ns> constexpr int DKNumMatches(void)
+	template <int Num, int... Ns> constexpr int DKNumMatches()
 	{
 		return Private::NumMatches<Num, Ns...>::Result;
 	}
 
 	/// determine whether type Source is convertible into type Target.
-	template <typename Source, typename Target> constexpr bool DKTypeConversionTest(void)
+	template <typename Source, typename Target> constexpr bool DKTypeConversionTest()
 	{
 		return Private::ConversionTest<Source, Target>::Result;
 	}

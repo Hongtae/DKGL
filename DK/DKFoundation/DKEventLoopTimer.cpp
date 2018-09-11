@@ -10,11 +10,11 @@
 
 using namespace DKFoundation;
 
-DKEventLoopTimer::DKEventLoopTimer(void)
+DKEventLoopTimer::DKEventLoopTimer()
 {
 }
 
-DKEventLoopTimer::~DKEventLoopTimer(void)
+DKEventLoopTimer::~DKEventLoopTimer()
 {
 	// operation should be invalidated when destroying!
 	Invalidate();
@@ -39,15 +39,15 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 		DKTimer::Tick			start;
 		DKEventLoop*			eventLoop; // DKEventLoop
 
-		void Invalidate(void) override				{ invalidated = true; }
-		size_t Count(void) const override			{ return count; }
-		DKEventLoop* EventLoop(void) const override	{ return eventLoop; }
-		bool IsRunning(void) const override			{ return !invalidated && eventLoop != NULL; }
-		double Interval(void) const override
+		void Invalidate() override				{ invalidated = true; }
+		size_t Count() const override			{ return count; }
+		DKEventLoop* EventLoop() const override	{ return eventLoop; }
+		bool IsRunning() const override			{ return !invalidated && eventLoop != NULL; }
+		double Interval() const override
 		{
 			return static_cast<double>(interval) / static_cast<double>(DKTimer::SystemTickFrequency());
 		}
-		void Perform(void) const override
+		void Perform() const override
 		{
 			EventLoopInvoker& invoker = const_cast<EventLoopInvoker&>(*this);
 			if (!invoker.invalidated)
@@ -57,7 +57,7 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 				invoker.Install();
 			}
 		}
-		bool Install(void)
+		bool Install()
 		{
 			// Install next operation into EventLoop.
 			if (DKEventLoop::IsRunning(this->eventLoop) && this->invalidated == false)
@@ -106,35 +106,35 @@ DKObject<DKEventLoopTimer> DKEventLoopTimer::Create(const DKOperation* operation
 	return NULL;
 }
 
-size_t DKEventLoopTimer::Count(void) const
+size_t DKEventLoopTimer::Count() const
 {
 	if (invoker)
 		return invoker->Count();
 	return 0;
 }
 
-DKEventLoop* DKEventLoopTimer::EventLoop(void) const
+DKEventLoop* DKEventLoopTimer::EventLoop() const
 {
 	if (invoker)
 		return invoker->EventLoop();
 	return NULL;
 }
 
-double DKEventLoopTimer::Interval(void) const
+double DKEventLoopTimer::Interval() const
 {
 	if (invoker)
 		return invoker->Interval();
 	return 0.0;
 }
 
-bool DKEventLoopTimer::IsRunning(void) const
+bool DKEventLoopTimer::IsRunning() const
 {
 	if (invoker)
 		return invoker->IsRunning();
 	return false;
 }
 
-void DKEventLoopTimer::Invalidate(void)
+void DKEventLoopTimer::Invalidate()
 {
 	if (invoker)
 		invoker->Invalidate();

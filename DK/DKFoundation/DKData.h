@@ -24,14 +24,14 @@ namespace DKFoundation
 	class DKGL_API DKData
 	{
 	public:
-		DKData(void);
-		virtual ~DKData(void);
+		DKData();
+		virtual ~DKData();
 
-		virtual size_t Length(void) const = 0;
-		virtual bool IsReadable(void) const = 0;
-		virtual bool IsWritable(void) const = 0;
-		virtual bool IsExcutable(void) const = 0;		///< program code image
-		virtual bool IsTransient(void) const = 0;
+		virtual size_t Length() const = 0;
+		virtual bool IsReadable() const = 0;
+		virtual bool IsWritable() const = 0;
+		virtual bool IsExcutable() const = 0;		///< program code image
+		virtual bool IsTransient() const = 0;
 
 		/// Cast an existing buffer to DKData (writable).
 		/// You can provide cleanup operation which will be invoked on finished.
@@ -53,18 +53,18 @@ namespace DKFoundation
 
 		/// shared lock. (read-only)
 		/// multiple-threads can be locked with this method simultaneously.
-		virtual const void* LockShared(void) const = 0;
+		virtual const void* LockShared() const = 0;
 		virtual bool TryLockShared(const void**) const = 0;
-		virtual void UnlockShared(void) const = 0;
+		virtual void UnlockShared() const = 0;
 
 		/// exclusive lock. (read-write)
 		/// only one thread can be locked.
-		virtual void* LockExclusive(void)		{ return NULL; }
+		virtual void* LockExclusive()		{ return NULL; }
 		virtual bool TryLockExclusive(void**)	{ return false; }
-		virtual void UnlockExclusive(void)		{}
+		virtual void UnlockExclusive()		{}
 
 		/// Clone immutable data object.
-		virtual DKObject<DKData> ImmutableData(void) const;
+		virtual DKObject<DKData> ImmutableData() const;
 
 
 		DKData(DKData&&) = delete;
@@ -89,7 +89,7 @@ namespace DKFoundation
 			if (source)
 				data = source->LockShared();
 		}
-		~DKDataReader(void)
+		~DKDataReader()
 		{
 			if (source)
 				source->UnlockShared();
@@ -107,14 +107,14 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		size_t Length(void) const
+		size_t Length() const
 		{
 			if (source)
 				return source->Length();
 			return 0;
 		}
-		const void* Bytes(void) const		{return data;}
-		operator const void* (void) const	{return data;}
+		const void* Bytes() const		{return data;}
+		operator const void* () const	{return data;}
 	private:
 		DKObject<DKData> source;
 		const void* data;
@@ -130,19 +130,19 @@ namespace DKFoundation
 			if (source)
 				data = source->LockExclusive();
 		}
-		~DKDataWriter(void)
+		~DKDataWriter()
 		{
 			if (source)
 				source->UnlockExclusive();
 		}
-		size_t Length(void) const
+		size_t Length() const
 		{
 			if (source)
 				return source->Length();
 			return 0;
 		}
-		void* Bytes(void) const		{return data;}
-		operator void* (void)		{return data;}
+		void* Bytes() const		{return data;}
+		operator void* ()		{return data;}
 	private:
 		DKObject<DKData> source;
 		void* data;

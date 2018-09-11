@@ -32,7 +32,7 @@ namespace DKFoundation
 		typedef DKCriticalSection<LOCK>		CriticalSection;
 		typedef DKTypeTraits<VALUE>			ValueTraits;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
 		/// OrderFunc, comparison function returns boolean,
 		/// for ascending array, return lhs < rhs,
@@ -54,10 +54,10 @@ namespace DKFoundation
 		///  And you can retrieve item as const VALUE& type (READ-ONLY) while iterating.
 		typedef DKArrayRBIterator<DKOrderedArray, const VALUE&>			RBIterator;
 		typedef DKArrayRBIterator<const DKOrderedArray, const VALUE&>	ConstRBIterator;
-		RBIterator begin(void)				{return RBIterator(*this, 0);}
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}
+		RBIterator begin()				{return RBIterator(*this, 0);}
+		ConstRBIterator begin() const	{return ConstRBIterator(*this, 0);}
+		RBIterator end()				{return RBIterator(*this, this->Count());}
+		ConstRBIterator end() const		{return ConstRBIterator(*this, this->Count());}
 
 		DKOrderedArray(OrderFunc func)
 			: orderFunc(func)
@@ -100,7 +100,7 @@ namespace DKFoundation
 		{
 			DKASSERT_DEBUG(orderFunc);
 		}
-		~DKOrderedArray(void)
+		~DKOrderedArray()
 		{
 		}
 		DKOrderedArray& operator = (DKOrderedArray&& v)
@@ -123,7 +123,7 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.IsEmpty();
@@ -181,27 +181,27 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Remove(pos, c);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
 		/// call this function when object has been locked already.
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return container.Count();
 		}
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return container.Capacity();
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			container.ShrinkToFit();
@@ -217,7 +217,7 @@ namespace DKFoundation
 			return container.Value(index);
 		}
 		/// to access items directly, when object has been locked already.
-		operator const VALUE* (void) const
+		operator const VALUE* () const
 		{
 			return (const VALUE*)container;
 		}

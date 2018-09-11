@@ -21,29 +21,29 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		Texture(DKGraphicsDevice*, id<MTLTexture>);
-		~Texture(void);
+		~Texture();
 
-		uint32_t Width(void) const override
+		uint32_t Width() const override
 		{
 			return static_cast<uint32_t>(texture.width);
 		}
 
-		uint32_t Height(void) const override
+		uint32_t Height() const override
 		{
 			return static_cast<uint32_t>(texture.height);
 		}
 
-		uint32_t Depth(void) const override
+		uint32_t Depth() const override
 		{
 			return static_cast<uint32_t>(texture.depth);
 		}
 
-		uint32_t MipmapCount(void) const override
+		uint32_t MipmapCount() const override
 		{
 			return static_cast<uint32_t>(texture.mipmapLevelCount);
 		}
 
-		DKTexture::Type TextureType(void) const override
+		DKTexture::Type TextureType() const override
 		{
 			MTLTextureType t = texture.textureType;
 			switch (t)
@@ -64,7 +64,7 @@ namespace DKFramework::Private::Metal
 			return DKTexture::TypeUnknown;
 		}
 
-		DKPixelFormat PixelFormat(void) const override
+		DKPixelFormat PixelFormat() const override
 		{
 			return PixelFormat::To(texture.pixelFormat);
 		}

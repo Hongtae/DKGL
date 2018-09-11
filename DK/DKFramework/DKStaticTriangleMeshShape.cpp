@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKStaticTriangleMeshShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -21,7 +21,7 @@ public:
 	size_t numIndices;
 	PHY_ScalarType indexType;
 
-	~IndexedTriangleData(void)
+	~IndexedTriangleData()
 	{
 		if (vertices)
 			DKFree(vertices);
@@ -150,27 +150,27 @@ DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(IndexedTriangleData* data)
 {
 }
 
-DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape(void)
+DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape()
 {
 	delete meshData;
 }
 
-size_t DKStaticTriangleMeshShape::NumberOfVertices(void) const
+size_t DKStaticTriangleMeshShape::NumberOfVertices() const
 {
 	return this->meshData->numVertices;
 }
 
-size_t DKStaticTriangleMeshShape::NumberOfIndices(void) const
+size_t DKStaticTriangleMeshShape::NumberOfIndices() const
 {
 	return this->meshData->numIndices;
 }
 
-size_t DKStaticTriangleMeshShape::IndexSize(void) const
+size_t DKStaticTriangleMeshShape::IndexSize() const
 {
 	return (this->meshData->indexType == PHY_INTEGER) ? 4 : 2;
 }
 
-size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const
+size_t DKStaticTriangleMeshShape::NumberOfTriangles() const
 {
 	return this->meshData->numTriangles;
 }
@@ -203,17 +203,17 @@ DKTriangle DKStaticTriangleMeshShape::TriangleAtIndex(int index) const
 	return triangle;
 }
 
-DKAabb DKStaticTriangleMeshShape::Aabb(void) const
+DKAabb DKStaticTriangleMeshShape::Aabb() const
 {
 	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
 }
 
-const DKVector3* DKStaticTriangleMeshShape::VertexData(void) const
+const DKVector3* DKStaticTriangleMeshShape::VertexData() const
 {
 	return (DKVector3*)this->meshData->vertices;
 }
 
-const void* DKStaticTriangleMeshShape::IndexData(void) const
+const void* DKStaticTriangleMeshShape::IndexData() const
 {
 	return this->meshData->indices;
 }

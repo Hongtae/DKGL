@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKCapsuleShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,14 +18,14 @@ namespace DKFramework
 	{
 	public:
 		DKCapsuleShape(float radius, float height, UpAxis up = UpAxis::Top);
-		~DKCapsuleShape(void);
+		~DKCapsuleShape();
 
-		float Radius(void) const;
-		float HalfHeight(void) const;
+		float Radius() const;
+		float HalfHeight() const;
 
-		float ScaledRadius(void) const;
-		float ScaledHalfHeight(void) const;
+		float ScaledRadius() const;
+		float ScaledHalfHeight() const;
 
-		UpAxis BaseAxis(void) const;
+		UpAxis BaseAxis() const;
 	};
 }

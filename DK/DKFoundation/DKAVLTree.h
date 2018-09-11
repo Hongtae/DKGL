@@ -67,11 +67,11 @@ namespace DKFoundation
 			uint16_t	leftHeight;		// left-tree weights
 			uint16_t	rightHeight;	// right-tree weights
 
-			FORCEINLINE uint16_t Height(void) const
+			FORCEINLINE uint16_t Height() const
 			{
 				return leftHeight > rightHeight ? (leftHeight + 1) : (rightHeight + 1);
 			}
-			Node* Duplicate(void) const
+			Node* Duplicate() const
 			{
 				Node* node = new(Allocator::Alloc(sizeof(Node))) Node(value);
 				if (left)
@@ -122,9 +122,9 @@ namespace DKFoundation
 		Comparator		comparator;
 		Replacer		replacer;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
+		constexpr static size_t NodeSize()	{ return sizeof(Node); }
 
-		DKAVLTree(void)
+		DKAVLTree()
 			: rootNode(NULL), count(0)
 		{
 		}
@@ -148,7 +148,7 @@ namespace DKFoundation
 				rootNode = tree.rootNode->Duplicate();
 			count = tree.count;
 		}
-		~DKAVLTree(void)
+		~DKAVLTree()
 		{
 			Clear();
 		}
@@ -238,7 +238,7 @@ namespace DKFoundation
 				}
 			}
 		}
-		FORCEINLINE void Clear(void)
+		FORCEINLINE void Clear()
 		{
 			if (rootNode)
 				DeleteNode(rootNode);
@@ -253,7 +253,7 @@ namespace DKFoundation
 				return &node->value;
 			return NULL;
 		}
-		FORCEINLINE size_t Count(void) const
+		FORCEINLINE size_t Count() const
 		{
 			return count;
 		}

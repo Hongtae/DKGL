@@ -17,7 +17,7 @@ namespace DKFramework
 	class DKGL_API DKSphere
 	{
 	public:
-		DKSphere(void);
+		DKSphere();
 		DKSphere(const DKVector3& c, float r);
 
 		/// bigger sphere, union of s1, s2 merged sphere.
@@ -25,9 +25,9 @@ namespace DKFramework
 		/// smaller sphere, intersection between s1, s2.
 		static DKSphere Intersection(const DKSphere&s1, const DKSphere&s2);
 
-		bool IsValid(void) const;
+		bool IsValid() const;
 		bool IsPointInside(const DKVector3& pos) const;
-		float Volume(void) const;
+		float Volume() const;
 
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 

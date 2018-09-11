@@ -20,20 +20,20 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		SwapChain(CommandQueue*, DKWindow*);
-		~SwapChain(void);
+		~SwapChain();
 
-		bool Setup(void);
-		bool Update(void);
-		void SetupFrame(void);
+		bool Setup();
+		bool Update();
+		void SetupFrame();
 
 		void SetColorPixelFormat(DKPixelFormat) override;
 		void SetDepthStencilPixelFormat(DKPixelFormat) override;
-		DKRenderPassDescriptor CurrentRenderPassDescriptor(void) override;
+		DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
 
-		bool Present(void) override;
+		bool Present() override;
 
-		DKPixelFormat ColorPixelFormat(void) const override;
-		DKPixelFormat DepthStencilPixelFormat(void) const override;
+		DKPixelFormat ColorPixelFormat() const override;
+		DKPixelFormat DepthStencilPixelFormat() const override;
 
 		bool enableVSync;
 		VkSurfaceFormatKHR surfaceFormat;

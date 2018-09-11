@@ -32,10 +32,10 @@ namespace DKFoundation
 				StateCancelled,	///< operation was cancelled by system or user
 			};
 
-			virtual ~OperationSync(void) {}
-			virtual bool Sync(void) = 0;	///< Wait until operation finished
-			virtual bool Cancel(void) = 0;	///< Cancellation request
-			virtual State OperationState(void) = 0; ///< Query state
+			virtual ~OperationSync() {}
+			virtual bool Sync() = 0;	///< Wait until operation finished
+			virtual bool Cancel() = 0;	///< Cancellation request
+			virtual State OperationState() = 0; ///< Query state
 		};
 
 		/// threading filter.
@@ -44,10 +44,10 @@ namespace DKFoundation
 		{
 			friend class DKOperationQueue;
 		public:
-			virtual ~ThreadFilter(void) {}
+			virtual ~ThreadFilter() {}
 		protected:
-			virtual void OnThreadInitialized(void) {}	///< invoked on initialize thread
-			virtual void OnThreadTerminate(void) {}		///< invoked on finialize thread
+			virtual void OnThreadInitialized() {}	///< invoked on initialize thread
+			virtual void OnThreadTerminate() {}		///< invoked on finialize thread
 			virtual void PerformOperation(DKOperation* op) ///< invoked on processing operation
 			{
 				op->Perform();
@@ -55,21 +55,21 @@ namespace DKFoundation
 		};
 
 		DKOperationQueue(ThreadFilter* filter = NULL);
-		~DKOperationQueue(void);
+		~DKOperationQueue();
 
 		void SetMaxConcurrentOperations(size_t maxConcurrent);
-		size_t MaxConcurrentOperations(void) const;
+		size_t MaxConcurrentOperations() const;
 
 		void Post(DKOperation* operation);
 		DKObject<OperationSync> ProcessAsync(DKOperation* operation);
 		bool Process(DKOperation* operation);	///< wait until done.
-		void CancelAllOperations(void);			///< cancel all operations.
-		void WaitForCompletion(void) const;		///< wait until all operations are done.
+		void CancelAllOperations();			///< cancel all operations.
+		void WaitForCompletion() const;		///< wait until all operations are done.
 		bool WaitForAnyOperation(double timeout) const; ///< wait for any single operation has done or time-out.
 
-		size_t QueueLength(void) const;			///< Number of operations in queue.
-		size_t RunningOperations(void) const;	///< Number of operations currently in process.
-		size_t RunningThreads(void) const;		///< Number of active threads.
+		size_t QueueLength() const;			///< Number of operations in queue.
+		size_t RunningOperations() const;	///< Number of operations currently in process.
+		size_t RunningThreads() const;		///< Number of active threads.
 
 	private:
 		struct Operation
@@ -86,8 +86,8 @@ namespace DKFoundation
 		DKCondition threadCond;
 		DKObject<ThreadFilter> filter;
 
-		void UpdateThreadPool(void);
-		void OperationProc(void);
+		void UpdateThreadPool();
+		void OperationProc();
 
 		DKOperationQueue(const DKOperationQueue&);
 		DKOperationQueue& operator = (const DKOperationQueue&) = delete;

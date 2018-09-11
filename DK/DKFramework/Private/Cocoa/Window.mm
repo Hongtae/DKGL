@@ -76,13 +76,13 @@ Window::Window(DKWindow* w)
 {
 }
 
-Window::~Window(void)
+Window::~Window()
 {
 	DKASSERT_DEBUG(window == nil);
 	DKASSERT_DEBUG(view == nil);
 }
 
-DKRect Window::ContentRect(void)
+DKRect Window::ContentRect()
 {
 	NSRect rect = view.bounds;
 	if (view.window)
@@ -90,7 +90,7 @@ DKRect Window::ContentRect(void)
 	return DKRect(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 }
 
-DKRect Window::WindowRect(void)
+DKRect Window::WindowRect()
 {
 	NSRect rect = view.frame;
 	if (view.window)
@@ -158,13 +158,13 @@ bool Window::CreateProxy(void* systemHandle)
 	return false;
 }
 
-bool Window::IsProxy(void) const
+bool Window::IsProxy() const
 {
 	DKASSERT_DEBUG(view != nil);
 	return window == nil;
 }
 
-void Window::UpdateProxy(void)
+void Window::UpdateProxy()
 {
 	if (IsProxy())
 	{
@@ -183,7 +183,7 @@ void Window::UpdateProxy(void)
 	}
 }
 
-void Window::Destroy(void)
+void Window::Destroy()
 {
 	DispatchSyncOnMain([&](){
 		if (window)
@@ -199,12 +199,12 @@ void Window::Destroy(void)
 	});
 }
 
-void* Window::PlatformHandle(void) const
+void* Window::PlatformHandle() const
 {
 	return view;
 }
 
-bool Window::IsValid(void) const
+bool Window::IsValid() const
 {
 	return view.window != nil;
 }
@@ -257,7 +257,7 @@ bool Window::IsMouseHeld(int deviceId) const
 	return false;
 }
 
-void Window::Show(void)
+void Window::Show()
 {
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		if (view.window)
@@ -274,7 +274,7 @@ void Window::Show(void)
 	});
 }
 
-void Window::Hide(void)
+void Window::Hide()
 {
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		if (view.window)
@@ -292,7 +292,7 @@ void Window::Hide(void)
 	});
 }
 
-void Window::Activate(void)
+void Window::Activate()
 {
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		if (view.window)
@@ -315,7 +315,7 @@ void Window::Activate(void)
 	});
 }
 
-void Window::Minimize(void)
+void Window::Minimize()
 {
 	dispatch_async(dispatch_get_main_queue(), ^(){
 		if (view.window)
@@ -372,7 +372,7 @@ void Window::Resize(DKSize s, const DKPoint* pt)
 	});
 }
 
-double Window::ContentScaleFactor(void) const
+double Window::ContentScaleFactor() const
 {
 	return DispatchSyncOnMain([&]()->CGFloat {
 		if (view.window)
@@ -389,7 +389,7 @@ void Window::SetTitle(const DKString& title)
 	});
 }
 
-DKString Window::Title(void) const
+DKString Window::Title() const
 {
 	return DispatchSyncOnMain([&]() -> DKString {
 		if (view.window)

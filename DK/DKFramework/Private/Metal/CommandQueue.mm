@@ -24,12 +24,12 @@ CommandQueue::CommandQueue(DKGraphicsDevice* d, id<MTLCommandQueue> q)
 	queue = [q retain];
 }
 
-CommandQueue::~CommandQueue(void)
+CommandQueue::~CommandQueue()
 {
 	[queue autorelease];
 }
 
-DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
+DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer()
 {
 	DKObject<CommandBuffer> buffer = DKOBJECT_NEW CommandBuffer(this);
 	return buffer.SafeCast<DKCommandBuffer>();

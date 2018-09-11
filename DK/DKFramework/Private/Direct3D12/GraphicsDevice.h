@@ -23,19 +23,19 @@ namespace DKFramework
 			class GraphicsDevice : public DKGraphicsDeviceInterface
 			{
 			public:
-				GraphicsDevice(void);
-				~GraphicsDevice(void);
+				GraphicsDevice();
+				~GraphicsDevice();
 
-				DKString DeviceName(void) const override;
+				DKString DeviceName() const override;
 				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*) override;
 
 				CommandAllocator* GetCommandAllocator(D3D12_COMMAND_LIST_TYPE);
 				void ReleaseCommandAllocator(CommandAllocator* allocator);
-				void PurgeCachedCommandAllocators(void);
+				void PurgeCachedCommandAllocators();
 				
 				ComPtr<ID3D12GraphicsCommandList> GetCommandList(D3D12_COMMAND_LIST_TYPE);
 				void ReleaseCommandList(ID3D12GraphicsCommandList* list);
-				void PurgeCachedCommandLists(void);
+				void PurgeCachedCommandLists();
 
 				D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE);
 				void ReleaseDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE, D3D12_CPU_DESCRIPTOR_HANDLE);
@@ -77,7 +77,7 @@ namespace DKFramework
 				DKCondition fenceCompletionCond;
 				bool fenceCompletionThreadRunning;
 				DKObject<DKThread> fenceCompletionThread;
-				void FenceCompletionCallbackThreadProc(void);
+				void FenceCompletionCallbackThreadProc();
 				HANDLE fenceCompletionEvent;
 			};
 		}

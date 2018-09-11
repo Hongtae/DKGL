@@ -10,7 +10,7 @@
 
 using namespace DKFramework;
 
-DKLine::DKLine(void)
+DKLine::DKLine()
 	: begin(DKVector3(-FLT_MAX, -FLT_MAX, -FLT_MAX))
 	, end(DKVector3(FLT_MAX, FLT_MAX, FLT_MAX))
 {
@@ -32,17 +32,17 @@ DKLine DKLine::operator * (const DKQuaternion& q) const
 	return DKLine(begin * q, end * q);
 }
 
-DKVector3 DKLine::Direction(void) const
+DKVector3 DKLine::Direction() const
 {
 	return (end - begin).Normalize();
 }
 
-float DKLine::Length(void) const
+float DKLine::Length() const
 {
 	return (end - begin).Length();
 }
 
-float DKLine::LengthSq(void) const
+float DKLine::LengthSq() const
 {
 	return (end - begin).LengthSq();
 }

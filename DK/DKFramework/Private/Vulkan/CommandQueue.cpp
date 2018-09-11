@@ -23,13 +23,13 @@ CommandQueue::CommandQueue(DKGraphicsDevice* d, QueueFamily* f, VkQueue q)
 {
 }
 
-CommandQueue::~CommandQueue(void)
+CommandQueue::~CommandQueue()
 {
 	vkQueueWaitIdle(queue);
 	family->RecycleQueue(queue);
 }
 
-DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
+DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 
@@ -97,12 +97,12 @@ bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKO
 	return err == VK_SUCCESS;
 }
 
-bool CommandQueue::WaitIdle(void)
+bool CommandQueue::WaitIdle()
 {
 	return vkQueueWaitIdle(queue) == VK_SUCCESS;
 }
 
-uint32_t CommandQueue::Type(void) const
+uint32_t CommandQueue::Type() const
 {
 	VkQueueFlags flags = family->properties.queueFlags;
 	uint32_t type = 0;

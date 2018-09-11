@@ -36,7 +36,7 @@ namespace DKFramework
 	public:
 		struct SerializeHelper : public DKResource
 		{
-			DKObject<DKSerializer> Serializer(void) override;
+			DKObject<DKSerializer> Serializer() override;
 			DKObject<DKCollisionShape> shape;
 		};
 
@@ -64,24 +64,24 @@ namespace DKFramework
 
 		const ShapeType type;
 
-		virtual ~DKCollisionShape(void);
+		virtual ~DKCollisionShape();
 
 		DKAabb Aabb(const DKNSTransform& transform) const;
 		void Aabb(const DKNSTransform& transform, DKVector3& aabbMin, DKVector3& aabbMax) const;
-		DKSphere BoundingSphere(void) const;
+		DKSphere BoundingSphere() const;
 
 		void SetMargin(float m);  ///< collision margin.
-		float Margin(void) const;
+		float Margin() const;
 
 		void SetLocalScale(const DKVector3& s);
-		DKVector3 LocalScale(void) const;
+		DKVector3 LocalScale() const;
 
 		DKVector3 CalculateLocalInertia(float mass) const;
 
-		bool IsCompund(void) const;
-		bool IsConvex(void) const;
-		bool IsConcave(void) const;
-		bool IsPolyhedral(void) const;
+		bool IsCompund() const;
+		bool IsConvex() const;
+		bool IsConcave() const;
+		bool IsPolyhedral() const;
 
 	protected:
 		class btCollisionShape* impl;

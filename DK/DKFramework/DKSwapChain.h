@@ -15,14 +15,14 @@ namespace DKFramework
 	class DKSwapChain
 	{
 	public:
-		virtual ~DKSwapChain(void) {}
+		virtual ~DKSwapChain() {}
 
-		virtual DKPixelFormat ColorPixelFormat(void) const = 0;
-		virtual DKPixelFormat DepthStencilPixelFormat(void) const = 0;
+		virtual DKPixelFormat ColorPixelFormat() const = 0;
+		virtual DKPixelFormat DepthStencilPixelFormat() const = 0;
 		virtual void SetColorPixelFormat(DKPixelFormat) = 0;
 		virtual void SetDepthStencilPixelFormat(DKPixelFormat) = 0;
-		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor(void) = 0;
+		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor() = 0;
 
-		virtual bool Present(void) = 0;
+		virtual bool Present() = 0;
 	};
 }

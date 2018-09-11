@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKStringUE.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -44,8 +44,8 @@ namespace DKFoundation
 	class DKStringU8;
 	class DKStringW;
 
-	DKGL_API DKStringEncoding DKStringWEncoding(void);
-	DKGL_API DKStringEncoding DKStringU8Encoding(void);	///< always return DKStringEncodingUTF8
+	DKGL_API DKStringEncoding DKStringWEncoding();
+	DKGL_API DKStringEncoding DKStringU8Encoding();	///< always return DKStringEncodingUTF8
 	DKGL_API const char* DKStringEncodingCanonicalName(DKStringEncoding e);
 
 	DKGL_API void DKStringEncode(DKBuffer* output, const DKStringU8& input, DKStringEncoding e);

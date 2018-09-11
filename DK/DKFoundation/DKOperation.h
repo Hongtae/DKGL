@@ -22,8 +22,8 @@ namespace DKFoundation
 	class DKOperation
 	{
 	public:
-		DKOperation(void) {}
-		virtual ~DKOperation(void) {}
-		virtual void Perform(void) const = 0;
+		DKOperation() {}
+		virtual ~DKOperation() {}
+		virtual void Perform() const = 0;
 	};
 }

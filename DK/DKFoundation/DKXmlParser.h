@@ -20,8 +20,8 @@ namespace DKFoundation
 	class DKGL_API DKXmlParser
 	{
 	public:
-		DKXmlParser(void);
-		virtual ~DKXmlParser(void);
+		DKXmlParser();
+		virtual ~DKXmlParser();
 
 		bool BeginHtml(const DKString& url);
 		bool BeginHtml(const DKData* buffer);
@@ -122,8 +122,8 @@ namespace DKFoundation
 		virtual void OnEntityDeclaration(const DKString& name, int type, const DKString& publicID, const DKString& systemID, const DKString& content);
 		virtual void OnAttributeDeclaration(const AttributeDecl& attr, const DKArray<DKString>& enumeratedValues);
 		virtual void OnElementDeclaration(const ElementDecl& elem, const ElementContentDecl& content);
-		virtual void OnStartDocument(void);
-		virtual void OnEndDocument(void);
+		virtual void OnStartDocument();
+		virtual void OnEndDocument();
 		virtual void OnStartElement(const Element& element, const DKArray<Namespace>& namespaces, const DKArray<Attribute>& attributes);
 		virtual void OnEndElement(const Element& element);
 		virtual void OnComment(const DKString& comment);
@@ -135,7 +135,7 @@ namespace DKFoundation
 
 		DKArray<void*> customEntityStorage;
 	private:
-		void ClearCustomEntityStorage(void);
+		void ClearCustomEntityStorage();
 	};
 }
 

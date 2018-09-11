@@ -13,12 +13,12 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKSpinLock& LoggerLock(void)
+		static DKSpinLock& LoggerLock()
 		{
 			static DKSpinLock lock;
 			return lock;
 		}
-		static DKArray<DKObject<DKLogger>>& LoggerArray(void)
+		static DKArray<DKObject<DKLogger>>& LoggerArray()
 		{
 			static DKArray<DKObject<DKLogger>> loggers;
 			return loggers;
@@ -29,15 +29,15 @@ namespace DKFoundation
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKLogger::DKLogger(void)
+DKLogger::DKLogger()
 {
 }
 
-DKLogger::~DKLogger(void)
+DKLogger::~DKLogger()
 {
 }
 
-void DKLogger::Bind(void)
+void DKLogger::Bind()
 {
 	DKCriticalSection<DKSpinLock> guard(LoggerLock());
 	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();
@@ -53,7 +53,7 @@ void DKLogger::Bind(void)
 	this->OnBind();
 }
 
-void DKLogger::Unbind(void)
+void DKLogger::Unbind()
 {
 	DKCriticalSection<DKSpinLock> guard(LoggerLock());
 	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();
@@ -69,7 +69,7 @@ void DKLogger::Unbind(void)
 	}
 }
 
-bool DKLogger::IsBound(void) const
+bool DKLogger::IsBound() const
 {
 	DKCriticalSection<DKSpinLock> guard(LoggerLock());
 	DKArray<DKObject<DKLogger>>& loggers = LoggerArray();

@@ -48,7 +48,7 @@ namespace DKFramework
 	class DKGL_API DKFrame
 	{
 	public:
-		DKFrame(void);
-		virtual ~DKFrame(void);
+		DKFrame();
+		virtual ~DKFrame();
 	};
 }

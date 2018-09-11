@@ -32,10 +32,10 @@ namespace DKFoundation
 
 		static const DKStringW empty;
 		/// DKUniCharW encoding with endianness.
-		static DKStringEncoding SystemEncoding(void);
+		static DKStringEncoding SystemEncoding();
 
 		// DKStringW class
-		DKStringW(void);
+		DKStringW();
 		DKStringW(DKStringW&& str);
 		DKStringW(const DKStringW& str);
 		DKStringW(const DKUniCharW* str, size_t len = ~size_t(0));
@@ -43,7 +43,7 @@ namespace DKFoundation
 		explicit DKStringW(const void* str, size_t len, DKStringEncoding e);
 		explicit DKStringW(DKUniCharW c);
 		explicit DKStringW(DKUniChar8 c);
-		~DKStringW(void);
+		~DKStringW();
 
 		DKObject<DKData> Encode(DKStringEncoding e) const;
 		/// formatting string.
@@ -56,8 +56,8 @@ namespace DKFoundation
 		static DKStringW FormatV(const DKUniChar8* fmt, va_list v);
 		static DKStringW FormatV(const DKUniCharW* fmt, va_list v);
 
-		size_t Length(void) const;
-		size_t Bytes(void) const;
+		size_t Length() const;
+		size_t Bytes() const;
 
 		long Find(DKUniCharW c, long begin = 0) const;
 		long Find(const DKUniCharW* str, long begin = 0) const;
@@ -69,8 +69,8 @@ namespace DKFoundation
 		DKStringW Left(size_t count) const; ///< copy 'count' length characters from beginning.
 		DKStringW Mid(long index, size_t count) const; ///< copy 'count' length characters from index.
 
-		DKStringW LowercaseString(void) const;
-		DKStringW UppercaseString(void) const;
+		DKStringW LowercaseString() const;
+		DKStringW UppercaseString() const;
 				
 		int Compare(const DKUniCharW* str) const;
 		int Compare(const DKStringW& str) const;
@@ -90,15 +90,15 @@ namespace DKFoundation
 
 		/// file system path string.
 		/// convert path separator charactor ('\\' on win32, '/' on Unix)
-		DKStringW FilePathString(void) const;
+		DKStringW FilePathString() const;
 		DKStringW FilePathStringByAppendingPath(const DKStringW& path) const;
-		DKStringW LastPathComponent(void) const;
-		StringArray PathComponents(void) const;
+		DKStringW LastPathComponent() const;
+		StringArray PathComponents() const;
 
 		// whitespaces
 		bool IsWhitespaceCharacterAtIndex(long index) const;
 		/// trim whitespaces (with escape sequences) both side of beginning, ending.
-		DKStringW& TrimWhitespaces(void);
+		DKStringW& TrimWhitespaces();
 		/// remove whitespaces (with escape sequences) for all sequences in range.
 		DKStringW& RemoveWhitespaces(long begin = 0, long count = -1);
 
@@ -121,7 +121,7 @@ namespace DKFoundation
 		DKStringW& operator = (DKUniChar8 ch);
 
 		// conversion operators
-		operator const DKUniCharW* (void) const;
+		operator const DKUniCharW* () const;
 
 		// concatenation operators
 		DKStringW& operator += (const DKStringW& str);
@@ -150,9 +150,9 @@ namespace DKFoundation
 		bool operator != (const DKUniCharW* str) const			{return Compare(str) != 0;}
 
 		// convert numeric values.
-		int64_t ToInteger(void) const;
-		uint64_t ToUnsignedInteger(void) const;
-		double ToRealNumber(void) const;
+		int64_t ToInteger() const;
+		uint64_t ToUnsignedInteger() const;
+		double ToRealNumber() const;
 
 		IntegerArray ToIntegerArray(const DKStringW& delimiter, bool ignoreEmptyString = false) const;
 		UnsignedIntegerArray ToUnsignedIntegerArray(const DKStringW& delimiter, bool ignoreEmptyString = false) const;
@@ -161,7 +161,7 @@ namespace DKFoundation
 		// split string into sub-string array. (StringArray)
 		StringArray Split(const DKStringW& delimiter, bool ignoreEmptyString = false) const;
 		StringArray SplitByCharactersInSet(const CharacterSet& cs, bool ignoreEmptyString = false) const;
-		StringArray SplitByWhitespace(void) const;
+		StringArray SplitByWhitespace() const;
 
 	private:
 		CharT* stringData;

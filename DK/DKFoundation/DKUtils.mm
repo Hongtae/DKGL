@@ -25,7 +25,7 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		bool InitializeMultiThreadedEnvironment(void)
+		bool InitializeMultiThreadedEnvironment()
 		{
 			if ([NSThread isMultiThreaded] == NO)
 			{
@@ -46,12 +46,12 @@ namespace DKFoundation
 		}
 	}
 
-	DKGL_API uint32_t DKRandom(void)
+	DKGL_API uint32_t DKRandom()
 	{
 		return arc4random();
 	}
 
-	DKGL_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory()
 	{
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		NSString* tmp = NSTemporaryDirectory();
@@ -61,7 +61,7 @@ namespace DKFoundation
 		return ret;
 	}
 	
-	DKGL_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments()
 	{
 		DKArray<DKString> result;
 		
@@ -77,7 +77,7 @@ namespace DKFoundation
 		return result;
 	}
 	
-	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments()
 	{
 		__block DKMap<DKString, DKString> result;
 
@@ -98,7 +98,7 @@ namespace DKFoundation
 		return result;
 	}
 
-	DKGL_API uint32_t DKNumberOfCpuCores(void)
+	DKGL_API uint32_t DKNumberOfCpuCores()
 	{
 		static int ncpu = []()
 		{
@@ -116,7 +116,7 @@ namespace DKFoundation
 		return 1;
 	}
 
-	DKGL_API uint32_t DKNumberOfProcessors(void)
+	DKGL_API uint32_t DKNumberOfProcessors()
 	{
 		static int ncpu = []()
 		{

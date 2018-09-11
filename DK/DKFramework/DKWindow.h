@@ -36,8 +36,8 @@ namespace DKFramework
 	class DKGL_API DKWindow
 	{
 	public:
-		DKWindow(void);
-		~DKWindow(void);
+		DKWindow();
+		~DKWindow();
 
 		/// Window Style
 		enum Style : uint32_t
@@ -175,21 +175,21 @@ namespace DKFramework
 		///  [UIView layerClass] should return CAMetalLayer, otherwise
 		///  function will fail.
 		static DKObject<DKWindow> CreateProxy(void* systemHandle);
-		void UpdateProxy(void);							///< update proxy window status
-		bool IsProxy(void) const;
+		void UpdateProxy();							///< update proxy window status
+		bool IsProxy() const;
 		void SetCallback(const WindowCallback& cb);
-		const WindowCallback& Callback(void) const;
+		const WindowCallback& Callback() const;
 
-		void Close(void);
-		void Show(void);
-		void Hide(void);
-		void Activate(void);
-		void Minimize(void);
+		void Close();
+		void Show();
+		void Hide();
+		void Activate();
+		void Minimize();
 		void Resize(const DKSize&);
 		void Resize(const DKSize&, const DKPoint&);
 		void SetOrigin(const DKPoint&);
 		void SetTitle(const DKString&);
-		DKString Title(void) const;
+		DKString Title() const;
 
 		/// Add event handler.
 		/// (a event that can be processed asynchronously, and dont need to response)
@@ -205,7 +205,7 @@ namespace DKFramework
 		bool KeyState(int deviceId, const DKVirtualKey& k) const;
 		void SetKeyState(int deviceId, const DKVirtualKey& k, bool down);
 		void ResetKeyState(int deviceId);
-		void ResetKeyStateForAllDevices(void);
+		void ResetKeyStateForAllDevices();
 		static DKString GetVKName(DKVirtualKey lKey); ///< get key name for debugging
 
 		// control mouse state
@@ -217,18 +217,18 @@ namespace DKFramework
 		void SetMousePosition(int deviceId, const DKPoint& pt);
 
 		// window state
-		DKRect WindowRect(void) const;			///< window's rect (OS coords unit)
-		DKRect ContentRect(void) const;			///< content rect on window (OS coords unit)
-		double ContentScaleFactor(void) const;	///< content unit scale, pixel ratio
+		DKRect WindowRect() const;			///< window's rect (OS coords unit)
+		DKRect ContentRect() const;			///< content rect on window (OS coords unit)
+		double ContentScaleFactor() const;	///< content unit scale, pixel ratio
 
-		bool IsVisible(void) const	{ return visible; }
-		bool IsActive(void) const	{ return activated; }
-		bool IsValid(void) const;
+		bool IsVisible() const	{ return visible; }
+		bool IsActive() const	{ return activated; }
+		bool IsValid() const;
 
 		/// HWD for Win32, NSView for Cocoa, UIView for CocoaTouch.
 		/// On macOS/iOS, You can reuse view (NSView/UIView).
 		/// You can detach from window (NSWindow/UIWindow) and attach to other window.
-		void* PlatformHandle(void) const;
+		void* PlatformHandle() const;
 
 		// call event handler manually.
 		void PostMouseEvent(const MouseEvent&);	///< call mouse event handlers manually
@@ -246,7 +246,7 @@ namespace DKFramework
 			DKObject<DKEventLoop::PendingState> state;
 		};
 		DKArray<PendingEvent> pendingEvents; // valid only if user's EventLoop have been provided.
-		void ClearCompletedEvents(void); // cleanup completed events
+		void ClearCompletedEvents(); // cleanup completed events
 
 		struct KeyboardState
 		{

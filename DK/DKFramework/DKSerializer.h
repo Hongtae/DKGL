@@ -142,12 +142,12 @@ namespace DKFramework
 		typedef DKOperation FaultHandler;
 		typedef DKFunctionSignature<void (State)> Callback;
 
-		DKSerializer(void);
-		virtual ~DKSerializer(void);
+		DKSerializer();
+		virtual ~DKSerializer();
 
 		void SetCallback(Callback* c);
 		void SetResourceClass(const DKString& rc);
-		DKString ResourceClass(void) const;
+		DKString ResourceClass() const;
 
 		bool Bind(const DKString& key, DKSerializer* s, FaultHandler* faultHandler);
 		bool Bind(const DKString& key, ValueGetter* getter, ValueSetter* setter, ValueValidator* validator, FaultHandler* faultHandler);
@@ -181,24 +181,24 @@ namespace DKFramework
 			// fault-handler, should be serialized without conditions if faultHandler is NULL.
 			DKObject<FaultHandler> faultHandler;
 
-			virtual ~Entity(void)											{}
-			virtual const VariantEntity*		Variant(void) const			{return NULL;}
-			virtual const SerializerEntity*		Serializer(void) const		{return NULL;}
-			virtual const ExternalEntity*		External(void) const		{return NULL;}
-			virtual const ExternalEntityArray*	ExternalArray(void) const	{return NULL;}
-			virtual const ExternalEntityMap*	ExternalMap(void) const		{return NULL;}
+			virtual ~Entity()											{}
+			virtual const VariantEntity*		Variant() const			{return NULL;}
+			virtual const SerializerEntity*		Serializer() const		{return NULL;}
+			virtual const ExternalEntity*		External() const		{return NULL;}
+			virtual const ExternalEntityArray*	ExternalArray() const	{return NULL;}
+			virtual const ExternalEntityMap*	ExternalMap() const		{return NULL;}
 		};
 		struct VariantEntity : public Entity
 		{
 			DKObject<ValueGetter>		getter; // component getter
 			DKObject<ValueSetter>		setter; // component setter
 			DKObject<ValueValidator>	validator; // component validator, called on deserialize if not NULL.
-			const VariantEntity*	Variant(void) const				{return this;}
+			const VariantEntity*	Variant() const				{return this;}
 		};
 		struct SerializerEntity : public Entity
 		{
 			DKObject<DKSerializer> serializer;
-			const SerializerEntity*		Serializer(void) const		{return this;}
+			const SerializerEntity*		Serializer() const		{return this;}
 		};
 		struct ExternalEntity : public Entity
 		{
@@ -206,7 +206,7 @@ namespace DKFramework
 			DKObject<ExternalSetter>		setter; // external resource setter
 			DKObject<ExternalValidator>	validator; // validator, called on deserialize if not NULL.
 			ExternalResource			external;
-			const ExternalEntity*		External(void) const		{return this;}
+			const ExternalEntity*		External() const		{return this;}
 		};
 		struct ExternalEntityArray : public Entity
 		{
@@ -214,7 +214,7 @@ namespace DKFramework
 			DKObject<ExternalArraySetter>		setter; // setter for external resource array
 			DKObject<ExternalArrayValidator>	validator; // validator, called on deserialize if not NULL.
 			ExternalResource			external;
-			const ExternalEntityArray*	ExternalArray(void) const		{return this;}
+			const ExternalEntityArray*	ExternalArray() const		{return this;}
 		};
 		struct ExternalEntityMap : public Entity
 		{
@@ -222,7 +222,7 @@ namespace DKFramework
 			DKObject<ExternalMapSetter>		setter; // setter for external resource map
 			DKObject<ExternalMapValidator>	validator; // validator, called on deserialize if not NULL.
 			ExternalResource			external;
-			const ExternalEntityMap*	ExternalMap(void) const			{return this;}
+			const ExternalEntityMap*	ExternalMap() const			{return this;}
 		};
 
 		typedef DKMap<DKString, Entity*> EntityMap;

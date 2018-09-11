@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConvexHullShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -26,10 +26,10 @@ namespace DKFramework
 	{
 	public:
 		DKConvexHullShape(const DKVector3* vertices, size_t numVerts);
-		~DKConvexHullShape(void);
+		~DKConvexHullShape();
 
 		void AddPoint(const DKVector3& p);
-		size_t NumberOfPoints(void) const;
+		size_t NumberOfPoints() const;
 		DKVector3 PointAtIndex(unsigned int index) const;
 		DKVector3 ScaledPointAtIndex(unsigned int index) const;
 

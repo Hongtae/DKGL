@@ -23,11 +23,11 @@ namespace DKFramework
 	class DKGL_API DKDynamicsWorld : public DKWorld
 	{
 	public:
-		DKDynamicsWorld(void);
-		virtual ~DKDynamicsWorld(void);
+		DKDynamicsWorld();
+		virtual ~DKDynamicsWorld();
 
 		void SetGravity(const DKVector3& g);
-		DKVector3 Gravity(void) const;
+		DKVector3 Gravity() const;
 
 		void Update(double tickDelta, DKTimeTick tick) override;
 
@@ -36,9 +36,9 @@ namespace DKFramework
 		/// You need to use fixed frame rate when sharing scene with
 		/// other simulator. (ex: connected via network or subprocesses)
 		void SetFixedFrameRate(double fps);
-		double FixedFrameRate(void) const;
+		double FixedFrameRate() const;
 
-		void RemoveAllObjects(void) override;
+		void RemoveAllObjects() override;
 
 	protected:
 		bool AddSingleObject(DKModel* obj) override;

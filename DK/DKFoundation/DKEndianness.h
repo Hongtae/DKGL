@@ -131,7 +131,7 @@ namespace DKFoundation
 		BigEndian,
 		LittleEndian,
 	};
-	inline DKByteOrder DKRuntimeByteOrder(void)
+	inline DKByteOrder DKRuntimeByteOrder()
 	{
 		union
 		{
@@ -147,7 +147,7 @@ namespace DKFoundation
 		return DKByteOrder::Unknown;
 	}
 
-	inline bool DKVerifyByteOrder(void)
+	inline bool DKVerifyByteOrder()
 	{
 #if     defined(__BIG_ENDIAN__)
 		return DKRuntimeByteOrder() == DKByteOrder::BigEndian;

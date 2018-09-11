@@ -24,18 +24,18 @@ namespace DKFramework
 			{
 			public:
 				CommandBuffer(CommandAllocator*, DKCommandQueue*);
-				~CommandBuffer(void);
+				~CommandBuffer();
 
 				DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
-				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
-				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
+				DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() override;
+				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() override;
 
-				bool Commit(void) override;
-				bool WaitUntilCompleted(void) override;
+				bool Commit() override;
+				bool WaitUntilCompleted() override;
 
 				void FinishCommandList(ID3D12GraphicsCommandList*);
 
-				DKCommandQueue* Queue(void) override { return queue; };
+				DKCommandQueue* Queue() override { return queue; };
 				
 				DKObject<DKCommandQueue> queue;
 				CommandAllocator* commandAllocator;

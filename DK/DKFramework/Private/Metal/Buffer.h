@@ -20,10 +20,10 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		Buffer(DKGraphicsDevice*, id<MTLBuffer>);
-		~Buffer(void);
+		~Buffer();
 
 		void* Lock(size_t offset, size_t length) override;
-		void Unlock(void) override;
+		void Unlock() override;
 
 		id<MTLBuffer> buffer;
 		DKObject<DKGraphicsDevice> device;

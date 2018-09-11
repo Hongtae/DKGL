@@ -22,7 +22,7 @@ Texture::Texture(DKGraphicsDevice* d, id<MTLTexture> t)
 
 }
 
-Texture::~Texture(void)
+Texture::~Texture()
 {
 	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	[texture release];

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKZipUnarchiver.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -40,17 +40,17 @@ namespace DKFoundation
 			unsigned int	crc32;
 		};
 
-		DKZipUnarchiver(void);
-		~DKZipUnarchiver(void);
+		DKZipUnarchiver();
+		~DKZipUnarchiver();
 
 		static DKObject<DKZipUnarchiver> Create(const DKString& file);
 
-		const DKArray<FileInfo>& GetFileList(void) const	{return files;}
+		const DKArray<FileInfo>& GetFileList() const	{return files;}
 		const FileInfo* GetFileInfo(const DKString& file) const;
 
 		DKObject<DKStream> OpenFileStream(const DKString& file, const char* password = NULL) const;
 
-		const DKString& GetArchiveName(void) const		{return filename;}
+		const DKString& GetArchiveName() const		{return filename;}
 	private:
 		void*							zipHandle;
 		DKArray<FileInfo>				files;

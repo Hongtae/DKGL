@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKCompoundShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -11,13 +11,13 @@
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKCompoundShape::DKCompoundShape(void)
+DKCompoundShape::DKCompoundShape()
 	: DKCollisionShape(ShapeType::Compound, new btCompoundShape())
 {
 	DKASSERT_DEBUG( this->impl->isCompound() );
 }
 
-DKCompoundShape::~DKCompoundShape(void)
+DKCompoundShape::~DKCompoundShape()
 {
 	DKASSERT_DEBUG( this->impl->isCompound() );
 	DKASSERT_DEBUG( dynamic_cast<btCompoundShape*>(this->impl) != NULL );
@@ -73,7 +73,7 @@ long DKCompoundShape::IndexOfShape(DKCollisionShape* shape) const
 	return -1;
 }
 
-size_t DKCompoundShape::NumberOfShapes(void) const
+size_t DKCompoundShape::NumberOfShapes() const
 {
 	DKASSERT_DEBUG(this->impl->isCompound());
 	DKASSERT_DEBUG(static_cast<const btCompoundShape*>(this->impl)->getNumChildShapes() == this->shapes.Count());

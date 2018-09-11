@@ -15,6 +15,6 @@ namespace DKFramework
 	class DKComputeCommandEncoder : public DKCommandEncoder
 	{
 	public:
-		virtual ~DKComputeCommandEncoder(void) {}
+		virtual ~DKComputeCommandEncoder() {}
 	};
 }

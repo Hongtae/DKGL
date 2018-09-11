@@ -10,7 +10,7 @@
 
 using namespace DKFoundation;
 
-DKDataStream::DKDataStream(void)
+DKDataStream::DKDataStream()
 	: offset(0)
 {
 }
@@ -27,7 +27,7 @@ DKDataStream::DKDataStream(DKData& d)
 {
 }
 
-DKDataStream::~DKDataStream(void)
+DKDataStream::~DKDataStream()
 {
 }
 
@@ -40,7 +40,7 @@ DKStream::Position DKDataStream::SetCurrentPosition(Position p)
 	return this->offset;
 }
 
-DKStream::Position DKDataStream::CurrentPosition(void) const
+DKStream::Position DKDataStream::CurrentPosition() const
 {
 	if (this->data)
 	{
@@ -52,7 +52,7 @@ DKStream::Position DKDataStream::CurrentPosition(void) const
 	return 0;
 }
 
-DKStream::Position DKDataStream::RemainLength(void) const
+DKStream::Position DKDataStream::RemainLength() const
 {
 	if (this->data)
 	{
@@ -64,7 +64,7 @@ DKStream::Position DKDataStream::RemainLength(void) const
 	return 0;
 }
 
-DKStream::Position DKDataStream::TotalLength(void) const
+DKStream::Position DKDataStream::TotalLength() const
 {
 	if (this->data)
 	{
@@ -105,12 +105,12 @@ size_t DKDataStream::Write(const void* p, size_t s)
 	return 0;
 }
 
-DKData* DKDataStream::Data(void)
+DKData* DKDataStream::Data()
 {
 	return this->data;
 }
 
-const DKData* DKDataStream::Data(void) const
+const DKData* DKDataStream::Data() const
 {
 	return this->data;
 }

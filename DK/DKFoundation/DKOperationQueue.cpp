@@ -28,10 +28,10 @@ namespace DKFoundation
 		{
 			State state;
 
-			OperationSyncState(void) : state(StateUnknown)
+			OperationSyncState() : state(StateUnknown)
 			{
 			}
-			bool Sync(void)
+			bool Sync()
 			{
 				DKCriticalSection<DKCondition> guard(operationStateCond);
 				while (state == State::StatePending)
@@ -39,7 +39,7 @@ namespace DKFoundation
 
 				return state == State::StateProcessed;
 			}
-			bool Cancel(void)
+			bool Cancel()
 			{
 				DKCriticalSection<DKCondition> guard(operationStateCond);
 				if (state == State::StatePending)
@@ -49,7 +49,7 @@ namespace DKFoundation
 				}
 				return false;
 			}
-			State OperationState(void)
+			State OperationState()
 			{
 				return state;
 			}
@@ -70,7 +70,7 @@ DKOperationQueue::DKOperationQueue(ThreadFilter* f)
 	maxConcurrentOperations = Max(2, static_cast<int>(DKNumberOfProcessors()) - 1);
 }
 
-DKOperationQueue::~DKOperationQueue(void)
+DKOperationQueue::~DKOperationQueue()
 {
 	threadCond.Lock();
 	maxThreadCount = 0;
@@ -104,7 +104,7 @@ void DKOperationQueue::SetMaxConcurrentOperations(size_t maxConcurrent)
 	UpdateThreadPool();
 }
 
-size_t DKOperationQueue::MaxConcurrentOperations(void) const
+size_t DKOperationQueue::MaxConcurrentOperations() const
 {
 	DKCriticalSection<DKCondition> guard(threadCond);
 	return maxConcurrentOperations;
@@ -149,7 +149,7 @@ bool DKOperationQueue::Process(DKOperation* operation)
 	return false;
 }
 
-void DKOperationQueue::UpdateThreadPool(void)
+void DKOperationQueue::UpdateThreadPool()
 {
 	threadCond.Lock();
 	maxThreadCount = maxConcurrentOperations;
@@ -174,7 +174,7 @@ void DKOperationQueue::UpdateThreadPool(void)
 	//DKLog("OperationQueue running %u threads (maxConcurrent:%d)\n", (unsigned int)numThreads, maxConcurrentOperations);
 }
 
-void DKOperationQueue::CancelAllOperations(void)
+void DKOperationQueue::CancelAllOperations()
 {
 	threadCond.Lock();
 
@@ -195,7 +195,7 @@ void DKOperationQueue::CancelAllOperations(void)
 	threadCond.Unlock();
 }
 
-void DKOperationQueue::WaitForCompletion(void) const
+void DKOperationQueue::WaitForCompletion() const
 {
 	DKCriticalSection<DKCondition> guard(threadCond);
 	while (operationQueue.Count() > 0 || activeThreads > 0)
@@ -210,25 +210,25 @@ bool DKOperationQueue::WaitForAnyOperation(double timeout) const
 
 }
 
-size_t DKOperationQueue::QueueLength(void) const
+size_t DKOperationQueue::QueueLength() const
 {
 	DKCriticalSection<DKCondition> guard(threadCond);
 	return operationQueue.Count();
 }
 
-size_t DKOperationQueue::RunningOperations(void) const
+size_t DKOperationQueue::RunningOperations() const
 {
 	DKCriticalSection<DKCondition> guard(threadCond);
 	return activeThreads;
 }
 
-size_t DKOperationQueue::RunningThreads(void) const
+size_t DKOperationQueue::RunningThreads() const
 {
 	DKCriticalSection<DKCondition> guard(threadCond);
 	return threadCount;
 }
 
-void DKOperationQueue::OperationProc(void)
+void DKOperationQueue::OperationProc()
 {
 	DKThread::ThreadId threadId = DKThread::CurrentThreadId();
 	DKTimer timer;
@@ -241,7 +241,7 @@ void DKOperationQueue::OperationProc(void)
 	{
 		struct Wrapper : public DKOperation
 		{
-			void Perform(void) const override
+			void Perform() const override
 			{
 				if (filter)
 					filter->PerformOperation(op);

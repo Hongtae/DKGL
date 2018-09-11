@@ -22,7 +22,7 @@ namespace DKFoundation
 
 		ValueType value;
 
-		DKTupleUnit(void) {}
+		DKTupleUnit() {}
 		DKTupleUnit(const T& v) : value(v) {}
 		DKTupleUnit(T&& v) : value(static_cast<T&&>(v)) {}
 		DKTupleUnit(const DKTupleUnit& t) : value(t.value) {}
@@ -30,8 +30,8 @@ namespace DKFoundation
 
 		void SetValue(const T& v)	{this->value = v;}
 		void SetValue(T&& v)		{this->value = static_cast<T&&>(v);}
-		RefType Value(void)			{return this->value;}
-		CRefType Value(void) const	{return this->value;}
+		RefType Value()			{return this->value;}
+		CRefType Value() const	{return this->value;}
 
 		DKTupleUnit& operator = (const T& v)
 		{
@@ -65,14 +65,14 @@ namespace DKFoundation
 
 		ValueType value;
 
-		DKTupleUnit(void) : value(NULL) {}
+		DKTupleUnit() : value(NULL) {}
 		DKTupleUnit(const DKTupleUnit& t) : value(t.value) {}
 		DKTupleUnit(DKTupleUnit&& t) : value(t.value) {t.value = NULL;}
 		DKTupleUnit(T& v) : value(const_cast<ValueType>(&v)) {}
 
 		void SetValue(T& v)			{this->value = const_cast<ValueType>(&v);}
-		RefType Value(void)			{return *this->value;}
-		CRefType Value(void) const	{return *this->value;}
+		RefType Value()			{return *this->value;}
+		CRefType Value() const	{return *this->value;}
 
 		DKTupleUnit& operator = (T& v)
 		{
@@ -102,14 +102,14 @@ namespace DKFoundation
 
 		ValueType value;
 
-		DKTupleUnit(void) {}
+		DKTupleUnit() {}
 		DKTupleUnit(const DKTupleUnit& t) : value(t.value) {}
 		DKTupleUnit(DKTupleUnit&& t) : value(static_cast<ValueType&&>(t.value)) {}
 		DKTupleUnit(T&& v) : value(static_cast<T&&>(v)) {}
 
 		void SetValue(T&& v)		{this->value = static_cast<T&&>(v);}
-		RefType Value(void)			{return static_cast<RefType>(this->value);}
-		CRefType Value(void) const	{return static_cast<CRefType>(this->value);}
+		RefType Value()			{return static_cast<RefType>(this->value);}
+		CRefType Value() const	{return static_cast<CRefType>(this->value);}
 
 		DKTupleUnit& operator = (T&& v)
 		{
@@ -187,7 +187,7 @@ namespace DKFoundation
 			using UnitType = typename TypeList::template TypeAt<Index>;
 			using TupleUnit = DKTupleUnit<UnitType>;
 
-			DataUnitHierarchy(void) {}
+			DataUnitHierarchy() {}
 			DataUnitHierarchy(const DataUnitHierarchy& d) : Super(d), unit(d.unit) {}
 			DataUnitHierarchy(DataUnitHierarchy&& d) : Super(static_cast<Super&&>(d)), unit(static_cast<TupleUnit&&>(d.unit)) {}
 
@@ -213,7 +213,7 @@ namespace DKFoundation
 		};
 		template <typename... Ts> struct DataUnitHierarchy<0, Ts...> // top-level object.
 		{
-			DataUnitHierarchy(void)						{}
+			DataUnitHierarchy()						{}
 			DataUnitHierarchy(const DKTupleValueSet&)	{}
 		};
 		// a type, could be recognized by index.
@@ -235,32 +235,32 @@ namespace DKFoundation
 		template <int Index> using TypeAt = typename ItemAt<Index>::ElementType;
 		template <int Index> using UnitTypeAt = typename ItemAt<Index>::TupleUnitType;
 
-		template <typename T> constexpr static auto IndexOf(void) -> int
+		template <typename T> constexpr static auto IndexOf() -> int
 		{
 			return TypeList::template IndexOf<T>();
 		}
 
-		template <typename T> constexpr static auto HasType(void) -> bool
+		template <typename T> constexpr static auto HasType() -> bool
 		{
 			return TypeList::template Count<T>::Value > 0;
 		};
 		
-		template <int Index> auto Unit(void) -> UnitTypeAt<Index>&
+		template <int Index> auto Unit() -> UnitTypeAt<Index>&
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return static_cast<DataUnitAtIndex<Index>&>(dataUnits).unit;
 		};
-		template <int Index> auto Unit(void) const -> const UnitTypeAt<Index>&
+		template <int Index> auto Unit() const -> const UnitTypeAt<Index>&
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return static_cast<const DataUnitAtIndex<Index>&>(dataUnits).unit;
 		};
-		template <int Index> auto Value(void) -> typename UnitTypeAt<Index>::RefType
+		template <int Index> auto Value() -> typename UnitTypeAt<Index>::RefType
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return Unit<Index>().Value();
 		};
-		template <int Index> auto Value(void) const -> typename UnitTypeAt<Index>::CRefType
+		template <int Index> auto Value() const -> typename UnitTypeAt<Index>::CRefType
 		{
 			static_assert(Index < sizeof...(Types), "Index must be lesser than type size");
 			return Unit<Index>().Value();
@@ -274,7 +274,7 @@ namespace DKFoundation
 			SetValue<Index+1, Ts...>(std::forward<Ts>(vs)...);
 		}
 
-		DKTuple(void) {}
+		DKTuple() {}
 		DKTuple(const DKTuple& t) : dataUnits(t.dataUnits) {}
 		DKTuple(DKTuple&& t) : dataUnits(static_cast<DataUnitType&&>(t.dataUnits)) {}
 

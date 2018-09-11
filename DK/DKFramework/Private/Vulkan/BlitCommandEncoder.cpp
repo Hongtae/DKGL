@@ -19,15 +19,15 @@ BlitCommandEncoder::BlitCommandEncoder(VkCommandBuffer vcb, CommandBuffer* cb)
 {
 }
 
-BlitCommandEncoder::~BlitCommandEncoder(void)
+BlitCommandEncoder::~BlitCommandEncoder()
 {
 }
 
-void BlitCommandEncoder::EndEncoding(void)
+void BlitCommandEncoder::EndEncoding()
 {
 }
 
-DKCommandBuffer* BlitCommandEncoder::Buffer(void)
+DKCommandBuffer* BlitCommandEncoder::Buffer()
 {
 	return commandBuffer;
 }

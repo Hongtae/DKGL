@@ -18,16 +18,16 @@ namespace DKFramework
 	class DKGL_API DKPlane
 	{
 	public:
-		DKPlane(void);  ///< init (a,b,c,d) = (0, 0, 0, 0)
+		DKPlane();  ///< init (a,b,c,d) = (0, 0, 0, 0)
 		DKPlane(const DKVector3& v1, const DKVector3& v2, const DKVector3& v3); ///< plane from triangle
 		DKPlane(const DKVector3& n, const DKVector3& p);						///< plane from normal, point
-		~DKPlane(void);
+		~DKPlane();
 
 		/// distance between one point to plane. (dot < 0 located behind the plane)
 		float Dot(const DKVector3& v) const;
 		float Dot(const DKVector4& v) const;
 
-		DKVector3 Normal(void) const;
+		DKVector3 Normal() const;
 
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;
 

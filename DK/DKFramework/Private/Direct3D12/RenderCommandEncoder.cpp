@@ -97,11 +97,11 @@ RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, Comman
 	}
 }
 
-RenderCommandEncoder::~RenderCommandEncoder(void)
+RenderCommandEncoder::~RenderCommandEncoder()
 {
 }
 
-void RenderCommandEncoder::EndEncoding(void)
+void RenderCommandEncoder::EndEncoding()
 {
 	if (commandList)
 	{
@@ -124,7 +124,7 @@ void RenderCommandEncoder::EndEncoding(void)
 	}
 }
 
-DKCommandBuffer* RenderCommandEncoder::Buffer(void)
+DKCommandBuffer* RenderCommandEncoder::Buffer()
 {
 	return commandBuffer;
 }

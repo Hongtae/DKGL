@@ -21,25 +21,25 @@ namespace DKFramework
 	public:
 		struct VolumeInterface
 		{
-			virtual ~VolumeInterface(void) {}
+			virtual ~VolumeInterface() {}
 
-			virtual int NumberOfObjects(void) const = 0;
+			virtual int NumberOfObjects() const = 0;
 			virtual DKAabb AabbForObjectAtIndex(int) = 0;
 
-			virtual void Lock(void) {}
-			virtual void Unlock(void) {}
+			virtual void Lock() {}
+			virtual void Unlock() {}
 		};
 
-		DKBvh(void);
-		~DKBvh(void);
+		DKBvh();
+		~DKBvh();
 
 		void Build(VolumeInterface*);
-		void Rebuild(void);
+		void Rebuild();
 
-		VolumeInterface* Volume(void) { return volume;}
-		const VolumeInterface* Volume(void) const { return volume;}
+		VolumeInterface* Volume() { return volume;}
+		const VolumeInterface* Volume() const { return volume;}
 
-		DKAabb Aabb(void) const;
+		DKAabb Aabb() const;
 
 		/// RayCastResultCallback : filter-callback function,
 		///   return false if ray-test no longer necessary.
@@ -70,7 +70,7 @@ namespace DKFramework
 			};
 		};
 
-		void BuildInternal(void);
+		void BuildInternal();
 		void BuildTree(QuantizedAabbNode* nodes, int count);
 
 		DKObject<VolumeInterface> volume;

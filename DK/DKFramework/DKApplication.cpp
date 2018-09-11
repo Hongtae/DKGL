@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKApplication.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -58,11 +58,11 @@ DKApplication::DKApplication(int argc, char* argv[])
 	Private::application = this;
 }
 
-DKApplication::DKApplication(void) : DKApplication(0, 0)
+DKApplication::DKApplication() : DKApplication(0, 0)
 {
 }
 
-DKApplication::~DKApplication(void)
+DKApplication::~DKApplication()
 {
 	if (!Private::disableLogger)
 		impl->DefaultLogger()->Unbind();
@@ -75,7 +75,7 @@ DKApplication::~DKApplication(void)
 	Private::appCond.Broadcast();
 }
 
-int DKApplication::Run(void)
+int DKApplication::Run()
 {
 	// Only one thread can have running instance!
 	DKCriticalSection<DKMutex> section(mutex);
@@ -83,7 +83,7 @@ int DKApplication::Run(void)
 	struct MainLoopRunner : public DKOperation
 	{
 		DKEventLoop* eventLoop;
-		void Perform(void) const override
+		void Perform() const override
 		{
 			eventLoop->Run();
 		}
@@ -95,13 +95,13 @@ int DKApplication::Run(void)
 	return exitCode;
 }
 
-DKApplication* DKApplication::Instance(void)
+DKApplication* DKApplication::Instance()
 {
 	DKCriticalSection<DKCondition> guard(Private::appCond);
 	return Private::application;
 }
 
-DKEventLoop* DKApplication::EventLoop(void)
+DKEventLoop* DKApplication::EventLoop()
 {
 	return impl->EventLoop();
 }
@@ -154,32 +154,32 @@ DKString DKApplication::ProcessInfoString(ProcessInfo pi)
 	return impl->ProcessInfoString(pi);
 }
 
-void DKApplication::OnHidden(void)
+void DKApplication::OnHidden()
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
-void DKApplication::OnRestore(void)
+void DKApplication::OnRestore()
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
-void DKApplication::OnActivated(void)
+void DKApplication::OnActivated()
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
-void DKApplication::OnDeactivated(void)
+void DKApplication::OnDeactivated()
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
-void DKApplication::OnInitialize(void)
+void DKApplication::OnInitialize()
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }
 
-void DKApplication::OnTerminate(void)
+void DKApplication::OnTerminate()
 {
 	DKLog("%s\n", DKGL_FUNCTION_NAME);
 }

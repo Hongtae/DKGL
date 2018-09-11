@@ -87,11 +87,11 @@ AppEventLoop::AppEventLoop(DKApplication* app)
 {
 }
 
-AppEventLoop::~AppEventLoop(void)
+AppEventLoop::~AppEventLoop()
 {
 }
 
-bool AppEventLoop::Run(void)
+bool AppEventLoop::Run()
 {
 	if (BindThread())
 	{
@@ -149,7 +149,7 @@ bool AppEventLoop::Run(void)
 		   {
 			   // terminate app by calling DKEventLoop::Stop().
 			   CFRunLoopRef runLoop = CFRunLoopGetCurrent();
-			   CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+			   CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 				   if (initialized)
 				   {
 					   UIApplication* app = [UIApplication sharedApplication];
@@ -161,7 +161,7 @@ bool AppEventLoop::Run(void)
 																		   object:app];
 				   }
 			   });
-			   CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+			   CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 				   exit(0);
 			   });
 			   CFRunLoopWakeUp(runLoop);
@@ -229,12 +229,12 @@ bool AppEventLoop::Run(void)
 	return false;
 }
 
-void AppEventLoop::Stop(void)
+void AppEventLoop::Stop()
 {
 	lock.Lock();
 	if (runLoop)
 	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 			[[NSNotificationCenter defaultCenter] postNotificationName:DKAPP_TERMINATE_NOTIFICATION object:nil];
 		});
 		CFRunLoopWakeUp(runLoop);
@@ -242,7 +242,7 @@ void AppEventLoop::Stop(void)
 	lock.Unlock();
 }
 
-void AppEventLoop::DispatchAndInstallTimer(void)
+void AppEventLoop::DispatchAndInstallTimer()
 {
 	if (timer)
 	{
@@ -274,7 +274,7 @@ DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operat
 	lock.Lock();
 	if (runLoop)
 	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 			this->DispatchAndInstallTimer();
 		});
 		CFRunLoopWakeUp(runLoop);
@@ -290,7 +290,7 @@ DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operat
 	lock.Lock();
 	if (runLoop)
 	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 			this->DispatchAndInstallTimer();
 		});
 		CFRunLoopWakeUp(runLoop);

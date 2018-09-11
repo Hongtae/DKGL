@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSize.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,7 +18,7 @@ namespace DKFramework
 	class DKGL_API DKSize
 	{
 	public:
-		DKSize(void)
+		DKSize()
 			: width(0), height(0)
 		{
 		}
@@ -118,7 +118,7 @@ namespace DKFramework
 			height /= s;
 			return *this;
 		}
-		DKVector2 Vector(void) const
+		DKVector2 Vector() const
 		{
 			return DKVector2(width, height);
 		}

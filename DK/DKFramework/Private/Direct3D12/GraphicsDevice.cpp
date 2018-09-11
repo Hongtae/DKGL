@@ -20,7 +20,7 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			DKGraphicsDeviceInterface* CreateInterface(void)
+			DKGraphicsDeviceInterface* CreateInterface()
 			{
 				return DKRawPtrNew<GraphicsDevice>();
 			}
@@ -32,7 +32,7 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
-GraphicsDevice::GraphicsDevice(void)
+GraphicsDevice::GraphicsDevice()
 	: fenceCompletionEvent(NULL)
 	, fenceCompletionThreadRunning(true)
 {
@@ -217,7 +217,7 @@ GraphicsDevice::GraphicsDevice(void)
 	fenceCompletionThread = DKThread::Create(DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
 }
 
-GraphicsDevice::~GraphicsDevice(void)
+GraphicsDevice::~GraphicsDevice()
 {
 	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
 	{
@@ -241,7 +241,7 @@ GraphicsDevice::~GraphicsDevice(void)
 	DKLog("Direct3D12 Device destroyed.");
 }
 
-DKString GraphicsDevice::DeviceName(void) const
+DKString GraphicsDevice::DeviceName() const
 {
 	return deviceName;
 }
@@ -301,7 +301,7 @@ void GraphicsDevice::ReleaseCommandAllocator(CommandAllocator* allocator)
 	this->reusableCommandAllocators.Add(allocator);
 }
 
-void GraphicsDevice::PurgeCachedCommandAllocators(void)
+void GraphicsDevice::PurgeCachedCommandAllocators()
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
@@ -347,7 +347,7 @@ void GraphicsDevice::ReleaseCommandList(ID3D12GraphicsCommandList* list)
 	list->AddRef();
 }
 
-void GraphicsDevice::PurgeCachedCommandLists(void)
+void GraphicsDevice::PurgeCachedCommandLists()
 {
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandLists.Clear();
@@ -445,7 +445,7 @@ void GraphicsDevice::AddFenceCompletionHandler(ID3D12Fence* fence, UINT64 value,
 	}
 }
 
-void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
+void GraphicsDevice::FenceCompletionCallbackThreadProc()
 {
 	DKArray<ID3D12Fence*> waitingFences;
 	DKArray<UINT64> waitingFenceValues;

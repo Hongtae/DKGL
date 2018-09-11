@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSphereShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,11 +16,11 @@ DKSphereShape::DKSphereShape(float radius)
 {
 }
 
-DKSphereShape::~DKSphereShape(void)
+DKSphereShape::~DKSphereShape()
 {
 }
 
-float DKSphereShape::Radius(void) const
+float DKSphereShape::Radius() const
 {
 	btSphereShape* shape = static_cast<btSphereShape*>(this->impl);
 	float r = shape->getRadius();
@@ -29,7 +29,7 @@ float DKSphereShape::Radius(void) const
 	return r / s;
 }
 
-float DKSphereShape::ScaledRadius(void) const
+float DKSphereShape::ScaledRadius() const
 {
 	return static_cast<btSphereShape*>(this->impl)->getRadius();
 }

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKAffineTransform3.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -51,7 +51,7 @@ DKAffineTransform3::DKAffineTransform3(const DKMatrix4& m)
 {
 }
 
-DKAffineTransform3& DKAffineTransform3::Identity(void)
+DKAffineTransform3& DKAffineTransform3::Identity()
 {
 	matrix3.Identity();
 	translation.x = 0.0f;
@@ -60,14 +60,14 @@ DKAffineTransform3& DKAffineTransform3::Identity(void)
 	return *this;
 }
 
-bool DKAffineTransform3::IsIdentity(void) const
+bool DKAffineTransform3::IsIdentity() const
 {
 	if (translation.x == 0.0f && translation.y == 0.0f && translation.z == 0.0f)
 		return matrix3.IsIdentity();
 	return false;
 }
 
-bool DKAffineTransform3::IsDiagonal(void) const
+bool DKAffineTransform3::IsDiagonal() const
 {
 	if (translation.x == 0.0f && translation.y == 0.0f && translation.z == 0.0f)
 		return matrix3.IsDiagonal();
@@ -127,7 +127,7 @@ bool DKAffineTransform3::operator != (const DKAffineTransform3& t) const
 	return matrix3 != t.matrix3;
 }
 
-DKAffineTransform3& DKAffineTransform3::Inverse(void)
+DKAffineTransform3& DKAffineTransform3::Inverse()
 {
 	matrix3.Inverse();
 	translation = -translation * matrix3;
@@ -148,7 +148,7 @@ DKAffineTransform3& DKAffineTransform3::Multiply(const DKAffineTransform3& t)
 	return *this;
 }
 
-DKMatrix4 DKAffineTransform3::Matrix4(void) const
+DKMatrix4 DKAffineTransform3::Matrix4() const
 {
 	return DKMatrix4( 
 		matrix3.m[0][0], matrix3.m[0][1], matrix3.m[0][2], 0.0f, 

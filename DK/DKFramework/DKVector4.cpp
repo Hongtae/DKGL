@@ -14,7 +14,7 @@ using namespace DKFramework;
 
 const DKVector4 DKVector4::zero = DKVector4(0,0,0,0);
 
-DKVector4::DKVector4(void)
+DKVector4::DKVector4()
 	: x(0), y(0), z(0), w(0)
 {
 }
@@ -58,7 +58,7 @@ DKVector4 DKVector4::operator - (const DKVector4& v) const
 	return DKVector4(x - v.x, y - v.y, z - v.z, w - v.w);
 }
 
-DKVector4 DKVector4::operator - (void) const
+DKVector4 DKVector4::operator - () const
 {
 	return DKVector4(-x, -y, -z, -w);
 }
@@ -149,17 +149,17 @@ DKVector4& DKVector4::operator /= (const DKVector4& v)
 	return *this;
 }
 
-float DKVector4::Length(void) const
+float DKVector4::Length() const
 {
 	return sqrt( x*x + y*y + z*z + w*w );
 }
 
-float DKVector4::LengthSq(void) const
+float DKVector4::LengthSq() const
 {
 	return x*x + y*y + z*z + w*w;
 }
 
-DKVector4& DKVector4::Normalize(void)
+DKVector4& DKVector4::Normalize()
 {
 	float lengthSq = x*x + y*y + z*z + w*w;;
 	if (lengthSq > 0.0)

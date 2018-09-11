@@ -21,7 +21,7 @@ Buffer::Buffer(DKGraphicsDevice* d, id<MTLBuffer> b)
 {
 }
 
-Buffer::~Buffer(void)
+Buffer::~Buffer()
 {
 	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	[buffer release];
@@ -49,7 +49,7 @@ void* Buffer::Lock(size_t offset, size_t size)
 	return NULL;
 }
 
-void Buffer::Unlock(void)
+void Buffer::Unlock()
 {
 }
 

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSpline.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -48,7 +48,7 @@ namespace DKFramework
 }
 using namespace DKFramework;
 
-DKSpline::DKSpline(void) : DKSpline(0.0f, 0.0f, 0.0f, 0.0f)
+DKSpline::DKSpline() : DKSpline(0.0f, 0.0f, 0.0f, 0.0f)
 {
 }
 

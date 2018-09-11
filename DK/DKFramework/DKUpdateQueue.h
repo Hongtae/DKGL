@@ -24,15 +24,15 @@ namespace DKFramework
 			double tickDelta;
 			DKDateTime tickDate;
 
-			virtual void SetComplete(void) = 0; ///< Set this update process is just finished.
+			virtual void SetComplete() = 0; ///< Set this update process is just finished.
 			virtual void Synchronize(void*) = 0; ///< Wait for other object to finish
 			virtual void Enqueue(DKFunctionSignature<void(Synchronizer&)>) = 0; ///< enqueue follow up object
 		};
 
-		DKUpdateQueue(void) {}
-		virtual ~DKUpdateQueue(void) {}
+		DKUpdateQueue() {}
+		virtual ~DKUpdateQueue() {}
 
-		virtual void Complete(void) = 0; ///< Wait all objects are finished.
+		virtual void Complete() = 0; ///< Wait all objects are finished.
 		virtual void Enqueue(DKFunctionSignature<void(Synchronizer&)> fn) = 0;
 
 		DKTimeTick tick;
@@ -44,7 +44,7 @@ namespace DKFramework
 	class DKAsynchronousUpdatable
 	{
 	public:
-		virtual ~DKAsynchronousUpdatable(void) {}
+		virtual ~DKAsynchronousUpdatable() {}
 		virtual void Update(DKUpdateQueueSynchronizer&) = 0;
 	};
 
@@ -53,8 +53,8 @@ namespace DKFramework
 	class DKGL_API DKSerialUpdateQueue : public DKUpdateQueue
 	{
 	public:
-		DKSerialUpdateQueue(void);
-		~DKSerialUpdateQueue(void);
+		DKSerialUpdateQueue();
+		~DKSerialUpdateQueue();
 	};
 
 	/// @brief
@@ -62,7 +62,7 @@ namespace DKFramework
 	class DKGL_API DKParallelUpdateQueue : public DKUpdateQueue
 	{
 	public:
-		DKParallelUpdateQueue(void);
-		~DKParallelUpdateQueue(void);
+		DKParallelUpdateQueue();
+		~DKParallelUpdateQueue();
 	};
 }

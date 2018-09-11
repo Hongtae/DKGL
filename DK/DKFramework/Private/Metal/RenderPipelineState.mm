@@ -21,7 +21,7 @@ RenderPipelineState::RenderPipelineState(DKGraphicsDevice* d, id<MTLRenderPipeli
 	pipelineState = [st retain];
 }
 
-RenderPipelineState::~RenderPipelineState(void)
+RenderPipelineState::~RenderPipelineState()
 {
 	[pipelineState autorelease];
 }

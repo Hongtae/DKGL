@@ -44,20 +44,20 @@ namespace DKFoundation
 			ModeShareExclusive,
 		};
 
-		DKFile(void);
-		~DKFile(void);
+		DKFile();
+		~DKFile();
 
 		static bool GetInfo(const DKString& file, FileInfo& info);
 		static bool Delete(const DKString& file);
 
 		static DKObject<DKFile> Create(const DKString& file, ModeOpen mod, ModeShare share);
 		/// create temporary file. delete automatically when object destroyed.
-		static DKObject<DKFile> CreateTemporary(void);
+		static DKObject<DKFile> CreateTemporary();
 
 		Position SetCurrentPosition(Position p) override;
-		Position CurrentPosition(void) const override;
-		Position RemainLength(void) const override;
-		Position TotalLength(void) const override;
+		Position CurrentPosition() const override;
+		Position RemainLength() const override;
+		Position TotalLength() const override;
 
 		/// read file contents and returns DKBuffer object.
 		DKObject<DKBuffer> Read(size_t s, DKAllocator& alloc = DKAllocator::DefaultAllocator()) const;
@@ -72,15 +72,15 @@ namespace DKFoundation
 		size_t Write(DKStream* s);
 
 		bool GetInfo(FileInfo& info) const; ///< get file info (for this object)
-		FileInfo GetInfo(void) const;
+		FileInfo GetInfo() const;
 
 		bool SetLength(size_t len);
 
-		bool IsReadable(void) const override;
-		bool IsWritable(void) const override;
-		bool IsSeekable(void) const override;
+		bool IsReadable() const override;
+		bool IsWritable() const override;
+		bool IsSeekable() const override;
 
-		const DKString& Path(void) const;
+		const DKString& Path() const;
 
 		/// file-mapped data
 		DKObject<DKData> MapContentRange(size_t offset, size_t length);

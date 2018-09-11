@@ -213,7 +213,7 @@ namespace DKFramework
 		}
 
 		// register image extensions to resource-loader.
-		int RegisterImageFileExts(void)
+		int RegisterImageFileExts()
 		{
 			const wchar_t* exts[] = {
 				L"bmp",
@@ -244,7 +244,7 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKImage::DKImage(void)
+DKImage::DKImage()
 	: data(NULL)
 	, width(0)
 	, height(0)
@@ -252,20 +252,20 @@ DKImage::DKImage(void)
 {
 }
 
-DKImage::~DKImage(void)
+DKImage::~DKImage()
 {
 	if (data)
 		DKFree(data);
 }
 
-size_t DKImage::BytesPerPixel(void) const
+size_t DKImage::BytesPerPixel() const
 {
 	size_t bpp = Private::BytesPerPixel(format);
 	DKASSERT_DESC_DEBUG(bpp, "Invalid format");
 	return bpp;
 }
 
-bool DKImage::IsValid(void) const
+bool DKImage::IsValid() const
 {
 	if (width > 0 && height > 0 && data)
 	{
@@ -1502,7 +1502,7 @@ DKObject<DKImage> DKImage::Resample(uint32_t w, uint32_t h, PixelFormat f, Inter
 	return NULL;
 }
 
-DKObject<DKSerializer> DKImage::Serializer(void)
+DKObject<DKSerializer> DKImage::Serializer()
 {
 	class LocalSerializer : public DKSerializer
 	{

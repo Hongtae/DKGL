@@ -520,12 +520,12 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKXmlParser::DKXmlParser(void)
+DKXmlParser::DKXmlParser()
 {
 
 }
 
-DKXmlParser::~DKXmlParser(void)
+DKXmlParser::~DKXmlParser()
 {
 	ClearCustomEntityStorage();
 }
@@ -818,12 +818,12 @@ void DKXmlParser::OnElementDeclaration(const ElementDecl& elem, const ElementCon
 	DKLog(txt);
 }
 
-void DKXmlParser::OnStartDocument(void)
+void DKXmlParser::OnStartDocument()
 {
 	DKLog("[DKXmlParser::OnStartDocument]\n");
 }
 
-void DKXmlParser::OnEndDocument(void)
+void DKXmlParser::OnEndDocument()
 {
 	DKLog("[DKXmlParser::OnEndDocument]\n");
 }
@@ -884,7 +884,7 @@ void DKXmlParser::OnFatalError(const DKString& mesg)
 	DKLog("[DKXmlParser::OnFatalError] FatalError: %ls\n", (const wchar_t*)mesg);
 }
 
-void DKXmlParser::ClearCustomEntityStorage(void)
+void DKXmlParser::ClearCustomEntityStorage()
 {
 	if (customEntityStorage.Count() > 0)
 	{

@@ -24,7 +24,7 @@ namespace DKFoundation
 			LZ4HC,		///< fast decompression, better compression ratio than LZ4.
 		};
 		DKCompressor(Method);
-		~DKCompressor(void);
+		~DKCompressor();
 
 		bool Compress(DKStream* input, DKStream* output) const;
 		static bool Decompress(DKStream* input, DKStream* output);

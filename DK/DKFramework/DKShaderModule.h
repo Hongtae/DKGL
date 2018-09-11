@@ -22,12 +22,12 @@ namespace DKFramework
 	class DKShaderModule
 	{
 	public:
-		virtual ~DKShaderModule(void) {}
+		virtual ~DKShaderModule() {}
 
 		virtual DKObject<DKShaderFunction> CreateFunction(const DKString& name) const = 0;
 		virtual DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const = 0;
-		virtual const DKArray<DKString>& FunctionNames(void) const = 0;
+		virtual const DKArray<DKString>& FunctionNames() const = 0;
 
-		virtual DKGraphicsDevice* Device(void) = 0;
+		virtual DKGraphicsDevice* Device() = 0;
 	};
 }

@@ -18,7 +18,7 @@ namespace DKFramework
 	class DKGL_API DKBox
 	{
 	public:
-		DKBox(void);
+		DKBox();
 		/// c,x,y,z is absolute position value.
 		DKBox(const DKVector3& c, const DKVector3& x, const DKVector3& y, const DKVector3& z);
 		/// c: position of center
@@ -32,13 +32,13 @@ namespace DKFramework
 		static DKBox Intersection(const DKBox& b1, const DKBox& b2);
 		static DKBox Union(const DKBox& b1, const DKBox& b2);
 
-		bool IsValid(void) const;
+		bool IsValid() const;
 		bool IsPointInside(const DKVector3& pos) const;
 
-		float Volume(void) const;
-		DKMatrix4 LocalTransform(void) const;  ///< transform of box
-		DKMatrix4 AffineTransform(void) const; ///< affine transform of box
-		DKQuaternion Orientation(void) const;  ///< orientation of box
+		float Volume() const;
+		DKMatrix4 LocalTransform() const;  ///< transform of box
+		DKMatrix4 AffineTransform() const; ///< affine transform of box
+		DKQuaternion Orientation() const;  ///< orientation of box
 		DKBox& RotateOrientation(const DKQuaternion& q);
 
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL) const;

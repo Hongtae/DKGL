@@ -104,16 +104,16 @@ Application::Application(DKApplication* app)
 {
 }
 
-Application::~Application(void)
+Application::~Application()
 {
 }
 
-DKEventLoop* Application::EventLoop(void)
+DKEventLoop* Application::EventLoop()
 {
 	return &mainLoop;
 }
 
-DKLogger* Application::DefaultLogger(void)
+DKLogger* Application::DefaultLogger()
 {
 	static AppLogger logger;
 	return &logger;

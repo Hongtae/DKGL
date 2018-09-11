@@ -32,9 +32,9 @@ namespace DKFoundation
 		DKBuffer(const void* p, size_t s, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		DKBuffer(const DKBuffer&);
 		DKBuffer(DKBuffer&&);
-		~DKBuffer(void);
+		~DKBuffer();
 		
-		size_t Length(void) const override;
+		size_t Length() const override;
 		size_t CopyContent(void* p, size_t offset, size_t length) const;
 
 		bool SetLength(size_t);
@@ -63,25 +63,25 @@ namespace DKFoundation
 		DKBuffer& operator = (const DKBuffer&);
 		DKBuffer& operator = (DKBuffer&&);
 
-		bool IsReadable(void) const override { return true; }
-		bool IsWritable(void) const	override { return true; }
-		bool IsExcutable(void) const override { return false; }
-		bool IsTransient(void) const override { return false; }
+		bool IsReadable() const override { return true; }
+		bool IsWritable() const	override { return true; }
+		bool IsExcutable() const override { return false; }
+		bool IsTransient() const override { return false; }
 	
 		void SwitchAllocator(DKAllocator& alloc);
-		DKAllocator& Allocator(void) const;
+		DKAllocator& Allocator() const;
 
-		const void* LockShared(void) const override;
+		const void* LockShared() const override;
 		bool TryLockShared(const void**) const override;
-		void UnlockShared(void) const override;
+		void UnlockShared() const override;
 
-		void* LockExclusive(void) override;
+		void* LockExclusive() override;
 		bool TryLockExclusive(void**) override;
-		void UnlockExclusive(void) override;
+		void UnlockExclusive() override;
 
 	protected:
-		void* LockContent(void);
-		void UnlockContent(void);
+		void* LockContent();
+		void UnlockContent();
 
 	private:
 		void*	contentPtr;

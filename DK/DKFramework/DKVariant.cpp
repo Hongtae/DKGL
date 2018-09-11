@@ -328,7 +328,7 @@ DKVariant::DKVariant(const DKXmlElement* e)
 	this->ImportXML(e);
 }
 
-DKVariant::~DKVariant(void)
+DKVariant::~DKVariant()
 {
 	SetValueType(TypeUndefined);
 }
@@ -447,14 +447,14 @@ DKVariant& DKVariant::SetValueType(Type t)
 	return *this;
 }
 
-DKVariant::Type DKVariant::ValueType(void) const
+DKVariant::Type DKVariant::ValueType() const
 {
 	return valueType;
 }
 
 #define DKVARIANT_XML_ELEMENT	L"DKVariant"
 
-DKObject<DKXmlElement> DKVariant::ExportXML(void) const
+DKObject<DKXmlElement> DKVariant::ExportXML() const
 {
 	DKObject<DKXmlElement> e = DKObject<DKXmlElement>::New();
 	e->name = DKVARIANT_XML_ELEMENT;
@@ -1942,194 +1942,194 @@ DKVariant& DKVariant::operator = (DKVariant&& v)
 	return *this;
 }
 
-DKVariant::VInteger& DKVariant::Integer(void)
+DKVariant::VInteger& DKVariant::Integer()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeInteger);
 	DKASSERT_DEBUG(ValueType() == TypeInteger);
 	return VariantBlock<VInteger, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VInteger& DKVariant::Integer(void) const
+const DKVariant::VInteger& DKVariant::Integer() const
 {
 	return const_cast<DKVariant*>(this)->Integer();
 }
 
-DKVariant::VFloat& DKVariant::Float(void)
+DKVariant::VFloat& DKVariant::Float()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeFloat);
 	DKASSERT_DEBUG(ValueType() == TypeFloat);
 	return VariantBlock<VFloat, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VFloat& DKVariant::Float(void) const
+const DKVariant::VFloat& DKVariant::Float() const
 {
 	return const_cast<DKVariant*>(this)->Float();
 }
 
-DKVariant::VVector2& DKVariant::Vector2(void)
+DKVariant::VVector2& DKVariant::Vector2()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector2);
 	DKASSERT_DEBUG(ValueType() == TypeVector2);
 	return VariantBlock<VVector2, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VVector2& DKVariant::Vector2(void) const
+const DKVariant::VVector2& DKVariant::Vector2() const
 {
 	return const_cast<DKVariant*>(this)->Vector2();
 }
 
-DKVariant::VVector3& DKVariant::Vector3(void)
+DKVariant::VVector3& DKVariant::Vector3()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector3);
 	DKASSERT_DEBUG(ValueType() == TypeVector3);
 	return VariantBlock<VVector3, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VVector3& DKVariant::Vector3(void) const
+const DKVariant::VVector3& DKVariant::Vector3() const
 {
 	return const_cast<DKVariant*>(this)->Vector3();
 }
 
-DKVariant::VVector4& DKVariant::Vector4(void)
+DKVariant::VVector4& DKVariant::Vector4()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector4);
 	DKASSERT_DEBUG(ValueType() == TypeVector4);
 	return VariantBlock<VVector4, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VVector4& DKVariant::Vector4(void) const
+const DKVariant::VVector4& DKVariant::Vector4() const
 {
 	return const_cast<DKVariant*>(this)->Vector4();
 }
 
-DKVariant::VMatrix2& DKVariant::Matrix2(void)
+DKVariant::VMatrix2& DKVariant::Matrix2()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix2);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix2);
 	return VariantBlock<VMatrix2, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VMatrix2& DKVariant::Matrix2(void) const
+const DKVariant::VMatrix2& DKVariant::Matrix2() const
 {
 	return const_cast<DKVariant*>(this)->Matrix2();
 }
 
-DKVariant::VMatrix3& DKVariant::Matrix3(void)
+DKVariant::VMatrix3& DKVariant::Matrix3()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix3);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix3);
 	return VariantBlock<VMatrix3, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VMatrix3& DKVariant::Matrix3(void) const
+const DKVariant::VMatrix3& DKVariant::Matrix3() const
 {
 	return const_cast<DKVariant*>(this)->Matrix3();
 }
 
-DKVariant::VMatrix4& DKVariant::Matrix4(void)
+DKVariant::VMatrix4& DKVariant::Matrix4()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix4);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix4);
 	return VariantBlock<VMatrix4, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VMatrix4& DKVariant::Matrix4(void) const
+const DKVariant::VMatrix4& DKVariant::Matrix4() const
 {
 	return const_cast<DKVariant*>(this)->Matrix4();
 }
 
-DKVariant::VQuaternion& DKVariant::Quaternion(void)
+DKVariant::VQuaternion& DKVariant::Quaternion()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeQuaternion);
 	DKASSERT_DEBUG(ValueType() == TypeQuaternion);
 	return VariantBlock<VQuaternion, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VQuaternion& DKVariant::Quaternion(void) const
+const DKVariant::VQuaternion& DKVariant::Quaternion() const
 {
 	return const_cast<DKVariant*>(this)->Quaternion();
 }
 
-DKVariant::VRationalNumber& DKVariant::RationalNumber(void)
+DKVariant::VRationalNumber& DKVariant::RationalNumber()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeRationalNumber);
 	DKASSERT_DEBUG(ValueType() == TypeRationalNumber);
 	return VariantBlock<VRationalNumber, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VRationalNumber& DKVariant::RationalNumber(void) const
+const DKVariant::VRationalNumber& DKVariant::RationalNumber() const
 {
 	return const_cast<DKVariant*>(this)->RationalNumber();
 }
 
-DKVariant::VString& DKVariant::String(void)
+DKVariant::VString& DKVariant::String()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeString);
 	DKASSERT_DEBUG(ValueType() == TypeString);
 	return VariantBlock<VString, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VString& DKVariant::String(void) const
+const DKVariant::VString& DKVariant::String() const
 {
 	return const_cast<DKVariant*>(this)->String();
 }
 
-DKVariant::VDateTime& DKVariant::DateTime(void)
+DKVariant::VDateTime& DKVariant::DateTime()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeDateTime);
 	DKASSERT_DEBUG(ValueType() == TypeDateTime);
 	return VariantBlock<VDateTime, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VDateTime& DKVariant::DateTime(void) const
+const DKVariant::VDateTime& DKVariant::DateTime() const
 {
 	return const_cast<DKVariant*>(this)->DateTime();
 }
 
-DKVariant::VData& DKVariant::Data(void)
+DKVariant::VData& DKVariant::Data()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeData);
 	DKASSERT_DEBUG(ValueType() == TypeData);
 	return *(VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock).data);
 }
 
-const DKVariant::VData& DKVariant::Data(void) const
+const DKVariant::VData& DKVariant::Data() const
 {
 	return const_cast<DKVariant*>(this)->Data();
 }
 
-DKVariant::VStructuredData& DKVariant::StructuredData(void)
+DKVariant::VStructuredData& DKVariant::StructuredData()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeStructData);
 	DKASSERT_DEBUG(ValueType() == TypeStructData);
 	return VariantBlock<VStructuredData, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VStructuredData& DKVariant::StructuredData(void) const
+const DKVariant::VStructuredData& DKVariant::StructuredData() const
 {
 	return const_cast<DKVariant*>(this)->StructuredData();
 }
 
-DKVariant::VArray& DKVariant::Array(void)
+DKVariant::VArray& DKVariant::Array()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeArray);
 	DKASSERT_DEBUG(ValueType() == TypeArray);
 	return VariantBlock<VArray, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VArray& DKVariant::Array(void) const
+const DKVariant::VArray& DKVariant::Array() const
 {
 	return const_cast<DKVariant*>(this)->Array();
 }
 
-DKVariant::VPairs& DKVariant::Pairs(void)
+DKVariant::VPairs& DKVariant::Pairs()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypePairs);
 	DKASSERT_DEBUG(ValueType() == TypePairs);
 	return VariantBlock<VPairs, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VPairs& DKVariant::Pairs(void) const
+const DKVariant::VPairs& DKVariant::Pairs() const
 {
 	return const_cast<DKVariant*>(this)->Pairs();
 }

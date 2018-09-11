@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKZipArchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,12 +18,12 @@
 
 using namespace DKFoundation;
 
-DKZipArchiver::DKZipArchiver(void)
+DKZipArchiver::DKZipArchiver()
 : zipHandle(NULL)
 {
 }
 
-DKZipArchiver::~DKZipArchiver(void)
+DKZipArchiver::~DKZipArchiver()
 {
 	if (zipHandle)
 	{

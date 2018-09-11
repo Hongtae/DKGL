@@ -10,10 +10,10 @@
 using namespace DKFoundation;
 using namespace DKFramework;
 
-DKGpuBuffer::DKGpuBuffer(void)
+DKGpuBuffer::DKGpuBuffer()
 {
 }
 
-DKGpuBuffer::~DKGpuBuffer(void)
+DKGpuBuffer::~DKGpuBuffer()
 {
 }

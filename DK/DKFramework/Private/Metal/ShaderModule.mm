@@ -34,7 +34,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib)
 	}
 }
 
-ShaderModule::~ShaderModule(void)
+ShaderModule::~ShaderModule()
 {
 	[library release];
 }

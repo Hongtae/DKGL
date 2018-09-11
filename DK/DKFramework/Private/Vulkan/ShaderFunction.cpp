@@ -57,13 +57,13 @@ ShaderFunction::ShaderFunction(DKShaderModule* m, const DKStringU8& name, const 
 	}
 }
 
-ShaderFunction::~ShaderFunction(void)
+ShaderFunction::~ShaderFunction()
 {
 	if (specializationData)
 		DKFree(specializationData);
 }
 
-const DKArray<DKVertexAttribute>& ShaderFunction::VertexAttributes(void) const
+const DKArray<DKVertexAttribute>& ShaderFunction::VertexAttributes() const
 {
 	const ShaderModule* m = module.StaticCast<ShaderModule>();
 	if (m->stage == VK_SHADER_STAGE_VERTEX_BIT)
@@ -73,7 +73,7 @@ const DKArray<DKVertexAttribute>& ShaderFunction::VertexAttributes(void) const
 	return vertexAttributes;	
 }
 
-const DKArray<DKShaderAttribute>& ShaderFunction::StageInputAttributes(void) const
+const DKArray<DKShaderAttribute>& ShaderFunction::StageInputAttributes() const
 {
 	return module.StaticCast<ShaderModule>()->stageInputAttributes;
 }

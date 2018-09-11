@@ -15,11 +15,11 @@ namespace DKFoundation
 	class DKGL_API DKMutex
 	{
 	public:
-		DKMutex(void);
-		~DKMutex(void);
-		void Lock(void) const;
-		bool TryLock(void) const;
-		void Unlock(void) const;
+		DKMutex();
+		~DKMutex();
+		void Lock() const;
+		bool TryLock() const;
+		void Unlock() const;
 
 	private:
 		DKMutex(const DKMutex&) = delete;

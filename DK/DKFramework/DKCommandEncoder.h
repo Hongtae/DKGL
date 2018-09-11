@@ -15,10 +15,10 @@ namespace DKFramework
 	class DKCommandEncoder
 	{
 	public:
-		virtual ~DKCommandEncoder(void) {}
+		virtual ~DKCommandEncoder() {}
 
-		virtual void EndEncoding(void) = 0;
-		virtual bool IsCompleted(void) const = 0;
-		virtual DKCommandBuffer* Buffer(void) = 0;
+		virtual void EndEncoding() = 0;
+		virtual bool IsCompleted() const = 0;
+		virtual DKCommandBuffer* Buffer() = 0;
 	};
 }

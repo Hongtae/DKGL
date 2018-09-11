@@ -25,7 +25,7 @@ DKAudioStream::DKAudioStream(FileType t)
 {
 }
 
-DKAudioStream::~DKAudioStream(void)
+DKAudioStream::~DKAudioStream()
 {
 }
 

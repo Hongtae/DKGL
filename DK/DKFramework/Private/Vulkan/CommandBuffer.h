@@ -19,19 +19,19 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		CommandBuffer(VkCommandPool, DKCommandQueue*);
-		~CommandBuffer(void);
+		~CommandBuffer();
 
 		DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
-		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder(void) override;
-		DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder(void) override;
+		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() override;
+		DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() override;
 
-		bool Commit(void) override;
+		bool Commit() override;
 
-		DKCommandQueue* Queue(void) override { return queue; };
+		DKCommandQueue* Queue() override { return queue; };
 
 		void Submit(const VkSubmitInfo&, DKOperation*);
 		void ReleaseEncodingBuffer(VkCommandBuffer cb);
-		VkCommandBuffer GetEncodingBuffer(void);
+		VkCommandBuffer GetEncodingBuffer();
 
 		VkCommandPool commandPool;
 		DKObject<DKCommandQueue> queue;

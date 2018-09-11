@@ -26,7 +26,7 @@ CommandQueue::CommandQueue(ID3D12CommandQueue* q, ID3D12Fence* f, DKGraphicsDevi
 	fence->Signal(fenceCounter);
 }
 
-CommandQueue::~CommandQueue(void)
+CommandQueue::~CommandQueue()
 {
 	// wait until queue completed
 	DKCriticalSection<DKSpinLock> guard(queueLock);
@@ -39,7 +39,7 @@ CommandQueue::~CommandQueue(void)
 	}
 }
 
-DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer(void)
+DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	CommandAllocator* commandAllocator = dev->GetCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT);
@@ -84,7 +84,7 @@ UINT64 CommandQueue::Enqueue(ID3D12CommandList* const* commandLists, UINT numLis
 	return fenceCounter;
 }
 
-UINT64 CommandQueue::EnqueuedCounterValue(void)
+UINT64 CommandQueue::EnqueuedCounterValue()
 {
 	DKCriticalSection<DKSpinLock> guard(queueLock);
 	return fenceCounter;

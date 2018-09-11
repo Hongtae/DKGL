@@ -12,7 +12,7 @@
 
 using namespace DKFramework;
 
-DKAudioSource::DKAudioSource(void)
+DKAudioSource::DKAudioSource()
 	: sourceId(0)
 {
 	alGenSources(1, &sourceId);
@@ -23,7 +23,7 @@ DKAudioSource::DKAudioSource(void)
 	DKASSERT_DEBUG(this->sourceId != 0);
 }
 
-DKAudioSource::~DKAudioSource(void)
+DKAudioSource::~DKAudioSource()
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	DKASSERT_DEBUG(alIsSource(sourceId));
@@ -45,7 +45,7 @@ DKAudioSource::~DKAudioSource(void)
 #endif
 }
 
-bool DKAudioSource::Play(void)
+bool DKAudioSource::Play()
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 
@@ -54,7 +54,7 @@ bool DKAudioSource::Play(void)
 	return true;
 }
 
-bool DKAudioSource::Stop(void)
+bool DKAudioSource::Stop()
 {
 	DKCriticalSection<DKSpinLock> guard(this->bufferLock);
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -99,7 +99,7 @@ bool DKAudioSource::Stop(void)
 	return true;
 }
 
-bool DKAudioSource::Pause(void)
+bool DKAudioSource::Pause()
 {
 	DKCriticalSection<DKSpinLock> guard(this->bufferLock);
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -195,7 +195,7 @@ bool DKAudioSource::EnqueueBuffer(int frequency, int bits, int channels, const v
 	return false;
 }
 
-void DKAudioSource::UnqueueBuffers(void) const
+void DKAudioSource::UnqueueBuffers() const
 {
 	DKCriticalSection<DKSpinLock> guard(this->bufferLock);
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -240,7 +240,7 @@ void DKAudioSource::UnqueueBuffers(void) const
 	}
 }
 
-size_t DKAudioSource::QueuedBuffers(void) const
+size_t DKAudioSource::QueuedBuffers() const
 {
 	this->UnqueueBuffers();
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -259,7 +259,7 @@ size_t DKAudioSource::QueuedBuffers(void) const
 	return buffers.Count();
 }
 
-double DKAudioSource::TimePosition(void) const
+double DKAudioSource::TimePosition() const
 {
 	this->UnqueueBuffers();
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -316,7 +316,7 @@ void DKAudioSource::SetTimePosition(double t)
 	}
 }
 
-double DKAudioSource::TimeOffset(void) const
+double DKAudioSource::TimeOffset() const
 {
 	this->UnqueueBuffers();
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -367,7 +367,7 @@ void DKAudioSource::SetTimeOffset(double t)
 	}	
 }
 
-DKAudioSource::AudioState DKAudioSource::State(void) const
+DKAudioSource::AudioState DKAudioSource::State() const
 {
 	this->UnqueueBuffers();
 	DKASSERT_DEBUG(this->sourceId != 0);
@@ -389,7 +389,7 @@ void DKAudioSource::SetPitch(float f)
 	alSourcef(this->sourceId, AL_PITCH, f);
 }
 
-float DKAudioSource::Pitch(void) const
+float DKAudioSource::Pitch() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 1.0;
@@ -404,7 +404,7 @@ void DKAudioSource::SetGain(float f)
 	alSourcef(sourceId, AL_GAIN, f);
 }
 
-float DKAudioSource::Gain(void) const
+float DKAudioSource::Gain() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 1.0;
@@ -419,7 +419,7 @@ void DKAudioSource::SetMinGain(float f)
 	alSourcef(sourceId, AL_MIN_GAIN, f);
 }
 
-float DKAudioSource::MinGain(void) const
+float DKAudioSource::MinGain() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 0.0;
@@ -434,7 +434,7 @@ void DKAudioSource::SetMaxGain(float f)
 	alSourcef(sourceId, AL_MAX_GAIN, f);
 }
 
-float DKAudioSource::MaxGain(void) const
+float DKAudioSource::MaxGain() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 1.0;
@@ -449,7 +449,7 @@ void DKAudioSource::SetMaxDistance(float f)
 	alSourcef(sourceId, AL_MAX_DISTANCE, f);
 }
 
-float DKAudioSource::MaxDistance(void) const
+float DKAudioSource::MaxDistance() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = FLT_MAX;
@@ -464,7 +464,7 @@ void DKAudioSource::SetRolloffFactor(float f)
 	alSourcef(this->sourceId, AL_ROLLOFF_FACTOR, f);
 }
 
-float DKAudioSource::RolloffFactor(void) const
+float DKAudioSource::RolloffFactor() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 1.0;
@@ -479,7 +479,7 @@ void DKAudioSource::SetConeOuterGain(float f)
 	alSourcef(this->sourceId, AL_CONE_OUTER_GAIN, f);
 }
 
-float DKAudioSource::ConeOuterGain(void) const
+float DKAudioSource::ConeOuterGain() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 0.0;
@@ -494,7 +494,7 @@ void DKAudioSource::SetConeInnerAngle(float f)
 	alSourcef(this->sourceId, AL_CONE_INNER_ANGLE, f);
 }
 
-float DKAudioSource::ConeInnerAngle(void) const
+float DKAudioSource::ConeInnerAngle() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 360.0;
@@ -509,7 +509,7 @@ void DKAudioSource::SetConeOuterAngle(float f)
 	alSourcef(this->sourceId, AL_CONE_OUTER_ANGLE, f);
 }
 
-float DKAudioSource::ConeOuterAngle(void) const
+float DKAudioSource::ConeOuterAngle() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 360.0;
@@ -524,7 +524,7 @@ void DKAudioSource::SetReferenceDistance(float f)
 	alSourcef(this->sourceId, AL_REFERENCE_DISTANCE, f);
 }
 
-float DKAudioSource::ReferenceDistance(void) const
+float DKAudioSource::ReferenceDistance() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	float f = 1.0;
@@ -538,7 +538,7 @@ void DKAudioSource::SetPosition(const DKVector3& v)
 	alSource3f(this->sourceId, AL_POSITION, v.x, v.y, v.z);
 }
 
-DKVector3 DKAudioSource::Position(void) const
+DKVector3 DKAudioSource::Position() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	DKVector3 v(0,0,0);
@@ -552,7 +552,7 @@ void DKAudioSource::SetVelocity(const DKVector3& v)
 	alSource3f(sourceId, AL_VELOCITY, v.x, v.y, v.z);
 }
 
-DKVector3 DKAudioSource::Velocity(void) const
+DKVector3 DKAudioSource::Velocity() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	DKVector3 v(0, 0, 0);
@@ -566,7 +566,7 @@ void DKAudioSource::SetDirection(const DKVector3& v)
 	alSource3f(sourceId, AL_DIRECTION, v.x, v.y, v.z);
 }
 
-DKVector3 DKAudioSource::Direction(void) const
+DKVector3 DKAudioSource::Direction() const
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 	DKVector3 v(0, 0, 0);
@@ -642,7 +642,7 @@ int DKAudioSource::Format(int bits, int channels)
 	return 0;
 }
 
-int DKAudioSource::ErrorCode(void)
+int DKAudioSource::ErrorCode()
 {
 	return alGetError();
 }

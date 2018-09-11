@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -86,7 +86,7 @@ namespace DKFramework
 		};
 		const LinkType type;
 
-		virtual ~DKConstraint(void);
+		virtual ~DKConstraint();
 
 		bool disableCollisionsBetweenLinkedBodies;
 
@@ -96,31 +96,31 @@ namespace DKFramework
 		virtual float GetParam(ParamType type, ParamAxis axis);
 
 		void SetBreakingImpulseThreshold(float threshold);
-		float BreakingImpulseThreshold(void) const;
+		float BreakingImpulseThreshold() const;
 
-		bool IsEnabled(void) const;
+		bool IsEnabled() const;
 		void SetEnabled(bool e);
 
-		void Enable(void)				{SetEnabled(true);}
-		void Disable(void)				{SetEnabled(false);}
+		void Enable()				{SetEnabled(true);}
+		void Disable()				{SetEnabled(false);}
 
-		DKRigidBody* BodyA(void)				{ return bodyA; }
-		DKRigidBody* BodyB(void)				{ return bodyB; }
-		const DKRigidBody* BodyA(void) const	{ return bodyA; }
-		const DKRigidBody* BodyB(void) const	{ return bodyB; }
+		DKRigidBody* BodyA()				{ return bodyA; }
+		DKRigidBody* BodyB()				{ return bodyB; }
+		const DKRigidBody* BodyA() const	{ return bodyA; }
+		const DKRigidBody* BodyB() const	{ return bodyB; }
 
 		virtual bool Retarget(DKRigidBody* a, DKRigidBody* b);
 
-		virtual DKObject<DKSerializer> Serializer(void) override;
+		virtual DKObject<DKSerializer> Serializer() override;
 
 	protected:
 		DKConstraint(LinkType type, DKRigidBody* rbA, DKRigidBody* rbB, class btTypedConstraint* p);
 
-		void ResetObject(void);
+		void ResetObject();
 		/// ResetContext, ResetContextImpl should be overriden by subclass.
 		/// invoked by ResetObject.
-		virtual void ResetContext(void);
-		virtual void ResetContextImpl(void) = 0;
+		virtual void ResetContext();
+		virtual void ResetContextImpl() = 0;
 
 		DKObject<DKRigidBody> bodyA;
 		DKObject<DKRigidBody> bodyB;

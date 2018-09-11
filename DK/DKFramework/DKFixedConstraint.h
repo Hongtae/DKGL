@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKFixedConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,20 +17,20 @@ namespace DKFramework
 	public:
 		DKFixedConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKFixedConstraint(DKRigidBody* bodyA, const DKNSTransform& frameA);
-		DKFixedConstraint(void);
-		~DKFixedConstraint(void);
+		DKFixedConstraint();
+		~DKFixedConstraint();
 
-		DKNSTransform FrameA(void) const;
-		DKNSTransform FrameB(void) const;
+		DKNSTransform FrameA() const;
+		DKNSTransform FrameB() const;
 		void SetFrameA(const DKNSTransform& t);
 		void SetFrameB(const DKNSTransform& t);
 		void SetFrames(const DKNSTransform& ta, const DKNSTransform& tb);
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKFixedConstraint* Copy(UUIDObjectMap&, const DKFixedConstraint*);

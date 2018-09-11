@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKLinearTransform2.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -12,7 +12,7 @@
 
 using namespace DKFramework;
 
-DKLinearTransform2::DKLinearTransform2(void)
+DKLinearTransform2::DKLinearTransform2()
 	: matrix2(DKMatrix2::identity)
 {
 }
@@ -38,18 +38,18 @@ DKLinearTransform2::DKLinearTransform2(const DKMatrix2& m)
 {
 }
 
-DKLinearTransform2& DKLinearTransform2::Identity(void)
+DKLinearTransform2& DKLinearTransform2::Identity()
 {
 	matrix2.Identity();
 	return *this;
 }
 
-bool DKLinearTransform2::IsIdentity(void) const
+bool DKLinearTransform2::IsIdentity() const
 {
 	return matrix2.IsIdentity();
 }
 
-bool DKLinearTransform2::IsDiagonal(void) const
+bool DKLinearTransform2::IsDiagonal() const
 {
 	return matrix2.IsDiagonal();
 }
@@ -78,7 +78,7 @@ DKLinearTransform2& DKLinearTransform2::VerticalShear(float s)
 	return *this;
 }
 
-DKLinearTransform2& DKLinearTransform2::HorizontalFlip(void)
+DKLinearTransform2& DKLinearTransform2::HorizontalFlip()
 {
 	/*
 	Horizontal flip
@@ -90,7 +90,7 @@ DKLinearTransform2& DKLinearTransform2::HorizontalFlip(void)
 	return *this;
 }
 
-DKLinearTransform2& DKLinearTransform2::VerticalFlip(void)
+DKLinearTransform2& DKLinearTransform2::VerticalFlip()
 {
 	/*
 	Vertical flip
@@ -156,7 +156,7 @@ DKLinearTransform2& DKLinearTransform2::Rotate(float angle)
 	return *this;
 }
 
-DKLinearTransform2& DKLinearTransform2::Inverse(void)
+DKLinearTransform2& DKLinearTransform2::Inverse()
 {
 	matrix2.Inverse();
 	return *this;

@@ -17,7 +17,7 @@
 
 using namespace DKFramework;
 
-DKLinearTransform3::DKLinearTransform3(void)
+DKLinearTransform3::DKLinearTransform3()
 	: matrix3(DKMatrix3::identity)
 {
 }
@@ -45,18 +45,18 @@ DKLinearTransform3::DKLinearTransform3(const DKMatrix3& m)
 {
 }
 
-DKLinearTransform3& DKLinearTransform3::Identity(void)
+DKLinearTransform3& DKLinearTransform3::Identity()
 {
 	matrix3.Identity();
 	return *this;
 }
 
-bool DKLinearTransform3::IsIdentity(void) const
+bool DKLinearTransform3::IsIdentity() const
 {
 	return matrix3.IsIdentity();
 }
 
-bool DKLinearTransform3::IsDiagonal(void) const
+bool DKLinearTransform3::IsDiagonal() const
 {
 	return matrix3.IsDiagonal();
 }
@@ -215,7 +215,7 @@ bool DKLinearTransform3::operator != (const DKLinearTransform3& t) const
 	return matrix3 != t.matrix3;
 }
 
-DKQuaternion DKLinearTransform3::Rotation(void) const
+DKQuaternion DKLinearTransform3::Rotation() const
 {
 	float x = sqrt( Max( float(0), 1 + matrix3.m[0][0] - matrix3.m[1][1] - matrix3.m[2][2] ) ) / 2;
 	float y = sqrt( Max( float(0), 1 - matrix3.m[0][0] + matrix3.m[1][1] - matrix3.m[2][2] ) ) / 2;
@@ -258,7 +258,7 @@ bool DKLinearTransform3::Decompose(DKVector3& scale, DKQuaternion& rotate) const
 	return true;
 }
 
-DKLinearTransform3& DKLinearTransform3::Inverse(void)
+DKLinearTransform3& DKLinearTransform3::Inverse()
 {
 	matrix3.Inverse();
 	return *this;

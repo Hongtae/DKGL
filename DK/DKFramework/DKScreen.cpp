@@ -24,7 +24,7 @@ DKScreen::DKScreen(DKWindow*, DKFrame*)
 	audioDevice = DKAudioDevice::SharedInstance();
 }
 
-DKScreen::~DKScreen(void)
+DKScreen::~DKScreen()
 {
 	if (thread && thread->IsAlive())
 	{
@@ -33,24 +33,24 @@ DKScreen::~DKScreen(void)
 	}
 }
 
-void DKScreen::Start(void)
+void DKScreen::Start()
 {
 
 }
 
-void DKScreen::Pause(void)
+void DKScreen::Pause()
 {
 }
 
-void DKScreen::Resume(void)
+void DKScreen::Resume()
 {
 }
 
-void DKScreen::Stop(void)
+void DKScreen::Stop()
 {
 }
 
-void DKScreen::DrawFrame(void)
+void DKScreen::DrawFrame()
 {
 }
 

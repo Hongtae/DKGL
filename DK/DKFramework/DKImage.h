@@ -16,8 +16,8 @@ namespace DKFramework
 	class DKGL_API DKImage : public DKResource
 	{
 	public:
-		DKImage(void);
-		~DKImage(void);
+		DKImage();
+		~DKImage();
 
 		enum PixelFormat
 		{
@@ -50,10 +50,10 @@ namespace DKFramework
 			Quadratic,
 		};
 
-		uint32_t Width(void) const				{ return width; }
-		uint32_t Height(void) const				{ return height; }
-		size_t BytesPerPixel(void) const;
-		bool IsValid(void) const;
+		uint32_t Width() const				{ return width; }
+		uint32_t Height() const				{ return height; }
+		size_t BytesPerPixel() const;
+		bool IsValid() const;
 
 		static DKObject<DKImage> Create(const DKString& path);
 		static DKObject<DKImage> Create(DKStream* stream);
@@ -68,7 +68,7 @@ namespace DKFramework
 		/// encode image data to export (eg, save to common image file formats like png, jpeg)
 		DKObject<DKData> EncodeData(const DKString& format, DKOperationQueue*) const;
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	private:
 		uint32_t width;

@@ -30,9 +30,9 @@ namespace DKFoundation
 
 		static const DKStringU8 empty;
 		/// SystemEncoding returns 'DKStringEncoding::UTF8' always!
-		static DKStringEncoding SystemEncoding(void);
+		static DKStringEncoding SystemEncoding();
 
-		DKStringU8(void);
+		DKStringU8();
 		DKStringU8(DKStringU8&& str);
 		DKStringU8(const DKStringU8& str);
 		DKStringU8(const DKUniChar8* str, size_t len = (size_t)-1);
@@ -40,7 +40,7 @@ namespace DKFoundation
 		explicit DKStringU8(const void* str, size_t bytes, DKStringEncoding e);
 		explicit DKStringU8(DKUniCharW c);
 		explicit DKStringU8(DKUniChar8 c);
-		~DKStringU8(void);
+		~DKStringU8();
 
 		static DKStringU8 Format(const DKUniChar8* fmt, ...);
 		static DKStringU8 Format(const DKUniCharW* fmt, ...);
@@ -59,8 +59,8 @@ namespace DKFoundation
 
 		DKObject<DKData> Encode(DKStringEncoding e) const;
 
-		size_t Length(void) const;		///< number of characters. (not bytes!)
-		size_t Bytes(void) const;
+		size_t Length() const;		///< number of characters. (not bytes!)
+		size_t Bytes() const;
 
 		int Compare(const DKUniChar8* str) const;
 		int Compare(const DKStringU8& str) const;
@@ -76,7 +76,7 @@ namespace DKFoundation
 		DKStringU8& operator = (DKUniChar8 ch);
 
 		// conversion operators
-		operator const DKUniChar8* (void) const;
+		operator const DKUniChar8* () const;
 
 		// concatenation operators
 		DKStringU8& operator += (const DKStringU8& str);
@@ -105,9 +105,9 @@ namespace DKFoundation
 		bool operator != (const DKUniChar8* str) const			{return Compare(str) != 0;}
 
 		// convert numeric values (like atoi, atof)
-		int64_t ToInteger(void) const;
-		uint64_t ToUnsignedInteger(void) const;
-		double ToRealNumber(void) const;
+		int64_t ToInteger() const;
+		uint64_t ToUnsignedInteger() const;
+		double ToRealNumber() const;
 
 	private:
 		CharT* stringData;

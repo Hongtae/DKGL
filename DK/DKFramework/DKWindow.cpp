@@ -34,7 +34,7 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKWindow::DKWindow(void)
+DKWindow::DKWindow()
 	: activated(false)
 	, visible(false)
 	, eventLoop(NULL)
@@ -42,7 +42,7 @@ DKWindow::DKWindow(void)
 {
 }
 
-DKWindow::~DKWindow(void)
+DKWindow::~DKWindow()
 {
 	if (impl)
 	{
@@ -78,13 +78,13 @@ DKObject<DKWindow> DKWindow::CreateProxy(void* systemHandle)
 	return NULL;
 }
 
-void DKWindow::UpdateProxy(void)
+void DKWindow::UpdateProxy()
 {
 	if (impl)
 		impl->UpdateProxy();
 }
 
-bool DKWindow::IsProxy(void) const
+bool DKWindow::IsProxy() const
 {
 	if (impl)
 		return impl->IsProxy();
@@ -96,12 +96,12 @@ void DKWindow::SetCallback(const WindowCallback& cb)
 	this->callback = cb;
 }
 
-const DKWindow::WindowCallback& DKWindow::Callback(void) const
+const DKWindow::WindowCallback& DKWindow::Callback() const
 {
 	return this->callback;
 }
 
-void DKWindow::Close(void)
+void DKWindow::Close()
 {
 	if (impl)
 	{
@@ -157,7 +157,7 @@ void DKWindow::ResetKeyState(int deviceId)
 	}
 }
 
-void DKWindow::ResetKeyStateForAllDevices(void)
+void DKWindow::ResetKeyStateForAllDevices()
 {
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	this->keyboardStateMap.Clear();
@@ -381,7 +381,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 	}
 }
 
-void DKWindow::ClearCompletedEvents(void)
+void DKWindow::ClearCompletedEvents()
 {
 	DKCriticalSection<DKSpinLock> guard(handlerLock);
 	DKArray<PendingEvent> activeEvents;
@@ -436,25 +436,25 @@ void DKWindow::SetMousePosition(int deviceId, const DKPoint& pt)
 		impl->SetMousePosition(deviceId, pt);
 }
 
-void DKWindow::Show(void)
+void DKWindow::Show()
 {
 	if (impl)
 		impl->Show();
 }
 
-void DKWindow::Hide(void)
+void DKWindow::Hide()
 {
 	if (impl)
 		impl->Hide();
 }
 
-void DKWindow::Activate(void)
+void DKWindow::Activate()
 {
 	if (impl)
 		impl->Activate();
 }
 
-void DKWindow::Minimize(void)
+void DKWindow::Minimize()
 {
 	if (impl)
 		impl->Minimize();
@@ -478,17 +478,17 @@ void DKWindow::SetOrigin(const DKPoint& pt)
 		impl->SetOrigin(pt);
 }
 
-DKRect DKWindow::WindowRect(void) const
+DKRect DKWindow::WindowRect() const
 {
 	return windowRect;
 }
 
-DKRect DKWindow::ContentRect(void) const
+DKRect DKWindow::ContentRect() const
 {
 	return contentRect;
 }
 
-double DKWindow::ContentScaleFactor(void) const
+double DKWindow::ContentScaleFactor() const
 {
 	if (impl)
 		return impl->ContentScaleFactor();
@@ -501,7 +501,7 @@ void DKWindow::SetTitle(const DKString& title)
 		impl->SetTitle(title);
 }
 
-DKString DKWindow::Title(void) const
+DKString DKWindow::Title() const
 {
 	if (impl)
 		return impl->Title();
@@ -553,14 +553,14 @@ void DKWindow::RemoveEventHandler(EventHandlerContext context)
 	}
 }
 
-bool DKWindow::IsValid(void) const
+bool DKWindow::IsValid() const
 {
 	if (impl)
 		return impl->IsValid();
 	return false;
 }
 
-void* DKWindow::PlatformHandle(void) const
+void* DKWindow::PlatformHandle() const
 {
 	if (impl)
 		return impl->PlatformHandle();

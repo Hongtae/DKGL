@@ -16,7 +16,7 @@ namespace DKFramework
 	class DKGL_API DKVector4
 	{
 	public:
-		DKVector4(void);
+		DKVector4();
 		DKVector4(float x_, float y_, float z_, float w_);
 
 		static DKVector4 Cross(const DKVector4&v1, const DKVector4& v2, const DKVector4& v3);///< cross product
@@ -27,7 +27,7 @@ namespace DKFramework
 
 		DKVector4 operator + (const DKVector4& v) const;
 		DKVector4 operator - (const DKVector4& v) const;
-		DKVector4 operator - (void) const;
+		DKVector4 operator - () const;
 		DKVector4 operator * (float f) const;
 		DKVector4 operator * (const DKVector4& v) const;
 		DKVector4 operator * (const DKMatrix4& m) const;
@@ -42,14 +42,14 @@ namespace DKFramework
 		DKVector4& operator /= (float f);
 		DKVector4& operator /= (const DKVector4& v);
 
-		float Length(void) const;
-		float LengthSq(void) const; ///< length^2
+		float Length() const;
+		float LengthSq() const; ///< length^2
 
 		DKVector4& Transform(const DKMatrix4& m);
-		DKVector4& Normalize(void);
+		DKVector4& Normalize();
 
-		operator float* (void)				{return val;}
-		operator const float* (void) const	{return val;}
+		operator float* ()				{return val;}
+		operator const float* () const	{return val;}
 
 		union
 		{

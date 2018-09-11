@@ -18,13 +18,13 @@ namespace DKFoundation
 	/// @tparam T result type
 	template <typename T> struct DKInvocation : public DKOperation
 	{
-		virtual ~DKInvocation(void) {}
+		virtual ~DKInvocation() {}
 
-		void Perform(void) const {Invoke();}		
-		virtual T Invoke(void) const = 0;
+		void Perform() const {Invoke();}		
+		virtual T Invoke() const = 0;
 
 		/// test type T is convertible to U
-		template <typename U> constexpr static bool CanAcceptResultTypeAs(void)
+		template <typename U> constexpr static bool CanAcceptResultTypeAs()
 		{
 			return DKTypeConversionTest<T, U>();
 		};

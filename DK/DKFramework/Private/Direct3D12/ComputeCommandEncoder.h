@@ -23,11 +23,11 @@ namespace DKFramework
 			{
 			public:
 				ComputeCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*);
-				~ComputeCommandEncoder(void);
+				~ComputeCommandEncoder();
 
 
-				void EndEncoding(void) override;
-				DKCommandBuffer* Buffer(void) override;
+				void EndEncoding() override;
+				DKCommandBuffer* Buffer() override;
 
 				ComPtr<ID3D12GraphicsCommandList> commandList;
 				DKObject<CommandBuffer> commandBuffer;

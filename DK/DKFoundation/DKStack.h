@@ -23,23 +23,23 @@ namespace DKFoundation
 		typedef ALLOC					Allocator;
 		typedef DKQueue<VALUE, LOCK, ALLOC>	Container;
 
-		constexpr static size_t NodeSize(void)	{ return Container::NodeSize(); }
+		constexpr static size_t NodeSize()	{ return Container::NodeSize(); }
 
-		DKStack(void) {}
-		~DKStack(void) {}
+		DKStack() {}
+		~DKStack() {}
 		
 		void Push(const VALUE& v)		{container.PushFront(v);}
 		void Push(VALUE&& v)			{container.PushFront(static_cast<VALUE&&>(v)); }
 		void Pop(VALUE& v)				{container.PopFront(v);}
-		void Pop(void)					{container.PopFront();}
+		void Pop()					{container.PopFront();}
 
-		VALUE& Top(void)				{return container.Front();}
-		const VALUE& Top(void) const	{return container.Front();}
+		VALUE& Top()				{return container.Front();}
+		const VALUE& Top() const	{return container.Front();}
 		
-		bool IsEmpty(void) const		{return container.IsEmpty();}
-		void Clear(void)				{container.Clear();}
+		bool IsEmpty() const		{return container.IsEmpty();}
+		void Clear()				{container.Clear();}
 		
-		size_t Count(void)				{return container.Count();}
+		size_t Count()				{return container.Count();}
 
 		/// EnumerateForward / EnumerateBackward: enumerate all items.
 		/// You cannot insert, remove items while enumerating. (container is read-only)

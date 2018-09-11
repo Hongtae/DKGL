@@ -23,22 +23,22 @@ namespace DKFramework
 	{
 	public:
 		DKScreen(DKWindow*, DKFrame*);
-		~DKScreen(void);
+		~DKScreen();
 
 		/// Create rendering thread and start event-loop
-		void Start(void);
-		void Pause(void);
-		void Resume(void);
-		void Stop(void);
+		void Start();
+		void Pause();
+		void Resume();
+		void Stop();
 
-		DKWindow* Window(void)		{ return window; }
-		DKFrame* RootFrame(void)	{ return rootFrame; }
+		DKWindow* Window()		{ return window; }
+		DKFrame* RootFrame()	{ return rootFrame; }
 
-		DKCommandQueue* CommandQueue(void) { return commandQueue;} ///< main command queue
-		DKEventLoop* EventLoop(void) {return eventLoop;} ///< event loop for render thread
+		DKCommandQueue* CommandQueue() { return commandQueue;} ///< main command queue
+		DKEventLoop* EventLoop() {return eventLoop;} ///< event loop for render thread
 
 	private:
-		void DrawFrame(void);
+		void DrawFrame();
 		static void EventLoopIdle(DKScreen*, DKEventLoop*);
 
 		DKObject<DKEventLoop> eventLoop;

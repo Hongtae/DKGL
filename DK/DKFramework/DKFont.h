@@ -33,8 +33,8 @@ namespace DKFramework
 			DKRect									rect;
 		};
 
-		DKFont(void);
-		~DKFont(void);
+		DKFont();
+		~DKFont();
 
 		/// create object from file (path)
 		static DKObject<DKFont> Create(const DKString& file);
@@ -50,30 +50,30 @@ namespace DKFramework
 		/// text pixel-width from baseline. not includes outline.
 		float LineWidth(const DKString& str) const;
 		/// pixel-height from baseline. not includes outline.
-		float LineHeight(void) const;
+		float LineHeight() const;
 
-		float Baseline(void) const;	///< baseline offset (in pixel unit)
+		float Baseline() const;	///< baseline offset (in pixel unit)
 		DKRect Bounds(const DKString& str) const; ///< text bounding box.
 		DKPoint	KernAdvance(wchar_t left, wchar_t right) const; ///< calculate kern advance between characters.
 
-		int				PointSize(void) const							{ return pointSize; }
-		const DKPoint&	Resolution(void) const							{ return resolution; }
-		float			Outline(void) const								{ return outline; }
-		float			Embolden(void) const							{ return embolden; }
-		bool			KerningEnabled(void) const						{ return kerningEnabled; }
-		bool			ForceBitmap(void) const							{ return forceBitmap; }
+		int				PointSize() const							{ return pointSize; }
+		const DKPoint&	Resolution() const							{ return resolution; }
+		float			Outline() const								{ return outline; }
+		float			Embolden() const							{ return embolden; }
+		bool			KerningEnabled() const						{ return kerningEnabled; }
+		bool			ForceBitmap() const							{ return forceBitmap; }
 
-		DKString FamilyName(void) const;
-		DKString StyleName(void) const;
+		DKString FamilyName() const;
+		DKString StyleName() const;
 
 		/// point, embolden is point-size, outline is pixel-size.
 		bool SetStyle(int point, float embolden = 0, float outline = 0, DKPoint dpi = DKPoint(72,72), bool enableKerning = true, bool forceBitmap = false);
-		bool IsValid(void) const;
+		bool IsValid() const;
 
-		float Height(void) const;	///< font pixel-height (includes outline)
-		float Width(void) const;	///< font pixel-width (includes outline)
+		float Height() const;	///< font pixel-height (includes outline)
+		float Width() const;	///< font pixel-width (includes outline)
 
-		void ClearCache(void);		///< clear glyph textures.
+		void ClearCache();		///< clear glyph textures.
 
 	private:
 		float		outline;			// 0 for no-outline

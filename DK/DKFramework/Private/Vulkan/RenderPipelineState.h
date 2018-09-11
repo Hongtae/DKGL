@@ -19,9 +19,9 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		RenderPipelineState(DKGraphicsDevice*, VkPipeline, VkPipelineLayout, VkRenderPass);
-		~RenderPipelineState(void);
+		~RenderPipelineState();
 
-		DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device() override { return device; }
 
 		DKObject<DKGraphicsDevice> device;
 		VkPipeline pipeline;

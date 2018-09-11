@@ -27,7 +27,7 @@ RenderCommandEncoder::Resources::Resources(CommandBuffer* b)
 {
 }
 
-RenderCommandEncoder::Resources::~Resources(void)
+RenderCommandEncoder::Resources::~Resources()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(cb->Queue()->Device());
 	VkDevice device = dev->device;
@@ -254,7 +254,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	vkCmdSetScissor(resources->commandBuffer, 0, 1, &scissorRect);
 }
 
-RenderCommandEncoder::~RenderCommandEncoder(void)
+RenderCommandEncoder::~RenderCommandEncoder()
 {
 	resources = NULL;
 }
@@ -274,7 +274,7 @@ void RenderCommandEncoder::AddSignalSemaphore(VkSemaphore semaphore)
 		signalSemaphores.Insert(semaphore);
 }
 
-void RenderCommandEncoder::EndEncoding(void)
+void RenderCommandEncoder::EndEncoding()
 {
 	vkCmdEndRenderPass(resources->commandBuffer);
 	VkResult err = vkEndCommandBuffer(resources->commandBuffer);

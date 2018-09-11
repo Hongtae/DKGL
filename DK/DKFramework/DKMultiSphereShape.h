@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKMultiSphereShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -18,9 +18,9 @@ namespace DKFramework
 	public:
 		DKMultiSphereShape(const DKSphere* spheres, size_t numSpheres);
 		DKMultiSphereShape(const DKVector3* centers, const float* radii, size_t numSpheres);
-		~DKMultiSphereShape(void);
+		~DKMultiSphereShape();
 
-		size_t NumberOfSpheres(void) const;
+		size_t NumberOfSpheres() const;
 		DKVector3 CenterOfSphereAtIndex(unsigned int index) const;
 		float RadiusOfSphereAtIndex(unsigned int index) const;
 	};

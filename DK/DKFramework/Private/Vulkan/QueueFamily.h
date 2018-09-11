@@ -18,14 +18,14 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		QueueFamily(VkPhysicalDevice physicalDevice, VkDevice device, uint32_t familyIndex, uint32_t queueCount, const VkQueueFamilyProperties& prop, bool supportPresentation);
-		~QueueFamily(void);
+		~QueueFamily();
 
 		DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*);
 		void RecycleQueue(VkQueue);
 
 		// if presentation not supported, should check on the fly!
-		bool IsSupportPresentation(void) const { return supportPresentation; }
-		uint32_t FamilyIndex(void) const { return familyIndex; }
+		bool IsSupportPresentation() const { return supportPresentation; }
+		uint32_t FamilyIndex() const { return familyIndex; }
 
 		bool supportPresentation;
 		VkQueueFamilyProperties properties;

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKRationalNumber.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -19,17 +19,17 @@ namespace DKFoundation
 	public:
 		typedef int64_t Integer;
 
-		DKRationalNumber(void);
+		DKRationalNumber();
 		DKRationalNumber(Integer num, Integer den = 1);
 
-		bool IsInfinity(void) const;
-		bool IsPositiveInfinity(void) const;
-		bool IsNegativeInfinity(void) const;
-		bool IsIndeterminate(void) const;
-		bool IsNumeric(void) const;
+		bool IsInfinity() const;
+		bool IsPositiveInfinity() const;
+		bool IsNegativeInfinity() const;
+		bool IsIndeterminate() const;
+		bool IsNumeric() const;
 
-		Integer Numerator(void) const;
-		Integer Denominator(void) const;
+		Integer Numerator() const;
+		Integer Denominator() const;
 
 		DKRationalNumber operator + (const DKRationalNumber&) const;
 		DKRationalNumber operator - (const DKRationalNumber&) const;
@@ -49,11 +49,11 @@ namespace DKFoundation
 		bool operator > (const DKRationalNumber&) const;
 		bool operator >= (const DKRationalNumber&) const;
 
-		DKRationalNumber& Inverse(void);
-		double RealNumber(void) const;
+		DKRationalNumber& Inverse();
+		double RealNumber() const;
 
 	private:
-		void Normalize(void);
+		void Normalize();
 		Integer numerator;
 		Integer denominator;
 	};

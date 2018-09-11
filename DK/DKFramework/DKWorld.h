@@ -22,8 +22,8 @@ namespace DKFramework
 	class DKGL_API DKWorld
 	{
 	public:
-		DKWorld(void);
-		virtual ~DKWorld(void);
+		DKWorld();
+		virtual ~DKWorld();
 
 #if 0
 		struct DrawCallback
@@ -31,7 +31,7 @@ namespace DKFramework
 			using VertexArray = DKArray<DKRenderer::Vertex3DColored>;
 			using MeshArray = DKArray<const DKMesh*>;
 
-			virtual ~DrawCallback(void) {}
+			virtual ~DrawCallback() {}
 			virtual void DrawTriangles(VertexArray&, const DKMatrix4&) = 0;
 			virtual void DrawLines(VertexArray&, const DKMatrix4&) = 0;
 			virtual void DrawPoints(VertexArray&, const DKMatrix4&) = 0;
@@ -70,13 +70,13 @@ namespace DKFramework
 
 		bool AddObject(DKModel*);
 		void RemoveObject(DKModel*);
-		virtual void RemoveAllObjects(void);
+		virtual void RemoveAllObjects();
 
 //		virtual void SetSceneState(const DKCamera& cam, DKSceneState& state) const;
 
 		class CollisionWorldContext;
 
-		size_t NumberOfSceneObjects(void) const;
+		size_t NumberOfSceneObjects() const;
 		typedef DKFunctionSignature<bool(const DKModel*)> BEnumerator;
 		typedef DKFunctionSignature<void(const DKModel*)> VEnumerator;
 		void Enumerate(BEnumerator* e) const;
@@ -90,14 +90,14 @@ namespace DKFramework
 //		DKSet<DKMesh*> meshes;
 
 		void UpdateObjectKinematics(double tickDelta, DKTimeTick tick);
-		void UpdateObjectSceneStates(void);
+		void UpdateObjectSceneStates();
 
 		virtual bool AddSingleObject(DKModel* obj);
 		virtual void RemoveSingleObject(DKModel* obj);
 
 		/// picking out nodes to protect between update sequence.
-		void PrepareUpdateNode(void);
-		void CleanupUpdateNode(void);
+		void PrepareUpdateNode();
+		void CleanupUpdateNode();
 
 	private:
 		DKSpinLock lock;

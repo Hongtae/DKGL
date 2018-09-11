@@ -21,7 +21,7 @@ namespace DKFoundation
 	template <class TYPE> class DKSingleton
 	{
 	public:
-		static TYPE& Instance(void)
+		static TYPE& Instance()
 		{
 			static TYPE* instancePtr = NULL;
 			if (instancePtr == NULL)
@@ -38,8 +38,8 @@ namespace DKFoundation
 			return *instancePtr;
 		}
 	protected:
-		DKSingleton(void) {}
-		virtual ~DKSingleton(void) {}
+		DKSingleton() {}
+		virtual ~DKSingleton() {}
 	private:
 		DKSingleton(const DKSingleton&) = delete;
 		DKSingleton& operator = (const DKSingleton&) = delete;

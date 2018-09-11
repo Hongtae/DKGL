@@ -23,11 +23,11 @@ namespace DKFramework
 			{
 			public:
 				BlitCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*);
-				~BlitCommandEncoder(void);
+				~BlitCommandEncoder();
 
 
-				void EndEncoding(void) override;
-				DKCommandBuffer* Buffer(void) override;
+				void EndEncoding() override;
+				DKCommandBuffer* Buffer() override;
 
 				ComPtr<ID3D12GraphicsCommandList> commandList;
 				DKObject<CommandBuffer> commandBuffer;

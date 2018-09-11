@@ -20,7 +20,7 @@ namespace DKFoundation
 		{
 		}
 	protected:
-		T Invoke(void) const
+		T Invoke() const
 		{
 			return value;
 		}
@@ -34,7 +34,7 @@ namespace DKFoundation
 		{
 		}
 	protected:
-		T* Invoke(void) const
+		T* Invoke() const
 		{
 			return const_cast<T*>((const T*)value);
 		}

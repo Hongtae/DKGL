@@ -61,12 +61,12 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func)
 	}
 }
 
-ShaderFunction::~ShaderFunction(void)
+ShaderFunction::~ShaderFunction()
 {
     [function release];
 }
 
-DKString ShaderFunction::FunctionName(void) const 
+DKString ShaderFunction::FunctionName() const 
 {
 	DKString name;
 	@autoreleasepool

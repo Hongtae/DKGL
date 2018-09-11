@@ -139,12 +139,12 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-DKAnimation::DKAnimation(void)
+DKAnimation::DKAnimation()
 	: duration(0)
 {
 }
 
-DKAnimation::~DKAnimation(void)
+DKAnimation::~DKAnimation()
 {
 	RemoveAllNodes();
 }
@@ -173,7 +173,7 @@ void DKAnimation::SetDuration(float d)
 		duration = 0;
 }
 
-float DKAnimation::Duration(void) const
+float DKAnimation::Duration() const
 {
 	return duration;
 }
@@ -322,7 +322,7 @@ void DKAnimation::RemoveNode(const DKString& name)
 	nodeIndexMap.Remove(name);
 }
 
-void DKAnimation::RemoveAllNodes(void)
+void DKAnimation::RemoveAllNodes()
 {
 	for (size_t i = 0; i < nodes.Count(); ++i)
 	{
@@ -333,7 +333,7 @@ void DKAnimation::RemoveAllNodes(void)
 	nodeIndexMap.Clear();
 }
 
-size_t DKAnimation::NodeCount(void) const
+size_t DKAnimation::NodeCount() const
 {
 	return nodes.Count();
 }
@@ -549,7 +549,7 @@ bool DKAnimation::ResampleNode(const Node& source, unsigned int frames, Sampling
 	return true;
 }
 
-DKObject<DKAnimationController> DKAnimation::CreateLoopController(void)
+DKObject<DKAnimationController> DKAnimation::CreateLoopController()
 {
 	struct Controller : public DKAnimationController
 	{
@@ -573,22 +573,22 @@ DKObject<DKAnimationController> DKAnimation::CreateLoopController(void)
 				return animation->GetNodeTransform(key, frameTime, out);
 			return false;
 		}
-		bool IsPlaying(void) const
+		bool IsPlaying() const
 		{
 			return playing;
 		}
-		float Duration(void) const
+		float Duration() const
 		{
 			if (animation)
 				return animation->Duration();
 			return 0.0f;
 		}
-		void Play(void)
+		void Play()
 		{
 			if (!playing && animation)
 				playing = true;
 		}
-		void Stop(void)
+		void Stop()
 		{
 			playing = false;
 		}
@@ -602,7 +602,7 @@ DKObject<DKAnimationController> DKAnimation::CreateLoopController(void)
 	return con.SafeCast<DKAnimationController>();
 }
 
-DKObject<DKSerializer> DKAnimation::Serializer(void)
+DKObject<DKSerializer> DKAnimation::Serializer()
 {
 	class LocalSerializer : public DKSerializer
 	{

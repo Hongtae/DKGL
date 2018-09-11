@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKSoftBody.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -11,13 +11,13 @@
 using namespace DKFramework;
 
 
-DKSoftBody::DKSoftBody(void)
+DKSoftBody::DKSoftBody()
 : DKCollisionObject(ObjectType::SoftBody, new btSoftBody(nullptr))
 {
 	DKERROR_THROW("Not Implemented");
 }
 
-DKSoftBody::~DKSoftBody(void)
+DKSoftBody::~DKSoftBody()
 {
 }
 
@@ -27,7 +27,7 @@ DKObject<DKModel> DKSoftBody::Clone(UUIDObjectMap&) const
 	return NULL;
 }
 
-DKObject<DKSerializer> DKSoftBody::Serializer(void)
+DKObject<DKSerializer> DKSoftBody::Serializer()
 {
 	DKERROR_THROW("Not Implemented");
 	return NULL;

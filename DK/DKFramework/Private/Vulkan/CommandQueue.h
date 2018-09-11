@@ -21,17 +21,17 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		CommandQueue(DKGraphicsDevice*, QueueFamily*, VkQueue);
-		~CommandQueue(void);
+		~CommandQueue();
 
-		DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
+		DKObject<DKCommandBuffer> CreateCommandBuffer() override;
 		DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 
 		bool Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKOperation* callback);
 
-		bool WaitIdle(void);
+		bool WaitIdle();
 
-		uint32_t Type(void) const override;
-		DKGraphicsDevice* Device(void) override { return device; }
+		uint32_t Type() const override;
+		DKGraphicsDevice* Device() override { return device; }
 
 		QueueFamily* family;
 		VkQueue queue;

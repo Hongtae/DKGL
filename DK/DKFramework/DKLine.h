@@ -18,15 +18,15 @@ namespace DKFramework
 	class DKGL_API DKLine
 	{
 	public:
-		DKLine(void);
+		DKLine();
 		DKLine(const DKVector3& b, const DKVector3& e);
 
 		DKLine operator * (const DKMatrix4& m) const;
 		DKLine operator * (const DKQuaternion& q) const;
 
-		DKVector3 Direction(void) const;
-		float Length(void) const;
-		float LengthSq(void) const;
+		DKVector3 Direction() const;
+		float Length() const;
+		float LengthSq() const;
 		bool IsPointInside(const DKVector3& pos) const;
 
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, float epsilon = 0.000001f) const;

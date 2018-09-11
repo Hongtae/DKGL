@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKBoxShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -20,12 +20,12 @@ namespace DKFramework
 	public:
 		DKBoxShape(float u, float v, float w);
 		DKBoxShape(const DKVector3& halfExtents);
-		~DKBoxShape(void);
+		~DKBoxShape();
 
-		DKVector3 HalfExtents(void) const;
-		DKVector3 HalfExtentsWithMargin(void) const;
+		DKVector3 HalfExtents() const;
+		DKVector3 HalfExtentsWithMargin() const;
 
-		DKVector3 ScaledHalfExtents(void) const;
-		DKVector3 ScaledHalfExtentsWithMargin(void) const;
+		DKVector3 ScaledHalfExtents() const;
+		DKVector3 ScaledHalfExtentsWithMargin() const;
 	};
 }

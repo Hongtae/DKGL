@@ -23,7 +23,7 @@
 
 namespace DKFramework::Private::Metal
 {
-	DKGraphicsDeviceInterface* CreateInterface(void)
+	DKGraphicsDeviceInterface* CreateInterface()
 	{
 		return new GraphicsDevice();
 	}
@@ -33,7 +33,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
 
-GraphicsDevice::GraphicsDevice(void)
+GraphicsDevice::GraphicsDevice()
 : device(nil)
 {
 	@autoreleasepool {
@@ -99,12 +99,12 @@ GraphicsDevice::GraphicsDevice(void)
 	}
 }
 
-GraphicsDevice::~GraphicsDevice(void)
+GraphicsDevice::~GraphicsDevice()
 {
 	[device autorelease];
 }
 
-DKString GraphicsDevice::DeviceName(void) const
+DKString GraphicsDevice::DeviceName() const
 {
 	return DKString( device.name.UTF8String );
 }

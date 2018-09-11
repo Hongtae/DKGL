@@ -26,16 +26,16 @@ Application::Application(DKApplication* app)
 {
 }
 
-Application::~Application(void)
+Application::~Application()
 {
 }
 
-DKEventLoop* Application::EventLoop(void)
+DKEventLoop* Application::EventLoop()
 {
 	return &mainLoop;
 }
 
-DKLogger* Application::DefaultLogger(void)
+DKLogger* Application::DefaultLogger()
 {
 	struct Logger : public DKLogger
 	{

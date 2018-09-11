@@ -37,12 +37,12 @@ namespace DKFoundation
 
 		typedef DKArrayRBIterator<DKBitArray, bool>				RBIterator;						///<  implementation for range-based-for-loop.
 		typedef DKArrayRBIterator<const DKBitArray, bool>		ConstRBIterator;				///<  implementation for range-based-for-loop.
-		RBIterator begin(void)				{ return RBIterator(*this, 0); }					///<  implementation for range-based-for-loop.
-		ConstRBIterator begin(void) const	{ return ConstRBIterator(*this, 0); }				///<  implementation for range-based-for-loop.
-		RBIterator end(void)				{ return RBIterator(*this, this->Count()); }		///<  implementation for range-based-for-loop.
-		ConstRBIterator end(void) const		{ return ConstRBIterator(*this, this->Count()); }	///<  implementation for range-based-for-loop.
+		RBIterator begin()				{ return RBIterator(*this, 0); }					///<  implementation for range-based-for-loop.
+		ConstRBIterator begin() const	{ return ConstRBIterator(*this, 0); }				///<  implementation for range-based-for-loop.
+		RBIterator end()				{ return RBIterator(*this, this->Count()); }		///<  implementation for range-based-for-loop.
+		ConstRBIterator end() const		{ return ConstRBIterator(*this, this->Count()); }	///<  implementation for range-based-for-loop.
 
-		DKBitArray(void) : data(NULL), count(0), capacity(0)
+		DKBitArray() : data(NULL), count(0), capacity(0)
 		{
 		}
 		DKBitArray(const bool* values, size_t count) : data(NULL), count(0), capacity(0)
@@ -75,12 +75,12 @@ namespace DKFoundation
 				}
 			}
 		}
-		~DKBitArray(void)
+		~DKBitArray()
 		{
 			if (data)
 				Allocator::Free(data);
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return count == 0;
@@ -238,22 +238,22 @@ namespace DKFoundation
 			return count;
 		}
 
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			count = 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return capacity;
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			size_t countBytes = UnitLengthForBits(count);

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKColor.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -37,7 +37,7 @@ namespace DKFramework
 			uint32_t value;
 		};
 
-		DKColor(void)
+		DKColor()
 			: r(0.0f), g(0.0f), b(0.0f), a(1.0f)
 		{
 		}
@@ -72,7 +72,7 @@ namespace DKFramework
 		{
 		}
 
-		RGBA32 RGBA32Value(void) const
+		RGBA32 RGBA32Value() const
 		{
 			RGBA32 val = {
 				static_cast<uint8_t>(Clamp<int>(static_cast<int>(r * 255.0f), 0, 0xff)),
@@ -83,7 +83,7 @@ namespace DKFramework
 			return val;
 		}
 
-		ARGB32 ARGB32Value(void) const
+		ARGB32 ARGB32Value() const
 		{
 			ARGB32 val = {
 				static_cast<uint8_t>(Clamp<int>(static_cast<int>(a * 255.0f), 0, 0xff)),
@@ -209,11 +209,11 @@ namespace DKFramework
 			float inv = 1.0f / f;
 			return DKColor(r * inv, g * inv, b * inv, a * inv);
 		}
-		DKVector3 Vector3(void) const
+		DKVector3 Vector3() const
 		{
 			return DKVector3(r, g, b);
 		}
-		DKVector4 Vector4(void) const
+		DKVector4 Vector4() const
 		{
 			return DKVector4(r, g, b, a);
 		}

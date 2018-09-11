@@ -56,7 +56,7 @@ namespace DKFoundation
 			DKArray<DKError::StackFrame> callstack;
 			DKString description;
 			unsigned int code;
-			void Dump(void)
+			void Dump()
 			{
 				DKError::DumpUnexpectedError(this);
 			}
@@ -71,7 +71,7 @@ namespace DKFoundation
 			DKSpinLock critFuncLock;
 			DKObject<DKCriticalErrorHandler> criticalErrorFunc = NULL;
 #endif
-			DKObject<DKCriticalErrorHandler> GetCriticalErrorHandler(void)
+			DKObject<DKCriticalErrorHandler> GetCriticalErrorHandler()
 			{
 #if DKERROR_HANDLE_CRITICAL_ERROR
 				DKCriticalSection<DKSpinLock> guard(critFuncLock);
@@ -88,17 +88,17 @@ namespace DKFoundation
 				struct CriticalSection
 				{
 					CRITICAL_SECTION cs;
-					CriticalSection(void) { ::InitializeCriticalSection(&cs); }
-					static CRITICAL_SECTION* GetCS(void)
+					CriticalSection() { ::InitializeCriticalSection(&cs); }
+					static CRITICAL_SECTION* GetCS()
 					{
 						static CriticalSection cs;
 						return &cs.cs;
 					}
-					static void Enter(void) { ::EnterCriticalSection(GetCS()); }
-					static void Leave(void) { ::LeaveCriticalSection(GetCS()); }
+					static void Enter() { ::EnterCriticalSection(GetCS()); }
+					static void Leave() { ::LeaveCriticalSection(GetCS()); }
 				};
-				ScopeDbgHelpDllLock(void) { CriticalSection::Enter(); }
-				~ScopeDbgHelpDllLock(void) { CriticalSection::Leave(); }
+				ScopeDbgHelpDllLock() { CriticalSection::Enter(); }
+				~ScopeDbgHelpDllLock() { CriticalSection::Leave(); }
 			};
 
 			struct DbgHelpDLL
@@ -238,7 +238,7 @@ namespace DKFoundation
 				return ret;
 			}
 
-			DbgHelpDLL* GetDbgHelpDLL(void)
+			DbgHelpDLL* GetDbgHelpDLL()
 			{
 				ScopeDbgHelpDllLock guard;
 
@@ -600,7 +600,7 @@ namespace DKFoundation
 		}
 	}	// namespace Private
 
-	bool DKGL_API DKIsDebuggerPresent(void)
+	bool DKGL_API DKIsDebuggerPresent()
 	{
 #ifdef _WIN32
 		return ::IsDebuggerPresent() != FALSE;
@@ -623,7 +623,7 @@ namespace DKFoundation
 		return false;
 #endif
 	}
-	bool DKGL_API DKIsDebugBuild(void)
+	bool DKGL_API DKIsDebugBuild()
 	{
 #ifdef DKGL_DEBUG_ENABLED
 		return true;
@@ -648,7 +648,7 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKError::DKError(void)
+DKError::DKError()
 	: errorCode(0)
 	, functionName(L"")
 	, fileName(L"")
@@ -731,7 +731,7 @@ DKError::DKError(const DKError& e)
 	}
 }
 
-DKError::~DKError(void)
+DKError::~DKError()
 {
 	delete[] stackFrames;
 }
@@ -787,32 +787,32 @@ DKError& DKError::operator = (const DKError& e)
 	return *this;
 }
 
-int DKError::Code(void) const
+int DKError::Code() const
 {
 	return errorCode;
 }
 
-const DKString& DKError::Function(void) const
+const DKString& DKError::Function() const
 {
 	return functionName;
 }
 
-const DKString& DKError::File(void) const
+const DKString& DKError::File() const
 {
 	return fileName;
 }
 
-int DKError::Line(void) const
+int DKError::Line() const
 {
 	return lineNo;
 }
 
-const DKString& DKError::Description(void) const
+const DKString& DKError::Description() const
 {
 	return description;
 }
 
-size_t DKError::NumberOfStackFrames(void) const
+size_t DKError::NumberOfStackFrames() const
 {
 	return numFrames;
 }
@@ -958,7 +958,7 @@ void DKError::RaiseException(const DKError& e)
 	throw err;
 }
 
-void DKError::PrintDescription(void) const
+void DKError::PrintDescription() const
 {
 	PrintDescription(DKFunction((void (*)(const DKString&))&DKLog));
 }
@@ -981,7 +981,7 @@ void DKError::PrintDescription(const StringOutput* pfn) const
 		pfn->Invoke(DKString::Format("Error description: %ls\n", (const wchar_t*)description));
 }
 
-void DKError::PrintStackFrames(void) const
+void DKError::PrintStackFrames() const
 {
 	PrintStackFrames(DKFunction((void (*)(const DKString&))&DKLog));
 }
@@ -1025,7 +1025,7 @@ void DKError::PrintStackFrames(const StringOutput* pfn) const
 	}
 }
 
-void DKError::PrintDescriptionWithStackFrames(void) const
+void DKError::PrintDescriptionWithStackFrames() const
 {
 	PrintDescriptionWithStackFrames(DKFunction([](const DKString& str) {DKLogE(str);}));
 }
@@ -1090,7 +1090,7 @@ void DKError::WriteToDescriptor(const Descriptor* d) const
 	}
 }
 
-void DKError::WriteToDefaultDescriptor(void) const
+void DKError::WriteToDefaultDescriptor() const
 {
 	Private::fileLock.Lock();
 	DKObject<Descriptor> d = Private::defaultDescriptor;

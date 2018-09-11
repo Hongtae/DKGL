@@ -19,7 +19,7 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		Texture(DKGraphicsDevice*, VkImage, VkImageView, const VkImageCreateInfo*);
-		~Texture(void);
+		~Texture();
 
 		VkImage					image;
 		VkImageType				imageType;
@@ -35,29 +35,29 @@ namespace DKFramework::Private::Vulkan
 
 		DKObject<DKGraphicsDevice> device;
 
-		uint32_t Width(void) const override
+		uint32_t Width() const override
 		{
 			DKASSERT_DEBUG(extent.width > 0);
 			return extent.width;
 		}
-		uint32_t Height(void) const override
+		uint32_t Height() const override
 		{
 			DKASSERT_DEBUG(extent.height > 0);
 			return extent.height;
 		}
-		uint32_t Depth(void) const override
+		uint32_t Depth() const override
 		{
 			DKASSERT_DEBUG(extent.depth > 0);
 			return extent.depth;
 		}
 
-		uint32_t MipmapCount(void) const override
+		uint32_t MipmapCount() const override
 		{
 			DKASSERT_DEBUG(mipLevels > 0);
 			return mipLevels;
 		}
 
-		DKTexture::Type TextureType(void) const override
+		DKTexture::Type TextureType() const override
 		{
 			switch (imageType)
 			{
@@ -71,7 +71,7 @@ namespace DKFramework::Private::Vulkan
 			return DKTexture::TypeUnknown;
 		}
 
-		DKPixelFormat PixelFormat(void) const override
+		DKPixelFormat PixelFormat() const override
 		{
 			DKASSERT_DEBUG(format != VK_FORMAT_UNDEFINED);
 			return PixelFormat::To(format);

@@ -24,13 +24,13 @@
 
 using namespace DKFoundation;
 
-DKDirectory::DKDirectory(void)
+DKDirectory::DKDirectory()
 : currentPath(L"")
 , reloadRequired(true)
 {
 }
 
-DKDirectory::~DKDirectory(void)
+DKDirectory::~DKDirectory()
 {
 }
 
@@ -92,7 +92,7 @@ bool DKDirectory::IsDirExist(const DKString& path)
 	return false;
 }
 
-const DKString& DKDirectory::AbsolutePath(void) const
+const DKString& DKDirectory::AbsolutePath() const
 {
 	return currentPath;
 }
@@ -281,7 +281,7 @@ DKObject<DKDirectory> DKDirectory::CreateDir(const DKString& name) const
 	return NULL;
 }
 
-DKObject<DKDirectory> DKDirectory::OpenParent(void) const
+DKObject<DKDirectory> DKDirectory::OpenParent() const
 {
 	if (IsValid())
 	{
@@ -297,12 +297,12 @@ DKObject<DKDirectory> DKDirectory::OpenParent(void) const
 	return NULL;
 }
 
-bool DKDirectory::IsValid(void) const
+bool DKDirectory::IsValid() const
 {
 	return (this && this->IsDirExist(currentPath));
 }
 
-bool DKDirectory::IsReadable(void) const
+bool DKDirectory::IsReadable() const
 {
 	if (currentPath.Length() == 0)
 		return false;
@@ -320,7 +320,7 @@ bool DKDirectory::IsReadable(void) const
 	return false;
 }
 
-bool DKDirectory::IsWritable(void) const
+bool DKDirectory::IsWritable() const
 {
 	if (currentPath.Length() == 0)
 		return false;
@@ -338,7 +338,7 @@ bool DKDirectory::IsWritable(void) const
 	return false;
 }
 
-bool DKDirectory::Reload(void) const
+bool DKDirectory::Reload() const
 {
 	if (currentPath.Length() == 0)
 		return false;
@@ -453,13 +453,13 @@ bool DKDirectory::Reload(void) const
 	return true;
 }
 
-size_t DKDirectory::NumberOfFiles(void) const
+size_t DKDirectory::NumberOfFiles() const
 {
 	this->ReloadIfNeeded();
 	return files.Count();
 }
 
-size_t DKDirectory::NumberOfSubdirs(void) const
+size_t DKDirectory::NumberOfSubdirs() const
 {
 	this->ReloadIfNeeded();
 	return directories.Count();
@@ -507,7 +507,7 @@ bool DKDirectory::DeleteSubDir(const DKString& name) const
 	return false;
 }
 
-void DKDirectory::ReloadIfNeeded(void) const
+void DKDirectory::ReloadIfNeeded() const
 {
 	if (this->reloadRequired)
 		this->Reload();

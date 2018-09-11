@@ -16,14 +16,14 @@ namespace DKFoundation
 	class DKGL_API DKAllocator : public DKAllocatorChain
 	{
 	public:
-		virtual ~DKAllocator(void) noexcept(!DKGL_MEMORY_DEBUG);
-		virtual DKMemoryLocation Location(void) const = 0;
+		virtual ~DKAllocator() noexcept(!DKGL_MEMORY_DEBUG);
+		virtual DKMemoryLocation Location() const = 0;
 
 		/// Default allocator instance for given location
 		static DKAllocator& DefaultAllocator(DKMemoryLocation loc = DKMemoryLocationDefault);
 
 	protected:
-		DKAllocator(void);
+		DKAllocator();
 
 	private:
 		DKAllocator(const DKAllocator&) = delete;

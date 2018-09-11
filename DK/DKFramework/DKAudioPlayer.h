@@ -28,8 +28,8 @@ namespace DKFramework
 		
 		typedef DKAudioSource::AudioState AudioState;
 
-		DKAudioPlayer(void);
-		virtual ~DKAudioPlayer(void);
+		DKAudioPlayer();
+		virtual ~DKAudioPlayer();
 
 		/// create instance from data stream.
 		static DKObject<DKAudioPlayer> Create(DKStream* stream);
@@ -39,31 +39,31 @@ namespace DKFramework
 		/// @note stream should not be shared.
 		static DKObject<DKAudioPlayer> Create(DKAudioStream* stream);
 
-		int Channels(void) const;
-		int Bits(void) const;
-		int Frequency(void) const;
-		double Duration(void) const;
+		int Channels() const;
+		int Bits() const;
+		int Frequency() const;
+		double Duration() const;
 
-		double TimePosition(void) const;
-		AudioState State(void) const;
+		double TimePosition() const;
+		AudioState State() const;
 
-		DKAudioStream* Stream(void)							{return stream;}
-		const DKAudioSource* Source(void) const				{return source;}
+		DKAudioStream* Stream()							{return stream;}
+		const DKAudioSource* Source() const				{return source;}
 
 		void PlayLoop(double pos, int loops);
-		void Play(void);
-		void Stop(void);
-		void Pause(void);
+		void Play();
+		void Stop();
+		void Pause();
 
-		DKAudioSource* AudioSource(void);
-		const DKAudioSource* AudioSource(void) const;
+		DKAudioSource* AudioSource();
+		const DKAudioSource* AudioSource() const;
 
 		/// set filter.
 		void SetStreamFilter(StreamFilter* f);
 		
 		/// buffer control. (0 for minimum size, smaller buffer could be laggy)
 		void SetBufferingTime(double t);
-		double BufferingTime(void) const;
+		double BufferingTime() const;
 
 	private:
 		class AudioQueue;

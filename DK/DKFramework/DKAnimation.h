@@ -42,14 +42,14 @@ namespace DKFramework
 			const NodeType	type;
 
 			Node(NodeType t) : type(t) {}
-			virtual ~Node(void) {}
-			virtual bool IsEmpty(void) const = 0;
+			virtual ~Node() {}
+			virtual bool IsEmpty() const = 0;
 		};
 		struct SamplingNode : public Node
 		{
 			DKArray<DKTransformUnit>	frames;
-			SamplingNode(void) : Node(NodeTypeSampling) {}
-			bool IsEmpty(void) const			{return frames.IsEmpty();}
+			SamplingNode() : Node(NodeTypeSampling) {}
+			bool IsEmpty() const			{return frames.IsEmpty();}
 		};
 		struct KeyframeNode : public Node
 		{
@@ -66,8 +66,8 @@ namespace DKFramework
 			DKArray<RotationKey>		rotationKeys;
 			DKArray<TranslationKey>	translationKeys;
 
-			KeyframeNode(void) : Node(NodeTypeKeyframe) {}
-			bool IsEmpty(void) const		{return translationKeys.IsEmpty() && rotationKeys.IsEmpty() && scaleKeys.IsEmpty();}
+			KeyframeNode() : Node(NodeTypeKeyframe) {}
+			bool IsEmpty() const		{return translationKeys.IsEmpty() && rotationKeys.IsEmpty() && scaleKeys.IsEmpty();}
 		};
 		struct NodeSnapshot
 		{
@@ -76,8 +76,8 @@ namespace DKFramework
 		};
 #pragma pack(pop)
 
-		DKAnimation(void);
-		~DKAnimation(void);
+		DKAnimation();
+		~DKAnimation();
 
 		// Node insertion
 		bool		AddNode(const Node* node);
@@ -88,8 +88,8 @@ namespace DKFramework
 									const KeyframeNode::TranslationKey* translationKeys, size_t numTk);
 
 		void		RemoveNode(const DKString& name);
-		void		RemoveAllNodes(void);
-		size_t		NodeCount(void) const;
+		void		RemoveAllNodes();
+		size_t		NodeCount() const;
 		NodeIndex	IndexOfNode(const DKString& name) const;
 		const Node*	NodeAtIndex(NodeIndex index) const;
 
@@ -116,13 +116,13 @@ namespace DKFramework
 
 		/// set animation duration.
 		void	SetDuration(float d);
-		float	Duration(void) const;
+		float	Duration() const;
 
 		/// create loop controller. (useful to apply repeated animation to DKModel)
-		DKObject<DKAnimationController> CreateLoopController(void);
+		DKObject<DKAnimationController> CreateLoopController();
 
 		/// serializer object.
-		DKObject<DKSerializer> Serializer(void);
+		DKObject<DKSerializer> Serializer();
 	private:
 		float	duration;
 

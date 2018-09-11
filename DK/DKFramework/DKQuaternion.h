@@ -19,33 +19,33 @@ namespace DKFramework
 	class DKGL_API DKQuaternion
 	{
 	public:
-		DKQuaternion(void);
+		DKQuaternion();
 		DKQuaternion(const DKQuaternion& q);
 		DKQuaternion(const DKVector3& axis, float angle); ///< angle is radian
 		DKQuaternion(float pitch, float yaw, float roll); ///< radian
 		DKQuaternion(const DKVector3& from, const DKVector3& to, float t = 1.0); ///< t > 1 for over-rotate, < 0 for inverse
 
 		DKQuaternion(float _x, float _y, float _z, float _w);
-		~DKQuaternion(void);
+		~DKQuaternion();
 
 		/// spherical linear interpolation
 		static DKQuaternion Slerp(const DKQuaternion& q1, const DKQuaternion& q2, float t);
 		static float Dot(const DKQuaternion& q1, const DKQuaternion& q2);
 
-		DKQuaternion& Zero(void);
-		DKQuaternion& Identity(void);
-		DKQuaternion& Normalize(void);
-		bool IsIdentity(void) const;
-		float Length(void) const;
-		float LengthSq(void) const;
-		float Roll(void) const;
-		float Pitch(void) const;
-		float Yaw(void) const;
-		float Angle(void) const;
+		DKQuaternion& Zero();
+		DKQuaternion& Identity();
+		DKQuaternion& Normalize();
+		bool IsIdentity() const;
+		float Length() const;
+		float LengthSq() const;
+		float Roll() const;
+		float Pitch() const;
+		float Yaw() const;
+		float Angle() const;
 
-		DKQuaternion& Inverse(void);
-		DKQuaternion& Conjugate(void);
-		DKVector3 Axis(void) const;
+		DKQuaternion& Inverse();
+		DKQuaternion& Conjugate();
+		DKVector3 Axis() const;
 		DKVector3 AxisAngle(float* pAngle) const;
 
 		DKQuaternion& Multiply(const DKQuaternion& q);
@@ -53,7 +53,7 @@ namespace DKFramework
 
 		DKQuaternion operator + (const DKQuaternion& q) const;
 		DKQuaternion operator - (const DKQuaternion& q) const;
-		DKQuaternion operator - (void) const;
+		DKQuaternion operator - () const;
 		DKQuaternion operator * (float f) const;
 		DKQuaternion operator / (float f) const;
 		DKQuaternion operator * (const DKQuaternion& q) const;
@@ -68,8 +68,8 @@ namespace DKFramework
 		bool operator == (const DKQuaternion& q) const;
 		bool operator != (const DKQuaternion& q) const;
 
-		DKMatrix3 Matrix3(void) const;
-		DKMatrix4 Matrix4(void) const;
+		DKMatrix3 Matrix3() const;
+		DKMatrix4 Matrix4() const;
 
         union
 		{

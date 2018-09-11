@@ -34,7 +34,7 @@ namespace DKFramework
 	class DKRenderCommandEncoder : public DKCommandEncoder
 	{
 	public:
-		virtual ~DKRenderCommandEncoder(void) {}
+		virtual ~DKRenderCommandEncoder() {}
 
 		virtual void SetViewport(const DKViewport&) = 0;
 		virtual void SetRenderPipelineState(DKRenderPipelineState* state) = 0;

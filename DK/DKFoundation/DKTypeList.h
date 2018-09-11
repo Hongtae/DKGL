@@ -271,13 +271,13 @@ namespace DKFoundation
 		template <int Index> using TypeAt = typename _TypeAt<Index>::Result;
 
 		/// get Index of specific type.
-		template <typename T> constexpr static auto IndexOf(void) -> int
+		template <typename T> constexpr static auto IndexOf() -> int
 		{
 			return _IndexOf<T>::Result;
 		}
 
 		/// count number of given type T in list.
-		template <typename T> constexpr static auto Count(void) -> int
+		template <typename T> constexpr static auto Count() -> int
 		{
 			return _CountType<T>::Result;
 		}
@@ -295,13 +295,13 @@ namespace DKFoundation
 		template <int Index, typename... Ts> using InsertAt = typename _InsertTypesAt<Index, Ts...>::Result;
 
 		/// check lists are equal.
-		template <typename... Ts> constexpr static auto IsSame(void) -> bool
+		template <typename... Ts> constexpr static auto IsSame() -> bool
 		{
 			return _IsSame<Ts...>::Reult;
 		}
 
 		/// check types in list can be convertible to others.
-		template <typename... Ts> constexpr static auto IsConvertible(void) -> bool
+		template <typename... Ts> constexpr static auto IsConvertible() -> bool
 		{
 			return _IsConvertible<Ts...>::Result;
 		}

@@ -20,9 +20,9 @@ namespace DKFramework
 	{
 	public:
 		/// user preferences. You can export, import from file.
-		static DKPropertySet& DefaultSet(void);
+		static DKPropertySet& DefaultSet();
 		/// default system config. do not save or export this.
-		static DKPropertySet& SystemConfig(void);
+		static DKPropertySet& SystemConfig();
 
 		using InsertionFunc = void (DKString, DKVariant);				///< a function type of insertion (key, new-value)
 		using ModificationFunc = void (DKString, DKVariant, DKVariant);	///< a function type of modification (key, old-value, new-value)
@@ -35,8 +35,8 @@ namespace DKFramework
 		using Enumerator = DKFunctionSignature<void (const DKString&, const DKVariant&)>;
 		using Replacer = DKFunctionSignature<DKVariant (const DKVariant&)>;
 
-		DKPropertySet(void);
-		~DKPropertySet(void);
+		DKPropertySet();
+		~DKPropertySet();
 
 		/// Import, import from file or URL
 		/// @return number of pairs imported or -1 if import failed.
@@ -62,7 +62,7 @@ namespace DKFramework
 		const DKVariant& Value(const DKString& key) const;
 		bool HasValue(const DKString& key) const;
 		void Remove(const DKString& key);
-		size_t NumberOfEntries(void) const;
+		size_t NumberOfEntries() const;
 
 		/// search all values that matching key-path.
 		bool LookUpValueForKeyPath(const DKString& path, DKVariant::ConstKeyPathEnumerator* callback) const;

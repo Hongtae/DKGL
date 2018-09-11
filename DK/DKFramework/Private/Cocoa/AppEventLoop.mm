@@ -26,11 +26,11 @@ AppEventLoop::AppEventLoop(DKApplication* app)
 {
 }
 
-AppEventLoop::~AppEventLoop(void)
+AppEventLoop::~AppEventLoop()
 {
 }
 
-bool AppEventLoop::Run(void)
+bool AppEventLoop::Run()
 {
 	if (BindThread())
 	{
@@ -96,7 +96,7 @@ bool AppEventLoop::Run(void)
 			}
 			if (running)
 			{
-				CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+				CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 					this->DispatchAndInstallTimer();
 				});
 				[app run];
@@ -132,12 +132,12 @@ bool AppEventLoop::Run(void)
 	return false;
 }
 
-void AppEventLoop::Stop(void)
+void AppEventLoop::Stop()
 {
 	lock.Lock();
 	if (runLoop)
 	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 			this->running = false;
 			NSApplication* app = [NSApplication sharedApplication];
 			if (app.running)
@@ -169,7 +169,7 @@ void AppEventLoop::Stop(void)
 	CFRunLoopStop(runLoop);
 }
 
-void AppEventLoop::DispatchAndInstallTimer(void)
+void AppEventLoop::DispatchAndInstallTimer()
 {
 	if (timer)
 	{
@@ -204,7 +204,7 @@ DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operat
 	lock.Lock();
 	if (runLoop)
 	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 			this->DispatchAndInstallTimer();
 		});
 		CFRunLoopWakeUp(runLoop);
@@ -220,7 +220,7 @@ DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operat
 	lock.Lock();
 	if (runLoop)
 	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^(void) {
+		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
 			this->DispatchAndInstallTimer();
 		});
 		CFRunLoopWakeUp(runLoop);

@@ -20,7 +20,7 @@
 
 namespace DKFramework::Private::Vulkan
 {
-	DKGraphicsDeviceInterface* CreateInterface(void)
+	DKGraphicsDeviceInterface* CreateInterface()
 	{
 		return new GraphicsDevice();
 	}
@@ -93,7 +93,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
 
-GraphicsDevice::GraphicsDevice(void)
+GraphicsDevice::GraphicsDevice()
 	: instance(NULL)
 	, device(NULL)
 	, physicalDevice(NULL)
@@ -515,7 +515,7 @@ GraphicsDevice::GraphicsDevice(void)
 		DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
 }
 
-GraphicsDevice::~GraphicsDevice(void)
+GraphicsDevice::~GraphicsDevice()
 {
 	vkDeviceWaitIdle(device);
 	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
@@ -553,7 +553,7 @@ GraphicsDevice::~GraphicsDevice(void)
 		iproc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, nullptr);
 }
 
-DKString GraphicsDevice::DeviceName(void) const
+DKString GraphicsDevice::DeviceName() const
 {
 	return DKString(properties.deviceName);
 }
@@ -1258,7 +1258,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 	return NULL;
 }
 
-VkFence GraphicsDevice::GetFence(void)
+VkFence GraphicsDevice::GetFence()
 {
 	VkFence fence = VK_NULL_HANDLE;
 
@@ -1301,7 +1301,7 @@ void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op, b
 	}
 }
 
-void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
+void GraphicsDevice::FenceCompletionCallbackThreadProc()
 {
 	const double fenceWaitInterval = 0.002;
 
@@ -1417,7 +1417,7 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc(void)
 	DKLogI("Vulkan Queue Completion Helper thread is finished.");
 }
 
-void GraphicsDevice::LoadPipelineCache(void)
+void GraphicsDevice::LoadPipelineCache()
 {
 	if (this->pipelineCache != VK_NULL_HANDLE)
 	{
@@ -1458,7 +1458,7 @@ void GraphicsDevice::LoadPipelineCache(void)
 	}
 }
 
-void GraphicsDevice::SavePipelineCache(void)
+void GraphicsDevice::SavePipelineCache()
 {
 	if (this->pipelineCache != VK_NULL_HANDLE)
 	{

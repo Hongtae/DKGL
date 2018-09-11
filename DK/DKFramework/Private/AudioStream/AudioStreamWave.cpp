@@ -118,13 +118,13 @@ static_assert(sizeof(WaveFormatEX) == 20, "sizeof(WaveFormatEX) == 20");
 static_assert(sizeof(WaveFormatExt) == 44, "sizeof(WaveFormatEX) == 44");
 
 
-AudioStreamWave::AudioStreamWave(void)
+AudioStreamWave::AudioStreamWave()
 	: DKAudioStream(DKAudioStream::FileTypeWave)
 	, context(new WaveFileContext())
 {
 }
 
-AudioStreamWave::~AudioStreamWave(void)
+AudioStreamWave::~AudioStreamWave()
 {
 	context->stream = NULL;
 	delete context;
@@ -299,7 +299,7 @@ double AudioStreamWave::SeekTime(double s)
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamWave::RawPos(void) const
+DKAudioStream::Position AudioStreamWave::RawPos() const
 {
 	if (context->stream)
 	{
@@ -308,12 +308,12 @@ DKAudioStream::Position AudioStreamWave::RawPos(void) const
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamWave::PcmPos(void) const
+DKAudioStream::Position AudioStreamWave::PcmPos() const
 {
 	return RawPos();
 }
 
-double AudioStreamWave::TimePos(void) const
+double AudioStreamWave::TimePos() const
 {
 	if (context->stream)
 	{
@@ -323,7 +323,7 @@ double AudioStreamWave::TimePos(void) const
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamWave::RawTotal(void) const
+DKAudioStream::Position AudioStreamWave::RawTotal() const
 {
 	if (context->stream)
 	{
@@ -332,12 +332,12 @@ DKAudioStream::Position AudioStreamWave::RawTotal(void) const
 	return 0;
 }
 
-DKAudioStream::Position AudioStreamWave::PcmTotal(void) const
+DKAudioStream::Position AudioStreamWave::PcmTotal() const
 {
 	return RawTotal();
 }
 
-double AudioStreamWave::TimeTotal(void) const
+double AudioStreamWave::TimeTotal() const
 {
 	if (context->stream)
 	{

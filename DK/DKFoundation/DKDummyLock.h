@@ -19,11 +19,11 @@ namespace DKFoundation
 	class DKDummyLock
 	{
 	public:
-		DKDummyLock(void) {}
-		~DKDummyLock(void) {}
-		void Lock(void) const {}
-		bool TryLock(void) const {return true;}
-		void Unlock(void) const {}
+		DKDummyLock() {}
+		~DKDummyLock() {}
+		void Lock() const {}
+		bool TryLock() const {return true;}
+		void Unlock() const {}
 
 	private:
 		DKDummyLock(const DKDummyLock&) = delete;

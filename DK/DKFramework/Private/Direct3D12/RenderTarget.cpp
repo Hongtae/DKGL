@@ -23,7 +23,7 @@ RenderTarget::RenderTarget(DKGraphicsDevice* dev, ID3D12Resource* res, D3D12_CPU
 	DKASSERT_DEBUG((resource->GetDesc().Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET) != 0);
 }
 
-RenderTarget::~RenderTarget(void)
+RenderTarget::~RenderTarget()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (srvHandle.ptr)

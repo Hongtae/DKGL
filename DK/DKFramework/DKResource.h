@@ -21,26 +21,26 @@ namespace DKFramework
 	class DKGL_API DKResource
 	{
 	public:
-		DKResource(void);
-		virtual ~DKResource(void);
+		DKResource();
+		virtual ~DKResource();
 
 		virtual void SetName(const DKString& name);
-		const DKString& Name(void) const;
+		const DKString& Name() const;
 		virtual void SetUUID(const DKUuid& uuid);
-		const DKUuid& UUID(void) const;
+		const DKUuid& UUID() const;
 
-		virtual DKObject<DKSerializer> Serializer(void);
+		virtual DKObject<DKSerializer> Serializer();
 		virtual DKObject<DKData> Serialize(DKSerializer::SerializeForm) const;
 		virtual DKObject<DKXmlElement> SerializeXML(DKSerializer::SerializeForm) const;
 		virtual bool Deserialize(const DKData*, DKResourceLoader*);
 		virtual bool Deserialize(const DKXmlElement*, DKResourceLoader*);
 
-		virtual bool Validate(void); ///< resource validation
+		virtual bool Validate(); ///< resource validation
 
 		DKVariant::VPairs metadata;
 
 	protected:
-		DKAllocator& Allocator(void);
+		DKAllocator& Allocator();
 
 	private:
 		DKString objectName;

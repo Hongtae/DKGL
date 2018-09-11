@@ -20,20 +20,20 @@ namespace DKFramework
 	class DKGL_API DKMatrix2
 	{
 	public:
-		DKMatrix2(void);
+		DKMatrix2();
 		DKMatrix2(const DKVector2& row1, const DKVector2& row2);
 		DKMatrix2(float e11, float e12, float e21, float e22);
 
-		DKMatrix2& Zero(void);
-		DKMatrix2& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKMatrix2& Zero();
+		DKMatrix2& Identity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
-		DKMatrix2& Inverse(void);
-		DKMatrix2& Transpose(void);
+		DKMatrix2& Inverse();
+		DKMatrix2& Transpose();
 		DKMatrix2& Multiply(const DKMatrix2& m);
 
-		float Determinant(void) const;
+		float Determinant() const;
 		bool GetInverseMatrix(DKMatrix2& matOut, float *pDeterminant) const;
 
 		DKMatrix2 operator * (const DKMatrix2& m) const;
@@ -51,10 +51,10 @@ namespace DKFramework
 		bool operator == (const DKMatrix2& m) const;
 		bool operator != (const DKMatrix2& m) const;
 
-		DKVector2 Row1(void) const;
-		DKVector2 Row2(void) const;
-		DKVector2 Column1(void) const;
-		DKVector2 Column2(void) const;
+		DKVector2 Row1() const;
+		DKVector2 Row2() const;
+		DKVector2 Column1() const;
+		DKVector2 Column2() const;
 
 		union
 		{

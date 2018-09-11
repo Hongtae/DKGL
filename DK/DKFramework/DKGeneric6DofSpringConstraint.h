@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKGeneric6DofSpringConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -19,8 +19,8 @@ namespace DKFramework
 		/// DKNSTransform is rigid body's local transform.
 		DKGeneric6DofSpringConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKGeneric6DofSpringConstraint(DKRigidBody* bodyB, const DKNSTransform& frameB);
-		DKGeneric6DofSpringConstraint(void);
-		~DKGeneric6DofSpringConstraint(void);
+		DKGeneric6DofSpringConstraint();
+		~DKGeneric6DofSpringConstraint();
 
 		void EnableSpring(ParamAxis axis, bool enable);
 		bool IsSpringEnabled(ParamAxis axis) const;
@@ -32,17 +32,17 @@ namespace DKFramework
 		float Damping(ParamAxis axis) const;
 
 		/// set the current constraint position/orientation as an equilibrium point for all DOF
-		void SetEquilibriumPoint(void);
+		void SetEquilibriumPoint();
 		/// set the current constraint position/orientation as an equilibrium point for given DOF
 		void SetEquilibriumPoint(ParamAxis axis);
 		void SetEquilibriumPoint(ParamAxis axis, float val);
 		float EquilibriumPoint(ParamAxis axis) const;
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGeneric6DofSpringConstraint* Copy(UUIDObjectMap&, const DKGeneric6DofSpringConstraint*);

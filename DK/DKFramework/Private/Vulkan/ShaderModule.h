@@ -34,13 +34,13 @@ namespace DKFramework::Private::Vulkan
 	{
 	public:
 		ShaderModule(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType);
-		~ShaderModule(void);
+		~ShaderModule();
 
 		DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
 		DKObject<DKShaderFunction> CreateSpecializedFunction(const DKString& name, const DKShaderSpecialization* values, size_t numValues) const override;
-		const DKArray<DKString>& FunctionNames(void) const override { return functionNames; }
+		const DKArray<DKString>& FunctionNames() const override { return functionNames; }
 
-		DKGraphicsDevice* Device(void) override { return device; }
+		DKGraphicsDevice* Device() override { return device; }
 
 		DKArray<DKString> functionNames;
 		DKObject<DKGraphicsDevice> device;

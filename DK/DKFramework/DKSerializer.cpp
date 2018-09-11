@@ -22,7 +22,7 @@ public:
 	typedef DKArray<DKObject<DeserializerEntity>> DeserializerArray;
 	struct Entity
 	{
-		Entity(void) : deserializer(DKObject<DeserializerEntity>::New())
+		Entity() : deserializer(DKObject<DeserializerEntity>::New())
 		{
 			deserializer->rootValue.SetValueType(DKVariant::TypePairs);
 		}
@@ -179,12 +179,12 @@ private:
 	bool entityError;
 };
 
-DKSerializer::DKSerializer(void)
+DKSerializer::DKSerializer()
 	: outputStreamByteOrder(DKRuntimeByteOrder())
 {
 }
 
-DKSerializer::~DKSerializer(void)
+DKSerializer::~DKSerializer()
 {
 	auto dtor = [](EntityMap::Pair& p)
 	{
@@ -206,7 +206,7 @@ void DKSerializer::SetResourceClass(const DKString& rc)
 	resourceClass = rc;
 }
 
-DKString DKSerializer::ResourceClass(void) const
+DKString DKSerializer::ResourceClass() const
 {
 	return resourceClass;
 }

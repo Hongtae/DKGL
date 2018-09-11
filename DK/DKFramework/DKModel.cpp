@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKModel.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -15,12 +15,12 @@ DKModel::DKModel(Type t)
 {
 }
 
-DKModel::DKModel(void)
+DKModel::DKModel()
 : DKModel(TypeCustom)
 {
 }
 
-DKModel::~DKModel(void)
+DKModel::~DKModel()
 {
 	DKASSERT_DEBUG(this->scene == NULL);
 	DKASSERT_DEBUG(this->parent == NULL);
@@ -34,7 +34,7 @@ DKModel::~DKModel(void)
 	children.Clear();
 }
 
-void DKModel::RemoveFromScene(void)
+void DKModel::RemoveFromScene()
 {
 	if (scene)
 	{
@@ -74,7 +74,7 @@ bool DKModel::AddChild(DKModel* obj)
 	return false;
 }
 
-void DKModel::RemoveFromParent(void)
+void DKModel::RemoveFromParent()
 {
 	if (parent)
 	{
@@ -98,14 +98,14 @@ void DKModel::RemoveFromParent(void)
 	}
 }
 
-DKModel* DKModel::RootObject(void)
+DKModel* DKModel::RootObject()
 {
 	if (parent)
 		return parent->RootObject();
 	return this;
 }
 
-const DKModel* DKModel::RootObject(void) const
+const DKModel* DKModel::RootObject() const
 {
 	if (parent)
 		return parent->RootObject();
@@ -121,7 +121,7 @@ bool DKModel::IsDescendantOf(const DKModel* obj) const
 	return false;
 }
 
-size_t DKModel::NumberOfDescendants(void) const
+size_t DKModel::NumberOfDescendants() const
 {
 	size_t num = 1;
 	for (const DKModel* obj : children)
@@ -147,7 +147,7 @@ const DKModel* DKModel::FindDescendant(const DKString& name) const
 	return const_cast<DKModel&>(*this).FindDescendant(name);
 }
 
-bool DKModel::DidAncestorHideDescendants(void) const
+bool DKModel::DidAncestorHideDescendants() const
 {
 	for (const DKModel* p = this->parent; p != NULL; p = p->parent)
 	{
@@ -417,7 +417,7 @@ void DKModel::UpdateWorldTransform(bool recursive)
 	}
 }
 
-DKObject<DKModel> DKModel::Clone(void) const
+DKObject<DKModel> DKModel::Clone() const
 {
 	UUIDObjectMap uuids;
 	DKObject<DKModel> copied = this->Clone(uuids);
@@ -479,7 +479,7 @@ DKModel* DKModel::Copy(UUIDObjectMap& uuids, const DKModel* obj)
 	return NULL;
 }
 
-DKObject<DKSerializer> DKModel::Serializer(void)
+DKObject<DKSerializer> DKModel::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{
@@ -512,7 +512,7 @@ DKObject<DKSerializer> DKModel::Serializer(void)
 		{
 			return v.ValueType() == DKVariant::TypePairs;
 		}
-		void ResetLocalTransform(void)
+		void ResetLocalTransform()
 		{
 			target->localTransform.Identity();
 		}

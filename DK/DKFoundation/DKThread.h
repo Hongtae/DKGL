@@ -25,26 +25,26 @@ namespace DKFoundation
 		typedef uintptr_t ThreadId;
 
 		/// waiting for join.
-		void WaitTerminate(void) const;
+		void WaitTerminate() const;
 		/// get thread-id (system thread-id)
 		/// GetCurrentThreadId() for Win32, pthread_self() for pthread.
-		ThreadId Id(void) const;
+		ThreadId Id() const;
 		/// determines thread is running(or sleeping).
-		bool IsAlive(void) const;
+		bool IsAlive() const;
 
 		/// Set thread priority (from 0.0 to 1.0, 1.0 is highest priority)
 		bool SetPriority(double p);
 		/// Get thread priority
-		double Priority(void) const;
+		double Priority() const;
 
 		/// find thread specified by id.
 		static DKObject<DKThread> FindThread(ThreadId id);
 		/// get current thread as DKThread object.
-		static DKObject<DKThread> CurrentThread(void);
+		static DKObject<DKThread> CurrentThread();
 		/// get current thread-id
-		static ThreadId CurrentThreadId(void);
+		static ThreadId CurrentThreadId();
 		/// yeild CPU
-		static void Yield(void);
+		static void Yield();
 		/// sleep current thread.
 		static void Sleep(double d);
 
@@ -55,8 +55,8 @@ namespace DKFoundation
 		static const ThreadId invalidId;
 
 	private:
-		DKThread(void);
-		~DKThread(void);
+		DKThread();
+		~DKThread();
 
 		DKThread(const DKThread&) = delete;
 		DKThread& operator = (const DKThread&) = delete;

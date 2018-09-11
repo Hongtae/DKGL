@@ -25,16 +25,16 @@ namespace DKFramework
 			{
 			public:
 				AppEventLoop(DKApplication* app);
-				~AppEventLoop(void);
+				~AppEventLoop();
 
-				bool Run(void) override;
-				void Stop(void) override;
+				bool Run() override;
+				void Stop() override;
 
 				DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
 				DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
 
 			private:
-				void DispatchAndInstallTimer(void);
+				void DispatchAndInstallTimer();
 				
 				DKApplication* appInstance;
 				bool running;

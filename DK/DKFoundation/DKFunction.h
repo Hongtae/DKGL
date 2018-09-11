@@ -79,9 +79,9 @@ namespace DKFoundation
 		virtual DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple&) const = 0;
 		virtual DKObject<DKInvocation<R>> InvocationWithTuple(ParameterTuple&&) const = 0;
 
-		virtual ~DKFunctionSignature(void) {}
+		virtual ~DKFunctionSignature() {}
 
-		template <typename... Ts> constexpr static bool CanInvokeWithParameterTypes(void)
+		template <typename... Ts> constexpr static bool CanInvokeWithParameterTypes()
 		{
 			return DKTypeList<Ts...>::template IsConvertible<typename ParameterTuple::TypeList>();
 		};
@@ -92,14 +92,14 @@ namespace DKFoundation
 		template <typename T, bool SmallSize = (sizeof(T) < 16) > struct FunctionAllocator;
 		template <typename T> struct FunctionAllocator<T, true> // custom allocator for small size
 		{
-			static DKAllocator& Instance(void)
+			static DKAllocator& Instance()
 			{
 				return DKFixedSizeAllocator<sizeof(T), 4, 1024>::AllocatorInstance();
 			}
 		};
 		template <typename T> struct FunctionAllocator<T, false> // default allocator
 		{
-			static DKAllocator& Instance(void)
+			static DKAllocator& Instance()
 			{
 				return DKAllocator::DefaultAllocator();
 			}
@@ -150,7 +150,7 @@ namespace DKFoundation
 				_Invocation(Function& f, ParameterTuple&& t) : function(f), tuple(static_cast<ParameterTuple&&>(t)) {}
 				Function function;
 				ParameterTuple tuple;
-				R Invoke(void) const override
+				R Invoke() const override
 				{
 					Function& fn = const_cast<_Invocation&>(*this).function;
 					ParameterTuple& tup = const_cast<_Invocation&>(*this).tuple;
@@ -210,7 +210,7 @@ namespace DKFoundation
 				Object object;
 				Function function;
 				ParameterTuple tuple;
-				R Invoke(void) const override
+				R Invoke() const override
 				{
 					Object& obj = const_cast<_Invocation&>(*this).object;
 					ParameterTuple& tup = const_cast<_Invocation&>(*this).tuple;
@@ -347,7 +347,7 @@ namespace DKFoundation
 				_Wrapper(const _Wrapper& w) : object(w.object)				{}
 				_Wrapper(_Wrapper&& w) : object(std::forward<U>(w.object))	{}
 
-				U& operator * (void)	{return object;}
+				U& operator * ()	{return object;}
 
 				_Wrapper& operator = (_Wrapper&&) = delete;
 				_Wrapper& operator = (const _Wrapper&) = delete;

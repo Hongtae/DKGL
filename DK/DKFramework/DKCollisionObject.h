@@ -32,8 +32,8 @@ namespace DKFramework
 		};
 		const ObjectType objectType;
 
-		DKCollisionObject(void);
-		virtual ~DKCollisionObject(void);
+		DKCollisionObject();
+		virtual ~DKCollisionObject();
 
 		void SetWorldTransform(const DKNSTransform& t) override;
 		void SetLocalTransform(const DKNSTransform& t) override;
@@ -43,25 +43,25 @@ namespace DKFramework
 		void SetKinematic(bool k);
 		void SetContactResponse(bool response);
 
-		bool IsActive(void) const;
-		bool IsStatic(void) const;
-		bool IsKinematic(void) const;
-		bool HasContactResponse(void) const;
+		bool IsActive() const;
+		bool IsStatic() const;
+		bool IsKinematic() const;
+		bool HasContactResponse() const;
 
 		void SetRestitution(float);
-		float Restitution(void) const;
+		float Restitution() const;
 		void SetFriction(float);
-		float Friction(void) const;
+		float Friction() const;
 		void SetRollingFriction(float);
-		float RollingFriction(void) const;
+		float RollingFriction() const;
 		void SetHitFraction(float);
-		float HitFraction(void) const;
+		float HitFraction() const;
 
 		virtual void SetCollisionShape(DKCollisionShape* s);
-		DKCollisionShape* CollisionShape(void);
-		const DKCollisionShape* CollisionShape(void) const;
+		DKCollisionShape* CollisionShape();
+		const DKCollisionShape* CollisionShape() const;
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
 		DKCollisionObject* Copy(UUIDObjectMap&, const DKCollisionObject*);

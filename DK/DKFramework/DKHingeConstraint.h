@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKHingeConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -24,30 +24,30 @@ namespace DKFramework
 						  const DKVector3& pivotInA, const DKVector3& pivotInB,
 						  const DKVector3& axisInA, const DKVector3& axisInB);
 		DKHingeConstraint(DKRigidBody* bodyA, const DKVector3& pivotInA, const DKVector3& axisInA);
-		DKHingeConstraint(void);
-		~DKHingeConstraint(void);
+		DKHingeConstraint();
+		~DKHingeConstraint();
 
 		void SetLimit(float lower, float upper, float softness = 0.9f, float biasFactor = 0.3f, float relaxationFactor = 1.0f);
-		float LowerLimit(void) const;
-		float UpperLimit(void) const;
-		float Softness(void) const;
-		float BiasFactor(void) const;
-		float RelaxationFactor(void) const;
+		float LowerLimit() const;
+		float UpperLimit() const;
+		float Softness() const;
+		float BiasFactor() const;
+		float RelaxationFactor() const;
 
 		void SetAngularOnly(bool angularOnly);
-		bool IsAngularOnly(void) const;
+		bool IsAngularOnly() const;
 
 		void SetAngularMotor(bool enable, float targetVelocity, float maxMotorImpulse);
 		void EnableAngularMotor(bool enable);
-		bool IsAngularMotorEnabled(void) const;
-		float MaxMotorImpulse(void) const;
-		float MotorTargetVelocity(void) const;
+		bool IsAngularMotorEnabled() const;
+		float MaxMotorImpulse() const;
+		float MotorTargetVelocity() const;
 
-		float HingeAngle(void) const;
+		float HingeAngle() const;
 		float HingeAngle(const DKNSTransform& ta, const DKNSTransform& tb) const;
 
-		DKNSTransform FrameA(void) const;
-		DKNSTransform FrameB(void) const;
+		DKNSTransform FrameA() const;
+		DKNSTransform FrameB() const;
 		void SetFrameA(const DKNSTransform& t);
 		void SetFrameB(const DKNSTransform& t);
 		void SetFrames(const DKNSTransform& ta, const DKNSTransform& tb);
@@ -55,11 +55,11 @@ namespace DKFramework
 		bool IsValidParam(ParamType type, ParamAxis axis) const override;
 		bool HasParam(ParamType type, ParamAxis axis) const override;
 
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKHingeConstraint* Copy(UUIDObjectMap&, const DKHingeConstraint*);

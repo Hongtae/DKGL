@@ -22,10 +22,10 @@ namespace DKFramework
 			Compute,
 		};
 
-		DKShader(void);
+		DKShader();
 		DKShader(DKData*, StageType stage); // share data
 		DKShader(const void*, size_t, StageType stage); // copy data
-		~DKShader(void);
+		~DKShader();
 
 		StageType stage;
 		DKObject<DKData> codeData;

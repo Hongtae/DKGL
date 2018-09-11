@@ -16,7 +16,7 @@ using namespace DKFramework;
 
 const DKQuaternion DKQuaternion::identity = DKQuaternion().Identity();
 
-DKQuaternion::DKQuaternion(void)
+DKQuaternion::DKQuaternion()
 	: x(0), y(0), z(0), w(1)
 {
 }
@@ -89,7 +89,7 @@ DKQuaternion::DKQuaternion(float _x, float _y, float _z, float _w)
 {
 }
 
-DKQuaternion::~DKQuaternion(void)
+DKQuaternion::~DKQuaternion()
 {
 }
 
@@ -126,7 +126,7 @@ float DKQuaternion::Dot(const DKQuaternion& q1, const DKQuaternion& q2)
 	return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
 }
 
-DKQuaternion& DKQuaternion::Zero(void)
+DKQuaternion& DKQuaternion::Zero()
 {
 	x = 0;
 	y = 0;
@@ -135,7 +135,7 @@ DKQuaternion& DKQuaternion::Zero(void)
 	return *this;
 }
 
-DKQuaternion& DKQuaternion::Identity(void)
+DKQuaternion& DKQuaternion::Identity()
 {
 	x = 0;
 	y = 0;
@@ -144,12 +144,12 @@ DKQuaternion& DKQuaternion::Identity(void)
 	return *this;
 }
 
-bool DKQuaternion::IsIdentity(void) const
+bool DKQuaternion::IsIdentity() const
 {
 	return x == 0 && y == 0 && z == 0 && w == 1;
 }
 
-DKQuaternion& DKQuaternion::Normalize(void)
+DKQuaternion& DKQuaternion::Normalize()
 {
 	float lengthSq = (x * x + y * y + z * z + w * w);
 	if (lengthSq > 0.0f)
@@ -163,7 +163,7 @@ DKQuaternion& DKQuaternion::Normalize(void)
 	return *this;
 }
 
-DKQuaternion& DKQuaternion::Inverse(void)
+DKQuaternion& DKQuaternion::Inverse()
 {
 	float n = (x * x + y * y + z * z + w * w);
 	if (n > 0.0f)
@@ -177,37 +177,37 @@ DKQuaternion& DKQuaternion::Inverse(void)
 	return *this;
 }
 
-DKQuaternion& DKQuaternion::Conjugate(void)
+DKQuaternion& DKQuaternion::Conjugate()
 {
 	return *this = DKQuaternion( -x, -y, -z, w );
 }
 
-float DKQuaternion::Length(void) const
+float DKQuaternion::Length() const
 {
 	return sqrt(x * x + y * y + z * z + w * w);
 }
 
-float DKQuaternion::LengthSq(void) const
+float DKQuaternion::LengthSq() const
 {
 	return (x * x + y * y + z * z + w * w);
 }
 
-float DKQuaternion::Roll(void) const
+float DKQuaternion::Roll() const
 {
 	return atan2(2*(x*y + w*z), w*w + x*x - y*y - z*z);
 }
 
-float DKQuaternion::Pitch(void) const
+float DKQuaternion::Pitch() const
 {
 	return atan2(2*(y*z + w*x), w*w - x*x - y*y + z*z);
 }
 
-float DKQuaternion::Yaw(void) const
+float DKQuaternion::Yaw() const
 {
 	return asin(-2*(x*z - w*y));
 }
 
-float DKQuaternion::Angle(void) const
+float DKQuaternion::Angle() const
 {
 	float lenSq = (x * x + y * y + z * z + w * w);
 	if (lenSq > 0.0f && fabs(w) < 1.0f)
@@ -217,7 +217,7 @@ float DKQuaternion::Angle(void) const
 	return 0.0f;
 }
 
-DKVector3 DKQuaternion::Axis(void) const
+DKVector3 DKQuaternion::Axis() const
 {
 	float lenSq = (x * x + y * y + z * z + w * w);
 	if (lenSq > 0.0f)
@@ -294,7 +294,7 @@ DKQuaternion DKQuaternion::operator - (const DKQuaternion& q) const
 	return DKQuaternion(x - q.x, y - q.y, z - q.z, w - q.w);
 }
 
-DKQuaternion DKQuaternion::operator - (void) const
+DKQuaternion DKQuaternion::operator - () const
 {
 	return DKQuaternion(-x, -y, -z, -w);
 }
@@ -370,7 +370,7 @@ bool DKQuaternion::operator != (const DKQuaternion& q) const
 	return this->x != q.x || this->y != q.y || this->z != q.z || this->w != q.w;
 }
 
-DKMatrix4 DKQuaternion::Matrix4(void) const
+DKMatrix4 DKQuaternion::Matrix4() const
 {
 	DKMatrix4 mat;
 	mat.Identity();
@@ -389,7 +389,7 @@ DKMatrix4 DKQuaternion::Matrix4(void) const
 	return mat;
 }
 
-DKMatrix3 DKQuaternion::Matrix3(void) const
+DKMatrix3 DKQuaternion::Matrix3() const
 {
 	DKMatrix3 mat;
 	mat.Identity();

@@ -49,20 +49,20 @@ namespace DKFramework
 		/// You need to subclass to use your custom locator.
 		struct Locator
 		{
-			virtual ~Locator(void) {}
+			virtual ~Locator() {}
 			virtual DKString FindSystemPath(const DKString&) const = 0;
 			virtual DKObject<DKStream> OpenStream(const DKString&) const = 0;
 		};
 
-		DKResourcePool(void);
-		~DKResourcePool(void);
+		DKResourcePool();
+		~DKResourcePool();
 
 		bool AddLocator(Locator*, const DKString& name);
 		Locator* AddLocatorForPath(const DKString& path);
 		Locator* FindLocator(const DKString& name);
 		void RemoveLocator(const DKString& name);
-		void RemoveAllLocators(void);
-		DKString::StringArray AllLocatorNames(void) const;
+		void RemoveAllLocators();
+		DKString::StringArray AllLocatorNames() const;
 
 		bool AddSearchPath(const DKString& path)
 		{
@@ -87,25 +87,25 @@ namespace DKFramework
 		/// remove resource data from pool.
 		void RemoveResourceData(const DKString& name);
 		/// remove all resource data from pool.
-		void RemoveAllResourceData(void);
+		void RemoveAllResourceData();
 		/// remove all resource objects from pool.
-		void RemoveAllResources(void);
+		void RemoveAllResources();
 		/// remove everything in pool.
-		void RemoveAll(void);
+		void RemoveAll();
 
 		/// remove unreferenced objects only.
-		void ClearUnreferencedObjects(void);
+		void ClearUnreferencedObjects();
 
 		/// return absolute file path string, if specified file are exists in file-system directory.
 		DKString ResourceFilePath(const DKString& name) const;
 		/// open resource as stream.
 		DKObject<DKStream> OpenResourceStream(const DKString& name) const;
 
-		DKObject<DKResourcePool> Clone(void) const;
+		DKObject<DKResourcePool> Clone() const;
 
 		void SetAllocator(DKMemoryLocation loc);
 		void SetAllocator(DKAllocator* alloc);
-		DKAllocator& Allocator(void) const;
+		DKAllocator& Allocator() const;
 
 	private:
 		struct NamedLocator

@@ -20,8 +20,8 @@ namespace DKFoundation
 	class DKGL_API DKZipArchiver
 	{
 	public:
-		DKZipArchiver(void);
-		~DKZipArchiver(void);
+		DKZipArchiver();
+		~DKZipArchiver();
 
 		static DKObject<DKZipArchiver> Create(const DKString& file, bool append);
 
@@ -31,7 +31,7 @@ namespace DKFoundation
 		bool Write(const DKString& file, DKStream* stream, int compressionLevel, const char* password = NULL);
 		bool Write(const DKString& file, const void* data, size_t len, int compressionLevel, const char* password = NULL);
 
-		const DKString& GetArchiveName(void) const		{return filename;}
+		const DKString& GetArchiveName() const		{return filename;}
 	private:
 		DKString	filename;
 		void*		zipHandle;

@@ -11,7 +11,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKCollisionObject::DKCollisionObject(void)
+DKCollisionObject::DKCollisionObject()
 	: DKModel(TypeCollision)
 	, objectType(CollisionObject)
 	, impl(new btCollisionObject())
@@ -29,7 +29,7 @@ DKCollisionObject::DKCollisionObject(ObjectType t, btCollisionObject* co)
 	this->SetCollisionShape(NULL);
 }
 
-DKCollisionObject::~DKCollisionObject(void)
+DKCollisionObject::~DKCollisionObject()
 {
 	if (impl)
 	{
@@ -81,17 +81,17 @@ void DKCollisionObject::SetContactResponse(bool response)
 	this->impl->setCollisionFlags(flags);
 }
 
-bool DKCollisionObject::IsActive(void) const
+bool DKCollisionObject::IsActive() const
 {
 	return this->impl->isActive();
 }
 
-bool DKCollisionObject::IsStatic(void) const
+bool DKCollisionObject::IsStatic() const
 {
 	return this->impl->isStaticObject();
 }
 
-bool DKCollisionObject::IsKinematic(void) const
+bool DKCollisionObject::IsKinematic() const
 {
 	return this->impl->isKinematicObject();
 }
@@ -112,7 +112,7 @@ void DKCollisionObject::SetKinematic(bool k)
 	}
 }
 
-bool DKCollisionObject::HasContactResponse(void) const
+bool DKCollisionObject::HasContactResponse() const
 {
 	return this->impl->hasContactResponse();
 }
@@ -122,7 +122,7 @@ void DKCollisionObject::SetRestitution(float f)
 	this->impl->setRestitution(f);
 }
 
-float DKCollisionObject::Restitution(void) const
+float DKCollisionObject::Restitution() const
 {
 	return this->impl->getRestitution();
 }
@@ -132,7 +132,7 @@ void DKCollisionObject::SetFriction(float f)
 	this->impl->setFriction(f);
 }
 
-float DKCollisionObject::Friction(void) const
+float DKCollisionObject::Friction() const
 {
 	return this->impl->getFriction();
 }
@@ -142,7 +142,7 @@ void DKCollisionObject::SetRollingFriction(float f)
 	this->impl->setRollingFriction(f);
 }
 
-float DKCollisionObject::RollingFriction(void) const
+float DKCollisionObject::RollingFriction() const
 {
 	return this->impl->getRollingFriction();
 }
@@ -151,7 +151,7 @@ void DKCollisionObject::SetHitFraction(float f)
 {
 	this->impl->setHitFraction(f);
 }
-float DKCollisionObject::HitFraction(void) const
+float DKCollisionObject::HitFraction() const
 {
 	return this->impl->getHitFraction();
 }
@@ -175,12 +175,12 @@ void DKCollisionObject::SetCollisionShape(DKCollisionShape* s)
 	}
 }
 
-DKCollisionShape* DKCollisionObject::CollisionShape(void)
+DKCollisionShape* DKCollisionObject::CollisionShape()
 {
 	return collisionShape;
 }
 
-const DKCollisionShape* DKCollisionObject::CollisionShape(void) const
+const DKCollisionShape* DKCollisionObject::CollisionShape() const
 {
 	return collisionShape;
 }
@@ -192,7 +192,7 @@ DKCollisionObject* DKCollisionObject::Copy(UUIDObjectMap& uuids, const DKCollisi
 	return NULL;
 }
 
-DKObject<DKSerializer> DKCollisionObject::Serializer(void)
+DKObject<DKSerializer> DKCollisionObject::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

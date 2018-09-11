@@ -18,7 +18,7 @@ namespace DKFramework
 	class DKGL_API DKVector3
 	{
 	public:
-		DKVector3(void);
+		DKVector3();
 		DKVector3(float x_, float y_, float z_);
 
 		static DKVector3 Cross(const DKVector3&v1, const DKVector3& v2); ///< cross product
@@ -29,7 +29,7 @@ namespace DKFramework
 
 		DKVector3 operator + (const DKVector3& v) const;
 		DKVector3 operator - (const DKVector3& v) const;	// binary
-		DKVector3 operator - (void) const;					// unary
+		DKVector3 operator - () const;					// unary
 		DKVector3 operator * (float f) const;
 		DKVector3 operator * (const DKVector3& v) const;
 		DKVector3 operator * (const DKMatrix3& m) const;
@@ -48,8 +48,8 @@ namespace DKFramework
 		DKVector3& operator /= (float f);
 		DKVector3& operator /= (const DKVector3& v);
 
-		float Length(void) const;
-		float LengthSq(void) const;			///< length^2
+		float Length() const;
+		float LengthSq() const;			///< length^2
 
 		DKVector3& RotateX(float radian);
 		DKVector3& RotateY(float radian);
@@ -58,10 +58,10 @@ namespace DKFramework
 		DKVector3& Rotate(const DKQuaternion& q);
 		DKVector3& Transform(const DKMatrix3& m);	///< Linear Transform
 		DKVector3& Transform(const DKMatrix4& m);	///< Homogeneous Transform
-		DKVector3& Normalize(void);
+		DKVector3& Normalize();
 
-		operator float* (void)				{return val;}
-		operator const float* (void) const	{return val;}
+		operator float* ()				{return val;}
+		operator const float* () const	{return val;}
 
 		union
 		{

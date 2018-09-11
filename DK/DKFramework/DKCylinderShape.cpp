@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKCylinderShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -36,11 +36,11 @@ DKCylinderShape::DKCylinderShape(const DKVector3& v, UpAxis up)
 {
 }
 
-DKCylinderShape::~DKCylinderShape(void)
+DKCylinderShape::~DKCylinderShape()
 {
 }
 
-DKVector3 DKCylinderShape::HalfExtents(void) const
+DKVector3 DKCylinderShape::HalfExtents() const
 {
 	btCylinderShape* shape = static_cast<btCylinderShape*>(this->impl);
 	const btVector3& halfExt = shape->getHalfExtentsWithoutMargin();
@@ -49,7 +49,7 @@ DKVector3 DKCylinderShape::HalfExtents(void) const
 	return BulletVector3(halfExt / scale);
 }
 
-DKVector3 DKCylinderShape::HalfExtentsWithMargin(void) const
+DKVector3 DKCylinderShape::HalfExtentsWithMargin() const
 {
 	btCylinderShape* shape = static_cast<btCylinderShape*>(this->impl);
 	const btVector3& halfExt = shape->getHalfExtentsWithoutMargin();
@@ -59,17 +59,17 @@ DKVector3 DKCylinderShape::HalfExtentsWithMargin(void) const
 	return BulletVector3( halfExt / scale + margin );
 }
 
-DKVector3 DKCylinderShape::ScaledHalfExtents(void) const
+DKVector3 DKCylinderShape::ScaledHalfExtents() const
 {
 	return BulletVector3(static_cast<btCylinderShape*>(this->impl)->getHalfExtentsWithoutMargin());
 }
 
-DKVector3 DKCylinderShape::ScaledHalfExtentsWithMargin(void) const
+DKVector3 DKCylinderShape::ScaledHalfExtentsWithMargin() const
 {
 	return BulletVector3(static_cast<btCylinderShape*>(this->impl)->getHalfExtentsWithMargin());
 }
 
-DKCylinderShape::UpAxis DKCylinderShape::BaseAxis(void) const
+DKCylinderShape::UpAxis DKCylinderShape::BaseAxis() const
 {
 	int axis = static_cast<btCylinderShape*>(this->impl)->getUpAxis();
 	switch (axis)

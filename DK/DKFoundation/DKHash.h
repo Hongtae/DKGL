@@ -41,7 +41,7 @@ namespace DKFoundation
 		bool operator >= (const DKHashResult& r) const		{return Compare(r) >= 0;}
 		bool operator <= (const DKHashResult& r) const		{return Compare(r) <= 0;}
 
-		DKString String(void) const ///< represent hash digest as a string
+		DKString String() const ///< represent hash digest as a string
 		{
 			char buff[Length * 8];
 			char* tmp = buff;
@@ -113,11 +113,11 @@ namespace DKFoundation
 	class DKGL_API DKHash
 	{
 	public:
-		virtual ~DKHash(void);
+		virtual ~DKHash();
 
-		void Initialize(void);
+		void Initialize();
 		void Update(const void*, size_t);
-		void Finalize(void);
+		void Finalize();
 
 		struct Context;
 	protected:
@@ -152,43 +152,43 @@ namespace DKFoundation
 	class DKGL_API DKHash32 : public DKHash
 	{
 	public:
-		DKHash32(void) : DKHash(Type32) {}
-		DKHashResult32 Result(void) const;
+		DKHash32() : DKHash(Type32) {}
+		DKHashResult32 Result() const;
 	};
 	class DKGL_API DKHash128 : public DKHash
 	{
 	public:
-		DKHash128(void) : DKHash(Type128) {}
-		DKHashResult128 Result(void) const;
+		DKHash128() : DKHash(Type128) {}
+		DKHashResult128 Result() const;
 	};
 	class DKGL_API DKHash160 : public DKHash
 	{
 	public:
-		DKHash160(void) : DKHash(Type160) {}
-		DKHashResult160 Result(void) const;
+		DKHash160() : DKHash(Type160) {}
+		DKHashResult160 Result() const;
 	};
 	class DKGL_API DKHash224 : public DKHash
 	{
 	public:
-		DKHash224(void) : DKHash(Type224) {}
-		DKHashResult224 Result(void) const;
+		DKHash224() : DKHash(Type224) {}
+		DKHashResult224 Result() const;
 	};
 	class DKGL_API DKHash256 : public DKHash
 	{
 	public:
-		DKHash256(void) : DKHash(Type256) {}
-		DKHashResult256 Result(void) const;
+		DKHash256() : DKHash(Type256) {}
+		DKHashResult256 Result() const;
 	};
 	class DKGL_API DKHash384 : public DKHash
 	{
 	public:
-		DKHash384(void) : DKHash(Type384) {}
-		DKHashResult384 Result(void) const;
+		DKHash384() : DKHash(Type384) {}
+		DKHashResult384 Result() const;
 	};
 	class DKGL_API DKHash512 : public DKHash
 	{
 	public:
-		DKHash512(void) : DKHash(Type512) {}
-		DKHashResult512 Result(void) const;
+		DKHash512() : DKHash(Type512) {}
+		DKHashResult512 Result() const;
 	};
 }

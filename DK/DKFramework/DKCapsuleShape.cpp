@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKCapsuleShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -41,11 +41,11 @@ DKCapsuleShape::DKCapsuleShape(float radius, float height, UpAxis up)
 	}
 }
 
-DKCapsuleShape::~DKCapsuleShape(void)
+DKCapsuleShape::~DKCapsuleShape()
 {
 }
 
-float DKCapsuleShape::Radius(void) const
+float DKCapsuleShape::Radius() const
 {
 	btCapsuleShape* shape = static_cast<btCapsuleShape*>(this->impl);
 
@@ -56,7 +56,7 @@ float DKCapsuleShape::Radius(void) const
 	return r / scale[axis];
 }
 
-float DKCapsuleShape::HalfHeight(void) const
+float DKCapsuleShape::HalfHeight() const
 {
 	btCapsuleShape* shape = static_cast<btCapsuleShape*>(this->impl);
 
@@ -67,17 +67,17 @@ float DKCapsuleShape::HalfHeight(void) const
 	return (h / scale[up]);
 }
 
-float DKCapsuleShape::ScaledRadius(void) const
+float DKCapsuleShape::ScaledRadius() const
 {
 	return static_cast<btCapsuleShape*>(this->impl)->getRadius();
 }
 
-float DKCapsuleShape::ScaledHalfHeight(void) const
+float DKCapsuleShape::ScaledHalfHeight() const
 {
 	return static_cast<btCapsuleShape*>(this->impl)->getHalfHeight();
 }
 
-DKCapsuleShape::UpAxis DKCapsuleShape::BaseAxis(void) const
+DKCapsuleShape::UpAxis DKCapsuleShape::BaseAxis() const
 {
 	int axis = static_cast<btCapsuleShape*>(this->impl)->getUpAxis();
 	switch (axis)

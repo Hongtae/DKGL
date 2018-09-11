@@ -22,11 +22,11 @@ BlitCommandEncoder::BlitCommandEncoder(ID3D12GraphicsCommandList* cm, CommandBuf
 
 }
 
-BlitCommandEncoder::~BlitCommandEncoder(void)
+BlitCommandEncoder::~BlitCommandEncoder()
 {
 }
 
-void BlitCommandEncoder::EndEncoding(void)
+void BlitCommandEncoder::EndEncoding()
 {
 	if (commandList)
 	{
@@ -37,7 +37,7 @@ void BlitCommandEncoder::EndEncoding(void)
 	}
 }
 
-DKCommandBuffer* BlitCommandEncoder::Buffer(void)
+DKCommandBuffer* BlitCommandEncoder::Buffer()
 {
 	return commandBuffer;
 }

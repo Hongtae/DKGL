@@ -984,12 +984,12 @@ namespace DKFoundation
 		}
 	}
 
-	DKGL_API DKStringEncoding DKStringWEncoding(void)
+	DKGL_API DKStringEncoding DKStringWEncoding()
 	{
 		return Private::StringWTraits::encoding;
 	}
 
-	DKGL_API DKStringEncoding DKStringU8Encoding(void)
+	DKGL_API DKStringEncoding DKStringU8Encoding()
 	{
 		return DKStringEncoding::UTF8;
 	}

@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConvexShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,7 +17,7 @@ DKConvexShape::DKConvexShape(ShapeType t, btConvexShape* impl)
 	DKASSERT_DEBUG( this->impl->isConvex() );
 }
 
-DKConvexShape::~DKConvexShape(void)
+DKConvexShape::~DKConvexShape()
 {
 	DKASSERT_DEBUG( this->impl->isConvex() );
 }

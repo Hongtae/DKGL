@@ -19,15 +19,15 @@ ComputeCommandEncoder::ComputeCommandEncoder(VkCommandBuffer vcb, CommandBuffer*
 {
 }
 
-ComputeCommandEncoder::~ComputeCommandEncoder(void)
+ComputeCommandEncoder::~ComputeCommandEncoder()
 {
 }
 
-void ComputeCommandEncoder::EndEncoding(void)
+void ComputeCommandEncoder::EndEncoding()
 {
 }
 
-DKCommandBuffer* ComputeCommandEncoder::Buffer(void)
+DKCommandBuffer* ComputeCommandEncoder::Buffer()
 {
 	return commandBuffer;
 }

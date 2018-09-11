@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: AudioStreamWave.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -22,8 +22,8 @@ namespace DKFramework
 		class AudioStreamWave : public DKAudioStream
 		{
 		public:
-			AudioStreamWave(void);
-			~AudioStreamWave(void);
+			AudioStreamWave();
+			~AudioStreamWave();
 
 			bool Open(const DKString& file);
 			bool Open(DKStream* stream);
@@ -34,13 +34,13 @@ namespace DKFramework
 			Position SeekPcm(Position nPos);
 			double SeekTime(double s);
 
-			Position RawPos(void) const;
-			Position PcmPos(void) const;
-			double TimePos(void) const;
+			Position RawPos() const;
+			Position PcmPos() const;
+			double TimePos() const;
 
-			Position RawTotal(void) const;
-			Position PcmTotal(void) const;
-			double TimeTotal(void) const;
+			Position RawTotal() const;
+			Position PcmTotal() const;
+			double TimeTotal() const;
 		private:
 			WaveFileContext* context;
 		};

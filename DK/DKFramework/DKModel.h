@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKModel.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -49,50 +49,50 @@ namespace DKFramework
 
 		const Type type;
 
-		DKModel(void);
-		virtual ~DKModel(void);
+		DKModel();
+		virtual ~DKModel();
 
-		DKWorld* Scene(void)					{ return scene; }
-		const DKWorld* Scene(void) const		{ return scene; }
-		virtual void RemoveFromScene(void);
+		DKWorld* Scene()					{ return scene; }
+		const DKWorld* Scene() const		{ return scene; }
+		virtual void RemoveFromScene();
 
 		bool AddChild(DKModel*);
-		void RemoveFromParent(void);
+		void RemoveFromParent();
 
-		DKModel* RootObject(void);
-		const DKModel* RootObject(void) const;
+		DKModel* RootObject();
+		const DKModel* RootObject() const;
 
-		DKModel* Parent(void)				{ return parent; }
-		const DKModel* Parent(void) const	{ return parent; }
+		DKModel* Parent()				{ return parent; }
+		const DKModel* Parent() const	{ return parent; }
 
 		bool IsDescendantOf(const DKModel* obj) const;
-		size_t NumberOfDescendants(void) const;
+		size_t NumberOfDescendants() const;
 		DKModel* FindDescendant(const DKString&);
 		const DKModel* FindDescendant(const DKString&) const;
 		DKModel* FindCommonAncestor(DKModel*, DKModel*, Type t = TypeCustom);
 
 		DKModel* ChildAtIndex(unsigned int i)					{ return children.Value(i); }
 		const DKModel* ChildAtIndex(unsigned int i) const		{ return children.Value(i); }
-		size_t NumberOfChildren(void) const						{ return children.Count(); }
+		size_t NumberOfChildren() const						{ return children.Count(); }
 
 		/// show/hide all descendants (not self)
 		void SetDescendantsHidden(bool hidden)			{ hideDescendants = hidden; }
-		bool AreDescendantsHidden(void) const			{ return hideDescendants; }
-		bool DidAncestorHideDescendants(void) const;
+		bool AreDescendantsHidden() const			{ return hideDescendants; }
+		bool DidAncestorHideDescendants() const;
 
 		void Enumerate(Enumerator* e)					{ EnumerateInternal(e); }
 		void Enumerate(EnumeratorLoop* e)				{ EnumerateInternal(e); }
 		void Enumerate(ConstEnumerator* e) const		{ EnumerateInternal(e); }
 		void Enumerate(ConstEnumeratorLoop* e) const	{ EnumerateInternal(e); }
 
-		DKAnimatedTransform* Animation(void)				{ return animation; }
-		const DKAnimatedTransform* Animation(void) const	{ return animation; }
+		DKAnimatedTransform* Animation()				{ return animation; }
+		const DKAnimatedTransform* Animation() const	{ return animation; }
 		void SetAnimation(DKAnimatedTransform*, bool recursive = true);
 
 		virtual void SetWorldTransform(const DKNSTransform&);
 		virtual void SetLocalTransform(const DKNSTransform&);
-		const DKNSTransform& WorldTransform(void) const		{ return worldTransform; }
-		const DKNSTransform& LocalTransform(void) const		{ return localTransform; }
+		const DKNSTransform& WorldTransform() const		{ return worldTransform; }
+		const DKNSTransform& LocalTransform() const		{ return localTransform; }
 
 		void CreateNamedObjectMap(NamedObjectMap&); ///< building object map for search by name.
 		void CreateUUIDObjectMap(UUIDObjectMap&);   ///< building object map for search by UUID.
@@ -104,15 +104,15 @@ namespace DKFramework
 		void UpdateWorldTransform(bool recursive = true);
 
 		/// clone object. (internal resources are shared)
-		DKObject<DKModel> Clone(void) const;
+		DKObject<DKModel> Clone() const;
 		/// serializer
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		virtual void OnAddedToScene(void) {}
-		virtual void OnRemovedFromScene(void) {}
-		virtual void OnAddedToParent(void) {}
-		virtual void OnRemovedFromParent(void) {}
+		virtual void OnAddedToScene() {}
+		virtual void OnRemovedFromScene() {}
+		virtual void OnAddedToParent() {}
+		virtual void OnRemovedFromParent() {}
 		virtual void OnSetAnimation(DKAnimatedTransform*) {}
 
 		// OnUpdateTreeReferences: called on tree changed or restored.

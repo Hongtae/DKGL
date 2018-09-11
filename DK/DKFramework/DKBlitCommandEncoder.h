@@ -22,6 +22,6 @@ namespace DKFramework
 			OptionStencilFromDepthStencil    = 1 << 1,
 		};
 
-		virtual ~DKBlitCommandEncoder(void) {}
+		virtual ~DKBlitCommandEncoder() {}
 	};
 }

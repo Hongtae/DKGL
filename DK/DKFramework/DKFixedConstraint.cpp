@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKFixedConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -36,22 +36,22 @@ DKFixedConstraint::DKFixedConstraint(DKRigidBody* rbA, const DKNSTransform& ta)
 {
 }
 
-DKFixedConstraint::DKFixedConstraint(void)
+DKFixedConstraint::DKFixedConstraint()
 : DKFixedConstraint(NULL, NULL, DKNSTransform::identity, DKNSTransform::identity)
 {
 }
 
-DKFixedConstraint::~DKFixedConstraint(void)
+DKFixedConstraint::~DKFixedConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btFixedConstraint*>(this->impl));
 }
 
-DKNSTransform DKFixedConstraint::FrameA(void) const
+DKNSTransform DKFixedConstraint::FrameA() const
 {
 	return BulletTransform(static_cast<FixedConstraintExt*>(this->impl)->m_frameInA);
 }
 
-DKNSTransform DKFixedConstraint::FrameB(void) const
+DKNSTransform DKFixedConstraint::FrameB() const
 {
 	return BulletTransform(static_cast<FixedConstraintExt*>(this->impl)->m_frameInB);
 }
@@ -81,7 +81,7 @@ void DKFixedConstraint::SetFrames(const DKNSTransform& a, const DKNSTransform& b
 	c->m_frameInB = BulletTransform(b);
 }
 
-void DKFixedConstraint::ResetContext(void)
+void DKFixedConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btFixedConstraint*>(this->impl));
 
@@ -95,7 +95,7 @@ void DKFixedConstraint::ResetContext(void)
 	c->m_frameInB = frameB;
 }
 
-void DKFixedConstraint::ResetContextImpl(void)
+void DKFixedConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btFixedConstraint*>(this->impl));
 	btFixedConstraint* c = static_cast<btFixedConstraint*>(this->impl);
@@ -120,7 +120,7 @@ DKFixedConstraint* DKFixedConstraint::Copy(UUIDObjectMap& uuids, const DKFixedCo
 	return NULL;
 }
 
-DKObject<DKSerializer> DKFixedConstraint::Serializer(void)
+DKObject<DKSerializer> DKFixedConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

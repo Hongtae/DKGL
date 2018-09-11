@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKRigidBody.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -171,7 +171,7 @@ DKRigidBody::DKRigidBody(DKCollisionShape* shape, const ObjectData& data)
 	DKASSERT_DEBUG(b);
 }
 
-DKRigidBody::~DKRigidBody(void)
+DKRigidBody::~DKRigidBody()
 {
 	btRigidBody* rb = btRigidBody::upcast(impl);
 	DKASSERT_DEBUG(rb);
@@ -185,7 +185,7 @@ DKRigidBody::~DKRigidBody(void)
 	motionState = NULL;
 }
 
-void DKRigidBody::OnAddedToParent(void)
+void DKRigidBody::OnAddedToParent()
 {
 	DKModel* p = this->Parent();
 	if (p)
@@ -224,14 +224,14 @@ void DKRigidBody::SetLocalTransform(const DKNSTransform& t)
 	body->activate(true);
 }
 
-DKNSTransform DKRigidBody::CenterOfMassTransform(void) const
+DKNSTransform DKRigidBody::CenterOfMassTransform() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
 	return BulletTransform(body->getCenterOfMassTransform());
 }
 
-DKVector3 DKRigidBody::CenterOfMassPosition(void) const
+DKVector3 DKRigidBody::CenterOfMassPosition() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -254,7 +254,7 @@ void DKRigidBody::SetMass(float mass)
 	body->updateInertiaTensor();
 }
 
-float DKRigidBody::Mass(void) const
+float DKRigidBody::Mass() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -264,7 +264,7 @@ float DKRigidBody::Mass(void) const
 	return m;
 }
 
-float DKRigidBody::InverseMass(void) const
+float DKRigidBody::InverseMass() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -282,7 +282,7 @@ void DKRigidBody::SetLocalInertia(const DKVector3& inertia)
 	body->updateInertiaTensor();
 }
 
-DKVector3 DKRigidBody::LocalInertia(void) const
+DKVector3 DKRigidBody::LocalInertia() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -295,14 +295,14 @@ DKVector3 DKRigidBody::LocalInertia(void) const
 		);
 }
 
-DKVector3 DKRigidBody::InverseDiagLocalInertia(void) const
+DKVector3 DKRigidBody::InverseDiagLocalInertia() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
 	return BulletVector3(body->getInvInertiaDiagLocal());
 }
 
-DKMatrix3 DKRigidBody::InverseWorldInertiaTensor(void) const
+DKMatrix3 DKRigidBody::InverseWorldInertiaTensor() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -316,7 +316,7 @@ void DKRigidBody::SetLinearVelocity(const DKVector3& v)
 	body->setLinearVelocity(BulletVector3(v));
 }
 
-DKVector3 DKRigidBody::LinearVelocity(void) const
+DKVector3 DKRigidBody::LinearVelocity() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -330,7 +330,7 @@ void DKRigidBody::SetAngularVelocity(const DKVector3& v)
 	body->setAngularVelocity(BulletVector3(v));
 }
 
-DKVector3 DKRigidBody::AngularVelocity(void) const
+DKVector3 DKRigidBody::AngularVelocity() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -344,7 +344,7 @@ void DKRigidBody::SetLinearFactor(const DKVector3& f)
 	body->setLinearFactor(BulletVector3(f));
 }
 
-DKVector3 DKRigidBody::LinearFactor(void) const
+DKVector3 DKRigidBody::LinearFactor() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -358,7 +358,7 @@ void DKRigidBody::SetAngularFactor(const DKVector3& f)
 	body->setAngularFactor(BulletVector3(f));
 }
 
-DKVector3 DKRigidBody::AngularFactor(void) const
+DKVector3 DKRigidBody::AngularFactor() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -373,7 +373,7 @@ void DKRigidBody::SetLinearDamping(float d)
 	body->setDamping(d, ang);
 }
 
-float DKRigidBody::LinearDamping(void) const
+float DKRigidBody::LinearDamping() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	if (body)
@@ -389,21 +389,21 @@ void DKRigidBody::SetAngularDamping(float d)
 	body->setDamping(lin, d);
 }
 
-float DKRigidBody::AngularDamping(void) const
+float DKRigidBody::AngularDamping() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
 	return body->getAngularDamping();
 }
 
-DKVector3 DKRigidBody::TotalForce(void) const
+DKVector3 DKRigidBody::TotalForce() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
 	return BulletVector3(body->getTotalForce());
 }
 
-DKVector3 DKRigidBody::TotalTorque(void) const
+DKVector3 DKRigidBody::TotalTorque() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -503,14 +503,14 @@ void DKRigidBody::SetAngularSleepingThreshold(float angular)
 	body->setSleepingThresholds(linear, angular);
 }
 
-float DKRigidBody::LinearSleepingThreshold(void) const
+float DKRigidBody::LinearSleepingThreshold() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
 	return body->getLinearSleepingThreshold();
 }
 
-float DKRigidBody::AngularSleepingThreshold(void) const
+float DKRigidBody::AngularSleepingThreshold() const
 {
 	btRigidBody* body = btRigidBody::upcast(this->impl);
 	DKASSERT_DEBUG(body);
@@ -567,7 +567,7 @@ DKRigidBody* DKRigidBody::Copy(UUIDObjectMap& uuids, const DKRigidBody* rb)
 	return NULL;
 }
 
-DKObject<DKSerializer> DKRigidBody::Serializer(void)
+DKObject<DKSerializer> DKRigidBody::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

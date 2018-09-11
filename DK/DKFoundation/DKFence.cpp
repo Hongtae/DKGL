@@ -76,7 +76,7 @@ DKFence::DKFence(const void* p, bool exclusive)
 	}
 }
 
-DKFence::~DKFence(void)
+DKFence::~DKFence()
 {
 	DKCriticalSection<DKCondition> guard(cond);
 	Bucket& b = buckets[reinterpret_cast<uintptr_t>(key) % BUCKET_SIZE];

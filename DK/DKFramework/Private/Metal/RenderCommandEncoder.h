@@ -22,12 +22,12 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		RenderCommandEncoder(MTLRenderPassDescriptor*, CommandBuffer*);
-		~RenderCommandEncoder(void);
+		~RenderCommandEncoder();
 
 		// DKCommandEncoder overrides
-		void EndEncoding(void) override;
-		bool IsCompleted(void) const override { return reusableEncoder == nullptr; }
-		DKCommandBuffer* Buffer(void) override { return buffer; }
+		void EndEncoding() override;
+		bool IsCompleted() const override { return reusableEncoder == nullptr; }
+		DKCommandBuffer* Buffer() override { return buffer; }
 
 		// DKRenderCommandEncoder overrides
 		void SetViewport(const DKViewport&) override;
@@ -51,7 +51,7 @@ namespace DKFramework::Private::Metal
 
 		struct ReusableEncoder : public ReusableCommandEncoder
 		{
-			~ReusableEncoder(void)
+			~ReusableEncoder()
 			{
 				[renderPassDescriptor autorelease];
 			}

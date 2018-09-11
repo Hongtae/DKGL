@@ -20,12 +20,12 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		BlitCommandEncoder(CommandBuffer*);
-		~BlitCommandEncoder(void);
+		~BlitCommandEncoder();
 
 		// DKCommandEncoder overrides
-		void EndEncoding(void) override;
-		bool IsCompleted(void) const override { return reusableEncoder == nullptr; }
-		DKCommandBuffer* Buffer(void) override { return buffer; }
+		void EndEncoding() override;
+		bool IsCompleted() const override { return reusableEncoder == nullptr; }
+		DKCommandBuffer* Buffer() override { return buffer; }
 
 		// DKBlitCommandEncoder
 

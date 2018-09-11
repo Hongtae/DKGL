@@ -84,9 +84,9 @@ namespace DKFramework
 			ModulePath,	///< retrieve current module (or executable) path.
 		};
 
-		DKApplication(void);
+		DKApplication();
 		DKApplication(int argc, char* argv[]);
-		virtual ~DKApplication(void);
+		virtual ~DKApplication();
 
 		/// create and running application's main event loop.
 		/// only one instance can enter main loop.
@@ -96,10 +96,10 @@ namespace DKFramework
 		void Terminate(int exitCode);
 
 		/// get DKApplication instance which is running.
-		static DKApplication* Instance(void);
+		static DKApplication* Instance();
 
 		/// get application main event loop.
-		DKEventLoop* EventLoop(void);
+		DKEventLoop* EventLoop();
 
 		/// retrieve pre-defined paths
 		DKString DefaultPath(SystemPath);
@@ -117,12 +117,12 @@ namespace DKFramework
 		DKRect ScreenContentBounds(int displayId) const;
 
 	protected:
-		virtual void OnHidden(void);        ///< application become hidden. (not minimized)
-		virtual void OnRestore(void);       ///< application has restored.
-		virtual void OnActivated(void);     ///< application has activated.
-		virtual void OnDeactivated(void);   ///< application has deactivated.
-		virtual void OnInitialize(void);    ///< application being initialized. (entering EventLoop)
-		virtual void OnTerminate(void);     ///< application being terminated. (exiting EventLoop)
+		virtual void OnHidden();        ///< application become hidden. (not minimized)
+		virtual void OnRestore();       ///< application has restored.
+		virtual void OnActivated();     ///< application has activated.
+		virtual void OnDeactivated();   ///< application has deactivated.
+		virtual void OnInitialize();    ///< application being initialized. (entering EventLoop)
+		virtual void OnTerminate();     ///< application being terminated. (exiting EventLoop)
 
 	private:
 		void Initialize();

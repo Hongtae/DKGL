@@ -23,10 +23,10 @@ namespace DKFramework
 			{
 			public:
 				Application(DKApplication* app);
-				~Application(void);
+				~Application();
 
-				DKEventLoop* EventLoop(void) override;
-				DKLogger* DefaultLogger(void) override;
+				DKEventLoop* EventLoop() override;
+				DKLogger* DefaultLogger() override;
 
 				DKString DefaultPath(SystemPath) override;
 				DKString ProcessInfoString(ProcessInfo) override;

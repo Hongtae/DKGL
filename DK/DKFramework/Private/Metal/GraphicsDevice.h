@@ -18,10 +18,10 @@ namespace DKFramework::Private::Metal
 	class GraphicsDevice : public DKGraphicsDeviceInterface
 	{
 	public:
-		GraphicsDevice(void);
-		~GraphicsDevice(void);
+		GraphicsDevice();
+		~GraphicsDevice();
 
-		DKString DeviceName(void) const override;
+		DKString DeviceName() const override;
 		DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*, uint32_t) override;
 		DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) override;
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKRenderPipelineReflection*) override;

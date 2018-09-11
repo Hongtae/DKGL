@@ -56,7 +56,7 @@ namespace DKFoundation
 		/// return allocator if object has one.
 		static DKAllocator* Allocator(void*);
 
-		static size_t TableSize(void);	///< functions for debugging.
+		static size_t TableSize();	///< functions for debugging.
 		static void TableDump(size_t*);	///< functions for debugging.
 	};
 }

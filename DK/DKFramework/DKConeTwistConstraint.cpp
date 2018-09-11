@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKConeTwistConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -24,12 +24,12 @@ DKConeTwistConstraint::DKConeTwistConstraint(DKRigidBody* rbA, const DKNSTransfo
 	DKASSERT_DEBUG(dynamic_cast<btConeTwistConstraint*>(BulletTypedConstraint(this)));
 }
 
-DKConeTwistConstraint::DKConeTwistConstraint(void)
+DKConeTwistConstraint::DKConeTwistConstraint()
 : DKConeTwistConstraint(NULL, NULL, DKNSTransform::identity, DKNSTransform::identity)
 {
 }
 
-DKConeTwistConstraint::~DKConeTwistConstraint(void)
+DKConeTwistConstraint::~DKConeTwistConstraint()
 {
 }
 
@@ -42,7 +42,7 @@ void DKConeTwistConstraint::SetLimit(float swingSpan1, float swingSpan2, float t
 #define LIMIT_SWINGSPAN2	4
 #define LIMIT_TWISTSPAN		3
 
-float DKConeTwistConstraint::SwingSpan1(void) const
+float DKConeTwistConstraint::SwingSpan1() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getSwingSpan1();
 }
@@ -52,7 +52,7 @@ void DKConeTwistConstraint::SetSwingSpan1(float f)
 	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(LIMIT_SWINGSPAN1, f);
 }
 
-float DKConeTwistConstraint::SwingSpan2(void) const
+float DKConeTwistConstraint::SwingSpan2() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getSwingSpan2();
 }
@@ -62,7 +62,7 @@ void DKConeTwistConstraint::SetSwingSpan2(float f)
 	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(LIMIT_SWINGSPAN2, f);
 }
 
-float DKConeTwistConstraint::TwistSpan(void) const
+float DKConeTwistConstraint::TwistSpan() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getTwistSpan();
 }
@@ -72,7 +72,7 @@ void DKConeTwistConstraint::SetTwistSpan(float f)
 	static_cast<btConeTwistConstraint*>(this->impl)->setLimit(LIMIT_TWISTSPAN, f);
 }
 
-float DKConeTwistConstraint::Softness(void) const
+float DKConeTwistConstraint::Softness() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getLimitSoftness();
 }
@@ -88,7 +88,7 @@ void DKConeTwistConstraint::SetSoftness(float softness)
 				c->getRelaxationFactor());
 }
 
-float DKConeTwistConstraint::BiasFactor(void) const
+float DKConeTwistConstraint::BiasFactor() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getBiasFactor();
 }
@@ -104,7 +104,7 @@ void DKConeTwistConstraint::SetBiasFactor(float biasFactor)
 				c->getRelaxationFactor());
 }
 
-float DKConeTwistConstraint::RelaxationFactor(void) const
+float DKConeTwistConstraint::RelaxationFactor() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getRelaxationFactor();
 }
@@ -120,12 +120,12 @@ void DKConeTwistConstraint::SetRelaxationFactor(float relaxationFactor)
 				relaxationFactor);
 }
 
-float DKConeTwistConstraint::TwistAngle(void) const
+float DKConeTwistConstraint::TwistAngle() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getTwistAngle();
 }
 
-float DKConeTwistConstraint::Damping(void) const
+float DKConeTwistConstraint::Damping() const
 {
 	return static_cast<btConeTwistConstraint*>(this->impl)->getDamping();
 }
@@ -142,12 +142,12 @@ void DKConeTwistConstraint::SetFrames(const DKNSTransform& fA, const DKNSTransfo
 	static_cast<btConeTwistConstraint*>(this->impl)->setFrames(ta, tb);
 }
 
-DKNSTransform DKConeTwistConstraint::FrameA(void) const
+DKNSTransform DKConeTwistConstraint::FrameA() const
 {
 	return BulletTransform(static_cast<btConeTwistConstraint*>(this->impl)->getFrameOffsetA());
 }
 
-DKNSTransform DKConeTwistConstraint::FrameB(void) const
+DKNSTransform DKConeTwistConstraint::FrameB() const
 {
 	return BulletTransform(static_cast<btConeTwistConstraint*>(this->impl)->getFrameOffsetB());
 }
@@ -205,7 +205,7 @@ bool DKConeTwistConstraint::HasParam(ParamType type, ParamAxis axis) const
 	return false;
 }
 
-void DKConeTwistConstraint::ResetContext(void)
+void DKConeTwistConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btConeTwistConstraint*>(this->impl));
 	btConeTwistConstraint* c = static_cast<btConeTwistConstraint*>(this->impl);
@@ -227,7 +227,7 @@ void DKConeTwistConstraint::ResetContext(void)
 	c->setDamping(damping);
 }
 
-void DKConeTwistConstraint::ResetContextImpl(void)
+void DKConeTwistConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btConeTwistConstraint*>(this->impl));
 	btConeTwistConstraint* c = static_cast<btConeTwistConstraint*>(this->impl);
@@ -257,7 +257,7 @@ DKConeTwistConstraint* DKConeTwistConstraint::Copy(UUIDObjectMap& uuids, const D
 	return NULL;
 }
 
-DKObject<DKSerializer> DKConeTwistConstraint::Serializer(void)
+DKObject<DKSerializer> DKConeTwistConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

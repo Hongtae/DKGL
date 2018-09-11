@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKStaticPlaneShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -16,16 +16,16 @@ DKStaticPlaneShape::DKStaticPlaneShape(const DKVector3& planeNormal, float plane
 {
 }
 
-DKStaticPlaneShape::~DKStaticPlaneShape(void)
+DKStaticPlaneShape::~DKStaticPlaneShape()
 {
 }
 
-DKVector3 DKStaticPlaneShape::PlaneNormal(void) const
+DKVector3 DKStaticPlaneShape::PlaneNormal() const
 {
 	return BulletVector3(static_cast<btStaticPlaneShape*>(this->impl)->getPlaneNormal());
 }
 
-float DKStaticPlaneShape::PlaneConstant(void) const
+float DKStaticPlaneShape::PlaneConstant() const
 {
 	return static_cast<btStaticPlaneShape*>(this->impl)->getPlaneConstant();
 }

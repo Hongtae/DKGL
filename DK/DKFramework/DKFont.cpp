@@ -25,17 +25,17 @@ namespace DKFramework
 			class FTLibrary
 			{
 			public:
-				static FT_Library& GetLibrary(void)
+				static FT_Library& GetLibrary()
 				{
 					static FTLibrary	lib;
 					return lib.library;
 				}
 			private:
-				FTLibrary(void)
+				FTLibrary()
 				{
 					FT_Init_FreeType(&library);
 				}
-				~FTLibrary(void)
+				~FTLibrary()
 				{
 					FT_Done_FreeType(library);
 				}
@@ -47,7 +47,7 @@ namespace DKFramework
 
 using namespace DKFramework;
 
-DKFont::DKFont(void)
+DKFont::DKFont()
 	: ftFace(NULL)
 	, outline(0)
 	, embolden(0)
@@ -59,7 +59,7 @@ DKFont::DKFont(void)
 {
 }
 
-DKFont::~DKFont(void)
+DKFont::~DKFont()
 {
 	if (ftFace)
 		FT_Done_Face(reinterpret_cast<FT_Face>(ftFace));
@@ -392,7 +392,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 }
 #endif
 
-float DKFont::Baseline(void) const
+float DKFont::Baseline() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -412,7 +412,7 @@ float DKFont::Baseline(void) const
 	return ceilf(baseline + embolden);
 }
 
-float DKFont::Height(void) const
+float DKFont::Height() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -432,7 +432,7 @@ float DKFont::Height(void) const
 	return ceilf(height + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f));
 }
 
-float DKFont::Width(void) const
+float DKFont::Width() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -452,7 +452,7 @@ float DKFont::Width(void) const
 	return ceilf(width + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f));
 }
 
-float DKFont::LineHeight(void) const
+float DKFont::LineHeight() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -625,7 +625,7 @@ bool DKFont::SetStyle(int point, float embolden, float outline, DKPoint dpi, boo
 	return true;
 }
 
-void DKFont::ClearCache(void)
+void DKFont::ClearCache()
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	glyphMap.Clear();
@@ -634,14 +634,14 @@ void DKFont::ClearCache(void)
 	numGlyphsLoaded = 0;
 }
 
-bool DKFont::IsValid(void) const
+bool DKFont::IsValid() const
 {
 	if (ftFace && pointSize > 0)
 		return true;
 	return false;
 }
 
-DKString DKFont::FamilyName(void) const
+DKString DKFont::FamilyName() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face)
@@ -649,7 +649,7 @@ DKString DKFont::FamilyName(void) const
 	return L"";
 }
 
-DKString DKFont::StyleName(void) const
+DKString DKFont::StyleName() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face)

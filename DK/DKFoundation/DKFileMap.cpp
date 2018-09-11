@@ -65,13 +65,13 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKFileMap::DKFileMap(void)
+DKFileMap::DKFileMap()
 	: mapContext(NULL)
 	, mappedPtr(NULL)
 {
 }
 
-DKFileMap::~DKFileMap(void)
+DKFileMap::~DKFileMap()
 {
 	DKASSERT_DEBUG(mappedPtr == NULL);
 
@@ -118,7 +118,7 @@ DKFileMap::~DKFileMap(void)
 	}
 }
 
-const void* DKFileMap::LockShared(void) const
+const void* DKFileMap::LockShared() const
 {
 	lock.LockShared();
 	DKCriticalSection<DKSpinLock> guard(spinLock);
@@ -142,7 +142,7 @@ bool DKFileMap::TryLockShared(const void** ptr) const
 	return false;
 }
 
-void DKFileMap::UnlockShared(void) const
+void DKFileMap::UnlockShared() const
 {
 	lock.UnlockShared();
 
@@ -156,7 +156,7 @@ void DKFileMap::UnlockShared(void) const
 	}
 }
 
-void* DKFileMap::LockExclusive(void)
+void* DKFileMap::LockExclusive()
 {
 	lock.Lock();
 	DKCriticalSection<DKSpinLock> guard(spinLock);
@@ -179,7 +179,7 @@ bool DKFileMap::TryLockExclusive(void** ptr)
 	return false;
 }
 
-void DKFileMap::UnlockExclusive(void)
+void DKFileMap::UnlockExclusive()
 {
 	DKCriticalSection<DKSpinLock> guard(spinLock);
 	if (mappedPtr)
@@ -188,7 +188,7 @@ void DKFileMap::UnlockExclusive(void)
 	lock.Unlock();
 }
 
-void* DKFileMap::MapContent(void) const
+void* DKFileMap::MapContent() const
 {
 	// map, commit
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
@@ -217,7 +217,7 @@ void* DKFileMap::MapContent(void) const
 	return NULL;
 }
 
-void DKFileMap::UnmapContent(void) const
+void DKFileMap::UnmapContent() const
 {
 	// unmap, decommit
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
@@ -242,7 +242,7 @@ void DKFileMap::UnmapContent(void) const
 	}
 }
 
-size_t DKFileMap::Length(void) const
+size_t DKFileMap::Length() const
 {
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
 	if (ctxt)
@@ -252,7 +252,7 @@ size_t DKFileMap::Length(void) const
 	return 0;
 }
 
-bool DKFileMap::IsReadable(void) const
+bool DKFileMap::IsReadable() const
 {
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
 	if (ctxt)
@@ -266,7 +266,7 @@ bool DKFileMap::IsReadable(void) const
 	return false;
 }
 
-bool DKFileMap::IsWritable(void) const
+bool DKFileMap::IsWritable() const
 {
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
 	if (ctxt)
@@ -280,7 +280,7 @@ bool DKFileMap::IsWritable(void) const
 	return false;
 }
 
-bool DKFileMap::IsExcutable(void) const
+bool DKFileMap::IsExcutable() const
 {
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
 	if (ctxt)
@@ -294,7 +294,7 @@ bool DKFileMap::IsExcutable(void) const
 	return false;
 }
 
-bool DKFileMap::IsTransient(void) const
+bool DKFileMap::IsTransient() const
 {
 	Private::FileMapContext* ctxt = reinterpret_cast<Private::FileMapContext*>(this->mapContext);
 	if (ctxt)

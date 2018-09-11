@@ -12,7 +12,7 @@
 
 using namespace DKFramework;
 
-DKPlane::DKPlane(void)
+DKPlane::DKPlane()
 	: a(0)
 	, b(0)
 	, c(0)
@@ -38,7 +38,7 @@ DKPlane::DKPlane(const DKVector3& n, const DKVector3& p)
 {
 }
 
-DKPlane::~DKPlane(void)
+DKPlane::~DKPlane()
 {
 }
 
@@ -52,7 +52,7 @@ float DKPlane::Dot(const DKVector4& v) const
 	return a*v.x + b*v.y + c*v.z + d*v.w;
 }
 
-DKVector3 DKPlane::Normal(void) const
+DKVector3 DKPlane::Normal() const
 {
 	return DKVector3(a,b,c);
 }

@@ -28,7 +28,7 @@ DKCompressor::DKCompressor(Method m)
 {
 }
 
-DKCompressor::~DKCompressor(void)
+DKCompressor::~DKCompressor()
 {
 }
 

@@ -25,12 +25,12 @@ namespace DKFoundation
 #endif
 
 		typedef DKMap<DKThread::ThreadId, DKObject<DKEventLoop>, DKDummyLock> EventLoopMap;
-		static EventLoopMap& GetEventLoopMap(void)
+		static EventLoopMap& GetEventLoopMap()
 		{
 			static EventLoopMap eventLoopMap;
 			return eventLoopMap;
 		}
-		static DKSpinLock& GetEventLoopMapLock(void)
+		static DKSpinLock& GetEventLoopMapLock()
 		{
 			static DKSpinLock lock;
 			return lock;
@@ -87,10 +87,10 @@ namespace DKFoundation
 			};
 			mutable State state;
 
-			EventLoopPendingState(void) : state(StatePending)
+			EventLoopPendingState() : state(StatePending)
 			{
 			}
-			bool EnterOperation(void) const
+			bool EnterOperation() const
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				if (state == StatePending)
@@ -100,14 +100,14 @@ namespace DKFoundation
 				}
 				return false;
 			}
-			void LeaveOperation(void) const
+			void LeaveOperation() const
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				DKASSERT(state == StateProcessing);
 				state = StateProcessed;
 				resultCond.Broadcast();
 			}
-			bool Revoke(void) const override
+			bool Revoke() const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				if (state == StatePending)
@@ -117,7 +117,7 @@ namespace DKFoundation
 				}
 				return state == StateRevoked;
 			}
-			bool Result(void) const override
+			bool Result() const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				while (state != StateProcessed && state != StateRevoked)
@@ -125,17 +125,17 @@ namespace DKFoundation
 
 				return state == StateProcessed;
 			}
-			bool IsDone(void) const override
+			bool IsDone() const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				return state == StateProcessed;
 			}
-			bool IsRevoked(void) const override
+			bool IsRevoked() const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				return state == StateRevoked;
 			}
-			bool IsPending(void) const override
+			bool IsPending() const override
 			{
 				DKCriticalSection<DKCondition> guard(resultCond);
 				return state == StatePending;
@@ -157,7 +157,7 @@ bool DKEventLoop::InternalCommandCompareOrder(const InternalCommandTime& lhs, co
 	return lhs.fire < rhs.fire;
 }
 
-DKEventLoop::DKEventLoop(void)
+DKEventLoop::DKEventLoop()
 : running(false)
 , threadId(DKThread::invalidId)
 , commandQueueTick(&DKEventLoop::InternalCommandCompareOrder)
@@ -165,7 +165,7 @@ DKEventLoop::DKEventLoop(void)
 {
 }
 
-DKEventLoop::~DKEventLoop(void)
+DKEventLoop::~DKEventLoop()
 {
 	if (threadId != DKThread::invalidId)
 	{
@@ -175,7 +175,7 @@ DKEventLoop::~DKEventLoop(void)
 	RevokeAll();
 }
 
-bool DKEventLoop::Run(void)
+bool DKEventLoop::Run()
 {
 	if (BindThread())
 	{
@@ -194,7 +194,7 @@ bool DKEventLoop::Run(void)
 	return false;
 }
 
-bool DKEventLoop::IsRunning(void) const
+bool DKEventLoop::IsRunning() const
 {
 	if (threadId != DKThread::invalidId)
 	{
@@ -218,7 +218,7 @@ void DKEventLoop::InternalPostCommand(const InternalCommandTime& cmd)
 	commandQueueCond.Signal();
 }
 
-bool DKEventLoop::BindThread(void)
+bool DKEventLoop::BindThread()
 {
 	if (this->threadId == DKThread::invalidId)
 	{
@@ -238,7 +238,7 @@ bool DKEventLoop::BindThread(void)
 	return false;
 }
 
-void DKEventLoop::UnbindThread(void)
+void DKEventLoop::UnbindThread()
 {
 	DKASSERT_DEBUG(IsEventLoopExist(this));
 	DKASSERT_DEBUG(threadId != DKThread::invalidId);
@@ -247,7 +247,7 @@ void DKEventLoop::UnbindThread(void)
 	threadId = DKThread::invalidId;
 }
 
-void DKEventLoop::Stop(void)
+void DKEventLoop::Stop()
 {
 	if (IsRunning())
 	{
@@ -318,7 +318,7 @@ bool DKEventLoop::Process(const DKOperation* op)
 	return false;
 }
 
-size_t DKEventLoop::RevokeAll(void)
+size_t DKEventLoop::RevokeAll()
 {
 	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
 
@@ -387,7 +387,7 @@ bool DKEventLoop::GetNextLoopIntervalNL(double* d) const
 	return false;
 }
 
-void DKEventLoop::WaitNextLoop(void)
+void DKEventLoop::WaitNextLoop()
 {
 	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
 
@@ -428,7 +428,7 @@ bool DKEventLoop::WaitNextLoopTimeout(double t)
 	return false;
 }
 
-double DKEventLoop::PendingEventInterval(void) const
+double DKEventLoop::PendingEventInterval() const
 {
 	DKCriticalSection<DKCondition> guard(this->commandQueueCond);
 
@@ -445,7 +445,7 @@ void DKEventLoop::PerformOperation(const DKOperation* operation)
 	operation->Perform();
 }
 
-bool DKEventLoop::Dispatch(void)
+bool DKEventLoop::Dispatch()
 {
 	DKASSERT_DEBUG(this->threadId == DKThread::CurrentThreadId());
 
@@ -487,7 +487,7 @@ bool DKEventLoop::Dispatch(void)
 			DKEventLoop* el;
 			DKOperation* op;
 
-			void Perform(void) const override
+			void Perform() const override
 			{
 				el->PerformOperation(op);
 			}
@@ -512,17 +512,17 @@ bool DKEventLoop::Dispatch(void)
 	return false;
 }
 
-bool DKEventLoop::IsWrokingThread(void) const
+bool DKEventLoop::IsWrokingThread() const
 {
 	return DKThread::CurrentThreadId() == this->threadId;
 }
 
-DKThread::ThreadId DKEventLoop::RunningThreadId(void) const
+DKThread::ThreadId DKEventLoop::RunningThreadId() const
 {
 	return this->threadId;
 }
 
-DKObject<DKEventLoop> DKEventLoop::CurrentEventLoop(void)
+DKObject<DKEventLoop> DKEventLoop::CurrentEventLoop()
 {
 	return GetEventLoop(DKThread::CurrentThreadId());
 }

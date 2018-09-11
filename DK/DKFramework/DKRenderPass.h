@@ -32,7 +32,7 @@ namespace DKFramework
 		LoadAction loadAction = LoadActionDontCare;
 		StoreAction storeAction = StoreActionDontCare;
 
-		virtual ~DKRenderPassAttachmentDescriptor(void) {}
+		virtual ~DKRenderPassAttachmentDescriptor() {}
 	};
 
 	struct DKRenderPassColorAttachmentDescriptor : public DKRenderPassAttachmentDescriptor

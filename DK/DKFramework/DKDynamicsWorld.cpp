@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKDynamicsWorld.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -57,7 +57,7 @@ namespace DKFramework
 			//}
 		};
 
-		CollisionWorldContext* CreateDynamicsWorldContext(void)
+		CollisionWorldContext* CreateDynamicsWorldContext()
 		{
 			CollisionWorldContext* ctxt = new CollisionWorldContext();
 			ctxt->configuration = new btDefaultCollisionConfiguration();
@@ -85,7 +85,7 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKDynamicsWorld::DKDynamicsWorld(void)
+DKDynamicsWorld::DKDynamicsWorld()
 	: DKWorld(CreateDynamicsWorldContext())
 	, dynamicsFixedFPS(0.0)
 	, actionInterface(NULL)
@@ -114,7 +114,7 @@ DKDynamicsWorld::DKDynamicsWorld(void)
 	world->addAction(this->actionInterface);	
 }
 
-DKDynamicsWorld::~DKDynamicsWorld(void)
+DKDynamicsWorld::~DKDynamicsWorld()
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -181,7 +181,7 @@ void DKDynamicsWorld::SetFixedFrameRate(double fps)
 	dynamicsFixedFPS = fps;
 }
 
-double DKDynamicsWorld::FixedFrameRate(void) const
+double DKDynamicsWorld::FixedFrameRate() const
 {
 	return dynamicsFixedFPS;
 }
@@ -202,7 +202,7 @@ void DKDynamicsWorld::SetGravity(const DKVector3& g)
 	static_cast<btDiscreteDynamicsWorld*>(context->world)->setGravity(btVector3(g.x, g.y, g.z));
 }
 
-DKVector3 DKDynamicsWorld::Gravity(void) const
+DKVector3 DKDynamicsWorld::Gravity() const
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));
@@ -336,7 +336,7 @@ void DKDynamicsWorld::RemoveSingleObject(DKModel* obj)
 	}
 }
 
-void DKDynamicsWorld::RemoveAllObjects(void)
+void DKDynamicsWorld::RemoveAllObjects()
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(dynamic_cast<btDiscreteDynamicsWorld*>(context->world));

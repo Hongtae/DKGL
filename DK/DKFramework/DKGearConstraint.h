@@ -19,22 +19,22 @@ namespace DKFramework
 		DKGearConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB,
 						 const DKVector3& axisInA, const DKVector3& axisInB,
 						 float ratio = 1.0f);
-		DKGearConstraint(void);
-		~DKGearConstraint(void);
+		DKGearConstraint();
+		~DKGearConstraint();
 
 		void SetAxisInA(const DKVector3& axis);
 		void SetAxisInB(const DKVector3& axis);
-		DKVector3 AxisInA(void) const;
-		DKVector3 AxisInB(void) const;
+		DKVector3 AxisInA() const;
+		DKVector3 AxisInB() const;
 
-		float Ratio(void) const;
+		float Ratio() const;
 		void SetRatio(float r);
 		
-		DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
 		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGearConstraint* Copy(UUIDObjectMap&, const DKGearConstraint*);

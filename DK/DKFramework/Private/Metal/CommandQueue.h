@@ -20,13 +20,13 @@ namespace DKFramework::Private::Metal
 	{
 	public:
 		CommandQueue(DKGraphicsDevice*, id<MTLCommandQueue>);
-		~CommandQueue(void);
+		~CommandQueue();
 
-		DKObject<DKCommandBuffer> CreateCommandBuffer(void) override;
+		DKObject<DKCommandBuffer> CreateCommandBuffer() override;
 		DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 
-		uint32_t Type(void) const override { return Graphics | Compute; }
-		DKGraphicsDevice* Device(void) override { return device; }
+		uint32_t Type() const override { return Graphics | Compute; }
+		DKGraphicsDevice* Device() override { return device; }
 
 		DKObject<DKGraphicsDevice> device;
 		id<MTLCommandQueue> queue;

@@ -29,16 +29,16 @@ namespace DKFramework
 			Both,	///< assume both faces are front.
 		};
 
-		DKTriangle(void);
+		DKTriangle();
 		DKTriangle(const DKVector3& p1, const DKVector3& p2, const DKVector3& p3);
-		~DKTriangle(void);
+		~DKTriangle();
 
 		DKVector3	position1;
 		DKVector3	position2;
 		DKVector3	position3;
 
-		float Area(void) const;		///< area of triangle
-		DKAabb Aabb(void) const;
+		float Area() const;		///< area of triangle
+		DKAabb Aabb() const;
 		bool RayTest(const DKLine& ray, DKVector3* hitPoint = NULL, Front faces = Front::Both, float epsilon = 0.000001f) const;
 	};
 }

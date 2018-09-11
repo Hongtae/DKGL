@@ -18,10 +18,10 @@ namespace DKFoundation
 	public:
 		typedef int64_t Value;
 		DKAtomicNumber64(Value initialValue = 0);
-		~DKAtomicNumber64(void);
+		~DKAtomicNumber64();
 
-		Value Increment(void);			///< +1, returns previous value.
-		Value Decrement(void);			///< -1, returns previous value.
+		Value Increment();			///< +1, returns previous value.
+		Value Decrement();			///< -1, returns previous value.
 		Value Add(Value addend);		///< +addend, returns previous value.
 		Value Exchange(Value value);	///< set value, returns previous value.
 
@@ -30,7 +30,7 @@ namespace DKFoundation
 
 		DKAtomicNumber64& operator = (Value value);
 		DKAtomicNumber64& operator += (Value value);
-		operator Value (void) const;
+		operator Value () const;
 	private:
 		volatile Value atomic;
 	};

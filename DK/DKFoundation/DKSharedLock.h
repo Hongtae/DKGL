@@ -21,14 +21,14 @@ namespace DKFoundation
 	class DKGL_API DKSharedLock
 	{
 	public:
-		DKSharedLock(void);
-		~DKSharedLock(void);
-		void LockShared(void) const;
-		bool TryLockShared(void) const;
-		void UnlockShared(void) const;
-		void Lock(void) const;		///< exclusive lock
-		bool TryLock(void) const;	///< exclusive try-lock
-		void Unlock(void) const;	///< exclusive unlock
+		DKSharedLock();
+		~DKSharedLock();
+		void LockShared() const;
+		bool TryLockShared() const;
+		void UnlockShared() const;
+		void Lock() const;		///< exclusive lock
+		bool TryLock() const;	///< exclusive try-lock
+		void Unlock() const;	///< exclusive unlock
 
 	private:
 		DKSharedLock(const DKSharedLock&) = delete;
@@ -42,7 +42,7 @@ namespace DKFoundation
 	{
 	public:
 		DKSharedLockReadOnlySection(const DKSharedLock& sl) : lock(sl) { lock.LockShared(); }
-		~DKSharedLockReadOnlySection(void) { lock.UnlockShared(); }
+		~DKSharedLockReadOnlySection() { lock.UnlockShared(); }
 
 	private:
 		DKSharedLockReadOnlySection(const DKSharedLockReadOnlySection&) = delete;

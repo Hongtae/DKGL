@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKCollisionShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -31,7 +31,7 @@ DKCollisionShape::DKCollisionShape(ShapeType t, btCollisionShape* c)
 	impl->setUserPointer(this);
 }
 
-DKCollisionShape::~DKCollisionShape(void)
+DKCollisionShape::~DKCollisionShape()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -64,7 +64,7 @@ void DKCollisionShape::Aabb(const DKNSTransform& transform, DKVector3& aabbMin, 
 	aabbMax = BulletVector3(vmax);
 }
 
-DKSphere DKCollisionShape::BoundingSphere(void) const
+DKSphere DKCollisionShape::BoundingSphere() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -85,7 +85,7 @@ void DKCollisionShape::SetMargin(float m)
 	impl->setMargin(m);
 }
 
-float DKCollisionShape::Margin(void) const
+float DKCollisionShape::Margin() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -101,7 +101,7 @@ void DKCollisionShape::SetLocalScale(const DKVector3& s)
 	impl->setLocalScaling(BulletVector3(s));
 }
 
-DKVector3 DKCollisionShape::LocalScale(void) const
+DKVector3 DKCollisionShape::LocalScale() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -120,27 +120,27 @@ DKVector3 DKCollisionShape::CalculateLocalInertia(float mass) const
 	return DKVector3(localInertia.x(), localInertia.y(), localInertia.z());
 }
 
-bool DKCollisionShape::IsCompund(void) const
+bool DKCollisionShape::IsCompund() const
 {
 	return impl->isCompound();
 }
 
-bool DKCollisionShape::IsConvex(void) const
+bool DKCollisionShape::IsConvex() const
 {
 	return impl->isConvex();
 }
 
-bool DKCollisionShape::IsConcave(void) const
+bool DKCollisionShape::IsConcave() const
 {
 	return impl->isConcave();
 }
 
-bool DKCollisionShape::IsPolyhedral(void) const
+bool DKCollisionShape::IsPolyhedral() const
 {
 	return impl->isPolyhedral();
 }
 
-DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
+DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

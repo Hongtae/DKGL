@@ -18,10 +18,10 @@ namespace DKFramework::Private::Vulkan
 	class GraphicsDevice : public DKGraphicsDeviceInterface
 	{
 	public:
-		GraphicsDevice(void);
-		~GraphicsDevice(void);
+		GraphicsDevice();
+		~GraphicsDevice();
 
-		DKString DeviceName(void) const override;
+		DKString DeviceName() const override;
 		DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*, uint32_t) override;
 		DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) override;
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKRenderPipelineReflection*) override;
@@ -29,7 +29,7 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) override;
 		DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) override;
 
-		VkFence GetFence(void);
+		VkFence GetFence();
 		void AddFenceCompletionHandler(VkFence, DKOperation*, bool useEventLoop = false);
 
 		VkInstance instance;
@@ -61,11 +61,11 @@ namespace DKFramework::Private::Vulkan
 		DKCondition fenceCompletionCond;
 		bool fenceCompletionThreadRunning;
 		DKObject<DKThread> fenceCompletionThread;
-		void FenceCompletionCallbackThreadProc(void);
+		void FenceCompletionCallbackThreadProc();
 
 		VkPipelineCache pipelineCache;
-		void LoadPipelineCache(void);
-		void SavePipelineCache(void);
+		void LoadPipelineCache();
+		void SavePipelineCache();
 
 		// extensions
 		InstanceProc iproc; // instance procedure

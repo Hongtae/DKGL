@@ -28,7 +28,7 @@ namespace DKFoundation
 	template <class TYPE> class DKSharedInstance
 	{
 	public:
-		static DKObject<TYPE> SharedInstance(void)
+		static DKObject<TYPE> SharedInstance()
 		{
 			DKCriticalSection<DKSpinLock> cs(creatorLock);
 
@@ -63,7 +63,7 @@ namespace DKFoundation
 			DKASSERT_DESC_DEBUG(obj != NULL, "Object creation failure!");
 			return obj;
 		}
-		static DKObject<TYPE> GetSharedInstanceIfExist(void)
+		static DKObject<TYPE> GetSharedInstanceIfExist()
 		{
 			DKCriticalSection<DKSpinLock> guard(sharedRefLock);
 			if (creator)
@@ -75,10 +75,10 @@ namespace DKFoundation
 			return NULL;
 		}
 	protected:
-		DKSharedInstance(void)
+		DKSharedInstance()
 		{
 		}
-		virtual ~DKSharedInstance(void)
+		virtual ~DKSharedInstance()
 		{
 			DKCriticalSection<DKSpinLock> guard(sharedRefLock);
 			if (creator == this)

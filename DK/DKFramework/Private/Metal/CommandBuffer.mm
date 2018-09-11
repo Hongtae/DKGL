@@ -27,7 +27,7 @@ CommandBuffer::CommandBuffer(DKCommandQueue* q)
 	DKASSERT_DEBUG(queue.SafeCast<CommandQueue>());
 }
 
-CommandBuffer::~CommandBuffer(void)
+CommandBuffer::~CommandBuffer()
 {
 }
 
@@ -141,7 +141,7 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 	return r;
 }
 
-DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(void)
+DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 {
 	if (activeEncoder)
 	{
@@ -155,7 +155,7 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder(voi
 	return r;
 }
 
-DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
+DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
 {
 	if (activeEncoder)
 	{
@@ -169,7 +169,7 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder(void)
 	return r;
 }
 
-bool CommandBuffer::Commit(void)
+bool CommandBuffer::Commit()
 {
 	DKASSERT_DEBUG(activeEncoder == nullptr);
 

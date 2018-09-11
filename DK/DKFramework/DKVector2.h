@@ -17,7 +17,7 @@ namespace DKFramework
 	class DKGL_API DKVector2
 	{
 	public:
-		DKVector2(void);
+		DKVector2();
 		DKVector2(float x_, float y_);
 
 		static float Dot(const DKVector2& v1, const DKVector2& v2); ///< dot product
@@ -27,7 +27,7 @@ namespace DKFramework
 
 		DKVector2 operator + (const DKVector2& v) const;
 		DKVector2 operator - (const DKVector2& v) const;	// binary
-		DKVector2 operator - (void) const;					// unary
+		DKVector2 operator - () const;					// unary
 		DKVector2 operator * (float f) const;
 		DKVector2 operator * (const DKVector2& v) const;
 		DKVector2 operator * (const DKMatrix2& m) const;
@@ -44,15 +44,15 @@ namespace DKFramework
 		DKVector2& operator /= (float f);
 		DKVector2& operator /= (const DKVector2& v);
 
-		float Length(void) const;
-		float LengthSq(void) const;			///< length^2
+		float Length() const;
+		float LengthSq() const;			///< length^2
 
 		DKVector2& Transform(const DKMatrix2& m);	///< Linear Transform
 		DKVector2& Transform(const DKMatrix3& m);	///< Homogeneous Transform
-		DKVector2& Normalize(void);
+		DKVector2& Normalize();
 
-		operator float* (void)				{return val;}
-		operator const float* (void) const	{return val;}
+		operator float* ()				{return val;}
+		operator const float* () const	{return val;}
 
 		union
 		{

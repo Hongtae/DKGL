@@ -1,4 +1,4 @@
-﻿//
+//
 //  File: DKPolyhedralConvexShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -17,23 +17,23 @@ DKPolyhedralConvexShape::DKPolyhedralConvexShape(ShapeType t, btPolyhedralConvex
 	DKASSERT_DEBUG( this->impl->isPolyhedral() );
 }
 
-DKPolyhedralConvexShape::~DKPolyhedralConvexShape(void)
+DKPolyhedralConvexShape::~DKPolyhedralConvexShape()
 {
 	DKASSERT_DEBUG( this->impl->isPolyhedral() );
 	DKASSERT_DEBUG( dynamic_cast<btPolyhedralConvexShape*>(this->impl) );
 }
 
-size_t DKPolyhedralConvexShape::NumberOfVertices(void) const
+size_t DKPolyhedralConvexShape::NumberOfVertices() const
 {
 	return static_cast<btPolyhedralConvexShape*>(this->impl)->getNumVertices();
 }
 
-size_t DKPolyhedralConvexShape::NumberOfEdges(void) const
+size_t DKPolyhedralConvexShape::NumberOfEdges() const
 {
 	return static_cast<btPolyhedralConvexShape*>(this->impl)->getNumEdges();
 }
 
-size_t DKPolyhedralConvexShape::NumberOfPlanes(void) const
+size_t DKPolyhedralConvexShape::NumberOfPlanes() const
 {
 	return static_cast<btPolyhedralConvexShape*>(this->impl)->getNumPlanes();
 }

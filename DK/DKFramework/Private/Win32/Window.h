@@ -21,32 +21,32 @@ namespace DKFramework
 			{
 			public:
 				Window(DKWindow*);
-				~Window(void);
+				~Window();
 
 				bool Create(const DKString& title, uint32_t style);
 				bool CreateProxy(void* systemHandle);
-				bool IsProxy(void) const;
-				void UpdateProxy(void);
-				void Destroy(void);
-				void* PlatformHandle(void) const;
-				bool IsValid(void) const;
+				bool IsProxy() const;
+				void UpdateProxy();
+				void Destroy();
+				void* PlatformHandle() const;
+				bool IsValid() const;
 
 				void ShowMouse(int deviceId, bool show);
 				bool IsMouseVisible(int deviceId) const;
 				void HoldMouse(int deviceId, bool hold);
 				bool IsMouseHeld(int deviceId) const;
 
-				void Show(void);
-				void Hide(void);
-				void Activate(void);
-				void Minimize(void);
+				void Show();
+				void Hide();
+				void Activate();
+				void Minimize();
 
 				void SetOrigin(DKPoint);
 				void Resize(DKSize, const DKPoint* optionalOrigin);
-				double ContentScaleFactor(void) const;  // logical coords by pixel ratio.
+				double ContentScaleFactor() const;  // logical coords by pixel ratio.
 
 				void SetTitle(const DKString& title);
-				DKString Title(void) const;
+				DKString Title() const;
 
 				void SetMousePosition(int deviceId, DKPoint pt);
 				DKPoint MousePosition(int deviceId) const;
@@ -57,10 +57,10 @@ namespace DKFramework
 			private:
 				static LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 				static DKVirtualKey ConvertVKey(int key);
-				void UpdateKeyboard(void);
-				void UpdateMouse(void);
-				void ResetKeyboard(void);
-				void ResetMouse(void);
+				void UpdateKeyboard();
+				void UpdateMouse();
+				void ResetKeyboard();
+				void ResetMouse();
 
 				DKWindow* instance;
 				IDropTarget* dropTarget;

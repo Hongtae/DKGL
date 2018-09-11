@@ -10,14 +10,14 @@
 
 using namespace DKFramework;
 
-DKResource::DKResource(void)
+DKResource::DKResource()
 : allocator(NULL)
 , objectName("")
 , objectUUID(DKUuid::Create())
 {
 }
 
-DKResource::~DKResource(void)
+DKResource::~DKResource()
 {
 }
 
@@ -26,7 +26,7 @@ void DKResource::SetName(const DKString& name)
 	objectName = name;
 }
 
-const DKString& DKResource::Name(void) const
+const DKString& DKResource::Name() const
 {
 	return objectName;
 }
@@ -37,17 +37,17 @@ void DKResource::SetUUID(const DKUuid& uuid)
 	this->objectUUID = uuid;
 }
 
-const DKUuid& DKResource::UUID(void) const
+const DKUuid& DKResource::UUID() const
 {
 	return objectUUID;
 }
 
-bool DKResource::Validate(void)
+bool DKResource::Validate()
 {
 	return false;
 }
 
-DKObject<DKSerializer> DKResource::Serializer(void)
+DKObject<DKSerializer> DKResource::Serializer()
 {
 	class LocalSerializer : public DKSerializer
 	{
@@ -107,7 +107,7 @@ DKObject<DKSerializer> DKResource::Serializer(void)
 				return DKUuid(v.String()).IsValid();
 			return false;
 		}
-		void ResetUUID(void)
+		void ResetUUID()
 		{
 			target->objectUUID = DKUuid::Create();
 		}
@@ -126,7 +126,7 @@ DKObject<DKSerializer> DKResource::Serializer(void)
 		{
 			return v.ValueType() == DKVariant::TypePairs;
 		}
-		void ResetMetadata(void)
+		void ResetMetadata()
 		{
 			target->metadata.Clear();
 		}
@@ -185,7 +185,7 @@ bool DKResource::Deserialize(const DKXmlElement* e, DKResourceLoader* p)
 	return false;
 }
 
-DKAllocator& DKResource::Allocator(void)
+DKAllocator& DKResource::Allocator()
 {
 	if (this->allocator)
 		return *this->allocator;

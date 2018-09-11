@@ -36,13 +36,13 @@ namespace DKFramework
 			bool required;
 		};
 
-		virtual ~DKShaderFunction(void) {}
+		virtual ~DKShaderFunction() {}
 
-		virtual const DKArray<DKVertexAttribute>& VertexAttributes(void) const = 0;
-		virtual const DKArray<DKShaderAttribute>& StageInputAttributes(void) const = 0;
-		virtual const DKMap<DKString, Constant>& FunctionConstants(void) const = 0;
-		virtual DKString FunctionName(void) const = 0;
+		virtual const DKArray<DKVertexAttribute>& VertexAttributes() const = 0;
+		virtual const DKArray<DKShaderAttribute>& StageInputAttributes() const = 0;
+		virtual const DKMap<DKString, Constant>& FunctionConstants() const = 0;
+		virtual DKString FunctionName() const = 0;
 
-		virtual DKGraphicsDevice* Device(void) = 0;
+		virtual DKGraphicsDevice* Device() = 0;
 	};
 }
