@@ -469,25 +469,61 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				};
 
 				NSLog(@"RenderPipelineReflection: %@", pipelineReflection);
-				reflection->vertexResources.Clear();
-				reflection->vertexResources.Reserve(pipelineReflection.vertexArguments.count);
-				for (MTLArgument* arg in pipelineReflection.vertexArguments)
-				{
-					DKShaderResource res;
-					if (shaderResourceFromArgument(arg, res))
-						reflection->vertexResources.Add(res);
-				}
 
-				reflection->fragmentResources.Clear();
-				reflection->fragmentResources.Reserve(pipelineReflection.fragmentArguments.count);
-				for (MTLArgument* arg in pipelineReflection.fragmentArguments)
-				{
-					DKShaderResource res;
-					if (shaderResourceFromArgument(arg, res))
-						reflection->fragmentResources.Add(res);
-				}
-				reflection->vertexResources.ShrinkToFit();
-				reflection->fragmentResources.ShrinkToFit();
+                DKArray<DKShaderResource> vertexResources, fragmentResources;
+                struct PipelineReflectionCopy
+                {
+                    NSArray<MTLArgument*> *arguments;
+                    DKArray<DKShaderResource>& resources;
+                } reflectionCopyItems[2] =
+                {
+                    { pipelineReflection.vertexArguments, vertexResources },
+                    { pipelineReflection.fragmentArguments, fragmentResources },
+                };
+
+                for (auto& item : reflectionCopyItems )
+                {
+                    item.resources.Clear();
+                    item.resources.Reserve(item.arguments.count);
+                    for (MTLArgument* arg in item.arguments)
+                    {
+                        DKShaderResource res;
+                        if (shaderResourceFromArgument(arg, res))
+                        {
+                            bool combined = false;
+                            if (res.type == DKShaderResource::TypeSampler ||
+                                res.type == DKShaderResource::TypeTexture)
+                            {
+                                for (DKShaderResource& r : item.resources)
+                                {
+                                    if (r.binding == res.binding)
+                                    {
+                                        if ((res.type == DKShaderResource::TypeSampler && r.type == DKShaderResource::TypeTexture) ||
+                                            (res.type == DKShaderResource::TypeTexture && r.type == DKShaderResource::TypeSampler))
+                                        {
+                                            DKASSERT_DEBUG(r.typeInfo.buffer.alignment == res.typeInfo.buffer.alignment);
+                                            DKASSERT_DEBUG(r.typeInfo.buffer.size == res.typeInfo.buffer.size);
+
+                                            r.type = DKShaderResource::TypeSampledTexture;
+                                            combined = true;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            DKASSERT_DESC_DEBUG(0, "Invalid resource type!");
+                                        }
+                                    }
+                                }
+                            }
+                            if (!combined)
+                                item.resources.Add(res);
+                        }
+                    }
+
+                    item.resources.ShrinkToFit();
+                }
+                reflection->vertexResources = std::move(vertexResources);
+                reflection->fragmentResources = std::move(fragmentResources);
 			}
 		}
 		else

@@ -146,6 +146,7 @@ namespace DKFramework
 			TypeBuffer,
 			TypeTexture,
 			TypeSampler,
+			TypeSampledTexture,
 			TypeThreadgroupMemory,
 		};
 		enum Access

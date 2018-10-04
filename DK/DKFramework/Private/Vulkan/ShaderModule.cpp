@@ -61,8 +61,10 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		switch (type.basetype)
 		{
 		case spirv_cross::SPIRType::Image:
-		case spirv_cross::SPIRType::SampledImage:
 			out.type = DKShaderResource::TypeTexture;
+			break;
+		case spirv_cross::SPIRType::SampledImage:
+			out.type = DKShaderResource::TypeSampledTexture;
 			break;
 		case spirv_cross::SPIRType::Sampler:
 			out.type = DKShaderResource::TypeSampler;
