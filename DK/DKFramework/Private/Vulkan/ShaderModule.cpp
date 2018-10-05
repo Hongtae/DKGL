@@ -109,7 +109,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 						}
 
 						member.count = 1;
-						for (auto n : spType.array)
+						for (auto n : memberType.array)
 							member.count = member.count * n;
 
 						member.name = compiler.get_member_name(spType.self, i).c_str();
