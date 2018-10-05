@@ -18,7 +18,6 @@
 #define SPIRV_CROSS_GLSL_HPP
 
 #include "spirv_cross.hpp"
-#include <limits>
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
@@ -105,6 +104,11 @@ public:
 
 			// Inverts gl_Position.y or equivalent.
 			bool flip_vert_y = false;
+
+			// If true, the backend will assume that InstanceIndex will need to apply
+			// a base instance offset. Set to false if you know you will never use base instance
+			// functionality as it might remove some internal uniforms.
+			bool support_nonzero_base_instance = true;
 		} vertex;
 
 		struct
@@ -201,6 +205,7 @@ protected:
 	virtual void emit_function_prototype(SPIRFunction &func, const Bitset &return_flags);
 
 	SPIRBlock *current_emitting_block = nullptr;
+	SPIRBlock *current_emitting_switch = nullptr;
 
 	virtual void emit_instruction(const Instruction &instr);
 	void emit_block_instructions(SPIRBlock &block);
@@ -223,7 +228,7 @@ protected:
 	virtual void emit_struct_member(const SPIRType &type, uint32_t member_type_id, uint32_t index,
 	                                const std::string &qualifier = "", uint32_t base_offset = 0);
 	virtual std::string image_type_glsl(const SPIRType &type, uint32_t id = 0);
-	virtual std::string constant_expression(const SPIRConstant &c);
+	std::string constant_expression(const SPIRConstant &c);
 	std::string constant_op_expression(const SPIRConstantOp &cop);
 	virtual std::string constant_expression_vector(const SPIRConstant &c, uint32_t vector);
 	virtual void emit_fixup();
@@ -276,7 +281,6 @@ protected:
 		{
 			for (uint32_t i = 0; i < indent; i++)
 				(*buffer) << "    ";
-
 			statement_inner(std::forward<Ts>(ts)...);
 			(*buffer) << '\n';
 		}
@@ -322,6 +326,10 @@ protected:
 
 	std::unordered_set<std::string> local_variable_names;
 	std::unordered_set<std::string> resource_names;
+	std::unordered_set<std::string> block_input_names;
+	std::unordered_set<std::string> block_output_names;
+	std::unordered_set<std::string> block_ubo_names;
+	std::unordered_set<std::string> block_ssbo_names;
 	std::unordered_map<std::string, std::unordered_set<uint64_t>> function_overloads;
 
 	bool processing_entry_point = false;
@@ -356,6 +364,7 @@ protected:
 		bool allow_truncated_access_chain = false;
 		bool supports_extensions = false;
 		bool supports_empty_struct = false;
+		bool array_is_value_type = true;
 	} backend;
 
 	void emit_struct(SPIRType &type);
@@ -370,7 +379,7 @@ protected:
 	void emit_flattened_io_block(const SPIRVariable &var, const char *qual);
 	void emit_block_chain(SPIRBlock &block);
 	void emit_hoisted_temporaries(std::vector<std::pair<uint32_t, uint32_t>> &temporaries);
-	void emit_specialization_constant(const SPIRConstant &constant);
+	void emit_constant(const SPIRConstant &constant);
 	void emit_specialization_constant_op(const SPIRConstantOp &constant);
 	std::string emit_continue_block(uint32_t continue_block);
 	bool attempt_emit_loop_header(SPIRBlock &block, SPIRBlock::Method method);
@@ -403,6 +412,9 @@ protected:
 
 	SPIRType binary_op_bitcast_helper(std::string &cast_op0, std::string &cast_op1, SPIRType::BaseType &input_type,
 	                                  uint32_t op0, uint32_t op1, bool skip_cast_if_equal_type);
+
+	std::string to_ternary_expression(const SPIRType &result_type, uint32_t select, uint32_t true_value,
+	                                  uint32_t false_value);
 
 	void emit_unary_op(uint32_t result_type, uint32_t result_id, uint32_t op0, const char *op);
 	bool expression_is_forwarded(uint32_t id);
@@ -442,6 +454,7 @@ protected:
 	std::string enclose_expression(const std::string &expr);
 	void strip_enclosed_expression(std::string &expr);
 	std::string to_member_name(const SPIRType &type, uint32_t index);
+	virtual std::string to_member_reference(const SPIRVariable *var, const SPIRType &type, uint32_t index);
 	std::string type_to_glsl_constructor(const SPIRType &type);
 	std::string argument_decl(const SPIRFunction::Parameter &arg);
 	virtual std::string to_qualifiers_glsl(uint32_t id);
@@ -451,14 +464,15 @@ protected:
 	const char *format_to_glsl(spv::ImageFormat format);
 	virtual std::string layout_for_member(const SPIRType &type, uint32_t index);
 	virtual std::string to_interpolation_qualifiers(const Bitset &flags);
-	Bitset combined_decoration_for_member(const SPIRType &type, uint32_t index);
 	std::string layout_for_variable(const SPIRVariable &variable);
 	std::string to_combined_image_sampler(uint32_t image_id, uint32_t samp_id);
 	virtual bool skip_argument(uint32_t id) const;
 	virtual void emit_array_copy(const std::string &lhs, uint32_t rhs_id);
+	virtual void emit_block_hints(const SPIRBlock &block);
+	virtual std::string to_initializer_expression(const SPIRVariable &var);
 
 	bool buffer_is_packing_standard(const SPIRType &type, BufferPackingStandard packing, uint32_t start_offset = 0,
-	                                uint32_t end_offset = std::numeric_limits<uint32_t>::max());
+	                                uint32_t end_offset = ~(0u));
 	uint32_t type_to_packed_base_size(const SPIRType &type, BufferPackingStandard packing);
 	uint32_t type_to_packed_alignment(const SPIRType &type, const Bitset &flags, BufferPackingStandard packing);
 	uint32_t type_to_packed_array_stride(const SPIRType &type, const Bitset &flags, BufferPackingStandard packing);
@@ -484,7 +498,7 @@ protected:
 	void replace_fragment_output(SPIRVariable &var);
 	void replace_fragment_outputs();
 	bool check_explicit_lod_allowed(uint32_t lod);
-	std::string legacy_tex_op(const std::string &op, const SPIRType &imgtype, uint32_t lod);
+	std::string legacy_tex_op(const std::string &op, const SPIRType &imgtype, uint32_t lod, uint32_t id);
 
 	uint32_t indent = 0;
 
@@ -542,6 +556,7 @@ protected:
 	void find_static_extensions();
 
 	std::string emit_for_loop_initializers(const SPIRBlock &block);
+	void emit_while_loop_initializers(const SPIRBlock &block);
 	bool for_loop_initializers_are_same_type(const SPIRBlock &block);
 	bool optimize_read_modify_write(const SPIRType &type, const std::string &lhs, const std::string &rhs);
 	void fixup_image_load_store_access();
@@ -560,7 +575,13 @@ protected:
 	std::string convert_float_to_string(const SPIRConstant &value, uint32_t col, uint32_t row);
 	std::string convert_double_to_string(const SPIRConstant &value, uint32_t col, uint32_t row);
 
-	std::string convert_separate_image_to_combined(uint32_t id);
+	std::string convert_separate_image_to_expression(uint32_t id);
+
+	// Builtins in GLSL are always specific signedness, but the SPIR-V can declare them
+	// as either unsigned or signed.
+	// Sometimes we will need to automatically perform bitcasts on load and store to make this work.
+	virtual void bitcast_to_builtin_store(uint32_t target_id, std::string &expr, const SPIRType &expr_type);
+	virtual void bitcast_from_builtin_load(uint32_t source_id, std::string &expr, const SPIRType &expr_type);
 
 private:
 	void init()

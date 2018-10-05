@@ -57,6 +57,9 @@
     <ClInclude Include="src\spirv_cross_util.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\spirv_reflect.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\LICENSE" />
@@ -82,6 +85,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\spirv_cross_util.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_reflect.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

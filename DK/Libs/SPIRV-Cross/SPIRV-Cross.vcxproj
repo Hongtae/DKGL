@@ -35,6 +35,7 @@
     <ClInclude Include="src\spirv_glsl.hpp" />
     <ClInclude Include="src\spirv_hlsl.hpp" />
     <ClInclude Include="src\spirv_msl.hpp" />
+    <ClInclude Include="src\spirv_reflect.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\LICENSE" />
@@ -48,6 +49,7 @@
     <ClCompile Include="src\spirv_glsl.cpp" />
     <ClCompile Include="src\spirv_hlsl.cpp" />
     <ClCompile Include="src\spirv_msl.cpp" />
+    <ClCompile Include="src\spirv_reflect.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

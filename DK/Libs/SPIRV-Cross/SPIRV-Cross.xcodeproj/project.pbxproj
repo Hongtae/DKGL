@@ -27,6 +27,9 @@
 		84A897E3209D7275001AFDB4 /* sampler.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DD209D7274001AFDB4 /* sampler.hpp */; };
 		84A897E4209D7275001AFDB4 /* external_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DE209D7274001AFDB4 /* external_interface.h */; };
 		84A897E5209D7275001AFDB4 /* image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DF209D7274001AFDB4 /* image.hpp */; };
+		84BDD61E2167E15B0009027E /* spirv_reflect.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84BDD61C2167E15B0009027E /* spirv_reflect.hpp */; };
+		84BDD61F2167E15B0009027E /* spirv_reflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BDD61D2167E15B0009027E /* spirv_reflect.cpp */; };
+		84BDD6202167E15B0009027E /* spirv_reflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BDD61D2167E15B0009027E /* spirv_reflect.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,6 +70,8 @@
 		84A897DD209D7274001AFDB4 /* sampler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sampler.hpp; sourceTree = "<group>"; };
 		84A897DE209D7274001AFDB4 /* external_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_interface.h; sourceTree = "<group>"; };
 		84A897DF209D7274001AFDB4 /* image.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = image.hpp; sourceTree = "<group>"; };
+		84BDD61C2167E15B0009027E /* spirv_reflect.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_reflect.hpp; sourceTree = "<group>"; };
+		84BDD61D2167E15B0009027E /* spirv_reflect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_reflect.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +129,8 @@
 				849B23E71EB4C2150033C44C /* spirv_hlsl.hpp */,
 				849B23E81EB4C2150033C44C /* spirv_msl.cpp */,
 				849B23E91EB4C2150033C44C /* spirv_msl.hpp */,
+				84BDD61D2167E15B0009027E /* spirv_reflect.cpp */,
+				84BDD61C2167E15B0009027E /* spirv_reflect.hpp */,
 				849B23EA1EB4C2150033C44C /* spirv.hpp */,
 			);
 			path = src;
@@ -163,6 +170,7 @@
 				84A897E0209D7275001AFDB4 /* barrier.hpp in Headers */,
 				84A897E2209D7275001AFDB4 /* internal_interface.hpp in Headers */,
 				84A897E4209D7275001AFDB4 /* external_interface.h in Headers */,
+				84BDD61E2167E15B0009027E /* spirv_reflect.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,6 +255,7 @@
 			files = (
 				84A897D0209D7197001AFDB4 /* spirv_hlsl.cpp in Sources */,
 				84A897CA209D7197001AFDB4 /* spirv_cpp.cpp in Sources */,
+				84BDD6202167E15B0009027E /* spirv_reflect.cpp in Sources */,
 				84A897CE209D7197001AFDB4 /* spirv_glsl.cpp in Sources */,
 				84A897C3209D7197001AFDB4 /* spirv_cross_util.cpp in Sources */,
 				84A897D2209D7197001AFDB4 /* spirv_msl.cpp in Sources */,
@@ -261,6 +270,7 @@
 			files = (
 				849B23FC1EB4C2150033C44C /* spirv_hlsl.cpp in Sources */,
 				849B23F61EB4C2150033C44C /* spirv_cross.cpp in Sources */,
+				84BDD61F2167E15B0009027E /* spirv_reflect.cpp in Sources */,
 				849B23EF1EB4C2150033C44C /* spirv_cfg.cpp in Sources */,
 				849B23FF1EB4C2150033C44C /* spirv_msl.cpp in Sources */,
 				849B23F31EB4C2150033C44C /* spirv_cpp.cpp in Sources */,
