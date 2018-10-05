@@ -96,7 +96,7 @@ namespace DKFramework
 	struct DKShaderResourceBuffer
 	{
 		DKShaderDataType dataType;
-		uint32_t alignment;
+		//uint32_t alignment;
 		uint32_t size;
 	};
 	/**
@@ -122,8 +122,8 @@ namespace DKFramework
 	{
 		DKShaderDataType dataType;
 		DKString name;
-		uint32_t offset;
-		uint32_t size;
+        uint32_t offset;
+        //uint32_t size;
 		uint32_t count; // array length
 		uint32_t stride; // stride between array elements
 

@@ -392,25 +392,33 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 						{
 							DKShaderResourceStructMember mb;
 							MTLDataType type = member.dataType;
+                            MTLStructType* memberStruct = nil;
+
 							if (type == MTLDataTypeArray)
 							{
 								MTLArrayType* arrayType = member.arrayType;
-								type = arrayType.elementType;
-								mb.count = arrayType.arrayLength;
-								mb.stride = arrayType.stride;
+
+                                mb.count = (uint32_t)arrayType.arrayLength;
+								mb.stride = (uint32_t)arrayType.stride;
+                                mb.dataType = ShaderDataType::To(arrayType.elementType);
+                                if (arrayType.elementType == MTLDataTypeStruct)
+                                    memberStruct = arrayType.elementStructType;
 							}
 							else
 							{
 								mb.count = 1;
+                                mb.dataType = ShaderDataType::To(type);
 							}
-							mb.dataType = ShaderDataType::To(type);
-							mb.name = member.name.UTF8String;
-							mb.offset = member.offset;
 
-							if (type == MTLDataTypeStruct)
+							mb.name = member.name.UTF8String;
+							mb.offset = (uint32_t)member.offset;
+
+                            if (type == MTLDataTypeStruct)
+                                memberStruct = member.structType;
+                            if (memberStruct)
 							{
 								DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
-								mb.typeInfoKey = GetStructTypeData{ typeKey, base }.operator() (member.structType);
+								mb.typeInfoKey = GetStructTypeData{ typeKey, base }.operator() (memberStruct);
 							}
 							output.members.Add(mb);
 						}
@@ -427,7 +435,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 					res.set = 0;
 					res.binding = (uint32_t)arg.index;
 					res.name = DKStringU8(arg.name.UTF8String);
-					res.count = arg.arrayLength;
+					res.count = (uint32_t)arg.arrayLength;
 					res.enabled = arg.active;
 					switch (arg.access)
 					{
@@ -446,8 +454,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 					{
 						case MTLArgumentTypeBuffer:
 							res.type = DKShaderResource::TypeBuffer;
-							res.typeInfo.buffer.size = arg.bufferDataSize;
-							res.typeInfo.buffer.alignment = arg.bufferAlignment;
+							res.typeInfo.buffer.size = (uint32_t)arg.bufferDataSize;
+							//res.typeInfo.buffer.alignment = (uint32_t)arg.bufferAlignment;
 							res.typeInfo.buffer.dataType = ShaderDataType::To(arg.bufferDataType);
 							if (arg.bufferDataType == MTLDataTypeStruct)
 							{
@@ -458,9 +466,15 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 								NSLog(@"WARNING: Unsupported buffer type: %@", arg);
 							}
 							break;
-						case MTLArgumentTypeThreadgroupMemory:	res.type = DKShaderResource::TypeThreadgroupMemory; break;
-						case MTLArgumentTypeTexture:			res.type = DKShaderResource::TypeTexture; break;
-						case MTLArgumentTypeSampler:			res.type = DKShaderResource::TypeSampler; break;
+						case MTLArgumentTypeThreadgroupMemory:
+                            res.type = DKShaderResource::TypeThreadgroupMemory;
+                            break;
+						case MTLArgumentTypeTexture:
+                            res.type = DKShaderResource::TypeTexture;
+                            break;
+						case MTLArgumentTypeSampler:
+                            res.type = DKShaderResource::TypeSampler;
+                            break;
 						default:
 							NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
 							return false;
@@ -501,9 +515,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
                                         if ((res.type == DKShaderResource::TypeSampler && r.type == DKShaderResource::TypeTexture) ||
                                             (res.type == DKShaderResource::TypeTexture && r.type == DKShaderResource::TypeSampler))
                                         {
-                                            DKASSERT_DEBUG(r.typeInfo.buffer.alignment == res.typeInfo.buffer.alignment);
-                                            DKASSERT_DEBUG(r.typeInfo.buffer.size == res.typeInfo.buffer.size);
-
                                             r.type = DKShaderResource::TypeSampledTexture;
                                             combined = true;
                                             break;

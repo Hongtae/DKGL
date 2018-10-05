@@ -72,7 +72,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 		case spirv_cross::SPIRType::Struct:
 			out.type = DKShaderResource::TypeBuffer;
 			out.typeInfo.buffer.dataType = DKShaderDataType::Struct;
-			out.typeInfo.buffer.alignment = compiler.get_decoration(resource.id, spv::DecorationAlignment);
+			//out.typeInfo.buffer.alignment = compiler.get_decoration(resource.id, spv::DecorationAlignment);
 			out.typeInfo.buffer.size = compiler.get_declared_struct_size(type);
 			break;
 		default:
@@ -102,9 +102,8 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 
 						member.name = compiler.get_member_name(spType.self, i).c_str();
 						member.offset = compiler.type_struct_member_offset(spType, i);
-						//member.size = (memberType.width >> 3) * memberType.vecsize * memberType.columns;
-						member.size = compiler.get_declared_struct_member_size(spType, i);
-						DKASSERT_DEBUG(member.size > 0);
+						//member.size = compiler.get_declared_struct_member_size(spType, i);
+						//DKASSERT_DEBUG(member.size > 0);
 
                         if (member.dataType == DKShaderDataType::Struct)
                         {
