@@ -100,23 +100,23 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 						DKASSERT_DEBUG(member.dataType != DKShaderDataType::Unknown);
 						DKASSERT_DEBUG(member.dataType != DKShaderDataType::None);
 
-						if (member.dataType == DKShaderDataType::Struct)
-						{
-							member.typeInfoKey = DKString(name).Append(".").Append(member.name);
-							GetStructMembers getMembers = { base, compiler };
-							DKShaderResourceStruct memberStruct = getMembers(member.typeInfoKey, memberType);
-							base.structTypeMemberMap.Update(member.typeInfoKey, memberStruct);
-						}
-
-						member.count = 1;
-						for (auto n : memberType.array)
-							member.count = member.count * n;
-
 						member.name = compiler.get_member_name(spType.self, i).c_str();
 						member.offset = compiler.type_struct_member_offset(spType, i);
 						//member.size = (memberType.width >> 3) * memberType.vecsize * memberType.columns;
 						member.size = compiler.get_declared_struct_member_size(spType, i);
 						DKASSERT_DEBUG(member.size > 0);
+
+                        if (member.dataType == DKShaderDataType::Struct)
+                        {
+                            member.typeInfoKey = DKString(name).Append(".").Append(member.name);
+                            GetStructMembers getMembers = { base, compiler };
+                            DKShaderResourceStruct memberStruct = getMembers(member.typeInfoKey, memberType);
+                            base.structTypeMemberMap.Update(member.typeInfoKey, memberStruct);
+                        }
+
+                        member.count = 1;
+                        for (auto n : memberType.array)
+                            member.count = member.count * n;
 
 						if (member.count > 1)
 							member.stride = compiler.type_struct_member_array_stride(spType, i);
