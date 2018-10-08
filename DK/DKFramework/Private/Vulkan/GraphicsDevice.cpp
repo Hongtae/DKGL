@@ -83,8 +83,11 @@ namespace DKFramework::Private::Vulkan
 		// return VK_ERROR_VALIDATION_FAILED_EXT
 
 #ifdef DKGL_DEBUG_ENABLED
-		if (!DKIsDebuggerPresent())
-			return VK_TRUE;
+        if (cat == DKLogCategory::Error)
+        {
+            if (!DKIsDebuggerPresent())
+                return VK_TRUE;
+        }
 #endif
 		return VK_FALSE;
 	}
@@ -103,11 +106,18 @@ GraphicsDevice::GraphicsDevice()
 	, numberOfFences(0)
 	, pipelineCache(VK_NULL_HANDLE)
 {
+    VkResult err = VK_SUCCESS;
+    bool enableAllExtensions = false;
+    bool enableAllLayerExtensions = false;
+
 #ifdef DKGL_DEBUG_ENABLED
 	this->enableValidation = true;
+    //enableAllExtensions = true;
 #endif
 
 	DKMap<const char*, VkLayerProperties> supportingLayers;
+    DKMap<const char*, DKArray<VkExtensionProperties>> layerExtensions;
+    DKArray<VkExtensionProperties> instanceExtensions; // instance extensions provided by the Vulkan implementation
 	// checking layers
 	if (1)
 	{
@@ -127,7 +137,51 @@ GraphicsDevice::GraphicsDevice()
 				  prop.implementationVersion);
 
 			supportingLayers.Update(prop.layerName, prop);
-		}
+
+            uint32_t extCount = 0;
+            err = vkEnumerateInstanceExtensionProperties(prop.layerName, &extCount, nullptr);
+            if (err != VK_SUCCESS)
+            {
+                throw std::runtime_error((const char*)DKStringU8::Format("vkEnumerateInstanceExtensionProperties failed: %s", VkResultCStr(err)));
+            }
+            DKArray<VkExtensionProperties> extensions;
+            if (extCount > 0)
+            {
+                extensions.Resize(extCount);
+                err = vkEnumerateInstanceExtensionProperties(prop.layerName, &extCount, extensions);
+                DKASSERT_DEBUG(err == VK_SUCCESS);
+
+                for (const VkExtensionProperties& ext : extensions)
+                {
+                    DKLog(" ---- Layer extensions: %s\n", ext.extensionName);
+                }
+            }
+            layerExtensions.Update(prop.layerName, std::move(extensions));
+        }
+
+        // default ext
+        if (1)
+        {
+            uint32_t extCount = 0;
+            err = vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
+            if (err != VK_SUCCESS)
+            {
+                throw std::runtime_error((const char*)DKStringU8::Format("vkEnumerateInstanceExtensionProperties failed: %s", VkResultCStr(err)));
+            }
+            DKArray<VkExtensionProperties> extensions;
+            if (extCount > 0)
+            {
+                extensions.Resize(extCount);
+                err = vkEnumerateInstanceExtensionProperties(nullptr, &extCount, extensions);
+                DKASSERT_DEBUG(err == VK_SUCCESS);
+
+                for (const VkExtensionProperties& ext : extensions)
+                {
+                    DKLog(" -- Instance extensions: %s\n", ext.extensionName);
+                }
+            }
+            instanceExtensions = std::move(extensions);
+        }
 	}
 
 	VkApplicationInfo appInfo = {VK_STRUCTURE_TYPE_APPLICATION_INFO};
@@ -159,28 +213,69 @@ GraphicsDevice::GraphicsDevice()
 	enabledExtensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #endif
 
-	VkInstanceCreateInfo instanceCreateInfo = {VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
+    if (enableAllExtensions)
+    {
+        for (const VkExtensionProperties& ext : instanceExtensions)
+        {
+            enabledExtensions.Add(ext.extensionName);
+        }
+    }
+
+    DKArray<const char*> enabledLayers = {};
+    if (enableValidation)
+    {
+        for (const char* layer : validationLayerNames)
+        {
+            enabledLayers.Add(layer);
+        }
+        enabledExtensions.Add(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    }
+    if (enableAllLayerExtensions)
+    {
+        for (const char* layer : enabledLayers)
+        {
+            auto* p = layerExtensions.Find(layer);
+            if (p)
+            {
+                for (const VkExtensionProperties& ext : p->value)
+                    enabledExtensions.Add(ext.extensionName);
+            }
+        }
+    }
+
+    VkInstanceCreateInfo instanceCreateInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
 	instanceCreateInfo.pApplicationInfo = &appInfo;
+    if (enabledLayers.Count() > 0)
+    {
+        instanceCreateInfo.enabledLayerCount = (uint32_t)enabledLayers.Count();
+        instanceCreateInfo.ppEnabledLayerNames = enabledLayers;
+    }
 	if (enabledExtensions.Count() > 0)
 	{
-		if (enableValidation)
-		{
-			enabledExtensions.Add(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-		}
 		instanceCreateInfo.enabledExtensionCount = (uint32_t)enabledExtensions.Count();
 		instanceCreateInfo.ppEnabledExtensionNames = enabledExtensions;
 	}
-	if (enableValidation)
-	{
-		instanceCreateInfo.enabledLayerCount = 1;
-		instanceCreateInfo.ppEnabledLayerNames = validationLayerNames;
-	}
-	
-	VkResult err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
+
+	err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
 	if (err != VK_SUCCESS)
 	{
 		throw std::runtime_error((const char*)DKStringU8::Format("vkCreateInstance failed: %s", VkResultCStr(err)));
 	}
+    if (enabledLayers.IsEmpty())
+        DKLogI("VkInstance enabled layers: None\n");
+    else
+    {
+        for (int i = 0; i < enabledLayers.Count(); ++i)
+            DKLogI("VkInstance enabled layers[%d]: %s\n", i, enabledLayers.Value(i));
+    }
+    if (enabledExtensions.IsEmpty())
+        DKLogI("VkInstance enabled extensions: None\n");
+    else
+    {
+        for (int i = 0; i < enabledExtensions.Count(); ++i)
+            DKLogI("VkInstance enabled extensions[%d]: %s\n", i, enabledExtensions.Value(i));
+    }
+
 	// load instance extensions
 	iproc.Load(instance);
 
@@ -429,7 +524,6 @@ GraphicsDevice::GraphicsDevice()
 		// setup device extensions
 		DKArray<const char*> deviceExtensions;
 
-		bool enableAllExtensions = true;
 		if (enableAllExtensions)
 		{
 			deviceExtensions.Reserve(desc.extensionProperties.Count());
