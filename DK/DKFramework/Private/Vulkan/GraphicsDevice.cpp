@@ -96,6 +96,10 @@ using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
 
+#define DKGL_PRINT_VULKAN_LAYERS 1
+#define DKGL_PRINT_VULKAN_EXTENSIONS 1
+#define DKGL_PRINT_VULKAN_DEVICE_EXTENSIONS 1
+
 GraphicsDevice::GraphicsDevice()
 	: instance(NULL)
 	, device(NULL)
@@ -130,12 +134,13 @@ GraphicsDevice::GraphicsDevice()
 		DKLog("Vulkan available layers: %d", layerCount);
 		for (const VkLayerProperties& prop : availableLayers)
 		{
+#if DKGL_PRINT_VULKAN_LAYERS
 			DKLog(" -- Layer: %s (\"%s\", %d / %d)",
 				  prop.layerName,
 				  prop.description,
 				  prop.specVersion, 
 				  prop.implementationVersion);
-
+#endif
 			supportingLayers.Update(prop.layerName, prop);
 
             uint32_t extCount = 0;
@@ -151,10 +156,12 @@ GraphicsDevice::GraphicsDevice()
                 err = vkEnumerateInstanceExtensionProperties(prop.layerName, &extCount, extensions);
                 DKASSERT_DEBUG(err == VK_SUCCESS);
 
+#if DKGL_PRINT_VULKAN_EXTENSIONS
                 for (const VkExtensionProperties& ext : extensions)
                 {
-                    DKLog(" ---- Layer extensions: %s\n", ext.extensionName);
+                    DKLog(" ---- Layer extensions: %s (Version: %u)\n", ext.extensionName, ext.specVersion);
                 }
+#endif
             }
             layerExtensions.Update(prop.layerName, std::move(extensions));
         }
@@ -175,10 +182,12 @@ GraphicsDevice::GraphicsDevice()
                 err = vkEnumerateInstanceExtensionProperties(nullptr, &extCount, extensions);
                 DKASSERT_DEBUG(err == VK_SUCCESS);
 
+#if DKGL_PRINT_VULKAN_EXTENSIONS
                 for (const VkExtensionProperties& ext : extensions)
                 {
-                    DKLog(" -- Instance extensions: %s\n", ext.extensionName);
+                    DKLog(" -- Instance extensions: %s (Version: %u)\n", ext.extensionName, ext.specVersion);
                 }
+#endif
             }
             instanceExtensions = std::move(extensions);
         }
@@ -456,7 +465,7 @@ GraphicsDevice::GraphicsDevice()
 				  (uint32_t)desc.queueFamilyProperties.Count());
 			for (size_t j = 0; j < desc.queueFamilyProperties.Count(); ++j)
 			{
-				VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
+				const VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
 				DKLog(" -- Queue-Family[%llu] SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c, Queues:%d",
 					j,
 					prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? 'Y' : 'N',
@@ -465,7 +474,13 @@ GraphicsDevice::GraphicsDevice()
 					prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ?		'Y' : 'N',
 					prop.queueCount);
 			}
-
+#if DKGL_PRINT_VULKAN_DEVICE_EXTENSIONS
+            for (size_t j = 0; j < desc.extensionProperties.Count(); ++j)
+            {
+                const VkExtensionProperties& prop = desc.extensionProperties.Value(j);
+                DKLog(" -- Device-Extension[%llu]: %s (Version:%u)\n", j, prop.extensionName, prop.specVersion);
+            }
+#endif
 			deviceList.Array().Add(desc.properties.deviceName);
 		}
 		DKPropertySet::SystemConfig().SetValue(graphicsDeviceListKey, deviceList);
@@ -581,7 +596,11 @@ GraphicsDevice::GraphicsDevice()
 				QueueFamily* qf = new QueueFamily(desc.physicalDevice, logicalDevice, queueInfo.queueFamilyIndex, queueInfo.queueCount, desc.queueFamilyProperties.Value(queueInfo.queueFamilyIndex), supportPresentation);
 				this->queueFamilies.Add(qf);
 			}
-			DKLogI("Vulkan device created with \"%s\"", desc.properties.deviceName);
+			DKLogI("Vulkan device created with \"%s\" (EnabledExtensionCount: %u)", desc.properties.deviceName, deviceCreateInfo.enabledExtensionCount);
+            for (int i = 0; i < deviceExtensions.Count(); ++i)
+            {
+                DKLogI(" -- Enabled extensions[%d]: %s\n", i, deviceExtensions.Value(i));
+            }
 			break;
 		}
 	}
