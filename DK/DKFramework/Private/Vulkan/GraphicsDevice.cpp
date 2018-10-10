@@ -465,14 +465,15 @@ GraphicsDevice::GraphicsDevice()
 				  (uint32_t)desc.queueFamilyProperties.Count());
 			for (size_t j = 0; j < desc.queueFamilyProperties.Count(); ++j)
 			{
-				const VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
-				DKLog(" -- Queue-Family[%llu] SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c, Queues:%d",
-					j,
-					prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? 'Y' : 'N',
-					prop.queueFlags & VK_QUEUE_TRANSFER_BIT ?		'Y' : 'N', // this is optional for Graphics, Compute queue.
-					prop.queueFlags & VK_QUEUE_COMPUTE_BIT ?		'Y' : 'N',
-					prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ?		'Y' : 'N',
-					prop.queueCount);
+                const VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
+                DKLog(" -- Queue-Family[%llu] Flags:0x%04x (SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c), Queues:%d",
+                      j,
+                      prop.queueFlags,
+                      prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? 'Y' : 'N',
+                      prop.queueFlags & VK_QUEUE_TRANSFER_BIT ? 'Y' : 'N', // this is optional for Graphics, Compute queue.
+                      prop.queueFlags & VK_QUEUE_COMPUTE_BIT ? 'Y' : 'N',
+                      prop.queueFlags & VK_QUEUE_GRAPHICS_BIT ? 'Y' : 'N',
+                      prop.queueCount);
 			}
 #if DKGL_PRINT_VULKAN_DEVICE_EXTENSIONS
             for (size_t j = 0; j < desc.extensionProperties.Count(); ++j)
@@ -678,9 +679,7 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 		queueFlags = queueFlags | VK_QUEUE_GRAPHICS_BIT;
 	if (flags & DKCommandQueue::Compute)
 		queueFlags = queueFlags | VK_QUEUE_COMPUTE_BIT;
-	uint32_t queueMask = ~uint32_t(0);
-	queueMask = queueMask ^ VK_QUEUE_TRANSFER_BIT;
-	queueMask = queueMask ^ VK_QUEUE_SPARSE_BINDING_BIT;
+    uint32_t queueMask = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
 	queueMask = queueMask ^ queueFlags;
 
 	// find the exact matching queue
