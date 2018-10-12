@@ -292,6 +292,20 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* da
 			return a.binding < b.binding;
 		return a.set < b.set;
 	});
+    this->resources.Sort([](const DKShaderResource& a, const DKShaderResource& b)
+    {
+        if (a.type == b.type)
+        {
+            if (a.set == b.set)
+                return a.binding < b.binding;
+            return a.set < b.binding;
+        }
+        return static_cast<int>(a.type) < static_cast<int>(b.type);
+    });
+    this->stageInputAttributes.Sort([](const DKShaderAttribute& a, const DKShaderAttribute& b)
+    {
+        return a.location < b.location;
+    });
 	this->descriptorBindings.ShrinkToFit();
 	this->resources.ShrinkToFit();
 	this->stageInputAttributes.ShrinkToFit();
