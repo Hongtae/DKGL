@@ -16,27 +16,33 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size, DKShader::StageType st)
+ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule s, const void* data, size_t size)
 	: device(d)
 	, module(s)
 	, pushConstantLayout({})
 {
-	switch (st)
-	{
-	case DKShader::StageType::Vertex:
-		stage = VK_SHADER_STAGE_VERTEX_BIT; break;
-	case DKShader::StageType::Fragment:
-		stage = VK_SHADER_STAGE_FRAGMENT_BIT; break;
-	case DKShader::StageType::Compute:
-		stage = VK_SHADER_STAGE_COMPUTE_BIT; break;
-	default:
-		DKASSERT_DEBUG(0);
-		break;
-	}
-
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 
 	spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(data), size / sizeof(uint32_t));
+    switch (spv::ExecutionModel exec = compiler.get_execution_model(); exec)
+    {
+    case spv::ExecutionModelVertex:
+        stage = VK_SHADER_STAGE_VERTEX_BIT; break;
+    case spv::ExecutionModelTessellationControl:
+        stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT; break;
+    case spv::ExecutionModelTessellationEvaluation:
+        stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT; break;
+    case spv::ExecutionModelGeometry:
+        stage = VK_SHADER_STAGE_GEOMETRY_BIT; break;
+    case spv::ExecutionModelFragment:
+        stage = VK_SHADER_STAGE_FRAGMENT_BIT; break;
+    case spv::ExecutionModelGLCompute:
+        stage = VK_SHADER_STAGE_COMPUTE_BIT; break;
+    default:
+        DKASSERT_DESC_DEBUG(0, "Unknown shader type");
+        break;
+    }
+
 	auto active = compiler.get_active_interface_variables();
 	spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 

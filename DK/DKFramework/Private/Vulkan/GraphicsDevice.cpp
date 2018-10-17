@@ -739,7 +739,30 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 				return NULL;
 			}
 
-			DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, reader.Bytes(), reader.Length(), shader->stage);
+			DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, reader.Bytes(), reader.Length());
+
+            if (module)
+            {
+                VkShaderStageFlagBits stage = (VkShaderStageFlagBits)0;
+                switch (shader->stage)
+                {
+                case DKShader::StageType::Vertex:
+                    stage = VK_SHADER_STAGE_VERTEX_BIT; break;
+                case DKShader::StageType::Fragment:
+                    stage = VK_SHADER_STAGE_FRAGMENT_BIT; break;
+                case DKShader::StageType::Compute:
+                    stage = VK_SHADER_STAGE_COMPUTE_BIT; break;
+                default:
+                    DKASSERT_DEBUG(0);
+                    break;
+                }
+
+                if (stage != module->stage)
+                {
+                    DKLogE("ERROR: Invalid shader type!");
+                }
+            }
+
 			return module.SafeCast<DKShaderModule>();
 		}
 	}

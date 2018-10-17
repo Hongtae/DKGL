@@ -33,7 +33,7 @@ namespace DKFramework::Private::Vulkan
 	class ShaderModule : public DKShaderModule
 	{
 	public:
-		ShaderModule(DKGraphicsDevice*, VkShaderModule, const void* data, size_t, DKShader::StageType);
+		ShaderModule(DKGraphicsDevice*, VkShaderModule, const void* data, size_t);
 		~ShaderModule();
 
 		DKObject<DKShaderFunction> CreateFunction(const DKString& name) const override;
