@@ -164,6 +164,33 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
                 NSLog(@"MSL Source:\n%@\n", source);
 
+                decltype(ShaderModule::threadgroupSize) threadgroupSize = { 1U, 1U, 1U };
+
+                if (auto model = compiler.get_execution_model(); model == spv::ExecutionModelGLCompute)
+                {
+                    uint32_t localSizeX = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, 0);
+                    uint32_t localSizeY = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, 1);
+                    uint32_t localSizeZ = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, 2);
+
+                    spirv_cross::SpecializationConstant wg_x, wg_y, wg_z;
+                    uint32_t constantId = compiler.get_work_group_size_specialization_constants(wg_x, wg_y, wg_z);
+                    if (wg_x.id)
+                        localSizeX = compiler.get_constant(wg_x.id).scalar();
+                    if (wg_y.id)
+                        localSizeY = compiler.get_constant(wg_y.id).scalar();
+                    if (wg_z.id)
+                        localSizeZ = compiler.get_constant(wg_z.id).scalar();
+
+                    NSLog(@"ComputeShader.constantId: %u", constantId);
+                    NSLog(@"ComputeShader.LocalSize.X: %u (specialized:%u, specializationID:%u)", localSizeX, wg_x.id, wg_x.constant_id);
+                    NSLog(@"ComputeShader.LocalSize.Y: %u (specialized:%u, specializationID:%u)", localSizeY, wg_y.id, wg_y.constant_id);
+                    NSLog(@"ComputeShader.LocalSize.Z: %u (specialized:%u, specializationID:%u)", localSizeZ, wg_z.id, wg_z.constant_id);
+
+                    threadgroupSize.x = Max(localSizeX, 1U);
+                    threadgroupSize.y = Max(localSizeY, 1U);
+                    threadgroupSize.z = Max(localSizeZ, 1U);
+                }
+
                 NSError* compileError = nil;
                 MTLCompileOptions* compileOptions = [[[MTLCompileOptions alloc] init] autorelease];
                 compileOptions.fastMathEnabled = YES;
@@ -181,6 +208,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                     NSLog(@"MTLLibrary: %@", library);
 
 					DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, library);
+                    module->threadgroupSize = threadgroupSize;
 
 					[library release];
 

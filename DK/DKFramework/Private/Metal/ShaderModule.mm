@@ -19,6 +19,7 @@ using namespace DKFramework::Private::Metal;
 ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib)
 : library(nil)
 , device(dev)
+, threadgroupSize({1,1,1})
 {
 	DKASSERT_DEBUG(lib != nil);
 	library = [lib retain];
