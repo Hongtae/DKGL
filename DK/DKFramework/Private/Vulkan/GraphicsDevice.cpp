@@ -14,6 +14,7 @@
 #include "ShaderFunction.h"
 #include "PixelFormat.h"
 #include "RenderPipelineState.h"
+#include "ComputePipelineState.h"
 #include "Buffer.h"
 #include "Texture.h"
 #include "../../DKPropertySet.h"
@@ -91,6 +92,15 @@ namespace DKFramework::Private::Vulkan
 #endif
 		return VK_FALSE;
 	}
+
+    struct Cleanup
+    {
+        DKObject<DKOperation> op;
+        ~Cleanup()
+        {
+            op->Perform();
+        }
+    };
 }
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -864,25 +874,22 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
 
-	DKArray<VkDescriptorSetLayout> descriptorSetLayouts;	// shader descriptor set layouts
+    DKObject<RenderPipelineState> pipelineState = nullptr;
 
-	auto CleanupAndReturnNull = [&]()-> DKRenderPipelineState* // cleanup operation, invoked if function failure.
-	{
-		if (pipelineLayout != VK_NULL_HANDLE)
-			vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-		if (renderPass != VK_NULL_HANDLE)
-			vkDestroyRenderPass(device, renderPass, nullptr);
-		if (pipeline != VK_NULL_HANDLE)
-			vkDestroyPipeline(device, pipeline, nullptr);
-		for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-		{
-			if (setLayout != VK_NULL_HANDLE)
-				vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
-		}
-		return NULL;
-	};
+    Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
+    {
+        if (!pipelineState)
+        { 
+            if (pipelineLayout != VK_NULL_HANDLE)
+                vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+            if (renderPass != VK_NULL_HANDLE)
+                vkDestroyRenderPass(device, renderPass, nullptr);
+            if (pipeline != VK_NULL_HANDLE)
+                vkDestroyPipeline(device, pipeline, nullptr);
+        }
+    })->Invocation() };
 
-	auto VerifyShaderStage = [](const DKShaderFunction* fn, VkShaderStageFlagBits stage)->bool
+	auto verifyShaderStage = [](const DKShaderFunction* fn, VkShaderStageFlagBits stage)->bool
 	{
 		if (fn)
 		{
@@ -895,11 +902,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	};
 	if (desc.vertexFunction)
 	{
-		DKASSERT_DEBUG(VerifyShaderStage(desc.vertexFunction, VK_SHADER_STAGE_VERTEX_BIT));
+		DKASSERT_DEBUG(verifyShaderStage(desc.vertexFunction, VK_SHADER_STAGE_VERTEX_BIT));
 	}
 	if (desc.fragmentFunction)
 	{
-		DKASSERT_DEBUG(VerifyShaderStage(desc.fragmentFunction, VK_SHADER_STAGE_FRAGMENT_BIT));
+		DKASSERT_DEBUG(verifyShaderStage(desc.fragmentFunction, VK_SHADER_STAGE_FRAGMENT_BIT));
 	}
 
 	VkGraphicsPipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO };
@@ -909,10 +916,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	std::initializer_list<const DKShaderFunction*> shaderFunctions = { desc.vertexFunction, desc.fragmentFunction };
 	shaderStageCreateInfos.Reserve(shaderFunctions.size());
-	size_t maxDescriptorBindings = 0; // maximum number of descriptor
-	uint32_t maxDescriptorSets = 0; // maximum number of sets
-	DKArray<VkPushConstantRange> pushConstantRanges;
-	pushConstantRanges.Reserve(shaderFunctions.size());
+
 	for (const DKShaderFunction* fn : shaderFunctions)
 	{
 		if (fn)
@@ -928,112 +932,15 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				shaderStageCreateInfo.pSpecializationInfo = &func->specializationInfo;
 
 			shaderStageCreateInfos.Add(shaderStageCreateInfo);
-
-			// get push constant range
-			if (module->pushConstantLayout.size > 0)
-			{
-				VkPushConstantRange range = {};
-				range.stageFlags = module->stage;
-				range.offset = module->pushConstantLayout.offset;
-				range.size = module->pushConstantLayout.size;
-				pushConstantRanges.Add(range);
-			}
-
-			// calculate max descriptor bindings a set
-			if (module->descriptorBindings.Count() > 0)
-			{
-				maxDescriptorSets = Max(maxDescriptorSets,
-										module->descriptorBindings.Value(module->descriptorBindings.Count() - 1).set + 1);
-				maxDescriptorBindings = Max(maxDescriptorBindings, module->descriptorBindings.Count());
-			}
 		}
 	}
 	pipelineCreateInfo.stageCount = (uint32_t)shaderStageCreateInfos.Count();
 	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
-	// setup descriptor layout
-	DKArray<VkDescriptorSetLayoutBinding> descriptorBindings;
-	descriptorBindings.Reserve(maxDescriptorBindings);
-
-	for (uint32_t setIndex = 0; setIndex < maxDescriptorSets; ++setIndex)
-	{
-		descriptorBindings.Clear();
-		for (const DKShaderFunction* fn : shaderFunctions)
-		{
-			if (fn)
-			{
-				const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
-				const ShaderModule* module = func->module.StaticCast<ShaderModule>();
-				
-				for (const DescriptorBinding& desc : module->descriptorBindings)
-				{
-					if (desc.set > setIndex)
-						break;
-
-					if (desc.set == setIndex)
-					{
-						bool newBinding = true;
-
-						for (VkDescriptorSetLayoutBinding& b : descriptorBindings)
-						{
-							if (b.binding == desc.binding) // exist binding!! (conflict)
-							{
-								newBinding = false;
-								if (b.descriptorType == desc.type)
-								{
-									b.descriptorCount = Max(b.descriptorCount, desc.count);
-									b.stageFlags |= module->stage;
-								}
-								else
-								{
-									DKLogE("ERROR: descriptor binding conflict! (set=%d, binding=%u)",
-										   setIndex, desc.binding);
-									return CleanupAndReturnNull();
-								}
-							}
-						}
-						if (newBinding)
-						{
-							VkDescriptorSetLayoutBinding binding = {
-								desc.binding,
-								desc.type,
-								desc.count,
-								module->stage,
-								nullptr  /* VkSampler* pImmutableSamplers */
-							};
-							descriptorBindings.Add(binding);
-						}
-					}
-				}
-			}
-		}
-		// create descriptor set (setIndex) layout
-		VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
-		setLayoutCreateInfo.bindingCount = (uint32_t)descriptorBindings.Count();
-		setLayoutCreateInfo.pBindings = descriptorBindings;
-		VkDescriptorSetLayout setLayout = VK_NULL_HANDLE;
-		result = vkCreateDescriptorSetLayout(device, &setLayoutCreateInfo, nullptr, &setLayout);
-		if (result != VK_SUCCESS)
-		{
-			DKLogE("ERROR: vkCreateDescriptorSetLayout failed: %s", VkResultCStr(result));
-			return CleanupAndReturnNull();
-		}
-		descriptorSetLayouts.Add(setLayout);
-		descriptorBindings.Clear();
-	}
-	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
-	pipelineLayoutCreateInfo.setLayoutCount = (uint32_t)descriptorSetLayouts.Count();
-	pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts;
-	pipelineLayoutCreateInfo.pushConstantRangeCount = (uint32_t)pushConstantRanges.Count();
-	pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
-
-	result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
-	if (result != VK_SUCCESS)
-	{
-		DKLogE("ERROR: vkCreatePipelineLayout failed: %s", VkResultCStr(result));
-		return CleanupAndReturnNull();
-	}
-	pipelineCreateInfo.layout = pipelineLayout;
+    pipelineLayout = CreatePipelineLayout(shaderFunctions);
+    if (pipelineLayout == VK_NULL_HANDLE)
+        return nullptr;
+    pipelineCreateInfo.layout = pipelineLayout;
 
 	// vertex input state
 	DKArray<VkVertexInputBindingDescription> vertexBindingDescriptions;
@@ -1278,7 +1185,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	{
 		DKLogE("ERROR: The number of colors attached exceeds the device limit. (%u > %u)",
 			(uint32_t)colorAttachmentRefCount, (uint32_t)this->properties.limits.maxColorAttachments);
-		return CleanupAndReturnNull();
+		return nullptr;
 	}
 	subpassColorAttachmentRefs.Add({ VK_ATTACHMENT_UNUSED, VK_IMAGE_LAYOUT_GENERAL }, colorAttachmentRefCount);
 	for (size_t index = 0; index < desc.colorAttachments.Count(); ++index)
@@ -1334,7 +1241,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateRenderPass failed: %s", VkResultCStr(result));
-		return CleanupAndReturnNull();
+		return nullptr;
 	}
 	pipelineCreateInfo.renderPass = renderPass;
 
@@ -1351,7 +1258,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateGraphicsPipelines failed: %s", VkResultCStr(result));
-		return CleanupAndReturnNull();
+		return nullptr;
 	}
 	if (reflection)
 	{
@@ -1376,21 +1283,80 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		reflection->fragmentResources.ShrinkToFit();
 	}
 
-	// Delete the descriptorSetLayouts that are no longer needed.
-	for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-	{
-		if (setLayout != VK_NULL_HANDLE)
-			vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
-	}
-	descriptorSetLayouts.Clear();
-
-	DKObject<RenderPipelineState> pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
+	pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
 	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
 
-DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKComputePipelineReflection*)
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice* dev, const DKComputePipelineDescriptor& desc, DKComputePipelineReflection* reflection)
 {
-	return NULL;
+    VkResult result = VK_SUCCESS;
+
+    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+    VkPipeline pipeline = VK_NULL_HANDLE;
+
+    DKObject<ComputePipelineState> pipelineState = nullptr;
+
+    Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
+    {
+        if (!pipelineState)
+        {
+            if (pipelineLayout != VK_NULL_HANDLE)
+                vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+            if (pipeline != VK_NULL_HANDLE)
+                vkDestroyPipeline(device, pipeline, nullptr);
+        }
+    })->Invocation() };
+
+    VkComputePipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO };
+
+    if (desc.disableOptimization)
+        pipelineCreateInfo.flags |= VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT;
+    //if (desc.deferCompile)
+    //    pipelineCreateInfo.flags |= VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NVX;
+
+    if (!desc.computeFunction)
+        return nullptr; // compute function must be provided.
+
+    DKASSERT_DEBUG(desc.computeFunction.SafeCast<ShaderFunction>() != nullptr);
+    const ShaderFunction* func = desc.computeFunction.StaticCast<ShaderFunction>();
+    const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+    DKASSERT_DEBUG(module->stage == VK_SHADER_STAGE_COMPUTE_BIT);
+
+    VkPipelineShaderStageCreateInfo shaderStageCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO };
+    shaderStageCreateInfo.stage = module->stage;
+    shaderStageCreateInfo.module = module->module;
+    shaderStageCreateInfo.pName = func->functionName;
+    if (func->specializationInfo.mapEntryCount > 0)
+        shaderStageCreateInfo.pSpecializationInfo = &func->specializationInfo;
+
+    pipelineCreateInfo.stage = shaderStageCreateInfo;
+
+    pipelineLayout = CreatePipelineLayout({ func });
+    if (pipelineLayout == VK_NULL_HANDLE)
+        return nullptr;
+
+    pipelineCreateInfo.layout = pipelineLayout;
+    DKASSERT_DEBUG(pipelineCreateInfo.stage.stage == VK_SHADER_STAGE_COMPUTE_BIT);
+
+    result = vkCreateComputePipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline);
+    if (result == VK_SUCCESS)
+        SavePipelineCache();
+
+    if (result != VK_SUCCESS)
+    {
+        DKLogE("ERROR: vkCreateComputePipelines failed: %s", VkResultCStr(result));
+        return nullptr;
+    }
+
+    if (reflection)
+    {
+        reflection->resources.Clear();
+        reflection->resources.Add(module->resources);
+        reflection->resources.ShrinkToFit();
+    }
+
+    pipelineState = DKOBJECT_NEW ComputePipelineState(dev, pipeline, pipelineLayout);
+	return pipelineState.SafeCast<DKComputePipelineState>();
 }
 
 VkFence GraphicsDevice::GetFence()
@@ -1645,6 +1611,137 @@ void GraphicsDevice::SavePipelineCache()
 	{
 		DKLogE("ERROR: VkPipelineCache is NULL");
 	}
+}
+
+VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions) const
+{
+    VkResult result = VK_SUCCESS;
+    DKArray<VkDescriptorSetLayout> descriptorSetLayouts; // shader descriptor set layouts
+
+    DKArray<VkPushConstantRange> pushConstantRanges;
+    pushConstantRanges.Reserve(functions.size());
+
+    Cleanup _cleanup = { DKFunction([&]()
+    {
+        for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+        {
+            if (setLayout != VK_NULL_HANDLE)
+                vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+        }
+    })->Invocation() };
+
+    size_t maxDescriptorBindings = 0;   // maximum number of descriptor
+    uint32_t maxDescriptorSets = 0;     // maximum number of sets
+
+    for (const DKShaderFunction* fn : functions)
+    {
+        DKASSERT_DEBUG(fn);
+        DKASSERT_DEBUG(dynamic_cast<const ShaderFunction*>(fn));
+
+        const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+        const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+
+        if (module->pushConstantLayout.size > 0)
+        {
+            VkPushConstantRange range = {};
+            range.stageFlags = module->stage;
+            range.offset = module->pushConstantLayout.offset;
+            range.size = module->pushConstantLayout.size;
+            pushConstantRanges.Add(range);
+        }
+        // calculate max descriptor bindings a set
+        if (module->descriptorBindings.Count() > 0)
+        {
+            maxDescriptorSets = Max(maxDescriptorSets,
+                                    module->descriptorBindings.Value(module->descriptorBindings.Count() - 1).set + 1);
+            maxDescriptorBindings = Max(maxDescriptorBindings, module->descriptorBindings.Count());
+        }
+    }
+
+    // setup descriptor layout
+    DKArray<VkDescriptorSetLayoutBinding> descriptorBindings;
+    descriptorBindings.Reserve(maxDescriptorBindings);
+
+    for (uint32_t setIndex = 0; setIndex < maxDescriptorSets; ++setIndex)
+    {
+        descriptorBindings.Clear();
+        for (const DKShaderFunction* fn : functions)
+        {
+            if (fn)
+            {
+                const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+                const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+
+                for (const DescriptorBinding& desc : module->descriptorBindings)
+                {
+                    if (desc.set > setIndex)
+                        break;
+
+                    if (desc.set == setIndex)
+                    {
+                        bool newBinding = true;
+
+                        for (VkDescriptorSetLayoutBinding& b : descriptorBindings)
+                        {
+                            if (b.binding == desc.binding) // exist binding!! (conflict)
+                            {
+                                newBinding = false;
+                                if (b.descriptorType == desc.type)
+                                {
+                                    b.descriptorCount = Max(b.descriptorCount, desc.count);
+                                    b.stageFlags |= module->stage;
+                                }
+                                else
+                                {
+                                    DKLogE("ERROR: descriptor binding conflict! (set=%d, binding=%u)",
+                                           setIndex, desc.binding);
+                                    return nullptr;
+                                }
+                            }
+                        }
+                        if (newBinding)
+                        {
+                            VkDescriptorSetLayoutBinding binding = {
+                                desc.binding,
+                                desc.type,
+                                desc.count,
+                                module->stage,
+                                nullptr  /* VkSampler* pImmutableSamplers */
+                            };
+                            descriptorBindings.Add(binding);
+                        }
+                    }
+                }
+            }
+        }
+        // create descriptor set (setIndex) layout
+        VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
+        setLayoutCreateInfo.bindingCount = (uint32_t)descriptorBindings.Count();
+        setLayoutCreateInfo.pBindings = descriptorBindings;
+        VkDescriptorSetLayout setLayout = VK_NULL_HANDLE;
+        result = vkCreateDescriptorSetLayout(device, &setLayoutCreateInfo, nullptr, &setLayout);
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkCreateDescriptorSetLayout failed: %s", VkResultCStr(result));
+            return VK_NULL_HANDLE;
+        }
+        descriptorSetLayouts.Add(setLayout);
+        descriptorBindings.Clear();
+    }
+    VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
+    pipelineLayoutCreateInfo.setLayoutCount = (uint32_t)descriptorSetLayouts.Count();
+    pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts;
+    pipelineLayoutCreateInfo.pushConstantRangeCount = (uint32_t)pushConstantRanges.Count();
+    pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
+
+    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+     result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+    if (result != VK_SUCCESS)
+    {
+        DKLogE("ERROR: vkCreatePipelineLayout failed: %s", VkResultCStr(result));
+        return VK_NULL_HANDLE;
+    }
+    return pipelineLayout;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

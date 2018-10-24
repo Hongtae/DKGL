@@ -70,6 +70,9 @@ namespace DKFramework::Private::Vulkan
 		// extensions
 		InstanceProc iproc; // instance procedure
 		DeviceProc dproc; // device procedure
+
+    private:
+        VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>) const;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

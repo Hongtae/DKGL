@@ -36,6 +36,9 @@ namespace DKFramework::Private::Metal
 			return maxNumberOfVertexAttributes - index - 1;
 		}
 		id<MTLDevice> device;
+
+    private:
+        DKArray<DKShaderResource> ShaderResourceArrayFromArguments(NSArray<MTLArgument*>*) const;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

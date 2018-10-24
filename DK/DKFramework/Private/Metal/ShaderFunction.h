@@ -20,7 +20,7 @@ namespace DKFramework::Private::Metal
 	class ShaderFunction : public DKShaderFunction
 	{
 	public:
-		ShaderFunction(DKShaderModule*, id<MTLFunction>);
+		ShaderFunction(DKShaderModule*, id<MTLFunction>, MTLSize);
 		~ShaderFunction();
 
 		const DKArray<DKVertexAttribute>& VertexAttributes() const override { return vertexAttributes; }
@@ -37,6 +37,8 @@ namespace DKFramework::Private::Metal
 		DKArray<DKVertexAttribute> vertexAttributes;
 		DKArray<DKShaderAttribute> stageInputAttributes;
 		DKMap<DKString, Constant> functionConstantsMap;
+
+        MTLSize workgroupSize;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

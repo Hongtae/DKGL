@@ -1,27 +1,28 @@
 //
-//  File: RenderPipelineState.mm
+//  File: ComputePipelineState.mm
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2018 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 #include <TargetConditionals.h>
 
-#include "RenderPipelineState.h"
+#include "ComputePipelineState.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderPipelineState::RenderPipelineState(DKGraphicsDevice* d, id<MTLRenderPipelineState> pso)
+ComputePipelineState::ComputePipelineState(DKGraphicsDevice* d, id<MTLComputePipelineState> pso, MTLSize wgSize)
 : device(d)
+, workgroupSize(wgSize)
 {
 	pipelineState = [pso retain];
 }
 
-RenderPipelineState::~RenderPipelineState()
+ComputePipelineState::~ComputePipelineState()
 {
 	[pipelineState autorelease];
 }

@@ -16,9 +16,10 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func)
+ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize wgSize)
 : module(sm)
 , function(nil)
+, workgroupSize(wgSize)
 {
 	DKASSERT_DEBUG(func != nil);
 

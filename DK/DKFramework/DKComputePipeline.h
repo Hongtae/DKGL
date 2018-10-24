@@ -7,14 +7,22 @@
 
 #pragma once
 #include "../DKFoundation.h"
+#include "DKShaderFunction.h"
 
 namespace DKFramework
 {
-	class DKComputePipelineDescriptor
+	struct DKComputePipelineDescriptor
 	{
+        DKObject<DKShaderFunction> computeFunction;
+        bool deferCompile;
+        bool disableOptimization;
 	};
 
+    class DKGraphicsDevice;
 	class DKComputePipelineState
 	{
+    public:
+        virtual ~DKComputePipelineState() {}
+        virtual DKGraphicsDevice* Device() = 0;
 	};
 }

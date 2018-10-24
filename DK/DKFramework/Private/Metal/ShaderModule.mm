@@ -19,7 +19,7 @@ using namespace DKFramework::Private::Metal;
 ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib)
 : library(nil)
 , device(dev)
-, threadgroupSize({1,1,1})
+, workgroupSize({1,1,1})
 {
 	DKASSERT_DEBUG(lib != nil);
 	library = [lib retain];
@@ -47,7 +47,7 @@ DKObject<DKShaderFunction> ShaderModule::CreateFunction(const DKString& name) co
 		id<MTLFunction> func = [library newFunctionWithName:functionName];
 		if (func)
 		{
-			return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func);
+			return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func, workgroupSize);
 		}
 	}
 	return NULL;
@@ -78,7 +78,7 @@ DKObject<DKShaderFunction> ShaderModule::CreateSpecializedFunction(const DKStrin
 			}
 			if (func)
 			{
-				return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func);
+				return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func, workgroupSize);
 			}
 		}
 	}

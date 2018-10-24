@@ -33,10 +33,7 @@ namespace DKFramework::Private::Metal
 		DKObject<DKGraphicsDevice> device;
 		DKArray<DKString> functionNames;
 
-        struct
-        {
-            uint32_t x, y, z;
-        } threadgroupSize;
+        MTLSize workgroupSize;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL
