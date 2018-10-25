@@ -721,9 +721,42 @@ DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* de
 DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* dev, DKShader* shader)
 {
 	DKASSERT_DEBUG(shader);
-	if (shader->codeData)
+	if (DKData* data = shader->Data(); data)
 	{
-		DKDataReader reader(shader->codeData);
+        for (const DKShader::PushConstantLayout& layout : shader->PushConstantBufferLayouts())
+        {
+            if (layout.offset >= this->properties.limits.maxPushConstantsSize)
+            {
+                DKLogE("ERROR: PushConstant offset is out of range. (offset:%u, limit:%u)",
+                       layout.offset,
+                       this->properties.limits.maxPushConstantsSize);
+                return NULL;
+            }
+            if (layout.offset + layout.size > this->properties.limits.maxPushConstantsSize)
+            {
+                DKLogE("ERROR: PushConstant range exceeded limit. (offset:%u, size:%u, limit:%u)",
+                       layout.offset, layout.size,
+                       this->properties.limits.maxPushConstantsSize);
+                return NULL;
+            }
+        }
+
+        if (auto threadWorkgroupSize = shader->ThreadgroupSize();
+            (threadWorkgroupSize.x > this->properties.limits.maxComputeWorkGroupSize[0]) ||
+            (threadWorkgroupSize.y > this->properties.limits.maxComputeWorkGroupSize[1]) ||
+            (threadWorkgroupSize.z > this->properties.limits.maxComputeWorkGroupSize[2]))
+        {
+            DKLogE("ERROR: Thread-WorkGroup size exceeded limit. Size:(%u, %u, %u), Limit:(%u, %u, %u)",
+                   threadWorkgroupSize.x,
+                   threadWorkgroupSize.y,
+                   threadWorkgroupSize.z,
+                   this->properties.limits.maxComputeWorkGroupSize[0],
+                   this->properties.limits.maxComputeWorkGroupSize[1],
+                   this->properties.limits.maxComputeWorkGroupSize[2]);
+            return NULL;
+        }
+
+		DKDataReader reader(data);
 		if (reader.Length() > 0)
 		{
 			VkShaderModuleCreateInfo shaderModuleCreateInfo = { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
@@ -738,41 +771,18 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 				return NULL;
 			}
 
-			switch (shader->stage)
+			switch (shader->Stage())
 			{
-			case DKShader::StageType::Vertex:
-			case DKShader::StageType::Fragment:
-			case DKShader::StageType::Compute:
+			case DKShader::Vertex:
+			case DKShader::Fragment:
+			case DKShader::Compute:
 				break;
 			default:
-				DKLogE("ERROR: Invalid shader type");
-				return NULL;
+                DKLogW("Warning: Unsupported shader type!");
+                break;
 			}
 
-			DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, reader.Bytes(), reader.Length());
-
-            if (module)
-            {
-                VkShaderStageFlagBits stage = (VkShaderStageFlagBits)0;
-                switch (shader->stage)
-                {
-                case DKShader::StageType::Vertex:
-                    stage = VK_SHADER_STAGE_VERTEX_BIT; break;
-                case DKShader::StageType::Fragment:
-                    stage = VK_SHADER_STAGE_FRAGMENT_BIT; break;
-                case DKShader::StageType::Compute:
-                    stage = VK_SHADER_STAGE_COMPUTE_BIT; break;
-                default:
-                    DKASSERT_DEBUG(0);
-                    break;
-                }
-
-                if (stage != module->stage)
-                {
-                    DKLogE("ERROR: Invalid shader type!");
-                }
-            }
-
+			DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, shaderModule, shader);
 			return module.SafeCast<DKShaderModule>();
 		}
 	}
@@ -874,6 +884,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
 
+    DKArray<VkDescriptorSetLayout> descriptorSetLayouts;	// shader descriptor set layouts
+
     DKObject<RenderPipelineState> pipelineState = nullptr;
 
     Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
@@ -886,6 +898,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
                 vkDestroyRenderPass(device, renderPass, nullptr);
             if (pipeline != VK_NULL_HANDLE)
                 vkDestroyPipeline(device, pipeline, nullptr);
+            for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+            {
+                DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
+                vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+            }
         }
     })->Invocation() };
 
@@ -937,7 +954,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	pipelineCreateInfo.stageCount = (uint32_t)shaderStageCreateInfos.Count();
 	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
-    pipelineLayout = CreatePipelineLayout(shaderFunctions);
+    pipelineLayout = CreatePipelineLayout(shaderFunctions, descriptorSetLayouts);
     if (pipelineLayout == VK_NULL_HANDLE)
         return nullptr;
     pipelineCreateInfo.layout = pipelineLayout;
@@ -1283,6 +1300,13 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		reflection->fragmentResources.ShrinkToFit();
 	}
 
+    // Delete the descriptorSetLayouts that are no longer needed.
+    for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+    {
+        DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
+        vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+    }
+
 	pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
 	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
@@ -1293,7 +1317,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
     VkPipeline pipeline = VK_NULL_HANDLE;
-
+    DKArray<VkDescriptorSetLayout> descriptorSetLayouts;	// shader descriptor set layouts
     DKObject<ComputePipelineState> pipelineState = nullptr;
 
     Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
@@ -1304,6 +1328,11 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
                 vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
             if (pipeline != VK_NULL_HANDLE)
                 vkDestroyPipeline(device, pipeline, nullptr);
+            for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+            {
+                DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
+                vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+            }
         }
     })->Invocation() };
 
@@ -1331,7 +1360,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 
     pipelineCreateInfo.stage = shaderStageCreateInfo;
 
-    pipelineLayout = CreatePipelineLayout({ func });
+    pipelineLayout = CreatePipelineLayout({ func }, descriptorSetLayouts);
     if (pipelineLayout == VK_NULL_HANDLE)
         return nullptr;
 
@@ -1354,6 +1383,14 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
         reflection->resources.Add(module->resources);
         reflection->resources.ShrinkToFit();
     }
+
+    // Delete the descriptorSetLayouts that are no longer needed.
+    for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+    {
+        DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
+        vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+    }
+
 
     pipelineState = DKOBJECT_NEW ComputePipelineState(dev, pipeline, pipelineLayout);
 	return pipelineState.SafeCast<DKComputePipelineState>();
@@ -1615,24 +1652,36 @@ void GraphicsDevice::SavePipelineCache()
 
 VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions) const
 {
+    DKArray<VkDescriptorSetLayout> descriptorSetLayouts;
+    auto result = CreatePipelineLayout(functions, descriptorSetLayouts);
+
+    for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
+    {
+        DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
+        vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+    }
+    return result;
+}
+
+VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions, DKArray<VkDescriptorSetLayout>& descriptorSetLayouts) const
+{
     VkResult result = VK_SUCCESS;
-    DKArray<VkDescriptorSetLayout> descriptorSetLayouts; // shader descriptor set layouts
+    //DKArray<VkDescriptorSetLayout> descriptorSetLayouts; // shader descriptor set layouts
 
-    DKArray<VkPushConstantRange> pushConstantRanges;
-    pushConstantRanges.Reserve(functions.size());
-
+    // NOTE: 
+    // Delete VkDescriptorSetLayout objects after the pipeline is created.
+    // Otherwise, the nVidia driver crashes. - 2018-10-26
+#if 0
     Cleanup _cleanup = { DKFunction([&]()
     {
         for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
         {
-            if (setLayout != VK_NULL_HANDLE)
-                vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+            DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
+            vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
         }
     })->Invocation() };
-
-    size_t maxDescriptorBindings = 0;   // maximum number of descriptor
-    uint32_t maxDescriptorSets = 0;     // maximum number of sets
-
+#endif
+    size_t numPushConstantRanges = 0;
     for (const DKShaderFunction* fn : functions)
     {
         DKASSERT_DEBUG(fn);
@@ -1641,20 +1690,38 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
         const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
         const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
-        if (module->pushConstantLayout.size > 0)
+        numPushConstantRanges += module->pushConstantLayouts.Count();
+    }
+
+    DKArray<VkPushConstantRange> pushConstantRanges;
+    pushConstantRanges.Reserve(numPushConstantRanges);
+
+    size_t maxDescriptorBindings = 0;   // maximum number of descriptor
+    uint32_t maxDescriptorSets = 0;     // maximum number of sets
+
+    for (const DKShaderFunction* fn : functions)
+    {
+        const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+        const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+
+        for (const DKShader::PushConstantLayout& layout : module->pushConstantLayouts)
         {
-            VkPushConstantRange range = {};
-            range.stageFlags = module->stage;
-            range.offset = module->pushConstantLayout.offset;
-            range.size = module->pushConstantLayout.size;
-            pushConstantRanges.Add(range);
+            if (layout.size > 0)
+            {
+                VkPushConstantRange range = {};
+                range.stageFlags = module->stage;
+                range.offset = layout.offset;
+                range.size = layout.size;
+                pushConstantRanges.Add(range);
+            }
         }
+
         // calculate max descriptor bindings a set
-        if (module->descriptorBindings.Count() > 0)
+        if (module->descriptors.Count() > 0)
         {
             maxDescriptorSets = Max(maxDescriptorSets,
-                                    module->descriptorBindings.Value(module->descriptorBindings.Count() - 1).set + 1);
-            maxDescriptorBindings = Max(maxDescriptorBindings, module->descriptorBindings.Count());
+                                    module->descriptors.Value(module->descriptors.Count() - 1).set + 1);
+            maxDescriptorBindings = Max(maxDescriptorBindings, module->descriptors.Count());
         }
     }
 
@@ -1672,7 +1739,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
                 const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
                 const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
-                for (const DescriptorBinding& desc : module->descriptorBindings)
+                for (const DKShader::Descriptor& desc : module->descriptors)
                 {
                     if (desc.set > setIndex)
                         break;
@@ -1701,9 +1768,38 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
                         }
                         if (newBinding)
                         {
+                            VkDescriptorType type;
+                            switch (desc.type)
+                            {
+                            case DKShader::DescriptorTypeUniformBuffer:
+                                type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; 
+                                break;
+                            case DKShader::DescriptorTypeStorageBuffer:
+                                type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; 
+                                break;
+                            case DKShader::DescriptorTypeStorageTexture:
+                                type = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+                                break;
+                            case DKShader::DescriptorTypeSampledTexture:
+                                type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; 
+                                break;
+                            case DKShader::DescriptorTypeTexture:
+                                type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+                                break;
+                            case DKShader::DescriptorTypeTexelBuffer:
+                                type = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+                                break;
+                            case DKShader::DescriptorTypeSampler:
+                                type = VK_DESCRIPTOR_TYPE_SAMPLER;
+                                break;
+                            default:
+                                DKLogE("Unknown DescriptorType!!");
+                                return nullptr;
+                            }
+
                             VkDescriptorSetLayoutBinding binding = {
                                 desc.binding,
-                                desc.type,
+                                type,
                                 desc.count,
                                 module->stage,
                                 nullptr  /* VkSampler* pImmutableSamplers */

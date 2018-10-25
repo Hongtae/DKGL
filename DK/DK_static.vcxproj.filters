@@ -32,6 +32,7 @@
     <None Include="DKFramework\Private\CocoaTouch\Window.mm">
       <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
+    <None Include="LICENSE" />
     <None Include="DKFramework\Private\Metal\BlitCommandEncoder.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
@@ -45,6 +46,9 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\ComputePipelineState.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm">
@@ -71,7 +75,6 @@
     <None Include="DKFramework\Private\Metal\Texture.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
-    <None Include="LICENSE" />
     <None Include="DKFramework\Private\Metal\Types.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
@@ -1188,6 +1191,21 @@
     <ClInclude Include="DKFramework\Private\Vulkan\Buffer.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\Types.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKShaderResource.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKRationalNumber.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKLinkedList.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
@@ -1201,6 +1219,9 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\ComputePipelineState.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h">
@@ -1227,23 +1248,8 @@
     <ClInclude Include="DKFramework\Private\Metal\Texture.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Vulkan\Types.h">
-      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKShaderResource.h">
-      <Filter>DKFramework_WIP</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Types.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKRationalNumber.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKLinkedList.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h">
-      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

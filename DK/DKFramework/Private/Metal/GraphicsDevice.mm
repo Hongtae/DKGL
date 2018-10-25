@@ -121,24 +121,95 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 {
     DKASSERT_DEBUG(shader);
 
-    if (shader->codeData)
+    if (DKData* data = shader->Data(); data)
     {
-        DKDataReader reader(shader->codeData);
+        DKDataReader reader(data);
         if (reader.Length() > 0)
         {
-			switch (shader->stage)
+            spv::ExecutionModel stage;
+			switch (shader->Stage())
 			{
-				case DKShader::StageType::Vertex:					
-				case DKShader::StageType::Fragment:
-				case DKShader::StageType::Compute:		
+                case DKShader::StageType::Vertex:
+                    stage = spv::ExecutionModelVertex;
+                    break;
+                case DKShader::StageType::Fragment:
+                    stage = spv::ExecutionModelFragment;
+                    break;
+                case DKShader::StageType::Compute:
+                    stage = spv::ExecutionModelGLCompute;
 					break;
 				default:
 					DKLogE("Error: Invalid shader stage!");
 					return NULL;
 			}
 
+            uint32_t numBuffers = 0;
+            uint32_t numTextures = 0;
+            uint32_t numSamplers = 0;
+            DKArray<spirv_cross::MSLResourceBinding> bindings1;
+            DKArray<ResourceBinding> bindings2;
+
+            const DKArray<DKShaderResource>& resources = shader->Resources();
+            bindings1.Reserve(resources.Count() + 1);
+            bindings2.Reserve(resources.Count() + 1);
+
+            for (const DKShaderResource& res : resources)
+            {
+                spirv_cross::MSLResourceBinding b1 = { stage };
+                ResourceBinding b2 = {};
+
+                b1.desc_set = b2.set = res.set;
+                b1.binding = b2.binding = res.binding;
+                b1.msl_buffer = b2.bufferIndex = numBuffers;
+                b1.msl_texture = b2.textureIndex = numTextures;
+                b1.msl_sampler = b2.samplerIndex = numSamplers;
+                b2.type = res.type;
+
+                bindings1.Add(b1);
+                bindings2.Add(b2);
+
+                switch (res.type)
+                {
+                    case DKShaderResource::TypeBuffer:
+                        numBuffers++;
+                        break;
+                    case DKShaderResource::TypeTexture:
+                        numTextures++;
+                        break;
+                    case DKShaderResource::TypeSampler:
+                        numSamplers++;
+                        break;
+                    case DKShaderResource::TypeSampledTexture:
+                        numSamplers++;
+                        numTextures++;
+                        break;
+                }
+            }
+            if (const DKArray<DKShader::PushConstantLayout>& layouts = shader->PushConstantBufferLayouts(); layouts.Count() > 0)
+            {
+                DKASSERT_DESC_DEBUG(layouts.Count() == 1, "There can be only one push constant block!");
+
+                // add push-constant
+                spirv_cross::MSLResourceBinding b1 = { stage };
+                ResourceBinding b2 = {};
+
+                b1.desc_set = b2.set = spirv_cross::kPushConstDescSet;
+                b1.binding = b2.binding = spirv_cross::kPushConstBinding;
+                b1.msl_buffer = b2.bufferIndex = numBuffers;
+                b1.msl_texture = b2.textureIndex = numTextures;
+                b1.msl_sampler = b2.samplerIndex = numSamplers;
+                b2.type = DKShaderResource::TypeBuffer;
+
+                bindings1.Add(b1);
+                bindings2.Add(b2);
+
+                numBuffers++;
+            }
+
 			using Compiler = spirv_cross::CompilerMSL;
-			Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+			Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t),
+                              nullptr, 0,
+                              bindings1, bindings1.Count());
 			std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
 			if (entryPoints.empty())
 			{
@@ -165,32 +236,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
                 NSLog(@"MSL Source:\n%@\n", source);
 
-                MTLSize threadgroupSize = MTLSizeMake(1,1,1);
-
-                if (auto model = compiler.get_execution_model(); model == spv::ExecutionModelGLCompute)
-                {
-                    uint32_t localSizeX = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, 0);
-                    uint32_t localSizeY = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, 1);
-                    uint32_t localSizeZ = compiler.get_execution_mode_argument(spv::ExecutionModeLocalSize, 2);
-
-                    spirv_cross::SpecializationConstant wg_x, wg_y, wg_z;
-                    uint32_t constantId = compiler.get_work_group_size_specialization_constants(wg_x, wg_y, wg_z);
-                    if (wg_x.id)
-                        localSizeX = compiler.get_constant(wg_x.id).scalar();
-                    if (wg_y.id)
-                        localSizeY = compiler.get_constant(wg_y.id).scalar();
-                    if (wg_z.id)
-                        localSizeZ = compiler.get_constant(wg_z.id).scalar();
-
-                    NSLog(@"ComputeShader.constantId: %u", constantId);
-                    NSLog(@"ComputeShader.LocalSize.X: %u (specialized:%u, specializationID:%u)", localSizeX, wg_x.id, wg_x.constant_id);
-                    NSLog(@"ComputeShader.LocalSize.Y: %u (specialized:%u, specializationID:%u)", localSizeY, wg_y.id, wg_y.constant_id);
-                    NSLog(@"ComputeShader.LocalSize.Z: %u (specialized:%u, specializationID:%u)", localSizeZ, wg_z.id, wg_z.constant_id);
-
-                    threadgroupSize.width = Max(localSizeX, 1U);
-                    threadgroupSize.height = Max(localSizeY, 1U);
-                    threadgroupSize.depth = Max(localSizeZ, 1U);
-                }
+                auto workgroupSize = shader->ThreadgroupSize();
 
                 NSError* compileError = nil;
                 MTLCompileOptions* compileOptions = [[[MTLCompileOptions alloc] init] autorelease];
@@ -209,7 +255,35 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                     NSLog(@"MTLLibrary: %@", library);
 
 					DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, library);
-                    module->workgroupSize = threadgroupSize;
+                    module->workgroupSize = MTLSizeMake(workgroupSize.x, workgroupSize.y, workgroupSize.z);
+
+                    DKASSERT_DEBUG(bindings1.Count() == bindings2.Count());
+
+                    StageResourceBindingMap bindingMap = {};
+                    bindingMap.resourceBindings.Reserve(bindings1.Count());
+                    for (size_t i = 0, n = bindings1.Count(); i < n; ++i)
+                    {
+                        const spirv_cross::MSLResourceBinding& b1 = bindings1.Value(i);
+                        const ResourceBinding& b2 = bindings2.Value(i);
+
+                        if (b1.used_by_shader)
+                        {
+                            if (b1.desc_set == spirv_cross::kPushConstDescSet)
+                                bindingMap.pushConstantIndex = b1.msl_buffer;
+                            else
+                                bindingMap.resourceBindings.Add(b2);
+                        }
+                    }
+
+                    bindingMap.resourceBindings.Sort([](auto& a, auto& b) {
+                        if (a.set == b.set)
+                            return a.binding < b.binding;
+                        return a.set < b.set;
+                    });
+                    bindingMap.resourceBindings.ShrinkToFit();
+                    bindingMap.inputAttributeIndexOffset = numBuffers;
+
+                    module->bindings = std::move(bindingMap);
 
 					[library release];
 
@@ -252,12 +326,27 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		NSError* error = nil;
 		MTLRenderPipelineDescriptor* descriptor = [[[MTLRenderPipelineDescriptor alloc] init] autorelease];
 
-		const ShaderFunction* vertexFunction = desc.vertexFunction.StaticCast<ShaderFunction>();
-		if (vertexFunction)
-			descriptor.vertexFunction = vertexFunction->function;
-		const ShaderFunction* fragmentFunction = desc.fragmentFunction.StaticCast<ShaderFunction>();
-		if (fragmentFunction)
-			descriptor.fragmentFunction = fragmentFunction->function;
+        NSUInteger vertexAttributeOffset = 0;
+
+        const ShaderFunction* vertexFunction = desc.vertexFunction.StaticCast<ShaderFunction>();
+        const ShaderFunction* fragmentFunction = desc.fragmentFunction.StaticCast<ShaderFunction>();
+
+        if (vertexFunction)
+        {
+            DKASSERT_DEBUG(desc.vertexFunction.SafeCast<ShaderFunction>() != nullptr);
+            DKASSERT_DEBUG(vertexFunction->function.functionType == MTLFunctionTypeVertex);
+
+            const ShaderModule* module = vertexFunction->module.StaticCast<ShaderModule>();
+            descriptor.vertexFunction = vertexFunction->function;
+            vertexAttributeOffset = module->bindings.inputAttributeIndexOffset;
+        }
+        if (fragmentFunction)
+        {
+            DKASSERT_DEBUG(desc.fragmentFunction.SafeCast<ShaderFunction>() != nullptr);
+            DKASSERT_DEBUG(fragmentFunction->function.functionType == MTLFunctionTypeFragment);
+
+            descriptor.fragmentFunction = fragmentFunction->function;
+        }
 
 		auto GetVertexFormat = [](DKVertexFormat f)->MTLVertexFormat
 		{
@@ -383,13 +472,13 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				MTLVertexAttributeDescriptor* attr = [vertexDescriptor.attributes objectAtIndexedSubscript:attrDesc.location];
 				attr.format = GetVertexFormat(attrDesc.format);
 				attr.offset = attrDesc.offset;
-				NSUInteger bufferIndex = VertexAttributeIndexForDevice(attrDesc.bufferIndex);
+				NSUInteger bufferIndex = vertexAttributeOffset + attrDesc.bufferIndex;
 				attr.bufferIndex = bufferIndex;
 				vertexAttributeIndices.Insert(bufferIndex);
 			}
 			for (const DKVertexBufferLayoutDescriptor& layoutDesc : desc.vertexDescriptor.layouts)
 			{
-				NSUInteger bufferIndex = VertexAttributeIndexForDevice(layoutDesc.bufferIndex);
+				NSUInteger bufferIndex = vertexAttributeOffset + layoutDesc.bufferIndex;
 				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:bufferIndex];
 				layout.stepFunction = GetVertexStepFunction(layoutDesc.step);
 				layout.stepRate = 1;
@@ -441,6 +530,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			state = DKOBJECT_NEW RenderPipelineState(dev, pipelineState);
 			state->primitiveType = primitiveType;
+            if (vertexFunction)
+                state->vertexBindings = vertexFunction->module.StaticCast<ShaderModule>()->bindings;
+            if (fragmentFunction)
+                state->fragmentBindings = fragmentFunction->module.StaticCast<ShaderModule>()->bindings;
 			[pipelineState autorelease];
 		}
 	}
@@ -488,6 +581,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
         if (pipelineState)
         {
             state = DKOBJECT_NEW ComputePipelineState(dev, pipelineState, func->workgroupSize);
+            state->bindings = func->module.StaticCast<ShaderModule>()->bindings;
 
             [pipelineState autorelease];
         }
@@ -622,9 +716,9 @@ DKArray<DKShaderResource> GraphicsDevice::ShaderResourceArrayFromArguments(NSArr
                     NSLog(@"WARNING: Unsupported buffer type: %@", arg);
                 }
                 break;
-            case MTLArgumentTypeThreadgroupMemory:
-                res.type = DKShaderResource::TypeThreadgroupMemory;
-                break;
+//            case MTLArgumentTypeThreadgroupMemory:
+//                res.type = DKShaderResource::TypeThreadgroupMemory;
+//                break;
             case MTLArgumentTypeTexture:
                 res.type = DKShaderResource::TypeTexture;
                 break;

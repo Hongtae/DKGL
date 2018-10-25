@@ -73,6 +73,7 @@ namespace DKFramework::Private::Vulkan
 
     private:
         VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>) const;
+        VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>, DKArray<VkDescriptorSetLayout>&) const;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

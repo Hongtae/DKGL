@@ -20,6 +20,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib)
 : library(nil)
 , device(dev)
 , workgroupSize({1,1,1})
+, bindings({})
 {
 	DKASSERT_DEBUG(lib != nil);
 	library = [lib retain];

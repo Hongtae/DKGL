@@ -23,7 +23,6 @@ namespace DKFramework::Private::Metal
 		ShaderFunction(DKShaderModule*, id<MTLFunction>, MTLSize);
 		~ShaderFunction();
 
-		const DKArray<DKVertexAttribute>& VertexAttributes() const override { return vertexAttributes; }
 		const DKArray<DKShaderAttribute>& StageInputAttributes() const override { return stageInputAttributes; }
 
 		const DKMap<DKString, Constant>& FunctionConstants() const override { return functionConstantsMap; }

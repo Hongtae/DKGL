@@ -21,7 +21,6 @@ namespace DKFramework::Private::Vulkan
 		ShaderFunction(DKShaderModule* module, const DKStringU8& name, const DKShaderSpecialization* values, size_t numValues);
 		~ShaderFunction();
 
-		const DKArray<DKVertexAttribute>& VertexAttributes() const override;
 		const DKArray<DKShaderAttribute>& StageInputAttributes() const override;
 
 		const DKMap<DKString, Constant>& FunctionConstants() const override { return functionConstantsMap; }

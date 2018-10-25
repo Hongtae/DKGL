@@ -68,10 +68,13 @@ void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, u
 	DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffer));
 	DKObject<class Buffer> vertexBuffer = static_cast<class Buffer*>(buffer);
 
-	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->buffer->Queue()->Device());
-	NSUInteger bufferIndex = dev->VertexAttributeIndexForDevice(index);
-	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, Resources& res)
+	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->buffer->Queue()->Device());
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, Resources& res)
 	{
+        NSUInteger bufferIndex = index;
+        if (res.pipelineState)
+            bufferIndex = res.pipelineState->vertexBindings.inputAttributeIndexOffset + index;
 		[encoder setVertexBuffer:vertexBuffer->buffer offset:offset atIndex:bufferIndex];
 	});
 	reusableEncoder->encoderCommands.Add(command);

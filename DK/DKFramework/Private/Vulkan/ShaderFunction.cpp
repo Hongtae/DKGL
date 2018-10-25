@@ -63,19 +63,9 @@ ShaderFunction::~ShaderFunction()
 		DKFree(specializationData);
 }
 
-const DKArray<DKVertexAttribute>& ShaderFunction::VertexAttributes() const
-{
-	const ShaderModule* m = module.StaticCast<ShaderModule>();
-	if (m->stage == VK_SHADER_STAGE_VERTEX_BIT)
-	{
-		return module.StaticCast<ShaderModule>()->stageInputAttributes;
-	}
-	return vertexAttributes;	
-}
-
 const DKArray<DKShaderAttribute>& ShaderFunction::StageInputAttributes() const
 {
-	return module.StaticCast<ShaderModule>()->stageInputAttributes;
+	return module.StaticCast<ShaderModule>()->inputAttributes;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

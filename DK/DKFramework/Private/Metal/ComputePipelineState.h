@@ -13,6 +13,7 @@
 
 #include "../../DKComputePipeline.h"
 #include "../../DKGraphicsDevice.h"
+#include "ShaderModule.h"
 
 namespace DKFramework::Private::Metal
 {
@@ -26,6 +27,8 @@ namespace DKFramework::Private::Metal
 
 		DKObject<DKGraphicsDevice> device;
 		id<MTLComputePipelineState> pipelineState;
+
+        StageResourceBindingMap bindings;
         MTLSize workgroupSize;
 	};
 }

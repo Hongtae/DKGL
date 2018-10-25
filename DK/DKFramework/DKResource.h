@@ -47,8 +47,8 @@ namespace DKFramework
 		DKUuid objectUUID;
 		DKAllocator* allocator;
 
-		DKResource(const DKResource&);
-		DKResource& operator = (const DKResource&);
+		DKResource(const DKResource&) = delete;
+		DKResource& operator = (const DKResource&) = delete;
 
 		friend class DKResourceLoader;
 	};

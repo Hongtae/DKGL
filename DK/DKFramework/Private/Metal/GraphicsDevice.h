@@ -29,12 +29,6 @@ namespace DKFramework::Private::Metal
 		DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) override;
 		DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) override;
 
-		NSUInteger VertexAttributeIndexForDevice(NSUInteger index)
-		{
-			/* 31 = Maximum number of vertex attributes, per vertex descriptor */
-			const NSUInteger maxNumberOfVertexAttributes = 31;
-			return maxNumberOfVertexAttributes - index - 1;
-		}
 		id<MTLDevice> device;
 
     private:

@@ -13,6 +13,7 @@
 
 #include "../../DKRenderPipeline.h"
 #include "../../DKGraphicsDevice.h"
+#include "ShaderModule.h"
 
 namespace DKFramework::Private::Metal
 {
@@ -27,6 +28,9 @@ namespace DKFramework::Private::Metal
 		MTLPrimitiveType primitiveType;
 		DKObject<DKGraphicsDevice> device;
 		id<MTLRenderPipelineState> pipelineState;
+
+        StageResourceBindingMap vertexBindings;
+        StageResourceBindingMap fragmentBindings;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

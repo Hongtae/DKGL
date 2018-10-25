@@ -7,21 +7,11 @@
 
 #pragma once
 #include "../DKFoundation.h"
-#include "DKShaderResource.h"
+#include "DKShader.h"
 
 namespace DKFramework
 {
 	class DKGraphicsDevice;
-
-	struct DKShaderAttribute
-	{
-		DKString name;
-		uint32_t location;
-		DKShaderDataType type;
-		bool active;
-		bool patchControlPointData;
-		bool patchData;
-	};
 
 	using DKVertexAttribute = DKShaderAttribute;
 
@@ -38,7 +28,6 @@ namespace DKFramework
 
 		virtual ~DKShaderFunction() {}
 
-		virtual const DKArray<DKVertexAttribute>& VertexAttributes() const = 0;
 		virtual const DKArray<DKShaderAttribute>& StageInputAttributes() const = 0;
 		virtual const DKMap<DKString, Constant>& FunctionConstants() const = 0;
 		virtual DKString FunctionName() const = 0;

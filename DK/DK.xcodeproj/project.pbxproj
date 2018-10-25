@@ -1450,6 +1450,14 @@
 		84B10B522180AFCA0073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B4C2180AFC90073EF38 /* ComputePipelineState.h */; };
 		84B10B532180AFCA0073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B4C2180AFC90073EF38 /* ComputePipelineState.h */; };
 		84B10B542180AFCA0073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B4C2180AFC90073EF38 /* ComputePipelineState.h */; };
+		84B10B64218359020073EF38 /* ComputePipelineState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B10B62218359010073EF38 /* ComputePipelineState.cpp */; };
+		84B10B65218359020073EF38 /* ComputePipelineState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B10B62218359010073EF38 /* ComputePipelineState.cpp */; };
+		84B10B66218359020073EF38 /* ComputePipelineState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B10B62218359010073EF38 /* ComputePipelineState.cpp */; };
+		84B10B67218359020073EF38 /* ComputePipelineState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B10B62218359010073EF38 /* ComputePipelineState.cpp */; };
+		84B10B68218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
+		84B10B69218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
+		84B10B6A218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
+		84B10B6B218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
 		84B673E51EF7C3210058F553 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E41EF7C3210058F553 /* OpenAL.framework */; };
 		84B673E71EF7C33F0058F553 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E61EF7C33F0058F553 /* AppKit.framework */; };
 		84B673E91EF7C3570058F553 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E81EF7C3570058F553 /* Metal.framework */; };
@@ -2408,6 +2416,8 @@
 		84A6A3AB1AE0001B001C1778 /* DKFixedSizeAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKFixedSizeAllocator.h; sourceTree = "<group>"; };
 		84B10B4B2180AFC90073EF38 /* ComputePipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputePipelineState.mm; sourceTree = "<group>"; };
 		84B10B4C2180AFC90073EF38 /* ComputePipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputePipelineState.h; sourceTree = "<group>"; };
+		84B10B62218359010073EF38 /* ComputePipelineState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComputePipelineState.cpp; sourceTree = "<group>"; };
+		84B10B63218359010073EF38 /* ComputePipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputePipelineState.h; sourceTree = "<group>"; };
 		84B354FD15CF83EF00078470 /* DKEndianness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKEndianness.h; sourceTree = "<group>"; };
 		84B43D4F15D0F9A700C7A681 /* DKRationalNumber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKRationalNumber.cpp; sourceTree = "<group>"; };
 		84B43D5015D0F9A700C7A681 /* DKRationalNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRationalNumber.h; sourceTree = "<group>"; };
@@ -2786,6 +2796,8 @@
 				844324021E1950D700FD6B53 /* CommandQueue.h */,
 				84F224B21EE503220053F08B /* ComputeCommandEncoder.cpp */,
 				84F224B31EE503220053F08B /* ComputeCommandEncoder.h */,
+				84B10B62218359010073EF38 /* ComputePipelineState.cpp */,
+				84B10B63218359010073EF38 /* ComputePipelineState.h */,
 				84FCF1641E3693B500DF9386 /* Extensions.h */,
 				66DA89821DD30BC100338015 /* GraphicsDevice.cpp */,
 				66DA89831DD30BC100338015 /* GraphicsDevice.h */,
@@ -3349,6 +3361,7 @@
 				841B5C452090CADB001B4326 /* DKShaderModule.h in Headers */,
 				846A2D681E40F29F009F117C /* Extensions.h in Headers */,
 				8482B7481DCE272C0079FD84 /* AudioStreamWave.h in Headers */,
+				84B10B6B218359020073EF38 /* ComputePipelineState.h in Headers */,
 				840CA5D81928952800689BB6 /* DKMatrix4.h in Headers */,
 				840CA65E1928957700689BB6 /* DK.h in Headers */,
 				8436CDF21928A78900F18892 /* DKOrderedArray.h in Headers */,
@@ -3524,6 +3537,7 @@
 				84798C9E19E51E96009378A6 /* DKError.h in Headers */,
 				666ECB2B1DB180EA00354463 /* DKGraphicsDevice.h in Headers */,
 				84798CCD19E51E96009378A6 /* DKXmlParser.h in Headers */,
+				84B10B6A218359020073EF38 /* ComputePipelineState.h in Headers */,
 				84798C4019E51E7F009378A6 /* DKDynamicsWorld.h in Headers */,
 				666ECB261DB180EA00354463 /* DKCommandBuffer.h in Headers */,
 				84798CC819E51E96009378A6 /* DKUtils.h in Headers */,
@@ -3751,6 +3765,7 @@
 				84F970021B4C26C300BA24E4 /* DKBvh.h in Headers */,
 				84211C681665E86400B9B9A2 /* DKCircularQueue.h in Headers */,
 				84211C691665E86400B9B9A2 /* DKCondition.h in Headers */,
+				84B10B68218359020073EF38 /* ComputePipelineState.h in Headers */,
 				666ECB191DB180E800354463 /* DKGraphicsDevice.h in Headers */,
 				84211C6A1665E86400B9B9A2 /* DKCriticalSection.h in Headers */,
 				84211C6B1665E86400B9B9A2 /* DKData.h in Headers */,
@@ -4099,6 +4114,7 @@
 				84211CBC1665E88E00B9B9A2 /* DKConvexHullShape.h in Headers */,
 				848566AD1E2004580011B53B /* DKDepthStencil.h in Headers */,
 				84211CBD1665E88E00B9B9A2 /* DKCylinderShape.h in Headers */,
+				84B10B69218359020073EF38 /* ComputePipelineState.h in Headers */,
 				84211CBF1665E88E00B9B9A2 /* DKDynamicsWorld.h in Headers */,
 				840CA6771928A2D800689BB6 /* BulletPhysics.h in Headers */,
 				84F224C51EE503960053F08B /* DKPipelineReflection.h in Headers */,
@@ -4679,6 +4695,7 @@
 				8436CDFF1928A78900F18892 /* DKSpinLock.cpp in Sources */,
 				840CA5D51928952800689BB6 /* DKMatrix3.cpp in Sources */,
 				8436CDDE1928A78900F18892 /* DKHash.cpp in Sources */,
+				84B10B67218359020073EF38 /* ComputePipelineState.cpp in Sources */,
 				8436CDD91928A78900F18892 /* DKFile.cpp in Sources */,
 				840CA62B1928952800689BB6 /* DKTriangle.cpp in Sources */,
 				84D8AF731E002892005059F7 /* Window.mm in Sources */,
@@ -4850,6 +4867,7 @@
 				84798BD719E51E48009378A6 /* DKHingeConstraint.cpp in Sources */,
 				84798B9E19E51DFB009378A6 /* DKMutex.cpp in Sources */,
 				8482B7411DCE272B0079FD84 /* AudioStreamWave.cpp in Sources */,
+				84B10B66218359020073EF38 /* ComputePipelineState.cpp in Sources */,
 				84798BB019E51DFB009378A6 /* DKZipArchiver.cpp in Sources */,
 				841B5C262090C1AA001B4326 /* Buffer.mm in Sources */,
 				847A4FAE2052D7CE001225B0 /* ShaderFunction.cpp in Sources */,
@@ -5014,6 +5032,7 @@
 				84211BA51665E7FD00B9B9A2 /* DKLine.cpp in Sources */,
 				84211BA71665E7FD00B9B9A2 /* DKLinearTransform2.cpp in Sources */,
 				847A4FC72052D86D001225B0 /* ShaderModule.mm in Sources */,
+				84B10B64218359020073EF38 /* ComputePipelineState.cpp in Sources */,
 				84211BA91665E7FD00B9B9A2 /* DKLinearTransform3.cpp in Sources */,
 				8482B74D1DCE272D0079FD84 /* AudioStreamWave.cpp in Sources */,
 				84211BAE1665E7FD00B9B9A2 /* DKMatrix2.cpp in Sources */,
@@ -5170,6 +5189,7 @@
 				84C8CEC51F0BF727007D69C3 /* ShaderModule.cpp in Sources */,
 				840C3E09178D396D00F57A8D /* DKLog.cpp in Sources */,
 				84211ADF1665E7FC00B9B9A2 /* DKFrame.cpp in Sources */,
+				84B10B65218359020073EF38 /* ComputePipelineState.cpp in Sources */,
 				84211AE11665E7FC00B9B9A2 /* DKGeneric6DofConstraint.cpp in Sources */,
 				84211AE31665E7FC00B9B9A2 /* DKGeneric6DofSpringConstraint.cpp in Sources */,
 				84211AE71665E7FC00B9B9A2 /* DKHingeConstraint.cpp in Sources */,

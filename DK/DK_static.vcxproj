@@ -188,6 +188,7 @@
     <None Include="DKFramework\Private\Metal\CommandBuffer.mm" />
     <None Include="DKFramework\Private\Metal\CommandQueue.mm" />
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm" />
+    <None Include="DKFramework\Private\Metal\ComputePipelineState.mm" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="DKFramework\Private\Metal\PixelFormat.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
@@ -544,6 +545,7 @@
     <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ComputePipelineState.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />

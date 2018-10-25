@@ -16,6 +16,25 @@
 
 namespace DKFramework::Private::Metal
 {
+    struct ResourceBinding
+    {
+        uint32_t set;
+        uint32_t binding;
+
+        uint32_t bufferIndex;
+        uint32_t textureIndex;
+        uint32_t samplerIndex;
+
+        DKShaderResource::Type type;
+    };
+
+    struct StageResourceBindingMap
+    {
+        DKArray<ResourceBinding> resourceBindings; // spir-v to msl binding (mapping)
+        uint32_t inputAttributeIndexOffset;
+        uint32_t pushConstantIndex;
+    };
+
 	class ShaderModule : public DKShaderModule
 	{
 	public:
@@ -34,6 +53,8 @@ namespace DKFramework::Private::Metal
 		DKArray<DKString> functionNames;
 
         MTLSize workgroupSize;
+
+        StageResourceBindingMap bindings;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL
