@@ -28,6 +28,170 @@ namespace DKFramework::Private::Metal
 	{
 		return new GraphicsDevice();
 	}
+
+    DKShaderResource ShaderResourceFromMTLArgument(MTLArgument* arg, const DKArray<ResourceBinding>& bindingMap, DKShaderStage stage)
+    {
+        struct GetStructTypeData
+        {
+            DKString name;
+            DKShaderResource& base;
+            DKString operator () (MTLStructType* st)
+            {
+                DKShaderResourceStruct output;
+                output.members.Reserve(st.members.count);
+                for (MTLStructMember* member in st.members)
+                {
+                    DKShaderResourceStructMember mb;
+                    MTLDataType type = member.dataType;
+                    MTLStructType* memberStruct = nil;
+
+                    if (type == MTLDataTypeArray)
+                    {
+                        MTLArrayType* arrayType = member.arrayType;
+
+                        mb.count = (uint32_t)arrayType.arrayLength;
+                        mb.stride = (uint32_t)arrayType.stride;
+                        mb.dataType = ShaderDataType::To(arrayType.elementType);
+                        if (arrayType.elementType == MTLDataTypeStruct)
+                            memberStruct = arrayType.elementStructType;
+                    }
+                    else
+                    {
+                        mb.count = 1;
+                        mb.dataType = ShaderDataType::To(type);
+                    }
+
+                    mb.name = member.name.UTF8String;
+                    mb.offset = (uint32_t)member.offset;
+
+                    if (type == MTLDataTypeStruct)
+                        memberStruct = member.structType;
+                    if (memberStruct)
+                    {
+                        DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
+                        mb.typeInfoKey = GetStructTypeData{ typeKey, base }.operator() (memberStruct);
+                    }
+                    output.members.Add(mb);
+                }
+                base.structTypeMemberMap.Update(name, output);
+                return name;
+            }
+        };
+
+        DKShaderResource res = {};
+
+        res.stages = (uint32_t)stage;
+        res.name = DKStringU8(arg.name.UTF8String);
+        res.count = (uint32_t)arg.arrayLength;
+        res.enabled = arg.active;
+        switch (arg.access)
+        {
+            case MTLArgumentAccessReadOnly:
+                res.access = DKShaderResource::AccessReadOnly; break;
+            case MTLArgumentAccessWriteOnly:
+                res.access = DKShaderResource::AccessWriteOnly; break;
+            case MTLArgumentAccessReadWrite:
+                res.access = DKShaderResource::AccessReadWrite; break;
+            default:
+                NSLog(@"ERROR: Unknown access type!");
+                DKASSERT_DESC_DEBUG(0, "Unknown access type!");
+        }
+
+        bool indexNotFound = true;
+        switch (arg.type)
+        {
+            case MTLArgumentTypeBuffer:
+                res.type = DKShaderResource::TypeBuffer;
+                res.typeInfo.buffer.size = (uint32_t)arg.bufferDataSize;
+                //res.typeInfo.buffer.alignment = (uint32_t)arg.bufferAlignment;
+                res.typeInfo.buffer.dataType = ShaderDataType::To(arg.bufferDataType);
+                if (arg.bufferDataType == MTLDataTypeStruct)
+                {
+                    res.typeInfoKey = GetStructTypeData{res.name, res}.operator()(arg.bufferStructType);
+                }
+                else
+                {
+                    NSLog(@"WARNING: Unsupported buffer type: %@", arg);
+                    DKASSERT_DESC_DEBUG(0, "Unsupported buffer type");
+                }
+
+                for (const ResourceBinding& binding : bindingMap)
+                {
+                    if (binding.bufferIndex == arg.index)
+                    {
+                        res.set = binding.set;
+                        res.binding = binding.binding;
+                        indexNotFound = false;
+                        break;
+                    }
+                }
+                break;
+//            case MTLArgumentTypeThreadgroupMemory:
+//                res.type = DKShaderResource::TypeThreadgroupMemory;
+//                break;
+            case MTLArgumentTypeTexture:
+                res.type = DKShaderResource::TypeTexture;
+                for (const ResourceBinding& binding : bindingMap)
+                {
+                    if (binding.textureIndex == arg.index)
+                    {
+                        res.set = binding.set;
+                        res.binding = binding.binding;
+                        indexNotFound = false;
+                        break;
+                    }
+                }
+                break;
+            case MTLArgumentTypeSampler:
+                res.type = DKShaderResource::TypeSampler;
+                for (const ResourceBinding& binding : bindingMap)
+                {
+                    if (binding.samplerIndex == arg.index)
+                    {
+                        res.set = binding.set;
+                        res.binding = binding.binding;
+                        indexNotFound = false;
+                        break;
+                    }
+                }
+                break;
+            default:
+                NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
+                DKASSERT_DESC_DEBUG(0, "Unsupported shader argument type");
+        }
+        DKASSERT(!indexNotFound);
+        return res;
+    }
+    DKShaderPushConstantLayout ShaderPushConstantLayoutFromMTLArgument(MTLArgument* arg, uint32_t offset, DKShaderStage stage)
+    {
+        DKShaderPushConstantLayout layout = {};
+        layout.name = DKString(arg.name.UTF8String);
+        layout.stages = (uint32_t)stage;
+        layout.offset = offset;
+        layout.size = (uint32_t)arg.bufferDataSize;
+        return layout;
+    }
+    bool CombineShaderResource(DKArray<DKShaderResource>& resources, const DKShaderResource& res)
+    {
+        for (DKShaderResource& r : resources)
+        {
+            if (res.set == r.set && res.binding == r.binding)
+            {
+                if ((res.type == DKShaderResource::TypeSampler && r.type == DKShaderResource::TypeTexture) ||
+                    (res.type == DKShaderResource::TypeTexture && r.type == DKShaderResource::TypeSampler))
+                {
+                    r.type = DKShaderResource::TypeSampledTexture;
+                }
+                else
+                {
+                    DKASSERT_DESC(res.type == r.type, "Invalid resource type!");
+                }
+                r.stages |= res.stages;
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 using namespace DKFramework;
@@ -129,13 +293,13 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
             spv::ExecutionModel stage;
 			switch (shader->Stage())
 			{
-                case DKShader::StageType::Vertex:
+                case DKShaderStage::Vertex:
                     stage = spv::ExecutionModelVertex;
                     break;
-                case DKShader::StageType::Fragment:
+                case DKShaderStage::Fragment:
                     stage = spv::ExecutionModelFragment;
                     break;
-                case DKShader::StageType::Compute:
+                case DKShaderStage::Compute:
                     stage = spv::ExecutionModelGLCompute;
 					break;
 				default:
@@ -185,7 +349,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                         break;
                 }
             }
-            if (const DKArray<DKShader::PushConstantLayout>& layouts = shader->PushConstantBufferLayouts(); layouts.Count() > 0)
+            if (const DKArray<DKShaderPushConstantLayout>& layouts = shader->PushConstantBufferLayouts(); layouts.Count() > 0)
             {
                 DKASSERT_DESC_DEBUG(layouts.Count() == 1, "There can be only one push constant block!");
 
@@ -268,8 +432,18 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
                         if (b1.used_by_shader)
                         {
-                            if (b1.desc_set == spirv_cross::kPushConstDescSet)
+                            if (b1.desc_set == spirv_cross::kPushConstDescSet &&
+                                b1.binding == spirv_cross::kPushConstBinding)
+                            {
+                                // Only one push-constant binding is allowed.
+                                DKASSERT_DEBUG(bindingMap.pushConstantIndex == 0);
+                                DKASSERT_DEBUG(bindingMap.pushConstantOffset == 0);
+
+                                const DKShaderPushConstantLayout& layout = shader->PushConstantBufferLayouts().Value(0);
                                 bindingMap.pushConstantIndex = b1.msl_buffer;
+                                // MTLArgument doesn't have an offset, save info for later use. (pipeline-reflection)
+                                bindingMap.pushConstantOffset = layout.offset;
+                            }
                             else
                                 bindingMap.resourceBindings.Add(b2);
                         }
@@ -295,7 +469,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
     return NULL;
 }
 
-DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKRenderPipelineReflection* reflection)
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	MTLPrimitiveType primitiveType;
 	switch (desc.primitiveTopology)
@@ -463,8 +637,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			colorAttachmentDesc.destinationRGBBlendFactor = GetBlendFactor(attachment.destinationRGBBlendFactor);
 			colorAttachmentDesc.destinationAlphaBlendFactor = GetBlendFactor(attachment.destinationAlphaBlendFactor);
 		}
-		DKSet<NSUInteger> vertexAttributeIndices; // buffer index converted for device
-		if (desc.vertexDescriptor.attributes.Count() > 0 || desc.vertexDescriptor.layouts.Count() > 0)
+
+        if (desc.vertexDescriptor.attributes.Count() > 0 || desc.vertexDescriptor.layouts.Count() > 0)
 		{
 			MTLVertexDescriptor *vertexDescriptor = [MTLVertexDescriptor vertexDescriptor];
 			for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
@@ -474,7 +648,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				attr.offset = attrDesc.offset;
 				NSUInteger bufferIndex = vertexAttributeOffset + attrDesc.bufferIndex;
 				attr.bufferIndex = bufferIndex;
-				vertexAttributeIndices.Insert(bufferIndex);
 			}
 			for (const DKVertexBufferLayoutDescriptor& layoutDesc : desc.vertexDescriptor.layouts)
 			{
@@ -500,22 +673,93 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			{
 				NSLog(@"RenderPipelineReflection: %@", pipelineReflection);
 
-                NSArray<MTLArgument*>* fragmentArguments = pipelineReflection.fragmentArguments;
-                NSArray<MTLArgument*>* vertexArguments = [&vertexAttributeIndices](NSArray<MTLArgument*>* args)->NSArray<MTLArgument*>*
+                DKArray<DKShaderResource> resources;
+                DKArray<DKShaderAttribute> inputAttrs;
+                DKArray<DKShaderPushConstantLayout> pushConstants;
+
+                if (vertexFunction)
+                    inputAttrs = vertexFunction->stageInputAttributes;
+
+                inputAttrs.Reserve(pipelineReflection.vertexArguments.count);
+                resources.Reserve(pipelineReflection.vertexArguments.count + pipelineReflection.fragmentArguments.count);
+                if (pipelineReflection.vertexArguments.count)
                 {
-                    NSMutableArray<MTLArgument*>* array = [[[NSMutableArray alloc] initWithCapacity:args.count] autorelease];
-                    for (MTLArgument* arg in args)
+                    const ShaderModule* module = vertexFunction->module.StaticCast<ShaderModule>();
+                    const StageResourceBindingMap& bindingMap = module->bindings;
+
+                    for (MTLArgument* arg in pipelineReflection.vertexArguments)
                     {
-                        if (arg.type == MTLArgumentTypeBuffer && vertexAttributeIndices.Contains(arg.index))
+                        if (!arg.active)
                             continue;
 
-                        [array addObject:arg];
+                        if (arg.type == MTLArgumentTypeBuffer && arg.index >= bindingMap.inputAttributeIndexOffset)
+                        {
+                            for (const DKShaderAttribute& attr : vertexFunction->stageInputAttributes)
+                            {
+                                if (attr.location == (arg.index - bindingMap.inputAttributeIndexOffset))
+                                {
+                                    DKShaderAttribute attr2 = attr;
+                                    attr2.enabled = true;
+                                    inputAttrs.Add(attr2);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
+                        {
+                            DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg, bindingMap.pushConstantOffset, DKShaderStage::Vertex);
+                            pushConstants.Add(layout);
+                        }
+                        else
+                        {
+                            DKShaderResource res = ShaderResourceFromMTLArgument(arg, bindingMap.resourceBindings, DKShaderStage::Vertex);
+                            if (!CombineShaderResource(resources, res))
+                                resources.Add(res);
+                        }
                     }
-                    return array;
-                }(pipelineReflection.vertexArguments);
+                }
+                if (pipelineReflection.fragmentArguments.count)
+                {
+                    uint32_t stageMask = static_cast<uint32_t>(fragmentFunction->Stage());
+                    const ShaderModule* module = fragmentFunction->module.StaticCast<ShaderModule>();
+                    const StageResourceBindingMap& bindingMap = module->bindings;
 
-                reflection->vertexResources = this->ShaderResourceArrayFromArguments(vertexArguments);
-                reflection->fragmentResources = this->ShaderResourceArrayFromArguments(fragmentArguments);
+                    for (MTLArgument* arg in pipelineReflection.fragmentArguments)
+                    {
+                        if (!arg.active)
+                            continue;
+
+                        if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
+                        {
+                            DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg, bindingMap.pushConstantOffset, DKShaderStage::Fragment);
+                            bool exist = false;
+                            for (DKShaderPushConstantLayout& l2 : pushConstants)
+                            {
+                                if (l2.offset == layout.offset && l2.size == layout.size)
+                                {
+                                    l2.stages |= stageMask;
+                                    exist = true;
+                                }
+                            }
+                            if (!exist)
+                                pushConstants.Add(layout);
+                        }
+                        else
+                        {
+                            DKShaderResource res = ShaderResourceFromMTLArgument(arg, bindingMap.resourceBindings, DKShaderStage::Fragment);
+                            if (!CombineShaderResource(resources, res))
+                                resources.Add(res);
+                        }
+                    }
+                }
+
+                resources.ShrinkToFit();
+                inputAttrs.ShrinkToFit();
+                pushConstants.ShrinkToFit();
+
+                reflection->resources = std::move(resources);
+                reflection->inputAttributes = std::move(inputAttrs);
+                reflection->pushConstantLayouts = std::move(pushConstants);
 			}
 		}
 		else
@@ -540,7 +784,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	return state.SafeCast<DKRenderPipelineState>();
 }
 
-DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice* dev, const DKComputePipelineDescriptor& desc, DKComputePipelineReflection* reflection)
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice* dev, const DKComputePipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
     if (!desc.computeFunction)
         return NULL;
@@ -554,6 +798,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
         MTLComputePipelineDescriptor* descriptor = [[[MTLComputePipelineDescriptor alloc] init] autorelease];
 
         const ShaderFunction* func = desc.computeFunction.StaticCast<ShaderFunction>();
+
         descriptor.computeFunction = func->function;
 
         id<MTLComputePipelineState> pipelineState = nil;
@@ -570,7 +815,34 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
         {
             NSLog(@"ComputePipelineReflection: %@", pipelineReflection);
 
-            reflection->resources = this->ShaderResourceArrayFromArguments(pipelineReflection.arguments);
+            DKArray<DKShaderResource> resources;
+            DKArray<DKShaderPushConstantLayout> pushConstants;
+            resources.Reserve(pipelineReflection.arguments.count);
+            pushConstants.Reserve(pipelineReflection.arguments.count);
+
+            const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+            const StageResourceBindingMap& bindingMap = module->bindings;
+
+            for (MTLArgument* arg in pipelineReflection.arguments)
+            {
+                if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
+                {
+                    DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg, bindingMap.pushConstantOffset, DKShaderStage::Compute);
+                    pushConstants.Add(layout);
+                }
+                else
+                {
+                    DKShaderResource res = ShaderResourceFromMTLArgument(arg, bindingMap.resourceBindings, DKShaderStage::Compute);
+                    if (!CombineShaderResource(resources, res))
+                        resources.Add(res);
+                }
+            }
+
+            resources.ShrinkToFit();
+            pushConstants.ShrinkToFit();
+
+            reflection->resources = std::move(resources);
+            reflection->pushConstantLayouts = std::move(pushConstants);
         }
 
         if (error)
@@ -629,144 +901,6 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&)
 {
 	return NULL;
-}
-
-DKArray<DKShaderResource> GraphicsDevice::ShaderResourceArrayFromArguments(NSArray<MTLArgument*>* arguments) const
-{
-    struct GetStructTypeData
-    {
-        DKString name;
-        DKShaderResource& base;
-        DKString operator () (MTLStructType* st)
-        {
-            DKShaderResourceStruct output;
-            output.members.Reserve(st.members.count);
-            for (MTLStructMember* member in st.members)
-            {
-                DKShaderResourceStructMember mb;
-                MTLDataType type = member.dataType;
-                MTLStructType* memberStruct = nil;
-
-                if (type == MTLDataTypeArray)
-                {
-                    MTLArrayType* arrayType = member.arrayType;
-
-                    mb.count = (uint32_t)arrayType.arrayLength;
-                    mb.stride = (uint32_t)arrayType.stride;
-                    mb.dataType = ShaderDataType::To(arrayType.elementType);
-                    if (arrayType.elementType == MTLDataTypeStruct)
-                        memberStruct = arrayType.elementStructType;
-                }
-                else
-                {
-                    mb.count = 1;
-                    mb.dataType = ShaderDataType::To(type);
-                }
-
-                mb.name = member.name.UTF8String;
-                mb.offset = (uint32_t)member.offset;
-
-                if (type == MTLDataTypeStruct)
-                    memberStruct = member.structType;
-                if (memberStruct)
-                {
-                    DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
-                    mb.typeInfoKey = GetStructTypeData{ typeKey, base }.operator() (memberStruct);
-                }
-                output.members.Add(mb);
-            }
-            base.structTypeMemberMap.Update(name, output);
-            return name;
-        }
-    };
-
-    auto shaderResourceFromArgument = [](MTLArgument* arg, DKShaderResource& res)->bool
-    {
-        res.set = 0;
-        res.binding = (uint32_t)arg.index;
-        res.name = DKStringU8(arg.name.UTF8String);
-        res.count = (uint32_t)arg.arrayLength;
-        res.enabled = arg.active;
-        switch (arg.access)
-        {
-            case MTLArgumentAccessReadOnly:
-                res.access = DKShaderResource::AccessReadOnly; break;
-            case MTLArgumentAccessWriteOnly:
-                res.access = DKShaderResource::AccessWriteOnly; break;
-            case MTLArgumentAccessReadWrite:
-                res.access = DKShaderResource::AccessReadWrite; break;
-            default:
-                NSLog(@"ERROR: Unknown access type!");
-                return false;
-        }
-
-        switch (arg.type)
-        {
-            case MTLArgumentTypeBuffer:
-                res.type = DKShaderResource::TypeBuffer;
-                res.typeInfo.buffer.size = (uint32_t)arg.bufferDataSize;
-                //res.typeInfo.buffer.alignment = (uint32_t)arg.bufferAlignment;
-                res.typeInfo.buffer.dataType = ShaderDataType::To(arg.bufferDataType);
-                if (arg.bufferDataType == MTLDataTypeStruct)
-                {
-                    res.typeInfoKey = GetStructTypeData{res.name, res}.operator()(arg.bufferStructType);
-                }
-                else
-                {
-                    NSLog(@"WARNING: Unsupported buffer type: %@", arg);
-                }
-                break;
-//            case MTLArgumentTypeThreadgroupMemory:
-//                res.type = DKShaderResource::TypeThreadgroupMemory;
-//                break;
-            case MTLArgumentTypeTexture:
-                res.type = DKShaderResource::TypeTexture;
-                break;
-            case MTLArgumentTypeSampler:
-                res.type = DKShaderResource::TypeSampler;
-                break;
-            default:
-                NSLog(@"WARNING: Unsupported shader argument type: %@", arg);
-                return false;
-        }
-        return true;
-    };
-
-    DKArray<DKShaderResource> resources;
-    resources.Reserve(arguments.count);
-    for (MTLArgument* arg in arguments)
-    {
-        DKShaderResource res;
-        if (shaderResourceFromArgument(arg, res))
-        {
-            bool combined = false;
-            if (res.type == DKShaderResource::TypeSampler ||
-                res.type == DKShaderResource::TypeTexture)
-            {
-                for (DKShaderResource& r : resources)
-                {
-                    if (r.binding == res.binding)
-                    {
-                        if ((res.type == DKShaderResource::TypeSampler && r.type == DKShaderResource::TypeTexture) ||
-                            (res.type == DKShaderResource::TypeTexture && r.type == DKShaderResource::TypeSampler))
-                        {
-                            r.type = DKShaderResource::TypeSampledTexture;
-                            combined = true;
-                            break;
-                        }
-                        else
-                        {
-                            DKASSERT_DESC_DEBUG(0, "Invalid resource type!");
-                        }
-                    }
-                }
-            }
-            if (!combined)
-                resources.Add(res);
-        }
-    }
-    resources.ShrinkToFit();
-    return resources;
 }
 
 #endif //#if DKGL_ENABLE_METAL

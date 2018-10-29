@@ -68,4 +68,23 @@ const DKArray<DKShaderAttribute>& ShaderFunction::StageInputAttributes() const
 	return module.StaticCast<ShaderModule>()->inputAttributes;
 }
 
+DKShaderStage ShaderFunction::Stage() const
+{
+	switch (module.StaticCast<ShaderModule>()->stage)
+	{
+	case VK_SHADER_STAGE_VERTEX_BIT:
+		return DKShaderStage::Vertex;
+	case VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT:
+		return DKShaderStage::TessellationControl;
+	case VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT:
+		return DKShaderStage::TessellationEvaluation;
+	case VK_SHADER_STAGE_GEOMETRY_BIT:
+		return DKShaderStage::Geometry;
+	case VK_SHADER_STAGE_FRAGMENT_BIT:
+		return DKShaderStage::Fragment;
+	case VK_SHADER_STAGE_COMPUTE_BIT:
+		return DKShaderStage::Compute;
+	}
+	return DKShaderStage::Unknown;
+}
 #endif //#if DKGL_ENABLE_VULKAN

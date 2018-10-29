@@ -723,7 +723,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 	DKASSERT_DEBUG(shader);
 	if (DKData* data = shader->Data(); data)
 	{
-        for (const DKShader::PushConstantLayout& layout : shader->PushConstantBufferLayouts())
+        for (const DKShaderPushConstantLayout& layout : shader->PushConstantBufferLayouts())
         {
             if (layout.offset >= this->properties.limits.maxPushConstantsSize)
             {
@@ -773,9 +773,9 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
 			switch (shader->Stage())
 			{
-			case DKShader::Vertex:
-			case DKShader::Fragment:
-			case DKShader::Compute:
+			case DKShaderStage::Vertex:
+			case DKShaderStage::Fragment:
+			case DKShaderStage::Compute:
 				break;
 			default:
                 DKLogW("Warning: Unsupported shader type!");
@@ -876,7 +876,7 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
 	return texture.SafeCast<DKTexture>();
 }
 
-DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKRenderPipelineReflection* reflection)
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	VkResult result = VK_SUCCESS;
 
@@ -1279,8 +1279,35 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	}
 	if (reflection)
 	{
-		reflection->vertexResources.Clear();
-		reflection->fragmentResources.Clear();
+		size_t maxResourceCount = 0;
+		size_t maxPushConstantLayoutCount = 0;
+
+		for (const DKShaderFunction* fn : shaderFunctions)
+		{
+			if (fn)
+			{
+				const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
+				const ShaderModule* module = func->module.StaticCast<ShaderModule>();
+				maxResourceCount += module->resources.Count();
+				maxPushConstantLayoutCount += module->pushConstantLayouts.Count();
+
+				if (module->stage == VK_SHADER_STAGE_VERTEX_BIT)
+				{
+                    reflection->inputAttributes.Reserve(module->inputAttributes.Count());
+                    for (const DKShaderAttribute& attr : module->inputAttributes)
+                    {
+                        if (attr.enabled)
+                            reflection->inputAttributes.Add(attr);
+                    }
+				}
+			}
+		}
+
+		reflection->resources.Clear();
+		reflection->pushConstantLayouts.Clear();
+
+		reflection->resources.Reserve(maxResourceCount);
+		reflection->pushConstantLayouts.Reserve(maxPushConstantLayoutCount);
 
 		for (const DKShaderFunction* fn : shaderFunctions)
 		{
@@ -1289,15 +1316,55 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
 				const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
-				if (module->stage == VK_SHADER_STAGE_VERTEX_BIT)
-					reflection->vertexResources.Add(module->resources);
-				else if (module->stage == VK_SHADER_STAGE_FRAGMENT_BIT)
-					reflection->fragmentResources.Add(module->resources);
+				uint32_t stageMask = static_cast<uint32_t>(func->Stage());
+                for (const DKShaderResource& res : module->resources)
+                {
+                    if (!res.enabled)
+                        continue;
+
+                    bool exist = false;
+                    for (DKShaderResource& res2 : reflection->resources)
+                    {
+                        if (res.set == res2.set && res.binding == res2.binding)
+                        {
+                            DKASSERT(res.type == res2.type);
+                            res2.stages |= stageMask;
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist)
+                    {
+                        DKShaderResource res2 = res;
+                        res2.stages = stageMask;
+                        reflection->resources.Add(res2);
+                    }
+                }
+				for (const DKShaderPushConstantLayout& layout : module->pushConstantLayouts)
+				{
+					bool exist = false;
+					for (DKShaderPushConstantLayout& l2 : reflection->pushConstantLayouts)
+					{
+						if (l2.offset == layout.offset && l2.size == layout.size)
+						{
+							l2.stages |= stageMask;
+                            exist = true;
+							break;
+						}
+					}
+					if (!exist)
+					{
+						DKShaderPushConstantLayout l2 = layout;
+						l2.stages = stageMask;
+						reflection->pushConstantLayouts.Add(l2);
+					}
+				}
 			}
 		}
 
-		reflection->vertexResources.ShrinkToFit();
-		reflection->fragmentResources.ShrinkToFit();
+		reflection->inputAttributes.ShrinkToFit();
+		reflection->resources.ShrinkToFit();
+		reflection->pushConstantLayouts.ShrinkToFit();
 	}
 
     // Delete the descriptorSetLayouts that are no longer needed.
@@ -1311,7 +1378,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
 
-DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice* dev, const DKComputePipelineDescriptor& desc, DKComputePipelineReflection* reflection)
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice* dev, const DKComputePipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
     VkResult result = VK_SUCCESS;
 
@@ -1704,7 +1771,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
         const ShaderFunction* func = static_cast<const ShaderFunction*>(fn);
         const ShaderModule* module = func->module.StaticCast<ShaderModule>();
 
-        for (const DKShader::PushConstantLayout& layout : module->pushConstantLayouts)
+        for (const DKShaderPushConstantLayout& layout : module->pushConstantLayouts)
         {
             if (layout.size > 0)
             {

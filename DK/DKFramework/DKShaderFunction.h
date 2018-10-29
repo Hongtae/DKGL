@@ -13,8 +13,6 @@ namespace DKFramework
 {
 	class DKGraphicsDevice;
 
-	using DKVertexAttribute = DKShaderAttribute;
-
 	class DKShaderFunction
 	{
 	public:
@@ -31,6 +29,7 @@ namespace DKFramework
 		virtual const DKArray<DKShaderAttribute>& StageInputAttributes() const = 0;
 		virtual const DKMap<DKString, Constant>& FunctionConstants() const = 0;
 		virtual DKString FunctionName() const = 0;
+		virtual DKShaderStage Stage() const = 0;
 
 		virtual DKGraphicsDevice* Device() = 0;
 	};

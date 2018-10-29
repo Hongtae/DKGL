@@ -25,13 +25,14 @@ namespace DKFramework::Private::Vulkan
 
 		const DKMap<DKString, Constant>& FunctionConstants() const override { return functionConstantsMap; }
 		DKString FunctionName() const override { return DKString(functionName); }
+		DKShaderStage Stage() const override;
 
 		DKGraphicsDevice* Device() override { return module->Device(); }
 
 		DKObject<DKShaderModule> module;
 		DKStringU8 functionName;
 
-		DKArray<DKVertexAttribute> vertexAttributes;
+		DKArray<DKShaderAttribute> inputAttributes;
 		VkSpecializationInfo specializationInfo;
 		void* specializationData;
 

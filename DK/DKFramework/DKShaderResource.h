@@ -90,6 +90,17 @@ namespace DKFramework
 		Bool4,
 	};
 
+	enum class DKShaderStage
+	{
+		Unknown = 0,
+		Vertex = 1U,
+		TessellationControl = 1U << 1,
+		TessellationEvaluation = 1U << 2,
+		Geometry = 1U << 3,
+		Fragment = 1U << 4,
+		Compute = 1U << 5,
+	};
+
 	/**
 	 Shader reflection data for buffer type.
 	 */
@@ -159,6 +170,7 @@ namespace DKFramework
 		uint32_t binding;
 		DKString name;
 		Type type;
+		uint32_t stages;
 
 		uint32_t count; // array length
 		uint32_t stride; // stride between array elements
@@ -178,5 +190,14 @@ namespace DKFramework
 
 		// type data for struct members
 		DKMap<DKString, DKShaderResourceStruct> structTypeMemberMap;
+	};
+
+	struct DKShaderPushConstantLayout
+	{
+		DKString name;
+		uint32_t offset;
+		uint32_t size;
+		uint32_t stages;
+		DKArray<DKShaderPushConstantLayout> memberLayouts;
 	};
 }

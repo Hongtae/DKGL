@@ -33,9 +33,9 @@ namespace DKFramework::Private::Vulkan
 		VkShaderStageFlagBits stage;
 
         DKArray<DKShaderAttribute> inputAttributes;
-        DKArray<DKShader::PushConstantLayout> pushConstantLayouts;
-        DKArray<DKShader::Descriptor> descriptors;
+        DKArray<DKShaderPushConstantLayout> pushConstantLayouts;
         DKArray<DKShaderResource> resources;
+        DKArray<DKShader::Descriptor> descriptors;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

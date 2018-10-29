@@ -189,7 +189,7 @@ namespace DKFramework::Private
 using namespace DKFramework;
 
 DKShader::DKShader()
-    : stage(StageType::Unknown)
+    : stage(DKShaderStage::Unknown)
     , threadgroupSize({1, 1, 1})
 {
 }
@@ -219,17 +219,17 @@ bool DKShader::Rebuild(const DKData* d)
                 switch (spv::ExecutionModel exec = compiler.get_execution_model(); exec)
                 {
                 case spv::ExecutionModelVertex:
-                    this->stage = Vertex; break;
+                    this->stage = DKShaderStage::Vertex; break;
                 case spv::ExecutionModelTessellationControl:
-                    this->stage = TessellationControl; break;
+                    this->stage = DKShaderStage::TessellationControl; break;
                 case spv::ExecutionModelTessellationEvaluation:
-                    this->stage = TessellationEvaluation; break;
+                    this->stage = DKShaderStage::TessellationEvaluation; break;
                 case spv::ExecutionModelGeometry:
-                    this->stage = Geometry; break;
+                    this->stage = DKShaderStage::Geometry; break;
                 case spv::ExecutionModelFragment:
-                    this->stage = Fragment; break;
+                    this->stage = DKShaderStage::Fragment; break;
                 case spv::ExecutionModelGLCompute:
-                    this->stage = Compute; break;
+                    this->stage = DKShaderStage::Compute; break;
                 default:
                     DKASSERT_DESC_DEBUG(0, "Unknown shader type");
                     break;
@@ -272,7 +272,8 @@ bool DKShader::Rebuild(const DKData* d)
                 auto active = compiler.get_active_interface_variables();
                 spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 
-                auto getResource = [&compiler, &active](const spirv_cross::Resource& resource, bool writable)->DKShaderResource
+				uint32_t stage = static_cast<uint32_t>(this->stage);
+                auto getResource = [&compiler, &active, stage](const spirv_cross::Resource& resource, bool writable)->DKShaderResource
                 {
                     DKShaderResource out = {};
                     out.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -280,6 +281,7 @@ bool DKShader::Rebuild(const DKData* d)
                     out.name = compiler.get_name(resource.id).c_str();
                     out.stride = compiler.get_decoration(resource.id, spv::DecorationArrayStride);
                     out.enabled = active.find(resource.id) != active.end();
+					out.stages = stage;
                     if (writable)
                         out.access = DKShaderResource::AccessReadWrite;
                     else
@@ -456,7 +458,7 @@ bool DKShader::Rebuild(const DKData* d)
                     attr.location = location;
                     attr.name = name;
                     attr.type = dataType;
-                    attr.active = true;
+                    attr.enabled = true;
                     return attr;
                 };
                 // stage inputs
@@ -477,8 +479,9 @@ bool DKShader::Rebuild(const DKData* d)
                 for (const spirv_cross::Resource& resource : resources.push_constant_buffers)
                 {
                     std::vector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
-                    PushConstantLayout layout = {};
+                    DKShaderPushConstantLayout layout = {};
                     layout.memberLayouts.Reserve(ranges.size());
+					layout.stages = stage;
 
                     uint32_t pushConstantOffset = (uint32_t)ranges[0].offset;
                     uint32_t pushConstantSize = 0;
@@ -486,7 +489,7 @@ bool DKShader::Rebuild(const DKData* d)
                     for (spirv_cross::BufferRange &range : ranges)
                     {
                         // get range.
-                        PushConstantLayout memberLayout;
+                        DKShaderPushConstantLayout memberLayout;
                         memberLayout.name = compiler.get_member_name(resource.id, range.index).c_str();
                         memberLayout.offset = range.offset;
                         memberLayout.size = range.range;

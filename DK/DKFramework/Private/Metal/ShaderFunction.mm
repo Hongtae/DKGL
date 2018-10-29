@@ -31,23 +31,11 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize
 		DKShaderFunction::Constant c;
 		c.name = obj.name.UTF8String;
 		c.type = ShaderDataType::To(obj.type);
-		c.index = obj.index;
+		c.index = (uint32_t)obj.index;
 		c.required = obj.required;
 		this->functionConstantsMap.Insert(DKString(key.UTF8String), c);
 	}];
 
-	vertexAttributes.Reserve(function.vertexAttributes.count);
-	for (MTLVertexAttribute* inAttr in function.vertexAttributes)
-	{
-		DKVertexAttribute attr;
-		attr.name = DKString((const char*)inAttr.name.UTF8String);
-		attr.location = (uint32_t)inAttr.attributeIndex;
-		attr.type = ShaderDataType::To(inAttr.attributeType);
-		attr.active = inAttr.active;
-		attr.patchControlPointData = inAttr.patchControlPointData;
-		attr.patchData = inAttr.patchData;
-		vertexAttributes.Add(attr);
-	}
 	stageInputAttributes.Reserve(function.stageInputAttributes.count);
 	for (MTLAttribute* inAttr in function.stageInputAttributes)
 	{
@@ -55,9 +43,9 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize
 		attr.name = DKString((const char*)inAttr.name.UTF8String);
 		attr.location = (uint32_t)inAttr.attributeIndex;
 		attr.type = ShaderDataType::To(inAttr.attributeType);
-		attr.active = inAttr.active;
-		attr.patchControlPointData = inAttr.patchControlPointData;
-		attr.patchData = inAttr.patchData;
+		attr.enabled = inAttr.active;
+//        attr.patchControlPointData = inAttr.patchControlPointData;
+//        attr.patchData = inAttr.patchData;
 		stageInputAttributes.Add(attr);
 	}
 }
@@ -75,6 +63,20 @@ DKString ShaderFunction::FunctionName() const
 		name = function.name.UTF8String;
 	}
 	return name;
+}
+
+DKShaderStage ShaderFunction::Stage() const
+{
+    switch (MTLFunctionType type = function.functionType; type)
+    {
+        case MTLFunctionTypeVertex:
+            return DKShaderStage::Vertex;
+        case MTLFunctionTypeFragment:
+            return DKShaderStage::Fragment;
+        case MTLFunctionTypeKernel:
+            return DKShaderStage::Compute;
+    }
+    return DKShaderStage::Unknown;
 }
 
 #endif //#if DKGL_ENABLE_METAL

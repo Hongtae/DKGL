@@ -27,13 +27,14 @@ namespace DKFramework::Private::Metal
 
 		const DKMap<DKString, Constant>& FunctionConstants() const override { return functionConstantsMap; }
 		DKString FunctionName() const override;
+        DKShaderStage Stage() const override;
+
 
 		DKGraphicsDevice* Device() override { return module->Device(); }
 
 		id<MTLFunction> function;
 		DKObject<DKShaderModule> module;
 
-		DKArray<DKVertexAttribute> vertexAttributes;
 		DKArray<DKShaderAttribute> stageInputAttributes;
 		DKMap<DKString, Constant> functionConstantsMap;
 

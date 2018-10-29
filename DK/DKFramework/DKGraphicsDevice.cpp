@@ -36,12 +36,12 @@ DKObject<DKShaderModule> DKGraphicsDevice::CreateShaderModule(DKShader* shader)
 	return NULL;
 }
 
-DKObject<DKRenderPipelineState> DKGraphicsDevice::CreateRenderPipeline(const DKRenderPipelineDescriptor& desc, DKRenderPipelineReflection* reflection)
+DKObject<DKRenderPipelineState> DKGraphicsDevice::CreateRenderPipeline(const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	return impl->CreateRenderPipeline(this, desc, reflection);
 }
 
-DKObject<DKComputePipelineState> DKGraphicsDevice::CreateComputePipeline(const DKComputePipelineDescriptor& desc, DKComputePipelineReflection* reflection)
+DKObject<DKComputePipelineState> DKGraphicsDevice::CreateComputePipeline(const DKComputePipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	return impl->CreateComputePipeline(this, desc, reflection);
 }

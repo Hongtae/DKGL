@@ -33,6 +33,7 @@ namespace DKFramework::Private::Metal
         DKArray<ResourceBinding> resourceBindings; // spir-v to msl binding (mapping)
         uint32_t inputAttributeIndexOffset;
         uint32_t pushConstantIndex;
+        uint32_t pushConstantOffset;
     };
 
 	class ShaderModule : public DKShaderModule

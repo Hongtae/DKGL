@@ -30,8 +30,8 @@ namespace DKFramework
 		DKObject<DKCommandQueue> CreateCommandQueue(uint32_t queueTypeFlags);
 		DKObject<DKShaderModule> CreateShaderModule(DKShader*);
 
-		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKRenderPipelineReflection* reflection = NULL);
-		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKComputePipelineReflection* reflection = NULL);
+		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);
+		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 
 		DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode);
 		DKObject<DKTexture> CreateTexture(const DKTextureDescriptor&);

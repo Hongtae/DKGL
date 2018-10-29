@@ -17,9 +17,7 @@ namespace DKFramework
         DKString name;
         uint32_t location;
         DKShaderDataType type;
-        bool active;
-        bool patchControlPointData;
-        bool patchData;
+        bool enabled;
     };
 
 	/// @brief shader object
@@ -43,36 +41,18 @@ namespace DKFramework
             uint32_t count; // array size
             DescriptorType type;
         };
-        struct PushConstantLayout
-        {
-            DKString name;
-            uint32_t offset;
-            uint32_t size;
-            DKArray<PushConstantLayout> memberLayouts;
-        };
-
-        enum StageType
-		{
-            Unknown = 0,
-			Vertex,
-            TessellationControl,
-            TessellationEvaluation,
-            Geometry,
-			Fragment,
-			Compute,
-		};
 
 		DKShader();
 		DKShader(const DKData*); // share data
 		~DKShader();
 
-        StageType Stage() const     { return stage; }
+        DKShaderStage Stage() const     { return stage; }
 
         const DKData* Data() const  { return data; }
         DKData* Data()              { return data; }
 
         bool Rebuild(const DKData*);
-        bool Validate() override    { return stage != Unknown && data; }
+        bool Validate() override    { return stage != DKShaderStage::Unknown && data; }
 
         // entry point functions
         const DKArray<DKString>& FunctionNames() const { return functions; }
@@ -84,13 +64,13 @@ namespace DKFramework
         const DKArray<DKShaderResource>& Resources() const { return resources; }
 
         const DKArray<Descriptor>& Descriptors() const { return descriptors; }
-        const DKArray<PushConstantLayout>& PushConstantBufferLayouts() const { return pushConstantLayouts; }
+        const DKArray<DKShaderPushConstantLayout>& PushConstantBufferLayouts() const { return pushConstantLayouts; }
 
         // compute-shader threadgroup
         auto ThreadgroupSize() const { return threadgroupSize; }
 
     private:
-		StageType stage;
+		DKShaderStage stage;
 		DKObject<DKData> data;
 
         DKArray<DKString> functions;
@@ -99,7 +79,7 @@ namespace DKFramework
         DKArray<DKShaderAttribute> outputs;
         DKArray<DKShaderResource> resources;
 
-        DKArray<PushConstantLayout> pushConstantLayouts;
+        DKArray<DKShaderPushConstantLayout> pushConstantLayouts;
 
         // for descriptor set layout bindings
         DKArray<Descriptor> descriptors;
