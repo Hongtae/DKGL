@@ -11,7 +11,7 @@
 
 using namespace DKFramework;
 
-const DKMatrix2 DKMatrix2::identity = DKMatrix2().Identity();
+const DKMatrix2 DKMatrix2::identity = DKMatrix2().SetIdentity();
 
 DKMatrix2::DKMatrix2()
 	: _11(1), _12(0)
@@ -31,13 +31,7 @@ DKMatrix2::DKMatrix2(float e11, float e12, float e21, float e22)
 {
 }
 
-DKMatrix2& DKMatrix2::Zero()
-{
-	m[0][0] = m[0][1] = m[1][0] = m[1][1] = 0.0f;
-	return *this;
-}
-
-DKMatrix2& DKMatrix2::Identity()
+DKMatrix2& DKMatrix2::SetIdentity()
 {
 	m[0][0] = m[1][1] = 1.0f;
 	m[0][1] = m[1][0] = 0.0f;
@@ -61,33 +55,53 @@ float DKMatrix2::Determinant() const
 	return m[0][0] * m[1][1] - m[0][1] * m[1][0];
 }
 
-bool DKMatrix2::GetInverseMatrix(DKMatrix2& matOut, float *pDeterminant) const
+DKMatrix2 DKMatrix2::InverseMatrix(bool* r, float* d) const
 {
-	float det = m[0][0] * m[1][1] - m[0][1] * m[1][0];
+    DKMatrix2 mat;
+    float det = Determinant();
+    bool result = false;
 
-	if (det != 0.0f)
-	{
-		if (pDeterminant)
-			*pDeterminant = det;
+    if (det != 0.0f)
+    {
+        float detInv = 1.0f / det;
 
-		float detInv = 1.0f / det;
+        mat.m[0][0] = m[1][1] * detInv;
+        mat.m[0][1] = -m[0][1] * detInv;
+        mat.m[1][0] = -m[1][0] * detInv;
+        mat.m[1][1] = m[0][0] * detInv;
 
-		matOut.m[0][0] = m[1][1] * detInv;
-		matOut.m[0][1] = -m[0][1] * detInv;
-		matOut.m[1][0] = -m[1][0] * detInv;
-		matOut.m[1][1] = m[0][0] * detInv;
-		return true;
-	}
-	return false;
+        result = true;
+        if (d)
+            *d = det;
+    }
+    else
+        mat.SetIdentity();
+    if (r)
+        *r = result;
+    return mat;
 }
 
-DKMatrix2& DKMatrix2::Inverse()
+DKMatrix2 DKMatrix2::TransposeMatrix() const
 {
-	DKMatrix2 mat;
-	mat.Identity();
-	if (GetInverseMatrix(mat, 0))
-		*this = mat;
-	return *this;
+    DKMatrix2 mat(*this);
+    return mat.Transpose();
+}
+
+DKMatrix2& DKMatrix2::Inverse(bool* r)
+{
+    bool b;
+    DKMatrix2 mat = this->InverseMatrix(&b, nullptr);
+    if (b)
+        *this = mat;
+    if (r)
+        *r = b;
+    else
+    {
+#ifdef DKGL_DEBUG_ENABLED
+        DKLogE("DKMatrix2::Inverse failed");
+#endif
+    }
+    return *this;
 }
 
 DKMatrix2& DKMatrix2::Transpose()

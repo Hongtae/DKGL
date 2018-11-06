@@ -53,7 +53,7 @@ DKAffineTransform3::DKAffineTransform3(const DKMatrix4& m)
 
 DKAffineTransform3& DKAffineTransform3::Identity()
 {
-	matrix3.Identity();
+	matrix3.SetIdentity();
 	translation.x = 0.0f;
 	translation.y = 0.0f;
 	translation.z = 0.0f;

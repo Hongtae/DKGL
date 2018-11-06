@@ -918,7 +918,7 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 				else if (this->ValueType() == TypeMatrix2)
 				{
 					if (floatArray.Count() < 4)
-						this->Matrix2().Identity();
+						this->Matrix2().SetIdentity();
 					else
 					{
 						for (int i = 0; i < 4; ++i)
@@ -928,7 +928,7 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 				else if (this->ValueType() == TypeMatrix3)
 				{
 					if (floatArray.Count() < 9)
-						this->Matrix3().Identity();
+						this->Matrix3().SetIdentity();
 					else
 					{
 						for (int i = 0; i < 9; ++i)
@@ -938,7 +938,7 @@ bool DKVariant::ImportXML(const DKXmlElement* e)
 				else if (this->ValueType() == TypeMatrix4)
 				{
 					if (floatArray.Count() < 16)
-						this->Matrix4().Identity();
+						this->Matrix4().SetIdentity();
 					else
 					{
 						for (int i = 0; i < 16; ++i)

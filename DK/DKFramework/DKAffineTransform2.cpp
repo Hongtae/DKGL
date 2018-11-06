@@ -49,7 +49,7 @@ DKAffineTransform2::DKAffineTransform2(const DKMatrix3& m)
 
 DKAffineTransform2& DKAffineTransform2::Identity()
 {
-	matrix2.Identity();
+	matrix2.SetIdentity();
 	translation.x = 0.0f;
 	translation.y = 0.0f;
 	return *this;

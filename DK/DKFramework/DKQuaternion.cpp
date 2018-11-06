@@ -373,7 +373,7 @@ bool DKQuaternion::operator != (const DKQuaternion& q) const
 DKMatrix4 DKQuaternion::Matrix4() const
 {
 	DKMatrix4 mat;
-	mat.Identity();
+	mat.SetIdentity();
 
 	mat.m[0][0] = 1.0f - 2.0f * (y * y + z * z);
 	mat.m[0][1] = 2.0f * (x * y + z * w);
@@ -392,7 +392,7 @@ DKMatrix4 DKQuaternion::Matrix4() const
 DKMatrix3 DKQuaternion::Matrix3() const
 {
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 
 	mat.m[0][0] = 1.0f - 2.0f * (y * y + z * z);
 	mat.m[0][1] = 2.0f * (x * y + z * w);

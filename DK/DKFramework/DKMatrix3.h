@@ -24,17 +24,17 @@ namespace DKFramework
 		DKMatrix3(const DKVector3& row1, const DKVector3& row2, const DKVector3& row3);
 		DKMatrix3(float e11, float e12, float e13, float e21, float e22, float e23, float e31, float e32, float e33);
 
-		DKMatrix3& Zero();
-		DKMatrix3& Identity();
+		DKMatrix3& SetIdentity();
 		bool IsIdentity() const;
 		bool IsDiagonal() const;
 
-		DKMatrix3& Inverse();
+		DKMatrix3& Inverse(bool* result = nullptr);
 		DKMatrix3& Transpose();
 		DKMatrix3& Multiply(const DKMatrix3& m);
 
 		float Determinant() const;
-		bool GetInverseMatrix(DKMatrix3& matOut, float *pDeterminant) const;
+        DKMatrix3 InverseMatrix(bool* result = nullptr, float* determinant = nullptr) const;
+        DKMatrix3 TransposeMatrix() const;
 
 		DKMatrix3 operator * (const DKMatrix3& m) const;
 		DKMatrix3 operator + (const DKMatrix3& m) const;

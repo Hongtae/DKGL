@@ -40,7 +40,7 @@ DKLinearTransform2::DKLinearTransform2(const DKMatrix2& m)
 
 DKLinearTransform2& DKLinearTransform2::Identity()
 {
-	matrix2.Identity();
+	matrix2.SetIdentity();
 	return *this;
 }
 

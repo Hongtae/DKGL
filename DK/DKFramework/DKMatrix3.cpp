@@ -13,7 +13,7 @@
 
 using namespace DKFramework;
 
-const DKMatrix3 DKMatrix3::identity = DKMatrix3().Identity();
+const DKMatrix3 DKMatrix3::identity = DKMatrix3().SetIdentity();
 
 DKMatrix3::DKMatrix3()
 	: _11(1), _12(0), _13(0)
@@ -38,15 +38,7 @@ DKMatrix3::DKMatrix3(float e11, float e12, float e13,
 {
 }
 
-DKMatrix3& DKMatrix3::Zero()
-{
-	m[0][0] = m[0][1] = m[0][2] = 0.0f;
-	m[1][0] = m[1][1] = m[1][2] = 0.0f;
-	m[2][0] = m[2][1] = m[2][2] = 0.0f;
-	return *this;
-}
-
-DKMatrix3& DKMatrix3::Identity()
+DKMatrix3& DKMatrix3::SetIdentity()
 {
 	m[0][0] = m[1][1] = m[2][2] = 1.0f;
 	m[0][1] = m[0][2] = 0.0f;
@@ -258,37 +250,57 @@ float DKMatrix3::Determinant() const
 		m[0][2]*m[1][1]*m[2][0];
 }
 
-bool DKMatrix3::GetInverseMatrix(DKMatrix3& matOut, float *pDeterminant) const
+DKMatrix3 DKMatrix3::InverseMatrix(bool* r, float* d) const
 {
-	float det = Determinant();
+    DKMatrix3 mat;
+    float det = Determinant();
+    bool result = false;
 
-	if (det != 0.0f)
-	{
-		if (pDeterminant)
-			*pDeterminant = det;
+    if (det != 0.0f)
+    {
+        float detInv = 1.0f / det;
 
-		float detInv = 1.0f / det;
+        mat.m[0][0] = (m[1][1] * m[2][2] - m[1][2] * m[2][1]) * detInv;
+        mat.m[0][1] = (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * detInv;
+        mat.m[0][2] = (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * detInv;
+        mat.m[1][0] = (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * detInv;
+        mat.m[1][1] = (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * detInv;
+        mat.m[1][2] = (m[0][2] * m[1][0] - m[0][0] * m[1][2]) * detInv;
+        mat.m[2][0] = (m[1][0] * m[2][1] - m[1][1] * m[2][0]) * detInv;
+        mat.m[2][1] = (m[0][1] * m[2][0] - m[0][0] * m[2][1]) * detInv;
+        mat.m[2][2] = (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * detInv;
 
-		matOut.m[0][0] = (m[1][1]*m[2][2] - m[1][2]*m[2][1]) * detInv;
-		matOut.m[0][1] = (m[0][2]*m[2][1] - m[0][1]*m[2][2]) * detInv;
-		matOut.m[0][2] = (m[0][1]*m[1][2] - m[0][2]*m[1][1]) * detInv;
-		matOut.m[1][0] = (m[1][2]*m[2][0] - m[1][0]*m[2][2]) * detInv;
-		matOut.m[1][1] = (m[0][0]*m[2][2] - m[0][2]*m[2][0]) * detInv;
-		matOut.m[1][2] = (m[0][2]*m[1][0] - m[0][0]*m[1][2]) * detInv;
-		matOut.m[2][0] = (m[1][0]*m[2][1] - m[1][1]*m[2][0]) * detInv;
-		matOut.m[2][1] = (m[0][1]*m[2][0] - m[0][0]*m[2][1]) * detInv;
-		matOut.m[2][2] = (m[0][0]*m[1][1] - m[0][1]*m[1][0]) * detInv;
-		return true;
-	}
-	return false;
+        result = true;
+        if (d)
+            *d = det;
+    }
+    else
+        mat.SetIdentity();
+    if (r)
+        *r = result;
+    return mat;
 }
 
-DKMatrix3& DKMatrix3::Inverse()
+DKMatrix3 DKMatrix3::TransposeMatrix() const
 {
-	DKMatrix3 mat;
-	mat.Identity();
-	if (GetInverseMatrix(mat, 0))
-		*this = mat;
+    DKMatrix3 mat(*this);
+    return mat.Transpose();
+}
+
+DKMatrix3& DKMatrix3::Inverse(bool* r)
+{
+    bool b;
+    DKMatrix3 mat = this->InverseMatrix(&b, nullptr);
+    if (b)
+        *this = mat;
+    if (r)
+        *r = b;
+    else
+    {
+#ifdef DKGL_DEBUG_ENABLED
+        DKLogE("DKMatrix3::Inverse failed");
+#endif
+    }
 	return *this;
 }
 

@@ -47,7 +47,7 @@ DKLinearTransform3::DKLinearTransform3(const DKMatrix3& m)
 
 DKLinearTransform3& DKLinearTransform3::Identity()
 {
-	matrix3.Identity();
+	matrix3.SetIdentity();
 	return *this;
 }
 
@@ -102,7 +102,7 @@ DKLinearTransform3& DKLinearTransform3::RotateX(float r)
 	float sinR = sin(r);
 
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 	mat.m[1][1] = cosR;
 	mat.m[1][2] = sinR;
 	mat.m[2][1] = -sinR;
@@ -123,7 +123,7 @@ DKLinearTransform3& DKLinearTransform3::RotateY(float r)
 	float sinR = sin(r);
 
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 	mat.m[0][0] = cosR;
 	mat.m[0][2] = -sinR;
 	mat.m[2][0] = sinR;
@@ -144,7 +144,7 @@ DKLinearTransform3& DKLinearTransform3::RotateZ(float r)
 	float sinR = sin(r);
 
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 	mat.m[0][0] = cosR;
 	mat.m[0][1] = sinR;
 	mat.m[1][0] = -sinR;
@@ -240,8 +240,7 @@ bool DKLinearTransform3::Decompose(DKVector3& scale, DKQuaternion& rotate) const
 
 	scale = vScale;
 
-	DKMatrix3 normalized;
-	normalized.Zero();
+    DKMatrix3 normalized = {};
 
 	normalized.m[0][0] = matrix3.m[0][0]/scale.x; 
 	normalized.m[0][1] = matrix3.m[0][1]/scale.x; 
