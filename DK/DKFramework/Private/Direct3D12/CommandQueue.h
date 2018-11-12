@@ -28,6 +28,7 @@ namespace DKFramework
 				DKObject<DKCommandBuffer> CreateCommandBuffer() override;
 				DKObject<DKSwapChain> CreateSwapChain(DKWindow*) override;
 				DKGraphicsDevice* Device() override { return device; }
+                uint32_t Type() const override;
 
 				// enqueue command lists and return counter for fence value. (required for waiting)
 				UINT64 Enqueue(ID3D12CommandList* const* commandLists, UINT numLists, UINT64 proceedAfter = 0);

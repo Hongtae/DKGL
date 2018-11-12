@@ -28,6 +28,7 @@ namespace DKFramework
 
 				void EndEncoding() override;
 				DKCommandBuffer* Buffer() override;
+                bool IsCompleted() const override;
 
 				ComPtr<ID3D12GraphicsCommandList> commandList;
 				DKObject<CommandBuffer> commandBuffer;

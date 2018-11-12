@@ -42,4 +42,9 @@ DKCommandBuffer* BlitCommandEncoder::Buffer()
 	return commandBuffer;
 }
 
+bool BlitCommandEncoder::IsCompleted() const
+{
+    return commandList == nullptr; 
+}
+
 #endif //#if DKGL_ENABLE_DIRECT3D12

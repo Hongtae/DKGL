@@ -20,10 +20,10 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			DKGraphicsDeviceInterface* CreateInterface()
-			{
-				return DKRawPtrNew<GraphicsDevice>();
-			}
+            DKGraphicsDeviceInterface* CreateInterface()
+            {
+                return new GraphicsDevice();
+            }
 		}
 	}
 }
@@ -246,7 +246,7 @@ DKString GraphicsDevice::DeviceName() const
 	return deviceName;
 }
 
-DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev)
+DKObject<DKCommandQueue> GraphicsDevice::CreateCommandQueue(DKGraphicsDevice* dev, uint32_t flags)
 {
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
@@ -292,7 +292,7 @@ CommandAllocator* GraphicsDevice::GetCommandAllocator(D3D12_COMMAND_LIST_TYPE ty
 		return NULL;
 	}
 
-	return DKRawPtrNew<CommandAllocator>(commandAllocator.Get(), type);
+	return new CommandAllocator(commandAllocator.Get(), type);
 }
 
 void GraphicsDevice::ReleaseCommandAllocator(CommandAllocator* allocator)
@@ -306,7 +306,7 @@ void GraphicsDevice::PurgeCachedCommandAllocators()
 	DKCriticalSection<DKSpinLock> guard(reusableItemsLock);
 	this->reusableCommandAllocators.EnumerateForward([](CommandAllocator* allocator)
 	{
-		DKRawPtrDelete(allocator);
+		delete allocator;
 	});
 	this->reusableCommandAllocators.Clear();
 }
@@ -569,5 +569,27 @@ void GraphicsDevice::FenceCompletionCallbackThreadProc()
 	}
 	DKLogI("Direct3D12 Fence Completion Helper thread is finished.");
 }
+
+DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice*, DKShader*)
+{
+    return NULL;
+}
+DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)
+{
+    return NULL;
+}
+DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*)
+{
+    return NULL;
+}
+DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode)
+{
+    return NULL;
+}
+DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&)
+{
+    return NULL;
+}
+
 
 #endif //#if DKGL_ENABLE_DIRECT3D12

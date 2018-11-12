@@ -31,7 +31,7 @@ namespace DKFramework
 				DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() override;
 
 				bool Commit() override;
-				bool WaitUntilCompleted() override;
+				bool WaitUntilCompleted();
 
 				void FinishCommandList(ID3D12GraphicsCommandList*);
 

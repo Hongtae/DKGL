@@ -103,13 +103,22 @@ bool SwapChain::Setup()
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = dc->GetDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 		device->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
 
-		DKObject<RenderTarget> texture = DKOBJECT_NEW RenderTarget(queue->Device(), renderTarget.Get(), CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT), rtvHandle);
+		DKObject<Texture> texture = DKOBJECT_NEW Texture(queue->Device(), renderTarget.Get(), CD3DX12_CPU_DESCRIPTOR_HANDLE(D3D12_DEFAULT), rtvHandle);
 		this->renderTargets.Add(texture);
 	}
 
 	DKLog("%d RenderTargets for SwapChain created.", (int)this->renderTargets.Count());
 
 	return true;
+}
+DKPixelFormat SwapChain::ColorPixelFormat() const
+{
+    return DKPixelFormat::Invalid;
+}
+
+DKPixelFormat SwapChain::DepthStencilPixelFormat() const
+{
+    return DKPixelFormat::Invalid;
 }
 
 void SwapChain::SetColorPixelFormat(DKPixelFormat)

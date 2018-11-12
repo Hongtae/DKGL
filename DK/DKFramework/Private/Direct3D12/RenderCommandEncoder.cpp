@@ -9,7 +9,7 @@
 #if DKGL_ENABLE_DIRECT3D12
 
 #include "RenderCommandEncoder.h"
-#include "RenderTarget.h"
+#include "Texture.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
@@ -25,7 +25,7 @@ RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, Comman
 	size_t numAttachments = renderPassDesc.colorAttachments.Count();
 	DKArray<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
 	rtvHandles.Reserve(numAttachments);
-	RenderTarget* depthStencilRT = nullptr;
+    Texture* depthStencilRT = nullptr;
 
 	if (renderPassDesc.depthStencilAttachment.renderTarget)
 		numAttachments += 1;
@@ -34,7 +34,7 @@ RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, Comman
 
 	for (DKRenderPassColorAttachmentDescriptor& colorAttachment : renderPassDesc.colorAttachments)
 	{
-		RenderTarget* rt = colorAttachment.renderTarget.SafeCast<RenderTarget>();
+        Texture* rt = colorAttachment.renderTarget.SafeCast<Texture>();
 		if (rt)
 		{
 			D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -48,7 +48,7 @@ RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, Comman
 	}
 	if (renderPassDesc.depthStencilAttachment.renderTarget)
 	{
-		RenderTarget* rt = renderPassDesc.depthStencilAttachment.renderTarget.SafeCast<RenderTarget>();
+        Texture* rt = renderPassDesc.depthStencilAttachment.renderTarget.SafeCast<Texture>();
 		if (rt)
 		{
 			D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -78,7 +78,7 @@ RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, Comman
 	{
 		if (colorAttachment.loadAction == DKRenderPassAttachmentDescriptor::LoadActionClear)
 		{
-			RenderTarget* rt = colorAttachment.renderTarget.SafeCast<RenderTarget>();
+            Texture* rt = colorAttachment.renderTarget.SafeCast<Texture>();
 			if (rt)
 				commandList->ClearRenderTargetView(rt->rtvHandle, colorAttachment.clearColor.val, 0, nullptr);
 		}
@@ -87,7 +87,7 @@ RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, Comman
 	{
 		if (renderPassDesc.depthStencilAttachment.loadAction == DKRenderPassAttachmentDescriptor::LoadActionClear)
 		{
-			RenderTarget* rt = renderPassDesc.depthStencilAttachment.renderTarget.SafeCast<RenderTarget>();
+            Texture* rt = renderPassDesc.depthStencilAttachment.renderTarget.SafeCast<Texture>();
 			if (rt)
 				commandList->ClearDepthStencilView(rt->rtvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
 												   renderPassDesc.depthStencilAttachment.clearDepth,
@@ -127,6 +127,35 @@ void RenderCommandEncoder::EndEncoding()
 DKCommandBuffer* RenderCommandEncoder::Buffer()
 {
 	return commandBuffer;
+}
+
+bool RenderCommandEncoder::IsCompleted() const
+{
+    return commandList == nullptr; 
+}
+
+void RenderCommandEncoder::SetViewport(const DKViewport&) 
+{
+}
+
+void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState*)
+{
+}
+void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
+{
+}
+void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
+{
+}
+void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type)
+{
+}
+
+void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)
+{
+}
+void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance)
+{
 }
 
 #endif //#if DKGL_ENABLE_DIRECT3D12

@@ -122,6 +122,9 @@
     <Filter Include="DKFramework_WIP\Private\Metal">
       <UniqueIdentifier>{e004958e-73db-4019-ae06-9649c13b24c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DKFramework_WIP\Private\Direct3D12">
+      <UniqueIdentifier>{014703e1-5262-4baa-8eb3-1ebc2b7decc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DKFoundation\DKAllocator.cpp">
@@ -549,6 +552,36 @@
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\BlitCommandEncoder.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandBuffer.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandQueue.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\ComputeCommandEncoder.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\GraphicsDevice.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\PixelFormat.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\SwapChain.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\Texture.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1250,6 +1283,42 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Types.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\BlitCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandBuffer.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandQueue.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\ComputeCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\d3d12_headers.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\d3dx12.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\GraphicsDevice.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\PixelFormat.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\RenderCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\SwapChain.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\Texture.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
-#include "RenderTarget.h"
+#include "Texture.h"
 
 namespace DKFramework
 {
@@ -29,6 +29,8 @@ namespace DKFramework
 				bool Setup();
 				void SetupFrame();
 
+                DKPixelFormat ColorPixelFormat() const override;
+                DKPixelFormat DepthStencilPixelFormat() const override;
 				void SetColorPixelFormat(DKPixelFormat) override;
 				void SetDepthStencilPixelFormat(DKPixelFormat) override;
 				DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
@@ -44,7 +46,7 @@ namespace DKFramework
 				ComPtr<ID3D12DescriptorHeap> rtvHeap;
 				UINT rtvDescriptorSize;
 
-				DKArray<DKObject<RenderTarget>> renderTargets;
+				DKArray<DKObject<Texture>> renderTargets;
 
 			private:
 				bool enableVerticalSync = false;

@@ -41,4 +41,9 @@ DKCommandBuffer* ComputeCommandEncoder::Buffer()
 	return commandBuffer;
 }
 
+bool ComputeCommandEncoder::IsCompleted() const
+{
+    return commandList == nullptr; 
+}
+
 #endif //#if DKGL_ENABLE_DIRECT3D12

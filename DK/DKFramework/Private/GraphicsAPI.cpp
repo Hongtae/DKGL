@@ -26,6 +26,12 @@ namespace DKFramework
 			DKGraphicsDeviceInterface* CreateInterface();
 		}
 #endif
+#if DKGL_ENABLE_DIRECT3D12
+        namespace Direct3D
+        {
+            DKGraphicsDeviceInterface* CreateInterface();
+        }
+#endif
 	}
 
 	DKGraphicsDeviceInterface* DKGraphicsDeviceInterface::CreateInterface()
@@ -35,6 +41,9 @@ namespace DKFramework
 		"Metal";
 #elif DKGL_ENABLE_VULKAN
 		"Vulkan";
+#elif DKGL_ENABLE_DIRECT3D12
+		"Direct3D";
+#else
 		"";
 #endif
 		struct APISet
@@ -44,14 +53,17 @@ namespace DKFramework
 			bool preferred;
 		};
 
-		DKArray<APISet> apis = {
+        DKArray<APISet> apis = {
 #if DKGL_ENABLE_METAL
-			{ "Metal", Private::Metal::CreateInterface, false },
+            { "Metal", Private::Metal::CreateInterface, false },
 #endif
 #if DKGL_ENABLE_VULKAN
-			{ "Vulkan", Private::Vulkan::CreateInterface, false },
+            { "Vulkan", Private::Vulkan::CreateInterface, false },
+#endif            
+#if DKGL_ENABLE_DIRECT3D12
+            { "Direct3D", Private::Direct3D::CreateInterface, false},
 #endif
-		};
+        };
 
 		for (size_t i = 0; i < apis.Count(); ++i)
 		{

@@ -90,4 +90,9 @@ UINT64 CommandQueue::EnqueuedCounterValue()
 	return fenceCounter;
 }
 
+uint32_t CommandQueue::Type() const
+{
+    uint32_t type = Graphics | Compute;
+    return type;
+}
 #endif //#if DKGL_ENABLE_DIRECT3D12

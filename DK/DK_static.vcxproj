@@ -202,6 +202,16 @@
     <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\BlitCommandEncoder.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandBuffer.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandQueue.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\ComputeCommandEncoder.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\PixelFormat.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\SwapChain.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\Texture.cpp" />
     <ClCompile Include="DKFoundation\DKAllocator.cpp" />
     <ClCompile Include="DKFoundation\DKAllocatorChain.cpp" />
     <ClCompile Include="DKFoundation\DKAtomicNumber32.cpp" />
@@ -346,6 +356,18 @@
     <ClCompile Include="DKFramework\Private\Win32\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\BlitCommandEncoder.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandBuffer.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandQueue.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\ComputeCommandEncoder.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\d3d12_headers.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\d3dx12.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\GraphicsDevice.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\PixelFormat.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\SwapChain.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\Texture.h" />
     <ClInclude Include="DK.h" />
     <ClInclude Include="DKFoundation.h" />
     <ClInclude Include="DKFoundation\DKAllocator.h" />
