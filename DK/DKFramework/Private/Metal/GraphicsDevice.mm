@@ -180,7 +180,7 @@ namespace DKFramework::Private::Metal
                 if ((res.type == DKShaderResource::TypeSampler && r.type == DKShaderResource::TypeTexture) ||
                     (res.type == DKShaderResource::TypeTexture && r.type == DKShaderResource::TypeSampler))
                 {
-                    r.type = DKShaderResource::TypeSampledTexture;
+                    r.type = DKShaderResource::TypeTextureSampler;
                 }
                 else
                 {
@@ -343,7 +343,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                     case DKShaderResource::TypeSampler:
                         numSamplers++;
                         break;
-                    case DKShaderResource::TypeSampledTexture:
+                    case DKShaderResource::TypeTextureSampler:
                         numSamplers++;
                         numTextures++;
                         break;

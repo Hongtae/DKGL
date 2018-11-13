@@ -298,7 +298,7 @@ bool DKShader::Rebuild(const DKData* d)
                         out.type = DKShaderResource::TypeTexture;
                         break;
                     case spirv_cross::SPIRType::SampledImage:
-                        out.type = DKShaderResource::TypeSampledTexture;
+                        out.type = DKShaderResource::TypeTextureSampler;
                         break;
                     case spirv_cross::SPIRType::Sampler:
                         out.type = DKShaderResource::TypeSampler;

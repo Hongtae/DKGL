@@ -157,7 +157,7 @@ namespace DKFramework
 			TypeBuffer,
 			TypeTexture,
 			TypeSampler,
-			TypeSampledTexture,
+			TypeTextureSampler, // texture and sampler (combined)
 		};
 		enum Access
 		{
