@@ -29,7 +29,7 @@ namespace DKFramework
             DescriptorTypeUniformBuffer,
             DescriptorTypeStorageBuffer,
             DescriptorTypeStorageTexture,
-            DescriptorTypeSampledTexture, // texture, sampler combined
+            DescriptorTypeTextureSampler, // texture, sampler combined
             DescriptorTypeTexture,
             DescriptorTypeTexelBuffer,
             DescriptorTypeSampler,

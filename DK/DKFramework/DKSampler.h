@@ -41,5 +41,7 @@ namespace DKFramework
 
 	class DKSamplerState
 	{
+    public:
+        virtual ~DKSamplerState() {}
 	};
 }

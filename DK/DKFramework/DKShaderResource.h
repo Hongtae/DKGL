@@ -191,7 +191,9 @@ namespace DKFramework
 		// type data for struct members
 		DKMap<DKString, DKShaderResourceStruct> structTypeMemberMap;
 	};
-
+    /**
+    Shader reflection data for push constants.
+    */
 	struct DKShaderPushConstantLayout
 	{
 		DKString name;

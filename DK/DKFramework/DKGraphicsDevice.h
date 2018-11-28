@@ -16,6 +16,7 @@
 #include "DKGpuBuffer.h"
 #include "DKTexture.h"
 #include "DKGpuResource.h"
+#include "DKShaderBindingSet.h"
 
 namespace DKFramework
 {
@@ -29,6 +30,7 @@ namespace DKFramework
 
 		DKObject<DKCommandQueue> CreateCommandQueue(uint32_t queueTypeFlags);
 		DKObject<DKShaderModule> CreateShaderModule(DKShader*);
+        DKObject<DKShaderBindingSet> CreateShaderBindingSet(const DKShaderBindingSetLayout&);
 
 		DKObject<DKRenderPipelineState> CreateRenderPipeline(const DKRenderPipelineDescriptor&, DKPipelineReflection* reflection = NULL);
 		DKObject<DKComputePipelineState> CreateComputePipeline(const DKComputePipelineDescriptor&, DKPipelineReflection* reflection = NULL);

@@ -1,5 +1,5 @@
 //
-//  File: RenderPipelineState.mm
+//  File: ShaderBindingSet.mm
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -8,20 +8,19 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
-#include "RenderPipelineState.h"
+#include "ShaderBindingSet.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderPipelineState::RenderPipelineState(DKGraphicsDevice* d, id<MTLRenderPipelineState> pso)
-: device(d)
+ShaderBindingSet::ShaderBindingSet()
 {
-	pipelineState = [pso retain];
+
 }
 
-RenderPipelineState::~RenderPipelineState()
+ShaderBindingSet::~ShaderBindingSet()
 {
-	[pipelineState autorelease];
+
 }
 
 #endif //#if DKGL_ENABLE_METAL

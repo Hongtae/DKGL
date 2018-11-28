@@ -193,6 +193,7 @@
     <None Include="DKFramework\Private\Metal\PixelFormat.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderBindingSet.mm" />
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
     <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
     <None Include="DKFramework\Private\Metal\SwapChain.mm" />
@@ -343,6 +344,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderBindingSet.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
@@ -517,6 +519,7 @@
     <ClInclude Include="DKFramework\DKScreen.h" />
     <ClInclude Include="DKFramework\DKSerializer.h" />
     <ClInclude Include="DKFramework\DKShader.h" />
+    <ClInclude Include="DKFramework\DKShaderBindingSet.h" />
     <ClInclude Include="DKFramework\DKShaderConstant.h" />
     <ClInclude Include="DKFramework\DKShaderFunction.h" />
     <ClInclude Include="DKFramework\DKShaderModule.h" />
@@ -572,6 +575,7 @@
     <ClInclude Include="DKFramework\Private\Metal\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderBindingSet.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
@@ -587,6 +591,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderBindingSet.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />

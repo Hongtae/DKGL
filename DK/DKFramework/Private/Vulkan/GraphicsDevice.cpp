@@ -789,6 +789,11 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 	return NULL;
 }
 
+DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice*, const DKShaderBindingSetLayout&)
+{
+    return NULL;
+}
+
 DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t size, DKGpuBuffer::StorageMode storage, DKCpuCacheMode cache)
 {
 	if (size > 0)
@@ -1847,7 +1852,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
                             case DKShader::DescriptorTypeStorageTexture:
                                 type = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
                                 break;
-                            case DKShader::DescriptorTypeSampledTexture:
+                            case DKShader::DescriptorTypeTextureSampler:
                                 type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; 
                                 break;
                             case DKShader::DescriptorTypeTexture:

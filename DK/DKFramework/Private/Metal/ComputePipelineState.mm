@@ -8,8 +8,6 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
-#include <TargetConditionals.h>
-
 #include "ComputePipelineState.h"
 
 using namespace DKFramework;

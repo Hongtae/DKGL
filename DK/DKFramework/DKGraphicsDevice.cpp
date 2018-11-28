@@ -36,6 +36,11 @@ DKObject<DKShaderModule> DKGraphicsDevice::CreateShaderModule(DKShader* shader)
 	return NULL;
 }
 
+DKObject<DKShaderBindingSet> DKGraphicsDevice::CreateShaderBindingSet(const DKShaderBindingSetLayout& layout)
+{
+    return impl->CreateShaderBindingSet(this, layout);
+}
+
 DKObject<DKRenderPipelineState> DKGraphicsDevice::CreateRenderPipeline(const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	return impl->CreateRenderPipeline(this, desc, reflection);

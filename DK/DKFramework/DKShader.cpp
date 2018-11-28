@@ -411,7 +411,7 @@ bool DKShader::Rebuild(const DKData* d)
                 for (const spirv_cross::Resource& resource : resources.sampled_images)
                 {
                     this->resources.Add(getResource(resource, false));
-                    this->descriptors.Add(getDescriptor(resource, DescriptorTypeSampledTexture));
+                    this->descriptors.Add(getDescriptor(resource, DescriptorTypeTextureSampler));
                 }
                 // separate_images
                 for (const spirv_cross::Resource& resource : resources.separate_images)
