@@ -208,7 +208,7 @@ GraphicsDevice::GraphicsDevice()
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.pEngineName = "DKGL";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_0;
+	appInfo.apiVersion = VK_API_VERSION_1_1; // Vulkan-1.1
 
 	DKArray<const char*> enabledExtensions = { VK_KHR_SURFACE_EXTENSION_NAME };
 
@@ -558,10 +558,20 @@ GraphicsDevice::GraphicsDevice()
 		}
 		else
 		{
-			deviceExtensions.Add(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-			if (desc.IsExtensionSupported(VK_EXT_DEBUG_MARKER_EXTENSION_NAME))
-				deviceExtensions.Add(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
-		}
+            auto addExtension = [&deviceExtensions, &desc](const char* ext)
+            {
+                if (desc.IsExtensionSupported(ext))
+                    deviceExtensions.Add(ext);
+                else
+                    DKLogW("DeviceExtension: %s not supported!", ext);
+            };
+
+            addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+            addExtension(VK_KHR_MAINTENANCE1_EXTENSION_NAME);
+            addExtension(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
+            addExtension(VK_KHR_MAINTENANCE3_EXTENSION_NAME);
+            addExtension(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+        }
 
 		VkPhysicalDeviceFeatures enabledFeatures = desc.features; //enable all features supported by a device
 		VkDeviceCreateInfo deviceCreateInfo = {VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
