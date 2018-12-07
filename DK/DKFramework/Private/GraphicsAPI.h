@@ -51,6 +51,20 @@ namespace DKFramework
 	constexpr const char* preferredGraphicsAPIKey = "GraphicsAPI";
 	constexpr const char* preferredDeviceNameKey = "PreferredGraphicsDeviceName";
 
+    // DKPropertySet::SystemConfig, array of string key
+    constexpr const char* vulkanRequiredLayers = "Vulkan.requiredLayers";
+    constexpr const char* vulkanOptionalLayers = "Vulkan.optionalLayers";
+    constexpr const char* vulkanRequiredInstanceExtensions = "Vulkan.requiredInstanceExtensions";
+    constexpr const char* vulkanOptionalInstanceExtensions = "Vulkan.optionalInstanceExtensions";
+    constexpr const char* vulkanRequiredDeviceExtensions = "Vulkan.requiredDeviceExtensions";
+    constexpr const char* vulkanOptionalDeviceExtensions = "Vulkan.optionalDeviceExtensions";
+
+    // DKPropertySet::SystemConfig, integer key
+    constexpr const char* vulkanEnableValidation = "Vulkan.enableValidation";
+    constexpr const char* vulkanEnableDebugMarker = "Vulkan.enableDebugMarker";
+    constexpr const char* vulkanEnableAllExtensions = "Vulkan.enableAllExtensions";
+    constexpr const char* vulkanEnableAllExtensionsForEnabledLayers = "Vulkan.enableAllExtensionsForEnabledLayers";
+
 	// saved states key (DKPropertySet::DefaultSet)
 	constexpr const char* savedSystemStates = "_SavedSystemStates"; // root
 	constexpr const char* savedPipelineCacheDataKey = "PipelineCacheData";

@@ -52,7 +52,6 @@ namespace DKFramework::Private::Vulkan
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
 
-		bool enableValidation;
 		VkDebugReportCallbackEXT msgCallback;
 
 		struct FenceCallback

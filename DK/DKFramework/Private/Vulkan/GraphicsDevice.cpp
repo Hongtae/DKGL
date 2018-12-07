@@ -26,11 +26,6 @@ namespace DKFramework::Private::Vulkan
 		return new GraphicsDevice();
 	}
 
-	const char *validationLayerNames[] =
-	{
-		"VK_LAYER_LUNARG_standard_validation"
-	};
-
 	VkBool32 DebugMessageCallback(
 								  VkDebugReportFlagsEXT flags,
 								  VkDebugReportObjectTypeEXT objType,
@@ -115,22 +110,107 @@ GraphicsDevice::GraphicsDevice()
 	, device(NULL)
 	, physicalDevice(NULL)
 	, msgCallback(NULL)
-	, enableValidation(false)
 	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
 	, pipelineCache(VK_NULL_HANDLE)
 {
     VkResult err = VK_SUCCESS;
-    bool enableAllExtensions = false;
-    bool enableAllLayerExtensions = false;
+
+    auto getBoolValueFromSystemConfig = [](const char* key, bool defaultValue)->bool
+    {
+        bool value = defaultValue;
+        DKPropertySet::SystemConfig().LookUpValueForKeyPath(key, DKFunction([&](const DKVariant& var)
+        {
+            if (var.ValueType() == DKVariant::TypeInteger)
+            {
+                value = var.Integer() != 0;
+                return true;
+            }
+            return false;
+        }));
+        return value;
+    };
+
+    bool enableAllExtensions =  getBoolValueFromSystemConfig(vulkanEnableAllExtensions, false);
+    bool enableAllExtensionsForEnabledLayers =  getBoolValueFromSystemConfig(vulkanEnableAllExtensionsForEnabledLayers, false);
+
+    bool enableValidation = getBoolValueFromSystemConfig(vulkanEnableValidation, false);
+    bool enableDebugMarker = getBoolValueFromSystemConfig(vulkanEnableDebugMarker, false);
 
 #ifdef DKGL_DEBUG_ENABLED
-	this->enableValidation = true;
-    //enableAllExtensions = true;
+    enableValidation = true;
+    enableDebugMarker = true;
 #endif
 
-	DKMap<const char*, VkLayerProperties> supportingLayers;
-    DKMap<const char*, DKArray<VkExtensionProperties>> layerExtensions;
+    auto getStringSetValueFromSystemConfig = [](const char* key, const DKSet<DKStringU8>& defaultValue = {})
+    {
+        DKSet<DKStringU8> set = defaultValue;
+        DKPropertySet::SystemConfig().LookUpValueForKeyPath(key, DKFunction([&](const DKVariant& var)->bool
+        {
+            if (var.ValueType() == DKVariant::TypeArray)
+            {
+                for (const DKVariant& v : var.Array())
+                {
+                    if (v.ValueType() == DKVariant::TypeString)
+                    {
+                        set.Insert(DKStringU8(v.String()));
+                    }
+                }
+                return true;
+            }
+            return false;
+        }));
+        return set;
+    };
+
+    DKSet<DKStringU8> configRequiredLayers = getStringSetValueFromSystemConfig(vulkanRequiredLayers);
+    DKSet<DKStringU8> configOptionalLayers = getStringSetValueFromSystemConfig(vulkanOptionalLayers);
+    DKSet<DKStringU8> configRequiredInstanceExtensions = getStringSetValueFromSystemConfig(vulkanRequiredInstanceExtensions);
+    DKSet<DKStringU8> configOptionalInstanceExtensions = getStringSetValueFromSystemConfig(vulkanOptionalInstanceExtensions);
+    DKSet<DKStringU8> configRequiredDeviceExtensions = getStringSetValueFromSystemConfig(vulkanRequiredDeviceExtensions);
+    DKSet<DKStringU8> configOptionalDeviceExtensions = getStringSetValueFromSystemConfig(vulkanOptionalDeviceExtensions);
+
+    if (enableValidation)
+    {
+        configRequiredLayers.Insert("VK_LAYER_LUNARG_standard_validation");
+        configRequiredInstanceExtensions.Insert(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    }
+    if (1)
+    {
+        configRequiredInstanceExtensions.Insert(VK_KHR_SURFACE_EXTENSION_NAME);
+        // Enable surface extensions depending on OS
+#ifdef VK_USE_PLATFORM_XLIB_KHR
+        configRequiredInstanceExtensions.Insert(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_XCB_KHR
+        configRequiredInstanceExtensions.Insert(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_WAYLAND_KHR
+        configRequiredInstanceExtensions.Insert(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_MIR_KHR
+        configRequiredInstanceExtensions.Insert(VK_KHR_MIR_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+        configRequiredInstanceExtensions.Insert(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#endif
+#ifdef VK_USE_PLATFORM_WIN32_KHR
+        configRequiredInstanceExtensions.Insert(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#endif
+    }
+
+    configRequiredDeviceExtensions.Insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    configRequiredDeviceExtensions.Insert(VK_KHR_MAINTENANCE1_EXTENSION_NAME);
+
+    configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
+    configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE3_EXTENSION_NAME);
+    if (enableDebugMarker)
+        configOptionalDeviceExtensions.Insert(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+
+
+	DKMap<DKStringU8, VkLayerProperties> supportingLayers;
+    DKMap<DKStringU8, DKArray<VkExtensionProperties>> layerExtensions;
+    DKMap<DKStringU8, DKArray<DKStringU8>> extensionSupportLayers;  // key: extension-name, value: layer-names(array)
     DKArray<VkExtensionProperties> instanceExtensions; // instance extensions provided by the Vulkan implementation
 	// checking layers
 	if (1)
@@ -166,12 +246,18 @@ GraphicsDevice::GraphicsDevice()
                 err = vkEnumerateInstanceExtensionProperties(prop.layerName, &extCount, extensions);
                 DKASSERT_DEBUG(err == VK_SUCCESS);
 
-#if DKGL_PRINT_VULKAN_EXTENSIONS
                 for (const VkExtensionProperties& ext : extensions)
                 {
+                    auto* p = extensionSupportLayers.Find(ext.extensionName);
+                    if (p)
+                        p->value.Add(prop.layerName);
+                    else
+                        extensionSupportLayers.Insert(ext.extensionName, { prop.layerName });
+
+#if DKGL_PRINT_VULKAN_EXTENSIONS
                     DKLog(" ---- Layer extensions: %s (Version: %u)\n", ext.extensionName, ext.specVersion);
-                }
 #endif
+                }
             }
             layerExtensions.Update(prop.layerName, std::move(extensions));
         }
@@ -192,12 +278,16 @@ GraphicsDevice::GraphicsDevice()
                 err = vkEnumerateInstanceExtensionProperties(nullptr, &extCount, extensions);
                 DKASSERT_DEBUG(err == VK_SUCCESS);
 
-#if DKGL_PRINT_VULKAN_EXTENSIONS
                 for (const VkExtensionProperties& ext : extensions)
                 {
+                    auto* p = extensionSupportLayers.Find(ext.extensionName);
+                    if (p == nullptr)
+                        extensionSupportLayers.Insert(ext.extensionName, {});
+
+#if DKGL_PRINT_VULKAN_EXTENSIONS
                     DKLog(" -- Instance extensions: %s (Version: %u)\n", ext.extensionName, ext.specVersion);
-                }
 #endif
+                }
             }
             instanceExtensions = std::move(extensions);
         }
@@ -210,56 +300,93 @@ GraphicsDevice::GraphicsDevice()
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_1; // Vulkan-1.1
 
-	DKArray<const char*> enabledExtensions = { VK_KHR_SURFACE_EXTENSION_NAME };
-
-	// Enable surface extensions depending on OS
-#ifdef VK_USE_PLATFORM_XLIB_KHR
-	enabledExtensions.Add(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef VK_USE_PLATFORM_XCB_KHR
-	enabledExtensions.Add(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef VK_USE_PLATFORM_WAYLAND_KHR
-	enabledExtensions.Add(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef VK_USE_PLATFORM_MIR_KHR
-	enabledExtensions.Add(VK_KHR_MIR_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
-	enabledExtensions.Add(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#endif
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-	enabledExtensions.Add(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#endif
-
-    if (enableAllExtensions)
+    // add layers for required extensions
+    configRequiredInstanceExtensions.EnumerateForward([&](const DKStringU8& ext)
     {
-        for (const VkExtensionProperties& ext : instanceExtensions)
+        auto* p = extensionSupportLayers.Find(ext);
+        if (p)
         {
-            enabledExtensions.Add(ext.extensionName);
+            for (const DKStringU8& layer : p->value)
+                configRequiredLayers.Insert(layer);
         }
-    }
-
-    DKArray<const char*> enabledLayers = {};
-    if (enableValidation)
+        else
+        {
+            DKLogW("InstanceExtension(%s) not supported, but required.", (const char*)ext);
+        }
+    });
+    // add layers for optional extensions,
+    configOptionalInstanceExtensions.EnumerateForward([&](const DKStringU8& ext)
     {
-        for (const char* layer : validationLayerNames)
+        auto* p = extensionSupportLayers.Find(ext);
+        if (p)
+        {
+            for (const DKStringU8& layer : p->value)
+                configOptionalLayers.Insert(layer);
+        }
+        else
+        {
+            DKLogW("InstanceExtension(%s) not supported.", (const char*)ext);
+        }
+    });
+
+    // setup layer!
+    DKArray<const char*> enabledLayers = {};
+    if (1)
+    {
+        // merge two sets.
+        configOptionalLayers.EnumerateForward([&](const DKStringU8& layer)
+        {
+            if (supportingLayers.Find(layer))
+                configRequiredLayers.Insert(layer);
+            else
+                DKLogW("Layer(%s) not supported.", (const char*)layer);
+        });
+
+        configRequiredLayers.EnumerateForward([&](const DKStringU8& layer)
         {
             enabledLayers.Add(layer);
-        }
-        enabledExtensions.Add(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-    }
-    if (enableAllLayerExtensions)
-    {
-        for (const char* layer : enabledLayers)
-        {
-            auto* p = layerExtensions.Find(layer);
-            if (p)
+            if (!supportingLayers.Find(layer))
             {
-                for (const VkExtensionProperties& ext : p->value)
-                    enabledExtensions.Add(ext.extensionName);
+                DKLogW("Layer(%s) not supported, but required.", (const char*)layer);
+            }
+        });
+    }
+
+    // setup instance extensions!
+    DKArray<const char*> enabledInstanceExtensions = {  };
+    if (1)
+    {
+        if (enableAllExtensions)
+        {
+            for (const VkExtensionProperties& ext : instanceExtensions)
+            {
+                configOptionalInstanceExtensions.Insert(ext.extensionName);
             }
         }
+        if (enableAllExtensionsForEnabledLayers)
+        {
+            for (const char* layer : enabledLayers)
+            {
+                auto* p = layerExtensions.Find(layer);
+                if (p)
+                {
+                    for (const VkExtensionProperties& ext : p->value)
+                        configOptionalInstanceExtensions.Insert(ext.extensionName);
+                }
+            }
+        }
+
+        // merge two sets.
+        configOptionalInstanceExtensions.EnumerateForward([&](const DKStringU8& ext)
+        {
+            if (extensionSupportLayers.Find(ext))
+                configRequiredInstanceExtensions.Insert(ext);
+        });
+
+        configRequiredInstanceExtensions.EnumerateForward([&](const DKStringU8& ext)
+        {
+            enabledInstanceExtensions.Add(ext);
+        });
     }
 
     VkInstanceCreateInfo instanceCreateInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
@@ -269,10 +396,10 @@ GraphicsDevice::GraphicsDevice()
         instanceCreateInfo.enabledLayerCount = (uint32_t)enabledLayers.Count();
         instanceCreateInfo.ppEnabledLayerNames = enabledLayers;
     }
-	if (enabledExtensions.Count() > 0)
+	if (enabledInstanceExtensions.Count() > 0)
 	{
-		instanceCreateInfo.enabledExtensionCount = (uint32_t)enabledExtensions.Count();
-		instanceCreateInfo.ppEnabledExtensionNames = enabledExtensions;
+		instanceCreateInfo.enabledExtensionCount = (uint32_t)enabledInstanceExtensions.Count();
+		instanceCreateInfo.ppEnabledExtensionNames = enabledInstanceExtensions;
 	}
 
 	err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
@@ -287,20 +414,20 @@ GraphicsDevice::GraphicsDevice()
         for (int i = 0; i < enabledLayers.Count(); ++i)
             DKLogI("VkInstance enabled layers[%d]: %s\n", i, enabledLayers.Value(i));
     }
-    if (enabledExtensions.IsEmpty())
+    if (enabledInstanceExtensions.IsEmpty())
         DKLogI("VkInstance enabled extensions: None\n");
     else
     {
-        for (int i = 0; i < enabledExtensions.Count(); ++i)
-            DKLogI("VkInstance enabled extensions[%d]: %s\n", i, enabledExtensions.Value(i));
+        for (int i = 0; i < enabledInstanceExtensions.Count(); ++i)
+            DKLogI("VkInstance enabled extensions[%d]: %s\n", i, enabledInstanceExtensions.Value(i));
     }
 
 	// load instance extensions
 	iproc.Load(instance);
 
-	if (enableValidation)
+    if (iproc.vkCreateDebugReportCallbackEXT)
 	{
-		VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = {VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT};
+        VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = { VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT };
 		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
 		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
 		
@@ -558,19 +685,19 @@ GraphicsDevice::GraphicsDevice()
 		}
 		else
 		{
-            auto addExtension = [&deviceExtensions, &desc](const char* ext)
+            configRequiredDeviceExtensions.EnumerateForward([&](const DKStringU8& ext)
+            {
+                deviceExtensions.Add(ext);
+                if (!desc.IsExtensionSupported(ext))
+                    DKLogW("DeviceExtension: %s not supported, but required.", ext);
+            });
+            configOptionalDeviceExtensions.EnumerateForward([&](const DKStringU8& ext)
             {
                 if (desc.IsExtensionSupported(ext))
                     deviceExtensions.Add(ext);
                 else
                     DKLogW("DeviceExtension: %s not supported!", ext);
-            };
-
-            addExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-            addExtension(VK_KHR_MAINTENANCE1_EXTENSION_NAME);
-            addExtension(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
-            addExtension(VK_KHR_MAINTENANCE3_EXTENSION_NAME);
-            addExtension(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+            });
         }
 
 		VkPhysicalDeviceFeatures enabledFeatures = desc.features; //enable all features supported by a device
