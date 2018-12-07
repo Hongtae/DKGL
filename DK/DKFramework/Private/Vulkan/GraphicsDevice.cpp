@@ -132,7 +132,8 @@ GraphicsDevice::GraphicsDevice()
     };
 
     bool enableAllExtensions =  getBoolValueFromSystemConfig(vulkanEnableAllExtensions, false);
-    bool enableAllExtensionsForEnabledLayers =  getBoolValueFromSystemConfig(vulkanEnableAllExtensionsForEnabledLayers, false);
+    bool enableExtensionsForEnabledLayers = getBoolValueFromSystemConfig(vulkanEnableExtensionsForEnabledLayers, false);
+    bool enableLayersForEnabledExtensions = getBoolValueFromSystemConfig(vulkanEnableLayersForEnabledExtensions, false);
 
     bool enableValidation = getBoolValueFromSystemConfig(vulkanEnableValidation, false);
     bool enableDebugMarker = getBoolValueFromSystemConfig(vulkanEnableDebugMarker, false);
@@ -306,8 +307,11 @@ GraphicsDevice::GraphicsDevice()
         auto* p = extensionSupportLayers.Find(ext);
         if (p)
         {
-            for (const DKStringU8& layer : p->value)
-                configRequiredLayers.Insert(layer);
+            if (enableLayersForEnabledExtensions)
+            {
+                for (const DKStringU8& layer : p->value)
+                    configRequiredLayers.Insert(layer);
+            }
         }
         else
         {
@@ -320,8 +324,11 @@ GraphicsDevice::GraphicsDevice()
         auto* p = extensionSupportLayers.Find(ext);
         if (p)
         {
-            for (const DKStringU8& layer : p->value)
-                configOptionalLayers.Insert(layer);
+            if (enableLayersForEnabledExtensions)
+            {
+                for (const DKStringU8& layer : p->value)
+                    configOptionalLayers.Insert(layer);
+            }
         }
         else
         {
@@ -363,7 +370,7 @@ GraphicsDevice::GraphicsDevice()
                 configOptionalInstanceExtensions.Insert(ext.extensionName);
             }
         }
-        if (enableAllExtensionsForEnabledLayers)
+        if (enableExtensionsForEnabledLayers)
         {
             for (const char* layer : enabledLayers)
             {

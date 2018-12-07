@@ -63,7 +63,8 @@ namespace DKFramework
     constexpr const char* vulkanEnableValidation = "Vulkan.enableValidation";
     constexpr const char* vulkanEnableDebugMarker = "Vulkan.enableDebugMarker";
     constexpr const char* vulkanEnableAllExtensions = "Vulkan.enableAllExtensions";
-    constexpr const char* vulkanEnableAllExtensionsForEnabledLayers = "Vulkan.enableAllExtensionsForEnabledLayers";
+    constexpr const char* vulkanEnableExtensionsForEnabledLayers = "Vulkan.enableAllExtensionsForEnabledLayers";
+    constexpr const char* vulkanEnableLayersForEnabledExtensions = "Vulkan.enableAllLayersForEnabledExtensions";
 
 	// saved states key (DKPropertySet::DefaultSet)
 	constexpr const char* savedSystemStates = "_SavedSystemStates"; // root
