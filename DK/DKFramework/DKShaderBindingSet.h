@@ -18,7 +18,7 @@ namespace DKFramework
     {
         uint32_t binding;
         DKShader::DescriptorType type;
-        uint32_t arrayLength;
+        uint32_t length; // array size or bytes of uniform buffer
         DKSamplerState* immutableSamplers;
     };
     struct DKShaderBindingSetLayout

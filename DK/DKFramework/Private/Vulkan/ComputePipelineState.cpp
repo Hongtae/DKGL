@@ -24,8 +24,8 @@ ComputePipelineState::ComputePipelineState(DKGraphicsDevice* d, VkPipeline p, Vk
 ComputePipelineState::~ComputePipelineState()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	vkDestroyPipeline(dev->device, pipeline, nullptr);
-	vkDestroyPipelineLayout(dev->device, layout, nullptr);
+	vkDestroyPipeline(dev->device, pipeline, dev->allocationCallbacks);
+	vkDestroyPipelineLayout(dev->device, layout, dev->allocationCallbacks);
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

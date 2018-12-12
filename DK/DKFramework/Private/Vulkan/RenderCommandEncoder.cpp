@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include "GraphicsDevice.h"
 #include "RenderPipelineState.h"
+#include "ShaderBindingSet.h"
 
 #define FLIP_VIEWPORT_Y	1
 
@@ -33,10 +34,10 @@ RenderCommandEncoder::Resources::~Resources()
 	VkDevice device = dev->device;
 
 	if (renderPass)
-		vkDestroyRenderPass(device, renderPass, nullptr);
+		vkDestroyRenderPass(device, renderPass, dev->allocationCallbacks);
 
 	if (framebuffer)
-		vkDestroyFramebuffer(device, framebuffer, nullptr);
+		vkDestroyFramebuffer(device, framebuffer, dev->allocationCallbacks);
 
 	if (commandBuffer)
 		cb->ReleaseEncodingBuffer(commandBuffer);
@@ -198,7 +199,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(commandBuffer->Queue()->Device());
 	VkDevice device = dev->device;
 
-	VkResult err = vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &resources->renderPass);
+	VkResult err = vkCreateRenderPass(device, &renderPassCreateInfo, dev->allocationCallbacks, &resources->renderPass);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateRenderPass failed: %s", VkResultCStr(err));
@@ -212,7 +213,7 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* c
 	frameBufferCreateInfo.width = frameWidth;
 	frameBufferCreateInfo.height = frameHeight;
 	frameBufferCreateInfo.layers = 1;
-	err = vkCreateFramebuffer(device, &frameBufferCreateInfo, nullptr, &resources->framebuffer);
+	err = vkCreateFramebuffer(device, &frameBufferCreateInfo, dev->allocationCallbacks, &resources->framebuffer);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateFramebuffer failed: %s", VkResultCStr(err));
@@ -341,6 +342,24 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 	vkCmdBindPipeline(resources->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
 	// bind descriptor set
+    resources->pipelineState = pipeline;
+    resources->unboundResources.EnumerateForward([&](decltype(resources->unboundResources)::Pair& pair)
+    {
+        VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+        if (pair.value)
+            descriptorSet = pair.value->descriptorSet;
+
+        vkCmdBindDescriptorSets(resources->commandBuffer,
+                                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                pipeline->layout,
+                                pair.key,
+                                1,
+                                &descriptorSet,
+                                0,      // dynamic offsets
+                                0);
+        resources->boundResources.Update(pair.key, pair.value);
+    });
+    resources->unboundResources.Clear();
 }
 
 void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
@@ -407,4 +426,34 @@ void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstance
 	}
 }
 
+void RenderCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
+{
+    ShaderBindingSet* bindingSet = nullptr;
+
+    if (set)
+    {
+        DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
+        bindingSet = static_cast<ShaderBindingSet*>(set);
+    }
+
+    if (resources->pipelineState)
+    {
+        VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+        if (bindingSet)
+            descriptorSet = bindingSet->descriptorSet;
+
+        vkCmdBindDescriptorSets(resources->commandBuffer,
+                                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                resources->pipelineState->layout,
+                                index,
+                                1,
+                                &descriptorSet,
+                                0,      // dynamic offsets
+                                0);
+    }
+    else
+    {
+        resources->unboundResources.Update(index, bindingSet);
+    }
+}
 #endif //#if DKGL_ENABLE_VULKAN

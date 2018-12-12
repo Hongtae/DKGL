@@ -11,6 +11,7 @@
 #include "DKRenderPipeline.h"
 #include "DKCommandEncoder.h"
 #include "DKGpuBuffer.h"
+#include "DKShaderBindingSet.h"
 
 namespace DKFramework
 {
@@ -36,6 +37,7 @@ namespace DKFramework
 	public:
 		virtual ~DKRenderCommandEncoder() {}
 
+        virtual void SetResources(uint32_t set, DKShaderBindingSet*) = 0;
 		virtual void SetViewport(const DKViewport&) = 0;
 		virtual void SetRenderPipelineState(DKRenderPipelineState* state) = 0;
 		virtual void SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index) = 0;

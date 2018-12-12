@@ -32,13 +32,13 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	VkResult err;
 	// create semaphore
 	VkSemaphoreCreateInfo semaphoreCreateInfo = {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
-	err = vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &presentCompleteSemaphore);
+	err = vkCreateSemaphore(device, &semaphoreCreateInfo, dev->allocationCallbacks, &presentCompleteSemaphore);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
 		DKASSERT_DEBUG(0);
 	}
-	err = vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &renderCompleteSemaphore);
+	err = vkCreateSemaphore(device, &semaphoreCreateInfo, dev->allocationCallbacks, &renderCompleteSemaphore);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
@@ -65,13 +65,13 @@ SwapChain::~SwapChain()
 	renderTargets.Clear();
 
 	if (swapchain)
-		vkDestroySwapchainKHR(device, swapchain, nullptr);
+		vkDestroySwapchainKHR(device, swapchain, dev->allocationCallbacks);
 
 	if (surface)
-		vkDestroySurfaceKHR(instance, surface, nullptr);
+		vkDestroySurfaceKHR(instance, surface, dev->allocationCallbacks);
 
-	vkDestroySemaphore(device, presentCompleteSemaphore, nullptr);
-	vkDestroySemaphore(device, renderCompleteSemaphore, nullptr);
+	vkDestroySemaphore(device, presentCompleteSemaphore, dev->allocationCallbacks);
+	vkDestroySemaphore(device, renderCompleteSemaphore, dev->allocationCallbacks);
 }
 
 bool SwapChain::Setup()
@@ -89,7 +89,7 @@ bool SwapChain::Setup()
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 	VkAndroidSurfaceCreateInfoKHR surfaceCreateInfo = {VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR};
 	surfaceCreateInfo.window = (ANativeWindow*)window->PlatformHandle();
-	err = vkCreateAndroidSurfaceKHR(instance, &surfaceCreateInfo, NULL, &surface);
+	err = vkCreateAndroidSurfaceKHR(instance, &surfaceCreateInfo, dev->allocationCallbacks, &surface);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateAndroidSurfaceKHR failed: %s", VkResultCStr(err));
@@ -100,7 +100,7 @@ bool SwapChain::Setup()
 	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
 	surfaceCreateInfo.hinstance = (HINSTANCE)GetModuleHandleW(NULL);
 	surfaceCreateInfo.hwnd = (HWND)window->PlatformHandle();
-	err = dev->iproc.vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
+	err = dev->iproc.vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, dev->allocationCallbacks, &surface);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateWin32SurfaceKHR failed: %s", VkResultCStr(err));
@@ -301,7 +301,7 @@ bool SwapChain::Update()
 		swapchainCI.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	}
 
-	err = vkCreateSwapchainKHR(device, &swapchainCI, nullptr, &this->swapchain);
+	err = vkCreateSwapchainKHR(device, &swapchainCI, dev->allocationCallbacks, &this->swapchain);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateSwapchainKHR failed: %s", VkResultCStr(err));
@@ -327,7 +327,7 @@ bool SwapChain::Update()
 	// This also cleans up all the presentable images
 	if (swapchainOld)
 	{
-		vkDestroySwapchainKHR(device, swapchainOld, nullptr);
+		vkDestroySwapchainKHR(device, swapchainOld, dev->allocationCallbacks);
 	}
 
 	for (Texture* tex : renderTargets)
@@ -377,7 +377,7 @@ bool SwapChain::Update()
 		imageViewCI.image = image;
 
 		VkImageView imageView = NULL;
-		err = vkCreateImageView(device, &imageViewCI, nullptr, &imageView);
+		err = vkCreateImageView(device, &imageViewCI, dev->allocationCallbacks, &imageView);
 		if (err != VK_SUCCESS)
 		{
 			DKLogE("ERROR: vkCreateImageView failed: %s", VkResultCStr(err));

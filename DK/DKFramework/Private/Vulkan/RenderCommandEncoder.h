@@ -14,6 +14,8 @@
 
 #include "CommandBuffer.h"
 #include "SwapChain.h"
+#include "RenderPipelineState.h"
+#include "ShaderBindingSet.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -26,6 +28,8 @@ namespace DKFramework::Private::Vulkan
 		void EndEncoding() override;
 		bool IsCompleted() const override { return resources == nullptr; }
 		DKCommandBuffer* Buffer() override { return commandBuffer; }
+
+        void SetResources(uint32_t set, DKShaderBindingSet*) override;
 
 		void SetViewport(const DKViewport&) override;
 		void SetRenderPipelineState(DKRenderPipelineState*) override;
@@ -40,6 +44,10 @@ namespace DKFramework::Private::Vulkan
 		{
 			VkFramebuffer		framebuffer;
 			VkRenderPass		renderPass;
+
+            DKObject<RenderPipelineState> pipelineState;
+            DKMap<uint32_t, DKObject<ShaderBindingSet>> boundResources;
+            DKMap<uint32_t, DKObject<ShaderBindingSet>> unboundResources;
 
 			DKArray<VkSemaphore>			waitSemaphores;
 			DKArray<VkPipelineStageFlags>	waitStageMasks;

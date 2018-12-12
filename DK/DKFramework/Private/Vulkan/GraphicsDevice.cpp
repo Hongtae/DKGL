@@ -12,11 +12,13 @@
 #include "CommandQueue.h"
 #include "ShaderModule.h"
 #include "ShaderFunction.h"
+#include "ShaderBindingSet.h"
 #include "PixelFormat.h"
 #include "RenderPipelineState.h"
 #include "ComputePipelineState.h"
 #include "Buffer.h"
 #include "Texture.h"
+#include "Types.h"
 #include "../../DKPropertySet.h"
 
 namespace DKFramework::Private::Vulkan
@@ -113,6 +115,7 @@ GraphicsDevice::GraphicsDevice()
 	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
 	, pipelineCache(VK_NULL_HANDLE)
+    , allocationCallbacks(nullptr)
 {
     VkResult err = VK_SUCCESS;
 
@@ -409,7 +412,7 @@ GraphicsDevice::GraphicsDevice()
 		instanceCreateInfo.ppEnabledExtensionNames = enabledInstanceExtensions;
 	}
 
-	err = vkCreateInstance(&instanceCreateInfo, nullptr, &instance);
+	err = vkCreateInstance(&instanceCreateInfo, allocationCallbacks, &instance);
 	if (err != VK_SUCCESS)
 	{
 		throw std::runtime_error((const char*)DKStringU8::Format("vkCreateInstance failed: %s", VkResultCStr(err)));
@@ -438,7 +441,7 @@ GraphicsDevice::GraphicsDevice()
 		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
 		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
 		
-		err = iproc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, nullptr, &msgCallback);
+		err = iproc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, allocationCallbacks, &msgCallback);
 		if (err != VK_SUCCESS)
 		{
 			throw std::runtime_error((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", VkResultCStr(err)));
@@ -720,7 +723,7 @@ GraphicsDevice::GraphicsDevice()
 		}
 
 		VkDevice logicalDevice = nullptr;
-		err = vkCreateDevice(desc.physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice);
+		err = vkCreateDevice(desc.physicalDevice, &deviceCreateInfo, allocationCallbacks, &logicalDevice);
 		if (err == VK_SUCCESS)
 		{
 			// initialize device extensions
@@ -785,6 +788,11 @@ GraphicsDevice::GraphicsDevice()
 
 GraphicsDevice::~GraphicsDevice()
 {
+    for (int i = 0; i < NumDescriptorPoolChainBuckets; ++i)
+    {
+        DKASSERT_DEBUG(descriptorPoolChainMaps[i].poolChainMap.IsEmpty());
+    }
+
 	vkDeviceWaitIdle(device);
 	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
 	{
@@ -798,7 +806,7 @@ GraphicsDevice::~GraphicsDevice()
 
 	DKASSERT_DEBUG(pendingFenceCallbacks.IsEmpty());
 	for (VkFence fence : reusableFences)
-		vkDestroyFence(device, fence, nullptr);
+		vkDestroyFence(device, fence, allocationCallbacks);
 	reusableFences.Clear();
 
 	for (QueueFamily* family : queueFamilies)
@@ -812,13 +820,16 @@ GraphicsDevice::~GraphicsDevice()
 	// destroy pipeline cache
 	if (pipelineCache != VK_NULL_HANDLE)
 	{
-		vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
+		vkDestroyPipelineCache(device, pipelineCache, allocationCallbacks);
 		this->pipelineCache = VK_NULL_HANDLE;
 	}
 
-	vkDestroyDevice(device, nullptr);
+	vkDestroyDevice(device, allocationCallbacks);
 	if (msgCallback)
-		iproc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, nullptr);
+		iproc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, allocationCallbacks);
+
+    if (allocationCallbacks)
+        delete allocationCallbacks;
 }
 
 DKString GraphicsDevice::DeviceName() const
@@ -908,7 +919,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 			shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(reader.Bytes());
 
 			VkShaderModule shaderModule;
-			VkResult res = vkCreateShaderModule(device, &shaderModuleCreateInfo, NULL, &shaderModule);
+			VkResult res = vkCreateShaderModule(device, &shaderModuleCreateInfo, allocationCallbacks, &shaderModule);
 			if (res != VK_SUCCESS)
 			{
 				DKLogE("ERROR: vkCreateShaderModule failed: %s", VkResultCStr(res));
@@ -933,9 +944,103 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 	return NULL;
 }
 
-DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice*, const DKShaderBindingSetLayout&)
+DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice* dev, const DKShaderBindingSetLayout& layout)
 {
+    DescriptorPoolId poolId(layout);
+    if (poolId.mask)
+    {
+        DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
+        uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+
+        DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
+
+        DKCriticalSection<DKSpinLock> guard(dpChainMap.lock);
+
+        // find matching pool.
+        auto p = dpChainMap.poolChainMap.Find(poolId);
+        if (!p)
+        {
+            // create new pool-chain.
+            DescriptorPoolChain* chain = new DescriptorPoolChain(this, poolId);
+            dpChainMap.poolChainMap.Update(poolId, chain);
+        }        
+        DescriptorPoolChain* chain = dpChainMap.poolChainMap.Value(poolId);
+        DKASSERT_DEBUG(chain->device == this);
+        DKASSERT_DEBUG(chain->poolId == poolId);
+
+        // create layout!
+        VkDescriptorSetLayoutCreateInfo layoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
+        DKArray<VkDescriptorSetLayoutBinding> layoutBindings;
+        layoutBindings.Reserve(layout.bindings.Count());
+        for (const DKShaderBinding& binding : layout.bindings)
+        {
+            VkDescriptorSetLayoutBinding  layoutBinding = {};
+            layoutBinding.binding = binding.binding;
+            layoutBinding.descriptorType = DescriptorType(binding.type);
+            layoutBinding.descriptorCount = binding.length;
+            layoutBinding.stageFlags = VK_SHADER_STAGE_ALL;
+            //TODO: setup immutable sampler!
+
+            layoutBindings.Add(layoutBinding);
+        }
+        layoutCreateInfo.bindingCount = layoutBindings.Count();
+        layoutCreateInfo.pBindings = layoutBindings;
+
+        VkDescriptorSetLayoutSupport layoutSupport = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT };
+        vkGetDescriptorSetLayoutSupport(device, &layoutCreateInfo, &layoutSupport);
+        DKASSERT_DEBUG(layoutSupport.supported);
+
+        VkDescriptorSetLayout setLayout = VK_NULL_HANDLE;
+        VkResult result = vkCreateDescriptorSetLayout(device, &layoutCreateInfo, allocationCallbacks, &setLayout);
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkCreateDescriptorSetLayout failed: %s", VkResultCStr(result));
+            return NULL;
+        }
+        Cleanup _tmp = {    // destroy set-layout on exit.
+            DKFunction([this, setLayout]() {
+            vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
+            })->Invocation()
+        };
+
+        DescriptorPoolChain::AllocationInfo info;
+        if (chain->AllocateDescriptorSet(setLayout, info))
+        {
+            DKASSERT_DEBUG(info.descriptorSet);
+            DKASSERT_DEBUG(info.descriptorPool);
+
+            DKObject<ShaderBindingSet> bindingSet = DKOBJECT_NEW ShaderBindingSet(dev, info.descriptorSet, info.descriptorPool);
+            return bindingSet.SafeCast<DKShaderBindingSet>();
+        }
+    }
     return NULL;
+}
+
+void GraphicsDevice::DestroyDescriptorSet(VkDescriptorSet set, DescriptorPool* pool)
+{
+    DKASSERT_DEBUG(set);
+    DKASSERT_DEBUG(pool);
+
+    const DescriptorPoolId& poolId = pool->poolId;
+    DKASSERT_DEBUG(poolId.mask);
+
+    DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
+    uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+
+    DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
+
+    DKCriticalSection<DKSpinLock> guard(dpChainMap.lock);
+
+    pool->ReleaseDescriptorSet(set);
+    auto p = dpChainMap.poolChainMap.Find(poolId);
+    DKASSERT_DEBUG(p);
+    DescriptorPoolChain* chain = p->value;
+    size_t numPools = chain->Cleanup();
+    if (numPools == 0)
+    {
+        dpChainMap.poolChainMap.Remove(poolId);
+        delete chain;
+    }
 }
 
 DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t size, DKGpuBuffer::StorageMode storage, DKCpuCacheMode cache)
@@ -948,7 +1053,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 		bufferCI.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		VkBuffer buffer = nullptr;
-		VkResult result = vkCreateBuffer(device, &bufferCI, nullptr, &buffer);
+		VkResult result = vkCreateBuffer(device, &bufferCI, allocationCallbacks, &buffer);
 		if (result == VK_SUCCESS)
 		{
 			VkBufferView view = nullptr;
@@ -982,7 +1087,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 			memAllocInfo.allocationSize = memReqs.size;
 			memAllocInfo.memoryTypeIndex = getMemoryTypeIndex(memReqs.memoryTypeBits, memProperties);
 
-			result = vkAllocateMemory(device, &memAllocInfo, nullptr, &memory);
+			result = vkAllocateMemory(device, &memAllocInfo, allocationCallbacks, &memory);
 			if (result == VK_SUCCESS)
 			{
 				result = vkBindBufferMemory(device, buffer, memory, 0);
@@ -1004,11 +1109,11 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 
 			// clean up
 			if (view)
-				vkDestroyBufferView(device, view, nullptr);
+				vkDestroyBufferView(device, view, allocationCallbacks);
 			if (buffer)
-				vkDestroyBuffer(device, buffer, nullptr);
+				vkDestroyBuffer(device, buffer, allocationCallbacks);
 			if (memory)
-				vkFreeMemory(device, memory, nullptr);
+				vkFreeMemory(device, memory, allocationCallbacks);
 		}
 		else
 		{
@@ -1042,15 +1147,15 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
         if (!pipelineState)
         { 
             if (pipelineLayout != VK_NULL_HANDLE)
-                vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+                vkDestroyPipelineLayout(device, pipelineLayout, allocationCallbacks);
             if (renderPass != VK_NULL_HANDLE)
-                vkDestroyRenderPass(device, renderPass, nullptr);
+                vkDestroyRenderPass(device, renderPass, allocationCallbacks);
             if (pipeline != VK_NULL_HANDLE)
-                vkDestroyPipeline(device, pipeline, nullptr);
+                vkDestroyPipeline(device, pipeline, allocationCallbacks);
             for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
             {
                 DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-                vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+                vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
             }
         }
     })->Invocation() };
@@ -1127,53 +1232,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		}
 		vertexBindingDescriptions.Add(bind);
 	}
-	auto GetVertexFormat = [](DKVertexFormat fmt)->VkFormat
-	{
-		switch (fmt) {
-		case DKVertexFormat::UChar2:				return VK_FORMAT_R8G8_UINT;
-		case DKVertexFormat::UChar3: 				return VK_FORMAT_R8G8B8_UINT;
-		case DKVertexFormat::UChar4: 				return VK_FORMAT_R8G8B8A8_UINT;
-		case DKVertexFormat::Char2: 				return VK_FORMAT_R8G8_SINT;
-		case DKVertexFormat::Char3: 				return VK_FORMAT_R8G8B8_SINT;
-		case DKVertexFormat::Char4: 				return VK_FORMAT_R8G8B8A8_SINT;
-		case DKVertexFormat::UChar2Normalized: 		return VK_FORMAT_R8G8_UNORM;
-		case DKVertexFormat::UChar3Normalized: 		return VK_FORMAT_R8G8B8_UNORM;
-		case DKVertexFormat::UChar4Normalized: 		return VK_FORMAT_R8G8B8A8_UNORM;
-		case DKVertexFormat::Char2Normalized: 		return VK_FORMAT_R8G8_SNORM;
-		case DKVertexFormat::Char3Normalized: 		return VK_FORMAT_R8G8B8_SNORM;
-		case DKVertexFormat::Char4Normalized: 		return VK_FORMAT_R8G8B8A8_SNORM;
-		case DKVertexFormat::UShort2: 				return VK_FORMAT_R16G16_UINT;
-		case DKVertexFormat::UShort3: 				return VK_FORMAT_R16G16B16_UINT;
-		case DKVertexFormat::UShort4: 				return VK_FORMAT_R16G16B16A16_UINT;
-		case DKVertexFormat::Short2: 				return VK_FORMAT_R16G16_SINT;
-		case DKVertexFormat::Short3: 				return VK_FORMAT_R16G16B16_SINT;
-		case DKVertexFormat::Short4: 				return VK_FORMAT_R16G16B16A16_SINT;
-		case DKVertexFormat::UShort2Normalized: 	return VK_FORMAT_R16G16_UNORM;
-		case DKVertexFormat::UShort3Normalized: 	return VK_FORMAT_R16G16B16_UNORM;
-		case DKVertexFormat::UShort4Normalized: 	return VK_FORMAT_R16G16B16A16_UNORM;
-		case DKVertexFormat::Short2Normalized: 		return VK_FORMAT_R16G16_SNORM;
-		case DKVertexFormat::Short3Normalized: 		return VK_FORMAT_R16G16B16_SNORM;
-		case DKVertexFormat::Short4Normalized: 		return VK_FORMAT_R16G16B16A16_SNORM;
-		case DKVertexFormat::Half2: 				return VK_FORMAT_R16G16_SFLOAT;
-		case DKVertexFormat::Half3: 				return VK_FORMAT_R16G16B16_SFLOAT;
-		case DKVertexFormat::Half4: 				return VK_FORMAT_R16G16B16A16_SFLOAT;
-		case DKVertexFormat::Float: 				return VK_FORMAT_R32_SFLOAT;
-		case DKVertexFormat::Float2: 				return VK_FORMAT_R32G32_SFLOAT;
-		case DKVertexFormat::Float3: 				return VK_FORMAT_R32G32B32_SFLOAT;
-		case DKVertexFormat::Float4: 				return VK_FORMAT_R32G32B32A32_SFLOAT;
-		case DKVertexFormat::Int: 					return VK_FORMAT_R32_SINT;
-		case DKVertexFormat::Int2: 					return VK_FORMAT_R32G32_SINT;
-		case DKVertexFormat::Int3: 					return VK_FORMAT_R32G32B32_SINT;
-		case DKVertexFormat::Int4: 					return VK_FORMAT_R32G32B32A32_SINT;
-		case DKVertexFormat::UInt: 					return VK_FORMAT_R32_UINT;
-		case DKVertexFormat::UInt2: 				return VK_FORMAT_R32G32_UINT;
-		case DKVertexFormat::UInt3: 				return VK_FORMAT_R32G32B32_UINT;
-		case DKVertexFormat::UInt4: 				return VK_FORMAT_R32G32B32A32_UINT;
-		case DKVertexFormat::Int1010102Normalized: 	return VK_FORMAT_A2B10G10R10_SNORM_PACK32;
-		case DKVertexFormat::UInt1010102Normalized: return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
-		}
-		return VK_FORMAT_UNDEFINED;
-	};
+
 	DKArray<VkVertexInputAttributeDescription> vertexAttributeDescriptions;
 	vertexAttributeDescriptions.Reserve(desc.vertexDescriptor.attributes.Count());
 	for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
@@ -1181,7 +1240,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		VkVertexInputAttributeDescription attr = {};
 		attr.location = attrDesc.location;
 		attr.binding = attrDesc.bufferIndex;
-		attr.format = GetVertexFormat(attrDesc.format);
+		attr.format = VertexFormat(attrDesc.format);
 		attr.offset = attrDesc.offset;
 		vertexAttributeDescriptions.Add(attr);
 	}
@@ -1403,7 +1462,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	renderPassCreateInfo.subpassCount = 1;
 	renderPassCreateInfo.pSubpasses = &subpassDesc;
 
-	result = vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass);
+	result = vkCreateRenderPass(device, &renderPassCreateInfo, allocationCallbacks, &renderPass);
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateRenderPass failed: %s", VkResultCStr(result));
@@ -1417,7 +1476,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	colorBlendState.pAttachments = colorBlendAttachmentStates;
 	pipelineCreateInfo.pColorBlendState = &colorBlendState;
 
-	result = vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline);
+	result = vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, allocationCallbacks, &pipeline);
 	if (result == VK_SUCCESS)
 		SavePipelineCache();
 
@@ -1520,7 +1579,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
     {
         DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-        vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
     }
 
 	pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
@@ -1541,13 +1600,13 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
         if (!pipelineState)
         {
             if (pipelineLayout != VK_NULL_HANDLE)
-                vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+                vkDestroyPipelineLayout(device, pipelineLayout, allocationCallbacks);
             if (pipeline != VK_NULL_HANDLE)
-                vkDestroyPipeline(device, pipeline, nullptr);
+                vkDestroyPipeline(device, pipeline, allocationCallbacks);
             for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
             {
                 DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-                vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+                vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
             }
         }
     })->Invocation() };
@@ -1583,7 +1642,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
     pipelineCreateInfo.layout = pipelineLayout;
     DKASSERT_DEBUG(pipelineCreateInfo.stage.stage == VK_SHADER_STAGE_COMPUTE_BIT);
 
-    result = vkCreateComputePipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline);
+    result = vkCreateComputePipelines(device, pipelineCache, 1, &pipelineCreateInfo, allocationCallbacks, &pipeline);
     if (result == VK_SUCCESS)
         SavePipelineCache();
 
@@ -1604,7 +1663,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
     for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
     {
         DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-        vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
     }
 
 
@@ -1628,7 +1687,7 @@ VkFence GraphicsDevice::GetFence()
 	if (fence == VK_NULL_HANDLE)
 	{
 		VkFenceCreateInfo fenceCreateInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-		VkResult err = vkCreateFence(device, &fenceCreateInfo, nullptr, &fence);
+		VkResult err = vkCreateFence(device, &fenceCreateInfo, allocationCallbacks, &fence);
 		if (err != VK_SUCCESS)
 		{
 			DKLogE("ERROR: vkCreateFence failed: %s", VkResultCStr(err));
@@ -1775,7 +1834,7 @@ void GraphicsDevice::LoadPipelineCache()
 {
 	if (this->pipelineCache != VK_NULL_HANDLE)
 	{
-		vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
+		vkDestroyPipelineCache(this->device, this->pipelineCache, this->allocationCallbacks);
 		this->pipelineCache = VK_NULL_HANDLE;
 	}
 
@@ -1805,7 +1864,7 @@ void GraphicsDevice::LoadPipelineCache()
 		return false;
 	}));
 	
-	VkResult result = vkCreatePipelineCache(this->device, &pipelineCreateInfo, nullptr, &this->pipelineCache);
+	VkResult result = vkCreatePipelineCache(this->device, &pipelineCreateInfo, allocationCallbacks, &this->pipelineCache);
 	if (result != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreatePipelineCache failed: %s", VkResultCStr(result));
@@ -1874,7 +1933,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
     for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
     {
         DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-        vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
     }
     return result;
 }
@@ -1893,7 +1952,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
         for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
         {
             DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-            vkDestroyDescriptorSetLayout(device, setLayout, nullptr);
+            vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
         }
     })->Invocation() };
 #endif
@@ -1984,35 +2043,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
                         }
                         if (newBinding)
                         {
-                            VkDescriptorType type;
-                            switch (desc.type)
-                            {
-                            case DKShader::DescriptorTypeUniformBuffer:
-                                type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; 
-                                break;
-                            case DKShader::DescriptorTypeStorageBuffer:
-                                type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; 
-                                break;
-                            case DKShader::DescriptorTypeStorageTexture:
-                                type = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-                                break;
-                            case DKShader::DescriptorTypeTextureSampler:
-                                type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; 
-                                break;
-                            case DKShader::DescriptorTypeTexture:
-                                type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-                                break;
-                            case DKShader::DescriptorTypeTexelBuffer:
-                                type = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-                                break;
-                            case DKShader::DescriptorTypeSampler:
-                                type = VK_DESCRIPTOR_TYPE_SAMPLER;
-                                break;
-                            default:
-                                DKLogE("Unknown DescriptorType!!");
-                                return nullptr;
-                            }
-
+                            VkDescriptorType type = DescriptorType(desc.type);
                             VkDescriptorSetLayoutBinding binding = {
                                 desc.binding,
                                 type,
@@ -2030,8 +2061,13 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
         VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
         setLayoutCreateInfo.bindingCount = (uint32_t)descriptorBindings.Count();
         setLayoutCreateInfo.pBindings = descriptorBindings;
+
+        VkDescriptorSetLayoutSupport layoutSupport = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_SUPPORT };
+        vkGetDescriptorSetLayoutSupport(device, &setLayoutCreateInfo, &layoutSupport);
+        DKASSERT_DEBUG(layoutSupport.supported);
+
         VkDescriptorSetLayout setLayout = VK_NULL_HANDLE;
-        result = vkCreateDescriptorSetLayout(device, &setLayoutCreateInfo, nullptr, &setLayout);
+        result = vkCreateDescriptorSetLayout(device, &setLayoutCreateInfo, allocationCallbacks, &setLayout);
         if (result != VK_SUCCESS)
         {
             DKLogE("ERROR: vkCreateDescriptorSetLayout failed: %s", VkResultCStr(result));
@@ -2047,7 +2083,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
     pipelineLayoutCreateInfo.pPushConstantRanges = pushConstantRanges;
 
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-     result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+     result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, allocationCallbacks, &pipelineLayout);
     if (result != VK_SUCCESS)
     {
         DKLogE("ERROR: vkCreatePipelineLayout failed: %s", VkResultCStr(result));

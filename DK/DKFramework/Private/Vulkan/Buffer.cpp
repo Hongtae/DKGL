@@ -32,11 +32,11 @@ Buffer::~Buffer()
 
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (view)
-		vkDestroyBufferView(dev->device, view, nullptr);
+		vkDestroyBufferView(dev->device, view, dev->allocationCallbacks);
 	if (buffer)
-		vkDestroyBuffer(dev->device, buffer, nullptr);
+		vkDestroyBuffer(dev->device, buffer, dev->allocationCallbacks);
 	if (memory)
-		vkFreeMemory(dev->device, memory, nullptr);
+		vkFreeMemory(dev->device, memory, dev->allocationCallbacks);
 }
 
 void* Buffer::Lock(size_t offset, size_t size)

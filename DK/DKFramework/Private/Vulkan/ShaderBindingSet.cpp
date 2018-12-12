@@ -8,18 +8,45 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
 #include "Extensions.h"
-#include "ShaderBindingSet.h"
 #include "GraphicsDevice.h"
+#include "ShaderBindingSet.h"
+#include "DescriptorPool.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-ShaderBindingSet::ShaderBindingSet()
+ShaderBindingSet::ShaderBindingSet(DKGraphicsDevice* dev, VkDescriptorSet set, DescriptorPool* pool)
+    : device(dev)
+    , descriptorSet(set)
+    , descriptorPool(pool)    
+{
+    DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
+    DKASSERT_DEBUG(descriptorPool);
+}
+
+
+ShaderBindingSet::~ShaderBindingSet()
+{
+    GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+    dev->DestroyDescriptorSet(descriptorSet, descriptorPool);
+}
+
+void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer*)
 {
 
 }
 
-ShaderBindingSet::~ShaderBindingSet()
+void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture*)
+{
+
+}
+
+void ShaderBindingSet::SetSamplerState(uint32_t binding, DKSamplerState*)
+{
+
+}
+
+void ShaderBindingSet::SetTextureSampler(uint32_t binding, DKTexture*, DKSamplerState*)
 {
 
 }

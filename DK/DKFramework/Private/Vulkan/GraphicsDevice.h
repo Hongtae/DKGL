@@ -12,6 +12,7 @@
 
 #include "../../Interface/DKGraphicsDeviceInterface.h"
 #include "QueueFamily.h"
+#include "DescriptorPoolChain.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -33,6 +34,8 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) override;
 
         DKString DeviceName() const override;
+
+        void DestroyDescriptorSet(VkDescriptorSet, DescriptorPool*);
 
 		VkFence GetFence();
 		void AddFenceCompletionHandler(VkFence, DKOperation*, bool useEventLoop = false);
@@ -71,6 +74,7 @@ namespace DKFramework::Private::Vulkan
 		void LoadPipelineCache();
 		void SavePipelineCache();
 
+        VkAllocationCallbacks* allocationCallbacks;
 		// extensions
 		InstanceProc iproc; // instance procedure
 		DeviceProc dproc; // device procedure
@@ -78,6 +82,13 @@ namespace DKFramework::Private::Vulkan
     private:
         VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>) const;
         VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>, DKArray<VkDescriptorSetLayout>&) const;
-	};
+
+        enum { NumDescriptorPoolChainBuckets = 7 };
+        struct DescriptorPoolChainMap
+        {
+            DKMap<DescriptorPoolId, DescriptorPoolChain*> poolChainMap;
+            DKSpinLock lock;
+        } descriptorPoolChainMaps[NumDescriptorPoolChainBuckets];
+    };
 }
 #endif //#if DKGL_ENABLE_VULKAN

@@ -404,8 +404,14 @@ bool DKShader::Rebuild(const DKData* d)
                 // storage_images
                 for (const spirv_cross::Resource& resource : resources.storage_images)
                 {
+                    const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+                    DescriptorType type = DescriptorTypeStorageTexture;
+                    if (spType.image.dim == spv::DimBuffer)
+                    {
+                        type = DescriptorTypeStorageTexelBuffer;
+                    }
                     this->resources.Add(getResource(resource, true));
-                    this->descriptors.Add(getDescriptor(resource, DescriptorTypeStorageTexture));
+                    this->descriptors.Add(getDescriptor(resource, type));
                 }
                 // sampled_images (sampler2D)
                 for (const spirv_cross::Resource& resource : resources.sampled_images)
@@ -420,7 +426,7 @@ bool DKShader::Rebuild(const DKData* d)
                     DescriptorType type = DescriptorTypeTexture;
                     if (spType.image.dim == spv::DimBuffer)
                     {
-                        type = DescriptorTypeTexelBuffer;
+                        type = DescriptorTypeUniformTexelBuffer;
                     }
                     this->resources.Add(getResource(resource, false));
                     this->descriptors.Add(getDescriptor(resource, type));

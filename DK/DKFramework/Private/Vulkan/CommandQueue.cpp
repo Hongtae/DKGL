@@ -38,7 +38,7 @@ DKObject<DKCommandBuffer> CommandQueue::CreateCommandBuffer()
 	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 	VkCommandPool commandPool = VK_NULL_HANDLE;
-	VkResult err = vkCreateCommandPool(dev->device, &cmdPoolCreateInfo, nullptr, &commandPool);
+	VkResult err = vkCreateCommandPool(dev->device, &cmdPoolCreateInfo, dev->allocationCallbacks, &commandPool);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateCommandPool failed: %s", VkResultCStr(err));

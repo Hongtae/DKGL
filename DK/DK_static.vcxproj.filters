@@ -589,6 +589,12 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderBindingSet.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPool.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPoolChain.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1334,6 +1340,12 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\ShaderBindingSet.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPool.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPoolChain.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

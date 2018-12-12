@@ -42,11 +42,11 @@ Texture::~Texture()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (imageView)
-		vkDestroyImageView(dev->device, imageView, nullptr);
+		vkDestroyImageView(dev->device, imageView, dev->allocationCallbacks);
 	if (signalSemaphore)
-		vkDestroySemaphore(dev->device, signalSemaphore, nullptr);
+		vkDestroySemaphore(dev->device, signalSemaphore, dev->allocationCallbacks);
 	if (waitSemaphore)
-		vkDestroySemaphore(dev->device, waitSemaphore, nullptr);
+		vkDestroySemaphore(dev->device, waitSemaphore, dev->allocationCallbacks);
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

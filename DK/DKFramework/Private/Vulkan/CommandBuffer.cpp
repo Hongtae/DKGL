@@ -30,7 +30,7 @@ CommandBuffer::~CommandBuffer()
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
 
-	vkDestroyCommandPool(device, commandPool, nullptr);
+	vkDestroyCommandPool(device, commandPool, dev->allocationCallbacks);
 }
 
 DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor& rp)

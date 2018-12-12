@@ -29,9 +29,10 @@ namespace DKFramework
             DescriptorTypeUniformBuffer,
             DescriptorTypeStorageBuffer,
             DescriptorTypeStorageTexture,
+            DescriptorTypeUniformTexelBuffer, // readonly texture 'buffer'
+            DescriptorTypeStorageTexelBuffer, // writable texture 'buffer'
             DescriptorTypeTextureSampler, // texture, sampler combined
             DescriptorTypeTexture,
-            DescriptorTypeTexelBuffer,
             DescriptorTypeSampler,
         };
         struct Descriptor
