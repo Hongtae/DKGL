@@ -1138,8 +1138,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
 
-    DKArray<VkDescriptorSetLayout> descriptorSetLayouts;	// shader descriptor set layouts
-
     DKObject<RenderPipelineState> pipelineState = nullptr;
 
     Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
@@ -1152,11 +1150,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
                 vkDestroyRenderPass(device, renderPass, allocationCallbacks);
             if (pipeline != VK_NULL_HANDLE)
                 vkDestroyPipeline(device, pipeline, allocationCallbacks);
-            for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-            {
-                DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-                vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
-            }
         }
     })->Invocation() };
 
@@ -1208,7 +1201,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	pipelineCreateInfo.stageCount = (uint32_t)shaderStageCreateInfos.Count();
 	pipelineCreateInfo.pStages = shaderStageCreateInfos;
 
-    pipelineLayout = CreatePipelineLayout(shaderFunctions, descriptorSetLayouts);
+    pipelineLayout = CreatePipelineLayout(shaderFunctions, VK_SHADER_STAGE_ALL);
     if (pipelineLayout == VK_NULL_HANDLE)
         return nullptr;
     pipelineCreateInfo.layout = pipelineLayout;
@@ -1575,13 +1568,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		reflection->pushConstantLayouts.ShrinkToFit();
 	}
 
-    // Delete the descriptorSetLayouts that are no longer needed.
-    for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-    {
-        DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
-    }
-
 	pipelineState = DKOBJECT_NEW RenderPipelineState(dev, pipeline, pipelineLayout, renderPass);
 	return pipelineState.SafeCast<DKRenderPipelineState>();
 }
@@ -1592,7 +1578,6 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
     VkPipeline pipeline = VK_NULL_HANDLE;
-    DKArray<VkDescriptorSetLayout> descriptorSetLayouts;	// shader descriptor set layouts
     DKObject<ComputePipelineState> pipelineState = nullptr;
 
     Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
@@ -1603,11 +1588,6 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
                 vkDestroyPipelineLayout(device, pipelineLayout, allocationCallbacks);
             if (pipeline != VK_NULL_HANDLE)
                 vkDestroyPipeline(device, pipeline, allocationCallbacks);
-            for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-            {
-                DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-                vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
-            }
         }
     })->Invocation() };
 
@@ -1635,7 +1615,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 
     pipelineCreateInfo.stage = shaderStageCreateInfo;
 
-    pipelineLayout = CreatePipelineLayout({ func }, descriptorSetLayouts);
+    pipelineLayout = CreatePipelineLayout({ func }, VK_SHADER_STAGE_ALL);
     if (pipelineLayout == VK_NULL_HANDLE)
         return nullptr;
 
@@ -1658,14 +1638,6 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
         reflection->resources.Add(module->resources);
         reflection->resources.ShrinkToFit();
     }
-
-    // Delete the descriptorSetLayouts that are no longer needed.
-    for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-    {
-        DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
-    }
-
 
     pipelineState = DKOBJECT_NEW ComputePipelineState(dev, pipeline, pipelineLayout);
 	return pipelineState.SafeCast<DKComputePipelineState>();
@@ -1925,10 +1897,10 @@ void GraphicsDevice::SavePipelineCache()
 	}
 }
 
-VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions) const
+VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions, VkShaderStageFlags layoutDefaultStageFlags) const
 {
     DKArray<VkDescriptorSetLayout> descriptorSetLayouts;
-    auto result = CreatePipelineLayout(functions, descriptorSetLayouts);
+    auto result = CreatePipelineLayout(functions, descriptorSetLayouts, layoutDefaultStageFlags);
 
     for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
     {
@@ -1938,24 +1910,10 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
     return result;
 }
 
-VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions, DKArray<VkDescriptorSetLayout>& descriptorSetLayouts) const
+VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<const DKShaderFunction*> functions, DKArray<VkDescriptorSetLayout>& descriptorSetLayouts, VkShaderStageFlags layoutDefaultStageFlags) const
 {
     VkResult result = VK_SUCCESS;
-    //DKArray<VkDescriptorSetLayout> descriptorSetLayouts; // shader descriptor set layouts
 
-    // NOTE: 
-    // Delete VkDescriptorSetLayout objects after the pipeline is created.
-    // Otherwise, the nVidia driver crashes. - 2018-10-26
-#if 0
-    Cleanup _cleanup = { DKFunction([&]()
-    {
-        for (VkDescriptorSetLayout setLayout : descriptorSetLayouts)
-        {
-            DKASSERT_DEBUG(setLayout != VK_NULL_HANDLE);
-            vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
-        }
-    })->Invocation() };
-#endif
     size_t numPushConstantRanges = 0;
     for (const DKShaderFunction* fn : functions)
     {
@@ -2048,7 +2006,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
                                 desc.binding,
                                 type,
                                 desc.count,
-                                module->stage,
+                                layoutDefaultStageFlags | module->stage, 
                                 nullptr  /* VkSampler* pImmutableSamplers */
                             };
                             descriptorBindings.Add(binding);

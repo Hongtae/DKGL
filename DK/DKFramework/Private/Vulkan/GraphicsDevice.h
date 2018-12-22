@@ -80,8 +80,8 @@ namespace DKFramework::Private::Vulkan
 		DeviceProc dproc; // device procedure
 
     private:
-        VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>) const;
-        VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>, DKArray<VkDescriptorSetLayout>&) const;
+        VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>, VkShaderStageFlags) const;
+        VkPipelineLayout CreatePipelineLayout(std::initializer_list<const DKShaderFunction*>, DKArray<VkDescriptorSetLayout>&, VkShaderStageFlags) const;
 
         enum { NumDescriptorPoolChainBuckets = 7 };
         struct DescriptorPoolChainMap
