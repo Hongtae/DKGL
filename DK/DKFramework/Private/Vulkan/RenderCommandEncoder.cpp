@@ -434,6 +434,7 @@ void RenderCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
     {
         DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
         bindingSet = static_cast<ShaderBindingSet*>(set);
+        bindingSet->UpdateDescriptorSet();
     }
 
     if (resources->pipelineState)

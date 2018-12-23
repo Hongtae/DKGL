@@ -17,7 +17,7 @@ using namespace DKFramework::Private::Vulkan;
 Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b, VkBufferView v, VkDeviceMemory mem, VkMemoryType memType, size_t len)
 	: device(dev)
 	, buffer(b)
-	, view(v)
+	, bufferView(v)
 	, memory(mem)
 	, memoryType(memType)
 	, length(len)
@@ -31,8 +31,8 @@ Buffer::~Buffer()
 	DKASSERT_DEBUG(mapped == nullptr);
 
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	if (view)
-		vkDestroyBufferView(dev->device, view, dev->allocationCallbacks);
+	if (bufferView)
+		vkDestroyBufferView(dev->device, bufferView, dev->allocationCallbacks);
 	if (buffer)
 		vkDestroyBuffer(dev->device, buffer, dev->allocationCallbacks);
 	if (memory)
@@ -48,7 +48,7 @@ void* Buffer::Lock(size_t offset, size_t size)
 		if (size == ~size_t(0) || (offset + size) <= length)
 		{
 			DKCriticalSection<DKSpinLock> guard(lock);
-			DKASSERT_DEBUG(mapped == nullptr);
+            DKASSERT_DESC_DEBUG(mapped == nullptr, "The buffer is already locked.");
 			if (!mapped)
 			{
 				if (size == ~size_t(0))

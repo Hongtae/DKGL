@@ -11,6 +11,9 @@
 #include <vulkan/vulkan.h>
 #include "../../DKGraphicsDevice.h"
 #include "../../DKShaderBindingSet.h"
+#include "Buffer.h"
+#include "Texture.h"
+#include "Sampler.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -18,17 +21,39 @@ namespace DKFramework::Private::Vulkan
     class ShaderBindingSet : public DKShaderBindingSet
     {
     public:
-        ShaderBindingSet(DKGraphicsDevice*, VkDescriptorSet, DescriptorPool*);
+        ShaderBindingSet(DKGraphicsDevice*, VkDescriptorSetLayout, VkDescriptorSet, DescriptorPool*);
         ~ShaderBindingSet();
 
         VkDescriptorSet descriptorSet;
+        VkDescriptorSetLayout descriptorSetLayout;
         DKObject<DescriptorPool> descriptorPool;
         DKObject<DKGraphicsDevice> device;
+        DKArray<VkDescriptorSetLayoutBinding> bindings;
 
-        void SetBuffer(uint32_t binding, DKGpuBuffer*) override;
+        void SetBuffer(uint32_t binding, DKGpuBuffer*, uint64_t, uint64_t) override;
         void SetTexture(uint32_t binding, DKTexture*) override;
         void SetSamplerState(uint32_t binding, DKSamplerState*) override;
         void SetTextureSampler(uint32_t binding, DKTexture*, DKSamplerState*) override;
+
+        void UpdateDescriptorSet();
+        bool FindDescriptorBinding(uint32_t binding, VkDescriptorSetLayoutBinding*) const;
+
+        // pending updates (vkUpdateDescriptorSets)
+        DKArray<VkWriteDescriptorSet> descriptorWrites;
+        DKArray<VkCopyDescriptorSet> descriptorCopies;
+
+        // descriptor infos (for storage of VkWriteDescriptorSets)
+        DKArray<VkDescriptorImageInfo> imageInfos;
+        DKArray<VkDescriptorBufferInfo> bufferInfos;
+        DKArray<VkBufferView> texelBufferViews;
+
+        using BufferObject = DKObject<Buffer>;
+        using TextureObject = DKObject<Texture>;
+        using SamplerObject = DKObject<Sampler>;
+        // take ownership of bound resources.
+        DKMap<uint32_t, BufferObject> buffers;
+        DKMap<uint32_t, TextureObject> textures;
+        DKMap<uint32_t, SamplerObject> samplers;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

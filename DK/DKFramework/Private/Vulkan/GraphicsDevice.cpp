@@ -997,11 +997,6 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
             DKLogE("ERROR: vkCreateDescriptorSetLayout failed: %s", VkResultCStr(result));
             return NULL;
         }
-        Cleanup _tmp = {    // destroy set-layout on exit.
-            DKFunction([this, setLayout]() {
-            vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
-            })->Invocation()
-        };
 
         DescriptorPoolChain::AllocationInfo info;
         if (chain->AllocateDescriptorSet(setLayout, info))
@@ -1009,9 +1004,12 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
             DKASSERT_DEBUG(info.descriptorSet);
             DKASSERT_DEBUG(info.descriptorPool);
 
-            DKObject<ShaderBindingSet> bindingSet = DKOBJECT_NEW ShaderBindingSet(dev, info.descriptorSet, info.descriptorPool);
+            DKObject<ShaderBindingSet> bindingSet = DKOBJECT_NEW ShaderBindingSet(dev, setLayout, info.descriptorSet, info.descriptorPool);
+            bindingSet->bindings = std::move(layoutBindings);
             return bindingSet.SafeCast<DKShaderBindingSet>();
         }
+
+        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
     }
     return NULL;
 }

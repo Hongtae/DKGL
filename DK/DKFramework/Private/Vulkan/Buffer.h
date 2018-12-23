@@ -27,7 +27,7 @@ namespace DKFramework::Private::Vulkan
 		void* mapped;
 		size_t length;
 		VkBuffer buffer;
-		VkBufferView view;
+		VkBufferView bufferView;
 		VkDeviceMemory memory;
 		VkMemoryType memoryType;
 		DKObject<DKGraphicsDevice> device;

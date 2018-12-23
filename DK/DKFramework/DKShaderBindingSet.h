@@ -34,7 +34,7 @@ namespace DKFramework
     public:
         virtual ~DKShaderBindingSet() {}
 
-        virtual void SetBuffer(uint32_t binding, DKGpuBuffer*) = 0;
+        virtual void SetBuffer(uint32_t binding, DKGpuBuffer*, uint64_t offset, uint64_t length) = 0;
         virtual void SetTexture(uint32_t binding, DKTexture*) = 0;
         virtual void SetSamplerState(uint32_t binding, DKSamplerState*) = 0;
         virtual void SetTextureSampler(uint32_t binding, DKTexture*, DKSamplerState*) = 0;
