@@ -313,10 +313,21 @@ void RenderCommandEncoder::EndEncoding()
 	submitInfo.signalSemaphoreCount = resources->signalSemaphores.Count();
 	submitInfo.pSignalSemaphores = resources->signalSemaphores;
 
-	commandBuffer->Submit(submitInfo, DKFunction([=](DKObject<Resources> res)
+    DKObject<DKOperation> submitCallback = DKFunction([](DKObject<Resources> res)
+    {
+        res->boundResources.EnumerateForward([](decltype(res->boundResources)::Pair& pair)
+        {
+            if (pair.value)
+                pair.value->UpdateDescriptorSet();
+        });
+    })->Invocation(resources);
+
+    DKObject<DKOperation> completedCallback = DKFunction([](DKObject<Resources> res)
 	{
 		res = NULL;
-	})->Invocation(resources));
+	})->Invocation(resources);
+
+    commandBuffer->Submit(submitInfo, submitCallback, completedCallback);
 
 	resources = NULL;
 	semaphorePipelineStageMasks.Clear();

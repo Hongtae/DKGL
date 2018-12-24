@@ -27,6 +27,9 @@ CommandBuffer::CommandBuffer(VkCommandPool p, DKCommandQueue* q)
 
 CommandBuffer::~CommandBuffer()
 {
+    submitCallbacks.Clear();
+    completedCallbacks.Clear();
+
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
 
@@ -73,7 +76,10 @@ bool CommandBuffer::Commit()
 	{
 		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
 
-		DKArray<DKObject<DKOperation>> callbacksCopy = std::move(callbacks);
+        for (DKOperation* op : submitCallbacks)
+            op->Perform();
+
+		DKArray<DKObject<DKOperation>> callbacksCopy = (completedCallbacks);
 
 		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 		VkDevice device = dev->device;
@@ -87,9 +93,6 @@ bool CommandBuffer::Commit()
 
 		})->Invocation(this));
 	}
-	submitInfos.Clear();
-	callbacks.Clear();
-
 	return result;
 }
 
@@ -123,11 +126,13 @@ void CommandBuffer::ReleaseEncodingBuffer(VkCommandBuffer cb)
 	}
 }
 
-void CommandBuffer::Submit(const VkSubmitInfo& info, DKOperation* callback)
+void CommandBuffer::Submit(const VkSubmitInfo& info, DKOperation* cb1, DKOperation* cb2)
 {
 	submitInfos.Add(info);
-	if (callback)
-		callbacks.Add(callback);
+    if (cb1)
+        submitCallbacks.Add(cb1);
+    if (cb2)
+        completedCallbacks.Add(cb2);
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

@@ -29,7 +29,7 @@ namespace DKFramework::Private::Vulkan
 
 		DKCommandQueue* Queue() override { return queue; };
 
-		void Submit(const VkSubmitInfo&, DKOperation*);
+		void Submit(const VkSubmitInfo&, DKOperation*, DKOperation*);
 		void ReleaseEncodingBuffer(VkCommandBuffer cb);
 		VkCommandBuffer GetEncodingBuffer();
 
@@ -37,7 +37,8 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKCommandQueue> queue;
 
 		DKArray<VkSubmitInfo> submitInfos;
-		DKArray<DKObject<DKOperation>> callbacks;
+        DKArray<DKObject<DKOperation>> submitCallbacks;
+        DKArray<DKObject<DKOperation>> completedCallbacks;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN
