@@ -31,9 +31,11 @@ namespace DKFramework::Private::Vulkan
         DKArray<VkDescriptorSetLayoutBinding> bindings;
 
         void SetBuffer(uint32_t binding, DKGpuBuffer*, uint64_t, uint64_t) override;
+        void SetBufferArray(uint32_t binding, uint32_t numBuffers, BufferInfo*) override;
         void SetTexture(uint32_t binding, DKTexture*) override;
+        void SetTextureArray(uint32_t binding, uint32_t numTextures, DKTexture**) override;
         void SetSamplerState(uint32_t binding, DKSamplerState*) override;
-        void SetTextureSampler(uint32_t binding, DKTexture*, DKSamplerState*) override;
+        void SetSamplerStateArray(uint32_t binding, uint32_t numSamplers, DKSamplerState**) override;
 
         void UpdateDescriptorSet();
         bool FindDescriptorBinding(uint32_t binding, VkDescriptorSetLayoutBinding*) const;
@@ -51,9 +53,9 @@ namespace DKFramework::Private::Vulkan
         using TextureObject = DKObject<Texture>;
         using SamplerObject = DKObject<Sampler>;
         // take ownership of bound resources.
-        DKMap<uint32_t, BufferObject> buffers;
-        DKMap<uint32_t, TextureObject> textures;
-        DKMap<uint32_t, SamplerObject> samplers;
+        DKMap<uint32_t, DKArray<BufferObject>> buffers;
+        DKMap<uint32_t, DKArray<TextureObject>> textures;
+        DKMap<uint32_t, DKArray<SamplerObject>> samplers;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

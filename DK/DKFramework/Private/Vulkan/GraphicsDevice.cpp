@@ -978,7 +978,14 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
             layoutBinding.binding = binding.binding;
             layoutBinding.descriptorType = DescriptorType(binding.type);
             layoutBinding.descriptorCount = binding.length;
-            layoutBinding.stageFlags = VK_SHADER_STAGE_ALL;
+
+            // input-attachment is for the fragment shader only! (framebuffer load operation)
+            if (layoutBinding.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT &&
+                layoutBinding.descriptorCount > 0)
+                layoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+            else
+                layoutBinding.stageFlags = VK_SHADER_STAGE_ALL;
+
             //TODO: setup immutable sampler!
 
             layoutBindings.Add(layoutBinding);
