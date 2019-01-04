@@ -13,7 +13,6 @@
 #include "ShaderModule.h"
 #include "ShaderFunction.h"
 #include "ShaderBindingSet.h"
-#include "PixelFormat.h"
 #include "RenderPipelineState.h"
 #include "ComputePipelineState.h"
 #include "Buffer.h"
@@ -1128,11 +1127,133 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 	return NULL;
 }
 
-DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const DKTextureDescriptor&)
+DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const DKTextureDescriptor& desc)
 {
-	DKObject<Texture> texture = NULL;
-	//texture = DKOBJECT_NEW Texture();
-	return texture.SafeCast<DKTexture>();
+    VkImageCreateInfo imageCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
+    switch (desc.textureType)
+    {
+    case DKTexture::Type1D:
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_1D;
+        break;
+    case DKTexture::Type2D:
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+        break;
+    case DKTexture::Type3D:
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_3D;
+        break;
+    case DKTexture::TypeCube:
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageCreateInfo.flags |= VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+        break;
+    default:
+        DKASSERT_DESC_DEBUG(0, "Invalid texture type!");
+        DKLogE("Invalid texture type!");
+        return NULL;
+    }
+    imageCreateInfo.arrayLayers = Max(desc.arrayLength, 1U);
+    if (imageCreateInfo.arrayLayers > 1 && imageCreateInfo.imageType == VK_IMAGE_TYPE_2D)
+    {
+        imageCreateInfo.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
+    }
+
+    imageCreateInfo.format = PixelFormat(desc.pixelFormat);
+    DKASSERT_DESC_DEBUG(imageCreateInfo.format != VK_FORMAT_UNDEFINED, "Unsupported format!");
+
+    imageCreateInfo.extent = { desc.width, desc.height, desc.depth };
+    imageCreateInfo.mipLevels = desc.mipmapLevels;
+
+    DKASSERT_DESC_DEBUG(desc.sampleCount == 1, "Multisample is not implemented yet.");
+    imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+
+    imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    
+    if (desc.usage & DKTexture::UsageCopySource)
+        imageCreateInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+    if (desc.usage & DKTexture::UsageCopyDestination)
+        imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    if (desc.usage & (DKTexture::UsageShaderRead | DKTexture::UsageSampled))
+        imageCreateInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
+    if (desc.usage & (DKTexture::UsageShaderWrite | DKTexture::UsageStorage))
+        imageCreateInfo.usage |= VK_IMAGE_USAGE_STORAGE_BIT;
+    if (desc.usage & DKTexture::UsageRenderTarget)
+    {
+        if (DKPixelFormatIsDepthFormat(desc.pixelFormat))
+            imageCreateInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        else
+            imageCreateInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    }
+
+    // Set initial layout of the image to undefined
+    imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+    VkImage image = VK_NULL_HANDLE;
+    VkImageView imageView = VK_NULL_HANDLE;
+    VkResult result = vkCreateImage(device, &imageCreateInfo, allocationCallbacks, &image);
+    if (result != VK_SUCCESS)
+    {
+        DKLogE("ERROR: vkCreateImage failed: %s", VkResultCStr(result));
+        return nullptr;
+    }
+
+    DKObject<Texture> texture = DKOBJECT_NEW Texture(dev, image, VK_NULL_HANDLE, &imageCreateInfo);
+
+    if (imageCreateInfo.usage & (VK_IMAGE_USAGE_SAMPLED_BIT |
+        VK_IMAGE_USAGE_STORAGE_BIT |
+        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT))
+    {
+        VkImageViewCreateInfo imageViewCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+        imageViewCreateInfo.image = image;
+
+        switch (desc.textureType)
+        {
+        case DKTexture::Type1D:
+            if (desc.arrayLength > 1)
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_1D_ARRAY;
+            else
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_1D;
+            break;
+        case DKTexture::Type2D:
+            if (desc.arrayLength > 1)
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+            else
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            break;
+        case DKTexture::Type3D:
+            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_3D;
+            break;
+        case DKTexture::TypeCube:
+            if (desc.arrayLength > 1)
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
+            else
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
+            break;
+        }
+        imageViewCreateInfo.format = imageCreateInfo.format;
+        imageViewCreateInfo.components = {
+            VK_COMPONENT_SWIZZLE_R,
+            VK_COMPONENT_SWIZZLE_G,
+            VK_COMPONENT_SWIZZLE_B,
+            VK_COMPONENT_SWIZZLE_A 
+        };
+
+        imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+        imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+        imageViewCreateInfo.subresourceRange.layerCount = imageCreateInfo.arrayLayers;
+        imageViewCreateInfo.subresourceRange.levelCount = imageCreateInfo.mipLevels;
+
+        result = vkCreateImageView(device, &imageViewCreateInfo, allocationCallbacks, &imageView);
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkCreateImageView failed: %s", VkResultCStr(result));
+            return nullptr;
+        }
+
+        texture->imageView = imageView;
+    }
+
+    return texture.SafeCast<DKTexture>();
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
@@ -1416,7 +1537,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		const DKRenderPipelineColorAttachmentDescriptor& attachment = desc.colorAttachments.Value(index);
 
 		VkAttachmentDescription attachmentDesc = {};
-		attachmentDesc.format = PixelFormat::From(attachment.pixelFormat);
+		attachmentDesc.format = PixelFormat(attachment.pixelFormat);
 		attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
 		attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;

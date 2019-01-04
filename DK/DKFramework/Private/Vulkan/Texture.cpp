@@ -41,6 +41,8 @@ Texture::Texture(DKGraphicsDevice* d, VkImage i, VkImageView v, const VkImageCre
 Texture::~Texture()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+    if (image)
+        vkDestroyImage(dev->device, image, dev->allocationCallbacks);
 	if (imageView)
 		vkDestroyImageView(dev->device, imageView, dev->allocationCallbacks);
 	if (signalSemaphore)

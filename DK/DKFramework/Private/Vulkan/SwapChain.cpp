@@ -403,7 +403,7 @@ bool SwapChain::Update()
 void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
-	VkFormat format = PixelFormat::From(pf);
+	VkFormat format = PixelFormat(pf);
 
 	if (format != this->surfaceFormat.format)
 	{
@@ -453,15 +453,15 @@ void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
 DKPixelFormat SwapChain::ColorPixelFormat() const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
-	return PixelFormat::To(this->surfaceFormat.format);
+	return PixelFormat(this->surfaceFormat.format);
 }
 
 DKPixelFormat SwapChain::DepthStencilPixelFormat() const
 {
 	// not implemented yet..
+    DKASSERT_DESC(false, "Not implemented yet!");
 	return DKPixelFormat::Invalid;
 }
-
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 {

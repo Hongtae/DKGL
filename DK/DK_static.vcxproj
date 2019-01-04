@@ -342,7 +342,6 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPool.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPoolChain.cpp" />
-    <ClCompile Include="DKFramework\Private\Vulkan\PixelFormat.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
@@ -592,7 +591,6 @@
     <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPool.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPoolChain.h" />
-    <ClInclude Include="DKFramework\Private\Vulkan\PixelFormat.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />

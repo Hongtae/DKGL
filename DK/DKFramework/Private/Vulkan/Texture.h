@@ -11,7 +11,7 @@
 #include <vulkan/vulkan.h>
 #include "../../DKGraphicsDevice.h"
 #include "../../DKTexture.h"
-#include "PixelFormat.h"
+#include "Types.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -56,15 +56,20 @@ namespace DKFramework::Private::Vulkan
 			DKASSERT_DEBUG(mipLevels > 0);
 			return mipLevels;
 		}
+        uint32_t ArrayLength() const override
+        {
+            DKASSERT_DEBUG(arrayLayers > 0);
+            return arrayLayers;
+        }
 
 		DKTexture::Type TextureType() const override
 		{
 			switch (imageType)
 			{
 			case VK_IMAGE_TYPE_1D:
-				return arrayLayers > 1 ? DKTexture::Type1DArray : DKTexture::Type1D;
+				return DKTexture::Type1D;
 			case VK_IMAGE_TYPE_2D:
-				return arrayLayers > 1 ? DKTexture::Type2DArray : DKTexture::Type2D;
+				return DKTexture::Type2D;
 			case VK_IMAGE_TYPE_3D:
 				return DKTexture::Type3D;
 			}
@@ -74,7 +79,7 @@ namespace DKFramework::Private::Vulkan
 		DKPixelFormat PixelFormat() const override
 		{
 			DKASSERT_DEBUG(format != VK_FORMAT_UNDEFINED);
-			return PixelFormat::To(format);
+			return Vulkan::PixelFormat(format);
 		}
 	};
 }
