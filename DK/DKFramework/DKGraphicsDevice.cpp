@@ -60,3 +60,8 @@ DKObject<DKTexture> DKGraphicsDevice::CreateTexture(const DKTextureDescriptor& d
 {
 	return impl->CreateTexture(this, d);
 }
+
+DKObject<DKSamplerState> DKGraphicsDevice::CreateSamplerState(const DKSamplerDescriptor& d)
+{
+    return impl->CreateSamplerState(this, d);
+}

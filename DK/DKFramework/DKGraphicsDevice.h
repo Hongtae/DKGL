@@ -15,6 +15,7 @@
 #include "DKPipelineReflection.h"
 #include "DKGpuBuffer.h"
 #include "DKTexture.h"
+#include "DKSampler.h"
 #include "DKGpuResource.h"
 #include "DKShaderBindingSet.h"
 
@@ -37,6 +38,7 @@ namespace DKFramework
 
 		DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode);
 		DKObject<DKTexture> CreateTexture(const DKTextureDescriptor&);
+        DKObject<DKSamplerState> CreateSamplerState(const DKSamplerDescriptor&);
 
 	private:
 		DKGraphicsDeviceInterface* impl;

@@ -1256,6 +1256,87 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
     return texture.SafeCast<DKTexture>();
 }
 
+DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* dev, const DKSamplerDescriptor& desc)
+{
+    VkSamplerCreateInfo createInfo = { VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO };
+
+    auto filter = [](DKSamplerDescriptor::MinMagFilter f)->VkFilter
+    {
+        if (f == DKSamplerDescriptor::MinMagFilterNearest)
+            return VK_FILTER_NEAREST;
+        return VK_FILTER_LINEAR;
+    };
+    auto addressMode = [](DKSamplerDescriptor::AddressMode m)->VkSamplerAddressMode
+    {
+        switch (m)
+        {
+        case DKSamplerDescriptor::AddressModeRepeat:
+            return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        case DKSamplerDescriptor::AddressModeMirrorRepeat:
+            return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+        case DKSamplerDescriptor::AddressModeClampToZero:
+            return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+        }
+        return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    };
+    auto compareOp = [](DKCompareFunction f)->VkCompareOp
+    {
+        switch (f)
+        {
+        case DKCompareFunctionNever:    return VK_COMPARE_OP_NEVER;
+        case DKCompareFunctionLess:     return VK_COMPARE_OP_LESS;
+        case DKCompareFunctionEqual:    return VK_COMPARE_OP_EQUAL;
+        case DKCompareFunctionLessEqual:    return VK_COMPARE_OP_LESS_OR_EQUAL;
+        case DKCompareFunctionGreater:      return VK_COMPARE_OP_GREATER;
+        case DKCompareFunctionNotEqual:     return VK_COMPARE_OP_NOT_EQUAL;
+        case DKCompareFunctionGreaterEqual: return VK_COMPARE_OP_GREATER_OR_EQUAL;
+        case DKCompareFunctionAlways:       return VK_COMPARE_OP_ALWAYS;
+        }
+        return VK_COMPARE_OP_NEVER;
+    };
+
+    createInfo.minFilter = filter(desc.minFilter);
+    createInfo.magFilter = filter(desc.magFilter);
+    createInfo.addressModeU = addressMode(desc.addressModeU);
+    createInfo.addressModeV = addressMode(desc.addressModeV);
+    createInfo.addressModeW = addressMode(desc.addressModeW);
+    createInfo.mipLodBias = 0.0f;
+    //createInfo.anisotropyEnable = desc.maxAnisotropy > 1 ? VK_TRUE : VK_FALSE;
+    createInfo.anisotropyEnable = VK_TRUE;
+    createInfo.maxAnisotropy = desc.maxAnisotropy;
+    createInfo.compareOp = compareOp(desc.compareFunction);
+    createInfo.compareEnable = createInfo.compareOp != VK_COMPARE_OP_NEVER;
+    createInfo.minLod = desc.minLod;
+    createInfo.maxLod = desc.maxLod;
+
+    createInfo.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+
+    createInfo.unnormalizedCoordinates = desc.normalizedCoordinates ? VK_FALSE : VK_TRUE;
+    if (createInfo.unnormalizedCoordinates)
+    {
+        createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+        createInfo.magFilter = createInfo.minFilter;
+        createInfo.minLod = 0;
+        createInfo.maxLod = 0;
+        createInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        createInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        createInfo.anisotropyEnable = VK_FALSE;
+        createInfo.compareEnable = VK_FALSE;
+    }
+
+    VkSampler sampler = VK_NULL_HANDLE;
+    VkResult result = vkCreateSampler(device, &createInfo, allocationCallbacks, &sampler);
+
+    if (result != VK_SUCCESS)
+    {
+        DKLogE("ERROR: vkCreateSampler failed: %s", VkResultCStr(result));
+        return nullptr;
+    }
+
+    DKObject<Sampler> s = DKOBJECT_NEW Sampler(dev, sampler);
+    return s.SafeCast<DKSamplerState>();
+}
+
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
 {
 	VkResult result = VK_SUCCESS;

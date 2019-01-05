@@ -10,18 +10,29 @@
 
 namespace DKFramework
 {
-	enum class DKCompareFunction
-	{
-		Never,
-		Less,
-		Equal,
-		LessEqual,
-		Greater,
-		NotEqual,
-		GreaterEqual,
-		Always,
-	};
+    enum DKCompareFunction
+    {
+        DKCompareFunctionNever,
+        DKCompareFunctionLess,
+        DKCompareFunctionEqual,
+        DKCompareFunctionLessEqual,
+        DKCompareFunctionGreater,
+        DKCompareFunctionNotEqual,
+        DKCompareFunctionGreaterEqual,
+        DKCompareFunctionAlways,
+    };
 
+    enum DKStencilOperation
+    {
+        DKStencilOperationKeep,
+        DKStencilOperationZero,
+        DKStencilOperationReplace,
+        DKStencilOperationIncrementClamp,
+        DKStencilOperationDecrementClamp,
+        DKStencilOperationInvert,
+        DKStencilOperationIncrementWrap,
+        DKStencilOperationDecrementWrap,
+    };
 
 
 	class DKStencilDescriptor

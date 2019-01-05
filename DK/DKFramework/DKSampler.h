@@ -11,7 +11,7 @@
 
 namespace DKFramework
 {
-	class DKSamplerDescriptor
+	struct DKSamplerDescriptor
 	{
 		enum MinMagFilter
 		{
@@ -31,12 +31,24 @@ namespace DKFramework
 			AddressModeMirrorRepeat,
 			AddressModeClampToZero,
 		};
-		enum BorderColor
-		{
-			BorderColorTransparentBlack,
-			BorderColorOpaqueBlack,
-			BorderColorOpaqueWhite
-		};
+
+        AddressMode addressModeU = AddressModeClampToEdge;
+        AddressMode addressModeV = AddressModeClampToEdge;
+        AddressMode addressModeW = AddressModeClampToEdge;
+
+        MinMagFilter minFilter = MinMagFilterNearest;
+        MinMagFilter magFilter = MinMagFilterNearest;
+        MipFilter mipFilter = MipFilterNotMipmapped;
+
+        float minLod = 0.0f;
+        float maxLod = FLT_MAX;
+
+        uint32_t maxAnisotropy = 1; /// Values must be between 1 and 16
+
+        bool normalizedCoordinates = true;
+
+        /// comparison function used when sampling texels from a depth texture.
+        DKCompareFunction compareFunction = DKCompareFunctionNever;
 	};
 
 	class DKSamplerState

@@ -27,6 +27,7 @@ namespace DKFramework
 
         virtual DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) = 0;
         virtual DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) = 0;
+        virtual DKObject<DKSamplerState> CreateSamplerState(DKGraphicsDevice*, const DKSamplerDescriptor&) = 0;
 
 		static DKGraphicsDeviceInterface* CreateInterface();
 		static DKGraphicsDeviceInterface* Instance(DKGraphicsDevice* p) { return p->impl; }
