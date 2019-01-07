@@ -24,15 +24,15 @@ namespace DKFramework
         };
         enum Usage : uint32_t
         {
-            UsageUnknown = 0,
-            UsageCopySource = 1,
-            UsageCopyDestination = 1 << 1,
-            UsageSampled = 1 << 2,
-            UsageStorage = 1 << 3,
-            UsageShaderRead = 1 << 4,
-            UsageShaderWrite = 1 << 5,
-            UsageRenderTarget = 1 << 6,
-            UsagePixelFormatView = 1 << 7,
+            UsageUnknown            = 0U,
+            UsageCopySource         = 1U,
+            UsageCopyDestination    = 1U << 1,
+            UsageSampled            = 1U << 2,
+            UsageStorage            = 1U << 3,
+            UsageShaderRead         = 1U << 4,
+            UsageShaderWrite        = 1U << 5,
+            UsageRenderTarget       = 1U << 6,
+            UsagePixelFormatView    = 1U << 7,
         };
 
         virtual ~DKTexture() {}

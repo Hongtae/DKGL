@@ -28,6 +28,7 @@ namespace DKFramework
 		{
 			AddressModeClampToEdge,
 			AddressModeRepeat,
+            AddressModeMirrorClampToEdge,
 			AddressModeMirrorRepeat,
 			AddressModeClampToZero,
 		};
@@ -41,7 +42,7 @@ namespace DKFramework
         MipFilter mipFilter = MipFilterNotMipmapped;
 
         float minLod = 0.0f;
-        float maxLod = FLT_MAX;
+        float maxLod = 3.402823466e+38F; // FLT_MAX
 
         uint32_t maxAnisotropy = 1; /// Values must be between 1 and 16
 

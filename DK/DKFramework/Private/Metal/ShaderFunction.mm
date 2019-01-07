@@ -30,7 +30,7 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize
 	[constants enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MTLFunctionConstant * _Nonnull obj, BOOL * _Nonnull stop) {
 		DKShaderFunction::Constant c;
 		c.name = obj.name.UTF8String;
-		c.type = ShaderDataType::To(obj.type);
+		c.type = ShaderDataType(obj.type);
 		c.index = (uint32_t)obj.index;
 		c.required = obj.required;
 		this->functionConstantsMap.Insert(DKString(key.UTF8String), c);
@@ -42,7 +42,7 @@ ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize
 		DKShaderAttribute attr;
 		attr.name = DKString((const char*)inAttr.name.UTF8String);
 		attr.location = (uint32_t)inAttr.attributeIndex;
-		attr.type = ShaderDataType::To(inAttr.attributeType);
+		attr.type = ShaderDataType(inAttr.attributeType);
 		attr.enabled = inAttr.active;
 //        attr.patchControlPointData = inAttr.patchControlPointData;
 //        attr.patchData = inAttr.patchData;

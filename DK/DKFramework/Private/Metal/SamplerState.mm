@@ -1,5 +1,5 @@
 //
-//  File: Texture.mm
+//  File: SamplerState.mm
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -9,23 +9,24 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 
-#include "Texture.h"
+#include "SamplerState.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-Texture::Texture(DKGraphicsDevice* d, id<MTLTexture> t)
+SamplerState::SamplerState(DKGraphicsDevice* d, id<MTLSamplerState> s)
 : device(d)
-, texture([t retain])
+, sampler([s retain])
 {
-    DKASSERT_DEBUG(texture);
+    DKASSERT_DEBUG(sampler);
 }
 
-Texture::~Texture()
+SamplerState::~SamplerState()
 {
-	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	[texture release];
+    //GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+    [sampler release];
 }
 
 #endif //#if DKGL_ENABLE_METAL
+

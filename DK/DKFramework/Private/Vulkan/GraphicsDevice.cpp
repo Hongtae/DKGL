@@ -1262,16 +1262,37 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
 
     auto filter = [](DKSamplerDescriptor::MinMagFilter f)->VkFilter
     {
-        if (f == DKSamplerDescriptor::MinMagFilterNearest)
+        switch (f)
+        {
+        case DKSamplerDescriptor::MinMagFilterNearest:
             return VK_FILTER_NEAREST;
+        case DKSamplerDescriptor::MinMagFilterLinear:
+            return VK_FILTER_LINEAR;
+        }
         return VK_FILTER_LINEAR;
+    };
+    auto mipmapMode = [](DKSamplerDescriptor::MipFilter f)->VkSamplerMipmapMode
+    {
+        switch (f)
+        {
+        case DKSamplerDescriptor::MipFilterNotMipmapped:
+        case DKSamplerDescriptor::MipFilterNearest:
+            return VK_SAMPLER_MIPMAP_MODE_NEAREST;
+        case DKSamplerDescriptor::MipFilterLinear:
+            return VK_SAMPLER_MIPMAP_MODE_LINEAR;
+        }
+        return VK_SAMPLER_MIPMAP_MODE_LINEAR;
     };
     auto addressMode = [](DKSamplerDescriptor::AddressMode m)->VkSamplerAddressMode
     {
         switch (m)
         {
+        case DKSamplerDescriptor::AddressModeClampToEdge:
+            return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
         case DKSamplerDescriptor::AddressModeRepeat:
             return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        case DKSamplerDescriptor::AddressModeMirrorClampToEdge:
+            return VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE;
         case DKSamplerDescriptor::AddressModeMirrorRepeat:
             return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
         case DKSamplerDescriptor::AddressModeClampToZero:
@@ -1297,6 +1318,7 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
 
     createInfo.minFilter = filter(desc.minFilter);
     createInfo.magFilter = filter(desc.magFilter);
+    createInfo.mipmapMode = mipmapMode(desc.mipFilter);
     createInfo.addressModeU = addressMode(desc.addressModeU);
     createInfo.addressModeV = addressMode(desc.addressModeV);
     createInfo.addressModeW = addressMode(desc.addressModeW);

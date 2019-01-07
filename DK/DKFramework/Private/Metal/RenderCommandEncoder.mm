@@ -36,6 +36,10 @@ void RenderCommandEncoder::EndEncoding()
 	reusableEncoder = NULL; // release data
 }
 
+void RenderCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)
+{
+}
+
 void RenderCommandEncoder::SetViewport(const DKViewport& v)
 {
 	DKASSERT_DEBUG(!IsCompleted());

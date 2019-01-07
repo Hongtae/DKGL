@@ -30,6 +30,7 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* Buffer() override { return buffer; }
 
 		// DKRenderCommandEncoder overrides
+        void SetResources(uint32_t set, DKShaderBindingSet*) override;
 		void SetViewport(const DKViewport&) override;
 		void SetRenderPipelineState(DKRenderPipelineState*) override;
 		void SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index) override;

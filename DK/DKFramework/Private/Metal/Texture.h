@@ -13,7 +13,7 @@
 
 #include "../../DKTexture.h"
 #include "../../DKGraphicsDevice.h"
-#include "PixelFormat.h"
+#include "Types.h"
 
 namespace DKFramework::Private::Metal
 {
@@ -43,30 +43,33 @@ namespace DKFramework::Private::Metal
 			return static_cast<uint32_t>(texture.mipmapLevelCount);
 		}
 
-		DKTexture::Type TextureType() const override
-		{
-			MTLTextureType t = texture.textureType;
-			switch (t)
-			{
-			case MTLTextureType1D:
-				return DKTexture::Type1D;
-			case MTLTextureType1DArray:
-				return DKTexture::Type1DArray;
-			case MTLTextureType2D:
-				return DKTexture::Type2D;
-			case MTLTextureType2DArray:
-				return DKTexture::Type2DArray;
-			case MTLTextureType3D:
-				return DKTexture::Type3D;
-			case MTLTextureTypeCube:
-				return DKTexture::TypeCube;
-			}
-			return DKTexture::TypeUnknown;
+        uint32_t ArrayLength() const override
+        {
+            return static_cast<uint32_t>(texture.arrayLength);
+        }
+
+        DKTexture::Type TextureType() const override
+        {
+            MTLTextureType t = texture.textureType;
+            switch (t)
+            {
+                case MTLTextureType1D:
+                case MTLTextureType1DArray:
+                    return DKTexture::Type1D;
+                case MTLTextureType2D:
+                case MTLTextureType2DArray:
+                    return DKTexture::Type2D;
+                case MTLTextureType3D:
+                    return DKTexture::Type3D;
+                case MTLTextureTypeCube:
+                    return DKTexture::TypeCube;
+            }
+            return DKTexture::TypeUnknown;
 		}
 
 		DKPixelFormat PixelFormat() const override
 		{
-			return PixelFormat::To(texture.pixelFormat);
+            return Metal::PixelFormat(texture.pixelFormat);
 		}
 
 		id<MTLTexture> texture;

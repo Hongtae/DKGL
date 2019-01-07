@@ -92,7 +92,7 @@ bool SwapChain::Setup()
 	if (this->metalLayer)
 	{
 		this->metalLayer.device = this->queue->queue.device;
-		this->metalLayer.pixelFormat = PixelFormat::From(colorPixelFormat);
+		this->metalLayer.pixelFormat = PixelFormat(colorPixelFormat);
 
 		return true;
 	}
@@ -168,7 +168,7 @@ void SwapChain::SetupFrame()
 		renderPassDescriptor.colorAttachments.Clear();
 		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 
-		this->metalLayer.pixelFormat = PixelFormat::From(colorPixelFormat);
+		this->metalLayer.pixelFormat = PixelFormat(colorPixelFormat);
 
         CGRect frame = this->metalLayer.frame;
         DKASSERT_DEBUG(frame.size.width > 0 && frame.size.height > 0);
@@ -202,7 +202,7 @@ void SwapChain::SetupFrame()
 		{
 			case DKPixelFormat::D32:
 			case DKPixelFormat::D32S8X24:
-				dsFormat = PixelFormat::From(depthStencilPixelFormat);
+				dsFormat = PixelFormat(depthStencilPixelFormat);
 				break;
 		}
 		DKObject<Texture> depthStencilRT = nullptr;

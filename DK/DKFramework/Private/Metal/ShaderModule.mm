@@ -66,7 +66,7 @@ DKObject<DKShaderFunction> ShaderModule::CreateSpecializedFunction(const DKStrin
 			{
 				const DKShaderSpecialization& sp = values[i];
 				[constantValues setConstantValues:sp.data
-											 type:ShaderDataType::From(sp.type)
+											 type:ShaderDataType(sp.type)
 										withRange:NSMakeRange(sp.index, sp.size)];
 			}
 

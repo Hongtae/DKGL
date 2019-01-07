@@ -14,11 +14,11 @@
 #include "CommandQueue.h"
 #include "ShaderFunction.h"
 #include "ShaderModule.h"
-#include "PixelFormat.h"
 #include "RenderPipelineState.h"
 #include "ComputePipelineState.h"
 #include "Buffer.h"
 #include "Texture.h"
+#include "SamplerState.h"
 #include "Types.h"
 #include "../../DKPropertySet.h"
 
@@ -51,14 +51,14 @@ namespace DKFramework::Private::Metal
 
                         mb.count = (uint32_t)arrayType.arrayLength;
                         mb.stride = (uint32_t)arrayType.stride;
-                        mb.dataType = ShaderDataType::To(arrayType.elementType);
+                        mb.dataType = ShaderDataType(arrayType.elementType);
                         if (arrayType.elementType == MTLDataTypeStruct)
                             memberStruct = arrayType.elementStructType;
                     }
                     else
                     {
                         mb.count = 1;
-                        mb.dataType = ShaderDataType::To(type);
+                        mb.dataType = ShaderDataType(type);
                     }
 
                     mb.name = member.name.UTF8String;
@@ -104,7 +104,7 @@ namespace DKFramework::Private::Metal
                 res.type = DKShaderResource::TypeBuffer;
                 res.typeInfo.buffer.size = (uint32_t)arg.bufferDataSize;
                 //res.typeInfo.buffer.alignment = (uint32_t)arg.bufferAlignment;
-                res.typeInfo.buffer.dataType = ShaderDataType::To(arg.bufferDataType);
+                res.typeInfo.buffer.dataType = ShaderDataType(arg.bufferDataType);
                 if (arg.bufferDataType == MTLDataTypeStruct)
                 {
                     res.typeInfoKey = GetStructTypeData{res.name, res}.operator()(arg.bufferStructType);
@@ -632,7 +632,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 		{
 			MTLRenderPipelineColorAttachmentDescriptor* colorAttachmentDesc = [descriptor.colorAttachments objectAtIndexedSubscript:attachment.index];
-			colorAttachmentDesc.pixelFormat = PixelFormat::From(attachment.pixelFormat);
+			colorAttachmentDesc.pixelFormat = PixelFormat(attachment.pixelFormat);
 			colorAttachmentDesc.writeMask = GetColorWriteMask(attachment.writeMask);
 			colorAttachmentDesc.blendingEnabled = attachment.blendingEnabled;
 			colorAttachmentDesc.alphaBlendOperation = GetBlendOperation(attachment.alphaBlendOperation);
@@ -852,7 +852,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 
         if (error)
         {
-            DKLogE("GraphicsDevice::CreateRenderPipeline Error: %s", (const char*)error.localizedDescription.UTF8String);
+            DKLogE("GraphicsDevice::CreateComputePipeline Error: %s", (const char*)error.localizedDescription.UTF8String);
         }
 
         if (pipelineState)
@@ -890,22 +890,185 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 				break;
 		}
 
-		id<MTLBuffer> buffer = [device newBufferWithLength:size options:options];
-		if (buffer)
-		{
-			return DKOBJECT_NEW Buffer(dev, buffer);
-		}
-		else
-		{
-			DKLogE("GraphicsDevice::CreateBuffer Error!");
-		}
+        @autoreleasepool {
+            id<MTLBuffer> buffer = [device newBufferWithLength:size options:options];
+            if (buffer)
+            {
+                return DKOBJECT_NEW Buffer(dev, [buffer autorelease]);
+            }
+            else
+            {
+                DKLogE("GraphicsDevice::CreateBuffer Error!");
+            }
+        }
 	}
 	return NULL;
 }
 
-DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&)
+DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const DKTextureDescriptor& desc)
 {
-	return NULL;
+    MTLPixelFormat pixelFormat = PixelFormat(desc.pixelFormat);
+    uint32_t arrayLength = desc.arrayLength;
+
+    if (arrayLength == 0)
+    {
+        DKLogE("Invalid array length!");
+        return NULL;
+    }
+    if (pixelFormat == MTLPixelFormatInvalid)
+    {
+        DKLogE("Invalid pixel format!");
+        return NULL;
+    }
+
+    @autoreleasepool {
+        MTLTextureDescriptor* texDesc = [[[MTLTextureDescriptor alloc] init] autorelease];
+
+        switch (desc.textureType)
+        {
+            case DKTexture::Type1D:
+                texDesc.textureType = (arrayLength > 1) ? MTLTextureType1DArray : MTLTextureType1D;
+                break;
+            case DKTexture::Type2D:
+                texDesc.textureType = (arrayLength > 1) ? MTLTextureType2DArray : MTLTextureType2D;
+                break;
+            case DKTexture::TypeCube:
+                texDesc.textureType = (arrayLength > 1) ? MTLTextureTypeCubeArray : MTLTextureTypeCube;
+                break;
+            case DKTexture::Type3D:
+                texDesc.textureType = MTLTextureType3D;
+                break;
+        }
+        texDesc.pixelFormat = pixelFormat;
+        texDesc.width = desc.width;
+        texDesc.height = desc.height;
+        texDesc.depth = desc.depth;
+        texDesc.mipmapLevelCount = desc.mipmapLevels;
+        texDesc.sampleCount = desc.sampleCount;
+        texDesc.arrayLength = arrayLength;
+        //texDesc.resourceOptions = MTLResourceStorageModePrivate;
+        texDesc.cpuCacheMode = MTLCPUCacheModeDefaultCache;
+        texDesc.storageMode = MTLStorageModePrivate;
+        texDesc.allowGPUOptimizedContents = YES;
+
+        MTLTextureUsage usage = 0; // MTLTextureUsageUnknown;
+        if (desc.usage & (DKTexture::UsageSampled | DKTexture::UsageShaderRead))
+            usage |= MTLTextureUsageShaderRead;
+        if (desc.usage & (DKTexture::UsageStorage | DKTexture::UsageShaderWrite))
+            usage |= MTLTextureUsageShaderWrite;
+        if (desc.usage & DKTexture::UsageRenderTarget)
+            usage |= MTLTextureUsageRenderTarget;
+        if (desc.usage & DKTexture::UsagePixelFormatView)
+            usage |= MTLTextureUsagePixelFormatView; // view with a different pixel format.
+
+        id<MTLTexture> texture = [device newTextureWithDescriptor:texDesc];
+        if (texture)
+        {
+            return DKOBJECT_NEW Texture(dev, [texture autorelease]);
+        }
+        else
+        {
+            DKLogE("GraphicsDevice::CreateTexture Error!");
+        }
+    }
+    return NULL;
+}
+
+DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* dev, const DKSamplerDescriptor& desc)
+{
+    auto addressMode = [](DKSamplerDescriptor::AddressMode m)->MTLSamplerAddressMode
+    {
+        switch (m)
+        {
+            case DKSamplerDescriptor::AddressModeClampToEdge:
+                return MTLSamplerAddressModeClampToEdge;
+            case DKSamplerDescriptor::AddressModeRepeat:
+                return MTLSamplerAddressModeRepeat;
+            case DKSamplerDescriptor::AddressModeMirrorClampToEdge:
+                return MTLSamplerAddressModeMirrorClampToEdge;
+            case DKSamplerDescriptor::AddressModeMirrorRepeat:
+                return MTLSamplerAddressModeMirrorRepeat;
+            case DKSamplerDescriptor::AddressModeClampToZero:
+                return MTLSamplerAddressModeClampToZero;
+        }
+        return MTLSamplerAddressModeClampToEdge;
+    };
+    auto minMagFilter = [](DKSamplerDescriptor::MinMagFilter f)->MTLSamplerMinMagFilter
+    {
+        switch (f)
+        {
+            case DKSamplerDescriptor::MinMagFilterNearest:
+                return MTLSamplerMinMagFilterNearest;
+            case DKSamplerDescriptor::MinMagFilterLinear:
+                return MTLSamplerMinMagFilterLinear;
+        }
+        return MTLSamplerMinMagFilterNearest;
+    };
+    auto mipFilter = [](DKSamplerDescriptor::MipFilter f)->MTLSamplerMipFilter
+    {
+        switch (f)
+        {
+            case DKSamplerDescriptor::MipFilterNotMipmapped:
+                return MTLSamplerMipFilterNotMipmapped;
+            case DKSamplerDescriptor::MipFilterNearest:
+                return MTLSamplerMipFilterNearest;
+            case DKSamplerDescriptor::MipFilterLinear:
+                return MTLSamplerMipFilterLinear;
+        }
+        return MTLSamplerMipFilterNotMipmapped;
+    };
+    auto compareFunction = [](DKCompareFunction fn)->MTLCompareFunction
+    {
+        switch (fn)
+        {
+            case DKCompareFunctionNever:            return MTLCompareFunctionNever;
+            case DKCompareFunctionLess:             return MTLCompareFunctionLess;
+            case DKCompareFunctionEqual:            return MTLCompareFunctionEqual;
+            case DKCompareFunctionLessEqual:        return MTLCompareFunctionLessEqual;
+            case DKCompareFunctionGreater:          return MTLCompareFunctionGreater;
+            case DKCompareFunctionNotEqual:         return MTLCompareFunctionNotEqual;
+            case DKCompareFunctionGreaterEqual:     return MTLCompareFunctionGreaterEqual;
+            case DKCompareFunctionAlways:           return MTLCompareFunctionAlways;
+        }
+        return MTLCompareFunctionNever;
+    };
+
+    @autoreleasepool {
+        MTLSamplerDescriptor* samplerDesc = [[[MTLSamplerDescriptor alloc] init] autorelease];
+        samplerDesc.sAddressMode = addressMode(desc.addressModeU);
+        samplerDesc.tAddressMode = addressMode(desc.addressModeV);
+        samplerDesc.rAddressMode = addressMode(desc.addressModeW);
+        samplerDesc.minFilter = minMagFilter(desc.minFilter);
+        samplerDesc.magFilter = minMagFilter(desc.magFilter);
+        samplerDesc.mipFilter = mipFilter(desc.mipFilter);
+        samplerDesc.lodMinClamp = desc.minLod;
+        samplerDesc.lodMaxClamp = desc.maxLod;
+        samplerDesc.maxAnisotropy = desc.maxAnisotropy;
+        samplerDesc.normalizedCoordinates = desc.normalizedCoordinates;
+        if (!desc.normalizedCoordinates)
+        {
+            samplerDesc.magFilter = samplerDesc.minFilter;
+            samplerDesc.sAddressMode = MTLSamplerAddressModeClampToEdge;
+            samplerDesc.tAddressMode = MTLSamplerAddressModeClampToEdge;
+            samplerDesc.rAddressMode = MTLSamplerAddressModeClampToEdge;
+            samplerDesc.mipFilter = MTLSamplerMipFilterNotMipmapped;
+            samplerDesc.maxAnisotropy = 1;
+        }
+        samplerDesc.compareFunction = compareFunction(desc.compareFunction);
+        samplerDesc.borderColor = MTLSamplerBorderColorTransparentBlack;
+
+        id<MTLSamplerState> sampler = [device newSamplerStateWithDescriptor:samplerDesc];
+        if (sampler)
+        {
+            return DKOBJECT_NEW SamplerState(dev, [sampler autorelease]);
+        }
+        else
+        {
+            DKLogE("GraphicsDevice::CreateSamplerState Error!");
+        }
+    }
+
+    return NULL;
 }
 
 #endif //#if DKGL_ENABLE_METAL

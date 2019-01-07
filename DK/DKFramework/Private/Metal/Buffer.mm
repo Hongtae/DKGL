@@ -17,8 +17,9 @@ using namespace DKFramework::Private::Metal;
 
 Buffer::Buffer(DKGraphicsDevice* d, id<MTLBuffer> b)
 : device(d)
-, buffer(b)
+, buffer([b retain])
 {
+    DKASSERT_DEBUG(buffer);
 }
 
 Buffer::~Buffer()
