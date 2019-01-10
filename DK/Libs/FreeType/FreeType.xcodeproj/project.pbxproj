@@ -87,6 +87,10 @@
 		66DA0E401DA3847400B3056E /* ftsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0DEE1DA3847400B3056E /* ftsystem.c */; };
 		66DA0E411DA3847400B3056E /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0DEF1DA3847400B3056E /* smooth.c */; };
 		66DA0E421DA3847400B3056E /* smooth.c in Sources */ = {isa = PBXBuildFile; fileRef = 66DA0DEF1DA3847400B3056E /* smooth.c */; };
+		8406D1FA21E71F9900E0EA0F /* ftfntfmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEDE2028A7E10005233E /* ftfntfmt.c */; };
+		8406D1FB21E71FA000E0EA0F /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEDA2028A79B0005233E /* ftbdf.c */; };
+		8406D1FC21E71FA000E0EA0F /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEDC2028A7CB0005233E /* ftcid.c */; };
+		8406D1FD21E71FA800E0EA0F /* ftdebug.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEE02028A8120005233E /* ftdebug.c */; };
 		8461EEDB2028A79B0005233E /* ftbdf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEDA2028A79B0005233E /* ftbdf.c */; };
 		8461EEDD2028A7CB0005233E /* ftcid.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEDC2028A7CB0005233E /* ftcid.c */; };
 		8461EEDF2028A7E10005233E /* ftfntfmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8461EEDE2028A7E10005233E /* ftfntfmt.c */; };
@@ -368,11 +372,14 @@
 				66DA0E151DA3847400B3056E /* psmodule.c in Sources */,
 				66DA0E0D1DA3847400B3056E /* pcf.c in Sources */,
 				66DA0DF91DA3847400B3056E /* ftgxval.c in Sources */,
+				8406D1FB21E71FA000E0EA0F /* ftbdf.c in Sources */,
+				8406D1FC21E71FA000E0EA0F /* ftcid.c in Sources */,
 				66DA0E1D1DA3847400B3056E /* type1.c in Sources */,
 				66DA0E051DA3847400B3056E /* ftsynth.c in Sources */,
 				66DA0E191DA3847400B3056E /* sfnt.c in Sources */,
 				66DA0E3D1DA3847400B3056E /* ftstroke.c in Sources */,
 				66DA0E271DA3847400B3056E /* bdf.c in Sources */,
+				8406D1FA21E71F9900E0EA0F /* ftfntfmt.c in Sources */,
 				66DA0DF71DA3847400B3056E /* ftbbox.c in Sources */,
 				66DA0E171DA3847400B3056E /* raster.c in Sources */,
 				66DA0DFD1DA3847400B3056E /* ftmm.c in Sources */,
@@ -396,6 +403,7 @@
 				66DA0E2D1DA3847400B3056E /* ftbitmap.c in Sources */,
 				66DA0E0F1DA3847400B3056E /* pfr.c in Sources */,
 				66DA0E331DA3847400B3056E /* ftgasp.c in Sources */,
+				8406D1FD21E71FA800E0EA0F /* ftdebug.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

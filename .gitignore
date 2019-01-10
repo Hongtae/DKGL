@@ -69,3 +69,6 @@ DK/Libs/Build/
 # separated workspace file inside xcodeproj
 **/*.xcodeproj/project.xcworkspace
 
+# no xc shared
+**/*.xcodeproj/xcshareddata/
+
