@@ -984,8 +984,6 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
                 return MTLSamplerAddressModeClampToEdge;
             case DKSamplerDescriptor::AddressModeRepeat:
                 return MTLSamplerAddressModeRepeat;
-            case DKSamplerDescriptor::AddressModeMirrorClampToEdge:
-                return MTLSamplerAddressModeMirrorClampToEdge;
             case DKSamplerDescriptor::AddressModeMirrorRepeat:
                 return MTLSamplerAddressModeMirrorRepeat;
             case DKSamplerDescriptor::AddressModeClampToZero:
@@ -1055,7 +1053,6 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
             samplerDesc.maxAnisotropy = 1;
         }
         samplerDesc.compareFunction = compareFunction(desc.compareFunction);
-        samplerDesc.borderColor = MTLSamplerBorderColorTransparentBlack;
 
         id<MTLSamplerState> sampler = [device newSamplerStateWithDescriptor:samplerDesc];
         if (sampler)
