@@ -2,7 +2,7 @@
 //  File: ShaderBindingSet.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -52,6 +52,7 @@ namespace DKFramework::Private::Vulkan
         using BufferObject = DKObject<Buffer>;
         using TextureObject = DKObject<Texture>;
         using SamplerObject = DKObject<Sampler>;
+
         // take ownership of bound resources.
         DKMap<uint32_t, DKArray<BufferObject>> buffers;
         DKMap<uint32_t, DKArray<TextureObject>> textures;

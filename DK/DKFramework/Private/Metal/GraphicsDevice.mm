@@ -3,7 +3,7 @@
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2019 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -14,6 +14,7 @@
 #include "CommandQueue.h"
 #include "ShaderFunction.h"
 #include "ShaderModule.h"
+#include "ShaderBindingSet.h"
 #include "RenderPipelineState.h"
 #include "ComputePipelineState.h"
 #include "Buffer.h"
@@ -469,9 +470,9 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
     return NULL;
 }
 
-DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice*, const DKShaderBindingSetLayout&)
+DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice* dev, const DKShaderBindingSetLayout& layout)
 {
-    return NULL;
+    return DKOBJECT_NEW ShaderBindingSet(dev, layout.bindings, layout.bindings.Count());
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)
