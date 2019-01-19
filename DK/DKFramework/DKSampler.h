@@ -28,7 +28,6 @@ namespace DKFramework
 		{
 			AddressModeClampToEdge,
 			AddressModeRepeat,
-            AddressModeMirrorClampToEdge,
 			AddressModeMirrorRepeat,
 			AddressModeClampToZero,
 		};

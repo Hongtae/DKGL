@@ -1290,8 +1290,6 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
             return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
         case DKSamplerDescriptor::AddressModeRepeat:
             return VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        case DKSamplerDescriptor::AddressModeMirrorClampToEdge:
-            return VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE;
         case DKSamplerDescriptor::AddressModeMirrorRepeat:
             return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
         case DKSamplerDescriptor::AddressModeClampToZero:
