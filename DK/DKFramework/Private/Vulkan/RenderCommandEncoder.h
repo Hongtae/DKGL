@@ -9,9 +9,7 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
-
 #include "../../DKRenderCommandEncoder.h"
-
 #include "CommandBuffer.h"
 #include "SwapChain.h"
 #include "RenderPipelineState.h"
@@ -22,12 +20,12 @@ namespace DKFramework::Private::Vulkan
 	class RenderCommandEncoder : public DKRenderCommandEncoder
 	{
 	public:
-		RenderCommandEncoder(VkCommandBuffer, CommandBuffer*, const DKRenderPassDescriptor&);
+		RenderCommandEncoder(VkCommandBuffer, class CommandBuffer*, const DKRenderPassDescriptor&);
 		~RenderCommandEncoder();
 
 		void EndEncoding() override;
 		bool IsCompleted() const override { return resources == nullptr; }
-		DKCommandBuffer* Buffer() override { return commandBuffer; }
+		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
 
@@ -45,19 +43,23 @@ namespace DKFramework::Private::Vulkan
 			VkFramebuffer		framebuffer;
 			VkRenderPass		renderPass;
 
-            DKObject<RenderPipelineState> pipelineState;
-            DKMap<uint32_t, DKObject<ShaderBindingSet>> boundResources;
-            DKMap<uint32_t, DKObject<ShaderBindingSet>> unboundResources;
+            RenderPipelineState* pipelineState;
+            DKMap<uint32_t, ShaderBindingSet*> boundResources;
+            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
 
 			DKArray<VkSemaphore>			waitSemaphores;
 			DKArray<VkPipelineStageFlags>	waitStageMasks;
 			DKArray<VkSemaphore>			signalSemaphores;
-
-			CommandBuffer* cb;
+            
+			class CommandBuffer* cb;
 			VkCommandBuffer commandBuffer;
 
-			Resources(CommandBuffer*);
+			Resources(class CommandBuffer*);
 			~Resources();
+
+            // Retain ownership of all encoded objects
+            DKArray<DKObject<RenderPipelineState>> pipelineStateObjects;
+            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
 		};
 
 		void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
@@ -67,7 +69,7 @@ namespace DKFramework::Private::Vulkan
 		DKSet<VkSemaphore> signalSemaphores;
 
 		DKObject<Resources> resources;
-		DKObject<CommandBuffer> commandBuffer;
+		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

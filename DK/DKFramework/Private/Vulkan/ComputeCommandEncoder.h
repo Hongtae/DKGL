@@ -9,25 +9,36 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
-
 #include "../../DKComputeCommandEncoder.h"
-
 #include "CommandBuffer.h"
+#include "ComputePipelineState.h"
 
 namespace DKFramework::Private::Vulkan
 {
 	class ComputeCommandEncoder : public DKComputeCommandEncoder
 	{
 	public:
-		ComputeCommandEncoder(VkCommandBuffer, CommandBuffer*);
+		ComputeCommandEncoder(VkCommandBuffer, class CommandBuffer*);
 		~ComputeCommandEncoder();
 
 		void EndEncoding() override;
 		bool IsCompleted() const override { return false; }
-		DKCommandBuffer* Buffer() override;
+		DKCommandBuffer* CommandBuffer() override;
 
-		VkCommandBuffer encodingBuffer;
-		DKObject<CommandBuffer> commandBuffer;
+        void SetResources(uint32_t set, DKShaderBindingSet*) override;
+        void SetComputePipelineState(DKComputePipelineState*) override;
+
+        struct Resources
+        {
+            class CommandBuffer* cb;
+            VkCommandBuffer commandBuffer;
+
+            Resources(class CommandBuffer*);
+            ~Resources();
+        };
+
+        DKObject<Resources> resources;
+		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

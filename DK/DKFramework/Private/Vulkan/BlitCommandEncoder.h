@@ -18,15 +18,15 @@ namespace DKFramework::Private::Vulkan
 	class BlitCommandEncoder : public DKBlitCommandEncoder
 	{
 	public:
-		BlitCommandEncoder(VkCommandBuffer, CommandBuffer*);
+		BlitCommandEncoder(VkCommandBuffer, class CommandBuffer*);
 		~BlitCommandEncoder();
 
 		void EndEncoding() override;
 		bool IsCompleted() const override { return false; }
-		DKCommandBuffer* Buffer() override;
+		DKCommandBuffer* CommandBuffer() override;
 
 		VkCommandBuffer encodingBuffer;
-		DKObject<CommandBuffer> commandBuffer;
+		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

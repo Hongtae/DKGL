@@ -19,7 +19,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-RenderCommandEncoder::Resources::Resources(CommandBuffer* b)
+RenderCommandEncoder::Resources::Resources(class CommandBuffer* b)
 	: cb(b)
 	, framebuffer(VK_NULL_HANDLE)
 	, renderPass(VK_NULL_HANDLE)
@@ -42,7 +42,7 @@ RenderCommandEncoder::Resources::~Resources()
 		cb->ReleaseEncodingBuffer(commandBuffer);
 }
 
-RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, CommandBuffer* cb, const DKRenderPassDescriptor& desc)
+RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, class CommandBuffer* cb, const DKRenderPassDescriptor& desc)
 	: commandBuffer(cb)
 {
 	resources = DKOBJECT_NEW Resources(cb);
@@ -352,6 +352,7 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 	vkCmdBindPipeline(resources->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
 	// bind descriptor set
+    resources->pipelineStateObjects.Add(pipeline);
     resources->pipelineState = pipeline;
     resources->unboundResources.EnumerateForward([&](decltype(resources->unboundResources)::Pair& pair)
     {
@@ -445,6 +446,9 @@ void RenderCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
         DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
         bindingSet = static_cast<ShaderBindingSet*>(set);
         bindingSet->UpdateDescriptorSet();
+
+        // keep ownership 
+        resources->shaderBindingSets.Add(bindingSet);
     }
 
     if (resources->pipelineState)
