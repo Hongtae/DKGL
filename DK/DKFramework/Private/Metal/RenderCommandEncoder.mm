@@ -10,13 +10,14 @@
 #if DKGL_ENABLE_METAL
 #include "RenderCommandEncoder.h"
 #include "RenderPipelineState.h"
+#include "ShaderBindingSet.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-RenderCommandEncoder::RenderCommandEncoder(MTLRenderPassDescriptor* rpDesc, CommandBuffer* b)
-: buffer(b)
+RenderCommandEncoder::RenderCommandEncoder(MTLRenderPassDescriptor* rpDesc, class CommandBuffer* b)
+: commandBuffer(b)
 {
 	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
 	reusableEncoder->renderPassDescriptor = [rpDesc retain];
@@ -31,12 +32,93 @@ void RenderCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	reusableEncoder->encoderCommands.ShrinkToFit();
-	buffer->EndEncoder(this, reusableEncoder);
+	commandBuffer->EndEncoder(this, reusableEncoder);
 	reusableEncoder = NULL; // release data
 }
 
 void RenderCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)
 {
+    DKASSERT_DEBUG(!IsCompleted());
+    DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(binds));
+    DKObject<ShaderBindingSet> bs = static_cast<ShaderBindingSet*>(binds);
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, Resources& res)
+    {
+        if (res.pipelineState)
+        {
+            // bind vertex resources
+            bs->BindResources(set, res.pipelineState->vertexBindings.resourceBindings,
+                              [&](const ShaderBindingSet::BufferObject* bufferObjects, uint32_t index, size_t numBuffers)
+                              {
+                                  id<MTLBuffer>* buffers = new id<MTLBuffer>[numBuffers];
+                                  NSUInteger* offsets = new NSUInteger[numBuffers];
+                                  for (size_t i = 0; i < numBuffers; ++i)
+                                  {
+                                      buffers[i] = bufferObjects[i].buffer->buffer;
+                                      offsets[i] = bufferObjects[i].offset;
+                                  }
+                                  [encoder setVertexBuffers:buffers
+                                                    offsets:offsets
+                                                  withRange:NSMakeRange(index, numBuffers)];
+                                  delete[] buffers;
+                                  delete[] offsets;
+                              },
+                              [&](const ShaderBindingSet::TextureObject* textureObjects, uint32_t index, size_t numTextures)
+                              {
+                                  id<MTLTexture>* textures = new id<MTLTexture>[numTextures];
+                                  for (size_t i = 0; i < numTextures; ++i)
+                                      textures[i] = textureObjects[i]->texture;
+                                  [encoder setVertexTextures:textures
+                                                   withRange:NSMakeRange(index, numTextures)];
+                                  delete[] textures;
+                              },
+                              [&](const ShaderBindingSet::SamplerObject* samplerObjects, uint32_t index, size_t numSamplers)
+                              {
+                                  id<MTLSamplerState>* samplers = new id<MTLSamplerState>[numSamplers];
+                                  for (size_t i = 0; i < numSamplers; ++i)
+                                      samplers[i] = samplerObjects[i]->sampler;
+                                  [encoder setVertexSamplerStates:samplers
+                                                        withRange:NSMakeRange(index, numSamplers)];
+                                  delete[] samplers;
+                              });
+            // bind fragment resources
+            bs->BindResources(set, res.pipelineState->fragmentBindings.resourceBindings,
+                              [&](const ShaderBindingSet::BufferObject* bufferObjects, uint32_t index, size_t numBuffers)
+                              {
+                                  id<MTLBuffer>* buffers = new id<MTLBuffer>[numBuffers];
+                                  NSUInteger* offsets = new NSUInteger[numBuffers];
+                                  for (size_t i = 0; i < numBuffers; ++i)
+                                  {
+                                      buffers[i] = bufferObjects[i].buffer->buffer;
+                                      offsets[i] = bufferObjects[i].offset;
+                                  }
+                                  [encoder setFragmentBuffers:buffers
+                                                      offsets:offsets
+                                                    withRange:NSMakeRange(index, numBuffers)];
+                                  delete[] buffers;
+                                  delete[] offsets;
+                              },
+                              [&](const ShaderBindingSet::TextureObject* textureObjects, uint32_t index, size_t numTextures)
+                              {
+                                  id<MTLTexture>* textures = new id<MTLTexture>[numTextures];
+                                  for (size_t i = 0; i < numTextures; ++i)
+                                      textures[i] = textureObjects[i]->texture;
+                                  [encoder setFragmentTextures:textures
+                                                     withRange:NSMakeRange(index, numTextures)];
+                                  delete[] textures;
+                              },
+                              [&](const ShaderBindingSet::SamplerObject* samplerObjects, uint32_t index, size_t numSamplers)
+                              {
+                                  id<MTLSamplerState>* samplers = new id<MTLSamplerState>[numSamplers];
+                                  for (size_t i = 0; i < numSamplers; ++i)
+                                      samplers[i] = samplerObjects[i]->sampler;
+                                  [encoder setFragmentSamplerStates:samplers
+                                                          withRange:NSMakeRange(index, numSamplers)];
+                                  delete[] samplers;
+                              });
+        }
+    });
+    reusableEncoder->encoderCommands.Add(command);
 }
 
 void RenderCommandEncoder::SetViewport(const DKViewport& v)
@@ -153,14 +235,41 @@ void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstance
 
 	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, Resources& res)
 	{
-		[encoder drawIndexedPrimitives:res.pipelineState->primitiveType
-							indexCount:numIndices
-							 indexType:res.indexBufferType
-						   indexBuffer:res.indexBuffer->buffer
-					 indexBufferOffset:indexOffset
-						 instanceCount:numInstances
-							baseVertex:vertexOffset
-						  baseInstance:baseInstance];
+        if (vertexOffset == 0 && baseInstance == 0)
+        {
+            [encoder drawIndexedPrimitives:res.pipelineState->primitiveType
+                                indexCount:numIndices
+                                 indexType:res.indexBufferType
+                               indexBuffer:res.indexBuffer->buffer
+                         indexBufferOffset:indexOffset
+                             instanceCount:numInstances];
+        }
+        else
+        {
+            // require feature set 'MTLFeatureSet_iOS_GPUFamily3_v1' for iOS (iPhone 6S or later)
+#if TARGET_OS_IPHONE
+            static BOOL supported = [this]()
+            {
+                //class CommandBuffer* cb = this->
+                DKGraphicsDevice* dev = this->commandBuffer->Queue()->Device();
+                id<MTLDevice> device = static_cast<GraphicsDevice*>(DKGraphicsDeviceInterface::Instance(dev))->device;
+                return [device supportsFeatureSet:MTLFeatureSet_iOS_GPUFamily3_v1];
+            }();
+            if (!supported)
+            {
+                DKLogE("Draw Failed: Feature not supported! (MTLFeatureSet_iOS_GPUFamily3_v1 or later required)");
+                return;
+            }
+#endif
+            [encoder drawIndexedPrimitives:res.pipelineState->primitiveType
+                                indexCount:numIndices
+                                 indexType:res.indexBufferType
+                               indexBuffer:res.indexBuffer->buffer
+                         indexBufferOffset:indexOffset
+                             instanceCount:numInstances
+                                baseVertex:vertexOffset
+                              baseInstance:baseInstance];
+        }
 	});
 	reusableEncoder->encoderCommands.Add(command);
 }

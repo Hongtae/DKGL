@@ -13,8 +13,8 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-BlitCommandEncoder::BlitCommandEncoder(CommandBuffer* b)
-: buffer(b)
+BlitCommandEncoder::BlitCommandEncoder(class CommandBuffer* b)
+: commandBuffer(b)
 {
 	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
 	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
@@ -28,7 +28,7 @@ void BlitCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	reusableEncoder->encoderCommands.ShrinkToFit();
-	buffer->EndEncoder(this, reusableEncoder);
+	commandBuffer->EndEncoder(this, reusableEncoder);
 	reusableEncoder = NULL;
 }
 #endif //#if DKGL_ENABLE_METAL

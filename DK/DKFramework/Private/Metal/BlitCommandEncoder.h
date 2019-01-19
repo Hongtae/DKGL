@@ -18,13 +18,13 @@ namespace DKFramework::Private::Metal
 	class BlitCommandEncoder : public DKBlitCommandEncoder
 	{
 	public:
-		BlitCommandEncoder(CommandBuffer*);
+		BlitCommandEncoder(class CommandBuffer*);
 		~BlitCommandEncoder();
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
 		bool IsCompleted() const override { return reusableEncoder == nullptr; }
-		DKCommandBuffer* Buffer() override { return buffer; }
+		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKBlitCommandEncoder
 
@@ -45,7 +45,7 @@ namespace DKFramework::Private::Metal
 			DKArray<DKObject<EncoderCommand>> encoderCommands;
 		};
 		DKObject<ReusableEncoder> reusableEncoder;
-		DKObject<CommandBuffer> buffer;
+		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

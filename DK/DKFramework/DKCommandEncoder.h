@@ -19,6 +19,6 @@ namespace DKFramework
 
 		virtual void EndEncoding() = 0;
 		virtual bool IsCompleted() const = 0;
-		virtual DKCommandBuffer* Buffer() = 0;
+		virtual DKCommandBuffer* CommandBuffer() = 0;
 	};
 }

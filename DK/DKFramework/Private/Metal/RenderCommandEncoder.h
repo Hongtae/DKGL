@@ -20,13 +20,13 @@ namespace DKFramework::Private::Metal
 	class RenderCommandEncoder : public DKRenderCommandEncoder
 	{
 	public:
-		RenderCommandEncoder(MTLRenderPassDescriptor*, CommandBuffer*);
+		RenderCommandEncoder(MTLRenderPassDescriptor*, class CommandBuffer*);
 		~RenderCommandEncoder();
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
 		bool IsCompleted() const override { return reusableEncoder == nullptr; }
-		DKCommandBuffer* Buffer() override { return buffer; }
+		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKRenderCommandEncoder overrides
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
@@ -43,7 +43,7 @@ namespace DKFramework::Private::Metal
 		struct Resources
 		{
 			DKObject<RenderPipelineState> pipelineState;
-			DKObject<class Buffer> indexBuffer;
+			DKObject<Buffer> indexBuffer;
 			size_t indexBufferOffset;
 			MTLIndexType indexBufferType;
 		};
@@ -78,7 +78,7 @@ namespace DKFramework::Private::Metal
 		};
 
 		DKObject<ReusableEncoder> reusableEncoder;
-		DKObject<CommandBuffer> buffer;
+		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

@@ -12,32 +12,40 @@
 #import <Metal/Metal.h>
 #include "../../DKComputeCommandEncoder.h"
 #include "CommandBuffer.h"
+#include "ComputePipelineState.h"
 
 namespace DKFramework::Private::Metal
 {
 	class ComputeCommandEncoder : public DKComputeCommandEncoder
 	{
 	public:
-		ComputeCommandEncoder(CommandBuffer*);
+		ComputeCommandEncoder(class CommandBuffer*);
 		~ComputeCommandEncoder();
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
 		bool IsCompleted() const override { return reusableEncoder == nullptr; }
-		DKCommandBuffer* Buffer() override { return buffer; }
+		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKComputeCommandEncoder
+        void SetResources(uint32_t set, DKShaderBindingSet*) override;
+        void SetComputePipelineState(DKComputePipelineState*) override;
 
 	private:
-		using EncoderCommand = DKFunctionSignature<void(id<MTLComputeCommandEncoder>)>;
+        struct Resources
+        {
+            DKObject<ComputePipelineState> pipelineState;
+        };
+		using EncoderCommand = DKFunctionSignature<void(id<MTLComputeCommandEncoder>, Resources&)>;
 		struct ReusableEncoder : public ReusableCommandEncoder
 		{
 			bool EncodeBuffer(id<MTLCommandBuffer> buffer) override
 			{
 				id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
+                Resources res = {};
 				for (EncoderCommand* command : encoderCommands )
 				{
-					command->Invoke(encoder);
+					command->Invoke(encoder, res);
 				}
 				[encoder endEncoding];
 				return true;
@@ -45,7 +53,7 @@ namespace DKFramework::Private::Metal
 			DKArray<DKObject<EncoderCommand>> encoderCommands;
 		};
 		DKObject<ReusableEncoder> reusableEncoder;
-		DKObject<CommandBuffer> buffer;
+		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

@@ -336,17 +336,17 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                 switch (res.type)
                 {
                     case DKShaderResource::TypeBuffer:
-                        numBuffers++;
+                        numBuffers += res.count;
                         break;
                     case DKShaderResource::TypeTexture:
-                        numTextures++;
+                        numTextures += res.count;
                         break;
                     case DKShaderResource::TypeSampler:
-                        numSamplers++;
+                        numSamplers += res.count;
                         break;
                     case DKShaderResource::TypeTextureSampler:
-                        numSamplers++;
-                        numTextures++;
+                        numSamplers += res.count;
+                        numTextures += res.count;
                         break;
                 }
             }

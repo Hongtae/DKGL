@@ -8,6 +8,8 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKCommandEncoder.h"
+#include "DKComputePipeline.h"
+#include "DKShaderBindingSet.h"
 
 namespace DKFramework
 {
@@ -16,5 +18,8 @@ namespace DKFramework
 	{
 	public:
 		virtual ~DKComputeCommandEncoder() {}
+
+        virtual void SetResources(uint32_t set, DKShaderBindingSet*) = 0;
+        virtual void SetComputePipelineState(DKComputePipelineState*) = 0;
 	};
 }

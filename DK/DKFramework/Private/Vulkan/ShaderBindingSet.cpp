@@ -75,7 +75,7 @@ bool ShaderBindingSet::FindDescriptorBinding(uint32_t binding, VkDescriptorSetLa
 
 void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, uint64_t offset, uint64_t length)
 {
-    VkDescriptorSetLayoutBinding descriptor = {};
+    VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
         DKASSERT_DEBUG(dynamic_cast<Buffer*>(bufferObject) != nullptr);
@@ -143,7 +143,7 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
 
 void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, BufferInfo* bufferArray)
 {
-    VkDescriptorSetLayoutBinding descriptor = {};
+    VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
         for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
@@ -234,7 +234,7 @@ void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, Buf
 
 void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
 {
-    VkDescriptorSetLayoutBinding descriptor = {};
+    VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
         DKASSERT_DEBUG(dynamic_cast<Texture*>(textureObject) != nullptr);
@@ -312,7 +312,7 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
 
 void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, DKTexture** textureArray)
 {
-    VkDescriptorSetLayoutBinding descriptor = {};
+    VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
         VkWriteDescriptorSet* prevWrite = nullptr;
@@ -414,7 +414,7 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
 
 void ShaderBindingSet::SetSamplerState(uint32_t binding, DKSamplerState* samplerState)
 {
-    VkDescriptorSetLayoutBinding descriptor = {};
+    VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
         DKASSERT_DEBUG(dynamic_cast<Sampler*>(samplerState) != nullptr);
@@ -490,7 +490,7 @@ void ShaderBindingSet::SetSamplerState(uint32_t binding, DKSamplerState* sampler
 
 void ShaderBindingSet::SetSamplerStateArray(uint32_t binding, uint32_t numSamplers, DKSamplerState** samplerArray) 
 {
-    VkDescriptorSetLayoutBinding descriptor = {};
+    VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
         VkWriteDescriptorSet* prevWrite = nullptr;
