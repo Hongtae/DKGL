@@ -44,7 +44,7 @@ namespace DKFramework::Private::Vulkan
 			VkRenderPass		renderPass;
 
             RenderPipelineState* pipelineState;
-            DKMap<uint32_t, ShaderBindingSet*> boundResources;
+            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
             DKMap<uint32_t, ShaderBindingSet*> unboundResources;
 
 			DKArray<VkSemaphore>			waitSemaphores;

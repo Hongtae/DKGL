@@ -277,8 +277,8 @@ void RenderCommandEncoder::AddSignalSemaphore(VkSemaphore semaphore)
 void RenderCommandEncoder::EndEncoding()
 {
 	vkCmdEndRenderPass(resources->commandBuffer);
-	VkResult err = vkEndCommandBuffer(resources->commandBuffer);
 
+	VkResult err = vkEndCommandBuffer(resources->commandBuffer);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkEndCommandBuffer failed: %s", VkResultCStr(err));
@@ -314,7 +314,7 @@ void RenderCommandEncoder::EndEncoding()
 
     DKObject<DKOperation> submitCallback = DKFunction([](DKObject<Resources> res)
     {
-        res->boundResources.EnumerateForward([](decltype(res->boundResources)::Pair& pair)
+        res->updateResources.EnumerateForward([](decltype(res->updateResources)::Pair& pair)
         {
             if (pair.value)
                 pair.value->UpdateDescriptorSet();
@@ -350,25 +350,33 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 	DKASSERT_DEBUG(dynamic_cast<RenderPipelineState*>(ps));
 	RenderPipelineState* pipeline = static_cast<RenderPipelineState*>(ps);
 	vkCmdBindPipeline(resources->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
-
-	// bind descriptor set
     resources->pipelineStateObjects.Add(pipeline);
     resources->pipelineState = pipeline;
+
+	// bind descriptor sets
     resources->unboundResources.EnumerateForward([&](decltype(resources->unboundResources)::Pair& pair)
     {
         VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
         if (pair.value)
-            descriptorSet = pair.value->descriptorSet;
+        {
+            ShaderBindingSet* bindingSet = pair.value;
+            DKASSERT_DEBUG(bindingSet);
 
-        vkCmdBindDescriptorSets(resources->commandBuffer,
-                                VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pipeline->layout,
-                                pair.key,
-                                1,
-                                &descriptorSet,
-                                0,      // dynamic offsets
-                                0);
-        resources->boundResources.Update(pair.key, pair.value);
+            descriptorSet = bindingSet->descriptorSet;
+            DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
+
+            vkCmdBindDescriptorSets(resources->commandBuffer,
+                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                pipeline->layout,
+                pair.key,
+                1,
+                &descriptorSet,
+                0,      // dynamic offsets
+                0);
+
+            if (bindingSet->layoutFlags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT)
+                resources->updateResources.Update(pair.key, pair.value);
+        }
     });
     resources->unboundResources.Clear();
 }

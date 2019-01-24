@@ -1011,6 +1011,7 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
 
             DKObject<ShaderBindingSet> bindingSet = DKOBJECT_NEW ShaderBindingSet(dev, setLayout, info.descriptorSet, info.descriptorPool);
             bindingSet->bindings = std::move(layoutBindings);
+            bindingSet->layoutFlags = layoutCreateInfo.flags; // copy layout creation flags! (for later use)
             return bindingSet.SafeCast<DKShaderBindingSet>();
         }
 

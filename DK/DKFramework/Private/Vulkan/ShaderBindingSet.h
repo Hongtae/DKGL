@@ -26,6 +26,8 @@ namespace DKFramework::Private::Vulkan
 
         VkDescriptorSet descriptorSet;
         VkDescriptorSetLayout descriptorSetLayout;
+        VkDescriptorSetLayoutCreateFlags layoutFlags;
+
         DKObject<DescriptorPool> descriptorPool;
         DKObject<DKGraphicsDevice> device;
         DKArray<VkDescriptorSetLayoutBinding> bindings;

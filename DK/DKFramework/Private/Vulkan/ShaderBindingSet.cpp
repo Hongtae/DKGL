@@ -20,13 +20,13 @@ ShaderBindingSet::ShaderBindingSet(DKGraphicsDevice* dev, VkDescriptorSetLayout 
     : device(dev)
     , descriptorSet(set)
     , descriptorSetLayout(layout)
-    , descriptorPool(pool)    
+    , descriptorPool(pool)
+    , layoutFlags(0)
 {
     DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
     DKASSERT_DEBUG(descriptorSetLayout != VK_NULL_HANDLE);
     DKASSERT_DEBUG(descriptorPool);
 }
-
 
 ShaderBindingSet::~ShaderBindingSet()
 {

@@ -12,6 +12,7 @@
 #include "../../DKComputeCommandEncoder.h"
 #include "CommandBuffer.h"
 #include "ComputePipelineState.h"
+#include "ShaderBindingSet.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -30,12 +31,30 @@ namespace DKFramework::Private::Vulkan
 
         struct Resources
         {
+            ComputePipelineState* pipelineState;
+            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
+            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
+
+            DKArray<VkSemaphore>			waitSemaphores;
+            DKArray<VkPipelineStageFlags>	waitStageMasks;
+            DKArray<VkSemaphore>			signalSemaphores;
+
             class CommandBuffer* cb;
             VkCommandBuffer commandBuffer;
 
             Resources(class CommandBuffer*);
             ~Resources();
+
+            // Retain ownership of all encoded objects
+            DKArray<DKObject<ComputePipelineState>> pipelineStateObjects;
+            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
         };
+
+        void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
+        void AddSignalSemaphore(VkSemaphore);
+
+        DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
+        DKSet<VkSemaphore> signalSemaphores;
 
         DKObject<Resources> resources;
 		DKObject<class CommandBuffer> commandBuffer;
