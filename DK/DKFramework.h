@@ -44,7 +44,7 @@ namespace DKFramework {}
 #include "DKFramework/DKGearConstraint.h"
 #include "DKFramework/DKGeneric6DofConstraint.h"
 #include "DKFramework/DKGeneric6DofSpringConstraint.h"
-#include "DKFramework/DKBlitCommandEncoder.h"
+#include "DKFramework/DKCopyCommandEncoder.h"
 #include "DKFramework/DKCommandBuffer.h"
 #include "DKFramework/DKCommandQueue.h"
 #include "DKFramework/DKComputeCommandEncoder.h"

@@ -1,5 +1,5 @@
 //
-//  File: BlitCommandEncoder.h
+//  File: CopyCommandEncoder.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
@@ -10,16 +10,16 @@
 #if DKGL_ENABLE_VULKAN
 #include <vulkan/vulkan.h>
 
-#include "../../DKBlitCommandEncoder.h"
+#include "../../DKCopyCommandEncoder.h"
 #include "CommandBuffer.h"
 
 namespace DKFramework::Private::Vulkan
 {
-	class BlitCommandEncoder : public DKBlitCommandEncoder
+	class CopyCommandEncoder : public DKCopyCommandEncoder
 	{
 	public:
-		BlitCommandEncoder(VkCommandBuffer, class CommandBuffer*);
-		~BlitCommandEncoder();
+        CopyCommandEncoder(VkCommandBuffer, class CommandBuffer*);
+		~CopyCommandEncoder();
 
 		void EndEncoding() override;
 		bool IsCompleted() const override { return false; }

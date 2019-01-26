@@ -1,5 +1,5 @@
 //
-//  File: BlitCommandEncoder.cpp
+//  File: CopyCommandEncoder.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
@@ -7,26 +7,26 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
-#include "BlitCommandEncoder.h"
+#include "CopyCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-BlitCommandEncoder::BlitCommandEncoder(VkCommandBuffer vcb, class CommandBuffer* cb)
+CopyCommandEncoder::CopyCommandEncoder(VkCommandBuffer vcb, class CommandBuffer* cb)
 	: encodingBuffer(vcb)
 	, commandBuffer(cb)
 {
 }
 
-BlitCommandEncoder::~BlitCommandEncoder()
+CopyCommandEncoder::~CopyCommandEncoder()
 {
 }
 
-void BlitCommandEncoder::EndEncoding()
+void CopyCommandEncoder::EndEncoding()
 {
 }
 
-DKCommandBuffer* BlitCommandEncoder::CommandBuffer()
+DKCommandBuffer* CopyCommandEncoder::CommandBuffer()
 {
 	return commandBuffer;
 }

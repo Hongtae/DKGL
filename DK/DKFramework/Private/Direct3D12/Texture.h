@@ -38,7 +38,10 @@ namespace DKFramework
 
                 uint32_t Depth() const override
                 {
-                    return resource->GetDesc().DepthOrArraySize;
+                    D3D12_RESOURCE_DESC desc = resource->GetDesc();
+                    if (desc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE3D)
+                        return desc.DepthOrArraySize;
+                    return 1;
                 }
 
                 uint32_t MipmapCount() const override
@@ -52,9 +55,9 @@ namespace DKFramework
                     switch (desc.Dimension)
                     {
                     case D3D12_RESOURCE_DIMENSION_TEXTURE1D:
-                        return (desc.DepthOrArraySize > 1) ? Type1DArray : Type1D;
+                        return Type1D;
                     case D3D12_RESOURCE_DIMENSION_TEXTURE2D:
-                        return (desc.DepthOrArraySize > 1) ? Type2DArray : Type2D;
+                        return Type2D;
                     case D3D12_RESOURCE_DIMENSION_TEXTURE3D:
                         return Type3D;
                     }
@@ -64,6 +67,13 @@ namespace DKFramework
                 DKPixelFormat PixelFormat() const override
                 {
                     return PixelFormat::To(resource->GetDesc().Format);
+                }
+                uint32_t ArrayLength() const override
+                {
+                    D3D12_RESOURCE_DESC desc = resource->GetDesc();
+                    if (desc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE3D)
+                        return 1;
+                    return resource->GetDesc().DepthOrArraySize;
                 }
 
 				DKObject<DKGraphicsDevice> device;

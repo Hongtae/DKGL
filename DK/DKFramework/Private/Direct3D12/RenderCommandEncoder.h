@@ -22,18 +22,18 @@ namespace DKFramework
 			class RenderCommandEncoder : public DKRenderCommandEncoder
 			{
 			public:
-				RenderCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*, const DKRenderPassDescriptor&);
+				RenderCommandEncoder(ID3D12GraphicsCommandList*, class CommandBuffer*, const DKRenderPassDescriptor&);
 				~RenderCommandEncoder();
 
 
 				void EndEncoding() override;
-				DKCommandBuffer* Buffer() override;
+				DKCommandBuffer* CommandBuffer() override;
                 bool IsCompleted() const override;
 
 				ComPtr<ID3D12GraphicsCommandList> commandList;
-				DKObject<CommandBuffer> commandBuffer;
+				DKObject<class CommandBuffer> commandBuffer;
 
-
+                void SetResources(uint32_t set, DKShaderBindingSet*) override;
                 void SetViewport(const DKViewport&) override;
                 void SetRenderPipelineState(DKRenderPipelineState*) override;
                 void SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index) override;

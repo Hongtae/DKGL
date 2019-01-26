@@ -574,6 +574,10 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice*, D
 {
     return NULL;
 }
+DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice*, const DKShaderBindingSetLayout&)
+{
+    return NULL;
+}
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*)
 {
     return NULL;
@@ -587,6 +591,10 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice*, size_t, DK
     return NULL;
 }
 DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&)
+{
+    return NULL;
+}
+DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice*, const DKSamplerDescriptor&)
 {
     return NULL;
 }

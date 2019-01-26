@@ -22,16 +22,19 @@ namespace DKFramework
 			class ComputeCommandEncoder : public DKComputeCommandEncoder
 			{
 			public:
-				ComputeCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*);
+				ComputeCommandEncoder(ID3D12GraphicsCommandList*, class CommandBuffer*);
 				~ComputeCommandEncoder();
 
 
 				void EndEncoding() override;
-				DKCommandBuffer* Buffer() override;
+				DKCommandBuffer* CommandBuffer() override;
                 bool IsCompleted() const override;
 
+                void SetResources(uint32_t set, DKShaderBindingSet*) override;
+                void SetComputePipelineState(DKComputePipelineState*) override;
+
 				ComPtr<ID3D12GraphicsCommandList> commandList;
-				DKObject<CommandBuffer> commandBuffer;
+				DKObject<class CommandBuffer> commandBuffer;
 			};
 		}
 	}

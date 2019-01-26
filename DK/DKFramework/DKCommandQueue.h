@@ -17,14 +17,14 @@ namespace DKFramework
 	class DKWindow;
 
 	/// @brief GPU command queue
-	/// every queues can perform blit commands by default
+	/// every queues can perform copy(blit) commands by default
 	class DKCommandQueue
 	{
 	public:
 		enum TypeFlags : uint32_t
 		{
-			Graphics = 1,		// Graphics and Blit commands
-			Compute = 1 << 1,	// Compute and Blit commands
+			Graphics = 1,		// Graphics and Copy(Blit) commands
+			Compute = 1 << 1,	// Compute and Copy(Blit) commands
 		};
 
 		virtual ~DKCommandQueue() {}

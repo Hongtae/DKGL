@@ -1,5 +1,5 @@
 //
-//  File: BlitCommandEncoder.mm
+//  File: CopyCommandEncoder.mm
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -8,23 +8,23 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
-#include "BlitCommandEncoder.h"
+#include "CopyCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-BlitCommandEncoder::BlitCommandEncoder(class CommandBuffer* b)
+CopyCommandEncoder::CopyCommandEncoder(class CommandBuffer* b)
 : commandBuffer(b)
 {
 	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
 	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
 }
 
-BlitCommandEncoder::~BlitCommandEncoder()
+CopyCommandEncoder::~CopyCommandEncoder()
 {
 }
 
-void BlitCommandEncoder::EndEncoding()
+void CopyCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	reusableEncoder->encoderCommands.ShrinkToFit();

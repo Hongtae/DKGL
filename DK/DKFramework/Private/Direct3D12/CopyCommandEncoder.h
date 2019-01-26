@@ -1,5 +1,5 @@
 //
-//  File: BlitCommandEncoder.h
+//  File: CopyCommandEncoder.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2015-2017 Hongtae Kim. All rights reserved.
@@ -10,7 +10,7 @@
 #if DKGL_ENABLE_DIRECT3D12
 #include "d3d12_headers.h"
 
-#include "../../DKBlitCommandEncoder.h"
+#include "../../DKCopyCommandEncoder.h"
 #include "CommandBuffer.h"
 
 namespace DKFramework
@@ -19,19 +19,19 @@ namespace DKFramework
 	{
 		namespace Direct3D
 		{
-			class BlitCommandEncoder : public DKBlitCommandEncoder
+			class CopyCommandEncoder : public DKCopyCommandEncoder
 			{
 			public:
-				BlitCommandEncoder(ID3D12GraphicsCommandList*, CommandBuffer*);
-				~BlitCommandEncoder();
+                CopyCommandEncoder(ID3D12GraphicsCommandList*, class CommandBuffer*);
+				~CopyCommandEncoder();
 
 
 				void EndEncoding() override;
-				DKCommandBuffer* Buffer() override;
+				DKCommandBuffer* CommandBuffer() override;
                 bool IsCompleted() const override;
 
 				ComPtr<ID3D12GraphicsCommandList> commandList;
-				DKObject<CommandBuffer> commandBuffer;
+				DKObject<class CommandBuffer> commandBuffer;
 			};
 		}
 	}

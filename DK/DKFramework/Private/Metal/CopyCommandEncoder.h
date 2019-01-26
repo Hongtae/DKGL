@@ -1,5 +1,5 @@
 //
-//  File: BlitCommandEncoder.h
+//  File: CopyCommandEncoder.h
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -10,23 +10,23 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 #import <Metal/Metal.h>
-#include "../../DKBlitCommandEncoder.h"
+#include "../../DKCopyCommandEncoder.h"
 #include "CommandBuffer.h"
 
 namespace DKFramework::Private::Metal
 {
-	class BlitCommandEncoder : public DKBlitCommandEncoder
+	class CopyCommandEncoder : public DKCopyCommandEncoder
 	{
 	public:
-		BlitCommandEncoder(class CommandBuffer*);
-		~BlitCommandEncoder();
+        CopyCommandEncoder(class CommandBuffer*);
+		~CopyCommandEncoder();
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
 		bool IsCompleted() const override { return reusableEncoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
-		// DKBlitCommandEncoder
+		// DKCopyCommandEncoder
 
 	private:
 		using EncoderCommand = DKFunctionSignature<void(id<MTLBlitCommandEncoder>)>;

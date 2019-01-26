@@ -23,7 +23,7 @@ namespace DKFramework::Private::Vulkan
 
 		DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
 		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() override;
-		DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() override;
+		DKObject<DKCopyCommandEncoder> CreateCopyCommandEncoder() override;
 
 		bool Commit() override;
 

@@ -15,7 +15,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
-RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, CommandBuffer* cb,  const DKRenderPassDescriptor& desc)
+RenderCommandEncoder::RenderCommandEncoder(ID3D12GraphicsCommandList* cm, class CommandBuffer* cb,  const DKRenderPassDescriptor& desc)
 	: commandList(cm)
 	, commandBuffer(cb)
 	, renderPassDesc(desc)
@@ -124,7 +124,7 @@ void RenderCommandEncoder::EndEncoding()
 	}
 }
 
-DKCommandBuffer* RenderCommandEncoder::Buffer()
+DKCommandBuffer* RenderCommandEncoder::CommandBuffer()
 {
 	return commandBuffer;
 }
@@ -132,6 +132,11 @@ DKCommandBuffer* RenderCommandEncoder::Buffer()
 bool RenderCommandEncoder::IsCompleted() const
 {
     return commandList == nullptr; 
+}
+
+void RenderCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet*)
+{
+
 }
 
 void RenderCommandEncoder::SetViewport(const DKViewport&) 

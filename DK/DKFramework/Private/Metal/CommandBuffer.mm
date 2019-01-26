@@ -13,7 +13,7 @@
 #include "CommandQueue.h"
 #include "RenderCommandEncoder.h"
 #include "ComputeCommandEncoder.h"
-#include "BlitCommandEncoder.h"
+#include "CopyCommandEncoder.h"
 #include "Texture.h"
 
 using namespace DKFramework;
@@ -154,7 +154,7 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 	return r;
 }
 
-DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
+DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
 {
 	if (activeEncoder)
 	{
@@ -162,8 +162,8 @@ DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
 		return NULL;
 	}
 
-	DKObject<BlitCommandEncoder> enc = DKOBJECT_NEW BlitCommandEncoder(this);
-	DKObject<DKBlitCommandEncoder> r = enc.SafeCast<DKBlitCommandEncoder>();
+	DKObject<CopyCommandEncoder> enc = DKOBJECT_NEW CopyCommandEncoder(this);
+	DKObject<DKCopyCommandEncoder> r = enc.SafeCast<DKCopyCommandEncoder>();
 	activeEncoder = r;
 	return r;
 }

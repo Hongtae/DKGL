@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		666ECA651DB1703600354463 /* DKAudioDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 666ECA5C1DB1703600354463 /* DKAudioDevice.cpp */; };
 		666ECA661DB1703600354463 /* DKAudioDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5D1DB1703600354463 /* DKAudioDevice.h */; };
-		666ECA671DB1703600354463 /* DKBlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */; };
+		666ECA671DB1703600354463 /* DKCopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */; };
 		666ECA681DB1703600354463 /* DKCommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5F1DB1703600354463 /* DKCommandBuffer.h */; };
 		666ECA691DB1703600354463 /* DKComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */; };
 		666ECA6A1DB1703600354463 /* DKRenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */; };
@@ -29,7 +29,7 @@
 		666ECB101DB180A000354463 /* DKGraphicsDeviceInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECB0C1DB180A000354463 /* DKGraphicsDeviceInterface.h */; };
 		666ECB111DB180E800354463 /* DKAudioDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 666ECA5C1DB1703600354463 /* DKAudioDevice.cpp */; };
 		666ECB121DB180E800354463 /* DKAudioDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5D1DB1703600354463 /* DKAudioDevice.h */; };
-		666ECB131DB180E800354463 /* DKBlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */; };
+		666ECB131DB180E800354463 /* DKCopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */; };
 		666ECB141DB180E800354463 /* DKCommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5F1DB1703600354463 /* DKCommandBuffer.h */; };
 		666ECB151DB180E800354463 /* DKComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */; };
 		666ECB161DB180E800354463 /* DKRenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */; };
@@ -37,7 +37,7 @@
 		666ECB191DB180E800354463 /* DKGraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA641DB1703600354463 /* DKGraphicsDevice.h */; };
 		666ECB1A1DB180E900354463 /* DKAudioDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 666ECA5C1DB1703600354463 /* DKAudioDevice.cpp */; };
 		666ECB1B1DB180E900354463 /* DKAudioDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5D1DB1703600354463 /* DKAudioDevice.h */; };
-		666ECB1C1DB180E900354463 /* DKBlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */; };
+		666ECB1C1DB180E900354463 /* DKCopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */; };
 		666ECB1D1DB180E900354463 /* DKCommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5F1DB1703600354463 /* DKCommandBuffer.h */; };
 		666ECB1E1DB180E900354463 /* DKComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */; };
 		666ECB1F1DB180E900354463 /* DKRenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */; };
@@ -45,7 +45,7 @@
 		666ECB221DB180E900354463 /* DKGraphicsDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA641DB1703600354463 /* DKGraphicsDevice.h */; };
 		666ECB231DB180EA00354463 /* DKAudioDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 666ECA5C1DB1703600354463 /* DKAudioDevice.cpp */; };
 		666ECB241DB180EA00354463 /* DKAudioDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5D1DB1703600354463 /* DKAudioDevice.h */; };
-		666ECB251DB180EA00354463 /* DKBlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */; };
+		666ECB251DB180EA00354463 /* DKCopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */; };
 		666ECB261DB180EA00354463 /* DKCommandBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA5F1DB1703600354463 /* DKCommandBuffer.h */; };
 		666ECB271DB180EA00354463 /* DKComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */; };
 		666ECB281DB180EA00354463 /* DKRenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */; };
@@ -1275,8 +1275,8 @@
 		84798CCF19E51E96009378A6 /* DKZipUnarchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A1E4E4141DD4B70091D2C0 /* DKZipUnarchiver.h */; };
 		847A4F962052D7C4001225B0 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 847A4F942052D7C4001225B0 /* Texture.h */; };
 		847A4F972052D7C4001225B0 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 847A4F952052D7C4001225B0 /* Texture.cpp */; };
-		847A4F982052D7CC001225B0 /* BlitCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* BlitCommandEncoder.cpp */; };
-		847A4F992052D7CC001225B0 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* BlitCommandEncoder.h */; };
+		847A4F982052D7CC001225B0 /* CopyCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* CopyCommandEncoder.cpp */; };
+		847A4F992052D7CC001225B0 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* CopyCommandEncoder.h */; };
 		847A4F9A2052D7CC001225B0 /* ComputeCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B21EE503220053F08B /* ComputeCommandEncoder.cpp */; };
 		847A4F9B2052D7CC001225B0 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B31EE503220053F08B /* ComputeCommandEncoder.h */; };
 		847A4F9C2052D7CC001225B0 /* RenderCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */; };
@@ -1289,8 +1289,8 @@
 		847A4FA32052D7CC001225B0 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C8CEC21F0BF727007D69C3 /* ShaderModule.h */; };
 		847A4FA42052D7CD001225B0 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 847A4F952052D7C4001225B0 /* Texture.cpp */; };
 		847A4FA52052D7CD001225B0 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 847A4F942052D7C4001225B0 /* Texture.h */; };
-		847A4FA62052D7CE001225B0 /* BlitCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* BlitCommandEncoder.cpp */; };
-		847A4FA72052D7CE001225B0 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* BlitCommandEncoder.h */; };
+		847A4FA62052D7CE001225B0 /* CopyCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* CopyCommandEncoder.cpp */; };
+		847A4FA72052D7CE001225B0 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* CopyCommandEncoder.h */; };
 		847A4FA82052D7CE001225B0 /* ComputeCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B21EE503220053F08B /* ComputeCommandEncoder.cpp */; };
 		847A4FA92052D7CE001225B0 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B31EE503220053F08B /* ComputeCommandEncoder.h */; };
 		847A4FAA2052D7CE001225B0 /* RenderCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */; };
@@ -1303,8 +1303,8 @@
 		847A4FB12052D7CE001225B0 /* ShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C8CEC21F0BF727007D69C3 /* ShaderModule.h */; };
 		847A4FB22052D7CE001225B0 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 847A4F952052D7C4001225B0 /* Texture.cpp */; };
 		847A4FB32052D7CE001225B0 /* Texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 847A4F942052D7C4001225B0 /* Texture.h */; };
-		847A4FB42052D7CE001225B0 /* BlitCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* BlitCommandEncoder.cpp */; };
-		847A4FB52052D7CE001225B0 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* BlitCommandEncoder.h */; };
+		847A4FB42052D7CE001225B0 /* CopyCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* CopyCommandEncoder.cpp */; };
+		847A4FB52052D7CE001225B0 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* CopyCommandEncoder.h */; };
 		847A4FB62052D7CE001225B0 /* ComputeCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B21EE503220053F08B /* ComputeCommandEncoder.cpp */; };
 		847A4FB72052D7CE001225B0 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B31EE503220053F08B /* ComputeCommandEncoder.h */; };
 		847A4FB82052D7CE001225B0 /* RenderCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */; };
@@ -1381,24 +1381,24 @@
 		849705301E28CDEB00E34F5C /* DKCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */; };
 		8498FC451E47683B00E6A961 /* RenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */; };
 		8498FC461E47683B00E6A961 /* RenderCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */; };
-		8498FC591E47832600E6A961 /* BlitCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* BlitCommandEncoder.mm */; };
-		8498FC5A1E47832600E6A961 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* BlitCommandEncoder.h */; };
+		8498FC591E47832600E6A961 /* CopyCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* CopyCommandEncoder.mm */; };
+		8498FC5A1E47832600E6A961 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* CopyCommandEncoder.h */; };
 		8498FC5B1E47832600E6A961 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC571E47832600E6A961 /* ComputeCommandEncoder.h */; };
 		8498FC5C1E47832600E6A961 /* ComputeCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */; };
-		8498FC5D1E4783D300E6A961 /* BlitCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* BlitCommandEncoder.mm */; };
-		8498FC5E1E4783D300E6A961 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* BlitCommandEncoder.h */; };
+		8498FC5D1E4783D300E6A961 /* CopyCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* CopyCommandEncoder.mm */; };
+		8498FC5E1E4783D300E6A961 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* CopyCommandEncoder.h */; };
 		8498FC5F1E4783D300E6A961 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC571E47832600E6A961 /* ComputeCommandEncoder.h */; };
 		8498FC601E4783D300E6A961 /* ComputeCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */; };
 		8498FC611E4783D300E6A961 /* RenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */; };
 		8498FC621E4783D300E6A961 /* RenderCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */; };
-		8498FC661E4783D400E6A961 /* BlitCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* BlitCommandEncoder.mm */; };
-		8498FC671E4783D400E6A961 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* BlitCommandEncoder.h */; };
+		8498FC661E4783D400E6A961 /* CopyCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* CopyCommandEncoder.mm */; };
+		8498FC671E4783D400E6A961 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* CopyCommandEncoder.h */; };
 		8498FC681E4783D400E6A961 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC571E47832600E6A961 /* ComputeCommandEncoder.h */; };
 		8498FC691E4783D400E6A961 /* ComputeCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */; };
 		8498FC6A1E4783D400E6A961 /* RenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */; };
 		8498FC6B1E4783D400E6A961 /* RenderCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */; };
-		8498FC6F1E4783D500E6A961 /* BlitCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* BlitCommandEncoder.mm */; };
-		8498FC701E4783D500E6A961 /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* BlitCommandEncoder.h */; };
+		8498FC6F1E4783D500E6A961 /* CopyCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC551E47832600E6A961 /* CopyCommandEncoder.mm */; };
+		8498FC701E4783D500E6A961 /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC561E47832600E6A961 /* CopyCommandEncoder.h */; };
 		8498FC711E4783D500E6A961 /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC571E47832600E6A961 /* ComputeCommandEncoder.h */; };
 		8498FC721E4783D500E6A961 /* ComputeCommandEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */; };
 		8498FC731E4783D500E6A961 /* RenderCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */; };
@@ -1564,8 +1564,8 @@
 		84F16DD31E1592830013DD29 /* CommandBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DCF1E1592830013DD29 /* CommandBuffer.mm */; };
 		84F16DD41E1592830013DD29 /* CommandQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F16DD01E1592830013DD29 /* CommandQueue.h */; };
 		84F16DD51E1592830013DD29 /* CommandQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84F16DD11E1592830013DD29 /* CommandQueue.mm */; };
-		84F224B81EE503220053F08B /* BlitCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* BlitCommandEncoder.cpp */; };
-		84F224B91EE503220053F08B /* BlitCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* BlitCommandEncoder.h */; };
+		84F224B81EE503220053F08B /* CopyCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B01EE503220053F08B /* CopyCommandEncoder.cpp */; };
+		84F224B91EE503220053F08B /* CopyCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B11EE503220053F08B /* CopyCommandEncoder.h */; };
 		84F224BA1EE503220053F08B /* ComputeCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B21EE503220053F08B /* ComputeCommandEncoder.cpp */; };
 		84F224BB1EE503220053F08B /* ComputeCommandEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F224B31EE503220053F08B /* ComputeCommandEncoder.h */; };
 		84F224BC1EE503220053F08B /* RenderCommandEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */; };
@@ -2122,7 +2122,7 @@
 /* Begin PBXFileReference section */
 		666ECA5C1DB1703600354463 /* DKAudioDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKAudioDevice.cpp; sourceTree = "<group>"; };
 		666ECA5D1DB1703600354463 /* DKAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKAudioDevice.h; sourceTree = "<group>"; };
-		666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKBlitCommandEncoder.h; sourceTree = "<group>"; };
+		666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCopyCommandEncoder.h; sourceTree = "<group>"; };
 		666ECA5F1DB1703600354463 /* DKCommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCommandBuffer.h; sourceTree = "<group>"; };
 		666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKComputeCommandEncoder.h; sourceTree = "<group>"; };
 		666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKRenderCommandEncoder.h; sourceTree = "<group>"; };
@@ -2257,8 +2257,8 @@
 		8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKCommandEncoder.h; sourceTree = "<group>"; };
 		8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCommandEncoder.h; sourceTree = "<group>"; };
 		8498FC441E47683B00E6A961 /* RenderCommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderCommandEncoder.mm; sourceTree = "<group>"; };
-		8498FC551E47832600E6A961 /* BlitCommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlitCommandEncoder.mm; sourceTree = "<group>"; };
-		8498FC561E47832600E6A961 /* BlitCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlitCommandEncoder.h; sourceTree = "<group>"; };
+		8498FC551E47832600E6A961 /* CopyCommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CopyCommandEncoder.mm; sourceTree = "<group>"; };
+		8498FC561E47832600E6A961 /* CopyCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CopyCommandEncoder.h; sourceTree = "<group>"; };
 		8498FC571E47832600E6A961 /* ComputeCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputeCommandEncoder.h; sourceTree = "<group>"; };
 		8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComputeCommandEncoder.mm; sourceTree = "<group>"; };
 		84990AFC1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKTriangleMeshProxyShape.cpp; sourceTree = "<group>"; };
@@ -2529,8 +2529,8 @@
 		84F16DCF1E1592830013DD29 /* CommandBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandBuffer.mm; sourceTree = "<group>"; };
 		84F16DD01E1592830013DD29 /* CommandQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandQueue.h; sourceTree = "<group>"; };
 		84F16DD11E1592830013DD29 /* CommandQueue.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommandQueue.mm; sourceTree = "<group>"; };
-		84F224B01EE503220053F08B /* BlitCommandEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlitCommandEncoder.cpp; sourceTree = "<group>"; };
-		84F224B11EE503220053F08B /* BlitCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlitCommandEncoder.h; sourceTree = "<group>"; };
+		84F224B01EE503220053F08B /* CopyCommandEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CopyCommandEncoder.cpp; sourceTree = "<group>"; };
+		84F224B11EE503220053F08B /* CopyCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CopyCommandEncoder.h; sourceTree = "<group>"; };
 		84F224B21EE503220053F08B /* ComputeCommandEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComputeCommandEncoder.cpp; sourceTree = "<group>"; };
 		84F224B31EE503220053F08B /* ComputeCommandEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComputeCommandEncoder.h; sourceTree = "<group>"; };
 		84F224B41EE503220053F08B /* RenderCommandEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCommandEncoder.cpp; sourceTree = "<group>"; };
@@ -2673,8 +2673,6 @@
 		666ECA6E1DB1721F00354463 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				8498FC561E47832600E6A961 /* BlitCommandEncoder.h */,
-				8498FC551E47832600E6A961 /* BlitCommandEncoder.mm */,
 				841B5C232090C1AA001B4326 /* Buffer.h */,
 				841B5C222090C1A9001B4326 /* Buffer.mm */,
 				84F16DCE1E1592830013DD29 /* CommandBuffer.h */,
@@ -2685,6 +2683,8 @@
 				8498FC581E47832600E6A961 /* ComputeCommandEncoder.mm */,
 				84B10B4C2180AFC90073EF38 /* ComputePipelineState.h */,
 				84B10B4B2180AFC90073EF38 /* ComputePipelineState.mm */,
+				8498FC561E47832600E6A961 /* CopyCommandEncoder.h */,
+				8498FC551E47832600E6A961 /* CopyCommandEncoder.mm */,
 				666ECA6F1DB1721F00354463 /* GraphicsDevice.h */,
 				666ECA701DB1721F00354463 /* GraphicsDevice.mm */,
 				8498FC431E47683B00E6A961 /* RenderCommandEncoder.h */,
@@ -2827,8 +2827,6 @@
 		66DA89811DD30BC100338015 /* Vulkan */ = {
 			isa = PBXGroup;
 			children = (
-				84F224B01EE503220053F08B /* BlitCommandEncoder.cpp */,
-				84F224B11EE503220053F08B /* BlitCommandEncoder.h */,
 				841B5C2C2090C202001B4326 /* Buffer.cpp */,
 				841B5C2D2090C202001B4326 /* Buffer.h */,
 				844324051E19525D00FD6B53 /* CommandBuffer.cpp */,
@@ -2839,6 +2837,8 @@
 				84F224B31EE503220053F08B /* ComputeCommandEncoder.h */,
 				84B10B62218359010073EF38 /* ComputePipelineState.cpp */,
 				84B10B63218359010073EF38 /* ComputePipelineState.h */,
+				84F224B01EE503220053F08B /* CopyCommandEncoder.cpp */,
+				84F224B11EE503220053F08B /* CopyCommandEncoder.h */,
 				84B81E4C21E35FA500E0C5FF /* DescriptorPool.cpp */,
 				84B81E4A21E35FA500E0C5FF /* DescriptorPool.h */,
 				84B81E4921E35FA500E0C5FF /* DescriptorPoolChain.cpp */,
@@ -3287,7 +3287,7 @@
 		84F16DBD1E1581E60013DD29 /* DKFramework_WIP */ = {
 			isa = PBXGroup;
 			children = (
-				666ECA5E1DB1703600354463 /* DKBlitCommandEncoder.h */,
+				666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */,
 				666ECA5F1DB1703600354463 /* DKCommandBuffer.h */,
 				8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */,
 				84F16DBE1E1584740013DD29 /* DKCommandQueue.h */,
@@ -3390,7 +3390,7 @@
 				847A4FD02052D86F001225B0 /* Types.h in Headers */,
 				8436CE131928A78900F18892 /* DKTypes.h in Headers */,
 				8436CDD41928A78900F18892 /* DKEndianness.h in Headers */,
-				666ECB1C1DB180E900354463 /* DKBlitCommandEncoder.h in Headers */,
+				666ECB1C1DB180E900354463 /* DKCopyCommandEncoder.h in Headers */,
 				8498FC6A1E4783D400E6A961 /* RenderCommandEncoder.h in Headers */,
 				8436CDFA1928A78900F18892 /* DKSet.h in Headers */,
 				847A4FBF2052D7CE001225B0 /* ShaderModule.h in Headers */,
@@ -3436,7 +3436,7 @@
 				840CA5B21928952800689BB6 /* DKConvexShape.h in Headers */,
 				840CA5CD1928952800689BB6 /* DKLinearTransform2.h in Headers */,
 				8436CDEB1928A78900F18892 /* DKMutex.h in Headers */,
-				8498FC671E4783D400E6A961 /* BlitCommandEncoder.h in Headers */,
+				8498FC671E4783D400E6A961 /* CopyCommandEncoder.h in Headers */,
 				846A2D6E1E40F29F009F117C /* SwapChain.h in Headers */,
 				84C3D8C31E9D09BE0003222C /* DKLogger.h in Headers */,
 				84F970061B4C26C400BA24E4 /* DKTriangleMesh.h in Headers */,
@@ -3454,7 +3454,7 @@
 				8436CE111928A78900F18892 /* DKTypeInfo.h in Headers */,
 				84AAAD931EF12B9D00F370F5 /* DKPixelFormat.h in Headers */,
 				8436CDDA1928A78900F18892 /* DKFile.h in Headers */,
-				847A4FB52052D7CE001225B0 /* BlitCommandEncoder.h in Headers */,
+				847A4FB52052D7CE001225B0 /* CopyCommandEncoder.h in Headers */,
 				846A2D671E40F29F009F117C /* CommandQueue.h in Headers */,
 				841B5C432090CADB001B4326 /* DKGpuBuffer.h in Headers */,
 				840CA5BA1928952800689BB6 /* DKFont.h in Headers */,
@@ -3615,7 +3615,7 @@
 				84798CC619E51E96009378A6 /* DKTypes.h in Headers */,
 				84798C9D19E51E96009378A6 /* DKEndianness.h in Headers */,
 				84798C3F19E51E7F009378A6 /* DKCylinderShape.h in Headers */,
-				666ECB251DB180EA00354463 /* DKBlitCommandEncoder.h in Headers */,
+				666ECB251DB180EA00354463 /* DKCopyCommandEncoder.h in Headers */,
 				842BF14B1E0AB209007D58B0 /* AppEventLoop.h in Headers */,
 				84798CB519E51E96009378A6 /* DKSet.h in Headers */,
 				84798C5119E51E7F009378A6 /* DKMatrix3.h in Headers */,
@@ -3635,7 +3635,7 @@
 				84798C2C19E51E7F009378A6 /* DKAudioListener.h in Headers */,
 				84798CA819E51E96009378A6 /* DKMap.h in Headers */,
 				84798C5A19E51E7F009378A6 /* DKPoint2PointConstraint.h in Headers */,
-				8498FC701E4783D500E6A961 /* BlitCommandEncoder.h in Headers */,
+				8498FC701E4783D500E6A961 /* CopyCommandEncoder.h in Headers */,
 				84AAAD8D1EF12B9B00F370F5 /* DKPixelFormat.h in Headers */,
 				842BF14D1E0AB209007D58B0 /* Application.h in Headers */,
 				84798CAE19E51E96009378A6 /* DKOperation.h in Headers */,
@@ -3651,7 +3651,7 @@
 				84798BB219E51E33009378A6 /* DKFoundation.h in Headers */,
 				841B5C3E2090CADA001B4326 /* DKGpuBuffer.h in Headers */,
 				84798C9A19E51E96009378A6 /* DKDateTime.h in Headers */,
-				847A4FA72052D7CE001225B0 /* BlitCommandEncoder.h in Headers */,
+				847A4FA72052D7CE001225B0 /* CopyCommandEncoder.h in Headers */,
 				84798C6919E51E7F009378A6 /* DKScreen.h in Headers */,
 				8447CB5E1E37A6DD00E02637 /* DKTexture.h in Headers */,
 				8498FC711E4783D500E6A961 /* ComputeCommandEncoder.h in Headers */,
@@ -3853,7 +3853,7 @@
 				842BF13F1E0AB206007D58B0 /* AppEventLoop.h in Headers */,
 				84211C831665E86400B9B9A2 /* DKMutex.h in Headers */,
 				84211C841665E86400B9B9A2 /* DKObject.h in Headers */,
-				666ECB131DB180E800354463 /* DKBlitCommandEncoder.h in Headers */,
+				666ECB131DB180E800354463 /* DKCopyCommandEncoder.h in Headers */,
 				84211C851665E86400B9B9A2 /* DKOperation.h in Headers */,
 				84211C861665E86400B9B9A2 /* DKOperationQueue.h in Headers */,
 				8482B74A1DCE272D0079FD84 /* AudioStreamFLAC.h in Headers */,
@@ -3870,7 +3870,7 @@
 				84211C8E1665E86400B9B9A2 /* DKSharedInstance.h in Headers */,
 				8482B74E1DCE272D0079FD84 /* AudioStreamWave.h in Headers */,
 				84211C8F1665E86400B9B9A2 /* DKSharedLock.h in Headers */,
-				8498FC5E1E4783D300E6A961 /* BlitCommandEncoder.h in Headers */,
+				8498FC5E1E4783D300E6A961 /* CopyCommandEncoder.h in Headers */,
 				84AAAD991EF12B9E00F370F5 /* DKPixelFormat.h in Headers */,
 				842BF1411E0AB206007D58B0 /* Application.h in Headers */,
 				84211C901665E86400B9B9A2 /* DKSingleton.h in Headers */,
@@ -4000,7 +4000,7 @@
 				84211D4C1665E89700B9B9A2 /* DKSize.h in Headers */,
 				84B81E5F21E35FA500E0C5FF /* DescriptorPoolChain.h in Headers */,
 				84211D4F1665E89700B9B9A2 /* DKSliderConstraint.h in Headers */,
-				847A4F992052D7CC001225B0 /* BlitCommandEncoder.h in Headers */,
+				847A4F992052D7CC001225B0 /* CopyCommandEncoder.h in Headers */,
 				84211D501665E89700B9B9A2 /* DKSoftBody.h in Headers */,
 				841B5C3B2090CAD8001B4326 /* DKVertexDescriptor.h in Headers */,
 				84211D521665E89700B9B9A2 /* DKSphere.h in Headers */,
@@ -4119,7 +4119,7 @@
 				84211C4E1665E86300B9B9A2 /* DKStream.h in Headers */,
 				84211C4F1665E86300B9B9A2 /* DKString.h in Headers */,
 				84D762911EC3497D00158097 /* OpenAL.h in Headers */,
-				84F224B91EE503220053F08B /* BlitCommandEncoder.h in Headers */,
+				84F224B91EE503220053F08B /* CopyCommandEncoder.h in Headers */,
 				840DD9A918EF04A50040D1D5 /* DKUtils.h in Headers */,
 				84211C501665E86300B9B9A2 /* DKStringU8.h in Headers */,
 				84D7C5AA1EF82C7E00CF2D51 /* DKSwapChain.h in Headers */,
@@ -4154,7 +4154,7 @@
 				849705301E28CDEB00E34F5C /* DKCommandEncoder.h in Headers */,
 				84211CAB1665E88E00B9B9A2 /* DKApplication.h in Headers */,
 				84219C211E40E5E30046B099 /* Texture.h in Headers */,
-				8498FC5A1E47832600E6A961 /* BlitCommandEncoder.h in Headers */,
+				8498FC5A1E47832600E6A961 /* CopyCommandEncoder.h in Headers */,
 				84211CAC1665E88E00B9B9A2 /* DKAudioListener.h in Headers */,
 				84211CAD1665E88E00B9B9A2 /* DKAudioPlayer.h in Headers */,
 				84211CAE1665E88E00B9B9A2 /* DKAudioSource.h in Headers */,
@@ -4261,7 +4261,7 @@
 				846A2D4F1E40F29D009F117C /* CommandBuffer.h in Headers */,
 				84B10B522180AFCA0073EF38 /* ComputePipelineState.h in Headers */,
 				84211D011665E88E00B9B9A2 /* DKVector4.h in Headers */,
-				666ECA671DB1703600354463 /* DKBlitCommandEncoder.h in Headers */,
+				666ECA671DB1703600354463 /* DKCopyCommandEncoder.h in Headers */,
 				84990AFF1BDA9C6C00D660EE /* DKTriangleMeshProxyShape.h in Headers */,
 				84211D041665E88E00B9B9A2 /* DKVKey.h in Headers */,
 				84211D061665E88E00B9B9A2 /* DKWindow.h in Headers */,
@@ -4773,7 +4773,7 @@
 				847A4FC02052D7CE001225B0 /* Texture.cpp in Sources */,
 				841B5C272090C1AA001B4326 /* Buffer.mm in Sources */,
 				840CA6291928952800689BB6 /* DKTransform.cpp in Sources */,
-				8498FC661E4783D400E6A961 /* BlitCommandEncoder.mm in Sources */,
+				8498FC661E4783D400E6A961 /* CopyCommandEncoder.mm in Sources */,
 				8436CE211928A78900F18892 /* DKZipUnarchiver.cpp in Sources */,
 				8482B7471DCE272C0079FD84 /* AudioStreamWave.cpp in Sources */,
 				844C64DC1C08BC7800FB97B6 /* DKFloat16.cpp in Sources */,
@@ -4793,7 +4793,7 @@
 				840CA5CE1928952800689BB6 /* DKLinearTransform3.cpp in Sources */,
 				847A4FCF2052D86F001225B0 /* RenderPipelineState.mm in Sources */,
 				840CA5AB1928952800689BB6 /* DKConeTwistConstraint.cpp in Sources */,
-				847A4FB42052D7CE001225B0 /* BlitCommandEncoder.cpp in Sources */,
+				847A4FB42052D7CE001225B0 /* CopyCommandEncoder.cpp in Sources */,
 				846A2D661E40F29F009F117C /* CommandQueue.cpp in Sources */,
 				847A4FD32052D86F001225B0 /* ShaderModule.mm in Sources */,
 				840CA5A21928952800689BB6 /* DKCollisionShape.cpp in Sources */,
@@ -4924,14 +4924,14 @@
 				84798BDA19E51E48009378A6 /* DKLinearTransform2.cpp in Sources */,
 				84798BFD19E51E48009378A6 /* DKSphereShape.cpp in Sources */,
 				84798BD919E51E48009378A6 /* DKLine.cpp in Sources */,
-				8498FC6F1E4783D500E6A961 /* BlitCommandEncoder.mm in Sources */,
+				8498FC6F1E4783D500E6A961 /* CopyCommandEncoder.mm in Sources */,
 				84B81E5921E35FA500E0C5FF /* Sampler.cpp in Sources */,
 				842BF14C1E0AB209007D58B0 /* AppEventLoop.mm in Sources */,
 				84805C5221B9447B00525127 /* ShaderBindingSet.cpp in Sources */,
 				84798C0119E51E48009378A6 /* DKStaticTriangleMeshShape.cpp in Sources */,
 				84798BCB19E51E48009378A6 /* DKConstraint.cpp in Sources */,
 				84798BBF19E51E48009378A6 /* DKAudioStream.cpp in Sources */,
-				847A4FA62052D7CE001225B0 /* BlitCommandEncoder.cpp in Sources */,
+				847A4FA62052D7CE001225B0 /* CopyCommandEncoder.cpp in Sources */,
 				84798BBC19E51E48009378A6 /* DKAudioListener.cpp in Sources */,
 				84798B9B19E51DFB009378A6 /* DKLock.cpp in Sources */,
 				84798BCC19E51E48009378A6 /* DKConvexHullShape.cpp in Sources */,
@@ -5063,7 +5063,7 @@
 				84AAAD9B1EF12B9E00F370F5 /* DKShader.cpp in Sources */,
 				84B81E5B21E35FA500E0C5FF /* DescriptorPool.cpp in Sources */,
 				84211B6F1665E7FD00B9B9A2 /* DKAudioPlayer.cpp in Sources */,
-				847A4F982052D7CC001225B0 /* BlitCommandEncoder.cpp in Sources */,
+				847A4F982052D7CC001225B0 /* CopyCommandEncoder.cpp in Sources */,
 				84211B711665E7FD00B9B9A2 /* DKAudioSource.cpp in Sources */,
 				840C3E29178D396E00F57A8D /* DKFile.cpp in Sources */,
 				84211B731665E7FD00B9B9A2 /* DKAudioStream.cpp in Sources */,
@@ -5090,7 +5090,7 @@
 				84211B8E1665E7FD00B9B9A2 /* DKCylinderShape.cpp in Sources */,
 				84D388AD18AB845200A86851 /* DKResourceLoader.cpp in Sources */,
 				840C3E40178D396E00F57A8D /* DKZipArchiver.cpp in Sources */,
-				8498FC5D1E4783D300E6A961 /* BlitCommandEncoder.mm in Sources */,
+				8498FC5D1E4783D300E6A961 /* CopyCommandEncoder.mm in Sources */,
 				842BF1401E0AB206007D58B0 /* AppEventLoop.mm in Sources */,
 				84211B921665E7FD00B9B9A2 /* DKDynamicsWorld.cpp in Sources */,
 				840C3E35178D396E00F57A8D /* DKSharedLock.cpp in Sources */,
@@ -5299,11 +5299,11 @@
 				84211B0C1665E7FC00B9B9A2 /* DKPropertySet.cpp in Sources */,
 				84211B0E1665E7FC00B9B9A2 /* DKQuaternion.cpp in Sources */,
 				842F125D17C24B0F004E66FB /* DKAtomicNumber64.cpp in Sources */,
-				8498FC591E47832600E6A961 /* BlitCommandEncoder.mm in Sources */,
+				8498FC591E47832600E6A961 /* CopyCommandEncoder.mm in Sources */,
 				84B10B4E2180AFCA0073EF38 /* ComputePipelineState.mm in Sources */,
 				84211B101665E7FC00B9B9A2 /* DKRect.cpp in Sources */,
 				840C3E13178D396D00F57A8D /* DKStringU8.cpp in Sources */,
-				84F224B81EE503220053F08B /* BlitCommandEncoder.cpp in Sources */,
+				84F224B81EE503220053F08B /* CopyCommandEncoder.cpp in Sources */,
 				84F224C71EE503960053F08B /* DKShader.cpp in Sources */,
 				840C3E15178D396D00F57A8D /* DKStringW.cpp in Sources */,
 				840C3E1D178D396D00F57A8D /* DKZipUnarchiver.cpp in Sources */,

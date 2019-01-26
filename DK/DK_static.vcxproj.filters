@@ -33,9 +33,6 @@
       <Filter>DKFramework\Private\CocoaTouch</Filter>
     </None>
     <None Include="LICENSE" />
-    <None Include="DKFramework\Private\Metal\BlitCommandEncoder.mm">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </None>
     <None Include="DKFramework\Private\Metal\Buffer.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
@@ -76,6 +73,9 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
     <None Include="DKFramework\Private\Metal\Texture.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\CopyCommandEncoder.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
   </ItemGroup>
@@ -487,9 +487,6 @@
     <ClCompile Include="DKFramework\Private\Win32\DropTarget.cpp">
       <Filter>DKFramework\Private\Win32</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\Private\Vulkan\BlitCommandEncoder.cpp">
-      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
@@ -550,9 +547,6 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\BlitCommandEncoder.cpp">
-      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.cpp">
       <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
@@ -591,6 +585,12 @@
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\Sampler.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\CopyCommandEncoder.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Direct3D12\CopyCommandEncoder.cpp">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1104,9 +1104,6 @@
     <ClInclude Include="DKFramework\Private\Win32\DropTarget.h">
       <Filter>DKFramework\Private\Win32</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Vulkan\BlitCommandEncoder.h">
-      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
@@ -1153,9 +1150,6 @@
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKImage.h">
-      <Filter>DKFramework_WIP</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKBlitCommandEncoder.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKShaderModule.h">
@@ -1245,9 +1239,6 @@
     <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\BlitCommandEncoder.h">
-      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.h">
       <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
@@ -1296,9 +1287,6 @@
     <ClInclude Include="DKFramework\Private\Vulkan\Sampler.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\BlitCommandEncoder.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Buffer.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
@@ -1343,6 +1331,18 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Types.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\CopyCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCopyCommandEncoder.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\CopyCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Direct3D12\CopyCommandEncoder.h">
+      <Filter>DKFramework_WIP\Private\Direct3D12</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

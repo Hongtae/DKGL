@@ -10,7 +10,7 @@
 #include "CommandBuffer.h"
 #include "RenderCommandEncoder.h"
 #include "ComputeCommandEncoder.h"
-#include "BlitCommandEncoder.h"
+#include "CopyCommandEncoder.h"
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
 
@@ -57,13 +57,13 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 	return nullptr;
 }
 
-DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
+DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
 {
 	VkCommandBuffer buffer = GetEncodingBuffer();
 	if (buffer)
 	{
-		DKObject<BlitCommandEncoder> encoder = DKOBJECT_NEW BlitCommandEncoder(buffer, this);
-		return encoder.SafeCast<DKBlitCommandEncoder>();
+		DKObject<CopyCommandEncoder> encoder = DKOBJECT_NEW CopyCommandEncoder(buffer, this);
+		return encoder.SafeCast<DKCopyCommandEncoder>();
 	}
 	return nullptr;
 }

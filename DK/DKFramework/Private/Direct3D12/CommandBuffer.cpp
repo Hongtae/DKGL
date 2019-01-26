@@ -13,7 +13,7 @@
 #include "GraphicsDevice.h"
 #include "RenderCommandEncoder.h"
 #include "ComputeCommandEncoder.h"
-#include "BlitCommandEncoder.h"
+#include "CopyCommandEncoder.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
@@ -56,14 +56,14 @@ DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 	return encoder.SafeCast<DKComputeCommandEncoder>();
 }
 
-DKObject<DKBlitCommandEncoder> CommandBuffer::CreateBlitCommandEncoder()
+DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->Device());
 	ComPtr<ID3D12GraphicsCommandList> cm = dev->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
 	cm->Reset(commandAllocator->allocator.Get(), nullptr);
 
-	DKObject<BlitCommandEncoder> encoder = DKOBJECT_NEW BlitCommandEncoder(cm.Get(), this);
-	return encoder.SafeCast<DKBlitCommandEncoder>();
+	DKObject<CopyCommandEncoder> encoder = DKOBJECT_NEW CopyCommandEncoder(cm.Get(), this);
+	return encoder.SafeCast<DKCopyCommandEncoder>();
 }
 
 void CommandBuffer::FinishCommandList(ID3D12GraphicsCommandList* list)

@@ -14,7 +14,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Direct3D;
 
-ComputeCommandEncoder::ComputeCommandEncoder(ID3D12GraphicsCommandList* cm, CommandBuffer* cb)
+ComputeCommandEncoder::ComputeCommandEncoder(ID3D12GraphicsCommandList* cm, class CommandBuffer* cb)
 	: commandList(cm)
 	, commandBuffer(cb)
 {
@@ -36,7 +36,7 @@ void ComputeCommandEncoder::EndEncoding()
 	}
 }
 
-DKCommandBuffer* ComputeCommandEncoder::Buffer()
+DKCommandBuffer* ComputeCommandEncoder::CommandBuffer()
 {
 	return commandBuffer;
 }
@@ -44,6 +44,16 @@ DKCommandBuffer* ComputeCommandEncoder::Buffer()
 bool ComputeCommandEncoder::IsCompleted() const
 {
     return commandList == nullptr; 
+}
+
+void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet*)
+{
+
+}
+
+void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState*)
+{
+
 }
 
 #endif //#if DKGL_ENABLE_DIRECT3D12

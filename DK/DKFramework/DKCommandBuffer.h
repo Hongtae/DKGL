@@ -9,7 +9,7 @@
 #include "../DKFoundation.h"
 #include "DKRenderCommandEncoder.h"
 #include "DKComputeCommandEncoder.h"
-#include "DKBlitCommandEncoder.h"
+#include "DKCopyCommandEncoder.h"
 
 namespace DKFramework
 {
@@ -33,7 +33,7 @@ namespace DKFramework
 
 		virtual DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) = 0;
 		virtual DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() = 0;
-		virtual DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() = 0;
+		virtual DKObject<DKCopyCommandEncoder> CreateCopyCommandEncoder() = 0;
 
 		virtual bool Commit() = 0;
 

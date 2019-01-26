@@ -19,26 +19,30 @@ namespace DKFramework
 	namespace Private
 	{
 		namespace Direct3D
-		{
-			class GraphicsDevice : public DKGraphicsDeviceInterface
-			{
-			public:
-				GraphicsDevice();
-				~GraphicsDevice();
+        {
+            class GraphicsDevice : public DKGraphicsDeviceInterface
+            {
+            public:
+                GraphicsDevice();
+                ~GraphicsDevice();
 
-				DKString DeviceName() const override;
-				DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*, uint32_t) override;
+                DKString DeviceName() const override;
+                DKObject<DKCommandQueue> CreateCommandQueue(DKGraphicsDevice*, uint32_t) override;
 
                 DKObject<DKShaderModule> CreateShaderModule(DKGraphicsDevice*, DKShader*) override;
+                DKObject<DKShaderBindingSet> CreateShaderBindingSet(DKGraphicsDevice*, const DKShaderBindingSetLayout&) override;
+
                 DKObject<DKRenderPipelineState> CreateRenderPipeline(DKGraphicsDevice*, const DKRenderPipelineDescriptor&, DKPipelineReflection*) override;
                 DKObject<DKComputePipelineState> CreateComputePipeline(DKGraphicsDevice*, const DKComputePipelineDescriptor&, DKPipelineReflection*) override;
+        
                 DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) override;
                 DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) override;
+                DKObject<DKSamplerState> CreateSamplerState(DKGraphicsDevice*, const DKSamplerDescriptor&) override;
 
 
-				CommandAllocator* GetCommandAllocator(D3D12_COMMAND_LIST_TYPE);
-				void ReleaseCommandAllocator(CommandAllocator* allocator);
-				void PurgeCachedCommandAllocators();
+                CommandAllocator* GetCommandAllocator(D3D12_COMMAND_LIST_TYPE);
+                void ReleaseCommandAllocator(CommandAllocator* allocator);
+                void PurgeCachedCommandAllocators();
 				
 				ComPtr<ID3D12GraphicsCommandList> GetCommandList(D3D12_COMMAND_LIST_TYPE);
 				void ReleaseCommandList(ID3D12GraphicsCommandList* list);

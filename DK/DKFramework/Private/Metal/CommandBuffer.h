@@ -30,7 +30,7 @@ namespace DKFramework::Private::Metal
 
 		DKObject<DKRenderCommandEncoder> CreateRenderCommandEncoder(const DKRenderPassDescriptor&) override;
 		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() override;
-		DKObject<DKBlitCommandEncoder> CreateBlitCommandEncoder() override;
+		DKObject<DKCopyCommandEncoder> CreateCopyCommandEncoder() override;
 
 		bool Commit() override;
 		DKCommandQueue* Queue() override { return queue; };
