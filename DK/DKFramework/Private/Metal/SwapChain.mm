@@ -200,8 +200,9 @@ void SwapChain::SetupFrame()
 		MTLPixelFormat dsFormat = MTLPixelFormatInvalid;
 		switch (depthStencilPixelFormat)
 		{
-			case DKPixelFormat::D32:
-			case DKPixelFormat::D32S8X24:
+			case DKPixelFormat::D32Float:
+			case DKPixelFormat::D32FloatS8:
+            case DKPixelFormat::S8:
 				dsFormat = PixelFormat(depthStencilPixelFormat);
 				break;
 		}

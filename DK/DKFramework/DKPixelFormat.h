@@ -76,20 +76,38 @@ namespace DKFramework
 		RGBA32Float,
 
 		// Depth
-		D32,
+		D32Float,
+
+        // Stencil (Uint)
+        S8,
 
 		// Depth Stencil
-		D32S8X24,
+		D32FloatS8, // 32-depth, 8-stencil, 24-unused.
 	};
 
 	constexpr bool DKPixelFormatIsColorFormat(DKPixelFormat pf)
 	{
 		return pf > DKPixelFormat::Invalid &&
-			pf < DKPixelFormat::D32;
+			pf < DKPixelFormat::D32Float;
 	}
 	constexpr bool DKPixelFormatIsDepthFormat(DKPixelFormat pf)
 	{
-		return pf >= DKPixelFormat::D32 &&
-			pf <= DKPixelFormat::D32S8X24;
+        switch (pf)
+        {
+        case DKPixelFormat::D32Float:
+        case DKPixelFormat::D32FloatS8:
+            return true;
+        }
+        return false;
 	}
+    constexpr bool DKPixelFormatIsStencilFormat(DKPixelFormat pf)
+    {
+        switch (pf)
+        {
+        case DKPixelFormat::S8:
+        case DKPixelFormat::D32FloatS8:
+            return false;
+        }
+        return false;
+    }
 }

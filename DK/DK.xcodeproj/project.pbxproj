@@ -1534,6 +1534,14 @@
 		84D388AB18AB845200A86851 /* DKResourceLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D388A818AB845200A86851 /* DKResourceLoader.h */; };
 		84D388AC18AB845200A86851 /* DKResourceLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D388A918AB845200A86851 /* DKResourceLoader.cpp */; };
 		84D388AD18AB845200A86851 /* DKResourceLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D388A918AB845200A86851 /* DKResourceLoader.cpp */; };
+		84D59426221131FE003C01EE /* DeviceMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D59424221131FD003C01EE /* DeviceMemory.cpp */; };
+		84D59427221131FE003C01EE /* DeviceMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D59424221131FD003C01EE /* DeviceMemory.cpp */; };
+		84D59428221131FE003C01EE /* DeviceMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D59424221131FD003C01EE /* DeviceMemory.cpp */; };
+		84D59429221131FE003C01EE /* DeviceMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84D59424221131FD003C01EE /* DeviceMemory.cpp */; };
+		84D5942A221131FE003C01EE /* DeviceMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D59425221131FE003C01EE /* DeviceMemory.h */; };
+		84D5942B221131FE003C01EE /* DeviceMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D59425221131FE003C01EE /* DeviceMemory.h */; };
+		84D5942C221131FE003C01EE /* DeviceMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D59425221131FE003C01EE /* DeviceMemory.h */; };
+		84D5942D221131FE003C01EE /* DeviceMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D59425221131FE003C01EE /* DeviceMemory.h */; };
 		84D762911EC3497D00158097 /* OpenAL.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D762901EC3497D00158097 /* OpenAL.h */; };
 		84D7C5A71EF820D000CF2D51 /* RenderPipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D7C5A51EF820D000CF2D51 /* RenderPipelineState.h */; };
 		84D7C5A81EF820D000CF2D51 /* RenderPipelineState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D7C5A61EF820D000CF2D51 /* RenderPipelineState.mm */; };
@@ -2501,6 +2509,8 @@
 		84D3E6831637071F00337848 /* DKRigidBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRigidBody.h; sourceTree = "<group>"; };
 		84D3E6861637071F00337848 /* DKSoftBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKSoftBody.cpp; sourceTree = "<group>"; };
 		84D3E6871637071F00337848 /* DKSoftBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSoftBody.h; sourceTree = "<group>"; };
+		84D59424221131FD003C01EE /* DeviceMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DeviceMemory.cpp; sourceTree = "<group>"; };
+		84D59425221131FE003C01EE /* DeviceMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceMemory.h; sourceTree = "<group>"; };
 		84D762901EC3497D00158097 /* OpenAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenAL.h; sourceTree = "<group>"; };
 		84D7C5A51EF820D000CF2D51 /* RenderPipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderPipelineState.h; sourceTree = "<group>"; };
 		84D7C5A61EF820D000CF2D51 /* RenderPipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderPipelineState.mm; sourceTree = "<group>"; };
@@ -2843,6 +2853,8 @@
 				84B81E4A21E35FA500E0C5FF /* DescriptorPool.h */,
 				84B81E4921E35FA500E0C5FF /* DescriptorPoolChain.cpp */,
 				84B81E4D21E35FA500E0C5FF /* DescriptorPoolChain.h */,
+				84D59424221131FD003C01EE /* DeviceMemory.cpp */,
+				84D59425221131FE003C01EE /* DeviceMemory.h */,
 				84FCF1641E3693B500DF9386 /* Extensions.h */,
 				66DA89821DD30BC100338015 /* GraphicsDevice.cpp */,
 				66DA89831DD30BC100338015 /* GraphicsDevice.h */,
@@ -3287,12 +3299,12 @@
 		84F16DBD1E1581E60013DD29 /* DKFramework_WIP */ = {
 			isa = PBXGroup;
 			children = (
-				666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */,
 				666ECA5F1DB1703600354463 /* DKCommandBuffer.h */,
 				8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */,
 				84F16DBE1E1584740013DD29 /* DKCommandQueue.h */,
 				666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */,
 				848566D01E214DCB0011B53B /* DKComputePipeline.h */,
+				666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */,
 				848566AC1E2004580011B53B /* DKDepthStencil.h */,
 				849EF8942033453800160DD3 /* DKGpuBuffer.cpp */,
 				849EF8932033453700160DD3 /* DKGpuBuffer.h */,
@@ -3414,6 +3426,7 @@
 				840CA5D81928952800689BB6 /* DKMatrix4.h in Headers */,
 				840CA65E1928957700689BB6 /* DK.h in Headers */,
 				8436CDF21928A78900F18892 /* DKOrderedArray.h in Headers */,
+				84D5942D221131FE003C01EE /* DeviceMemory.h in Headers */,
 				84AAAD921EF12B9D00F370F5 /* DKPipelineReflection.h in Headers */,
 				840CA5A41928952800689BB6 /* DKColor.h in Headers */,
 				8436CDE61928A78900F18892 /* DKMap.h in Headers */,
@@ -3784,6 +3797,7 @@
 				84798CBE19E51E96009378A6 /* DKStringU8.h in Headers */,
 				84AAAD911EF12B9B00F370F5 /* DKShaderFunction.h in Headers */,
 				84D08AE920D661A20014C9F9 /* Types.h in Headers */,
+				84D5942C221131FE003C01EE /* DeviceMemory.h in Headers */,
 				84798C6C19E51E7F009378A6 /* DKShaderConstant.h in Headers */,
 				84798C3919E51E7F009378A6 /* DKConcaveShape.h in Headers */,
 				84798CA119E51E96009378A6 /* DKFileMap.h in Headers */,
@@ -4017,6 +4031,7 @@
 				84211D561665E89700B9B9A2 /* DKStaticTriangleMeshShape.h in Headers */,
 				843A689117C6145D000DE61A /* DKWindowInterface.h in Headers */,
 				84D08AE720D661A20014C9F9 /* Types.h in Headers */,
+				84D5942A221131FE003C01EE /* DeviceMemory.h in Headers */,
 				840CA65A1928957600689BB6 /* DK.h in Headers */,
 				84211D5B1665E89700B9B9A2 /* DKTransform.h in Headers */,
 				84AAAD9D1EF12B9E00F370F5 /* DKShaderFunction.h in Headers */,
@@ -4098,6 +4113,7 @@
 				84211C411665E86300B9B9A2 /* DKOrderedArray.h in Headers */,
 				844DF8DD1E16F5EF00F5361C /* GraphicsAPI.h in Headers */,
 				84211C431665E86300B9B9A2 /* DKQueue.h in Headers */,
+				84D5942B221131FE003C01EE /* DeviceMemory.h in Headers */,
 				84211C441665E86300B9B9A2 /* DKRationalNumber.h in Headers */,
 				666ECA661DB1703600354463 /* DKAudioDevice.h in Headers */,
 				84211C451665E86300B9B9A2 /* DKEventLoop.h in Headers */,
@@ -4803,6 +4819,7 @@
 				666ECB1A1DB180E900354463 /* DKAudioDevice.cpp in Sources */,
 				8436CDE41928A78900F18892 /* DKLog.cpp in Sources */,
 				840CA5C51928952800689BB6 /* DKHingeConstraint.cpp in Sources */,
+				84D59429221131FE003C01EE /* DeviceMemory.cpp in Sources */,
 				8498FC691E4783D400E6A961 /* ComputeCommandEncoder.mm in Sources */,
 				8436CE1D1928A78900F18892 /* DKXmlParser.cpp in Sources */,
 				8436CDFC1928A78900F18892 /* DKSharedLock.cpp in Sources */,
@@ -4915,6 +4932,7 @@
 				846A2D6F1E40F2A0009F117C /* CommandBuffer.cpp in Sources */,
 				84798BA119E51DFB009378A6 /* DKRationalNumber.cpp in Sources */,
 				84798BAD19E51DFB009378A6 /* DKUuid.cpp in Sources */,
+				84D59428221131FE003C01EE /* DeviceMemory.cpp in Sources */,
 				84798BD519E51E48009378A6 /* DKGeneric6DofSpringConstraint.cpp in Sources */,
 				847A4FC92052D86E001225B0 /* RenderPipelineState.mm in Sources */,
 				84798BFE19E51E48009378A6 /* DKSpline.cpp in Sources */,
@@ -5083,6 +5101,7 @@
 				84B81E4F21E35FA500E0C5FF /* DescriptorPoolChain.cpp in Sources */,
 				84211B811665E7FD00B9B9A2 /* DKCollisionShape.cpp in Sources */,
 				84211B841665E7FD00B9B9A2 /* DKCompoundShape.cpp in Sources */,
+				84D59426221131FE003C01EE /* DeviceMemory.cpp in Sources */,
 				84211B861665E7FD00B9B9A2 /* DKConeShape.cpp in Sources */,
 				84211B881665E7FD00B9B9A2 /* DKConeTwistConstraint.cpp in Sources */,
 				84211B8A1665E7FD00B9B9A2 /* DKConstraint.cpp in Sources */,
@@ -5306,6 +5325,7 @@
 				84F224B81EE503220053F08B /* CopyCommandEncoder.cpp in Sources */,
 				84F224C71EE503960053F08B /* DKShader.cpp in Sources */,
 				840C3E15178D396D00F57A8D /* DKStringW.cpp in Sources */,
+				84D59427221131FE003C01EE /* DeviceMemory.cpp in Sources */,
 				840C3E1D178D396D00F57A8D /* DKZipUnarchiver.cpp in Sources */,
 				846A2D531E40F29D009F117C /* GraphicsDevice.cpp in Sources */,
 				8444171F1FC871E80082366E /* DKCompressor.cpp in Sources */,

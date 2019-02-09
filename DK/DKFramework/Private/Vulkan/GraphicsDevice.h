@@ -90,6 +90,17 @@ namespace DKFramework::Private::Vulkan
             DKMap<DescriptorPoolId, DescriptorPoolChain*> poolChainMap;
             DKSpinLock lock;
         } descriptorPoolChainMaps[NumDescriptorPoolChainBuckets];
+
+        uint32_t IndexOfMemoryType(uint32_t typeBits, VkMemoryPropertyFlags properties)
+        {
+            for (uint32_t i = 0; i < deviceMemoryTypes.Count(); ++i)
+            {
+                if ((typeBits & (1U << i)) && (deviceMemoryTypes.Value(i).propertyFlags & properties) == properties)
+                    return i;
+            }
+            DKASSERT_DEBUG(0);
+            return uint32_t(-1);
+        };
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

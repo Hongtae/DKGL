@@ -12,6 +12,7 @@
 #include "../../DKGraphicsDevice.h"
 #include "../../DKTexture.h"
 #include "Types.h"
+#include "DeviceMemory.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -33,7 +34,8 @@ namespace DKFramework::Private::Vulkan
 		VkSemaphore				waitSemaphore;
 		VkSemaphore				signalSemaphore;
 
-		DKObject<DKGraphicsDevice> device;
+        DKObject<DeviceMemory>      deviceMemory;
+		DKObject<DKGraphicsDevice>  device;
 
 		uint32_t Width() const override
 		{

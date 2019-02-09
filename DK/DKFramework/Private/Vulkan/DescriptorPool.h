@@ -94,7 +94,7 @@ namespace DKFramework::Private::Vulkan
         }
     };
 
-    class DescriptorPool
+    class DescriptorPool final
     {
     public:
         const DescriptorPoolId& poolId; // key for container(DescriptorPoolChain)

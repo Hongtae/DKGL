@@ -49,6 +49,8 @@ Texture::~Texture()
 		vkDestroySemaphore(dev->device, signalSemaphore, dev->allocationCallbacks);
 	if (waitSemaphore)
 		vkDestroySemaphore(dev->device, waitSemaphore, dev->allocationCallbacks);
+
+    deviceMemory = nullptr;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

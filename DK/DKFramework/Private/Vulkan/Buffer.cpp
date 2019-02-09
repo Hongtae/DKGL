@@ -14,70 +14,34 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b, VkBufferView v, VkDeviceMemory mem, VkMemoryType memType, size_t len)
+Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b, VkBufferView v, DeviceMemory* mem)
 	: device(dev)
 	, buffer(b)
 	, bufferView(v)
-	, memory(mem)
-	, memoryType(memType)
-	, length(len)
-	, mapped(nullptr)
+    , deviceMemory(mem)
 {
-	DKASSERT_DEBUG(length > 0);
+    DKASSERT_DEBUG(deviceMemory)
+	DKASSERT_DEBUG(deviceMemory->length > 0);
 }
 
 Buffer::~Buffer()
 {
-	DKASSERT_DEBUG(mapped == nullptr);
-
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 	if (bufferView)
 		vkDestroyBufferView(dev->device, bufferView, dev->allocationCallbacks);
 	if (buffer)
 		vkDestroyBuffer(dev->device, buffer, dev->allocationCallbacks);
-	if (memory)
-		vkFreeMemory(dev->device, memory, dev->allocationCallbacks);
+    deviceMemory = nullptr;
 }
 
 void* Buffer::Lock(size_t offset, size_t size)
 {
-	if (offset < length &&
-		memory &&
-		memoryType.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-	{
-		if (size == ~size_t(0) || (offset + size) <= length)
-		{
-			DKCriticalSection<DKSpinLock> guard(lock);
-            DKASSERT_DESC_DEBUG(mapped == nullptr, "The buffer is already locked.");
-			if (!mapped)
-			{
-				if (size == ~size_t(0))
-					size = VK_WHOLE_SIZE;
-				GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-				VkResult result = vkMapMemory(dev->device, memory, offset, size, 0, &mapped);
-				if (result == VK_SUCCESS)
-				{
-					return mapped;
-				}
-				else
-				{
-					DKLogE("ERROR: vkMapMemory failed: %s", VkResultCStr(result));
-				}
-			}
-		}
-	}
-	return NULL;
+    return deviceMemory->Lock(offset, size);
 }
 
 void Buffer::Unlock()
 {
-	DKCriticalSection<DKSpinLock> guard(lock);
-	if (mapped)
-	{
-		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-		vkUnmapMemory(dev->device, memory);
-		mapped = nullptr;
-	}
+    deviceMemory->Unlock();
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

@@ -1491,7 +1491,7 @@ DKObject<DKImage> DKImage::Resample(uint32_t w, uint32_t h, PixelFormat f, Inter
 		}
 		else
 		{
-			// convert!
+			//TODO: Resample image format!
 		}
 		return NULL;
 	}

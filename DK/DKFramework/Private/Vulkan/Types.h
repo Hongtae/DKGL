@@ -181,9 +181,10 @@ namespace DKFramework::Private::Vulkan
         case DKPixelFormat::RGBA32Sint:			return VK_FORMAT_R32G32B32A32_SINT;
         case DKPixelFormat::RGBA32Float:		return VK_FORMAT_R32G32B32A32_SFLOAT;
 
-        case DKPixelFormat::D32:				return VK_FORMAT_D32_SFLOAT;
+        case DKPixelFormat::D32Float:			return VK_FORMAT_D32_SFLOAT;
+        case DKPixelFormat::S8:                 return VK_FORMAT_S8_UINT;
 
-        case DKPixelFormat::D32S8X24:			return VK_FORMAT_D32_SFLOAT_S8_UINT;
+        case DKPixelFormat::D32FloatS8:	    	return VK_FORMAT_D32_SFLOAT_S8_UINT;
         }
         return VK_FORMAT_UNDEFINED;
     }
@@ -247,9 +248,10 @@ namespace DKFramework::Private::Vulkan
         case VK_FORMAT_R32G32B32A32_SINT:			return DKPixelFormat::RGBA32Sint;
         case VK_FORMAT_R32G32B32A32_SFLOAT:			return DKPixelFormat::RGBA32Float;
 
-        case VK_FORMAT_D32_SFLOAT:					return DKPixelFormat::D32;
+        case VK_FORMAT_D32_SFLOAT:					return DKPixelFormat::D32Float;
+        case VK_FORMAT_S8_UINT:                     return DKPixelFormat::S8;
 
-        case VK_FORMAT_D32_SFLOAT_S8_UINT:			return DKPixelFormat::D32S8X24;
+        case VK_FORMAT_D32_SFLOAT_S8_UINT:			return DKPixelFormat::D32FloatS8;
 
         }
         return DKPixelFormat::Invalid;
