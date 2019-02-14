@@ -883,10 +883,10 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 		}
 		switch (cache)
 		{
-			case DKCpuCacheModeDefault:
+			case DKCpuCacheModeReadWrite:
 				options |= MTLResourceCPUCacheModeDefaultCache;
 				break;
-			case DKCpuCacheModeWriteCombined:
+			case DKCpuCacheModeWriteOnly:
 				options |= MTLResourceCPUCacheModeWriteCombined;
 				break;
 		}

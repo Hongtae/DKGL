@@ -19,85 +19,73 @@ DeviceMemory::DeviceMemory(DKGraphicsDevice* dev, VkDeviceMemory mem, VkMemoryTy
     , memory(mem)
     , type(t)
     , length(s)
-    , lockContext(nullptr)
+    , mapped(nullptr)
 {
     DKASSERT_DEBUG(memory);
     DKASSERT_DEBUG(length > 0);
 
     if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
     {
-        lockContext = new HostVisibleContext();
-        lockContext->locked = 0;
-        lockContext->mapped = nullptr;
+        size_t offset = 0;
+        size_t size = VK_WHOLE_SIZE;
+
+        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+        VkResult result = vkMapMemory(dev->device, memory, offset, size, 0, &mapped);
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkMapMemory failed: %s", VkResultCStr(result));
+        }
     }
 }
 
 DeviceMemory::~DeviceMemory()
 {
-    if (lockContext)
-    {
-        DKASSERT_DEBUG(lockContext->mapped == nullptr);
-        DKASSERT_DEBUG(lockContext->locked == 0);
-
-        delete lockContext;
-    }
-
+    DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
     GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 
-    DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
+    if (mapped)
+        vkUnmapMemory(dev->device, memory);
+
     vkFreeMemory(dev->device, memory, dev->allocationCallbacks);
 }
 
-void* DeviceMemory::Lock(size_t offset, size_t size)
+void DeviceMemory::Invalidate(size_t offset, size_t size)
 {
-    if (lockContext && offset < length)
-    {
-        DKASSERT_DEBUG(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+    DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
 
-        if (size == ~size_t(0) || (offset + size) <= length)
-        {
-            DKCriticalSection<DKSpinLock> guard(lockContext->lock);
-            if (lockContext->locked)
-            {
-                DKASSERT_DEBUG(lockContext->mapped);
-                lockContext->locked++;
-            }
-            else
-            {
-                DKASSERT_DEBUG(lockContext->mapped == nullptr);
-
-                if (size == ~size_t(0))
-                    size = VK_WHOLE_SIZE;
-                GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-                VkResult result = vkMapMemory(dev->device, memory, offset, size, 0, &lockContext->mapped);
-                if (result == VK_SUCCESS)
-                {
-                    lockContext->locked++;
-                }
-                else
-                {
-                    DKLogE("ERROR: vkMapMemory failed: %s", VkResultCStr(result));
-                }
-            }
-            return lockContext->mapped;
-        }
-    }
-    return nullptr;
-}
-
-void DeviceMemory::Unlock()
-{
-    DKASSERT_DEBUG(lockContext);
-
-    DKCriticalSection<DKSpinLock> guard(lockContext->lock);
-    DKASSERT_DEBUG(lockContext->mapped);
-    DKASSERT_DEBUG(lockContext->locked > 0);
-    lockContext->locked--;
-    if (lockContext->locked == 0)
+    if (mapped && (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0)
     {
         GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-        vkUnmapMemory(dev->device, memory);
-        lockContext->mapped = nullptr;
+
+        VkMappedMemoryRange range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
+        range.memory = memory;
+        range.offset = offset;
+        range.size = size;
+        VkResult result = vkInvalidateMappedMemoryRanges(dev->device, 1, &range);
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkInvalidateMappedMemoryRanges failed: %s", VkResultCStr(result));
+        }
+    }
+}
+
+void DeviceMemory::Flush(size_t offset, size_t size)
+{
+    DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
+
+    if (mapped && (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0)
+    {
+        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+
+        VkMappedMemoryRange range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
+        range.memory = memory;
+        range.offset = offset;
+        range.size = size;
+        VkResult result = vkFlushMappedMemoryRanges(dev->device, 1, &range);
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkFlushMappedMemoryRanges failed: %s", VkResultCStr(result));
+        }
     }
 }
 

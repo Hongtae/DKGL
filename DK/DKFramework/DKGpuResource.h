@@ -12,7 +12,7 @@ namespace DKFramework
 {
 	enum DKCpuCacheMode
 	{
-		DKCpuCacheModeDefault = 0,
-		DKCpuCacheModeWriteCombined,
+		DKCpuCacheModeReadWrite = 0,
+		DKCpuCacheModeWriteOnly,
 	};
 }

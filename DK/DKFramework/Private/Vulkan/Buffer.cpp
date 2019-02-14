@@ -34,14 +34,30 @@ Buffer::~Buffer()
     deviceMemory = nullptr;
 }
 
-void* Buffer::Lock(size_t offset, size_t size)
+void* Buffer::Contents()
 {
-    return deviceMemory->Lock(offset, size);
+    return deviceMemory->mapped;
 }
 
-void Buffer::Unlock()
+void Buffer::Flush(size_t offset, size_t size)
 {
-    deviceMemory->Unlock();
+    size_t length = deviceMemory->length;
+    if (offset < length)
+    {
+        if (size != VK_WHOLE_SIZE)
+        {
+            if (offset + size > length)
+                size = length - offset;
+        }
+        if (size > 0 || size == VK_WHOLE_SIZE)
+            deviceMemory->Flush(offset, size);
+    }
+    deviceMemory->Invalidate(0, VK_WHOLE_SIZE);
+}
+
+size_t Buffer::Length() const
+{
+    return deviceMemory->length;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

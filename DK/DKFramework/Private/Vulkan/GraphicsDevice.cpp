@@ -1069,7 +1069,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 			switch (storage)
 			{
 			case DKGpuBuffer::StorageModeShared:
-				memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+				memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
 				break;
 			default:
 				memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;

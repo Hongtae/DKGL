@@ -13,32 +13,21 @@
 
 namespace DKFramework::Private::Vulkan
 {
-    class DeviceMemory
+    class DeviceMemory final
     {
-        struct HostVisibleContext
-        {
-            DKSpinLock lock;
-            uint64_t locked;
-            void* mapped;
-        };
-
     public:
         DeviceMemory(DKGraphicsDevice*, VkDeviceMemory, VkMemoryType, size_t);
-        virtual ~DeviceMemory();
+        ~DeviceMemory();
 
         VkDeviceMemory memory;
         VkMemoryType type;
         size_t length;
-
-        void* Lock(size_t offset, size_t size);
-        void Unlock();
-
-        bool IsLockable() const { return lockContext != nullptr; }
+        void* mapped;
 
         DKObject<DKGraphicsDevice> device;
 
-    private:
-        HostVisibleContext* lockContext;
+        void Invalidate(size_t offset, size_t size);
+        void Flush(size_t offset, size_t size);
     };
 }
 

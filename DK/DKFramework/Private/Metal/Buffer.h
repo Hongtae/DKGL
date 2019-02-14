@@ -21,8 +21,9 @@ namespace DKFramework::Private::Metal
 		Buffer(DKGraphicsDevice*, id<MTLBuffer>);
 		~Buffer();
 
-		void* Lock(size_t offset, size_t length) override;
-		void Unlock() override;
+        void* Contents() override;
+        void Flush(size_t offset, size_t size) override;
+        size_t Length() const override;
 
 		id<MTLBuffer> buffer;
 		DKObject<DKGraphicsDevice> device;

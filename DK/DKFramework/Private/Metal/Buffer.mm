@@ -27,29 +27,20 @@ Buffer::~Buffer()
 	[buffer release];
 }
 
-void* Buffer::Lock(size_t offset, size_t size)
+void* Buffer::Contents()
 {
-	NSUInteger length = buffer.length;
-	if (offset < length)
-	{
-		if (buffer.contents)
-		{
-			return &reinterpret_cast<unsigned char*>(buffer.contents)[offset];
-		}
-		else
-		{
-			DKLogE("ERROR: DKGpuBuffer::Lock failed: %s", "Unaccessible storage mode");
-		}
-	}
-	else
-	{
-		DKLogE("ERROR: DKGpuBuffer::Lock failed: %s", "Invalid offset");
-	}
-	return NULL;
+    return [buffer contents];
 }
 
-void Buffer::Unlock()
+void Buffer::Flush(size_t offset, size_t size)
 {
+    NSRange range = NSMakeRange(0, buffer.length);
+    [buffer didModifyRange:range];
+}
+
+size_t Buffer::Length() const
+{
+    return buffer.length;
 }
 
 #endif //#if DKGL_ENABLE_METAL
