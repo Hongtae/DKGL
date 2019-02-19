@@ -305,7 +305,7 @@ bool DKEventLoop::Process(const DKOperation* op)
 	{
 		if (this->IsWrokingThread())
 		{
-			op->Perform();
+            this->PerformOperation(op);
 			return true;
 		}
 		else
