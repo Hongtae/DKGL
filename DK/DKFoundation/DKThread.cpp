@@ -32,156 +32,172 @@
 #define POSIX_USE_SELECT_SLEEP	1
 #endif
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
 #if defined(__APPLE__) && defined(__MACH__)
-		bool InitializeMultiThreadedEnvironment();
-		void PerformOperationInsidePool(DKOperation* op);
+    bool InitializeMultiThreadedEnvironment();
+    void PerformOperationInsidePool(DKOperation* op);
 #else
-		FORCEINLINE bool InitializeMultiThreadedEnvironment() { return true; }
-		FORCEINLINE void PerformOperationInsidePool(DKOperation* op) {op->Perform();}
+    FORCEINLINE bool InitializeMultiThreadedEnvironment() { return true; }
+    FORCEINLINE void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
 #endif
-		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
+    void PerformOperationWithErrorHandler(const DKOperation*, size_t);
 
-		struct ThreadCreationInfo
-		{
-			DKThread::ThreadId		id;
-			DKObject<DKOperation>	op;
-		};
-		struct ThreadContext
-		{
-			DKThread::ThreadId		id;
-			DKObject<DKOperation>	op;
-			bool					running;
-		};
-		typedef DKMap<DKThread::ThreadId, ThreadContext> RunningThreadsMap;
-		static RunningThreadsMap runningThreads;
-		static DKCondition threadCond;
+    struct ThreadCreationInfo
+    {
+        DKThread::ThreadId		id;
+        DKObject<DKOperation>	op;
+    };
+    struct ThreadContext
+    {
+        DKThread::ThreadId		id;
+        DKObject<DKOperation>	op;
+        bool					running;
+    };
+    typedef DKMap<DKThread::ThreadId, ThreadContext> RunningThreadsMap;
+    static RunningThreadsMap runningThreads;
+    static DKCondition threadCond;
 
 #ifdef _WIN32
-		unsigned int __stdcall ThreadProc(void* p)
-		{
+    DKString GetWin32ErrorString(DWORD dwError); // defined DKError.cpp
+
+    unsigned int __stdcall ThreadProc(void* p)
+    {
 #else
-		void* ThreadProc(void* p)
-		{
-			//pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-			//pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    void* ThreadProc(void* p)
+    {
+        //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 #endif
-			ThreadCreationInfo* param = reinterpret_cast<ThreadCreationInfo*>(p);
-			// register running threads;
-			threadCond.Lock();
-			DKThread::ThreadId tid = DKThread::CurrentThreadId();
-			ThreadContext& ctxt = runningThreads.Value(tid);
-			ctxt.id = tid;
-			ctxt.op = param->op;
-			ctxt.running = false;
-			param->id = tid;
-			threadCond.Broadcast();
+        ThreadCreationInfo* param = reinterpret_cast<ThreadCreationInfo*>(p);
+        // register running threads;
+        threadCond.Lock();
+        DKThread::ThreadId tid = DKThread::CurrentThreadId();
+        ThreadContext& ctxt = runningThreads.Value(tid);
+        ctxt.id = tid;
+        ctxt.op = param->op;
+        ctxt.running = false;
+        param->id = tid;
+        threadCond.Broadcast();
 
-			// waiting for ctxt.running is being flagged.
-			while (!ctxt.running)
-				threadCond.Wait();
-			threadCond.Unlock();
+        // waiting for ctxt.running is being flagged.
+        while (!ctxt.running)
+            threadCond.Wait();
+        threadCond.Unlock();
 
-			if (ctxt.op)
-			{
-				// Calling thread procedure.
-				// To use NSAutoreleasePool in Cocoa,
-				// Wrap operation with PerformOperatonInsidePool.
-				struct OpWrapper : public DKOperation
-				{
-					OpWrapper(DKOperation* o) : op(o) {}
-					DKOperation* op;
-					void Perform() const override
-					{
-						PerformOperationWithErrorHandler(op, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
-					}
-				};
-				OpWrapper wrapper(ctxt.op);
-				PerformOperationInsidePool(&wrapper);
-			}
+        if (ctxt.op)
+        {
+            // Calling thread procedure.
+            // To use NSAutoreleasePool in Cocoa,
+            // Wrap operation with PerformOperatonInsidePool.
+            struct OpWrapper : public DKOperation
+            {
+                OpWrapper(DKOperation* o) : op(o) {}
+                DKOperation* op;
+                void Perform() const override
+                {
+                    PerformOperationWithErrorHandler(op, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
+                }
+            };
+            OpWrapper wrapper(ctxt.op);
+            PerformOperationInsidePool(&wrapper);
+        }
 
-			threadCond.Lock();
-			runningThreads.Remove(tid);
-			threadCond.Broadcast();
-			threadCond.Unlock();
+        threadCond.Lock();
+        runningThreads.Remove(tid);
+        threadCond.Broadcast();
+        threadCond.Unlock();
 
-			// terminate thread.
+        // terminate thread.
 #ifdef _WIN32
-			//ExitThread(0);
-			_endthreadex(0);
+            //ExitThread(0);
+        _endthreadex(0);
 #else
-			pthread_exit(0);
+        pthread_exit(0);
 #endif
-			return 0;
-		}
+        return 0;
+    }
 
-		static ThreadContext* CreateThread(DKOperation* op, size_t stackSize)
-		{
-			if (op == NULL)
-				return NULL;
+    static ThreadContext* CreateThread(DKOperation* op, size_t stackSize)
+    {
+        if (op == NULL)
+            return NULL;
 
-			InitializeMultiThreadedEnvironment();
+        InitializeMultiThreadedEnvironment();
 
-			ThreadCreationInfo param;
-			param.id = DKThread::invalidId;
-			param.op = op;
+        ThreadCreationInfo param;
+        param.id = DKThread::invalidId;
+        param.op = op;
 
-			bool failed = true;
+        bool failed = true;
 #ifdef _WIN32
-			if (stackSize > 0)
-			{
-				size_t pageSize = DKMemoryPageSize();
-				if (stackSize % pageSize)
-					stackSize += pageSize - (stackSize % pageSize);
-			}
-			unsigned int id;
-			HANDLE h = (HANDLE)_beginthreadex(0, stackSize, ThreadProc, reinterpret_cast<void*>(&param), 0, &id);
-			if (h)
-			{
-				// a closed handle could be recycled by system.
-				CloseHandle(h);
-				failed = false;
-			}
+        if (stackSize > 0)
+        {
+            size_t pageSize = DKMemoryPageSize();
+            if (stackSize % pageSize)
+                stackSize += pageSize - (stackSize % pageSize);
+        }
+        unsigned int id;
+        HANDLE h = (HANDLE)_beginthreadex(0, stackSize, ThreadProc, reinterpret_cast<void*>(&param), 0, &id);
+        if (h)
+        {
+            static const int numProcessorGroups = GetMaximumProcessorGroupCount();
+            if (numProcessorGroups > 1)
+            {
+                static WORD groupId = 0;
+                WORD affinityGroup = groupId++;
+                affinityGroup = affinityGroup % numProcessorGroups;
+                DKLogI("Setting thread group affinity: %d / %d", affinityGroup, numProcessorGroups);
+
+                GROUP_AFFINITY groupAffinity = {};
+                groupAffinity.Mask = ~KAFFINITY(0);
+                groupAffinity.Group = affinityGroup;
+                if (!SetThreadGroupAffinity(h, &groupAffinity, NULL))
+                {
+                    DKLogE("SetThreadGroupAffinity Error: %ls", (const wchar_t*)GetWin32ErrorString(GetLastError()));
+                }
+            }
+            // a closed handle could be recycled by system.
+            CloseHandle(h);
+            failed = false;
+        }
 #else
-			// set pthread to detached, unable to be joined.
-			pthread_t id;
-			pthread_attr_t attr;
-			pthread_attr_init(&attr);
-			pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-			if (stackSize > 0)
-			{
-				stackSize = Max(stackSize, (size_t)PTHREAD_STACK_MIN);
-				size_t pageSize = DKMemoryPageSize();
-				if (stackSize % pageSize)
-					stackSize += pageSize - (stackSize % pageSize);
-				pthread_attr_setstacksize(&attr, stackSize);
-			}
-			failed = (bool)pthread_create((pthread_t*)&id, &attr, ThreadProc, reinterpret_cast<void*>(&param));
-			pthread_attr_destroy(&attr);
+        // set pthread to detached, unable to be joined.
+        pthread_t id;
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+        if (stackSize > 0)
+        {
+            stackSize = Max(stackSize, (size_t)PTHREAD_STACK_MIN);
+            size_t pageSize = DKMemoryPageSize();
+            if (stackSize % pageSize)
+                stackSize += pageSize - (stackSize % pageSize);
+            pthread_attr_setstacksize(&attr, stackSize);
+        }
+        failed = (bool)pthread_create((pthread_t*)&id, &attr, ThreadProc, reinterpret_cast<void*>(&param));
+        pthread_attr_destroy(&attr);
 #endif
-			if (!failed)
-			{
-				DKCriticalSection<DKCondition> guard(threadCond);
+        if (!failed)
+        {
+            DKCriticalSection<DKCondition> guard(threadCond);
 
-				while (param.id == DKThread::invalidId)
-					threadCond.Wait();
+            while (param.id == DKThread::invalidId)
+                threadCond.Wait();
 
-				while (true)
-				{
-					RunningThreadsMap::Pair* p = runningThreads.Find(param.id);
-					if (p)
-						return &p->value;
-					threadCond.Wait();
-				}
-			}
-			return NULL;
-		}
-	}
+            DKASSERT_DEBUG(param.id == (DKThread::ThreadId)id);
+
+            while (true)
+            {
+                RunningThreadsMap::Pair* p = runningThreads.Find(param.id);
+                if (p)
+                    return &p->value;
+                threadCond.Wait();
+            }
+        }
+        return NULL;
+    }
 }
-
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
