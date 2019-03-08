@@ -30,18 +30,7 @@ namespace DKFoundation
 	namespace Private
 	{
 #ifdef _WIN32
-		inline DKString GetErrorString(DWORD dwError)
-		{
-			DKString ret = L"";
-			// error!
-			LPVOID lpMsgBuf;
-			::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
-
-			ret = (const wchar_t*)lpMsgBuf;
-			::LocalFree(lpMsgBuf);
-			return ret;
-		}
+        DKString GetWin32ErrorString(DWORD dwError);
 #endif
 	}
 }
@@ -49,6 +38,7 @@ namespace DKFoundation
 #define DKFILE_INVALID_FILE_HANDLE		(-1)
 
 using namespace DKFoundation;
+using namespace DKFoundation::Private;
 
 DKFile::DKFile()
 	: file(DKFILE_INVALID_FILE_HANDLE)
@@ -62,7 +52,7 @@ DKFile::~DKFile()
 #ifdef _WIN32
 		if (::CloseHandle((HANDLE)this->file) == 0)
 		{
-			DKLog("CloseHandle failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("CloseHandle failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		if (::close((int)this->file) != 0)
@@ -142,7 +132,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 	}
 	else
 	{
-		DKLog("CreateFile(%ls) failed:%ls\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(::GetLastError()));
+		DKLog("CreateFile(%ls) failed:%ls\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetWin32ErrorString(::GetLastError()));
 	}
 #else
 	int nOpenMode = 0;
@@ -249,7 +239,7 @@ DKObject<DKFile> DKFile::CreateTemporary()
 			DWORD err = ::GetLastError();
 			if (err != ERROR_FILE_EXISTS)
 			{
-				DKLog("CreateFile(%ls) failed:%s\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(err));
+				DKLog("CreateFile(%ls) failed:%s\n", (const wchar_t*)filePath, (const wchar_t*)GetWin32ErrorString(err));
 				break;
 			}
 		}
@@ -334,7 +324,7 @@ DKFile::Position DKFile::SetCurrentPosition(Position p)
 		else
 		{
 			pos.QuadPart = 0;
-			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 
 		pos.QuadPart = 0;
@@ -360,7 +350,7 @@ DKFile::Position DKFile::CurrentPosition() const
 		}
 		else
 		{
-			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		return ::lseek((int)this->file, 0, SEEK_CUR);
@@ -721,23 +711,23 @@ bool DKFile::SetLength(size_t len)
 					// back to previous position.
 					if (::SetFilePointerEx((HANDLE)this->file, out, NULL, FILE_BEGIN) == 0)
 					{
-						DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+						DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 					}
 					return true;
 				}
 				else
 				{
-					DKLog("SetEndOfFile failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+					DKLog("SetEndOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 				}
 			}
 			else
 			{
-				DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+				DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 			}
 		}
 		else
 		{
-			DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		if (::ftruncate((int)this->file, len) == 0)
@@ -784,11 +774,11 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			{
 				if (::UnmapViewOfFile(ptr) == 0)
 				{
-					DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+					DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 				}
 				if (::CloseHandle(hMap) == 0)
 				{
-					DKLog("CloseHandle failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+					DKLog("CloseHandle failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 				}
 			}
 
@@ -876,13 +866,13 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			}
 			else
 			{
-				DKLog("MapViewOfFile failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+				DKLog("MapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 			}
 			::CloseHandle(hMap);
 		}
 		else
 		{
-			DKLog("CreateFileMapping failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("CreateFileMapping failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		struct MappedContent : public DKData

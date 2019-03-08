@@ -3,7 +3,7 @@
 //  Platform: Win32, Linux
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -26,11 +26,11 @@
 
 extern "C" DKGL_API const char* DKVersion()
 {
-	return "DK 2.0.0";
+	return "DKGL 2.0.0";
 }
 extern "C" DKGL_API const char* DKCopyright()
 {
-	return "Copyright (c) 2004-2016 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
+	return "Copyright (c) 2004-2019 Hongtae Kim. (tiff2766@gmail.com), All rights reserved.";
 }
 
 namespace DKFoundation
@@ -139,8 +139,8 @@ namespace DKFoundation
 		{
 			SYSTEM_INFO sysInfo;
 			GetSystemInfo(&sysInfo);
-			uint32_t numLogicalProcessors = sysInfo.dwNumberOfProcessors;
-			uint32_t numPhysicalProcessors = numLogicalProcessors;
+			DWORD numLogicalProcessors = sysInfo.dwNumberOfProcessors;
+			DWORD numPhysicalProcessors = numLogicalProcessors;
 
 			DWORD buffSize = 0;
 			if (!GetLogicalProcessorInformationEx(RelationProcessorCore, 0, &buffSize) &&
@@ -150,7 +150,7 @@ namespace DKFoundation
 
 				if (GetLogicalProcessorInformationEx(RelationProcessorCore, (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)buffer, &buffSize))
 				{
-					uint32_t numCores = 0;
+					DWORD numCores = 0;
 					DWORD offset = 0;
 					do
 					{
@@ -168,20 +168,22 @@ namespace DKFoundation
 			return numPhysicalProcessors;
 		}();
 
-		if (ncpu >= 1)
+		if (ncpu > 1)
 			return ncpu;
 		return 1;
 	}
 
 	DKGL_API uint32_t DKNumberOfProcessors()
 	{
-		int ncpu = 0;
-		SYSTEM_INFO sysinfo;
-		GetSystemInfo(&sysinfo);
-		ncpu = sysinfo.dwNumberOfProcessors;
-
-		if (ncpu >= 1)
-			return ncpu;
+        DWORD numCores = GetMaximumProcessorCount(ALL_PROCESSOR_GROUPS);
+        if (!numCores)
+        {
+            SYSTEM_INFO sysinfo;
+            GetSystemInfo(&sysinfo);
+            numCores = sysinfo.dwNumberOfProcessors;
+        }
+        if (numCores > 1)
+            return numCores;
 		return 1;
 	}
 #elif defined(__linux__)
@@ -265,7 +267,7 @@ namespace DKFoundation
 			return -1;
 		}();
 
-		if (ncpu >= 1)
+		if (ncpu > 1)
 			return ncpu;
 		return 1;
 	}
@@ -274,7 +276,7 @@ namespace DKFoundation
 	{
 		static int ncpu = sysconf(_SC_NPROCESSORS_CONF);
 
-		if (ncpu >= 1)
+		if (ncpu > 1)
 			return ncpu;
 		return 1;
 	}

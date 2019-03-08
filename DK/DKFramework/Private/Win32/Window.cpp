@@ -24,18 +24,17 @@
 #define WM_DKWINDOW_SHOWCURSOR				(WM_USER + 0x1175)
 #define WM_DKWINDOW_UPDATEMOUSECAPTURE		(WM_USER + 0x1180)
 
-namespace DKFramework
+namespace DKFoundation::Private
 {
-	namespace Private 
-	{
-		namespace Win32
-		{
-			// declared in AppEventLoop.cpp
-			extern DKAtomicNumber32 numActiveWindows;
-		}
-	}
+    DKString GetWin32ErrorString(DWORD dwError); // defined DKError.cpp
 }
+using namespace DKFoundation::Private;
 
+namespace DKFramework::Private::Win32
+{
+    // declared in AppEventLoop.cpp
+    extern DKAtomicNumber32 numActiveWindows;
+}
 using namespace DKFramework;
 using namespace DKFramework::Private::Win32;
 
@@ -133,13 +132,7 @@ bool Window::Create(const DKString& title, uint32_t style)
 		if (dwError)
 		{
 			// error!
-			LPVOID lpMsgBuf;
-
-			::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
-
-			DKLog("SetWindowLongPtr failed with error %d: %ls", dwError, (const wchar_t*)lpMsgBuf);
-			::LocalFree(lpMsgBuf);
+			DKLog("SetWindowLongPtr failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 
 			::DestroyWindow(hWnd);
 			hWnd = NULL;

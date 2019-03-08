@@ -51,6 +51,20 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
+        DKString GetWin32ErrorString(DWORD dwError)
+        {
+            DKString ret = L"";
+            // error!
+            LPVOID lpMsgBuf;
+            ::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
+
+            ret = (const wchar_t*)lpMsgBuf;
+            ::LocalFree(lpMsgBuf);
+            return ret;
+        }
+#endif
 		struct UnexpectedError
 		{
 			DKArray<DKError::StackFrame> callstack;
@@ -145,18 +159,6 @@ namespace DKFoundation
 				PFSymGetSearchPathW pSymGetSearchPathW;
 			};
 
-			inline DKString GetErrorString(DWORD dwError)
-			{
-				DKString ret = L"";
-				// error!
-				LPVOID lpMsgBuf;
-				::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-								 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR) &lpMsgBuf, 0, NULL );
-
-				ret = (const wchar_t*)lpMsgBuf;
-				::LocalFree(lpMsgBuf);
-				return ret;
-			}
 			inline DKString GetExceptionString(DWORD ec)
 			{
 				DKString ret = L"";
@@ -280,7 +282,7 @@ namespace DKFoundation
 								failed = true;
 								DWORD dwError = ::GetLastError();
 								if (dwError)
-									DKLog("GetProcAddress failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+									DKLog("GetProcAddress failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 								else
 									DKLog("GetProcAddress failed with unknown error.\n");
 								break;
@@ -306,7 +308,7 @@ namespace DKFoundation
 						DWORD dwError = ::GetLastError();
 						if (dwError)
 						{
-							DKLog("LoadLibrary failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+							DKLog("LoadLibrary failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 						}
 					}
 				}
@@ -400,7 +402,7 @@ namespace DKFoundation
 										{
 											DWORD dwError = ::GetLastError();
 											if (dwError)
-												DKLog("SymFromAddr failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+												DKLog("SymFromAddr failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 											else
 												DKLog("SymFromAddr failed with unknown error!\n");
 										}
@@ -439,7 +441,7 @@ namespace DKFoundation
 							{
 								DWORD dwError = ::GetLastError();
 								if (dwError)
-									DKLog("StackWalk64 failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+									DKLog("StackWalk64 failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 								else
 									DKLog("StackWalk64 failed with unknown error!\n");
 
@@ -453,7 +455,7 @@ namespace DKFoundation
 					{
 						DWORD dwError = ::GetLastError();
 						if (dwError)
-							DKLog("SymInitialize failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+							DKLog("SymInitialize failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 						else
 							DKLog("SymInitialize failed with unknown error!\n");
 					}
