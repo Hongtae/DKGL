@@ -44,12 +44,7 @@ void Buffer::Flush(size_t offset, size_t size)
     size_t length = deviceMemory->length;
     if (offset < length)
     {
-        if (size != VK_WHOLE_SIZE)
-        {
-            if (offset + size > length)
-                size = length - offset;
-        }
-        if (size > 0 || size == VK_WHOLE_SIZE)
+        if (size > 0)
             deviceMemory->Flush(offset, size);
     }
     deviceMemory->Invalidate(0, VK_WHOLE_SIZE);

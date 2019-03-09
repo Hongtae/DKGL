@@ -98,7 +98,9 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, class CommandBuf
 			}
 			attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED; 
+            if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
+                attachment.initialLayout = rt->ChangeLayerLayout(0, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, nullptr);
 			attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 			VkAttachmentReference attachmentReference = {};
@@ -158,7 +160,9 @@ RenderCommandEncoder::RenderCommandEncoder(VkCommandBuffer vcb, class CommandBuf
 			}
 			attachment.stencilLoadOp = attachment.loadOp;
 			attachment.stencilStoreOp = attachment.storeOp;
-			attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
+                rt->ChangeLayerLayout(0, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, nullptr);
 			attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 			depthStencilReference.attachment = static_cast<uint32_t>(attachments.Count());
@@ -366,13 +370,13 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
             DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
 
             vkCmdBindDescriptorSets(resources->commandBuffer,
-                VK_PIPELINE_BIND_POINT_GRAPHICS,
-                pipeline->layout,
-                pair.key,
-                1,
-                &descriptorSet,
-                0,      // dynamic offsets
-                0);
+                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline->layout,
+                                    pair.key,
+                                    1,
+                                    &descriptorSet,
+                                    0,      // dynamic offsets
+                                    0);
 
             if (bindingSet->layoutFlags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT)
                 resources->updateResources.Update(pair.key, pair.value);
@@ -398,25 +402,30 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 
 		for (size_t i = 0; i < count; ++i)
 		{
-			DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffers[i]) != nullptr);
-			bufs[i] = static_cast<class Buffer*>(buffers[i])->buffer;
+            DKGpuBuffer* buffer = buffers[i];
+			DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer) != nullptr);
+			bufs[i] = static_cast<Buffer*>(buffer)->buffer;
 			ofs[i] = offsets[i];
+
+            resources->buffers.Add(buffer);
 		}
 		vkCmdBindVertexBuffers(resources->commandBuffer, index, count, bufs, ofs);
 		delete[] tmp;
 	}
 	else if (count > 0)
 	{
-		DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffers[0]) != nullptr);
-		class Buffer* buf = static_cast<class Buffer*>(buffers[0]);
+        DKGpuBuffer* buffer = buffers[0];
+        DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer) != nullptr);
+		Buffer* buf = static_cast<Buffer*>(buffer);
 		VkDeviceSize of = offsets[0];
+        resources->buffers.Add(buffer);
 		vkCmdBindVertexBuffers(resources->commandBuffer, index, count, &buf->buffer, &of);
 	}
 }
 void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type)
 {
 	DKASSERT_DEBUG(indexBuffer);
-	DKASSERT_DEBUG(dynamic_cast<class Buffer*>(indexBuffer) != nullptr);
+	DKASSERT_DEBUG(dynamic_cast<Buffer*>(indexBuffer) != nullptr);
 
 	VkIndexType indexType;
 	switch (type)
@@ -428,7 +437,8 @@ void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offse
 		DKLogE("ERROR: Unknown index type!");
 		return;
 	}
-	vkCmdBindIndexBuffer(resources->commandBuffer, static_cast<class Buffer*>(indexBuffer)->buffer, offset, indexType);
+    resources->buffers.Add(indexBuffer);
+	vkCmdBindIndexBuffer(resources->commandBuffer, static_cast<Buffer*>(indexBuffer)->buffer, offset, indexType);
 }
 
 void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)

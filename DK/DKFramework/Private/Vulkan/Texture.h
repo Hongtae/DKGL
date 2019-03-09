@@ -19,7 +19,7 @@ namespace DKFramework::Private::Vulkan
 	class Texture : public DKTexture
 	{
 	public:
-		Texture(DKGraphicsDevice*, VkImage, VkImageView, const VkImageCreateInfo*);
+        Texture(DKGraphicsDevice*, VkImage, VkImageView, const VkImageCreateInfo*);
 		~Texture();
 
 		VkImage					image;
@@ -83,6 +83,15 @@ namespace DKFramework::Private::Vulkan
 			DKASSERT_DEBUG(format != VK_FORMAT_UNDEFINED);
 			return Vulkan::PixelFormat(format);
 		}
+
+        VkImageLayout ChangeLayerLayout(uint32_t layer, VkImageLayout layout,
+                                        VkCommandBuffer,
+                                        VkPipelineStageFlags srcStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                                        VkPipelineStageFlags dstStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT) const;
+
+    private:
+        DKSpinLock layoutTransitionLock;
+        mutable VkImageLayout* layerLayouts;
 	};
 }
 

@@ -55,16 +55,26 @@ void DeviceMemory::Invalidate(size_t offset, size_t size)
 
     if (mapped && (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0)
     {
-        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-
-        VkMappedMemoryRange range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
-        range.memory = memory;
-        range.offset = offset;
-        range.size = size;
-        VkResult result = vkInvalidateMappedMemoryRanges(dev->device, 1, &range);
-        if (result != VK_SUCCESS)
+        if (offset < length)
         {
-            DKLogE("ERROR: vkInvalidateMappedMemoryRanges failed: %s", VkResultCStr(result));
+            GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+
+            VkMappedMemoryRange range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
+            range.memory = memory;
+            range.offset = offset;
+            if (size == VK_WHOLE_SIZE)
+                range.size = size;
+            else
+                range.size = Min(size, length - offset);
+            VkResult result = vkInvalidateMappedMemoryRanges(dev->device, 1, &range);
+            if (result != VK_SUCCESS)
+            {
+                DKLogE("ERROR: vkInvalidateMappedMemoryRanges failed: %s", VkResultCStr(result));
+            }
+        }
+        else
+        {
+            DKLogE("ERROR: DeviceMemory::Invalidate() failed: Out of range");
         }
     }
 }
@@ -75,16 +85,26 @@ void DeviceMemory::Flush(size_t offset, size_t size)
 
     if (mapped && (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0)
     {
-        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-
-        VkMappedMemoryRange range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
-        range.memory = memory;
-        range.offset = offset;
-        range.size = size;
-        VkResult result = vkFlushMappedMemoryRanges(dev->device, 1, &range);
-        if (result != VK_SUCCESS)
+        if (offset < length)
         {
-            DKLogE("ERROR: vkFlushMappedMemoryRanges failed: %s", VkResultCStr(result));
+            GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+
+            VkMappedMemoryRange range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
+            range.memory = memory;
+            range.offset = offset;
+            if (size == VK_WHOLE_SIZE)
+                range.size = size;
+            else
+                range.size = Min(size, length - offset);            
+            VkResult result = vkFlushMappedMemoryRanges(dev->device, 1, &range);
+            if (result != VK_SUCCESS)
+            {
+                DKLogE("ERROR: vkFlushMappedMemoryRanges failed: %s", VkResultCStr(result));
+            }
+        }
+        else
+        {
+            DKLogE("ERROR: DeviceMemory::Flush() failed: Out of range");
         }
     }
 }

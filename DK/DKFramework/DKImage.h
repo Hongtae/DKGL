@@ -54,6 +54,7 @@ namespace DKFramework
 		uint32_t Height() const				{ return height; }
 		size_t BytesPerPixel() const;
 		bool IsValid() const;
+        const void* Contents() const;
 
 		static DKObject<DKImage> Create(const DKString& path);
 		static DKObject<DKImage> Create(DKStream* stream);

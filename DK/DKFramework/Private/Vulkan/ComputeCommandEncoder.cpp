@@ -141,13 +141,13 @@ void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set
             descriptorSet = bindingSet->descriptorSet;
 
         vkCmdBindDescriptorSets(resources->commandBuffer,
-            VK_PIPELINE_BIND_POINT_GRAPHICS,
-            resources->pipelineState->layout,
-            index,
-            1,
-            &descriptorSet,
-            0,      // dynamic offsets
-            0);
+                                VK_PIPELINE_BIND_POINT_COMPUTE,
+                                resources->pipelineState->layout,
+                                index,
+                                1,
+                                &descriptorSet,
+                                0,      // dynamic offsets
+                                0);
     }
     else
     {
@@ -176,13 +176,13 @@ void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
             DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
 
             vkCmdBindDescriptorSets(resources->commandBuffer,
-                VK_PIPELINE_BIND_POINT_COMPUTE,
-                pipeline->layout,
-                pair.key,
-                1,
-                &descriptorSet,
-                0,      // dynamic offsets
-                0);
+                                    VK_PIPELINE_BIND_POINT_COMPUTE,
+                                    pipeline->layout,
+                                    pair.key,
+                                    1,
+                                    &descriptorSet,
+                                    0,      // dynamic offsets
+                                    0);
 
             if (bindingSet->layoutFlags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT)
                 resources->updateResources.Update(pair.key, pair.value);

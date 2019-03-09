@@ -19,6 +19,32 @@ namespace DKFramework::Private::Vulkan
 {
 	class RenderCommandEncoder : public DKRenderCommandEncoder
 	{
+        class Resources
+        {
+            class CommandBuffer* cb;
+        public:
+            Resources(class CommandBuffer*);
+            ~Resources();
+
+            VkFramebuffer		framebuffer;
+            VkRenderPass		renderPass;
+
+            RenderPipelineState* pipelineState;
+            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
+            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
+
+            DKArray<VkSemaphore>			waitSemaphores;
+            DKArray<VkPipelineStageFlags>	waitStageMasks;
+            DKArray<VkSemaphore>			signalSemaphores;
+
+            VkCommandBuffer commandBuffer;
+
+            // Retain ownership of all encoded objects
+            DKArray<DKObject<RenderPipelineState>> pipelineStateObjects;
+            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
+            DKArray<DKObject<DKGpuBuffer>> buffers;
+        };
+
 	public:
 		RenderCommandEncoder(VkCommandBuffer, class CommandBuffer*, const DKRenderPassDescriptor&);
 		~RenderCommandEncoder();
@@ -37,30 +63,6 @@ namespace DKFramework::Private::Vulkan
 
 		void Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance) override;
 		void DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance) override;
-
-		struct Resources
-		{
-			VkFramebuffer		framebuffer;
-			VkRenderPass		renderPass;
-
-            RenderPipelineState* pipelineState;
-            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
-            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
-
-			DKArray<VkSemaphore>			waitSemaphores;
-			DKArray<VkPipelineStageFlags>	waitStageMasks;
-			DKArray<VkSemaphore>			signalSemaphores;
-            
-			class CommandBuffer* cb;
-			VkCommandBuffer commandBuffer;
-
-			Resources(class CommandBuffer*);
-			~Resources();
-
-            // Retain ownership of all encoded objects
-            DKArray<DKObject<RenderPipelineState>> pipelineStateObjects;
-            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
-		};
 
 		void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
 		void AddSignalSemaphore(VkSemaphore);

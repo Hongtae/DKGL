@@ -1069,7 +1069,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
 			switch (storage)
 			{
 			case DKGpuBuffer::StorageModeShared:
-				memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+                memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
 				break;
 			default:
 				memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -1163,14 +1163,14 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
     if (desc.usage & DKTexture::UsageCopySource)
         imageCreateInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
     if (desc.usage & DKTexture::UsageCopyDestination)
-        imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+        imageCreateInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     if (desc.usage & (DKTexture::UsageShaderRead | DKTexture::UsageSampled))
         imageCreateInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
     if (desc.usage & (DKTexture::UsageShaderWrite | DKTexture::UsageStorage))
         imageCreateInfo.usage |= VK_IMAGE_USAGE_STORAGE_BIT;
     if (desc.usage & DKTexture::UsageRenderTarget)
     {
-        if (DKPixelFormatIsDepthFormat(desc.pixelFormat))
+        if (DKPixelFormatIsDepthFormat(desc.pixelFormat) || DKPixelFormatIsStencilFormat(desc.pixelFormat))
             imageCreateInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
         else
             imageCreateInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;

@@ -274,6 +274,13 @@ bool DKImage::IsValid() const
 	return false;
 }
 
+const void* DKImage::Contents() const
+{
+    if (IsValid())
+        return data;
+    return nullptr;
+}
+
 DKObject<DKImage> DKImage::Create(uint32_t w, uint32_t h, PixelFormat fmt, const void* p)
 {
 	size_t bpp = Private::BytesPerPixel(fmt);

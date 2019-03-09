@@ -18,6 +18,28 @@ namespace DKFramework::Private::Vulkan
 {
 	class ComputeCommandEncoder : public DKComputeCommandEncoder
 	{
+        class Resources
+        {
+            class CommandBuffer* cb;
+        public:
+            Resources(class CommandBuffer*);
+            ~Resources();
+
+            ComputePipelineState* pipelineState;
+            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
+            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
+
+            DKArray<VkSemaphore>			waitSemaphores;
+            DKArray<VkPipelineStageFlags>	waitStageMasks;
+            DKArray<VkSemaphore>			signalSemaphores;
+
+            VkCommandBuffer commandBuffer;
+
+            // Retain ownership of all encoded objects
+            DKArray<DKObject<ComputePipelineState>> pipelineStateObjects;
+            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
+        };
+
 	public:
 		ComputeCommandEncoder(VkCommandBuffer, class CommandBuffer*);
 		~ComputeCommandEncoder();
@@ -28,27 +50,6 @@ namespace DKFramework::Private::Vulkan
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
         void SetComputePipelineState(DKComputePipelineState*) override;
-
-        struct Resources
-        {
-            ComputePipelineState* pipelineState;
-            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
-            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
-
-            DKArray<VkSemaphore>			waitSemaphores;
-            DKArray<VkPipelineStageFlags>	waitStageMasks;
-            DKArray<VkSemaphore>			signalSemaphores;
-
-            class CommandBuffer* cb;
-            VkCommandBuffer commandBuffer;
-
-            Resources(class CommandBuffer*);
-            ~Resources();
-
-            // Retain ownership of all encoded objects
-            DKArray<DKObject<ComputePipelineState>> pipelineStateObjects;
-            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
-        };
 
         void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
         void AddSignalSemaphore(VkSemaphore);

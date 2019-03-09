@@ -150,8 +150,8 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffer));
-	DKObject<class Buffer> vertexBuffer = static_cast<class Buffer*>(buffer);
+	DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer));
+	DKObject<Buffer> vertexBuffer = static_cast<Buffer*>(buffer);
 
 	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->buffer->Queue()->Device());
 
@@ -170,7 +170,7 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 	DKASSERT_DEBUG(!IsCompleted());
 	if (count > 0)
 	{
-		DKArray<DKObject<class Buffer>> objects;
+		DKArray<DKObject<Buffer>> objects;
 		DKArray<id<MTLBuffer>> vertexBuffers;
 		DKArray<NSUInteger> bufferOffsets;
 		objects.Reserve(count);
@@ -178,8 +178,8 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 		bufferOffsets.Reserve(count);
 		for (size_t i = 0; i < count; ++i)
 		{
-			DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffers[i]));
-			DKObject<class Buffer> vb = static_cast<class Buffer*>(buffers[i]);
+			DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffers[i]));
+			DKObject<Buffer> vb = static_cast<Buffer*>(buffers[i]);
 			objects.Add(vb);
 			vertexBuffers.Add(vb->buffer);
 			bufferOffsets.Add(offsets[i]);
@@ -195,8 +195,8 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* buffer, size_t offset, DKIndexType type)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	DKASSERT_DEBUG(dynamic_cast<class Buffer*>(buffer));
-	DKObject<class Buffer> indexBuffer = static_cast<class Buffer*>(buffer);
+	DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer));
+	DKObject<Buffer> indexBuffer = static_cast<Buffer*>(buffer);
 	MTLIndexType indexType;
 	switch (type)
 	{
