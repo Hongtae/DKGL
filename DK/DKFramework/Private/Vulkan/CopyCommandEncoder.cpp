@@ -77,29 +77,64 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
     DKASSERT_DEBUG(dynamic_cast<Buffer*>(src) != nullptr);
     DKASSERT_DEBUG(dynamic_cast<Texture*>(dst) != nullptr);
 
-    Buffer* srcBuffer = static_cast<Buffer*>(src);
-    Texture* dstTexture = static_cast<Texture*>(dst);
+    DKASSERT_DEBUG((srcOffset.bufferOffset % 4) == 0);
+
+    Buffer* buffer = static_cast<Buffer*>(src);
+    Texture* texture = static_cast<Texture*>(dst);
+
+    uint32_t textureWidth = texture->Width();
+    uint32_t textureHeight = texture->Height();
+    uint32_t textureDepth = texture->Depth();
+    uint32_t mipWidth = Max(textureWidth >> dstOffset.level, 1);
+    uint32_t mipHeight = Max(textureHeight >> dstOffset.level, 1);
+    uint32_t mipDepth = Max(textureDepth >> dstOffset.level, 1);
+
+    if (dstOffset.x + size.width > mipWidth ||
+        dstOffset.y + size.height > mipHeight ||
+        dstOffset.z + size.depth > mipDepth)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromBufferToTexture failed: Invalid texture region");
+        return;
+    }
+    if (size.width > srcOffset.imageWidth ||
+        size.height > srcOffset.imageHeight)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromBufferToTexture failed: Invalid buffer region");
+        return;
+    }
+
+    DKPixelFormat pixelFormat = texture->PixelFormat();
+    size_t bufferLength = buffer->Length();
+    size_t bytesPerPixel = DKPixelFormatBytesPerPixel(pixelFormat);
+    DKASSERT_DEBUG(bytesPerPixel > 0);      // Unsupported texture format!
+
+    size_t requiredBufferLengthForCopy = size_t(srcOffset.imageWidth) * size_t(srcOffset.imageHeight) * size.depth * bytesPerPixel + srcOffset.bufferOffset;
+    if (requiredBufferLengthForCopy > bufferLength)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromBufferToTexture failed: buffer is too small!");
+        return;
+    }
 
     VkBufferImageCopy region = {};
-    region.bufferOffset = srcOffset.offset;
-    region.bufferRowLength = srcOffset.bytesPerRow;
+    region.bufferOffset = srcOffset.bufferOffset;
+    region.bufferRowLength = srcOffset.imageWidth;
     region.bufferImageHeight = srcOffset.imageHeight;
     region.imageOffset = { (int32_t)dstOffset.x, (int32_t)dstOffset.y,(int32_t)dstOffset.z };
     region.imageExtent = { size.width, size.height, size.depth };
-    SetupSubresource(dstOffset, 1, dstTexture->PixelFormat(), region.imageSubresource);
+    SetupSubresource(dstOffset, 1, pixelFormat, region.imageSubresource);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         for (int i = 0; i < region.imageSubresource.layerCount; ++i)
-            dstTexture->ChangeLayerLayout(region.imageSubresource.baseArrayLayer + i,
-                                          VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                          commandBuffer,
-                                          VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                          VK_PIPELINE_STAGE_TRANSFER_BIT);
+            texture->ChangeLayerLayout(region.imageSubresource.baseArrayLayer + i,
+                                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                       commandBuffer,
+                                       VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                                       VK_PIPELINE_STAGE_TRANSFER_BIT);
 
         vkCmdCopyBufferToImage(commandBuffer,
-                               srcBuffer->buffer,
-                               dstTexture->image,
+                               buffer->buffer,
+                               texture->image,
                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                1, &region);
     });
@@ -115,28 +150,63 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
     DKASSERT_DEBUG(dynamic_cast<Texture*>(src) != nullptr);
     DKASSERT_DEBUG(dynamic_cast<Buffer*>(dst) != nullptr);
 
-    Texture* srcTexture = static_cast<Texture*>(src);
-    Buffer* dstBuffer = static_cast<Buffer*>(dst);
+    DKASSERT_DEBUG((dstOffset.bufferOffset % 4) == 0);
+
+    Texture* texture = static_cast<Texture*>(src);
+    Buffer* buffer = static_cast<Buffer*>(dst);
+
+    uint32_t textureWidth = texture->Width();
+    uint32_t textureHeight = texture->Height();
+    uint32_t textureDepth = texture->Depth();
+    uint32_t mipWidth = Max(textureWidth >> srcOffset.level, 1);
+    uint32_t mipHeight = Max(textureHeight >> srcOffset.level, 1);
+    uint32_t mipDepth = Max(textureDepth >> srcOffset.level, 1);
+
+    if (srcOffset.x + size.width > mipWidth ||
+        srcOffset.y + size.height > mipHeight ||
+        srcOffset.z + size.depth > mipDepth)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromTextureToBuffer failed: Invalid texture region");
+        return;
+    }
+    if (size.width > dstOffset.imageWidth ||
+        size.height > dstOffset.imageHeight)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromTextureToBuffer failed: Invalid buffer region");
+        return;
+    }
+
+    DKPixelFormat pixelFormat = texture->PixelFormat();
+    size_t bufferLength = buffer->Length();
+    size_t bytesPerPixel = DKPixelFormatBytesPerPixel(pixelFormat);
+    DKASSERT_DEBUG(bytesPerPixel > 0);      // Unsupported texture format!
+
+    size_t requiredBufferLengthForCopy = size_t(dstOffset.imageWidth) * size_t(dstOffset.imageHeight) * size.depth * bytesPerPixel + dstOffset.bufferOffset;
+    if (requiredBufferLengthForCopy > bufferLength)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromTextureToBuffer failed: buffer is too small!");
+        return;
+    }
 
     VkBufferImageCopy region = {};
-    region.bufferOffset = dstOffset.offset;
-    region.bufferRowLength = dstOffset.bytesPerRow;
+    region.bufferOffset = dstOffset.bufferOffset;
+    region.bufferRowLength = dstOffset.imageWidth;
     region.bufferImageHeight = dstOffset.imageHeight;
     region.imageOffset = { (int32_t)srcOffset.x,(int32_t)srcOffset.y, (int32_t)srcOffset.z };
     region.imageExtent = { size.width, size.height,size.depth };
-    SetupSubresource(srcOffset, 1, srcTexture->PixelFormat(), region.imageSubresource);
+    SetupSubresource(srcOffset, 1, texture->PixelFormat(), region.imageSubresource);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         for (int i = 0; i < region.imageSubresource.layerCount; ++i)
-            srcTexture->ChangeLayerLayout(region.imageSubresource.baseArrayLayer + i,
-                                          VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                          commandBuffer);
+            texture->ChangeLayerLayout(region.imageSubresource.baseArrayLayer + i,
+                                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                       commandBuffer);
 
         vkCmdCopyImageToBuffer(commandBuffer,
-                               srcTexture->image,
+                               texture->image,
                                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                               dstBuffer->buffer,
+                               buffer->buffer,
                                1, &region);
     });
     encoder->commands.Add(command);

@@ -110,4 +110,94 @@ namespace DKFramework
         }
         return false;
     }
+    constexpr int32_t DKPixelFormatBytesPerPixel(DKPixelFormat pf)
+    {
+        switch (pf)
+        {
+            // 8 bit formats
+        case DKPixelFormat::R8Unorm:
+        case DKPixelFormat::R8Snorm:
+        case DKPixelFormat::R8Uint:
+        case DKPixelFormat::R8Sint:
+            return 1;
+            break;
+            // 16 bit formats
+        case DKPixelFormat::R16Unorm:
+        case DKPixelFormat::R16Snorm:
+        case DKPixelFormat::R16Uint:
+        case DKPixelFormat::R16Sint:
+        case DKPixelFormat::R16Float:
+
+        case DKPixelFormat::RG8Unorm:
+        case DKPixelFormat::RG8Snorm:
+        case DKPixelFormat::RG8Uint:
+        case DKPixelFormat::RG8Sint:
+            return 2;
+            break;
+
+            // 32 bit formats
+        case DKPixelFormat::R32Uint:
+        case DKPixelFormat::R32Sint:
+        case DKPixelFormat::R32Float:
+
+        case DKPixelFormat::RG16Unorm:
+        case DKPixelFormat::RG16Snorm:
+        case DKPixelFormat::RG16Uint:
+        case DKPixelFormat::RG16Sint:
+        case DKPixelFormat::RG16Float:
+
+        case DKPixelFormat::RGBA8Unorm:
+        case DKPixelFormat::RGBA8Unorm_sRGB:
+        case DKPixelFormat::RGBA8Snorm:
+        case DKPixelFormat::RGBA8Uint:
+        case DKPixelFormat::RGBA8Sint:
+
+        case DKPixelFormat::BGRA8Unorm:
+        case DKPixelFormat::BGRA8Unorm_sRGB:
+
+
+            // packed 32 bit formats
+        case DKPixelFormat::RGB10A2Unorm:
+        case DKPixelFormat::RGB10A2Uint:
+
+        case DKPixelFormat::RG11B10Float:
+        case DKPixelFormat::RGB9E5Float:
+            return 4;
+            break;
+
+            // 64 bit formats
+        case DKPixelFormat::RG32Uint:
+        case DKPixelFormat::RG32Sint:
+        case DKPixelFormat::RG32Float:
+
+        case DKPixelFormat::RGBA16Unorm:
+        case DKPixelFormat::RGBA16Snorm:
+        case DKPixelFormat::RGBA16Uint:
+        case DKPixelFormat::RGBA16Sint:
+        case DKPixelFormat::RGBA16Float:
+            return 8;
+            break;
+
+            // 128 bit formats
+        case DKPixelFormat::RGBA32Uint:
+        case DKPixelFormat::RGBA32Sint:
+        case DKPixelFormat::RGBA32Float:
+            return 16;
+            break;
+            // Depth
+        case DKPixelFormat::D32Float:
+            return 4;
+            break;
+            // Stencil (Uint)
+        case DKPixelFormat::S8:
+            return 1;
+            break;
+
+            // Depth Stencil
+        case DKPixelFormat::D32FloatS8: // 32-depth: 8-stencil: 24-unused.
+            return 8;
+            break;
+        }
+        return 0; // unsupported pixel format!
+    }
 }

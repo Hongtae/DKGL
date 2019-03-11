@@ -52,7 +52,6 @@ namespace DKFramework::Private::Vulkan
         DKSet<VkSemaphore> signalSemaphores;
 
         VkCommandBuffer commandBuffer;
-        bool reuseEncodedCommandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

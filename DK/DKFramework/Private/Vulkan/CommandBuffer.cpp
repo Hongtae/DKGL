@@ -21,7 +21,6 @@ CommandBuffer::CommandBuffer(VkCommandPool p, DKCommandQueue* q)
 	: commandPool(p)
 	, queue(q)
     , commandBuffer(VK_NULL_HANDLE)
-    , reuseEncodedCommandBuffer(false)
 {
 	DKASSERT_DEBUG(commandPool);
 }
@@ -31,7 +30,6 @@ CommandBuffer::~CommandBuffer()
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
 
-    // TODO: commandBuffer, commandPool must be synchronized.
     if (commandBuffer != VK_NULL_HANDLE)
     {
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
@@ -74,10 +72,6 @@ bool CommandBuffer::Commit()
 {
 	bool result = false;
 
-    VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
-    if (reuseEncodedCommandBuffer)
-        commandBuffer = this->commandBuffer;
-
     GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
     VkDevice device = dev->device;
 
@@ -105,13 +99,12 @@ bool CommandBuffer::Commit()
                 if (!enc->Encode(commandBuffer))
                 {
                     vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+                    commandBuffer = VK_NULL_HANDLE;
                     return false;
                 }
             }
             vkEndCommandBuffer(commandBuffer);
         }
-        if (reuseEncodedCommandBuffer)
-            this->commandBuffer = commandBuffer;
     }
 
     if (commandBuffer)
@@ -151,12 +144,8 @@ bool CommandBuffer::Commit()
         result = commandQueue->Submit(&submitInfo, 1,
                                       DKFunction([=](DKObject<CommandBuffer> cb) mutable
         {
-            if (!cb->reuseEncodedCommandBuffer)
-            {
-                // TODO: commandBuffer, commandPool must be synchronized.
-                DKASSERT_DEBUG(commandBuffer != cb->commandBuffer);
-                vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
-            }
+            if (cb)
+                cb = nullptr;
         })->Invocation(this));
     }
     return result;
