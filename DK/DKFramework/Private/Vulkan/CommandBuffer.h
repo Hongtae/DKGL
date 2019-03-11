@@ -15,6 +15,14 @@
 
 namespace DKFramework::Private::Vulkan
 {
+    class CommandBuffer;
+    class CommandBufferEncoder
+    {
+    public:
+        virtual ~CommandBufferEncoder() {}
+        virtual bool Encode(VkCommandBuffer) = 0;
+    };
+
 	class CommandBuffer : public DKCommandBuffer
 	{
 	public:
@@ -29,16 +37,22 @@ namespace DKFramework::Private::Vulkan
 
 		DKCommandQueue* Queue() override { return queue; };
 
-		void Submit(const VkSubmitInfo&, DKOperation*, DKOperation*);
-		void ReleaseEncodingBuffer(VkCommandBuffer cb);
-		VkCommandBuffer GetEncodingBuffer();
+        void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
+        void AddSignalSemaphore(VkSemaphore);
 
-		VkCommandPool commandPool;
-		DKObject<DKCommandQueue> queue;
+        void EndEncoder(DKCommandEncoder*, CommandBufferEncoder*);
 
-		DKArray<VkSubmitInfo> submitInfos;
-        DKArray<DKObject<DKOperation>> submitCallbacks;
-        DKArray<DKObject<DKOperation>> completedCallbacks;
+    private:
+        VkCommandPool commandPool;
+        DKObject<DKCommandQueue> queue;
+
+        DKArray<DKObject<CommandBufferEncoder>> encoders;
+
+        DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
+        DKSet<VkSemaphore> signalSemaphores;
+
+        VkCommandBuffer commandBuffer;
+        bool reuseEncodedCommandBuffer;
 	};
 }
 #endif //#if DKGL_ENABLE_VULKAN

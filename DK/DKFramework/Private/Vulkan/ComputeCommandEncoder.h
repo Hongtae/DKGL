@@ -18,46 +18,38 @@ namespace DKFramework::Private::Vulkan
 {
 	class ComputeCommandEncoder : public DKComputeCommandEncoder
 	{
-        class Resources
+        struct EncodingState
         {
-            class CommandBuffer* cb;
-        public:
-            Resources(class CommandBuffer*);
-            ~Resources();
-
             ComputePipelineState* pipelineState;
-            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
-            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
+        };
+        using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
+        class Encoder : public CommandBufferEncoder
+        {
+        public:
+            Encoder(class CommandBuffer*);
+            ~Encoder();
 
-            DKArray<VkSemaphore>			waitSemaphores;
-            DKArray<VkPipelineStageFlags>	waitStageMasks;
-            DKArray<VkSemaphore>			signalSemaphores;
-
-            VkCommandBuffer commandBuffer;
+            bool Encode(VkCommandBuffer) override;
 
             // Retain ownership of all encoded objects
             DKArray<DKObject<ComputePipelineState>> pipelineStateObjects;
             DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
+
+            class CommandBuffer* commandBuffer;
+            DKArray<DKObject<EncoderCommand>> commands;
         };
+        DKObject<Encoder> encoder;
 
 	public:
-		ComputeCommandEncoder(VkCommandBuffer, class CommandBuffer*);
-		~ComputeCommandEncoder();
+		ComputeCommandEncoder(class CommandBuffer*);
 
-		void EndEncoding() override;
-		bool IsCompleted() const override { return false; }
-		DKCommandBuffer* CommandBuffer() override;
+        void EndEncoding() override;
+        bool IsCompleted() const override { return encoder == nullptr; }
+        DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
         void SetComputePipelineState(DKComputePipelineState*) override;
 
-        void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
-        void AddSignalSemaphore(VkSemaphore);
-
-        DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
-        DKSet<VkSemaphore> signalSemaphores;
-
-        DKObject<Resources> resources;
 		DKObject<class CommandBuffer> commandBuffer;
 	};
 }

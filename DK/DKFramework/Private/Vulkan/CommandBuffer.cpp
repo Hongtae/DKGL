@@ -20,118 +20,166 @@ using namespace DKFramework::Private::Vulkan;
 CommandBuffer::CommandBuffer(VkCommandPool p, DKCommandQueue* q)
 	: commandPool(p)
 	, queue(q)
+    , commandBuffer(VK_NULL_HANDLE)
+    , reuseEncodedCommandBuffer(false)
 {
 	DKASSERT_DEBUG(commandPool);
 }
 
 CommandBuffer::~CommandBuffer()
 {
-    submitCallbacks.Clear();
-    completedCallbacks.Clear();
-
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
 
+    // TODO: commandBuffer, commandPool must be synchronized.
+    if (commandBuffer != VK_NULL_HANDLE)
+    {
+        vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+        commandBuffer = VK_NULL_HANDLE;
+    }
 	vkDestroyCommandPool(device, commandPool, dev->allocationCallbacks);
 }
 
 DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor& rp)
 {
-	VkCommandBuffer buffer = GetEncodingBuffer();
-	if (buffer)
-	{
-		DKObject<RenderCommandEncoder> encoder = DKOBJECT_NEW RenderCommandEncoder(buffer, this, rp);
-		return encoder.SafeCast<DKRenderCommandEncoder>();
-	}
-	return nullptr;
+    DKASSERT_DEBUG(queue.SafeCast<CommandQueue>());
+    CommandQueue* commandQueue = queue.StaticCast<CommandQueue>();
+    if (commandQueue->family->properties.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+    {
+        DKObject<RenderCommandEncoder> encoder = DKOBJECT_NEW RenderCommandEncoder(this, rp);
+        return encoder.SafeCast<DKRenderCommandEncoder>();
+    }
+    return nullptr;
 }
 
 DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 {
-	VkCommandBuffer buffer = GetEncodingBuffer();
-	if (buffer)
-	{
-		DKObject<ComputeCommandEncoder> encoder = DKOBJECT_NEW ComputeCommandEncoder(buffer, this);
-		return encoder.SafeCast<DKComputeCommandEncoder>();
-	}
-	return nullptr;
+    DKASSERT_DEBUG(queue.SafeCast<CommandQueue>());
+    CommandQueue* commandQueue = queue.StaticCast<CommandQueue>();
+    if (commandQueue->family->properties.queueFlags & VK_QUEUE_COMPUTE_BIT)
+    {
+        DKObject<ComputeCommandEncoder> encoder = DKOBJECT_NEW ComputeCommandEncoder(this);
+        return encoder.SafeCast<DKComputeCommandEncoder>();
+    }
+    return nullptr;
 }
 
 DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
 {
-	VkCommandBuffer buffer = GetEncodingBuffer();
-	if (buffer)
-	{
-		DKObject<CopyCommandEncoder> encoder = DKOBJECT_NEW CopyCommandEncoder(buffer, this);
-		return encoder.SafeCast<DKCopyCommandEncoder>();
-	}
-	return nullptr;
+    DKObject<CopyCommandEncoder> encoder = DKOBJECT_NEW CopyCommandEncoder(this);
+    return encoder.SafeCast<DKCopyCommandEncoder>();
 }
 
 bool CommandBuffer::Commit()
 {
 	bool result = false;
-	if (submitInfos.Count() > 0)
-	{
-		CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
 
-        for (DKOperation* op : submitCallbacks)
-            op->Perform();
+    VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
+    if (reuseEncodedCommandBuffer)
+        commandBuffer = this->commandBuffer;
 
-		DKArray<DKObject<DKOperation>> callbacksCopy = (completedCallbacks);
+    GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
+    VkDevice device = dev->device;
 
-		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-		VkDevice device = dev->device;
+    if (commandBuffer == VK_NULL_HANDLE)
+    {
+        if (encoders.Count() > 0)
+        {
+            VkCommandBufferAllocateInfo  bufferInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
+            bufferInfo.commandPool = commandPool;
+            bufferInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+            bufferInfo.commandBufferCount = 1;
 
-		result = commandQueue->Submit(submitInfos, submitInfos.Count(),
-							 DKFunction([=](DKObject<CommandBuffer> cb) mutable
-		{
-			for (DKOperation* op : callbacksCopy)
-				op->Perform();
-			callbacksCopy.Clear();
+            VkResult err = vkAllocateCommandBuffers(device, &bufferInfo, &commandBuffer);
+            if (err != VK_SUCCESS)
+            {
+                DKLogE("ERROR: vkAllocateCommandBuffers failed: %s", VkResultCStr(err));
+                return false;
+            }
 
-		})->Invocation(this));
-	}
-	return result;
+            // encode buffer!
+            VkCommandBufferBeginInfo commandBufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
+            vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo);
+            for (CommandBufferEncoder* enc : encoders)
+            {
+                if (!enc->Encode(commandBuffer))
+                {
+                    vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+                    return false;
+                }
+            }
+            vkEndCommandBuffer(commandBuffer);
+        }
+        if (reuseEncodedCommandBuffer)
+            this->commandBuffer = commandBuffer;
+    }
+
+    if (commandBuffer)
+    {
+        DKArray<VkSemaphore>			submitWaitSemaphores;
+        DKArray<VkPipelineStageFlags>	submitWaitStageMasks;
+        DKArray<VkSemaphore>			submitSignalSemaphores;
+
+        VkSubmitInfo submitInfo = { VK_STRUCTURE_TYPE_SUBMIT_INFO };
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffer;
+
+        submitWaitSemaphores.Reserve(this->semaphorePipelineStageMasks.Count());
+        submitWaitStageMasks.Reserve(this->semaphorePipelineStageMasks.Count());
+
+        this->semaphorePipelineStageMasks.EnumerateForward([&](decltype(semaphorePipelineStageMasks)::Pair& pair)
+        {
+            submitWaitSemaphores.Add(pair.key);
+            submitWaitStageMasks.Add(pair.value);
+        });
+
+        submitSignalSemaphores.Reserve(this->signalSemaphores.Count());
+        this->signalSemaphores.EnumerateForward([&](VkSemaphore semaphore)
+        {
+            submitSignalSemaphores.Add(semaphore);
+        });
+
+        DKASSERT_DEBUG(submitWaitSemaphores.Count() == submitWaitStageMasks.Count());
+
+        submitInfo.waitSemaphoreCount = submitWaitSemaphores.Count();
+        submitInfo.pWaitSemaphores = submitWaitSemaphores;
+        submitInfo.pWaitDstStageMask = submitWaitStageMasks;
+        submitInfo.signalSemaphoreCount = submitSignalSemaphores.Count();
+        submitInfo.pSignalSemaphores = submitSignalSemaphores;
+
+        CommandQueue* commandQueue = this->queue.StaticCast<CommandQueue>();
+        result = commandQueue->Submit(&submitInfo, 1,
+                                      DKFunction([=](DKObject<CommandBuffer> cb) mutable
+        {
+            if (!cb->reuseEncodedCommandBuffer)
+            {
+                // TODO: commandBuffer, commandPool must be synchronized.
+                DKASSERT_DEBUG(commandBuffer != cb->commandBuffer);
+                vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+            }
+        })->Invocation(this));
+    }
+    return result;
 }
 
-VkCommandBuffer CommandBuffer::GetEncodingBuffer()
+void CommandBuffer::AddWaitSemaphore(VkSemaphore semaphore, VkPipelineStageFlags flags)
 {
-	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-	VkDevice device = dev->device;
-
-	VkCommandBufferAllocateInfo  bufferInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
-	bufferInfo.commandPool = commandPool;
-	bufferInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	bufferInfo.commandBufferCount = 1;
-
-	VkCommandBuffer buffer = nullptr;
-	VkResult err = vkAllocateCommandBuffers(device, &bufferInfo, &buffer);
-	if (err != VK_SUCCESS)
-	{
-		DKLogE("ERROR: vkAllocateCommandBuffers failed: %s", VkResultCStr(err));
-		return NULL;
-	}
-	return buffer;
+    if (semaphore != VK_NULL_HANDLE)
+    {
+        if (!semaphorePipelineStageMasks.Insert(semaphore, flags))
+            semaphorePipelineStageMasks.Value(semaphore) |= flags;
+    }
 }
 
-void CommandBuffer::ReleaseEncodingBuffer(VkCommandBuffer cb)
+void CommandBuffer::AddSignalSemaphore(VkSemaphore semaphore)
 {
-	if (cb)
-	{
-		GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
-		VkDevice device = dev->device;
-		vkFreeCommandBuffers(device, commandPool, 1, &cb);
-	}
+    if (semaphore != VK_NULL_HANDLE)
+        signalSemaphores.Insert(semaphore);
 }
 
-void CommandBuffer::Submit(const VkSubmitInfo& info, DKOperation* cb1, DKOperation* cb2)
+void CommandBuffer::EndEncoder(DKCommandEncoder*, CommandBufferEncoder* encoder)
 {
-	submitInfos.Add(info);
-    if (cb1)
-        submitCallbacks.Add(cb1);
-    if (cb2)
-        completedCallbacks.Add(cb2);
+    this->encoders.Add(encoder);
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

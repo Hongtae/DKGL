@@ -17,29 +17,33 @@ namespace DKFramework::Private::Vulkan
 {
     class CopyCommandEncoder : public DKCopyCommandEncoder
     {
-        struct Resources
+        struct EncodingState
         {
-            DKArray<VkSemaphore>			waitSemaphores;
-            DKArray<VkPipelineStageFlags>	waitStageMasks;
-            DKArray<VkSemaphore>			signalSemaphores;
+        };
+        using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
+        class Encoder : public CommandBufferEncoder
+        {
+        public:
+            Encoder(class CommandBuffer*);
+            ~Encoder();
 
-            class CommandBuffer* cb;
-            VkCommandBuffer commandBuffer;
+            bool Encode(VkCommandBuffer) override;
 
-            Resources(class CommandBuffer*);
-            ~Resources();
-
+            // Retain ownership of all encoded objects
             DKArray<DKObject<DKGpuBuffer>> buffers;
             DKArray<DKObject<DKTexture>> textures;
+
+            class CommandBuffer* commandBuffer;
+            DKArray<DKObject<EncoderCommand>> commands;
         };
+        DKObject<Encoder> encoder;
 
     public:
-        CopyCommandEncoder(VkCommandBuffer, class CommandBuffer*);
-        ~CopyCommandEncoder();
+        CopyCommandEncoder(class CommandBuffer*);
 
         void EndEncoding() override;
-        bool IsCompleted() const override { return false; }
-        DKCommandBuffer* CommandBuffer() override;
+        bool IsCompleted() const override { return encoder == nullptr; }
+        DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
                                     DKGpuBuffer* dst, size_t dstOffset,
@@ -58,13 +62,6 @@ namespace DKFramework::Private::Vulkan
 
         void FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value) override;
 
-        void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
-        void AddSignalSemaphore(VkSemaphore);
-
-        DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
-        DKSet<VkSemaphore> signalSemaphores;
-
-        DKObject<Resources> resources;
         DKObject<class CommandBuffer> commandBuffer;
 
     private:

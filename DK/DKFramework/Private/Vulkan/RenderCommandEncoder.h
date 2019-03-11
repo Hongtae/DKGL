@@ -19,38 +19,39 @@ namespace DKFramework::Private::Vulkan
 {
 	class RenderCommandEncoder : public DKRenderCommandEncoder
 	{
-        class Resources
+        struct EncodingState
         {
-            class CommandBuffer* cb;
-        public:
-            Resources(class CommandBuffer*);
-            ~Resources();
-
-            VkFramebuffer		framebuffer;
-            VkRenderPass		renderPass;
-
             RenderPipelineState* pipelineState;
-            DKMap<uint32_t, ShaderBindingSet*> updateResources; // have flag that 'update after bind'
-            DKMap<uint32_t, ShaderBindingSet*> unboundResources;
+        };
+        using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
+        class Encoder : public CommandBufferEncoder
+        {
+        public:
+            Encoder(class CommandBuffer*, const DKRenderPassDescriptor& desc);
+            ~Encoder();
 
-            DKArray<VkSemaphore>			waitSemaphores;
-            DKArray<VkPipelineStageFlags>	waitStageMasks;
-            DKArray<VkSemaphore>			signalSemaphores;
-
-            VkCommandBuffer commandBuffer;
+            bool Encode(VkCommandBuffer) override;
 
             // Retain ownership of all encoded objects
             DKArray<DKObject<RenderPipelineState>> pipelineStateObjects;
             DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
             DKArray<DKObject<DKGpuBuffer>> buffers;
+
+            DKRenderPassDescriptor renderPassDescriptor;
+
+            VkFramebuffer		framebuffer;
+            VkRenderPass		renderPass;
+
+            class CommandBuffer* commandBuffer;
+            DKArray<DKObject<EncoderCommand>> commands;
         };
+        DKObject<Encoder> encoder;
 
 	public:
-		RenderCommandEncoder(VkCommandBuffer, class CommandBuffer*, const DKRenderPassDescriptor&);
-		~RenderCommandEncoder();
+		RenderCommandEncoder(class CommandBuffer*, const DKRenderPassDescriptor&);
 
 		void EndEncoding() override;
-		bool IsCompleted() const override { return resources == nullptr; }
+		bool IsCompleted() const override { return encoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
@@ -64,13 +65,6 @@ namespace DKFramework::Private::Vulkan
 		void Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance) override;
 		void DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance) override;
 
-		void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
-		void AddSignalSemaphore(VkSemaphore);
-
-		DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
-		DKSet<VkSemaphore> signalSemaphores;
-
-		DKObject<Resources> resources;
 		DKObject<class CommandBuffer> commandBuffer;
 	};
 }
