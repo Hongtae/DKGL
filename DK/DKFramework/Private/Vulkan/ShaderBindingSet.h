@@ -42,6 +42,13 @@ namespace DKFramework::Private::Vulkan
         void UpdateDescriptorSet();
         bool FindDescriptorBinding(uint32_t binding, VkDescriptorSetLayoutBinding*) const;
 
+        struct ImageLayoutTransition
+        {
+            Texture* texture;
+            VkImageLayout layout;
+        };
+        DKArray<ImageLayoutTransition> imageLayoutTransitions;
+
         // pending updates (vkUpdateDescriptorSets)
         DKArray<VkWriteDescriptorSet> descriptorWrites;
         DKArray<VkCopyDescriptorSet> descriptorCopies;

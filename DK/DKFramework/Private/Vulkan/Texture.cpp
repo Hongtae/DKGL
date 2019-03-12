@@ -63,11 +63,7 @@ Texture::~Texture()
     delete[] layerLayouts;
 }
 
-VkImageLayout Texture::ChangeLayerLayout(uint32_t layer,
-                                         VkImageLayout newLayout,
-                                         VkCommandBuffer commandBuffer,
-                                         VkPipelineStageFlags srcStageMasks,
-                                         VkPipelineStageFlags dstStageMasks) const
+VkImageLayout Texture::SetLayerLayout(uint32_t layer, VkImageLayout newLayout, LayoutTransitionBarrierFunction* callback) const
 {
     DKASSERT_DEBUG(newLayout != VK_IMAGE_LAYOUT_UNDEFINED);
     DKASSERT_DEBUG(newLayout != VK_IMAGE_LAYOUT_PREINITIALIZED);
@@ -84,7 +80,7 @@ VkImageLayout Texture::ChangeLayerLayout(uint32_t layer,
 
             layerLayouts[layer] = newLayout;
         }
-        if (commandBuffer != VK_NULL_HANDLE && oldLayout != newLayout)
+        if (callback)
         {
             DKPixelFormat pixelFormat = PixelFormat();
 
@@ -148,15 +144,20 @@ VkImageLayout Texture::ChangeLayerLayout(uint32_t layer,
             barrier.srcAccessMask = getLayoutAccessMasks(oldLayout);
             barrier.dstAccessMask = getLayoutAccessMasks(newLayout);
 
-            vkCmdPipelineBarrier(
-                commandBuffer,
-                srcStageMasks,
-                dstStageMasks,
-                0,          //dependencyFlags
-                0, nullptr, //pMemoryBarriers
-                0, nullptr, //pBufferMemoryBarriers
-                1, &barrier);
+            callback->Invoke(barrier);
         }
+    }
+    return oldLayout;
+}
+
+VkImageLayout Texture::LayerLayout(uint32_t layer) const
+{
+    DKASSERT_DEBUG(layer < arrayLayers);
+    VkImageLayout oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    if (layer < arrayLayers)
+    {
+        DKCriticalSection<DKSpinLock> guard(layoutTransitionLock);
+        oldLayout = layerLayouts[layer];
     }
     return oldLayout;
 }

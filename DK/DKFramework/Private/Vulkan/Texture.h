@@ -84,10 +84,9 @@ namespace DKFramework::Private::Vulkan
 			return Vulkan::PixelFormat(format);
 		}
 
-        VkImageLayout ChangeLayerLayout(uint32_t layer, VkImageLayout layout,
-                                        VkCommandBuffer,
-                                        VkPipelineStageFlags srcStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                        VkPipelineStageFlags dstStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT) const;
+        using LayoutTransitionBarrierFunction = DKFunctionSignature<void(VkImageMemoryBarrier&)>;
+        VkImageLayout SetLayerLayout(uint32_t layer, VkImageLayout layout, LayoutTransitionBarrierFunction*) const;
+        VkImageLayout LayerLayout(uint32_t layer) const;
 
     private:
         DKSpinLock layoutTransitionLock;

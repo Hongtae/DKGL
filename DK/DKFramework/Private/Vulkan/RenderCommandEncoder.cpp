@@ -93,7 +93,7 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-                attachment.initialLayout = rt->ChangeLayerLayout(0, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, nullptr);
+                attachment.initialLayout = rt->SetLayerLayout(0, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, nullptr);
             attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
             VkAttachmentReference attachmentReference = {};
@@ -155,7 +155,7 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilStoreOp = attachment.storeOp;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-                rt->ChangeLayerLayout(0, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, nullptr);
+                rt->SetLayerLayout(0, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, nullptr);
             attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
             depthStencilReference.attachment = static_cast<uint32_t>(attachments.Count());

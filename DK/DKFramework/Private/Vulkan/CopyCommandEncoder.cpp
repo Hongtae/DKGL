@@ -132,12 +132,31 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
+        DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
+        imageMemoryBarriers.Reserve(region.imageSubresource.layerCount);
+
+        DKObject<Texture::LayoutTransitionBarrierFunction> layoutTrans = 
+            DKFunction([&](VkImageMemoryBarrier& b)
+        {
+            imageMemoryBarriers.Add(b);
+        });
+
         for (int i = 0; i < region.imageSubresource.layerCount; ++i)
-            texture->ChangeLayerLayout(region.imageSubresource.baseArrayLayer + i,
-                                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                       commandBuffer,
-                                       VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                       VK_PIPELINE_STAGE_TRANSFER_BIT);
+            texture->SetLayerLayout(region.imageSubresource.baseArrayLayer + i,
+                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                    layoutTrans);
+
+        if (imageMemoryBarriers.Count() > 0)
+        {
+            vkCmdPipelineBarrier(commandBuffer,
+                                 VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                 0,          //dependencyFlags
+                                 0, nullptr, //pMemoryBarriers
+                                 0, nullptr, //pBufferMemoryBarriers
+                                 imageMemoryBarriers.Count(),
+                                 (const VkImageMemoryBarrier*)imageMemoryBarriers);
+        }
 
         vkCmdCopyBufferToImage(commandBuffer,
                                buffer->buffer,
@@ -203,10 +222,31 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
+        DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
+        imageMemoryBarriers.Reserve(region.imageSubresource.layerCount);
+
+        DKObject<Texture::LayoutTransitionBarrierFunction> layoutTrans =
+            DKFunction([&](VkImageMemoryBarrier& b)
+        {
+            imageMemoryBarriers.Add(b);
+        });
+
         for (int i = 0; i < region.imageSubresource.layerCount; ++i)
-            texture->ChangeLayerLayout(region.imageSubresource.baseArrayLayer + i,
-                                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                       commandBuffer);
+            texture->SetLayerLayout(region.imageSubresource.baseArrayLayer + i,
+                                    VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                    layoutTrans);
+
+        if (imageMemoryBarriers.Count() > 0)
+        {
+            vkCmdPipelineBarrier(commandBuffer,
+                                 VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                 0,          //dependencyFlags
+                                 0, nullptr, //pMemoryBarriers
+                                 0, nullptr, //pBufferMemoryBarriers
+                                 imageMemoryBarriers.Count(),
+                                 (const VkImageMemoryBarrier*)imageMemoryBarriers);
+        }
 
         vkCmdCopyImageToBuffer(commandBuffer,
                                texture->image,
@@ -282,16 +322,35 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
+        DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
+        imageMemoryBarriers.Reserve(region.srcSubresource.layerCount + region.dstSubresource.layerCount);
+
+        DKObject<Texture::LayoutTransitionBarrierFunction> layoutTrans =
+            DKFunction([&](VkImageMemoryBarrier& b)
+        {
+            imageMemoryBarriers.Add(b);
+        });
+
         for (int i = 0; i < region.srcSubresource.layerCount; ++i)
-            srcTexture->ChangeLayerLayout(region.srcSubresource.baseArrayLayer + i,
-                                          VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                          commandBuffer);
+            srcTexture->SetLayerLayout(region.srcSubresource.baseArrayLayer + i,
+                                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                       layoutTrans);
         for (int i = 0; i < region.dstSubresource.layerCount; ++i)
-            dstTexture->ChangeLayerLayout(region.dstSubresource.baseArrayLayer + i,
-                                          VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                          commandBuffer,
-                                          VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                          VK_PIPELINE_STAGE_TRANSFER_BIT);
+            dstTexture->SetLayerLayout(region.dstSubresource.baseArrayLayer + i,
+                                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                       layoutTrans);
+
+        if (imageMemoryBarriers.Count() > 0)
+        {
+            vkCmdPipelineBarrier(commandBuffer,
+                                 VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                 0,          //dependencyFlags
+                                 0, nullptr, //pMemoryBarriers
+                                 0, nullptr, //pBufferMemoryBarriers
+                                 imageMemoryBarriers.Count(),
+                                 (const VkImageMemoryBarrier*)imageMemoryBarriers);
+        }
 
         vkCmdCopyImage(commandBuffer,
                        srcTexture->image,

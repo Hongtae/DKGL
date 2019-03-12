@@ -259,6 +259,29 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
             }
         }
 
+        DKPixelFormat pixelFormat = texture->PixelFormat();
+        VkImageLayout imageLayout = texture->LayerLayout(0);
+        switch (descriptor.descriptorType)
+        {
+        case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+        case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+            imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            break;
+        case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+            imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+            break;
+        case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+            if (DKPixelFormatIsColorFormat(pixelFormat))
+                imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+            else if (DKPixelFormatIsDepthFormat(pixelFormat))
+                imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+            else if (DKPixelFormatIsStencilFormat(pixelFormat))
+                imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+            break;
+        default:
+            imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+        }
+
         switch (descriptor.descriptorType)
         {
             // pImageInfo
@@ -290,7 +313,7 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
 
                 VkDescriptorImageInfo imageInfo = {};
                 imageInfo.imageView = texture->imageView;
-                imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+                imageInfo.imageLayout = imageLayout;
                 auto index = imageInfos.Add(imageInfo);
                 write.pImageInfo = &imageInfos.Value(index);
 
