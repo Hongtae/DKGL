@@ -56,6 +56,15 @@ void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffs
     DKASSERT_DEBUG(dynamic_cast<Buffer*>(src) != nullptr);
     DKASSERT_DEBUG(dynamic_cast<Buffer*>(dst) != nullptr);
 
+    size_t srcLength = src->Length();
+    size_t dstLength = dst->Length();
+
+    if (srcOffset + size > srcLength || dstOffset + size > dstLength)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromBufferToBuffer failed: Invalid buffer region");
+        return;
+    }
+
     VkBufferCopy region = {srcOffset, dstOffset, size};
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
@@ -82,22 +91,20 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
     Buffer* buffer = static_cast<Buffer*>(src);
     Texture* texture = static_cast<Texture*>(dst);
 
-    uint32_t textureWidth = texture->Width();
-    uint32_t textureHeight = texture->Height();
-    uint32_t textureDepth = texture->Depth();
-    uint32_t mipWidth = Max(textureWidth >> dstOffset.level, 1);
-    uint32_t mipHeight = Max(textureHeight >> dstOffset.level, 1);
-    uint32_t mipDepth = Max(textureDepth >> dstOffset.level, 1);
+    const Size mipDimensions = {
+        Max(texture->Width() >> dstOffset.level, 1U),
+        Max(texture->Height() >> dstOffset.level, 1U),
+        Max(texture->Depth() >> dstOffset.level, 1U)
+    };
 
-    if (dstOffset.x + size.width > mipWidth ||
-        dstOffset.y + size.height > mipHeight ||
-        dstOffset.z + size.depth > mipDepth)
+    if (dstOffset.x + size.width > mipDimensions.width ||
+        dstOffset.y + size.height > mipDimensions.height ||
+        dstOffset.z + size.depth > mipDimensions.depth)
     {
         DKLogE("DKCopyCommandEncoder::CopyFromBufferToTexture failed: Invalid texture region");
         return;
     }
-    if (size.width > srcOffset.imageWidth ||
-        size.height > srcOffset.imageHeight)
+    if (size.width > srcOffset.imageWidth || size.height > srcOffset.imageHeight)
     {
         DKLogE("DKCopyCommandEncoder::CopyFromBufferToTexture failed: Invalid buffer region");
         return;
@@ -155,22 +162,20 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
     Texture* texture = static_cast<Texture*>(src);
     Buffer* buffer = static_cast<Buffer*>(dst);
 
-    uint32_t textureWidth = texture->Width();
-    uint32_t textureHeight = texture->Height();
-    uint32_t textureDepth = texture->Depth();
-    uint32_t mipWidth = Max(textureWidth >> srcOffset.level, 1);
-    uint32_t mipHeight = Max(textureHeight >> srcOffset.level, 1);
-    uint32_t mipDepth = Max(textureDepth >> srcOffset.level, 1);
+    const Size mipDimensions = {
+        Max(texture->Width() >> srcOffset.level, 1U),
+        Max(texture->Height() >> srcOffset.level, 1U),
+        Max(texture->Depth() >> srcOffset.level, 1U)
+    };
 
-    if (srcOffset.x + size.width > mipWidth ||
-        srcOffset.y + size.height > mipHeight ||
-        srcOffset.z + size.depth > mipDepth)
+    if (srcOffset.x + size.width > mipDimensions.width ||
+        srcOffset.y + size.height > mipDimensions.height ||
+        srcOffset.z + size.depth > mipDimensions.depth)
     {
         DKLogE("DKCopyCommandEncoder::CopyFromTextureToBuffer failed: Invalid texture region");
         return;
     }
-    if (size.width > dstOffset.imageWidth ||
-        size.height > dstOffset.imageHeight)
+    if (size.width > dstOffset.imageWidth || size.height > dstOffset.imageHeight)
     {
         DKLogE("DKCopyCommandEncoder::CopyFromTextureToBuffer failed: Invalid buffer region");
         return;
@@ -194,7 +199,7 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
     region.bufferImageHeight = dstOffset.imageHeight;
     region.imageOffset = { (int32_t)srcOffset.x,(int32_t)srcOffset.y, (int32_t)srcOffset.z };
     region.imageExtent = { size.width, size.height,size.depth };
-    SetupSubresource(srcOffset, 1, texture->PixelFormat(), region.imageSubresource);
+    SetupSubresource(srcOffset, 1, pixelFormat, region.imageSubresource);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
@@ -224,9 +229,49 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
     Texture* srcTexture = static_cast<Texture*>(src);
     Texture* dstTexture = static_cast<Texture*>(dst);
 
-    VkImageCopy region;
-    SetupSubresource(srcOffset, 1, srcTexture->PixelFormat(), region.srcSubresource);
-    SetupSubresource(dstOffset, 1, dstTexture->PixelFormat(), region.dstSubresource);
+    const Size srcMipDimensions = {
+        Max(srcTexture->Width() >> srcOffset.level, 1U),
+        Max(srcTexture->Height() >> srcOffset.level, 1U),
+        Max(srcTexture->Depth() >> srcOffset.level, 1U)
+    };
+    const Size dstMipDimensions = {
+        Max(dstTexture->Width() >> dstOffset.level, 1U),
+        Max(dstTexture->Height() >> dstOffset.level, 1U),
+        Max(dstTexture->Depth() >> dstOffset.level, 1U)
+    };
+
+    if (srcOffset.x + size.width > srcMipDimensions.width ||
+        srcOffset.y + size.height > srcMipDimensions.height ||
+        srcOffset.z + size.depth > srcMipDimensions.depth)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromTextureToTexture failed: Invalid source texture region");
+        return;
+    }
+    if (dstOffset.x + size.width > dstMipDimensions.width ||
+        dstOffset.y + size.height > dstMipDimensions.height ||
+        dstOffset.z + size.depth > dstMipDimensions.depth)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromTextureToTexture failed: Invalid destination texture region");
+        return;
+    }
+
+    DKPixelFormat srcPixelFormat = srcTexture->PixelFormat();
+    DKPixelFormat dstPixelFormat = dstTexture->PixelFormat();
+    size_t srcBytesPerPixel = DKPixelFormatBytesPerPixel(srcPixelFormat);
+    size_t dstBytesPerPixel = DKPixelFormatBytesPerPixel(dstPixelFormat);
+
+    DKASSERT_DEBUG(srcBytesPerPixel > 0);      // Unsupported texture format!
+    DKASSERT_DEBUG(dstBytesPerPixel > 0);      // Unsupported texture format!
+
+    if (srcBytesPerPixel != dstBytesPerPixel)
+    {
+        DKLogE("DKCopyCommandEncoder::CopyFromTextureToTexture failed: Incompatible pixel formats");
+        return;
+    }
+
+    VkImageCopy region = {};
+    SetupSubresource(srcOffset, 1, srcPixelFormat, region.srcSubresource);
+    SetupSubresource(dstOffset, 1, dstPixelFormat, region.dstSubresource);
 
     DKASSERT_DEBUG(region.srcSubresource.aspectMask);
     DKASSERT_DEBUG(region.dstSubresource.aspectMask);
@@ -263,6 +308,13 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
 void CopyCommandEncoder::FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value)
 {
     DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer) != nullptr);
+
+    size_t bufferLength = buffer->Length();
+    if (offset + length > bufferLength)
+    {
+        DKLogE("DKCopyCommandEncoder::FillBuffer failed: Invalid buffer region");
+        return;
+    }
 
     uint32_t data = (uint32_t(value) << 24 |
                      uint32_t(value) << 16 |
