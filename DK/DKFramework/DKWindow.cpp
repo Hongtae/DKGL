@@ -129,8 +129,7 @@ bool DKWindow::KeyState(int deviceId, const DKVirtualKey& k) const
 {
 	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
-	auto p = keyboardStateMap.Find(deviceId);
-	if (p)
+	if (auto p = keyboardStateMap.Find(deviceId); p)
 	{
 		return _GetUCArrayBit(p->value.keyStateBits, k);
 	}
@@ -149,8 +148,7 @@ void DKWindow::SetKeyState(int deviceId, const DKVirtualKey& k, bool down)
 void DKWindow::ResetKeyState(int deviceId)
 {
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
-	auto p = keyboardStateMap.Find(deviceId);
-	if (p)
+	if (auto p = keyboardStateMap.Find(deviceId); p)
 	{
 		KeyboardState& state = p->value;
 		memset(state.keyStateBits, 0, sizeof(state.keyStateBits));
@@ -165,8 +163,7 @@ void DKWindow::ResetKeyStateForAllDevices()
 
 DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
 {
-	auto p = keyboardStateMap.Find(deviceId);
-	if (p)
+	if (auto p = keyboardStateMap.Find(deviceId); p)
 		return p->value;
 
 	KeyboardState& newState = keyboardStateMap.Value(deviceId);
@@ -342,35 +339,37 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 
 	if (this->eventLoop)
 	{
-		WindowEvent* eventCopy = new WindowEvent(event);
+        WindowEvent* eventCopy = new WindowEvent(event);
 
-		DKCriticalSection<DKSpinLock> guard(handlerLock);
-		pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
-		windowEventHandlers.EnumerateForward([&](decltype(windowEventHandlers)::Pair& pair) {
-			if (pair.value)
-			{
-				DKObject<DKOperation> op = pair.value->Invocation(*eventCopy).SafeCast<DKOperation>();
-				PendingEvent pe = { pair.key, nullptr };
-				pe.state = this->eventLoop->Post(op);	// enqueue the event.
-				if (pe.state)
-					pendingEvents.Add(pe);
-			}
-		});
+        DKCriticalSection<DKSpinLock> guard(handlerLock);
+        pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
+        windowEventHandlers.EnumerateForward([&](decltype(windowEventHandlers)::Pair& pair)
+        {
+            if (pair.value)
+            {
+                DKObject<DKOperation> op = pair.value->Invocation(*eventCopy).SafeCast<DKOperation>();
+                PendingEvent pe = { pair.key, nullptr };
+                pe.state = this->eventLoop->Post(op);	// enqueue the event.
+                if (pe.state)
+                    pendingEvents.Add(pe);
+            }
+        });
 
-		// delete eventCopy async
-		DKObject<DKWindow> self = this;
-		this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
-		{
-			delete eventCopy;
-			self->ClearCompletedEvents();
-		})->Invocation());
+        // delete eventCopy async
+        DKObject<DKWindow> self = this;
+        this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
+        {
+            delete eventCopy;
+            self->ClearCompletedEvents();
+        })->Invocation());
 	}
 	else
 	{
 		handlerLock.Lock();
 		DKArray<DKObject<WindowEventHandler>> callbacks;
 		callbacks.Reserve(windowEventHandlers.Count());
-		windowEventHandlers.EnumerateForward([&callbacks](decltype(windowEventHandlers)::Pair& pair) {
+		windowEventHandlers.EnumerateForward([&callbacks](decltype(windowEventHandlers)::Pair& pair)
+        {
 			if (pair.value)
 				callbacks.Add(pair.value);
 		});

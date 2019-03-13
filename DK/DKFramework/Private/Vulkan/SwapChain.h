@@ -12,7 +12,7 @@
 
 #include "../../DKWindow.h"
 #include "CommandQueue.h"
-#include "Texture.h"
+#include "ImageView.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -45,7 +45,7 @@ namespace DKFramework::Private::Vulkan
 		VkSemaphore renderCompleteSemaphore;
 
 
-		DKArray<DKObject<Texture>> renderTargets;
+        DKArray<DKObject<ImageView>> imageViews;
 
 		DKObject<DKWindow> window;
 		DKObject<CommandQueue> queue;

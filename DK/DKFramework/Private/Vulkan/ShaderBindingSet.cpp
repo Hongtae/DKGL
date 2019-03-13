@@ -11,7 +11,6 @@
 #include "GraphicsDevice.h"
 #include "ShaderBindingSet.h"
 #include "DescriptorPool.h"
-#include "Buffer.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -78,8 +77,8 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
     VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
-        DKASSERT_DEBUG(dynamic_cast<Buffer*>(bufferObject) != nullptr);
-        Buffer* buffer = static_cast<Buffer*>(bufferObject);
+        DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferObject) != nullptr);
+        BufferView* bufferView = static_cast<BufferView*>(bufferObject);
 
         for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
         {
@@ -102,10 +101,15 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
         case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
         case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
             // bufferView (pTexelBufferView)
-            if (1)
+            DKASSERT_DEBUG(bufferView->bufferView);
+            if (bufferView->bufferView)
             {
-                DKASSERT_DEBUG(buffer->bufferView);
-                write.pTexelBufferView = &buffer->bufferView;
+                write.pTexelBufferView = &bufferView->bufferView;
+            }
+            else
+            {
+                DKLogE("DKShaderBindingSet::SetBuffer failed: Invalid buffer view");
+                return;
             }
             break;
         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
@@ -113,9 +117,9 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
         case  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
             // buffer (pBufferInfo)
-            if (1)
+            DKASSERT_DEBUG(bufferView->buffer);
+            if (Buffer* buffer = bufferView->buffer; buffer)
             {
-                DKASSERT_DEBUG(buffer->buffer);
                 VkDescriptorBufferInfo bufferInfo = {};
                 bufferInfo.buffer = buffer->buffer;
                 bufferInfo.offset = offset;
@@ -125,6 +129,11 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
                 auto index = bufferInfos.Add(bufferInfo);
                 write.pBufferInfo = &bufferInfos.Value(index);
             }
+            else
+            {
+                DKLogE("DKShaderBindingSet::SetBuffer failed: Invalid buffer");
+                return;
+            }
             break;
         default:
             DKLogE("Invalid type!");
@@ -133,9 +142,9 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
         }
 
         // take ownership of resource.
-        DKArray<BufferObject>& bufferObjectArray = buffers.Value(binding);
-        bufferObjectArray.Clear();
-        bufferObjectArray.Add(buffer);
+        DKArray<BufferViewObject>& bufferViewArray = bufferViews.Value(binding);
+        bufferViewArray.Clear();
+        bufferViewArray.Add(bufferView);
 
         descriptorWrites.Add(write);
     }
@@ -178,10 +187,10 @@ void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, Buf
                 texelBufferViews.Reserve(first + availableItems);
                 for (uint32_t i = 0; i < availableItems; ++i)
                 {
-                    DKASSERT_DEBUG(dynamic_cast<Buffer*>(bufferArray[i].buffer));
-                    Buffer* buffer = static_cast<Buffer*>(bufferArray[i].buffer);
-                    DKASSERT_DEBUG(buffer->bufferView);
-                    texelBufferViews.Add(buffer->bufferView);
+                    DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferArray[i].buffer));
+                    BufferView* bufferView = static_cast<BufferView*>(bufferArray[i].buffer);
+                    DKASSERT_DEBUG(bufferView->bufferView);
+                    texelBufferViews.Add(bufferView->bufferView);
                 }
                 write.pTexelBufferView = &texelBufferViews.Value(first);
             }
@@ -197,8 +206,8 @@ void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, Buf
                 bufferInfos.Reserve(first + availableItems);
                 for (uint32_t i = 0; i < availableItems; ++i)
                 {
-                    DKASSERT_DEBUG(dynamic_cast<Buffer*>(bufferArray[i].buffer));
-                    Buffer* buffer = static_cast<Buffer*>(bufferArray[i].buffer);
+                    DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferArray[i].buffer));
+                    Buffer* buffer = static_cast<BufferView*>(bufferArray[i].buffer)->buffer;
                     DKASSERT_DEBUG(buffer->buffer);
 
                     VkDescriptorBufferInfo bufferInfo = {};
@@ -218,14 +227,14 @@ void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, Buf
         }
 
         // take ownership of resource.
-        DKArray<BufferObject>& bufferObjectArray = buffers.Value(binding);
-        bufferObjectArray.Clear();
-        bufferObjectArray.Reserve(availableItems);
+        DKArray<BufferViewObject>& bufferViewArray = bufferViews.Value(binding);
+        bufferViewArray.Clear();
+        bufferViewArray.Reserve(availableItems);
 
         for (uint32_t i = 0; i < availableItems; ++i)
         {
-            Buffer* buffer = static_cast<Buffer*>(bufferArray[i].buffer);
-            bufferObjectArray.Add(buffer);
+            BufferView* bufferView = static_cast<BufferView*>(bufferArray[i].buffer);
+            bufferViewArray.Add(bufferView);
         }
 
         descriptorWrites.Add(write);
@@ -237,8 +246,8 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
     VkDescriptorSetLayoutBinding descriptor;
     if (FindDescriptorBinding(binding, &descriptor))
     {
-        DKASSERT_DEBUG(dynamic_cast<Texture*>(textureObject) != nullptr);
-        Texture* texture = static_cast<Texture*>(textureObject);
+        DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureObject) != nullptr);
+        ImageView* imageView = static_cast<ImageView*>(textureObject);
 
         VkWriteDescriptorSet* prevWrite = nullptr;
         for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
@@ -259,8 +268,8 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
             }
         }
 
-        DKPixelFormat pixelFormat = texture->PixelFormat();
-        VkImageLayout imageLayout = texture->LayerLayout(0);
+        DKPixelFormat pixelFormat = imageView->PixelFormat();
+        VkImageLayout imageLayout = VK_IMAGE_LAYOUT_UNDEFINED; /* imageView->LayerLayout(0);*/
         switch (descriptor.descriptorType)
         {
         case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
@@ -289,7 +298,7 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
         case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
         case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
         case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-            DKASSERT_DEBUG(texture->imageView);
+            DKASSERT_DEBUG(imageView->imageView);
             if (prevWrite)
             {
                 auto first = imageInfos.Count();
@@ -297,7 +306,7 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
                 for (uint32_t i = 0; i < prevWrite->descriptorCount; ++i)
                 {
                     VkDescriptorImageInfo imageInfo = prevWrite->pImageInfo[i];
-                    imageInfo.imageView = texture->imageView;
+                    imageInfo.imageView = imageView->imageView;
                     auto index = imageInfos.Add(imageInfo);
                 }
                 prevWrite->pImageInfo = &imageInfos.Value(first);
@@ -312,7 +321,7 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
                 write.descriptorType = descriptor.descriptorType;
 
                 VkDescriptorImageInfo imageInfo = {};
-                imageInfo.imageView = texture->imageView;
+                imageInfo.imageView = imageView->imageView;
                 imageInfo.imageLayout = imageLayout;
                 auto index = imageInfos.Add(imageInfo);
                 write.pImageInfo = &imageInfos.Value(index);
@@ -327,9 +336,9 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
         }
 
         // take ownership of resource.
-        DKArray<TextureObject>& textureObjectArray = textures.Value(binding);
-        textureObjectArray.Clear();
-        textureObjectArray.Add(texture);
+        DKArray<ImageViewObject>& imageViewArray = imageViews.Value(binding);
+        imageViewArray.Clear();
+        imageViewArray.Add(imageView);
     }
 }
 
@@ -380,11 +389,11 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
                     VkDescriptorImageInfo imageInfo = (prevWrite->descriptorCount < i) ?
                         prevWrite->pImageInfo[i] : prevWrite->pImageInfo[prevWrite->descriptorCount - 1];
 
-                    DKASSERT_DEBUG(dynamic_cast<Texture*>(textureArray[i]) != nullptr);
-                    Texture* texture = static_cast<Texture*>(textureArray[i]);
-                    DKASSERT_DEBUG(texture->imageView);
+                    DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureArray[i]) != nullptr);
+                    ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
+                    DKASSERT_DEBUG(imageView->imageView);
 
-                    imageInfo.imageView = texture->imageView;
+                    imageInfo.imageView = imageView->imageView;
                     auto index = imageInfos.Add(imageInfo);
                 }
                 prevWrite->pImageInfo = &imageInfos.Value(first);
@@ -404,11 +413,11 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
                 {
                     VkDescriptorImageInfo imageInfo = {};
 
-                    DKASSERT_DEBUG(dynamic_cast<Texture*>(textureArray[i]) != nullptr);
-                    Texture* texture = static_cast<Texture*>(textureArray[i]);
-                    DKASSERT_DEBUG(texture->imageView);
+                    DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureArray[i]) != nullptr);
+                    ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
+                    DKASSERT_DEBUG(imageView->imageView);
 
-                    imageInfo.imageView = texture->imageView;
+                    imageInfo.imageView = imageView->imageView;
                     auto index = imageInfos.Add(imageInfo);
                 }
                 write.pImageInfo = &imageInfos.Value(first);
@@ -423,14 +432,14 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
         }
 
         // take ownership of resource.
-        DKArray<TextureObject>& textureObjectArray = textures.Value(binding);
-        textureObjectArray.Clear();
-        textureObjectArray.Reserve(availableItems);
+        DKArray<ImageViewObject>& imageViewArray = imageViews.Value(binding);
+        imageViewArray.Clear();
+        imageViewArray.Reserve(availableItems);
 
         for (uint32_t i = 0; i < availableItems; ++i)
         {
-            Texture* texture = static_cast<Texture*>(textureArray[i]);
-            textureObjectArray.Add(texture);
+            ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
+            imageViewArray.Add(imageView);
         }
     }
 }

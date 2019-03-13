@@ -334,6 +334,7 @@
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
     <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\BufferView.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CopyCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\Buffer.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
@@ -342,6 +343,8 @@
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPool.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPoolChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DeviceMemory.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Image.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ImageView.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
@@ -352,7 +355,6 @@
     <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
-    <ClCompile Include="DKFramework\Private\Vulkan\Texture.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
     <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
@@ -584,6 +586,7 @@
     <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
     <ClInclude Include="DKFramework\Private\Metal\Types.h" />
     <ClInclude Include="DKFramework\Private\OpenAL.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\BufferView.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CopyCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Buffer.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
@@ -592,6 +595,8 @@
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPool.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPoolChain.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DeviceMemory.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Image.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ImageView.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
@@ -603,7 +608,6 @@
     <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
-    <ClInclude Include="DKFramework\Private\Vulkan\Texture.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Types.h" />
     <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
     <ClInclude Include="DKFramework\Private\Win32\Application.h" />

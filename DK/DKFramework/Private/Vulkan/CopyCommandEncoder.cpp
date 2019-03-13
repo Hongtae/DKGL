@@ -8,8 +8,8 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
 #include "CopyCommandEncoder.h"
-#include "Buffer.h"
-#include "Texture.h"
+#include "BufferView.h"
+#include "ImageView.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
@@ -53,11 +53,17 @@ void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffs
                                                 DKGpuBuffer* dst, size_t dstOffset,
                                                 size_t size)
 {
-    DKASSERT_DEBUG(dynamic_cast<Buffer*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<Buffer*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<BufferView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<BufferView*>(dst) != nullptr);
 
-    size_t srcLength = src->Length();
-    size_t dstLength = dst->Length();
+    Buffer* srcBuffer = static_cast<BufferView*>(src)->buffer;
+    Buffer* dstBuffer = static_cast<BufferView*>(dst)->buffer;
+
+    DKASSERT_DEBUG(srcBuffer &&srcBuffer->buffer);
+    DKASSERT_DEBUG(dstBuffer && dstBuffer->buffer);
+
+    size_t srcLength = srcBuffer->Length();
+    size_t dstLength = dstBuffer->Length();
 
     if (srcOffset + size > srcLength || dstOffset + size > dstLength)
     {
@@ -70,8 +76,8 @@ void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffs
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         vkCmdCopyBuffer(commandBuffer,
-                        static_cast<Buffer*>(src)->buffer,
-                        static_cast<Buffer*>(dst)->buffer,
+                        srcBuffer->buffer,
+                        dstBuffer->buffer,
                         1, &region);
     });
     encoder->commands.Add(command);
@@ -83,18 +89,21 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
                                                  DKTexture* dst, const TextureOrigin& dstOffset,
                                                  const Size& size)
 {
-    DKASSERT_DEBUG(dynamic_cast<Buffer*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<Texture*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<BufferView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<ImageView*>(dst) != nullptr);
 
     DKASSERT_DEBUG((srcOffset.bufferOffset % 4) == 0);
 
-    Buffer* buffer = static_cast<Buffer*>(src);
-    Texture* texture = static_cast<Texture*>(dst);
+    Buffer* buffer = static_cast<BufferView*>(src)->buffer;
+    Image* image = static_cast<ImageView*>(dst)->image;
+
+    DKASSERT_DEBUG(buffer && buffer->buffer);
+    DKASSERT_DEBUG(image && image->image);
 
     const Size mipDimensions = {
-        Max(texture->Width() >> dstOffset.level, 1U),
-        Max(texture->Height() >> dstOffset.level, 1U),
-        Max(texture->Depth() >> dstOffset.level, 1U)
+        Max(image->Width() >> dstOffset.level, 1U),
+        Max(image->Height() >> dstOffset.level, 1U),
+        Max(image->Depth() >> dstOffset.level, 1U)
     };
 
     if (dstOffset.x + size.width > mipDimensions.width ||
@@ -110,7 +119,7 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
         return;
     }
 
-    DKPixelFormat pixelFormat = texture->PixelFormat();
+    DKPixelFormat pixelFormat = image->PixelFormat();
     size_t bufferLength = buffer->Length();
     size_t bytesPerPixel = DKPixelFormatBytesPerPixel(pixelFormat);
     DKASSERT_DEBUG(bytesPerPixel > 0);      // Unsupported texture format!
@@ -135,16 +144,7 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
         DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
         imageMemoryBarriers.Reserve(region.imageSubresource.layerCount);
 
-        DKObject<Texture::LayoutTransitionBarrierFunction> layoutTrans = 
-            DKFunction([&](VkImageMemoryBarrier& b)
-        {
-            imageMemoryBarriers.Add(b);
-        });
-
-        for (int i = 0; i < region.imageSubresource.layerCount; ++i)
-            texture->SetLayerLayout(region.imageSubresource.baseArrayLayer + i,
-                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                    layoutTrans);
+        //TODO: setup image layout transition!
 
         if (imageMemoryBarriers.Count() > 0)
         {
@@ -160,7 +160,7 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
 
         vkCmdCopyBufferToImage(commandBuffer,
                                buffer->buffer,
-                               texture->image,
+                               image->image,
                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                1, &region);
     });
@@ -173,18 +173,21 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
                                                  DKGpuBuffer* dst, const BufferImageOrigin& dstOffset,
                                                  const Size& size)
 {
-    DKASSERT_DEBUG(dynamic_cast<Texture*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<Buffer*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<ImageView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<BufferView*>(dst) != nullptr);
 
     DKASSERT_DEBUG((dstOffset.bufferOffset % 4) == 0);
 
-    Texture* texture = static_cast<Texture*>(src);
-    Buffer* buffer = static_cast<Buffer*>(dst);
+    Image* image = static_cast<ImageView*>(src)->image;
+    Buffer* buffer = static_cast<BufferView*>(dst)->buffer;
+
+    DKASSERT_DEBUG(buffer && buffer->buffer);
+    DKASSERT_DEBUG(image && image->image);
 
     const Size mipDimensions = {
-        Max(texture->Width() >> srcOffset.level, 1U),
-        Max(texture->Height() >> srcOffset.level, 1U),
-        Max(texture->Depth() >> srcOffset.level, 1U)
+        Max(image->Width() >> srcOffset.level, 1U),
+        Max(image->Height() >> srcOffset.level, 1U),
+        Max(image->Depth() >> srcOffset.level, 1U)
     };
 
     if (srcOffset.x + size.width > mipDimensions.width ||
@@ -200,7 +203,7 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
         return;
     }
 
-    DKPixelFormat pixelFormat = texture->PixelFormat();
+    DKPixelFormat pixelFormat = image->PixelFormat();
     size_t bufferLength = buffer->Length();
     size_t bytesPerPixel = DKPixelFormatBytesPerPixel(pixelFormat);
     DKASSERT_DEBUG(bytesPerPixel > 0);      // Unsupported texture format!
@@ -225,16 +228,7 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
         DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
         imageMemoryBarriers.Reserve(region.imageSubresource.layerCount);
 
-        DKObject<Texture::LayoutTransitionBarrierFunction> layoutTrans =
-            DKFunction([&](VkImageMemoryBarrier& b)
-        {
-            imageMemoryBarriers.Add(b);
-        });
-
-        for (int i = 0; i < region.imageSubresource.layerCount; ++i)
-            texture->SetLayerLayout(region.imageSubresource.baseArrayLayer + i,
-                                    VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                    layoutTrans);
+        //TODO: setup image layout transition!
 
         if (imageMemoryBarriers.Count() > 0)
         {
@@ -249,7 +243,7 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
         }
 
         vkCmdCopyImageToBuffer(commandBuffer,
-                               texture->image,
+                               image->image,
                                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                                buffer->buffer,
                                1, &region);
@@ -263,21 +257,24 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
                                                   DKTexture* dst, const TextureOrigin& dstOffset,
                                                   const Size& size)
 {
-    DKASSERT_DEBUG(dynamic_cast<Texture*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<Texture*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<ImageView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<ImageView*>(dst) != nullptr);
 
-    Texture* srcTexture = static_cast<Texture*>(src);
-    Texture* dstTexture = static_cast<Texture*>(dst);
+    Image* srcImage = static_cast<ImageView*>(src)->image;
+    Image* dstImage = static_cast<ImageView*>(dst)->image;
+
+    DKASSERT_DEBUG(srcImage && srcImage->image);
+    DKASSERT_DEBUG(dstImage && dstImage->image);
 
     const Size srcMipDimensions = {
-        Max(srcTexture->Width() >> srcOffset.level, 1U),
-        Max(srcTexture->Height() >> srcOffset.level, 1U),
-        Max(srcTexture->Depth() >> srcOffset.level, 1U)
+        Max(srcImage->Width() >> srcOffset.level, 1U),
+        Max(srcImage->Height() >> srcOffset.level, 1U),
+        Max(srcImage->Depth() >> srcOffset.level, 1U)
     };
     const Size dstMipDimensions = {
-        Max(dstTexture->Width() >> dstOffset.level, 1U),
-        Max(dstTexture->Height() >> dstOffset.level, 1U),
-        Max(dstTexture->Depth() >> dstOffset.level, 1U)
+        Max(dstImage->Width() >> dstOffset.level, 1U),
+        Max(dstImage->Height() >> dstOffset.level, 1U),
+        Max(dstImage->Depth() >> dstOffset.level, 1U)
     };
 
     if (srcOffset.x + size.width > srcMipDimensions.width ||
@@ -295,8 +292,8 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
         return;
     }
 
-    DKPixelFormat srcPixelFormat = srcTexture->PixelFormat();
-    DKPixelFormat dstPixelFormat = dstTexture->PixelFormat();
+    DKPixelFormat srcPixelFormat = srcImage->PixelFormat();
+    DKPixelFormat dstPixelFormat = dstImage->PixelFormat();
     size_t srcBytesPerPixel = DKPixelFormatBytesPerPixel(srcPixelFormat);
     size_t dstBytesPerPixel = DKPixelFormatBytesPerPixel(dstPixelFormat);
 
@@ -325,20 +322,7 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
         DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
         imageMemoryBarriers.Reserve(region.srcSubresource.layerCount + region.dstSubresource.layerCount);
 
-        DKObject<Texture::LayoutTransitionBarrierFunction> layoutTrans =
-            DKFunction([&](VkImageMemoryBarrier& b)
-        {
-            imageMemoryBarriers.Add(b);
-        });
-
-        for (int i = 0; i < region.srcSubresource.layerCount; ++i)
-            srcTexture->SetLayerLayout(region.srcSubresource.baseArrayLayer + i,
-                                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                       layoutTrans);
-        for (int i = 0; i < region.dstSubresource.layerCount; ++i)
-            dstTexture->SetLayerLayout(region.dstSubresource.baseArrayLayer + i,
-                                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                       layoutTrans);
+        //TODO: setup image layout transition!
 
         if (imageMemoryBarriers.Count() > 0)
         {
@@ -353,9 +337,9 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
         }
 
         vkCmdCopyImage(commandBuffer,
-                       srcTexture->image,
+                       srcImage->image,
                        VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                       dstTexture->image,
+                       dstImage->image,
                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &region);
     });
@@ -366,9 +350,11 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
 
 void CopyCommandEncoder::FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<BufferView*>(buffer) != nullptr);
+    Buffer* buf = static_cast<BufferView*>(buffer)->buffer;
+    DKASSERT_DEBUG(buf && buf->buffer);
 
-    size_t bufferLength = buffer->Length();
+    size_t bufferLength = buf->Length();
     if (offset + length > bufferLength)
     {
         DKLogE("DKCopyCommandEncoder::FillBuffer failed: Invalid buffer region");
@@ -383,7 +369,7 @@ void CopyCommandEncoder::FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t l
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         vkCmdFillBuffer(commandBuffer,
-                        static_cast<Buffer*>(buffer)->buffer,
+                        static_cast<Buffer*>(buf)->buffer,
                         static_cast<VkDeviceSize>(offset),
                         static_cast<VkDeviceSize>(length),
                         data);

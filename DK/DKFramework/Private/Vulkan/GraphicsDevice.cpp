@@ -15,8 +15,8 @@
 #include "RenderPipelineState.h"
 #include "ComputePipelineState.h"
 #include "DeviceMemory.h"
-#include "Buffer.h"
-#include "Texture.h"
+#include "BufferView.h"
+#include "ImageView.h"
 #include "Types.h"
 #include "../../DKPropertySet.h"
 
@@ -956,8 +956,7 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
         DKCriticalSection<DKSpinLock> guard(dpChainMap.lock);
 
         // find matching pool.
-        auto p = dpChainMap.poolChainMap.Find(poolId);
-        if (!p)
+        if (auto p = dpChainMap.poolChainMap.Find(poolId); p == nullptr)
         {
             // create new pool-chain.
             DescriptorPoolChain* chain = new DescriptorPoolChain(this, poolId);
@@ -1050,77 +1049,134 @@ void GraphicsDevice::DestroyDescriptorSet(VkDescriptorSet set, DescriptorPool* p
 
 DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t size, DKGpuBuffer::StorageMode storage, DKCpuCacheMode cache)
 {
-	if (size > 0)
-	{
-		VkBufferCreateInfo bufferCI = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
-		bufferCI.size = size;
-		bufferCI.usage = 0x1ff;
-		bufferCI.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    if (size > 0)
+    {
+        auto createBuffer = [this, dev](const VkBufferCreateInfo& bufferCreateInfo, DKGpuBuffer::StorageMode storage)->DKObject<Buffer>
+        {
+            VkBuffer buffer = nullptr;
+            VkResult result = vkCreateBuffer(device, &bufferCreateInfo, allocationCallbacks, &buffer);
+            if (result == VK_SUCCESS)
+            {
+                VkDeviceMemory memory = VK_NULL_HANDLE;
+                VkMemoryRequirements memReqs;
 
-		VkBuffer buffer = nullptr;
-		VkResult result = vkCreateBuffer(device, &bufferCI, allocationCallbacks, &buffer);
-		if (result == VK_SUCCESS)
-		{
-			VkBufferView view = nullptr;
-			VkDeviceMemory memory = VK_NULL_HANDLE;
-			VkMemoryRequirements memReqs;
+                VkMemoryPropertyFlags memProperties;
+                switch (storage)
+                {
+                case DKGpuBuffer::StorageModeShared:
+                    memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+                    break;
+                default:
+                    memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+                    break;
+                }
 
-			VkMemoryPropertyFlags memProperties;
-			switch (storage)
-			{
-			case DKGpuBuffer::StorageModeShared:
-                memProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
-				break;
-			default:
-				memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-				break;
-			}
+                VkMemoryAllocateInfo memAllocInfo = { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+                vkGetBufferMemoryRequirements(device, buffer, &memReqs);
+                memAllocInfo.allocationSize = memReqs.size;
+                memAllocInfo.memoryTypeIndex = IndexOfMemoryType(memReqs.memoryTypeBits, memProperties);
+                DKASSERT_DEBUG(memAllocInfo.allocationSize >= bufferCreateInfo.size);
 
-			VkMemoryAllocateInfo memAllocInfo = { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
-			vkGetBufferMemoryRequirements(device, buffer, &memReqs);
-			memAllocInfo.allocationSize = memReqs.size;
-			memAllocInfo.memoryTypeIndex = IndexOfMemoryType(memReqs.memoryTypeBits, memProperties);
-            DKASSERT_DEBUG(memAllocInfo.allocationSize >= size);
+                result = vkAllocateMemory(device, &memAllocInfo, allocationCallbacks, &memory);
+                if (result == VK_SUCCESS)
+                {
+                    result = vkBindBufferMemory(device, buffer, memory, 0);
+                    if (result == VK_SUCCESS)
+                    {
+                        VkMemoryType memoryType = deviceMemoryTypes.Value(memAllocInfo.memoryTypeIndex);
+                        DKObject<DeviceMemory> deviceMemory = DKOBJECT_NEW DeviceMemory(dev, memory, memoryType, memAllocInfo.allocationSize);
+                        DKObject<Buffer> ret = DKOBJECT_NEW Buffer(deviceMemory, buffer, bufferCreateInfo);
+                        return ret;
+                    }
+                    else
+                    {
+                        DKLogE("ERROR: vkBindBufferMemory failed: %s", VkResultCStr(result));
+                    }
+                }
+                else
+                {
+                    DKLogE("ERROR: vkAllocateMemory failed: %s", VkResultCStr(result));
+                }
 
-			result = vkAllocateMemory(device, &memAllocInfo, allocationCallbacks, &memory);
-			if (result == VK_SUCCESS)
-			{
-				result = vkBindBufferMemory(device, buffer, memory, 0);
-				if (result == VK_SUCCESS)
-				{
-					VkMemoryType memoryType = deviceMemoryTypes.Value(memAllocInfo.memoryTypeIndex);
-                    DKObject<DeviceMemory> deviceMemory = DKOBJECT_NEW DeviceMemory(dev, memory, memoryType, memAllocInfo.allocationSize);
-					DKObject<Buffer> ret = DKOBJECT_NEW Buffer(dev, buffer, view, deviceMemory);
-					return ret.SafeCast<DKGpuBuffer>();
-				}
-				else
-				{
-					DKLogE("ERROR: vkBindBufferMemory failed: %s", VkResultCStr(result));
-				}
-			}
-			else
-			{
-				DKLogE("ERROR: vkAllocateMemory failed: %s", VkResultCStr(result));
-			}
+                // clean up
+                if (buffer)
+                    vkDestroyBuffer(device, buffer, allocationCallbacks);
+                if (memory)
+                    vkFreeMemory(device, memory, allocationCallbacks);
+            }
+            else
+            {
+                DKLogE("ERROR: vkCreateBuffer failed: %s", VkResultCStr(result));
+            }
+            return NULL;
+        };
 
-			// clean up
-			if (view)
-				vkDestroyBufferView(device, view, allocationCallbacks);
-			if (buffer)
-				vkDestroyBuffer(device, buffer, allocationCallbacks);
-			if (memory)
-				vkFreeMemory(device, memory, allocationCallbacks);
-		}
-		else
-		{
-			DKLogE("ERROR: vkCreateBuffer failed: %s", VkResultCStr(result));
-		}
-	}
-	return NULL;
+        VkBufferCreateInfo bufferCreateInfo = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO };
+        bufferCreateInfo.size = size;
+        bufferCreateInfo.usage = 0x1ff;
+        bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        DKObject<Buffer> buffer = createBuffer(bufferCreateInfo, storage);
+        if (buffer)
+        {
+            VkBufferView view = nullptr;
+            VkBufferViewCreateInfo bufferViewCreateInfo = { VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO };
+
+            if (bufferCreateInfo.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT ||
+                bufferCreateInfo.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)
+            {
+            }
+
+            DKObject<BufferView> bufferView = DKOBJECT_NEW BufferView(buffer, view, bufferViewCreateInfo);
+            return bufferView.SafeCast<DKGpuBuffer>();
+        }
+    }
+    return NULL;
 }
 
 DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const DKTextureDescriptor& desc)
 {
+    auto createImage = [this, dev](const VkImageCreateInfo& imageCreateInfo)->DKObject<Image>
+    {
+        VkImage image = VK_NULL_HANDLE;
+        VkDeviceMemory memory = VK_NULL_HANDLE;
+
+        VkResult result = vkCreateImage(device, &imageCreateInfo, allocationCallbacks, &image);
+        if (result == VK_SUCCESS)
+        {
+            // Allocate device memory
+            VkMemoryRequirements memReqs = {};
+            vkGetImageMemoryRequirements(device, image, &memReqs);
+            VkMemoryAllocateInfo memAllocInfo = { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
+            VkMemoryPropertyFlags memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+            memAllocInfo.allocationSize = memReqs.size;
+            memAllocInfo.memoryTypeIndex = IndexOfMemoryType(memReqs.memoryTypeBits, memProperties);
+            result = vkAllocateMemory(device, &memAllocInfo, allocationCallbacks, &memory);
+            if (result == VK_SUCCESS)
+            {
+                result = vkBindImageMemory(device, image, memory, 0);
+                if (result == VK_SUCCESS)
+                {
+                    VkMemoryType memoryType = deviceMemoryTypes.Value(memAllocInfo.memoryTypeIndex);
+                    DKObject<DeviceMemory> deviceMemory = DKOBJECT_NEW DeviceMemory(dev, memory, memoryType, memAllocInfo.allocationSize);
+                    DKObject<Image> texture = DKOBJECT_NEW Image(deviceMemory, image, imageCreateInfo);
+                    return texture;
+                }
+            }
+        }
+        else
+        {
+            DKLogE("ERROR: vkCreateImage failed: %s", VkResultCStr(result));
+        }
+
+        // allocation failed, cleanup.
+        if (image)
+            vkDestroyImage(device, image, allocationCallbacks);
+        if (memory)
+            vkFreeMemory(device, memory, allocationCallbacks);
+        return nullptr;
+    };
+
     VkImageCreateInfo imageCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO };
     switch (desc.textureType)
     {
@@ -1159,7 +1215,7 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
     imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 
     imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    
+
     if (desc.usage & DKTexture::UsageCopySource)
         imageCreateInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
     if (desc.usage & DKTexture::UsageCopyDestination)
@@ -1179,116 +1235,74 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
     // Set initial layout of the image to undefined
     imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-    VkImage image = VK_NULL_HANDLE;
-    VkResult result = vkCreateImage(device, &imageCreateInfo, allocationCallbacks, &image);
-    if (result == VK_SUCCESS)
+    DKObject<Image> image = createImage(imageCreateInfo);
+    if (image)
     {
-        // Allocate device memory
-        VkDeviceMemory memory = VK_NULL_HANDLE;
-        VkMemoryRequirements memReqs = {};
-        vkGetImageMemoryRequirements(device, image, &memReqs);
-        VkMemoryAllocateInfo memAllocInfo = { VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
-        VkMemoryPropertyFlags memProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-        memAllocInfo.allocationSize = memReqs.size;
-        memAllocInfo.memoryTypeIndex = IndexOfMemoryType(memReqs.memoryTypeBits, memProperties);
+        VkImageView imageView = VK_NULL_HANDLE;
 
-        result = vkAllocateMemory(device, &memAllocInfo, allocationCallbacks, &memory);
-        if (result == VK_SUCCESS)
+        if (imageCreateInfo.usage & (VK_IMAGE_USAGE_SAMPLED_BIT |
+                                     VK_IMAGE_USAGE_STORAGE_BIT |
+                                     VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+                                     VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT))
         {
-            result = vkBindImageMemory(device, image, memory, 0);
+            VkImageViewCreateInfo imageViewCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
+            imageViewCreateInfo.image = image->image;
+
+            switch (desc.textureType)
+            {
+            case DKTexture::Type1D:
+                if (desc.arrayLength > 1)
+                    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_1D_ARRAY;
+                else
+                    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_1D;
+                break;
+            case DKTexture::Type2D:
+                if (desc.arrayLength > 1)
+                    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+                else
+                    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+                break;
+            case DKTexture::Type3D:
+                imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_3D;
+                break;
+            case DKTexture::TypeCube:
+                if (desc.arrayLength > 1)
+                    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
+                else
+                    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
+                break;
+            }
+            imageViewCreateInfo.format = imageCreateInfo.format;
+            imageViewCreateInfo.components = {
+                VK_COMPONENT_SWIZZLE_R,
+                VK_COMPONENT_SWIZZLE_G,
+                VK_COMPONENT_SWIZZLE_B,
+                VK_COMPONENT_SWIZZLE_A
+            };
+
+            if (DKPixelFormatIsColorFormat(desc.pixelFormat))
+                imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+            if (DKPixelFormatIsDepthFormat(desc.pixelFormat))
+                imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+            if (DKPixelFormatIsStencilFormat(desc.pixelFormat))
+                imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+
+            imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+            imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+            imageViewCreateInfo.subresourceRange.layerCount = imageCreateInfo.arrayLayers;
+            imageViewCreateInfo.subresourceRange.levelCount = imageCreateInfo.mipLevels;
+
+            VkResult result = vkCreateImageView(device, &imageViewCreateInfo, allocationCallbacks, &imageView);
             if (result == VK_SUCCESS)
             {
-                VkMemoryType memoryType = deviceMemoryTypes.Value(memAllocInfo.memoryTypeIndex);
-                DKObject<DeviceMemory> deviceMemory = DKOBJECT_NEW DeviceMemory(dev, memory, memoryType, memAllocInfo.allocationSize);
-                DKObject<Texture> texture = DKOBJECT_NEW Texture(dev, image, VK_NULL_HANDLE, &imageCreateInfo);
-                texture->deviceMemory = deviceMemory;
-
-                image = VK_NULL_HANDLE;  // Texture object will delete this later.
-                memory = VK_NULL_HANDLE; // DeviceMemory object will delete this later.
-
-                VkImageView imageView = VK_NULL_HANDLE;
-
-                if (imageCreateInfo.usage & (VK_IMAGE_USAGE_SAMPLED_BIT |
-                    VK_IMAGE_USAGE_STORAGE_BIT |
-                    VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
-                    VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT))
-                {
-                    VkImageViewCreateInfo imageViewCreateInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
-                    imageViewCreateInfo.image = texture->image;
-
-                    switch (desc.textureType)
-                    {
-                    case DKTexture::Type1D:
-                        if (desc.arrayLength > 1)
-                            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_1D_ARRAY;
-                        else
-                            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_1D;
-                        break;
-                    case DKTexture::Type2D:
-                        if (desc.arrayLength > 1)
-                            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
-                        else
-                            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-                        break;
-                    case DKTexture::Type3D:
-                        imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_3D;
-                        break;
-                    case DKTexture::TypeCube:
-                        if (desc.arrayLength > 1)
-                            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
-                        else
-                            imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
-                        break;
-                    }
-                    imageViewCreateInfo.format = imageCreateInfo.format;
-                    imageViewCreateInfo.components = {
-                        VK_COMPONENT_SWIZZLE_R,
-                        VK_COMPONENT_SWIZZLE_G,
-                        VK_COMPONENT_SWIZZLE_B,
-                        VK_COMPONENT_SWIZZLE_A
-                    };
-
-                    if (DKPixelFormatIsColorFormat(desc.pixelFormat))
-                        imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
-                    if (DKPixelFormatIsDepthFormat(desc.pixelFormat))
-                        imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
-                    if (DKPixelFormatIsStencilFormat(desc.pixelFormat))
-                        imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
-
-                    imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
-                    imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
-                    imageViewCreateInfo.subresourceRange.layerCount = imageCreateInfo.arrayLayers;
-                    imageViewCreateInfo.subresourceRange.levelCount = imageCreateInfo.mipLevels;
-
-                    result = vkCreateImageView(device, &imageViewCreateInfo, allocationCallbacks, &imageView);
-                    if (result != VK_SUCCESS)
-                    {
-                        DKLogE("ERROR: vkCreateImageView failed: %s", VkResultCStr(result));
-                        return nullptr;
-                    }
-
-                    texture->imageView = imageView;
-                }
+                DKObject<ImageView> texture = DKOBJECT_NEW ImageView(image, imageView, imageViewCreateInfo);
                 return texture.SafeCast<DKTexture>();
             }
             else
             {
-                DKLogE("ERROR: vkBindImageMemory failed: %s", VkResultCStr(result));
+                DKLogE("ERROR: vkCreateImageView failed: %s", VkResultCStr(result));
             }
         }
-        else
-        {
-            DKLogE("ERROR: vkAllocateMemory failed: %s", VkResultCStr(result));
-        }
-        // allocation failed, cleanup.
-        if (image)
-            vkDestroyImage(device, image, allocationCallbacks);
-        if (memory)
-            vkFreeMemory(device, memory, allocationCallbacks);
-    }
-    else
-    {
-        DKLogE("ERROR: vkCreateImage failed: %s", VkResultCStr(result));
     }
     return NULL;
 }

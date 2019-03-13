@@ -310,8 +310,7 @@ bool DKEventLoop::Process(const DKOperation* op)
 		}
 		else
 		{
-			auto p = this->Post(op);
-			if (p)
+			if (auto p = this->Post(op); p)
 				return p->Result();
 		}
 	}

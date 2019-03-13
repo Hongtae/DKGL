@@ -10,6 +10,8 @@
 #include "Extensions.h"
 #include "SwapChain.h"
 #include "GraphicsDevice.h"
+#include "Image.h"
+#include "ImageView.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -56,13 +58,15 @@ SwapChain::~SwapChain()
 	VkInstance instance = dev->instance;
 	VkDevice device = dev->device;
 
-	for (Texture* tex : renderTargets)
+	for (ImageView* imageView : imageViews)
 	{
-		tex->image = VK_NULL_HANDLE;
-		tex->waitSemaphore = VK_NULL_HANDLE;
-		tex->signalSemaphore = VK_NULL_HANDLE;
+        imageView->image->image= VK_NULL_HANDLE;
+        imageView->image = nullptr;
+        imageView->imageView = VK_NULL_HANDLE;
+        imageView->waitSemaphore = VK_NULL_HANDLE;
+        imageView->signalSemaphore = VK_NULL_HANDLE;
 	}
-	renderTargets.Clear();
+	imageViews.Clear();
 
 	if (swapchain)
 		vkDestroySwapchainKHR(device, swapchain, dev->allocationCallbacks);
@@ -330,13 +334,15 @@ bool SwapChain::Update()
 		vkDestroySwapchainKHR(device, swapchainOld, dev->allocationCallbacks);
 	}
 
-	for (Texture* tex : renderTargets)
+	for (ImageView* imageView : imageViews)
 	{
-		tex->image = VK_NULL_HANDLE;
-		tex->waitSemaphore = VK_NULL_HANDLE;
-		tex->signalSemaphore = VK_NULL_HANDLE;
+        imageView->image->image = VK_NULL_HANDLE;
+        imageView->image = nullptr;
+        imageView->imageView = VK_NULL_HANDLE;
+        imageView->waitSemaphore = VK_NULL_HANDLE;
+        imageView->signalSemaphore = VK_NULL_HANDLE;
 	}
-	renderTargets.Clear();
+    imageViews.Clear();
 
 	uint32_t swapchainImageCount = 0;
 	err = vkGetSwapchainImagesKHR(device, this->swapchain, &swapchainImageCount, NULL);
@@ -356,45 +362,49 @@ bool SwapChain::Update()
 	}
 
 	// Get the swap chain buffers containing the image and imageview
-	this->renderTargets.Reserve(swapchainImages.Count());
+	this->imageViews.Reserve(swapchainImages.Count());
 	for (VkImage image : swapchainImages)
 	{
-		VkImageViewCreateInfo imageViewCI = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-		imageViewCI.format = this->surfaceFormat.format;
-		imageViewCI.components = {
+		VkImageViewCreateInfo imageViewCreateInfo = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
+        imageViewCreateInfo.format = this->surfaceFormat.format;
+        imageViewCreateInfo.components = {
 			VK_COMPONENT_SWIZZLE_R,
 			VK_COMPONENT_SWIZZLE_G,
 			VK_COMPONENT_SWIZZLE_B,
 			VK_COMPONENT_SWIZZLE_A
 		};
-		imageViewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		imageViewCI.subresourceRange.baseMipLevel = 0;
-		imageViewCI.subresourceRange.levelCount = 1;
-		imageViewCI.subresourceRange.baseArrayLayer = 0;
-		imageViewCI.subresourceRange.layerCount = 1;
-		imageViewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		imageViewCI.flags = 0;
-		imageViewCI.image = image;
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;
+		imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageViewCreateInfo.flags = 0;
+		imageViewCreateInfo.image = image;
 
 		VkImageView imageView = NULL;
-		err = vkCreateImageView(device, &imageViewCI, dev->allocationCallbacks, &imageView);
+		err = vkCreateImageView(device, &imageViewCreateInfo, dev->allocationCallbacks, &imageView);
 		if (err != VK_SUCCESS)
 		{
 			DKLogE("ERROR: vkCreateImageView failed: %s", VkResultCStr(err));
 			return false;
 		}
 
-		DKObject<Texture> renderTarget = DKOBJECT_NEW Texture(queue->Device(), image, imageView, nullptr);
-		renderTarget->imageType = VK_IMAGE_TYPE_2D;
-		renderTarget->format = swapchainCI.imageFormat;
-		renderTarget->extent = { swapchainExtent.width, swapchainExtent.height, 1 };
-		renderTarget->mipLevels = 1;
-		renderTarget->arrayLayers = swapchainCI.imageArrayLayers;
-		renderTarget->usage = swapchainCI.imageUsage;
-		renderTarget->waitSemaphore = presentCompleteSemaphore;
-		renderTarget->signalSemaphore = renderCompleteSemaphore;
+        DKObject<Image> swapChainImage = DKOBJECT_NEW Image();
+		swapChainImage->imageType = VK_IMAGE_TYPE_2D;
+		swapChainImage->format = swapchainCI.imageFormat;
+		swapChainImage->extent = { swapchainExtent.width, swapchainExtent.height, 1 };
+		swapChainImage->mipLevels = 1;
+		swapChainImage->arrayLayers = swapchainCI.imageArrayLayers;
+		swapChainImage->usage = swapchainCI.imageUsage;
 
-		this->renderTargets.Add(renderTarget);
+        DKObject<ImageView> swapChainImageView = DKOBJECT_NEW ImageView();
+        swapChainImageView->image = swapChainImage;
+        swapChainImageView->imageView = imageView;
+        swapChainImageView->waitSemaphore = presentCompleteSemaphore;
+        swapChainImageView->signalSemaphore = renderCompleteSemaphore;
+
+		this->imageViews.Add(swapChainImageView);
 	}
 
 	return true;
@@ -495,7 +505,7 @@ void SwapChain::SetupFrame()
 	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &this->frameIndex);
 
 	DKRenderPassColorAttachmentDescriptor colorAttachment = {};
-	colorAttachment.renderTarget = renderTargets.Value(frameIndex);
+	colorAttachment.renderTarget = imageViews.Value(frameIndex);
 	colorAttachment.clearColor = DKColor(0, 0, 0, 0);
 	colorAttachment.loadAction = DKRenderPassAttachmentDescriptor::LoadActionClear;
 	colorAttachment.storeAction = DKRenderPassAttachmentDescriptor::StoreActionStore;

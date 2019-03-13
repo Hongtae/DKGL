@@ -8,8 +8,8 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
 #include "RenderCommandEncoder.h"
-#include "Buffer.h"
-#include "Texture.h"
+#include "BufferView.h"
+#include "ImageView.h"
 #include "GraphicsDevice.h"
 #include "RenderPipelineState.h"
 #include "ShaderBindingSet.h"
@@ -59,14 +59,13 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 
     for (const DKRenderPassColorAttachmentDescriptor& colorAttachment : renderPassDescriptor.colorAttachments)
     {
-        const Texture* rt = colorAttachment.renderTarget.SafeCast<Texture>();
-        if (rt)
+        if (const ImageView* rt = colorAttachment.renderTarget.SafeCast<ImageView>(); rt && rt->image)
         {
             this->commandBuffer->AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
             this->commandBuffer->AddSignalSemaphore(rt->signalSemaphore);
 
             VkAttachmentDescription attachment = {};
-            attachment.format = rt->format;
+            attachment.format = rt->image->format;
             attachment.samples = VK_SAMPLE_COUNT_1_BIT; // 1 sample per pixel
             switch (colorAttachment.loadAction)
             {
@@ -93,7 +92,9 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-                attachment.initialLayout = rt->SetLayerLayout(0, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, nullptr);
+            {
+                //TODO: check attachment layout!
+            }
             attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
             VkAttachmentReference attachmentReference = {};
@@ -121,14 +122,13 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
     if (renderPassDescriptor.depthStencilAttachment.renderTarget)
     {
         const DKRenderPassDepthStencilAttachmentDescriptor& depthStencilAttachment = renderPassDescriptor.depthStencilAttachment;
-        const Texture* rt = depthStencilAttachment.renderTarget.SafeCast<Texture>();
-        if (rt)
+        if (const ImageView* rt = depthStencilAttachment.renderTarget.SafeCast<ImageView>(); rt && rt->image)
         {
             this->commandBuffer->AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
             this->commandBuffer->AddSignalSemaphore(rt->signalSemaphore);
 
             VkAttachmentDescription attachment = {};
-            attachment.format = rt->format;
+            attachment.format = rt->image->format;
             attachment.samples = VK_SAMPLE_COUNT_1_BIT;
             switch (depthStencilAttachment.loadAction)
             {
@@ -155,7 +155,9 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilStoreOp = attachment.storeOp;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-                rt->SetLayerLayout(0, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, nullptr);
+            {
+                //TODO: check attachment layout!
+            }
             attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
             depthStencilReference.attachment = static_cast<uint32_t>(attachments.Count());
@@ -319,12 +321,14 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 
         for (size_t i = 0; i < count; ++i)
         {
-            DKGpuBuffer* buffer = buffers[i];
-            DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer) != nullptr);
-            bufferObjects.Add(static_cast<Buffer*>(buffer)->buffer);
+            DKGpuBuffer* bufferObject = buffers[i];
+            DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferObject) != nullptr);
+            Buffer* buffer = static_cast<BufferView*>(bufferObject)->buffer;
+            DKASSERT_DEBUG(buffer && buffer->buffer);
+            bufferObjects.Add(buffer->buffer);
             bufferOffsets.Add(offsets[i]);
 
-            encoder->buffers.Add(buffer);
+            encoder->buffers.Add(bufferObject);
         }
         DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
         {
@@ -339,23 +343,25 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
     }
 	else if (count > 0)
 	{
-        DKGpuBuffer* buffer = buffers[0];
-        DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer) != nullptr);
-        Buffer* buf = static_cast<Buffer*>(buffer);
+        DKGpuBuffer* bufferObject = buffers[0];
+        DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferObject) != nullptr);
+        Buffer* buf = static_cast<BufferView*>(bufferObject)->buffer;
         VkDeviceSize of = offsets[0];
         DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
         {
             vkCmdBindVertexBuffers(commandBuffer, index, count, &buf->buffer, &of);
         });
         encoder->commands.Add(command);
-        encoder->buffers.Add(buffer);
+        encoder->buffers.Add(bufferObject);
     }
 }
 
 void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type)
 {
 	DKASSERT_DEBUG(indexBuffer);
-	DKASSERT_DEBUG(dynamic_cast<Buffer*>(indexBuffer) != nullptr);
+	DKASSERT_DEBUG(dynamic_cast<BufferView*>(indexBuffer) != nullptr);
+    Buffer* buffer = static_cast<BufferView*>(indexBuffer)->buffer;
+    DKASSERT_DEBUG(buffer && buffer->buffer);
 
 	VkIndexType indexType;
 	switch (type)
@@ -369,7 +375,7 @@ void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offse
 	}
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& es) mutable
     {
-        vkCmdBindIndexBuffer(commandBuffer, static_cast<Buffer*>(indexBuffer)->buffer, offset, indexType);
+        vkCmdBindIndexBuffer(commandBuffer, buffer->buffer, offset, indexType);
     });
     encoder->commands.Add(command);
     encoder->buffers.Add(indexBuffer);

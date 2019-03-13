@@ -55,8 +55,7 @@ DKFence::DKFence(const void* p, bool exclusive)
 
 		while (true)
 		{
-			auto p = b.Find(key);
-			if (p)
+			if (auto p = b.Find(key); p)
 			{
 				if (p->value.threadId == tid)
 				{

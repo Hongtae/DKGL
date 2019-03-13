@@ -11,8 +11,8 @@
 #include <vulkan/vulkan.h>
 #include "../../DKGraphicsDevice.h"
 #include "../../DKShaderBindingSet.h"
-#include "Buffer.h"
-#include "Texture.h"
+#include "BufferView.h"
+#include "ImageView.h"
 #include "Sampler.h"
 
 namespace DKFramework::Private::Vulkan
@@ -44,7 +44,7 @@ namespace DKFramework::Private::Vulkan
 
         struct ImageLayoutTransition
         {
-            Texture* texture;
+            Image* image;
             VkImageLayout layout;
         };
         DKArray<ImageLayoutTransition> imageLayoutTransitions;
@@ -58,13 +58,13 @@ namespace DKFramework::Private::Vulkan
         DKArray<VkDescriptorBufferInfo> bufferInfos;
         DKArray<VkBufferView> texelBufferViews;
 
-        using BufferObject = DKObject<Buffer>;
-        using TextureObject = DKObject<Texture>;
+        using BufferViewObject = DKObject<BufferView>;
+        using ImageViewObject = DKObject<ImageView>;
         using SamplerObject = DKObject<Sampler>;
 
         // take ownership of bound resources.
-        DKMap<uint32_t, DKArray<BufferObject>> buffers;
-        DKMap<uint32_t, DKArray<TextureObject>> textures;
+        DKMap<uint32_t, DKArray<BufferViewObject>> bufferViews;
+        DKMap<uint32_t, DKArray<ImageViewObject>> imageViews;
         DKMap<uint32_t, DKArray<SamplerObject>> samplers;
     };
 }

@@ -211,8 +211,7 @@ void DKConstraint::RestoreTargets(UUIDObjectMap& uuids)
 {
 	auto find = [&uuids](const DKUuid& uuid) -> DKRigidBody*
 	{
-		auto p = uuids.Find(uuid);
-		if (p)
+		if (auto p = uuids.Find(uuid); p)
 		{
 			if (p->value->type == DKModel::TypeCollision)
 			{

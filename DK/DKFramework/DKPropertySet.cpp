@@ -488,8 +488,7 @@ void DKPropertySet::CallbackObservers(const DKString& key, const DKMap<DKString,
 {
 	callbackLock.Lock();
 	DKArray<DKObject<T>> callbacks;
-	auto p = target.Find(key);
-	if (p)
+	if (auto p = target.Find(key); p)
 	{
 		callbacks.Reserve(p->value.Count());
 		p->value.EnumerateForward([&callbacks](const typename decltype(p->value)::Pair& pair) {

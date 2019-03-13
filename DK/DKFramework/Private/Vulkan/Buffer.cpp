@@ -9,16 +9,18 @@
 #if DKGL_ENABLE_VULKAN
 #include "Extensions.h"
 #include "Buffer.h"
+#include "BufferView.h"
 #include "GraphicsDevice.h"
+#include "Types.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b, VkBufferView v, DeviceMemory* mem)
-	: device(dev)
+Buffer::Buffer(DeviceMemory* mem, VkBuffer b, const VkBufferCreateInfo& createInfo)
+    : deviceMemory(mem)
 	, buffer(b)
-	, bufferView(v)
-    , deviceMemory(mem)
+    , usage(createInfo.usage)
+    , sharingMode(createInfo.sharingMode)
 {
     DKASSERT_DEBUG(deviceMemory)
 	DKASSERT_DEBUG(deviceMemory->length > 0);
@@ -26,12 +28,11 @@ Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b, VkBufferView v, DeviceMemory* 
 
 Buffer::~Buffer()
 {
-	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	if (bufferView)
-		vkDestroyBufferView(dev->device, bufferView, dev->allocationCallbacks);
-	if (buffer)
-		vkDestroyBuffer(dev->device, buffer, dev->allocationCallbacks);
-    deviceMemory = nullptr;
+    if (buffer)
+    {
+        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(deviceMemory->device);
+        vkDestroyBuffer(dev->device, buffer, dev->allocationCallbacks);
+    }
 }
 
 void* Buffer::Contents()
@@ -53,6 +54,48 @@ void Buffer::Flush(size_t offset, size_t size)
 size_t Buffer::Length() const
 {
     return deviceMemory->length;
+}
+
+DKObject<BufferView> Buffer::CreateBufferView(DKPixelFormat pixelFormat, size_t offset, size_t range)
+{
+    if (usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT ||
+        usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)
+    {
+        VkFormat format = PixelFormat(pixelFormat);
+        if (format != VK_FORMAT_UNDEFINED)
+        {
+            GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(deviceMemory->device);
+            auto alignment = dev->properties.limits.minTexelBufferOffsetAlignment;
+            DKASSERT_DEBUG(offset % alignment == 0);
+
+            VkBufferViewCreateInfo bufferViewCreateInfo = { VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO };
+            bufferViewCreateInfo.buffer = buffer;
+            bufferViewCreateInfo.format = format;
+            bufferViewCreateInfo.offset = offset;
+            bufferViewCreateInfo.range = range;
+
+            VkBufferView view = VK_NULL_HANDLE;
+            VkResult result = vkCreateBufferView(dev->device, &bufferViewCreateInfo, dev->allocationCallbacks, &view);
+            if (result == VK_SUCCESS)
+            {
+                DKObject<BufferView> bufferView = DKOBJECT_NEW BufferView(this, view, bufferViewCreateInfo);
+                return bufferView;
+            }
+            else
+            {
+                DKLogE("ERROR: vkCreateBufferView failed: %s", VkResultCStr(result));
+            }
+        }
+        else
+        {
+            DKLogE("Buffer::CreateBufferView failed: Invalid pixel format!");
+        }
+    }
+    else
+    {
+        DKLogE("Buffer::CreateBufferView failed: Invalid buffer object (Not intended for texel buffer creation)");
+    }
+    return NULL;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

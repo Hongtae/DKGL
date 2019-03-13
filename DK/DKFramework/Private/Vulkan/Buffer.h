@@ -15,20 +15,23 @@
 
 namespace DKFramework::Private::Vulkan
 {
-    class Buffer : public DKGpuBuffer
+    class Buffer
     {
     public:
-        Buffer(DKGraphicsDevice*, VkBuffer, VkBufferView, DeviceMemory*);
+        Buffer(DeviceMemory*, VkBuffer, const VkBufferCreateInfo&);
         ~Buffer();
 
-        void* Contents() override;
-        void Flush(size_t, size_t) override;
-        size_t Length() const override;
+        void* Contents();
+        void Flush(size_t, size_t);
+        size_t Length() const;
+
+        DKObject<class BufferView> CreateBufferView(DKPixelFormat format, size_t offset, size_t range);
 
         VkBuffer buffer;
-        VkBufferView bufferView;
+        VkBufferUsageFlags     usage;
+        VkSharingMode          sharingMode;
+
         DKObject<DeviceMemory> deviceMemory;
-        DKObject<DKGraphicsDevice> device;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

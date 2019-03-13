@@ -2566,8 +2566,7 @@ DKVariant* DKVariant::NewValueAtKeyPath(const DKString& path, const DKVariant& v
 		{
 			DKString key = path.Left(findResult);
 			DKString rest = path.Right(findResult + 1);
-			auto p = pair.Find(key);
-			if (p)
+			if (auto p = pair.Find(key); p)
 			{
 				DKVariant* result = p->value.NewValueAtKeyPath(rest, value);
 				if (result)
