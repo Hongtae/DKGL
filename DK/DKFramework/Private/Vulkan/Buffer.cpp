@@ -18,6 +18,7 @@ using namespace DKFramework::Private::Vulkan;
 
 Buffer::Buffer(DeviceMemory* mem, VkBuffer b, const VkBufferCreateInfo& createInfo)
     : deviceMemory(mem)
+    , device(mem->device)
 	, buffer(b)
     , usage(createInfo.usage)
     , sharingMode(createInfo.sharingMode)
@@ -26,11 +27,18 @@ Buffer::Buffer(DeviceMemory* mem, VkBuffer b, const VkBufferCreateInfo& createIn
 	DKASSERT_DEBUG(deviceMemory->length > 0);
 }
 
+Buffer::Buffer(DKGraphicsDevice* dev, VkBuffer b)
+    : deviceMemory(nullptr)
+    , device(dev)
+    , buffer(b)
+{
+}
+
 Buffer::~Buffer()
 {
     if (buffer)
     {
-        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(deviceMemory->device);
+        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
         vkDestroyBuffer(dev->device, buffer, dev->allocationCallbacks);
     }
 }

@@ -19,7 +19,7 @@ namespace DKFramework::Private::Vulkan
     {
     public:
         ImageView(Image*, VkImageView, const VkImageViewCreateInfo&);
-        ImageView();
+        ImageView(DKGraphicsDevice*, VkImageView);
         ~ImageView();
 
         VkImageView				imageView;
@@ -27,6 +27,7 @@ namespace DKFramework::Private::Vulkan
         VkSemaphore				signalSemaphore;
 
         DKObject<Image> image;
+        DKObject<DKGraphicsDevice> device;
 
         uint32_t Width() const override
         {

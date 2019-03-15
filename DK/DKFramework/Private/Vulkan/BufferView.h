@@ -20,6 +20,7 @@ namespace DKFramework::Private::Vulkan
     {
     public:
         BufferView(Buffer*, VkBufferView, const VkBufferViewCreateInfo&);
+        BufferView(DKGraphicsDevice*, VkBufferView);
         ~BufferView();
 
         void* Contents()

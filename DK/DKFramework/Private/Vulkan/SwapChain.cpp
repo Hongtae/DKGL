@@ -62,9 +62,9 @@ SwapChain::~SwapChain()
 	{
         imageView->image->image= VK_NULL_HANDLE;
         imageView->image = nullptr;
-        imageView->imageView = VK_NULL_HANDLE;
         imageView->waitSemaphore = VK_NULL_HANDLE;
         imageView->signalSemaphore = VK_NULL_HANDLE;
+        DKASSERT_DEBUG(imageView->imageView);
 	}
 	imageViews.Clear();
 
@@ -338,9 +338,9 @@ bool SwapChain::Update()
 	{
         imageView->image->image = VK_NULL_HANDLE;
         imageView->image = nullptr;
-        imageView->imageView = VK_NULL_HANDLE;
         imageView->waitSemaphore = VK_NULL_HANDLE;
         imageView->signalSemaphore = VK_NULL_HANDLE;
+        DKASSERT_DEBUG(imageView->imageView);
 	}
     imageViews.Clear();
 
@@ -390,7 +390,7 @@ bool SwapChain::Update()
 			return false;
 		}
 
-        DKObject<Image> swapChainImage = DKOBJECT_NEW Image();
+        DKObject<Image> swapChainImage = DKOBJECT_NEW Image(queue->Device(), image);
 		swapChainImage->imageType = VK_IMAGE_TYPE_2D;
 		swapChainImage->format = swapchainCI.imageFormat;
 		swapChainImage->extent = { swapchainExtent.width, swapchainExtent.height, 1 };
@@ -398,9 +398,8 @@ bool SwapChain::Update()
 		swapChainImage->arrayLayers = swapchainCI.imageArrayLayers;
 		swapChainImage->usage = swapchainCI.imageUsage;
 
-        DKObject<ImageView> swapChainImageView = DKOBJECT_NEW ImageView();
+        DKObject<ImageView> swapChainImageView = DKOBJECT_NEW ImageView(queue->Device(), imageView);
         swapChainImageView->image = swapChainImage;
-        swapChainImageView->imageView = imageView;
         swapChainImageView->waitSemaphore = presentCompleteSemaphore;
         swapChainImageView->signalSemaphore = renderCompleteSemaphore;
 

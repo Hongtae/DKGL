@@ -19,6 +19,7 @@ namespace DKFramework::Private::Vulkan
     {
     public:
         Buffer(DeviceMemory*, VkBuffer, const VkBufferCreateInfo&);
+        Buffer(DKGraphicsDevice*, VkBuffer);
         ~Buffer();
 
         void* Contents();
@@ -32,6 +33,7 @@ namespace DKFramework::Private::Vulkan
         VkSharingMode          sharingMode;
 
         DKObject<DeviceMemory> deviceMemory;
+        DKObject<DKGraphicsDevice> device;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

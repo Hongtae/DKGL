@@ -18,14 +18,23 @@ using namespace DKFramework::Private::Vulkan;
 BufferView::BufferView(Buffer* b, VkBufferView v, const VkBufferViewCreateInfo&)
     : buffer(b)
     , bufferView(v)
+    , device(b->device)
 {
+}
+
+BufferView::BufferView(DKGraphicsDevice* dev, VkBufferView view)
+    : buffer(nullptr)
+    , bufferView(view)
+    , device(dev)
+{
+
 }
 
 BufferView::~BufferView()
 {
     if (bufferView)
     {
-        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(buffer->deviceMemory->device);
+        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
         vkDestroyBufferView(dev->device, bufferView, dev->allocationCallbacks);
     }
 }

@@ -23,6 +23,7 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     , arrayLayers(1)
     , usage(0)
     , deviceMemory(m)
+    , device(m->device)
 {
     imageType = ci.imageType;
     format = ci.format;
@@ -32,6 +33,7 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     usage = ci.usage;
     VkImageLayout initialLayout = ci.initialLayout;
 
+    DKASSERT_DEBUG(deviceMemory);
     DKASSERT_DEBUG(extent.width > 0);
     DKASSERT_DEBUG(extent.height > 0);
     DKASSERT_DEBUG(extent.depth > 0);
@@ -40,9 +42,16 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     DKASSERT_DEBUG(format != VK_FORMAT_UNDEFINED);
 }
 
-Image::Image()
-    : image(VK_NULL_HANDLE)
+Image::Image(DKGraphicsDevice* dev, VkImage img)
+    : image(img)
+    , device(dev)
     , deviceMemory(nullptr)
+    , imageType(VK_IMAGE_TYPE_1D)
+    , format(VK_FORMAT_UNDEFINED)
+    , extent({ 0,0,0 })
+    , mipLevels(1)
+    , arrayLayers(1)
+    , usage(0)
 {
 }
 
@@ -50,8 +59,7 @@ Image::~Image()
 {
     if (image)
     {
-        DKASSERT_DEBUG(deviceMemory);
-        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(deviceMemory->device);
+        GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
         vkDestroyImage(dev->device, image, dev->allocationCallbacks);
     }
     deviceMemory = nullptr;

@@ -20,7 +20,7 @@ namespace DKFramework::Private::Vulkan
     {
     public:
         Image(DeviceMemory*, VkImage, const VkImageCreateInfo&);
-        Image();
+        Image(DKGraphicsDevice*, VkImage);
         ~Image();
 
         uint32_t Width() const 
@@ -70,6 +70,7 @@ namespace DKFramework::Private::Vulkan
         VkImageUsageFlags		usage;
 
         DKObject<DeviceMemory>  deviceMemory;
+        DKObject<DKGraphicsDevice> device;
     };
 }
 

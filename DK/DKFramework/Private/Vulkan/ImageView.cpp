@@ -18,14 +18,16 @@ using namespace DKFramework::Private::Vulkan;
 ImageView::ImageView(Image* img, VkImageView view, const VkImageViewCreateInfo& ci)
     : image(img)
     , imageView(view)
+    , device(img->device)
     , signalSemaphore(VK_NULL_HANDLE)
     , waitSemaphore(VK_NULL_HANDLE)
 {
 }
 
-ImageView::ImageView()
+ImageView::ImageView(DKGraphicsDevice* dev, VkImageView view)
     : image(nullptr)
-    , imageView(VK_NULL_HANDLE)
+    , imageView(view)
+    , device(dev)
     , signalSemaphore(VK_NULL_HANDLE)
     , waitSemaphore(VK_NULL_HANDLE)
 {
@@ -33,25 +35,14 @@ ImageView::ImageView()
 
 ImageView::~ImageView()
 {
-    GraphicsDevice* dev = nullptr;
-    if (image)
-        dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(image->deviceMemory->device);
+    GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 
     if (imageView)
-    {
-        DKASSERT_DEBUG(dev);
         vkDestroyImageView(dev->device, imageView, dev->allocationCallbacks);
-    }
     if (signalSemaphore)
-    {
-        DKASSERT_DEBUG(dev);
         vkDestroySemaphore(dev->device, signalSemaphore, dev->allocationCallbacks);
-    }
     if (waitSemaphore)
-    {
-        DKASSERT_DEBUG(dev);
         vkDestroySemaphore(dev->device, waitSemaphore, dev->allocationCallbacks);
-    }
 }
 
 #endif //#if DKGL_ENABLE_VULKAN
