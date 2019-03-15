@@ -46,6 +46,7 @@ namespace DKFramework::Private::Vulkan
         {
             Image* image;
             VkImageLayout layout;
+            VkShaderStageFlags stageFlags;
         };
         DKArray<ImageLayoutTransition> imageLayoutTransitions;
 

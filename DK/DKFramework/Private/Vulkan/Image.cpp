@@ -16,14 +16,15 @@ using namespace DKFramework::Private::Vulkan;
 
 Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     : image(i)
+    , deviceMemory(m)
+    , device(m->device)
     , imageType(VK_IMAGE_TYPE_1D)
     , format(VK_FORMAT_UNDEFINED)
     , extent({ 0,0,0 })
     , mipLevels(1)
     , arrayLayers(1)
     , usage(0)
-    , deviceMemory(m)
-    , device(m->device)
+    , optimalLayout(VK_IMAGE_LAYOUT_GENERAL)
 {
     imageType = ci.imageType;
     format = ci.format;
@@ -31,7 +32,7 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     mipLevels = ci.mipLevels;
     arrayLayers = ci.arrayLayers;
     usage = ci.usage;
-    VkImageLayout initialLayout = ci.initialLayout;
+    currentLayout = ci.initialLayout;
 
     DKASSERT_DEBUG(deviceMemory);
     DKASSERT_DEBUG(extent.width > 0);
@@ -52,6 +53,8 @@ Image::Image(DKGraphicsDevice* dev, VkImage img)
     , mipLevels(1)
     , arrayLayers(1)
     , usage(0)
+    , currentLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+    , optimalLayout(VK_IMAGE_LAYOUT_GENERAL)
 {
 }
 
@@ -64,5 +67,48 @@ Image::~Image()
     }
     deviceMemory = nullptr;
 }
+
+VkImageLayout Image::ResetLayout() const
+{
+    DKCriticalSection<DKSpinLock> guard(layoutLock);
+    VkImageLayout oldLayout = currentLayout;
+    currentLayout = optimalLayout;
+    return oldLayout;
+}
+
+VkImageLayout Image::SetLayout(VkImageLayout layout) const
+{
+    DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_UNDEFINED);
+    DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
+
+    DKCriticalSection<DKSpinLock> guard(layoutLock);
+    VkImageLayout oldLayout = currentLayout;
+    currentLayout = layout;
+    return oldLayout;
+}
+
+VkImageLayout Image::SetOptimalLayout(VkImageLayout layout)
+{
+    DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_UNDEFINED);
+    DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
+
+    DKCriticalSection<DKSpinLock> guard(layoutLock);
+    VkImageLayout oldLayout = optimalLayout;
+    optimalLayout = layout;
+    return oldLayout;
+}
+
+VkImageLayout Image::Layout() const
+{
+    DKCriticalSection<DKSpinLock> guard(layoutLock);
+    return currentLayout;
+}
+
+VkImageLayout Image::OptimalLayout() const
+{
+    DKCriticalSection<DKSpinLock> guard(layoutLock);
+    return optimalLayout;
+}
+
 
 #endif //#if DKGL_ENABLE_VULKAN

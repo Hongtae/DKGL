@@ -61,6 +61,12 @@ namespace DKFramework::Private::Vulkan
             return Vulkan::PixelFormat(format);
         }
 
+        VkImageLayout ResetLayout() const;
+        VkImageLayout SetLayout(VkImageLayout layout) const;
+        VkImageLayout SetOptimalLayout(VkImageLayout layout);
+        VkImageLayout Layout() const;
+        VkImageLayout OptimalLayout() const;
+
         VkImage					image;
         VkImageType				imageType;
         VkFormat				format;
@@ -71,6 +77,11 @@ namespace DKFramework::Private::Vulkan
 
         DKObject<DeviceMemory>  deviceMemory;
         DKObject<DKGraphicsDevice> device;
+
+    private:
+        DKSpinLock              layoutLock;
+        VkImageLayout           optimalLayout;
+        mutable VkImageLayout   currentLayout;
     };
 }
 

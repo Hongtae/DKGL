@@ -41,6 +41,27 @@ RenderCommandEncoder::Encoder::~Encoder()
 
 bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 {
+    // TODO: setup layout transition barrier!!
+#if 0
+    // setup layout transitions.
+    DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
+    size_t numImages = 0;
+    for (ShaderBindingSet* bs : shaderBindingSets)
+        numImages += bs->imageLayoutTransitions.Count();
+
+    imageMemoryBarriers.Reserve(numImages);
+    for (ShaderBindingSet* bs : shaderBindingSets)
+    {
+        for (ShaderBindingSet::ImageLayoutTransition& trans : bs->imageLayoutTransitions)
+        {
+            DKASSERT_DEBUG(trans.layout != VK_IMAGE_LAYOUT_UNDEFINED);
+            DKASSERT_DEBUG(trans.layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
+
+            VkImageMemoryBarrier imageMemoryBarrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+        }
+    }
+#endif
+
     // initialize render pass
     uint32_t frameWidth = 0;
     uint32_t frameHeight = 0;
@@ -91,11 +112,10 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
             attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            attachment.finalLayout = rt->image->OptimalLayout(); //VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-            {
-                //TODO: check attachment layout!
-            }
-            attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+                attachment.initialLayout = rt->image->SetLayout(attachment.finalLayout);            
+            rt->image->SetLayout(attachment.finalLayout);
 
             VkAttachmentReference attachmentReference = {};
             attachmentReference.attachment = static_cast<uint32_t>(attachments.Count());
@@ -154,11 +174,10 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilLoadOp = attachment.loadOp;
             attachment.stencilStoreOp = attachment.storeOp;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            attachment.finalLayout = rt->image->OptimalLayout(); //VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-            {
-                //TODO: check attachment layout!
-            }
-            attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+                attachment.initialLayout = rt->image->Layout();
+            rt->image->SetLayout(attachment.finalLayout);
 
             depthStencilReference.attachment = static_cast<uint32_t>(attachments.Count());
             attachments.Add(attachment);

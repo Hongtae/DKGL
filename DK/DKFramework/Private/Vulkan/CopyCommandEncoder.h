@@ -69,6 +69,11 @@ namespace DKFramework::Private::Vulkan
                                      uint32_t layerCount,
                                      DKPixelFormat pixelFormat,
                                      VkImageSubresourceLayers& subresource);
+        static void SetupSubresource(const TextureOrigin& origin,
+                                     uint32_t layerCount,
+                                     uint32_t levelCount,
+                                     DKPixelFormat pixelFormat,
+                                     VkImageSubresourceRange& subresource);
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

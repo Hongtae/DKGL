@@ -139,30 +139,48 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
     region.imageExtent = { size.width, size.height, size.depth };
     SetupSubresource(dstOffset, 1, pixelFormat, region.imageSubresource);
 
+    // for image layout transition barrier
+    VkImageMemoryBarrier imageMemoryBarrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarrier.image = image->image;
+    SetupSubresource(dstOffset, 1, 1, pixelFormat, imageMemoryBarrier.subresourceRange);
+
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
-        imageMemoryBarriers.Reserve(region.imageSubresource.layerCount);
+        imageMemoryBarrier.srcAccessMask = 0;
+        imageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        imageMemoryBarrier.oldLayout = image->ResetLayout();
+        imageMemoryBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 
-        //TODO: setup image layout transition!
-
-        if (imageMemoryBarriers.Count() > 0)
-        {
-            vkCmdPipelineBarrier(commandBuffer,
-                                 VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                 0,          //dependencyFlags
-                                 0, nullptr, //pMemoryBarriers
-                                 0, nullptr, //pBufferMemoryBarriers
-                                 imageMemoryBarriers.Count(),
-                                 (const VkImageMemoryBarrier*)imageMemoryBarriers);
-        }
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_HOST_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,            //dependencyFlags
+            0, nullptr,   //pMemoryBarriers
+            0, nullptr,   //pBufferMemoryBarriers
+            1, &imageMemoryBarrier);
 
         vkCmdCopyBufferToImage(commandBuffer,
                                buffer->buffer,
                                image->image,
                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                1, &region);
+
+        imageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        imageMemoryBarrier.dstAccessMask = 0;
+        imageMemoryBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        imageMemoryBarrier.newLayout = image->Layout();
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+            0,            //dependencyFlags
+            0, nullptr,   //pMemoryBarriers
+            0, nullptr,   //pBufferMemoryBarriers
+            1, &imageMemoryBarrier);
     });
     encoder->commands.Add(command);
     encoder->buffers.Add(src);
@@ -223,30 +241,48 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
     region.imageExtent = { size.width, size.height,size.depth };
     SetupSubresource(srcOffset, 1, pixelFormat, region.imageSubresource);
 
+    // for image layout transition barrier
+    VkImageMemoryBarrier imageMemoryBarrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+    imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarrier.image = image->image;
+    SetupSubresource(srcOffset, 1, 1, pixelFormat, imageMemoryBarrier.subresourceRange);
+
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
-        imageMemoryBarriers.Reserve(region.imageSubresource.layerCount);
+        imageMemoryBarrier.srcAccessMask = 0;
+        imageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        imageMemoryBarrier.oldLayout = image->ResetLayout();
+        imageMemoryBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
 
-        //TODO: setup image layout transition!
-
-        if (imageMemoryBarriers.Count() > 0)
-        {
-            vkCmdPipelineBarrier(commandBuffer,
-                                 VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                 0,          //dependencyFlags
-                                 0, nullptr, //pMemoryBarriers
-                                 0, nullptr, //pBufferMemoryBarriers
-                                 imageMemoryBarriers.Count(),
-                                 (const VkImageMemoryBarrier*)imageMemoryBarriers);
-        }
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_HOST_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,            //dependencyFlags
+            0, nullptr,   //pMemoryBarriers
+            0, nullptr,   //pBufferMemoryBarriers
+            1, &imageMemoryBarrier);
 
         vkCmdCopyImageToBuffer(commandBuffer,
                                image->image,
                                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                                buffer->buffer,
                                1, &region);
+
+        imageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        imageMemoryBarrier.dstAccessMask = 0;
+        imageMemoryBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        imageMemoryBarrier.newLayout = image->Layout();
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+            0,            //dependencyFlags
+            0, nullptr,   //pMemoryBarriers
+            0, nullptr,   //pBufferMemoryBarriers
+            1, &imageMemoryBarrier);
     });
     encoder->commands.Add(command);
     encoder->textures.Add(src);
@@ -317,24 +353,37 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
     region.dstOffset = { (int32_t)dstOffset.x, (int32_t)dstOffset.y,(int32_t)dstOffset.z };
     region.extent = { size.width, size.height, size.depth };
 
+    VkImageMemoryBarrier imageMemoryBarriers[2] = { { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER }, { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER } };
+    imageMemoryBarriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarriers[0].image = srcImage->image;
+    SetupSubresource(srcOffset, 1, 1, srcPixelFormat, imageMemoryBarriers[0].subresourceRange);
+
+    imageMemoryBarriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageMemoryBarriers[1].image = srcImage->image;
+    SetupSubresource(dstOffset, 1, 1, dstPixelFormat, imageMemoryBarriers[1].subresourceRange);
+
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
-        imageMemoryBarriers.Reserve(region.srcSubresource.layerCount + region.dstSubresource.layerCount);
+        imageMemoryBarriers[0].srcAccessMask = 0;
+        imageMemoryBarriers[0].dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        imageMemoryBarriers[0].oldLayout = srcImage->ResetLayout();
+        imageMemoryBarriers[0].newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
 
-        //TODO: setup image layout transition!
+        imageMemoryBarriers[1].srcAccessMask = 0;
+        imageMemoryBarriers[1].dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        imageMemoryBarriers[1].oldLayout = dstImage->ResetLayout();
+        imageMemoryBarriers[1].newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 
-        if (imageMemoryBarriers.Count() > 0)
-        {
-            vkCmdPipelineBarrier(commandBuffer,
-                                 VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                 0,          //dependencyFlags
-                                 0, nullptr, //pMemoryBarriers
-                                 0, nullptr, //pBufferMemoryBarriers
-                                 imageMemoryBarriers.Count(),
-                                 (const VkImageMemoryBarrier*)imageMemoryBarriers);
-        }
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,            //dependencyFlags
+            0, nullptr,   //pMemoryBarriers
+            0, nullptr,   //pBufferMemoryBarriers
+            2, imageMemoryBarriers);
 
         vkCmdCopyImage(commandBuffer,
                        srcImage->image,
@@ -342,6 +391,25 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
                        dstImage->image,
                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &region);
+
+        imageMemoryBarriers[0].srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        imageMemoryBarriers[0].dstAccessMask = 0;
+        imageMemoryBarriers[0].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        imageMemoryBarriers[0].newLayout = srcImage->Layout();
+
+        imageMemoryBarriers[1].srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        imageMemoryBarriers[1].dstAccessMask = 0;
+        imageMemoryBarriers[1].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        imageMemoryBarriers[1].newLayout = srcImage->Layout();
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+            0,            //dependencyFlags
+            0, nullptr,   //pMemoryBarriers
+            0, nullptr,   //pBufferMemoryBarriers
+            2, imageMemoryBarriers);
     });
     encoder->commands.Add(command);
     encoder->textures.Add(src);
@@ -396,6 +464,28 @@ void CopyCommandEncoder::SetupSubresource(const TextureOrigin& origin,
     subresource.mipLevel = origin.level;
     subresource.baseArrayLayer = origin.layer;
     subresource.layerCount = layerCount;
+}
+
+void CopyCommandEncoder::SetupSubresource(const TextureOrigin& origin,
+                                          uint32_t layerCount,
+                                          uint32_t levelCount,
+                                          DKPixelFormat pixelFormat,
+                                          VkImageSubresourceRange& subresource)
+{
+    if (DKPixelFormatIsColorFormat(pixelFormat))
+        subresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    else
+    {
+        subresource.aspectMask = 0;
+        if (DKPixelFormatIsDepthFormat(pixelFormat))
+            subresource.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+        if (DKPixelFormatIsStencilFormat(pixelFormat))
+            subresource.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+    }
+    subresource.baseMipLevel = origin.level;
+    subresource.baseArrayLayer = origin.layer;
+    subresource.layerCount = layerCount;
+    subresource.levelCount = levelCount;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN
