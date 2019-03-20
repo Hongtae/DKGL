@@ -961,7 +961,7 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
             // create new pool-chain.
             DescriptorPoolChain* chain = new DescriptorPoolChain(this, poolId);
             dpChainMap.poolChainMap.Update(poolId, chain);
-        }        
+        }
         DescriptorPoolChain* chain = dpChainMap.poolChainMap.Value(poolId);
         DKASSERT_DEBUG(chain->device == this);
         DKASSERT_DEBUG(chain->poolId == poolId);
@@ -1003,26 +1003,51 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
             return NULL;
         }
 
-        DescriptorPoolChain::AllocationInfo info;
-        if (chain->AllocateDescriptorSet(setLayout, info))
-        {
-            DKASSERT_DEBUG(info.descriptorSet);
-            DKASSERT_DEBUG(info.descriptorPool);
-
-            DKObject<ShaderBindingSet> bindingSet = DKOBJECT_NEW ShaderBindingSet(dev, setLayout, info.descriptorSet, info.descriptorPool);
-            bindingSet->bindings = std::move(layoutBindings);
-            bindingSet->layoutFlags = layoutCreateInfo.flags; // copy layout creation flags! (for later use)
-            return bindingSet.SafeCast<DKShaderBindingSet>();
-        }
-
-        vkDestroyDescriptorSetLayout(device, setLayout, allocationCallbacks);
+        DKObject<ShaderBindingSet> bindingSet = DKOBJECT_NEW ShaderBindingSet(dev, setLayout, poolId, layoutCreateInfo);
+        return bindingSet.SafeCast<DKShaderBindingSet>();
     }
     return NULL;
 }
 
-void GraphicsDevice::DestroyDescriptorSet(VkDescriptorSet set, DescriptorPool* pool)
+DKObject<DescriptorSet> GraphicsDevice::CreateDescriptorSet(DKGraphicsDevice* dev,
+                                                            VkDescriptorSetLayout layout,
+                                                            const DescriptorPoolId& poolId)
 {
-    DKASSERT_DEBUG(set);
+    if (poolId.mask)
+    {
+        DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
+        uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+
+        DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
+
+        DKCriticalSection<DKSpinLock> guard(dpChainMap.lock);
+
+        // find matching pool.
+        if (auto p = dpChainMap.poolChainMap.Find(poolId); p == nullptr)
+        {
+            // create new pool-chain.
+            DescriptorPoolChain* chain = new DescriptorPoolChain(this, poolId);
+            dpChainMap.poolChainMap.Update(poolId, chain);
+        }
+        DescriptorPoolChain* chain = dpChainMap.poolChainMap.Value(poolId);
+        DKASSERT_DEBUG(chain->device == this);
+        DKASSERT_DEBUG(chain->poolId == poolId);
+
+        DescriptorPoolChain::AllocationInfo info;
+        if (chain->AllocateDescriptorSet(layout, info))
+        {
+            DKASSERT_DEBUG(info.descriptorSet);
+            DKASSERT_DEBUG(info.descriptorPool);
+
+            DKObject<DescriptorSet> descriptorSet = DKOBJECT_NEW DescriptorSet(dev, info.descriptorPool, info.descriptorSet);
+            return descriptorSet;
+        }
+    }
+    return NULL;
+}
+
+void GraphicsDevice::DestroyDescriptorSets(DescriptorPool* pool, VkDescriptorSet* sets, size_t num)
+{
     DKASSERT_DEBUG(pool);
 
     const DescriptorPoolId& poolId = pool->poolId;
@@ -1035,7 +1060,7 @@ void GraphicsDevice::DestroyDescriptorSet(VkDescriptorSet set, DescriptorPool* p
 
     DKCriticalSection<DKSpinLock> guard(dpChainMap.lock);
 
-    pool->ReleaseDescriptorSet(set);
+    pool->ReleaseDescriptorSets(sets, num);
     auto p = dpChainMap.poolChainMap.Find(poolId);
     DKASSERT_DEBUG(p);
     DescriptorPoolChain* chain = p->value;

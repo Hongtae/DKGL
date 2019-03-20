@@ -15,57 +15,88 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-ShaderBindingSet::ShaderBindingSet(DKGraphicsDevice* dev, VkDescriptorSetLayout layout, VkDescriptorSet set, DescriptorPool* pool)
+ShaderBindingSet::ShaderBindingSet(DKGraphicsDevice* dev,
+                                   VkDescriptorSetLayout layout,
+                                   const DescriptorPoolId& poolId,
+                                   const VkDescriptorSetLayoutCreateInfo& createInfo)
     : device(dev)
-    , descriptorSet(set)
     , descriptorSetLayout(layout)
-    , descriptorPool(pool)
-    , layoutFlags(0)
+    , poolId(poolId)
+    , layoutFlags(createInfo.flags)
+    , descriptorSet(nullptr)
 {
-    DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
     DKASSERT_DEBUG(descriptorSetLayout != VK_NULL_HANDLE);
-    DKASSERT_DEBUG(descriptorPool);
+
+    bindings.Reserve(createInfo.bindingCount);
+    for (uint32_t i = 0; i < createInfo.bindingCount; ++i)
+    {
+        const VkDescriptorSetLayoutBinding& binding = createInfo.pBindings[i];
+
+        DescriptorBinding ds = { binding };
+        bindings.Add(ds);
+    }
 }
 
 ShaderBindingSet::~ShaderBindingSet()
 {
+    descriptorSet = nullptr;
     GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-    dev->DestroyDescriptorSet(descriptorSet, descriptorPool);
     vkDestroyDescriptorSetLayout(dev->device, descriptorSetLayout, dev->allocationCallbacks);
 }
 
-void ShaderBindingSet::UpdateDescriptorSet()
+DKObject<DescriptorSet> ShaderBindingSet::CreateDescriptorSet()
 {
-    if (descriptorWrites.Count() > 0 || descriptorCopies.Count() > 0)
+    size_t numUpdates = 0;
+    for (DescriptorBinding& binding : bindings)
+    {
+        if (binding.dirty)
+            numUpdates += binding.descriptorWrites.Count();
+    }
+    if (numUpdates > 0 || descriptorSet == NULL)
     {
         GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
+        descriptorSet = dev->CreateDescriptorSet(device, descriptorSetLayout, poolId);
+        DKASSERT_DEBUG(descriptorSet);
+
+        // TODO: update image layout!
+
+
+        DKArray<VkWriteDescriptorSet> descriptorWrites;
+        descriptorWrites.Reserve(numUpdates);
+
+        for (DescriptorBinding& binding : bindings)
+        {
+            if (binding.dirty)
+            {
+                for (const VkWriteDescriptorSet& write : binding.descriptorWrites)
+                {
+                    VkWriteDescriptorSet writeCopy = write;
+                    writeCopy.dstSet = descriptorSet->descriptorSet;
+                    descriptorWrites.Add(writeCopy);
+                }
+                binding.dirty = false;
+            }
+        }
+
+        DKASSERT_DEBUG(descriptorWrites.Count() > 0);
+
         vkUpdateDescriptorSets(dev->device,
                                descriptorWrites.Count(),
                                descriptorWrites,
-                               descriptorCopies.Count(),
-                               descriptorCopies);
-        descriptorWrites.Clear();
-        descriptorCopies.Clear();
-
-        imageInfos.Clear();
-        bufferInfos.Clear();
-        texelBufferViews.Clear();
+                               0,
+                               nullptr);
     }
-    
-    DKASSERT_DEBUG(descriptorWrites.IsEmpty());
-    DKASSERT_DEBUG(descriptorCopies.IsEmpty());
-    DKASSERT_DEBUG(imageInfos.IsEmpty());
-    DKASSERT_DEBUG(bufferInfos.IsEmpty());
-    DKASSERT_DEBUG(texelBufferViews.IsEmpty());
+
+    return descriptorSet;
 }
 
-bool ShaderBindingSet::FindDescriptorBinding(uint32_t binding, VkDescriptorSetLayoutBinding* descriptor) const
+bool ShaderBindingSet::FindDescriptorBinding(uint32_t binding, DescriptorBinding** descriptor)
 {
-    for (const VkDescriptorSetLayoutBinding& b : bindings)
+    for (DescriptorBinding& b : bindings)
     {
-        if (b.binding == binding)
+        if (b.layoutBinding.binding == binding)
         {
-            *descriptor = b;
+            *descriptor = &b;
             return true;
         }
     }
@@ -74,23 +105,28 @@ bool ShaderBindingSet::FindDescriptorBinding(uint32_t binding, VkDescriptorSetLa
 
 void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, uint64_t offset, uint64_t length)
 {
-    VkDescriptorSetLayoutBinding descriptor;
-    if (FindDescriptorBinding(binding, &descriptor))
+    BufferInfo bufferInfo = { bufferObject, offset, length };
+    return SetBufferArray(binding, 1, &bufferInfo);
+#if 0
+    DescriptorBinding* descriptorBinding;
+    if (FindDescriptorBinding(binding, &descriptorBinding))
     {
+        descriptorBinding->dirty = true;
+        descriptorBinding->descriptorWrites.Clear();
+        descriptorBinding->bufferInfos.Clear();
+        descriptorBinding->imageInfos.Clear();
+        descriptorBinding->texelBufferViews.Clear();
+        descriptorBinding->bufferViews.Clear();
+        descriptorBinding->imageViews.Clear();
+        descriptorBinding->samplers.Clear();
+
+        const VkDescriptorSetLayoutBinding& descriptor = descriptorBinding->layoutBinding;
+
         DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferObject) != nullptr);
         BufferView* bufferView = static_cast<BufferView*>(bufferObject);
 
-        for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
-        {
-            if (descriptorWrites.Value(i).dstBinding == binding)
-            {
-                descriptorWrites.Remove(i);
-                break;
-            }
-        }
-
         VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-        write.dstSet = descriptorSet;
+        write.dstSet = VK_NULL_HANDLE;
         write.dstBinding = descriptor.binding;
         write.dstArrayElement = 0;
         write.descriptorCount = 1;  // number of descriptors to update.
@@ -126,8 +162,8 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
                 bufferInfo.range = length;
 
                 // keep VkDescriptorBufferInfo instance until the descriptorSet is updated.
-                auto index = bufferInfos.Add(bufferInfo);
-                write.pBufferInfo = &bufferInfos.Value(index);
+                auto index = descriptorBinding->bufferInfos.Add(bufferInfo);
+                write.pBufferInfo = &descriptorBinding->bufferInfos.Value(index);
             }
             else
             {
@@ -142,83 +178,77 @@ void ShaderBindingSet::SetBuffer(uint32_t binding, DKGpuBuffer* bufferObject, ui
         }
 
         // take ownership of resource.
-        DKArray<BufferViewObject>& bufferViewArray = bufferViews.Value(binding);
-        bufferViewArray.Clear();
-        bufferViewArray.Add(bufferView);
-
-        descriptorWrites.Add(write);
+        descriptorBinding->bufferViews.Add(bufferView);
+        descriptorBinding->descriptorWrites.Add(write);
     }
+#endif
 }
 
 void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, BufferInfo* bufferArray)
 {
-    VkDescriptorSetLayoutBinding descriptor;
-    if (FindDescriptorBinding(binding, &descriptor))
+    DescriptorBinding* descriptorBinding;
+    if (FindDescriptorBinding(binding, &descriptorBinding))
     {
-        for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
-        {
-            if (descriptorWrites.Value(i).dstBinding == binding)
-            {
-                descriptorWrites.Remove(i);
-                break;
-            }
-        }
+        descriptorBinding->dirty = true;
+        descriptorBinding->descriptorWrites.Clear();
+        descriptorBinding->bufferInfos.Clear();
+        descriptorBinding->imageInfos.Clear();
+        descriptorBinding->texelBufferViews.Clear();
+        descriptorBinding->bufferViews.Clear();
+        descriptorBinding->imageViews.Clear();
+        descriptorBinding->samplers.Clear();
+
+        const VkDescriptorSetLayoutBinding& descriptor = descriptorBinding->layoutBinding;
 
         uint32_t startingIndex = 0;
         uint32_t availableItems = Min(numBuffers, descriptor.descriptorCount - startingIndex);
         DKASSERT_DEBUG(availableItems <= numBuffers);
 
         VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-        write.dstSet = descriptorSet;
+        write.dstSet = VK_NULL_HANDLE;
         write.dstBinding = descriptor.binding;
         write.dstArrayElement = startingIndex;
         write.descriptorCount = availableItems;
         write.descriptorType = descriptor.descriptorType;
 
+        DKASSERT_DEBUG(descriptorBinding->bufferInfos.IsEmpty());
+        DKASSERT_DEBUG(descriptorBinding->texelBufferViews.IsEmpty());
 
         switch (descriptor.descriptorType)
         {
         case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
         case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
             // bufferView (pTexelBufferView)
-            if (availableItems)
+            descriptorBinding->texelBufferViews.Reserve(availableItems);
+            for (uint32_t i = 0; i < availableItems; ++i)
             {
-                auto first = texelBufferViews.Count();
-                texelBufferViews.Reserve(first + availableItems);
-                for (uint32_t i = 0; i < availableItems; ++i)
-                {
-                    DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferArray[i].buffer));
-                    BufferView* bufferView = static_cast<BufferView*>(bufferArray[i].buffer);
-                    DKASSERT_DEBUG(bufferView->bufferView);
-                    texelBufferViews.Add(bufferView->bufferView);
-                }
-                write.pTexelBufferView = &texelBufferViews.Value(first);
+                DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferArray[i].buffer));
+                BufferView* bufferView = static_cast<BufferView*>(bufferArray[i].buffer);
+                DKASSERT_DEBUG(bufferView->bufferView);
+                descriptorBinding->texelBufferViews.Add(bufferView->bufferView);
             }
+            write.pTexelBufferView = descriptorBinding->texelBufferViews;
             break;
         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
         case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
         case  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
             // buffer (pBufferInfo)
-            if (availableItems)
+            descriptorBinding->bufferInfos.Reserve(availableItems);
+            for (uint32_t i = 0; i < availableItems; ++i)
             {
-                auto first = bufferInfos.Count();
-                bufferInfos.Reserve(first + availableItems);
-                for (uint32_t i = 0; i < availableItems; ++i)
-                {
-                    DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferArray[i].buffer));
-                    Buffer* buffer = static_cast<BufferView*>(bufferArray[i].buffer)->buffer;
-                    DKASSERT_DEBUG(buffer->buffer);
+                DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferArray[i].buffer));
+                Buffer* buffer = static_cast<BufferView*>(bufferArray[i].buffer)->buffer;
+                DKASSERT_DEBUG(buffer->buffer);
 
-                    VkDescriptorBufferInfo bufferInfo = {};
-                    bufferInfo.buffer = buffer->buffer;
-                    bufferInfo.offset = bufferArray[i].offset;
-                    bufferInfo.range = bufferArray[i].length;
+                VkDescriptorBufferInfo bufferInfo = {};
+                bufferInfo.buffer = buffer->buffer;
+                bufferInfo.offset = bufferArray[i].offset;
+                bufferInfo.range = bufferArray[i].length;
 
-                    bufferInfos.Add(bufferInfo);
-                }
-                write.pBufferInfo = &bufferInfos.Value(first);
+                descriptorBinding->bufferInfos.Add(bufferInfo);
             }
+            write.pBufferInfo = descriptorBinding->bufferInfos;
             break;
         default:
             DKLogE("Invalid type!");
@@ -227,45 +257,55 @@ void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, Buf
         }
 
         // take ownership of resource.
-        DKArray<BufferViewObject>& bufferViewArray = bufferViews.Value(binding);
-        bufferViewArray.Clear();
-        bufferViewArray.Reserve(availableItems);
+        descriptorBinding->bufferViews.Reserve(availableItems);
 
         for (uint32_t i = 0; i < availableItems; ++i)
         {
             BufferView* bufferView = static_cast<BufferView*>(bufferArray[i].buffer);
-            bufferViewArray.Add(bufferView);
+            descriptorBinding->bufferViews.Add(bufferView);
         }
-
-        descriptorWrites.Add(write);
+        descriptorBinding->descriptorWrites.Add(write);
     }
 }
 
 void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
 {
-    VkDescriptorSetLayoutBinding descriptor;
-    if (FindDescriptorBinding(binding, &descriptor))
+    return SetTextureArray(binding, 1, &textureObject);
+#if 0
+    DescriptorBinding* descriptorBinding;
+    if (FindDescriptorBinding(binding, &descriptorBinding))
     {
+        descriptorBinding->dirty = true;
+        //descriptorBinding->descriptorWrites.Clear();
+        descriptorBinding->bufferInfos.Clear();
+        //descriptorBinding->imageInfos.Clear();
+        descriptorBinding->texelBufferViews.Clear();
+        descriptorBinding->bufferViews.Clear();
+        descriptorBinding->imageViews.Clear();
+        //descriptorBinding->samplers.Clear();
+
+        const VkDescriptorSetLayoutBinding& descriptor = descriptorBinding->layoutBinding;
+
         DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureObject) != nullptr);
         ImageView* imageView = static_cast<ImageView*>(textureObject);
 
-        VkWriteDescriptorSet* prevWrite = nullptr;
-        for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
+        if (descriptorBinding->descriptorWrites.IsEmpty())
         {
-            if (descriptorWrites.Value(i).dstBinding == binding)
-            {
-                if (descriptorWrites.Value(i).descriptorCount > 0)
-                {
-                    prevWrite = &descriptorWrites.Value(i);
-                    DKASSERT_DEBUG(prevWrite->dstSet == descriptorSet);
-                    DKASSERT_DEBUG(prevWrite->descriptorType == descriptor.descriptorType);
-                }
-                else
-                {
-                    descriptorWrites.Remove(i);
-                }
-                break;
-            }
+            VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            write.dstSet = VK_NULL_HANDLE;
+            write.dstBinding = descriptor.binding;
+            write.dstArrayElement = 0;
+            write.descriptorCount = 1;  // number of descriptors to update.
+            write.descriptorType = descriptor.descriptorType;
+            auto n = descriptorBinding->descriptorWrites.Add(write);
+            DKASSERT_DEBUG(n == 0);
+        }
+        VkWriteDescriptorSet& write = descriptorBinding->descriptorWrites.Value(0);
+        if (write.pImageInfo == nullptr)
+        {
+            descriptorBinding->samplers.Clear();
+            descriptorBinding->imageInfos.Clear();
+            write.descriptorCount = 1;
         }
 
         DKPixelFormat pixelFormat = imageView->PixelFormat();
@@ -299,36 +339,20 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
         case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
         case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
             DKASSERT_DEBUG(imageView->imageView);
-            if (prevWrite)
+            for (uint32_t i = 0; i < write.descriptorCount; ++i)
             {
-                auto first = imageInfos.Count();
-                imageInfos.Reserve(first + prevWrite->descriptorCount);
-                for (uint32_t i = 0; i < prevWrite->descriptorCount; ++i)
+                if (i >= descriptorBinding->imageInfos.Count())
                 {
-                    VkDescriptorImageInfo imageInfo = prevWrite->pImageInfo[i];
-                    imageInfo.imageView = imageView->imageView;
-                    imageInfo.imageLayout = imageLayout;
-                    auto index = imageInfos.Add(imageInfo);
+                    VkDescriptorImageInfo imageInfo = {};
+                    auto index = descriptorBinding->imageInfos.Add(imageInfo);
+                    DKASSERT_DEBUG(index == i);
                 }
-                prevWrite->pImageInfo = &imageInfos.Value(first);
-            }
-            else
-            {
-                VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-                write.dstSet = descriptorSet;
-                write.dstBinding = descriptor.binding;
-                write.dstArrayElement = 0;
-                write.descriptorCount = 1;  // number of descriptors to update.
-                write.descriptorType = descriptor.descriptorType;
 
-                VkDescriptorImageInfo imageInfo = {};
+                VkDescriptorImageInfo& imageInfo = descriptorBinding->imageInfos.Value(i);
                 imageInfo.imageView = imageView->imageView;
                 imageInfo.imageLayout = imageLayout;
-                auto index = imageInfos.Add(imageInfo);
-                write.pImageInfo = &imageInfos.Value(index);
-
-                descriptorWrites.Add(write);
             }
+            write.pImageInfo = descriptorBinding->imageInfos;
             break;
         default:
             DKLogE("Invalid type!");
@@ -336,43 +360,51 @@ void ShaderBindingSet::SetTexture(uint32_t binding, DKTexture* textureObject)
             return;
         }
 
-        ImageLayoutTransition layoutTransition = { imageView->image, imageLayout, descriptor.stageFlags };
-        imageLayoutTransitions.Add(layoutTransition);
-
         // take ownership of resource.
-        DKArray<ImageViewObject>& imageViewArray = imageViews.Value(binding);
-        imageViewArray.Clear();
-        imageViewArray.Add(imageView);
+        descriptorBinding->imageViews.Add(imageView);
     }
+#endif
 }
 
 void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, DKTexture** textureArray)
 {
-    VkDescriptorSetLayoutBinding descriptor;
-    if (FindDescriptorBinding(binding, &descriptor))
+    DescriptorBinding* descriptorBinding;
+    if (FindDescriptorBinding(binding, &descriptorBinding))
     {
-        VkWriteDescriptorSet* prevWrite = nullptr;
-        for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
-        {
-            if (descriptorWrites.Value(i).dstBinding == binding)
-            {
-                if (descriptorWrites.Value(i).descriptorCount > 0)
-                {
-                    prevWrite = &descriptorWrites.Value(i);
-                    DKASSERT_DEBUG(prevWrite->dstSet == descriptorSet);
-                    DKASSERT_DEBUG(prevWrite->descriptorType == descriptor.descriptorType);
-                }
-                else
-                {
-                    descriptorWrites.Remove(i);
-                }
-                break;
-            }
-        }
+        descriptorBinding->dirty = true;
+        //descriptorBinding->descriptorWrites.Clear();
+        descriptorBinding->bufferInfos.Clear();
+        //descriptorBinding->imageInfos.Clear();
+        descriptorBinding->texelBufferViews.Clear();
+        descriptorBinding->bufferViews.Clear();
+        descriptorBinding->imageViews.Clear();
+        //descriptorBinding->samplers.Clear();
+
+        const VkDescriptorSetLayoutBinding& descriptor = descriptorBinding->layoutBinding;
 
         uint32_t startingIndex = 0;
         uint32_t availableItems = Min(numTextures, descriptor.descriptorCount - startingIndex);
         DKASSERT_DEBUG(availableItems <= numTextures);
+
+        if (descriptorBinding->descriptorWrites.IsEmpty())
+        {
+            VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            write.dstSet = VK_NULL_HANDLE;
+            write.dstBinding = descriptor.binding;
+            write.dstArrayElement = startingIndex;
+            write.descriptorCount = availableItems;  // number of descriptors to update.
+            write.descriptorType = descriptor.descriptorType;
+            auto n = descriptorBinding->descriptorWrites.Add(write);
+            DKASSERT_DEBUG(n == 0);
+        }
+        VkWriteDescriptorSet& write = descriptorBinding->descriptorWrites.Value(0);
+        if (write.pImageInfo == nullptr)
+        {
+            descriptorBinding->samplers.Clear();
+            descriptorBinding->imageInfos.Clear();
+        }
+        write.dstArrayElement = startingIndex;
+        write.descriptorCount = availableItems;
 
         auto getImageLayout = [](VkDescriptorType type, DKPixelFormat pixelFormat)
         {
@@ -407,106 +439,74 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
         case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
         case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
         case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-            if (prevWrite)
+            descriptorBinding->imageViews.Reserve(availableItems);
+            for (uint32_t i = 0; i < availableItems; ++i)
             {
-                prevWrite->dstArrayElement = startingIndex;
-                prevWrite->descriptorCount = availableItems;
-
-                auto first = imageInfos.Count();
-                imageInfos.Reserve(first + availableItems);
-                for (uint32_t i = 0; i < availableItems; ++i)
+                if (i >= descriptorBinding->imageInfos.Count())
                 {
-                    VkDescriptorImageInfo imageInfo = (prevWrite->descriptorCount < i) ?
-                        prevWrite->pImageInfo[i] : prevWrite->pImageInfo[prevWrite->descriptorCount - 1];
-
-                    DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureArray[i]) != nullptr);
-                    ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
-                    DKASSERT_DEBUG(imageView->imageView);
-
-                    imageInfo.imageView = imageView->imageView;
-                    imageInfo.imageLayout = getImageLayout(descriptor.descriptorType, imageView->image->PixelFormat());
-                    auto index = imageInfos.Add(imageInfo);
-
-                    ImageLayoutTransition layoutTransition = { imageView->image, imageInfo.imageLayout, descriptor.stageFlags };
-                    imageLayoutTransitions.Add(layoutTransition);
+                    VkDescriptorImageInfo info = {};
+                    auto index = descriptorBinding->imageInfos.Add(info);
+                    DKASSERT_DEBUG(index == i);
                 }
-                prevWrite->pImageInfo = &imageInfos.Value(first);
+
+                DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureArray[i]) != nullptr);
+                ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
+                DKASSERT_DEBUG(imageView->imageView);
+
+                VkDescriptorImageInfo& imageInfo = descriptorBinding->imageInfos.Value(i);
+                imageInfo.imageView = imageView->imageView;
+                imageInfo.imageLayout = getImageLayout(descriptor.descriptorType, imageView->image->PixelFormat());
+
+                descriptorBinding->imageViews.Add(imageView);
             }
-            else
-            {
-                VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-                write.dstSet = descriptorSet;
-                write.dstBinding = descriptor.binding;
-                write.dstArrayElement = startingIndex;
-                write.descriptorCount = availableItems;
-                write.descriptorType = descriptor.descriptorType;
-
-                auto first = imageInfos.Count();
-                imageInfos.Reserve(first + availableItems);
-                for (uint32_t i = 0; i < availableItems; ++i)
-                {
-                    VkDescriptorImageInfo imageInfo = {};
-
-                    DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureArray[i]) != nullptr);
-                    ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
-                    DKASSERT_DEBUG(imageView->imageView);
-
-                    imageInfo.imageView = imageView->imageView;
-                    imageInfo.imageLayout = getImageLayout(descriptor.descriptorType, imageView->image->PixelFormat());
-                    auto index = imageInfos.Add(imageInfo);
-
-                    ImageLayoutTransition layoutTransition = { imageView->image, imageInfo.imageLayout, descriptor.stageFlags };
-                    imageLayoutTransitions.Add(layoutTransition);
-                }
-                write.pImageInfo = &imageInfos.Value(first);
-
-                descriptorWrites.Add(write);
-            }
+            write.pImageInfo = descriptorBinding->imageInfos;
             break;
         default:
             DKLogE("Invalid type!");
             DKASSERT_DESC_DEBUG(0, "Invalid descriptor type!");
             return;
         }
-
-        // take ownership of resource.
-        DKArray<ImageViewObject>& imageViewArray = imageViews.Value(binding);
-        imageViewArray.Clear();
-        imageViewArray.Reserve(availableItems);
-
-        for (uint32_t i = 0; i < availableItems; ++i)
-        {
-            ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
-            imageViewArray.Add(imageView);
-        }
     }
 }
 
 void ShaderBindingSet::SetSamplerState(uint32_t binding, DKSamplerState* samplerState)
 {
-    VkDescriptorSetLayoutBinding descriptor;
-    if (FindDescriptorBinding(binding, &descriptor))
+    return SetSamplerStateArray(binding, 1, &samplerState);
+#if 0
+    DescriptorBinding* descriptorBinding;
+    if (FindDescriptorBinding(binding, &descriptorBinding))
     {
+        descriptorBinding->dirty = true;
+        //descriptorBinding->descriptorWrites.Clear();
+        descriptorBinding->bufferInfos.Clear();
+        //descriptorBinding->imageInfos.Clear();
+        descriptorBinding->texelBufferViews.Clear();
+        descriptorBinding->bufferViews.Clear();
+        //descriptorBinding->imageViews.Clear();
+        descriptorBinding->samplers.Clear();
+
+        const VkDescriptorSetLayoutBinding& descriptor = descriptorBinding->layoutBinding;
+
         DKASSERT_DEBUG(dynamic_cast<Sampler*>(samplerState) != nullptr);
         Sampler* sampler = static_cast<Sampler*>(samplerState);
 
-        VkWriteDescriptorSet* prevWrite = nullptr;
-        for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
+        if (descriptorBinding->descriptorWrites.IsEmpty())
         {
-            if (descriptorWrites.Value(i).dstBinding == binding)
-            {
-                if (descriptorWrites.Value(i).descriptorCount > 0)
-                {
-                    prevWrite = &descriptorWrites.Value(i);
-                    DKASSERT_DEBUG(prevWrite->dstSet == descriptorSet);
-                    DKASSERT_DEBUG(prevWrite->descriptorType == descriptor.descriptorType);
-                }
-                else
-                {
-                    descriptorWrites.Remove(i);
-                }
-                break;
-            }
+            VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            write.dstSet = VK_NULL_HANDLE;
+            write.dstBinding = descriptor.binding;
+            write.dstArrayElement = 0;
+            write.descriptorCount = 1;  // number of descriptors to update.
+            write.descriptorType = descriptor.descriptorType;
+            auto n = descriptorBinding->descriptorWrites.Add(write);
+            DKASSERT_DEBUG(n == 0);
+        }
+        VkWriteDescriptorSet& write = descriptorBinding->descriptorWrites.Value(0);
+        if (write.pImageInfo == nullptr)
+        {
+            descriptorBinding->imageViews.Clear();
+            descriptorBinding->imageInfos.Clear();
+            write.descriptorCount = 1;
         }
 
         switch (descriptor.descriptorType)
@@ -514,36 +514,18 @@ void ShaderBindingSet::SetSamplerState(uint32_t binding, DKSamplerState* sampler
         case VK_DESCRIPTOR_TYPE_SAMPLER:
         case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
             DKASSERT_DEBUG(sampler->sampler);
-            if (prevWrite)
+            for (uint32_t i = 0; i < write.descriptorCount; ++i)
             {
-                auto first = imageInfos.Count();
-                imageInfos.Reserve(first + prevWrite->descriptorCount);
-                for (uint32_t i = 0; i < prevWrite->descriptorCount; ++i)
+                if (i >= descriptorBinding->imageInfos.Count())
                 {
-                    VkDescriptorImageInfo imageInfo = prevWrite->pImageInfo[i];
-                    imageInfo.sampler = sampler->sampler;
-                    auto index = imageInfos.Add(imageInfo);
+                    VkDescriptorImageInfo imageInfo = {};
+                    auto index = descriptorBinding->imageInfos.Add(imageInfo);
+                    DKASSERT_DEBUG(index == i);
                 }
-                prevWrite->pImageInfo = &imageInfos.Value(first);
-            }
-            else
-            {
-                VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-                write.dstSet = descriptorSet;
-                write.dstBinding = descriptor.binding;
-                write.dstArrayElement = 0;
-                write.descriptorCount = 1;  // number of descriptors to update.
-                write.descriptorType = descriptor.descriptorType;
-
-                VkDescriptorImageInfo imageInfo = {};
+                VkDescriptorImageInfo& imageInfo = descriptorBinding->imageInfos.Value(i);
                 imageInfo.sampler = sampler->sampler;
-                imageInfo.imageView = VK_NULL_HANDLE;
-                imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-                auto index = imageInfos.Add(imageInfo);
-                write.pImageInfo = &imageInfos.Value(index);
-
-                descriptorWrites.Add(write);
             }
+            write.pImageInfo = descriptorBinding->imageInfos;
             break;
         default:
             DKLogE("Invalid type!");
@@ -552,109 +534,85 @@ void ShaderBindingSet::SetSamplerState(uint32_t binding, DKSamplerState* sampler
         }
 
         // take ownership of resource.
-        DKArray<SamplerObject>& samplerObjectArray = samplers.Value(binding);
-        samplerObjectArray.Clear();
-        samplerObjectArray.Add(sampler);
+        descriptorBinding->samplers.Add(sampler);
     }
+#endif
 }
 
 void ShaderBindingSet::SetSamplerStateArray(uint32_t binding, uint32_t numSamplers, DKSamplerState** samplerArray) 
 {
-    VkDescriptorSetLayoutBinding descriptor;
-    if (FindDescriptorBinding(binding, &descriptor))
+    DescriptorBinding* descriptorBinding;
+    if (FindDescriptorBinding(binding, &descriptorBinding))
     {
-        VkWriteDescriptorSet* prevWrite = nullptr;
-        for (uint32_t i = 0; i < descriptorWrites.Count(); ++i)
-        {
-            if (descriptorWrites.Value(i).dstBinding == binding)
-            {
-                if (descriptorWrites.Value(i).descriptorCount > 0)
-                {
-                    prevWrite = &descriptorWrites.Value(i);
-                    DKASSERT_DEBUG(prevWrite->dstSet == descriptorSet);
-                    DKASSERT_DEBUG(prevWrite->descriptorType == descriptor.descriptorType);
-                }
-                else
-                {
-                    descriptorWrites.Remove(i);
-                }
-                break;
-            }
-        }
+        descriptorBinding->dirty = true;
+        //descriptorBinding->descriptorWrites.Clear();
+        descriptorBinding->bufferInfos.Clear();
+        //descriptorBinding->imageInfos.Clear();
+        descriptorBinding->texelBufferViews.Clear();
+        descriptorBinding->bufferViews.Clear();
+        //descriptorBinding->imageViews.Clear();
+        descriptorBinding->samplers.Clear();
+
+        const VkDescriptorSetLayoutBinding& descriptor = descriptorBinding->layoutBinding;
 
         uint32_t startingIndex = 0;
         uint32_t availableItems = Min(numSamplers, descriptor.descriptorCount - startingIndex);
         DKASSERT_DEBUG(availableItems <= numSamplers);
 
+        if (descriptorBinding->descriptorWrites.IsEmpty())
+        {
+            VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            write.dstSet = VK_NULL_HANDLE;
+            write.dstBinding = descriptor.binding;
+            write.dstArrayElement = startingIndex;
+            write.descriptorCount = availableItems;  // number of descriptors to update.
+            write.descriptorType = descriptor.descriptorType;
+            auto n = descriptorBinding->descriptorWrites.Add(write);
+            DKASSERT_DEBUG(n == 0);
+        }
+        VkWriteDescriptorSet& write = descriptorBinding->descriptorWrites.Value(0);
+        if (write.pImageInfo == nullptr)
+        {
+            descriptorBinding->imageViews.Clear();
+            descriptorBinding->imageInfos.Clear();
+        }
+        write.dstArrayElement = startingIndex;
+        write.descriptorCount = availableItems;
+
         switch (descriptor.descriptorType)
         {
         case VK_DESCRIPTOR_TYPE_SAMPLER:
         case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-            if (prevWrite)
+            descriptorBinding->samplers.Reserve(availableItems);
+            for (uint32_t i = 0; i < availableItems; ++i)
             {
-                prevWrite->dstArrayElement = startingIndex;
-                prevWrite->descriptorCount = availableItems;
-
-                auto first = imageInfos.Count();
-                imageInfos.Reserve(first + availableItems);
-                for (uint32_t i = 0; i < availableItems; ++i)
+                VkDescriptorImageInfo* imageInfo = nullptr;
+                if (i < descriptorBinding->imageInfos.Count())
                 {
-                    VkDescriptorImageInfo imageInfo = (prevWrite->descriptorCount < i) ?
-                        prevWrite->pImageInfo[i] : prevWrite->pImageInfo[prevWrite->descriptorCount - 1];
-
-                    DKASSERT_DEBUG(dynamic_cast<Sampler*>(samplerArray[i]) != nullptr);
-                    Sampler* sampler = static_cast<Sampler*>(samplerArray[i]);
-                    DKASSERT_DEBUG(sampler->sampler);
-
-                    imageInfo.sampler = sampler->sampler;
-                    auto index = imageInfos.Add(imageInfo);
+                    imageInfo = &descriptorBinding->imageInfos.Value(i);
                 }
-                prevWrite->pImageInfo = &imageInfos.Value(first);
-            }
-            else
-            {
-                VkWriteDescriptorSet write = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-                write.dstSet = descriptorSet;
-                write.dstBinding = descriptor.binding;
-                write.dstArrayElement = startingIndex;
-                write.descriptorCount = availableItems;
-                write.descriptorType = descriptor.descriptorType;
-
-                auto first = imageInfos.Count();
-                imageInfos.Reserve(first + availableItems);
-                for (uint32_t i = 0; i < availableItems; ++i)
+                else
                 {
-                    VkDescriptorImageInfo imageInfo = {};
-
-                    DKASSERT_DEBUG(dynamic_cast<Sampler*>(samplerArray[i]) != nullptr);
-                    Sampler* sampler = static_cast<Sampler*>(samplerArray[i]);
-                    DKASSERT_DEBUG(sampler->sampler);
-
-                    imageInfo.sampler = sampler->sampler;
-                    imageInfo.imageView = VK_NULL_HANDLE;
-                    imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-                    auto index = imageInfos.Add(imageInfo);
+                    VkDescriptorImageInfo info = {};
+                    auto index = descriptorBinding->imageInfos.Add(info);
+                    imageInfo = &descriptorBinding->imageInfos.Value(index);
+                    DKASSERT_DEBUG(index == i);
                 }
-                write.pImageInfo = &imageInfos.Value(first);
 
-                descriptorWrites.Add(write);
+                DKASSERT_DEBUG(dynamic_cast<Sampler*>(samplerArray[i]) != nullptr);
+                Sampler* sampler = static_cast<Sampler*>(samplerArray[i]);
+                DKASSERT_DEBUG(sampler->sampler);
+
+                imageInfo->sampler = sampler->sampler;
+
+                descriptorBinding->samplers.Add(sampler);
             }
+            write.pImageInfo = descriptorBinding->imageInfos;
             break;
         default:
             DKLogE("Invalid type!");
             DKASSERT_DESC_DEBUG(0, "Invalid descriptor type!");
             return;
-        }
-
-        // take ownership of resource.
-        DKArray<SamplerObject>& samplerObjectArray = samplers.Value(binding);
-        samplerObjectArray.Clear();
-        samplerObjectArray.Reserve(availableItems);
-
-        for (uint32_t i = 0; i < availableItems; ++i)
-        {
-            Sampler* sampler = static_cast<Sampler*>(samplerArray[i]);
-            samplerObjectArray.Add(sampler);
         }
     }
 }

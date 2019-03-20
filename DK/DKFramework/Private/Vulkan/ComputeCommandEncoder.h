@@ -33,7 +33,7 @@ namespace DKFramework::Private::Vulkan
 
             // Retain ownership of all encoded objects
             DKArray<DKObject<ComputePipelineState>> pipelineStateObjects;
-            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
+            DKArray<DKObject<DescriptorSet>> descriptorSets;
 
             class CommandBuffer* commandBuffer;
             DKArray<DKObject<EncoderCommand>> commands;

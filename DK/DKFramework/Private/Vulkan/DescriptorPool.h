@@ -111,7 +111,7 @@ namespace DKFramework::Private::Vulkan
 
         VkDescriptorSet AllocateDescriptorSet(VkDescriptorSetLayout);
 
-        void ReleaseDescriptorSet(VkDescriptorSet);
+        void ReleaseDescriptorSets(VkDescriptorSet*, size_t);
 
     };
 }

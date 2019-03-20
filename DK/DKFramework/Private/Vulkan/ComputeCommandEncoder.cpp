@@ -51,15 +51,16 @@ void ComputeCommandEncoder::EndEncoding()
 
 void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
 {
-    ShaderBindingSet* bindingSet = nullptr;
+    DKObject<DescriptorSet> ds = nullptr;
 
     if (set)
     {
         DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
-        bindingSet = static_cast<ShaderBindingSet*>(set);
+        ShaderBindingSet* bindingSet = static_cast<ShaderBindingSet*>(set);
 
         // keep ownership 
-        encoder->shaderBindingSets.Add(bindingSet);
+        ds = bindingSet->CreateDescriptorSet();
+        encoder->descriptorSets.Add(ds);
     }
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
@@ -67,10 +68,9 @@ void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set
         if (state.pipelineState)
         {
             VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-            if (bindingSet)
+            if (ds)
             {
-                bindingSet->UpdateDescriptorSet();
-                descriptorSet = bindingSet->descriptorSet;
+                descriptorSet = ds->descriptorSet;
             }
 
             vkCmdBindDescriptorSets(commandBuffer,

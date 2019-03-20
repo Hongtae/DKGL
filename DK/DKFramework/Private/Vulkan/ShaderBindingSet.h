@@ -14,23 +14,51 @@
 #include "BufferView.h"
 #include "ImageView.h"
 #include "Sampler.h"
+#include "DescriptorSet.h"
+#include "DescriptorPool.h"
 
 namespace DKFramework::Private::Vulkan
 {
-    class DescriptorPool;
     class ShaderBindingSet : public DKShaderBindingSet
     {
+        const DescriptorPoolId poolId;
     public:
-        ShaderBindingSet(DKGraphicsDevice*, VkDescriptorSetLayout, VkDescriptorSet, DescriptorPool*);
+        ShaderBindingSet(DKGraphicsDevice*,
+                         VkDescriptorSetLayout,                         
+                         const DescriptorPoolId&,
+                         const VkDescriptorSetLayoutCreateInfo&);
         ~ShaderBindingSet();
 
-        VkDescriptorSet descriptorSet;
         VkDescriptorSetLayout descriptorSetLayout;
         VkDescriptorSetLayoutCreateFlags layoutFlags;
 
-        DKObject<DescriptorPool> descriptorPool;
+        DKObject<DescriptorSet> descriptorSet;
         DKObject<DKGraphicsDevice> device;
-        DKArray<VkDescriptorSetLayoutBinding> bindings;
+
+        using BufferViewObject = DKObject<BufferView>;
+        using ImageViewObject = DKObject<ImageView>;
+        using SamplerObject = DKObject<Sampler>;
+
+        struct DescriptorBinding
+        {
+            const VkDescriptorSetLayoutBinding layoutBinding;
+
+            // hold resource object ownership
+            DKArray<BufferViewObject> bufferViews;
+            DKArray<ImageViewObject> imageViews;
+            DKArray<SamplerObject> samplers;
+
+            // descriptor infos (for storage of VkWriteDescriptorSets)
+            DKArray<VkDescriptorImageInfo> imageInfos;
+            DKArray<VkDescriptorBufferInfo> bufferInfos;
+            DKArray<VkBufferView> texelBufferViews;
+
+            // pending updates (vkUpdateDescriptorSets)
+            DKArray<VkWriteDescriptorSet> descriptorWrites;
+
+            bool dirty;
+        };
+        DKArray<DescriptorBinding> bindings;
 
         void SetBuffer(uint32_t binding, DKGpuBuffer*, uint64_t, uint64_t) override;
         void SetBufferArray(uint32_t binding, uint32_t numBuffers, BufferInfo*) override;
@@ -39,34 +67,8 @@ namespace DKFramework::Private::Vulkan
         void SetSamplerState(uint32_t binding, DKSamplerState*) override;
         void SetSamplerStateArray(uint32_t binding, uint32_t numSamplers, DKSamplerState**) override;
 
-        void UpdateDescriptorSet();
-        bool FindDescriptorBinding(uint32_t binding, VkDescriptorSetLayoutBinding*) const;
-
-        struct ImageLayoutTransition
-        {
-            Image* image;
-            VkImageLayout layout;
-            VkShaderStageFlags stageFlags;
-        };
-        DKArray<ImageLayoutTransition> imageLayoutTransitions;
-
-        // pending updates (vkUpdateDescriptorSets)
-        DKArray<VkWriteDescriptorSet> descriptorWrites;
-        DKArray<VkCopyDescriptorSet> descriptorCopies;
-
-        // descriptor infos (for storage of VkWriteDescriptorSets)
-        DKArray<VkDescriptorImageInfo> imageInfos;
-        DKArray<VkDescriptorBufferInfo> bufferInfos;
-        DKArray<VkBufferView> texelBufferViews;
-
-        using BufferViewObject = DKObject<BufferView>;
-        using ImageViewObject = DKObject<ImageView>;
-        using SamplerObject = DKObject<Sampler>;
-
-        // take ownership of bound resources.
-        DKMap<uint32_t, DKArray<BufferViewObject>> bufferViews;
-        DKMap<uint32_t, DKArray<ImageViewObject>> imageViews;
-        DKMap<uint32_t, DKArray<SamplerObject>> samplers;
+        DKObject<DescriptorSet> CreateDescriptorSet();
+        bool FindDescriptorBinding(uint32_t binding, DescriptorBinding**);
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

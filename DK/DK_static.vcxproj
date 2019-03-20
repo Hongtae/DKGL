@@ -342,6 +342,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPool.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPoolChain.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\DescriptorSet.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\DeviceMemory.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\Image.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ImageView.cpp" />
@@ -594,6 +595,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPool.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPoolChain.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\DescriptorSet.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\DeviceMemory.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Image.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ImageView.h" />

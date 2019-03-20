@@ -14,6 +14,7 @@
 #include "SwapChain.h"
 #include "RenderPipelineState.h"
 #include "ShaderBindingSet.h"
+#include "DescriptorSet.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -34,7 +35,7 @@ namespace DKFramework::Private::Vulkan
 
             // Retain ownership of all encoded objects
             DKArray<DKObject<RenderPipelineState>> pipelineStateObjects;
-            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
+            DKArray<DKObject<DescriptorSet>> descriptorSets;
             DKArray<DKObject<DKGpuBuffer>> buffers;
 
             DKRenderPassDescriptor renderPassDescriptor;

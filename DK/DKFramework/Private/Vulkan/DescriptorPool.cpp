@@ -50,18 +50,16 @@ VkDescriptorSet DescriptorPool::AllocateDescriptorSet(VkDescriptorSetLayout layo
     }
     else
     {
-        DKLogE("ERROR: vkAllocateDescriptorSets failed: %s", VkResultCStr(result));
+        //DKLogE("ERROR: vkAllocateDescriptorSets failed: %s", VkResultCStr(result));
     }
 
     return descriptorSet;
 }
 
-void DescriptorPool::ReleaseDescriptorSet(VkDescriptorSet set)
+void DescriptorPool::ReleaseDescriptorSets(VkDescriptorSet* sets, size_t n)
 {
-    DKASSERT_DEBUG(set != VK_NULL_HANDLE);
-        
     DKASSERT_DEBUG(numAllocatedSets > 0);
-    numAllocatedSets -= 1;
+    numAllocatedSets -= n;
 
     if (numAllocatedSets == 0)
     {
@@ -73,7 +71,7 @@ void DescriptorPool::ReleaseDescriptorSet(VkDescriptorSet set)
     }
     else if (createFlags & VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
     {
-        VkResult result = vkFreeDescriptorSets(device->device, pool, 1, &set);
+        VkResult result = vkFreeDescriptorSets(device->device, pool, n, sets);
         DKASSERT_DEBUG(result == VK_SUCCESS);
         if (result != VK_SUCCESS)
         {

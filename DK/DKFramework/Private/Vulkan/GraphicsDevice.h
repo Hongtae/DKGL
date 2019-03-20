@@ -13,6 +13,8 @@
 #include "../../Interface/DKGraphicsDeviceInterface.h"
 #include "QueueFamily.h"
 #include "DescriptorPoolChain.h"
+#include "DescriptorPool.h"
+#include "DescriptorSet.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -36,7 +38,8 @@ namespace DKFramework::Private::Vulkan
 
         DKString DeviceName() const override;
 
-        void DestroyDescriptorSet(VkDescriptorSet, DescriptorPool*);
+        DKObject<DescriptorSet> CreateDescriptorSet(DKGraphicsDevice*, VkDescriptorSetLayout, const DescriptorPoolId&);
+        void DestroyDescriptorSets(DescriptorPool*, VkDescriptorSet*, size_t);
 
 		VkFence GetFence();
 		void AddFenceCompletionHandler(VkFence, DKOperation*, bool useEventLoop = false);
