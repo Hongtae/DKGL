@@ -41,27 +41,6 @@ RenderCommandEncoder::Encoder::~Encoder()
 
 bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 {
-    // TODO: setup layout transition barrier!!
-#if 0
-    // setup layout transitions.
-    DKArray<VkImageMemoryBarrier> imageMemoryBarriers;
-    size_t numImages = 0;
-    for (ShaderBindingSet* bs : shaderBindingSets)
-        numImages += bs->imageLayoutTransitions.Count();
-
-    imageMemoryBarriers.Reserve(numImages);
-    for (ShaderBindingSet* bs : shaderBindingSets)
-    {
-        for (ShaderBindingSet::ImageLayoutTransition& trans : bs->imageLayoutTransitions)
-        {
-            DKASSERT_DEBUG(trans.layout != VK_IMAGE_LAYOUT_UNDEFINED);
-            DKASSERT_DEBUG(trans.layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
-
-            VkImageMemoryBarrier imageMemoryBarrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
-        }
-    }
-#endif
-
     // initialize render pass
     uint32_t frameWidth = 0;
     uint32_t frameHeight = 0;
@@ -237,6 +216,11 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
         return false;
     }
 
+    // process pre-renderpass commands
+    EncodingState state = {};
+    for (EncoderCommand* c : preRenderPassCommands)
+        c->Invoke(commandBuffer, state);
+
     // begin render pass
     VkRenderPassBeginInfo renderPassBeginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
     renderPassBeginInfo.renderPass = this->renderPass;
@@ -270,13 +254,15 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
     vkCmdSetScissor(commandBuffer, 0, 1, &scissorRect);
 
     // recording commands
-    EncodingState state = {};
     for (EncoderCommand* c : commands)
-    {
         c->Invoke(commandBuffer, state);
-    }
     // end render pass
     vkCmdEndRenderPass(commandBuffer);
+
+    // process post-renderpass commands
+    for (EncoderCommand* c : postRenderPassCommands)
+        c->Invoke(commandBuffer, state);
+
     return true;
 }
 

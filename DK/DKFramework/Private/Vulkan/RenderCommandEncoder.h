@@ -45,6 +45,8 @@ namespace DKFramework::Private::Vulkan
 
             class CommandBuffer* commandBuffer;
             DKArray<DKObject<EncoderCommand>> commands;
+            DKArray<DKObject<EncoderCommand>> preRenderPassCommands;
+            DKArray<DKObject<EncoderCommand>> postRenderPassCommands;
         };
         DKObject<Encoder> encoder;
 
