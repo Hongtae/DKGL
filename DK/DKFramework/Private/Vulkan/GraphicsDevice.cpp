@@ -138,10 +138,12 @@ GraphicsDevice::GraphicsDevice()
     bool enableLayersForEnabledExtensions = getBoolValueFromSystemConfig(vulkanEnableLayersForEnabledExtensions, false);
 
     bool enableValidation = getBoolValueFromSystemConfig(vulkanEnableValidation, false);
+    bool enableValidationEXT = getBoolValueFromSystemConfig(vulkanEnableValidationEXT, false);
     bool enableDebugMarker = getBoolValueFromSystemConfig(vulkanEnableDebugMarker, false);
 
 #ifdef DKGL_DEBUG_ENABLED
     enableValidation = true;
+    enableValidationEXT = true;
     enableDebugMarker = true;
 #endif
 
@@ -399,6 +401,18 @@ GraphicsDevice::GraphicsDevice()
     }
 
     VkInstanceCreateInfo instanceCreateInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
+    if (enableValidationEXT)
+    {
+        VkValidationFeatureEnableEXT enables[] = {
+            VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT ,
+            VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT
+        };
+        VkValidationFeaturesEXT validationFeatures = { VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT };
+        validationFeatures.enabledValidationFeatureCount = std::size(enables);
+        validationFeatures.pEnabledValidationFeatures = enables;
+        instanceCreateInfo.pNext = &validationFeatures;
+    }
+
 	instanceCreateInfo.pApplicationInfo = &appInfo;
     if (enabledLayers.Count() > 0)
     {

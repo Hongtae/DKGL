@@ -61,6 +61,7 @@ namespace DKFramework
 
     // DKPropertySet::SystemConfig, integer key
     constexpr const char* vulkanEnableValidation = "Vulkan.enableValidation";
+    constexpr const char* vulkanEnableValidationEXT = "Vulkan.enableValidationEXT";
     constexpr const char* vulkanEnableDebugMarker = "Vulkan.enableDebugMarker";
     constexpr const char* vulkanEnableAllExtensions = "Vulkan.enableAllExtensions";
     constexpr const char* vulkanEnableExtensionsForEnabledLayers = "Vulkan.enableAllExtensionsForEnabledLayers";
