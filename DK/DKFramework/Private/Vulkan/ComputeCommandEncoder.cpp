@@ -28,9 +28,27 @@ ComputeCommandEncoder::Encoder::~Encoder()
 
 bool ComputeCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 {
-     // recording commands
-    EncodingState state = {};
+    // recording commands
+    EncodingState state = { this };
+    // collect image layout transition
+    for (ShaderBindingSet* bs : shaderBindingSets)
+    {
+        bs->CollectImageViewLayouts(state.imageLayoutMap, state.imageViewLayoutMap);
+    }
+    for (EncoderCommand* c : setupCommands)
+    {
+        c->Invoke(commandBuffer, state);
+    }
+    // Set image layout transition
+    state.imageLayoutMap.EnumerateForward([](decltype(state.imageLayoutMap)::Pair& pair)
+    {
+        pair.key->SetLayout(pair.value);
+    });
     for (EncoderCommand* c : commands)
+    {
+        c->Invoke(commandBuffer, state);
+    }
+    for (EncoderCommand* c : cleanupCommands)
     {
         c->Invoke(commandBuffer, state);
     }
@@ -51,26 +69,45 @@ void ComputeCommandEncoder::EndEncoding()
 
 void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
 {
-    DKObject<DescriptorSet> ds = nullptr;
-
+    DKObject<ShaderBindingSet> bindingSet = nullptr;
     if (set)
     {
         DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
-        ShaderBindingSet* bindingSet = static_cast<ShaderBindingSet*>(set);
-
-        // keep ownership 
-        ds = bindingSet->CreateDescriptorSet();
-        encoder->descriptorSets.Add(ds);
+        bindingSet = static_cast<ShaderBindingSet*>(set);
+        encoder->shaderBindingSets.Add(bindingSet);
     }
+
+    DKObject<EncoderCommand> preCommand = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
+    {
+        if (bindingSet)
+        {
+            DKObject<DescriptorSet> ds = bindingSet->CreateDescriptorSet(state.imageViewLayoutMap);
+            DKASSERT_DEBUG(ds);
+
+            if (ds)
+            {
+                state.bindingSetMap.Update(bindingSet, ds);
+
+                // keep ownership 
+                state.encoder->descriptorSets.Add(ds);
+            }
+        }
+    });
+    encoder->setupCommands.Add(preCommand);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         if (state.pipelineState)
         {
             VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-            if (ds)
+
+            if (bindingSet)
             {
-                descriptorSet = ds->descriptorSet;
+                if (auto p = state.bindingSetMap.Find(bindingSet); p)
+                {
+                    descriptorSet = p->value->descriptorSet;
+                    DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
+                }
             }
 
             vkCmdBindDescriptorSets(commandBuffer,

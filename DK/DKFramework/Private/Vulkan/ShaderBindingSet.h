@@ -67,7 +67,12 @@ namespace DKFramework::Private::Vulkan
         void SetSamplerState(uint32_t binding, DKSamplerState*) override;
         void SetSamplerStateArray(uint32_t binding, uint32_t numSamplers, DKSamplerState**) override;
 
-        DKObject<DescriptorSet> CreateDescriptorSet();
+        using ImageLayoutMap = DKMap<Image*, VkImageLayout>;
+        using ImageViewLayoutMap = DKMap<VkImageView, VkImageLayout>;
+
+        void CollectImageViewLayouts(ImageLayoutMap&, ImageViewLayoutMap&);
+
+        DKObject<DescriptorSet> CreateDescriptorSet(const ImageViewLayoutMap& imageLayouts);
         bool FindDescriptorBinding(uint32_t binding, DescriptorBinding**);
     };
 }

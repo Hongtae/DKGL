@@ -24,7 +24,7 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     , mipLevels(1)
     , arrayLayers(1)
     , usage(0)
-    , optimalLayout(VK_IMAGE_LAYOUT_GENERAL)
+    , layoutInfo{ ci.initialLayout }
 {
     imageType = ci.imageType;
     format = ci.format;
@@ -32,7 +32,10 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     mipLevels = ci.mipLevels;
     arrayLayers = ci.arrayLayers;
     usage = ci.usage;
-    currentLayout = ci.initialLayout;
+
+    layoutInfo.accessMask = 0;
+    layoutInfo.stageMaskBegin = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+    layoutInfo.stageMaskEnd = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 
     DKASSERT_DEBUG(deviceMemory);
     DKASSERT_DEBUG(extent.width > 0);
@@ -53,9 +56,11 @@ Image::Image(DKGraphicsDevice* dev, VkImage img)
     , mipLevels(1)
     , arrayLayers(1)
     , usage(0)
-    , currentLayout(VK_IMAGE_LAYOUT_UNDEFINED)
-    , optimalLayout(VK_IMAGE_LAYOUT_GENERAL)
+    , layoutInfo{ VK_IMAGE_LAYOUT_UNDEFINED }
 {
+    layoutInfo.accessMask = 0;
+    layoutInfo.stageMaskBegin = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+    layoutInfo.stageMaskEnd = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 }
 
 Image::~Image()
@@ -68,47 +73,56 @@ Image::~Image()
     deviceMemory = nullptr;
 }
 
-VkImageLayout Image::ResetLayout() const
-{
-    DKCriticalSection<DKSpinLock> guard(layoutLock);
-    VkImageLayout oldLayout = currentLayout;
-    currentLayout = optimalLayout;
-    return oldLayout;
-}
-
-VkImageLayout Image::SetLayout(VkImageLayout layout) const
+VkImageLayout Image::SetLayout(VkImageLayout layout,
+                               VkAccessFlags accessMask,
+                               VkPipelineStageFlags stageBegin,
+                               VkPipelineStageFlags stageEnd,
+                               LayoutPipelineBarrierProc* barrierProc) const
 {
     DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_UNDEFINED);
     DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
 
     DKCriticalSection<DKSpinLock> guard(layoutLock);
-    VkImageLayout oldLayout = currentLayout;
-    currentLayout = layout;
-    return oldLayout;
-}
+    if (barrierProc)
+    {
+        VkImageMemoryBarrier barrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+        barrier.srcAccessMask = layoutInfo.accessMask;
+        barrier.dstAccessMask = accessMask;
+        barrier.oldLayout = layoutInfo.layout;
+        barrier.newLayout = layout;
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.image = image;
 
-VkImageLayout Image::SetOptimalLayout(VkImageLayout layout)
-{
-    DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_UNDEFINED);
-    DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
+        DKPixelFormat pixelFormat = PixelFormat();
+        if (DKPixelFormatIsColorFormat(pixelFormat))
+            barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        else
+        {
+            if (DKPixelFormatIsDepthFormat(pixelFormat))
+                barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+            if (DKPixelFormatIsStencilFormat(pixelFormat))
+                barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+        }
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+        barrier.subresourceRange.baseArrayLayer = 0;
+        barrier.subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
 
-    DKCriticalSection<DKSpinLock> guard(layoutLock);
-    VkImageLayout oldLayout = optimalLayout;
-    optimalLayout = layout;
+        barrierProc->Invoke(barrier, layoutInfo.stageMaskEnd);
+    }
+    VkImageLayout oldLayout = layoutInfo.layout;
+    layoutInfo.layout = layout;
+    layoutInfo.stageMaskBegin = stageBegin;
+    layoutInfo.stageMaskEnd = stageEnd;
+    layoutInfo.accessMask = accessMask;
     return oldLayout;
 }
 
 VkImageLayout Image::Layout() const
 {
     DKCriticalSection<DKSpinLock> guard(layoutLock);
-    return currentLayout;
+    return layoutInfo.layout;
 }
-
-VkImageLayout Image::OptimalLayout() const
-{
-    DKCriticalSection<DKSpinLock> guard(layoutLock);
-    return optimalLayout;
-}
-
 
 #endif //#if DKGL_ENABLE_VULKAN

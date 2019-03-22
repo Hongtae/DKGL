@@ -29,8 +29,16 @@ CopyCommandEncoder::Encoder::~Encoder()
 bool CopyCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 {
     // recording commands
-    EncodingState state = {};
+    EncodingState state = { this };
+    for (EncoderCommand* c : setupCommands)
+    {
+        c->Invoke(commandBuffer, state);
+    }
     for (EncoderCommand* c : commands)
+    {
+        c->Invoke(commandBuffer, state);
+    }
+    for (EncoderCommand* c : cleanupCommands)
     {
         c->Invoke(commandBuffer, state);
     }

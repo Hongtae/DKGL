@@ -18,9 +18,14 @@ namespace DKFramework::Private::Vulkan
 {
 	class ComputeCommandEncoder : public DKComputeCommandEncoder
 	{
+        class Encoder;
         struct EncodingState
         {
+            Encoder* encoder;
             ComputePipelineState* pipelineState;
+            ShaderBindingSet::ImageLayoutMap imageLayoutMap;
+            ShaderBindingSet::ImageViewLayoutMap imageViewLayoutMap;
+            DKMap<ShaderBindingSet*, DescriptorSet*> bindingSetMap;
         };
         using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
         class Encoder : public CommandBufferEncoder
@@ -33,10 +38,13 @@ namespace DKFramework::Private::Vulkan
 
             // Retain ownership of all encoded objects
             DKArray<DKObject<ComputePipelineState>> pipelineStateObjects;
+            DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
             DKArray<DKObject<DescriptorSet>> descriptorSets;
 
             class CommandBuffer* commandBuffer;
             DKArray<DKObject<EncoderCommand>> commands;
+            DKArray<DKObject<EncoderCommand>> setupCommands;
+            DKArray<DKObject<EncoderCommand>> cleanupCommands;
         };
         DKObject<Encoder> encoder;
 

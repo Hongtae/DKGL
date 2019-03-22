@@ -61,11 +61,13 @@ namespace DKFramework::Private::Vulkan
             return Vulkan::PixelFormat(format);
         }
 
-        VkImageLayout ResetLayout() const;
-        VkImageLayout SetLayout(VkImageLayout layout) const;
-        VkImageLayout SetOptimalLayout(VkImageLayout layout);
+        using LayoutPipelineBarrierProc = DKFunctionSignature<void(VkImageMemoryBarrier&, VkPipelineStageFlags)>;
+        VkImageLayout SetLayout(VkImageLayout layout,
+                                VkAccessFlags access,
+                                VkPipelineStageFlags stageBegin,
+                                VkPipelineStageFlags stageEnd,
+                                LayoutPipelineBarrierProc* barrierProc) const;
         VkImageLayout Layout() const;
-        VkImageLayout OptimalLayout() const;
 
         VkImage					image;
         VkImageType				imageType;
@@ -79,9 +81,15 @@ namespace DKFramework::Private::Vulkan
         DKObject<DKGraphicsDevice> device;
 
     private:
-        DKSpinLock              layoutLock;
-        VkImageLayout           optimalLayout;
-        mutable VkImageLayout   currentLayout;
+        struct LayoutAccessInfo
+        {
+            VkImageLayout layout;
+            VkAccessFlags accessMask;
+            VkPipelineStageFlags stageMaskBegin;
+            VkPipelineStageFlags stageMaskEnd;
+        };
+        DKSpinLock                  layoutLock;
+        mutable LayoutAccessInfo    layoutInfo;
     };
 }
 

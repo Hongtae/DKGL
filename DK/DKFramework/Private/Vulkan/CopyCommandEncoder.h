@@ -17,8 +17,10 @@ namespace DKFramework::Private::Vulkan
 {
     class CopyCommandEncoder : public DKCopyCommandEncoder
     {
+        class Encoder;
         struct EncodingState
         {
+            Encoder* encoder;
         };
         using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
         class Encoder : public CommandBufferEncoder
@@ -35,6 +37,8 @@ namespace DKFramework::Private::Vulkan
 
             class CommandBuffer* commandBuffer;
             DKArray<DKObject<EncoderCommand>> commands;
+            DKArray<DKObject<EncoderCommand>> setupCommands;
+            DKArray<DKObject<EncoderCommand>> cleanupCommands;
         };
         DKObject<Encoder> encoder;
 
