@@ -171,4 +171,11 @@ void CommandBuffer::EndEncoder(DKCommandEncoder*, CommandBufferEncoder* encoder)
     this->encoders.Add(encoder);
 }
 
+QueueFamily* CommandBuffer::QueueFamily()
+{
+    DKASSERT_DEBUG(queue.SafeCast<CommandQueue>() != nullptr);
+    CommandQueue* cq = queue.StaticCast<CommandQueue>();
+    return cq->family;
+}
+
 #endif //#if DKGL_ENABLE_VULKAN

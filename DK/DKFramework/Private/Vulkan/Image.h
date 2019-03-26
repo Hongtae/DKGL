@@ -61,13 +61,16 @@ namespace DKFramework::Private::Vulkan
             return Vulkan::PixelFormat(format);
         }
 
-        using LayoutPipelineBarrierProc = DKFunctionSignature<void(VkImageMemoryBarrier&, VkPipelineStageFlags)>;
         VkImageLayout SetLayout(VkImageLayout layout,
-                                VkAccessFlags access,
+                                VkAccessFlags accessMask,
                                 VkPipelineStageFlags stageBegin,
                                 VkPipelineStageFlags stageEnd,
-                                LayoutPipelineBarrierProc* barrierProc) const;
+                                uint32_t queueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                                VkCommandBuffer commandBuffer = VK_NULL_HANDLE) const;
+
         VkImageLayout Layout() const;
+
+        static VkAccessFlags CommonLayoutAccessMask(VkImageLayout);
 
         VkImage					image;
         VkImageType				imageType;
@@ -87,6 +90,7 @@ namespace DKFramework::Private::Vulkan
             VkAccessFlags accessMask;
             VkPipelineStageFlags stageMaskBegin;
             VkPipelineStageFlags stageMaskEnd;
+            uint32_t queueFamilyIndex;
         };
         DKSpinLock                  layoutLock;
         mutable LayoutAccessInfo    layoutInfo;

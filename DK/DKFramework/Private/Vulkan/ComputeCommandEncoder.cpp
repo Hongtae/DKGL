@@ -40,9 +40,18 @@ bool ComputeCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
         c->Invoke(commandBuffer, state);
     }
     // Set image layout transition
-    state.imageLayoutMap.EnumerateForward([](decltype(state.imageLayoutMap)::Pair& pair)
+    state.imageLayoutMap.EnumerateForward([&](decltype(state.imageLayoutMap)::Pair& pair)
     {
-        pair.key->SetLayout(pair.value);
+        Image* image = pair.key;
+        VkImageLayout layout = pair.value;
+        VkAccessFlags accessMask = Image::CommonLayoutAccessMask(layout);
+
+        image->SetLayout(layout,
+                         accessMask,
+                         VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                         state.encoder->commandBuffer->QueueFamily()->familyIndex,
+                         commandBuffer);
     });
     for (EncoderCommand* c : commands)
     {

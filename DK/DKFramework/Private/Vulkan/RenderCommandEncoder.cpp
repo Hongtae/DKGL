@@ -41,6 +41,8 @@ RenderCommandEncoder::Encoder::~Encoder()
 
 bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 {
+    EncodingState state = { this };
+
     // initialize render pass
     uint32_t frameWidth = 0;
     uint32_t frameHeight = 0;
@@ -91,10 +93,13 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
             attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            attachment.finalLayout = rt->image->OptimalLayout(); //VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+            attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+            VkImageLayout currentLayout = rt->image->SetLayout(attachment.finalLayout,
+                                                               VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                                                               VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                                                               VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-                attachment.initialLayout = rt->image->SetLayout(attachment.finalLayout);            
-            rt->image->SetLayout(attachment.finalLayout);
+                attachment.initialLayout = currentLayout;
 
             VkAttachmentReference attachmentReference = {};
             attachmentReference.attachment = static_cast<uint32_t>(attachments.Count());
@@ -153,10 +158,14 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             attachment.stencilLoadOp = attachment.loadOp;
             attachment.stencilStoreOp = attachment.storeOp;
             attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            attachment.finalLayout = rt->image->OptimalLayout(); //VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+            attachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+            VkImageLayout currentLayout = rt->image->SetLayout(attachment.finalLayout,
+                                                               VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                                                               VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                                                               VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+
             if (attachment.loadOp == VK_ATTACHMENT_LOAD_OP_LOAD)
-                attachment.initialLayout = rt->image->Layout();
-            rt->image->SetLayout(attachment.finalLayout);
+                attachment.initialLayout = currentLayout;
 
             depthStencilReference.attachment = static_cast<uint32_t>(attachments.Count());
             attachments.Add(attachment);
@@ -216,7 +225,7 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
         return false;
     }
 
-    EncodingState state = { this };
+ 
     // collect image layout transition
     for (ShaderBindingSet* bs : shaderBindingSets)
     {
@@ -227,9 +236,18 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
         c->Invoke(commandBuffer, state);
 
     // Set image layout transition
-    state.imageLayoutMap.EnumerateForward([](decltype(state.imageLayoutMap)::Pair& pair)
+    state.imageLayoutMap.EnumerateForward([&](decltype(state.imageLayoutMap)::Pair& pair)
     {
-        pair.key->SetLayout(pair.value);
+        Image* image = pair.key;
+        VkImageLayout layout = pair.value;
+        VkAccessFlags accessMask = Image::CommonLayoutAccessMask(layout);
+
+        image->SetLayout(layout,
+                         accessMask,
+                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                         state.encoder->commandBuffer->QueueFamily()->familyIndex,
+                         commandBuffer);
     });
 
     // begin render pass

@@ -36,6 +36,11 @@ Image::Image(DeviceMemory* m, VkImage i, const VkImageCreateInfo& ci)
     layoutInfo.accessMask = 0;
     layoutInfo.stageMaskBegin = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
     layoutInfo.stageMaskEnd = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+    layoutInfo.queueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+
+    if (layoutInfo.layout == VK_IMAGE_LAYOUT_UNDEFINED ||
+        layoutInfo.layout == VK_IMAGE_LAYOUT_PREINITIALIZED)
+        layoutInfo.stageMaskEnd = VK_PIPELINE_STAGE_HOST_BIT;
 
     DKASSERT_DEBUG(deviceMemory);
     DKASSERT_DEBUG(extent.width > 0);
@@ -61,6 +66,7 @@ Image::Image(DKGraphicsDevice* dev, VkImage img)
     layoutInfo.accessMask = 0;
     layoutInfo.stageMaskBegin = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
     layoutInfo.stageMaskEnd = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+    layoutInfo.queueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 }
 
 Image::~Image()
@@ -77,13 +83,14 @@ VkImageLayout Image::SetLayout(VkImageLayout layout,
                                VkAccessFlags accessMask,
                                VkPipelineStageFlags stageBegin,
                                VkPipelineStageFlags stageEnd,
-                               LayoutPipelineBarrierProc* barrierProc) const
+                               uint32_t queueFamilyIndex,
+                               VkCommandBuffer commandBuffer) const
 {
     DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_UNDEFINED);
     DKASSERT_DEBUG(layout != VK_IMAGE_LAYOUT_PREINITIALIZED);
 
     DKCriticalSection<DKSpinLock> guard(layoutLock);
-    if (barrierProc)
+    if (commandBuffer)
     {
         VkImageMemoryBarrier barrier = { VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
         barrier.srcAccessMask = layoutInfo.accessMask;
@@ -93,6 +100,14 @@ VkImageLayout Image::SetLayout(VkImageLayout layout,
         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.image = image;
+
+        if (queueFamilyIndex != layoutInfo.queueFamilyIndex &&
+            layoutInfo.queueFamilyIndex != VK_QUEUE_FAMILY_IGNORED &&
+            queueFamilyIndex != VK_QUEUE_FAMILY_IGNORED)
+        {
+            barrier.srcQueueFamilyIndex = layoutInfo.queueFamilyIndex;
+            barrier.dstQueueFamilyIndex = queueFamilyIndex;
+        }
 
         DKPixelFormat pixelFormat = PixelFormat();
         if (DKPixelFormatIsColorFormat(pixelFormat))
@@ -109,13 +124,33 @@ VkImageLayout Image::SetLayout(VkImageLayout layout,
         barrier.subresourceRange.baseArrayLayer = 0;
         barrier.subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
 
-        barrierProc->Invoke(barrier, layoutInfo.stageMaskEnd);
+        VkPipelineStageFlags srcStageMask = layoutInfo.stageMaskEnd;
+        if (barrier.srcQueueFamilyIndex != barrier.dstQueueFamilyIndex)
+        {
+            srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+            barrier.srcAccessMask = 0;
+        }
+        if (srcStageMask == VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT)
+        {
+            srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+            barrier.srcAccessMask = 0;
+        }
+
+        vkCmdPipelineBarrier(commandBuffer,
+                             srcStageMask,
+                             stageBegin,
+                             0,             //dependencyFlags
+                             0, nullptr,    //pMemoryBarriers
+                             0, nullptr,    //pBufferMemoryBarriers
+                             1, &barrier);
     }
+
     VkImageLayout oldLayout = layoutInfo.layout;
     layoutInfo.layout = layout;
     layoutInfo.stageMaskBegin = stageBegin;
     layoutInfo.stageMaskEnd = stageEnd;
     layoutInfo.accessMask = accessMask;
+    layoutInfo.queueFamilyIndex = queueFamilyIndex;
     return oldLayout;
 }
 
@@ -123,6 +158,50 @@ VkImageLayout Image::Layout() const
 {
     DKCriticalSection<DKSpinLock> guard(layoutLock);
     return layoutInfo.layout;
+}
+
+VkAccessFlags Image::CommonLayoutAccessMask(VkImageLayout layout)
+{
+    VkAccessFlags accessMask = 0;
+    switch (layout)
+    {
+    case VK_IMAGE_LAYOUT_UNDEFINED:
+        accessMask = 0;
+        break;
+    case VK_IMAGE_LAYOUT_GENERAL:
+        accessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_PREINITIALIZED:
+        accessMask = VK_ACCESS_HOST_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        accessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+        accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+    case VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL:
+    case VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL:
+        accessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+        accessMask = VK_ACCESS_SHADER_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+        accessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        accessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+        accessMask = 0;
+        break;
+    default:
+        accessMask = 0;
+        break;
+    }
+    return accessMask;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

@@ -1277,8 +1277,6 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
     DKObject<Image> image = createImage(imageCreateInfo);
     if (image)
     {
-        image->SetOptimalLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
         VkImageView imageView = VK_NULL_HANDLE;
 
         if (imageCreateInfo.usage & (VK_IMAGE_USAGE_SAMPLED_BIT |

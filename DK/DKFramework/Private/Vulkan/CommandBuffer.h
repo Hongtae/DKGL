@@ -12,6 +12,7 @@
 
 #include "../../DKCommandBuffer.h"
 #include "../../DKCommandQueue.h"
+#include "QueueFamily.h"
 
 namespace DKFramework::Private::Vulkan
 {
@@ -37,6 +38,7 @@ namespace DKFramework::Private::Vulkan
 
 		DKCommandQueue* Queue() override { return queue; };
 
+        QueueFamily* QueueFamily();
         void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
         void AddSignalSemaphore(VkSemaphore);
 

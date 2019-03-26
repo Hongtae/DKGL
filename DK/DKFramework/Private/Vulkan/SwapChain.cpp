@@ -397,8 +397,7 @@ bool SwapChain::Update()
 		swapChainImage->mipLevels = 1;
 		swapChainImage->arrayLayers = swapchainCI.imageArrayLayers;
 		swapChainImage->usage = swapchainCI.imageUsage;
-        swapChainImage->SetOptimalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-        swapChainImage->SetLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+        swapChainImage->SetLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 0, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
 
         DKObject<ImageView> swapChainImageView = DKOBJECT_NEW ImageView(queue->Device(), imageView);
         swapChainImageView->image = swapChainImage;
