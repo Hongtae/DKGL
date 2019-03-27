@@ -21,7 +21,6 @@ using namespace DKFramework::Private::Metal;
 
 CommandBuffer::CommandBuffer(DKCommandQueue* q)
 : queue(q)
-, activeEncoder(NULL)
 {
 	DKASSERT_DEBUG(queue.SafeCast<CommandQueue>());
 }
@@ -32,12 +31,6 @@ CommandBuffer::~CommandBuffer()
 
 DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const DKRenderPassDescriptor& rp)
 {
-	if (activeEncoder)
-	{
-		DKLogE("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
-		return NULL;
-	}
-
 	DKObject<DKRenderCommandEncoder> r = NULL;
 	@autoreleasepool
 	{
@@ -48,18 +41,23 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 			switch (src->loadAction)
 			{
 				case DKRenderPassAttachmentDescriptor::LoadActionDontCare:
-					dst.loadAction = MTLLoadActionDontCare;	break;
+					dst.loadAction = MTLLoadActionDontCare;
+                    break;
 				case DKRenderPassAttachmentDescriptor::LoadActionLoad:
-					dst.loadAction = MTLLoadActionLoad;		break;
+					dst.loadAction = MTLLoadActionLoad;
+                    break;
 				case DKRenderPassAttachmentDescriptor::LoadActionClear:
-					dst.loadAction = MTLLoadActionClear;	break;
+					dst.loadAction = MTLLoadActionClear;
+                    break;
 			}
 			switch (src->storeAction)
 			{
 				case DKRenderPassAttachmentDescriptor::StoreActionDontCare:
-					dst.storeAction = MTLStoreActionDontCare;	break;
+					dst.storeAction = MTLStoreActionDontCare;
+                    break;
 				case DKRenderPassAttachmentDescriptor::StoreActionStore:
-					dst.storeAction = MTLStoreActionStore;		break;
+					dst.storeAction = MTLStoreActionStore;
+                    break;
 			}
 		};
 
@@ -136,50 +134,33 @@ DKObject<DKRenderCommandEncoder> CommandBuffer::CreateRenderCommandEncoder(const
 		DKObject<RenderCommandEncoder> enc = DKOBJECT_NEW RenderCommandEncoder(rpDesc, this);
 		r = enc.SafeCast<DKRenderCommandEncoder>();
 	}
-	activeEncoder = r;
 	return r;
 }
 
 DKObject<DKComputeCommandEncoder> CommandBuffer::CreateComputeCommandEncoder()
 {
-	if (activeEncoder)
-	{
-		DKLogE("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
-		return NULL;
-	}
-
 	DKObject<ComputeCommandEncoder> enc = DKOBJECT_NEW ComputeCommandEncoder(this);
 	DKObject<DKComputeCommandEncoder> r = enc.SafeCast<DKComputeCommandEncoder>();
-	activeEncoder = r;
 	return r;
 }
 
 DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
 {
-	if (activeEncoder)
-	{
-		DKLogE("ERROR: DKCommandBuffer(%p) has active encoder. Close active encoder first.", this);
-		return NULL;
-	}
-
 	DKObject<CopyCommandEncoder> enc = DKOBJECT_NEW CopyCommandEncoder(this);
 	DKObject<DKCopyCommandEncoder> r = enc.SafeCast<DKCopyCommandEncoder>();
-	activeEncoder = r;
 	return r;
 }
 
 bool CommandBuffer::Commit()
 {
-	DKASSERT_DEBUG(activeEncoder == nullptr);
-
 	@autoreleasepool
 	{
 		id<MTLCommandQueue> q = queue.StaticCast<CommandQueue>()->queue;
 		id<MTLCommandBuffer> buffer = [q commandBuffer];
 
-		for (ReusableCommandEncoder* enc : completedEncoders)
+		for (CommandEncoder* enc : encoders)
 		{
-			if (!enc->EncodeBuffer(buffer))
+			if (!enc->Encode(buffer))
 				return false;
 		}
 		[buffer commit];
@@ -187,13 +168,11 @@ bool CommandBuffer::Commit()
 	return true;
 }
 
-void CommandBuffer::EndEncoder(DKCommandEncoder* enc, ReusableCommandEncoder* reusableEncoder)
+void CommandBuffer::EndEncoder(DKCommandEncoder* enc, CommandEncoder* encoder)
 {
-	DKASSERT_DEBUG(activeEncoder == enc);
-	DKASSERT_DEBUG(reusableEncoder);
+	DKASSERT_DEBUG(encoder);
 
-	completedEncoders.Add(reusableEncoder);
-	activeEncoder = NULL;
+	encoders.Add(encoder);
 }
 
 #endif //#if DKGL_ENABLE_METAL

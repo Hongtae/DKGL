@@ -23,28 +23,36 @@ namespace DKFramework::Private::Metal
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
-		bool IsCompleted() const override { return reusableEncoder == nullptr; }
+		bool IsCompleted() const override { return encoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
-		// DKCopyCommandEncoder
+        // DKCopyCommandEncoder
+        void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
+                                    DKGpuBuffer* dst, size_t dstOffset,
+                                    size_t size) override;
+        void CopyFromBufferToTexture(DKGpuBuffer* src, const BufferImageOrigin& srcOffset,
+                                     DKTexture* dst, const TextureOrigin& dstOffset,
+                                     const Size& size) override;
+        void CopyFromTextureToBuffer(DKTexture* src, const TextureOrigin& srcOffset,
+                                     DKGpuBuffer* dst, const BufferImageOrigin& dstOffset,
+                                     const Size& size) override;
+        void CopyFromTextureToTexture(DKTexture* src, const TextureOrigin& srcOffset,
+                                      DKTexture* dst, const TextureOrigin& dstOffset,
+                                      const Size& size) override;
+        void FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value) override;
 
 	private:
-		using EncoderCommand = DKFunctionSignature<void(id<MTLBlitCommandEncoder>)>;
-		struct ReusableEncoder : public ReusableCommandEncoder
+        struct EncodingState
+        {
+        };
+		using EncoderCommand = DKFunctionSignature<void(id<MTLBlitCommandEncoder>, EncodingState&)>;
+		class Encoder : public CommandEncoder
 		{
-			bool EncodeBuffer(id<MTLCommandBuffer> buffer) override
-			{
-				id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
-				for (EncoderCommand* command : encoderCommands )
-				{
-					command->Invoke(encoder);
-				}
-				[encoder endEncoding];
-				return true;
-			}
-			DKArray<DKObject<EncoderCommand>> encoderCommands;
+        public:
+            bool Encode(id<MTLCommandBuffer> buffer) override;
+			DKArray<DKObject<EncoderCommand>> commands;
 		};
-		DKObject<ReusableEncoder> reusableEncoder;
+		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;
 	};
 }

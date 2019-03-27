@@ -15,11 +15,12 @@
 
 namespace DKFramework::Private::Metal
 {
-	struct ReusableCommandEncoder
+	class CommandEncoder
 	{
+    public:
 		enum { InitialNumberOfCommands = 128 };
-		virtual ~ReusableCommandEncoder() {}
-		virtual bool EncodeBuffer(id<MTLCommandBuffer>) = 0;
+		virtual ~CommandEncoder() {}
+		virtual bool Encode(id<MTLCommandBuffer>) = 0;
 	};
 
 	class CommandBuffer : public DKCommandBuffer
@@ -35,12 +36,11 @@ namespace DKFramework::Private::Metal
 		bool Commit() override;
 		DKCommandQueue* Queue() override { return queue; };
 
-		void EndEncoder(DKCommandEncoder*, ReusableCommandEncoder*);
+		void EndEncoder(DKCommandEncoder*, CommandEncoder*);
 
 	private:
-		DKCommandEncoder * activeEncoder;
 		DKObject<DKCommandQueue> queue;
-		DKArray<DKObject<ReusableCommandEncoder>> completedEncoders;
+		DKArray<DKObject<CommandEncoder>> encoders;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL

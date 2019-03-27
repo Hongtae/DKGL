@@ -15,11 +15,25 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
+#pragma mark - ComputeCommandEncoder::Encoder
+bool ComputeCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
+{
+    id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
+    EncodingState state = {};
+    for (EncoderCommand* command : commands )
+    {
+        command->Invoke(encoder, state);
+    }
+    [encoder endEncoding];
+    return true;
+}
+
+#pragma mark - ComputeCommandEncoder
 ComputeCommandEncoder::ComputeCommandEncoder(class CommandBuffer* b)
 : commandBuffer(b)
 {
-	reusableEncoder = DKOBJECT_NEW ReusableEncoder();
-	reusableEncoder->encoderCommands.Reserve(ReusableCommandEncoder::InitialNumberOfCommands);
+	encoder = DKOBJECT_NEW Encoder();
+	encoder->commands.Reserve(CommandEncoder::InitialNumberOfCommands);
 }
 
 ComputeCommandEncoder::~ComputeCommandEncoder()
@@ -29,9 +43,9 @@ ComputeCommandEncoder::~ComputeCommandEncoder()
 void ComputeCommandEncoder::EndEncoding()
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	reusableEncoder->encoderCommands.ShrinkToFit();
-	commandBuffer->EndEncoder(this, reusableEncoder);
-	reusableEncoder = NULL;
+	encoder->commands.ShrinkToFit();
+	commandBuffer->EndEncoder(this, encoder);
+	encoder = NULL;
 }
 
 void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)
@@ -40,12 +54,12 @@ void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds
     DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(binds));
     DKObject<ShaderBindingSet> bs = static_cast<ShaderBindingSet*>(binds);
 
-    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, Resources& res)
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
     {
-        if (res.pipelineState)
+        if (state.pipelineState)
         {
             // bind resources
-            bs->BindResources(set, res.pipelineState->bindings.resourceBindings,
+            bs->BindResources(set, state.pipelineState->bindings.resourceBindings,
                               [&](const ShaderBindingSet::BufferObject* bufferObjects, uint32_t index, size_t numBuffers)
                               {
                                   id<MTLBuffer>* buffers = new id<MTLBuffer>[numBuffers];
@@ -81,7 +95,7 @@ void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds
                               });
         }
     });
-    reusableEncoder->encoderCommands.Add(command);
+    encoder->commands.Add(command);
 }
 
 void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
@@ -90,13 +104,13 @@ void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
     DKASSERT_DEBUG(dynamic_cast<ComputePipelineState*>(ps));
     DKObject<ComputePipelineState> pipeline = static_cast<ComputePipelineState*>(ps);
 
-    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, Resources& res)
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
     {
         id<MTLComputePipelineState> pipelineState = pipeline->pipelineState;
         [encoder setComputePipelineState:pipelineState];
-        res.pipelineState = pipeline;
+        state.pipelineState = pipeline;
     });
-    reusableEncoder->encoderCommands.Add(command);
+    encoder->commands.Add(command);
 }
 
 #endif //#if DKGL_ENABLE_METAL

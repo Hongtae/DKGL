@@ -25,7 +25,7 @@ namespace DKFramework::Private::Metal
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
-		bool IsCompleted() const override { return reusableEncoder == nullptr; }
+		bool IsCompleted() const override { return encoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKRenderCommandEncoder overrides
@@ -40,44 +40,26 @@ namespace DKFramework::Private::Metal
 		void DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance) override;
 
 	private:
-		struct Resources
+		struct EncodingState
 		{
 			DKObject<RenderPipelineState> pipelineState;
 			DKObject<Buffer> indexBuffer;
 			size_t indexBufferOffset;
 			MTLIndexType indexBufferType;
 		};
-		using EncoderCommand = DKFunctionSignature<void(id<MTLRenderCommandEncoder>, Resources&)>;
-
-		struct ReusableEncoder : public ReusableCommandEncoder
+		using EncoderCommand = DKFunctionSignature<void(id<MTLRenderCommandEncoder>, EncodingState&)>;
+		class Encoder : public CommandEncoder
 		{
-			~ReusableEncoder()
-			{
-				[renderPassDescriptor autorelease];
-			}
+        public:
+            Encoder(MTLRenderPassDescriptor*);
+            ~Encoder();
+            bool Encode(id<MTLCommandBuffer> buffer) override;
 
-			bool EncodeBuffer(id<MTLCommandBuffer> buffer) override
-			{
-				DKASSERT_DEBUG(renderPassDescriptor);
-				if (renderPassDescriptor)
-				{
-					id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-					Resources res = {};
-					for (EncoderCommand* command : encoderCommands )
-					{
-						command->Invoke(encoder, res);
-					}
-					[encoder endEncoding];
-					return true;
-				}
-				return false;
-			}
-
-			DKArray<DKObject<EncoderCommand>> encoderCommands;
+            DKArray<DKObject<EncoderCommand>> commands;
 			MTLRenderPassDescriptor* renderPassDescriptor;
 		};
 
-		DKObject<ReusableEncoder> reusableEncoder;
+		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;
 	};
 }

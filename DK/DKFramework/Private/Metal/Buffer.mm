@@ -32,10 +32,13 @@ void* Buffer::Contents()
     return [buffer contents];
 }
 
-void Buffer::Flush(size_t offset, size_t size)
+void Buffer::Flush()
 {
-    NSRange range = NSMakeRange(0, buffer.length);
-    [buffer didModifyRange:range];
+    if (buffer.storageMode == MTLStorageModeManaged)
+    {
+        NSRange range = NSMakeRange(0, buffer.length);
+        [buffer didModifyRange:range];
+    }
 }
 
 size_t Buffer::Length() const

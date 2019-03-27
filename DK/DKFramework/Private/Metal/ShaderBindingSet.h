@@ -65,7 +65,7 @@ namespace DKFramework::Private::Metal
                             const ShaderBindingSet::BufferObject* bufferObjects = p->value;
                             size_t numBuffers = p->value.Count();
                             if (numBuffers > 0)
-                                bindBuffers(bufferObjects, binding.binding, numBuffers);
+                                bindBuffers(bufferObjects, binding.bufferIndex, numBuffers);
                         }
                     }
                     else
@@ -78,7 +78,7 @@ namespace DKFramework::Private::Metal
                                 const ShaderBindingSet::TextureObject* textureObjects = p->value;
                                 size_t numTextures = p->value.Count();
                                 if (numTextures > 0)
-                                    bindTextures(textureObjects, binding.binding, numTextures);
+                                    bindTextures(textureObjects, binding.textureIndex, numTextures);
                             }
                         }
                         if (binding.type == DKShaderResource::TypeSampler ||
@@ -89,7 +89,7 @@ namespace DKFramework::Private::Metal
                                 const ShaderBindingSet::SamplerObject* samplerObjects = p->value;
                                 size_t numSamplers = p->value.Count();
                                 if (numSamplers > 0)
-                                    bindSamplers(samplerObjects, binding.binding, numSamplers);
+                                    bindSamplers(samplerObjects, binding.samplerIndex, numSamplers);
                             }
                         }
                     }

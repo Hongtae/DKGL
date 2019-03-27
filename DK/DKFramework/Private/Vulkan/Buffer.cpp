@@ -23,7 +23,7 @@ Buffer::Buffer(DeviceMemory* mem, VkBuffer b, const VkBufferCreateInfo& createIn
     , usage(createInfo.usage)
     , sharingMode(createInfo.sharingMode)
 {
-    DKASSERT_DEBUG(deviceMemory)
+    DKASSERT_DEBUG(deviceMemory);
 	DKASSERT_DEBUG(deviceMemory->length > 0);
 }
 

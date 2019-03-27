@@ -26,12 +26,10 @@ namespace DKFramework::Private::Vulkan
         {
             return buffer->Contents();
         }
-
         void Flush() override
         {
             buffer->Flush(0, VK_WHOLE_SIZE);
         }
-
         size_t Length() const override
         {
             return buffer->Length();

@@ -24,7 +24,7 @@ namespace DKFramework::Private::Metal
 
 		// DKCommandEncoder overrides
 		void EndEncoding() override;
-		bool IsCompleted() const override { return reusableEncoder == nullptr; }
+		bool IsCompleted() const override { return encoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKComputeCommandEncoder
@@ -32,27 +32,18 @@ namespace DKFramework::Private::Metal
         void SetComputePipelineState(DKComputePipelineState*) override;
 
 	private:
-        struct Resources
+        struct EncodingState
         {
             DKObject<ComputePipelineState> pipelineState;
         };
-		using EncoderCommand = DKFunctionSignature<void(id<MTLComputeCommandEncoder>, Resources&)>;
-		struct ReusableEncoder : public ReusableCommandEncoder
+		using EncoderCommand = DKFunctionSignature<void(id<MTLComputeCommandEncoder>, EncodingState&)>;
+		class Encoder : public CommandEncoder
 		{
-			bool EncodeBuffer(id<MTLCommandBuffer> buffer) override
-			{
-				id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
-                Resources res = {};
-				for (EncoderCommand* command : encoderCommands )
-				{
-					command->Invoke(encoder, res);
-				}
-				[encoder endEncoding];
-				return true;
-			}
-			DKArray<DKObject<EncoderCommand>> encoderCommands;
+        public:
+            bool Encode(id<MTLCommandBuffer> buffer) override;
+			DKArray<DKObject<EncoderCommand>> commands;
 		};
-		DKObject<ReusableEncoder> reusableEncoder;
+		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;
 	};
 }

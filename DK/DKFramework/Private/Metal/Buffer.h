@@ -22,7 +22,7 @@ namespace DKFramework::Private::Metal
 		~Buffer();
 
         void* Contents() override;
-        void Flush(size_t offset, size_t size) override;
+        void Flush() override;
         size_t Length() const override;
 
 		id<MTLBuffer> buffer;
