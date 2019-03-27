@@ -18,6 +18,9 @@ using namespace DKFramework::Private::Vulkan;
 CopyCommandEncoder::Encoder::Encoder(class CommandBuffer* cb)
     : commandBuffer(cb)
 {
+    commands.Reserve(InitialNumberOfCommands);
+    setupCommands.Reserve(InitialNumberOfCommands);
+    cleanupCommands.Reserve(InitialNumberOfCommands);
 }
 
 CopyCommandEncoder::Encoder::~Encoder()

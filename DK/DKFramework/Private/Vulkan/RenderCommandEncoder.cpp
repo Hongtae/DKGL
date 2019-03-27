@@ -25,6 +25,9 @@ RenderCommandEncoder::Encoder::Encoder(class CommandBuffer* cb, const DKRenderPa
     , framebuffer(VK_NULL_HANDLE)
     , renderPass(VK_NULL_HANDLE)
 {
+    commands.Reserve(InitialNumberOfCommands);
+    setupCommands.Reserve(InitialNumberOfCommands);
+    cleanupCommands.Reserve(InitialNumberOfCommands);
 }
 
 RenderCommandEncoder::Encoder::~Encoder()

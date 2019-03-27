@@ -49,7 +49,7 @@ DeviceMemory::~DeviceMemory()
     vkFreeMemory(dev->device, memory, dev->allocationCallbacks);
 }
 
-void DeviceMemory::Invalidate(size_t offset, size_t size)
+bool DeviceMemory::Invalidate(size_t offset, size_t size)
 {
     DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
 
@@ -67,7 +67,11 @@ void DeviceMemory::Invalidate(size_t offset, size_t size)
             else
                 range.size = Min(size, length - offset);
             VkResult result = vkInvalidateMappedMemoryRanges(dev->device, 1, &range);
-            if (result != VK_SUCCESS)
+            if (result == VK_SUCCESS)
+            {
+                return true;
+            }
+            else
             {
                 DKLogE("ERROR: vkInvalidateMappedMemoryRanges failed: %s", VkResultCStr(result));
             }
@@ -77,9 +81,10 @@ void DeviceMemory::Invalidate(size_t offset, size_t size)
             DKLogE("ERROR: DeviceMemory::Invalidate() failed: Out of range");
         }
     }
+    return false;
 }
 
-void DeviceMemory::Flush(size_t offset, size_t size)
+bool DeviceMemory::Flush(size_t offset, size_t size)
 {
     DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
 
@@ -97,7 +102,11 @@ void DeviceMemory::Flush(size_t offset, size_t size)
             else
                 range.size = Min(size, length - offset);            
             VkResult result = vkFlushMappedMemoryRanges(dev->device, 1, &range);
-            if (result != VK_SUCCESS)
+            if (result == VK_SUCCESS)
+            {
+                return true;
+            }
+            else
             {
                 DKLogE("ERROR: vkFlushMappedMemoryRanges failed: %s", VkResultCStr(result));
             }
@@ -107,6 +116,7 @@ void DeviceMemory::Flush(size_t offset, size_t size)
             DKLogE("ERROR: DeviceMemory::Flush() failed: Out of range");
         }
     }
+    return false;
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

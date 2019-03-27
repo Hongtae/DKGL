@@ -26,8 +26,8 @@ namespace DKFramework::Private::Vulkan
 
         DKObject<DKGraphicsDevice> device;
 
-        void Invalidate(size_t offset, size_t size);
-        void Flush(size_t offset, size_t size);
+        bool Invalidate(size_t offset, size_t size);
+        bool Flush(size_t offset, size_t size);
     };
 }
 

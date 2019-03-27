@@ -30,7 +30,7 @@ namespace DKFramework::Private::Vulkan
             DKMap<ShaderBindingSet*, DescriptorSet*> bindingSetMap;
         };
         using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
-        class Encoder : public CommandBufferEncoder
+        class Encoder : public CommandEncoder
         {
         public:
             Encoder(class CommandBuffer*, const DKRenderPassDescriptor& desc);

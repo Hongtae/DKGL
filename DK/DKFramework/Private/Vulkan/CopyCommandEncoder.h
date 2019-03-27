@@ -23,7 +23,7 @@ namespace DKFramework::Private::Vulkan
             Encoder* encoder;
         };
         using EncoderCommand = DKFunctionSignature<void(VkCommandBuffer, EncodingState&)>;
-        class Encoder : public CommandBufferEncoder
+        class Encoder : public CommandEncoder
         {
         public:
             Encoder(class CommandBuffer*);

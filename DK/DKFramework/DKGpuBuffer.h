@@ -23,7 +23,7 @@ namespace DKFramework
 		virtual ~DKGpuBuffer();
 
         virtual void* Contents() = 0;
-        virtual void Flush(size_t offset = 0, size_t size = ~size_t(0)) = 0;
+        virtual void Flush() = 0;
         virtual size_t Length() const = 0;
 
 	protected:

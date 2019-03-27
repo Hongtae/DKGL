@@ -13,7 +13,6 @@
 #include "../../DKGpuBuffer.h"
 #include "Buffer.h"
 
-
 namespace DKFramework::Private::Vulkan
 {
     class BufferView : public DKGpuBuffer
@@ -23,21 +22,20 @@ namespace DKFramework::Private::Vulkan
         BufferView(DKGraphicsDevice*, VkBufferView);
         ~BufferView();
 
-        void* Contents()
+        void* Contents() override
         {
             return buffer->Contents();
         }
 
-        void Flush(size_t offset, size_t size)
+        void Flush() override
         {
-            buffer->Flush(offset, size);
+            buffer->Flush(0, VK_WHOLE_SIZE);
         }
 
-        size_t Length() const
+        size_t Length() const override
         {
             return buffer->Length();
         }
-
 
         VkBufferView bufferView;
         DKObject<Buffer> buffer;

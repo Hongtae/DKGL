@@ -17,10 +17,11 @@
 namespace DKFramework::Private::Vulkan
 {
     class CommandBuffer;
-    class CommandBufferEncoder
+    class CommandEncoder
     {
     public:
-        virtual ~CommandBufferEncoder() {}
+        enum { InitialNumberOfCommands = 128 };
+        virtual ~CommandEncoder() {}
         virtual bool Encode(VkCommandBuffer) = 0;
     };
 
@@ -42,13 +43,13 @@ namespace DKFramework::Private::Vulkan
         void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
         void AddSignalSemaphore(VkSemaphore);
 
-        void EndEncoder(DKCommandEncoder*, CommandBufferEncoder*);
+        void EndEncoder(DKCommandEncoder*, CommandEncoder*);
 
     private:
         VkCommandPool commandPool;
         DKObject<DKCommandQueue> queue;
 
-        DKArray<DKObject<CommandBufferEncoder>> encoders;
+        DKArray<DKObject<CommandEncoder>> encoders;
 
         DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
         DKSet<VkSemaphore> signalSemaphores;

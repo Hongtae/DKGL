@@ -94,7 +94,7 @@ bool CommandBuffer::Commit()
             // encode buffer!
             VkCommandBufferBeginInfo commandBufferBeginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
             vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo);
-            for (CommandBufferEncoder* enc : encoders)
+            for (CommandEncoder* enc : encoders)
             {
                 if (!enc->Encode(commandBuffer))
                 {
@@ -166,7 +166,7 @@ void CommandBuffer::AddSignalSemaphore(VkSemaphore semaphore)
         signalSemaphores.Insert(semaphore);
 }
 
-void CommandBuffer::EndEncoder(DKCommandEncoder*, CommandBufferEncoder* encoder)
+void CommandBuffer::EndEncoder(DKCommandEncoder*, CommandEncoder* encoder)
 {
     this->encoders.Add(encoder);
 }
