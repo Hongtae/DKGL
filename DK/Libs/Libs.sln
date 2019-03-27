@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPIRV-Cross", "SPIRV-Cross\SPIRV-Cross.vcxproj", "{0B99AC25-F938-4A25-AEDF-67A61B21D9E8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zstd", "zstd\zstd.vcxproj", "{C6B5981B-6E15-4C49-8541-F8C891A96EC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -151,6 +153,14 @@ Global
 		{0B99AC25-F938-4A25-AEDF-67A61B21D9E8}.Release|Win32.Build.0 = Release|Win32
 		{0B99AC25-F938-4A25-AEDF-67A61B21D9E8}.Release|x64.ActiveCfg = Release|x64
 		{0B99AC25-F938-4A25-AEDF-67A61B21D9E8}.Release|x64.Build.0 = Release|x64
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Debug|Win32.Build.0 = Debug|Win32
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Debug|x64.ActiveCfg = Debug|x64
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Debug|x64.Build.0 = Debug|x64
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|Win32.ActiveCfg = Release|Win32
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|Win32.Build.0 = Release|Win32
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|x64.ActiveCfg = Release|x64
+		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
