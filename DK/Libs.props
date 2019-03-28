@@ -29,11 +29,11 @@ MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(C
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;zstd.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;zstd.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>

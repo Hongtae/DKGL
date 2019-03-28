@@ -13,15 +13,23 @@
 namespace DKFoundation
 {
 	/** @brief
-	 A compression utility class, supports ZLib, LZ4 compression.
+	 A compression utility class, supports ZLib, Zstd, LZ4 compression.
 	 */
 	class DKCompressor
 	{
 	public:
-		enum Method {
-			Deflate,	///< good compression ratio.
-			LZ4,		///< fast compression, fast decompression.
-			LZ4HC,		///< fast decompression, better compression ratio than LZ4.
+        enum Method
+        {
+            Deflate,   	///< good compression ratio.
+            Deflate9,   ///< deflate level 9 (best ratio)
+            Zstd,       ///< better ratio, faster than Deflate.
+            ZstdMax,
+            LZ4,		///< fast compression, fast decompression.
+            LZ4HC,		///< fast decompression, better compression ratio than LZ4.
+
+            Default = Zstd,
+            BestRatio = ZstdMax,
+            Fastest = LZ4,
 		};
 		DKCompressor(Method);
 		~DKCompressor();
@@ -30,7 +38,6 @@ namespace DKFoundation
 		static bool Decompress(DKStream* input, DKStream* output);
 
 	private:
-		static bool DetectMethod(void* p, size_t, Method&);
 		Method method;
 	};
 }

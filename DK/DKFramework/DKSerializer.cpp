@@ -355,7 +355,7 @@ DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 							buff = DKBuffer::Create(data);
 							data = NULL;
 						}
-						DKObject<DKBuffer> compressed = buff->Compress(DKCompressor::Deflate);
+						DKObject<DKBuffer> compressed = buff->Compress(DKCompressor::Default);
 						if (compressed)
 						{
 							DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
@@ -560,7 +560,7 @@ DKObject<DKXmlElement> DKSerializer::SerializeXML(SerializeForm sf) const
 						const DKBuffer* buffer = stream.Buffer();
 						if (buffer && buffer->Length() > 0)
 						{
-							DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
+							DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Default);
 							if (compressed)
 							{
 								DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
@@ -1125,7 +1125,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 
 					DKObject<DKData> compressedData = NULL;
 					if (compress)
-						compressedData = DKBuffer::Compress(DKCompressor::Deflate, ptr, length).SafeCast<DKData>();
+						compressedData = DKBuffer::Compress(DKCompressor::Default, ptr, length).SafeCast<DKData>();
 
 					rawData->UnlockShared();
 
