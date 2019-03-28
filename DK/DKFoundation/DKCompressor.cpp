@@ -185,7 +185,20 @@ namespace DKFoundation::Private
             return false;
         }
 
+        /*
+        Zstd requests a large amount of memory allocation.
+        So we do not need to use DKMalloc.
+        */
+#if 0   
+        ZSTD_customMem customMem = {
+            [](void* opaque, size_t size)->void* {return DKMalloc(size); }, //ZSTD_allocFunction
+            [](void* opaque, void* address) { DKFree(address); }, //ZSTD_freeFunction
+            nullptr //opaque
+        };
+        ZSTD_CStream* const cstream = ZSTD_createCStream_advanced(customMem);
+#else
         ZSTD_CStream* const cstream = ZSTD_createCStream();
+#endif
         if (cstream)
         {
             bool result = false;
@@ -277,7 +290,20 @@ namespace DKFoundation::Private
             return false;
         }
 
+        /*
+        Zstd requests a large amount of memory allocation.
+        So we do not need to use DKMalloc.
+        */
+#if 0   
+        ZSTD_customMem customMem = {
+            [](void* opaque, size_t size)->void* { return DKMalloc(size); }, //ZSTD_allocFunction
+            [](void* opaque, void* address) { DKFree(address); }, //ZSTD_freeFunction
+            nullptr //opaque
+        };
+        ZSTD_DStream* const dstream = ZSTD_createDStream_advanced(customMem);
+#else
         ZSTD_DStream* const dstream = ZSTD_createDStream();
+#endif
         if (dstream)
         {
             bool result = false;
@@ -606,7 +632,7 @@ namespace DKFoundation::Private
             {
                 if (reinterpret_cast<const char*>(p)[0] == 0x78)
                 {
-                    m = DKCompressor::Deflate;
+                    m = DKCompressor::Zlib;
                     return true;
                 }
             }
@@ -636,17 +662,14 @@ bool DKCompressor::Compress(DKStream* input, DKStream* output) const
 
     switch (method)
     {
-    case Deflate:
-        return CompressDeflate(input, output, Z_DEFAULT_COMPRESSION);
-        break;
-    case Deflate9:
-        return CompressDeflate(input, output, 9);
+    case Zlib:
+        return CompressDeflate(input, output, 5); // Z_DEFAULT_COMPRESSION is 6
         break;
     case Zstd:
         return CompressZstd(input, output, ZSTD_CLEVEL_DEFAULT);
         break;
     case ZstdMax:
-        return CompressZstd(input, output, Clamp(19, int(ZSTD_CLEVEL_DEFAULT), ZSTD_maxCLevel())); // ZSTD_CLEVEL_DEFAULT is 3
+        return CompressZstd(input, output, 19);// Clamp(19, int(ZSTD_CLEVEL_DEFAULT), ZSTD_maxCLevel()));
         break;
     case LZ4:
         return CompressLZ4(input, output, 0);
@@ -751,8 +774,7 @@ bool DKCompressor::Decompress(DKStream* input, DKStream* output)
     {
         switch (method)
         {
-        case Deflate:
-        case Deflate9:
+        case Zlib:
             return DecompressDeflate(&bufferedInputStream, output);
             break;
         case Zstd:

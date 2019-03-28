@@ -20,10 +20,9 @@ namespace DKFoundation
 	public:
         enum Method
         {
-            Deflate,   	///< good compression ratio.
-            Deflate9,   ///< deflate level 9 (best ratio)
-            Zstd,       ///< better ratio, faster than Deflate.
-            ZstdMax,
+            Zlib,   	///< zlib deflate with level 5. Good compatibility.
+            Zstd,       ///< Zstandard with level 3. Fast and good compression ratio. Good balance.
+            ZstdMax,    ///< Zstandard compression level 19.
             LZ4,		///< fast compression, fast decompression.
             LZ4HC,		///< fast decompression, better compression ratio than LZ4.
 
