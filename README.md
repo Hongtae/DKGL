@@ -76,7 +76,7 @@ DK interfaces to use DK library with other GUI OSes.
     - This is LGPL licensed, configured to build **dynamic-library**.
     - Win32, Android only.
     - Mac OS X, iOS use Apple's OpenAL framework.
-- BulletPhysics-2.82 (svn rev: 2719)
+- [BulletPhysics-2.82](https://github.com/bulletphysics/bullet3)
 - FreeType-2.9
 - bzip2-1.0.6
 - jpeg-9
@@ -86,8 +86,9 @@ DK interfaces to use DK library with other GUI OSes.
 - libtiff-4.0.3
 - libvorbis-1.3.3
 - libxml2-2.9.0
-- lz4-r131
-- zlib-1.2.7
+- [lz4-r131](https://github.com/lz4/lz4)
+- [zlib-1.2.7](https://github.com/madler/zlib)
+- [Zstd-1.3.8](https://github.com/facebook/zstd)
 
 ## Author
 Hongtae Kim, (tiff2766@gmail.com)  
