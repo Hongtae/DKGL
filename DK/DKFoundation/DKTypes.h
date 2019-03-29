@@ -2,28 +2,22 @@
 //  File: DKTypes.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <type_traits>
 #include <utility>
-
-////////////////////////////////////////////////////////////////////////////////
-// DKTypes.h
-// basic types for template.
-////////////////////////////////////////////////////////////////////////////////
+#include "../DKInclude.h"
 
 namespace DKFoundation
 {
+	/// C++ compiler extensions
+	/// MSC: http://msdn.microsoft.com/en-us/library/vstudio/ms177194.aspx
+	/// GCC: http://gcc.gnu.org/onlinedocs/gcc/Type-Traits.html
+	/// Clang : http://clang.llvm.org/docs/LanguageExtensions.html
 	template <typename T> struct DKTypeTraitsCppExt
 	{
-		// compiler extensions
-		// MSC: http://msdn.microsoft.com/en-us/library/vstudio/ms177194.aspx
-		// GCC: http://gcc.gnu.org/onlinedocs/gcc/Type-Traits.html
-		// Clang : http://clang.llvm.org/docs/LanguageExtensions.html
-
 		constexpr static bool HasNothrowAssign()				{return __has_nothrow_assign(T);}
 		constexpr static bool HasNothrowCopy()					{return __has_nothrow_copy(T);}
 		constexpr static bool HasNothrowConstructor()			{return __has_nothrow_constructor(T);}
@@ -39,12 +33,12 @@ namespace DKFoundation
 		constexpr static bool IsPod()							{return __is_pod(T);}
 		constexpr static bool IsPolymorphic()					{return __is_polymorphic(T);}
 		constexpr static bool IsUnion()							{return __is_union(T);}
-		template <typename U> constexpr static bool IsBaseOf()	{return __is_base_of(U, T);} // __is_base_of(base, derived)
+		template <typename U> constexpr static bool IsBaseOf()	{return __is_base_of(U, T);} ///< __is_base_of(base, derived)
 	};
 
-	// type number
+	/// type number
 	template <int i> struct DKNumber {enum {Value = i};	};
-	// boolean type value (for SFINAE)
+	/// boolean type value (for SFINAE)
 	using DKTrue = DKNumber<1>;
 	using DKFalse = DKNumber<0>;
 
@@ -122,31 +116,46 @@ namespace DKFoundation
 		template <typename T> struct ConversionTest<void, T>	{enum {Result = false};};
 		template <typename T> struct ConversionTest<T, void>	{enum {Result = false};};
 		template <> struct ConversionTest<void, void>			{enum {Result = true};};
+
+		// conditional cast object.
+		// perform static_cast for convertible object (up cast)
+		// perform dynamic_cast for non-convertible object (down cast)
+		template <typename T, typename R, bool IsConvertible> struct SafeCaster;
+		template <typename T, typename R> struct SafeCaster<T, R, true>
+		{
+			static R* Cast(T* p)				{ return static_cast<R*>(p); }
+			static const R* Cast(const T* p)	{ return static_cast<const R*>(p); }
+		};
+		template <typename T, typename R> struct SafeCaster<T, R, false>
+		{
+			static R* Cast(T* p)				{ return dynamic_cast<R*>(p); }
+			static const R* Cast(const T* p)	{ return dynamic_cast<const R*>(p); }
+		};
 	}
 
-	// conditional type definition, if C is true result is T, else U.
+	/// conditional type definition, if C is true result is T, else U.
 	template <bool C, typename T, typename U> using DKCondType = typename Private::CondType<C, T, U>::Result;
 
-	// returns sum of integers in Ns...
-	template <int... Ns> constexpr int DKSum(void)
+	/// returns sum of integers in Ns...
+	template <int... Ns> constexpr int DKSum()
 	{
 		return Private::Sum<Ns...>::Result;
 	}
 
-	// count number of matches with first integer(Num) in Ns
-	template <int Num, int... Ns> constexpr int DKNumMatches(void)
+	/// count number of matches with first integer(Num) in Ns
+	template <int Num, int... Ns> constexpr int DKNumMatches()
 	{
 		return Private::NumMatches<Num, Ns...>::Result;
 	}
 
-	// determine whether type Source is convertible into type Target.
-	template <typename Source, typename Target> constexpr bool DKTypeConversionTest(void)
+	/// determine whether type Source is convertible into type Target.
+	template <typename Source, typename Target> constexpr bool DKTypeConversionTest()
 	{
 		return Private::ConversionTest<Source, Target>::Result;
 	}
 	
-	// returns object's base address.
-	// In multiple inheritance, base address may be differ.
+	/// returns object's base address.
+	/// In multiple inheritance, base address may be differ.
 	template <typename T> void* DKTypeBaseAddressCast(T* p)
 	{
 		return Private::BaseAddress<T>::Cast(p);

@@ -2,20 +2,19 @@
 //  File: DKRect.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKRect.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
 const DKPoint DKPoint::zero = DKPoint(0,0);
 const DKSize DKSize::zero = DKSize(0,0);
 const DKRect DKRect::zero = DKRect(0,0,0,0);
 
-DKRect::DKRect(void)
+DKRect::DKRect()
 	: origin(DKPoint(0,0))
 	, size(-FLT_MAX, -FLT_MAX)
 {
@@ -43,7 +42,7 @@ bool DKRect::operator != (const DKRect& rc) const
 	return origin != rc.origin || size != rc.size;
 }
 
-DKPoint DKRect::Center(void) const
+DKPoint DKRect::Center() const
 {
 	if (IsValid())
 	{
@@ -77,7 +76,7 @@ bool DKRect::IsPointInside(const DKPoint& pt) const
 	return (pt.x >= origin.x && pt.x <= origin.x + size.width && pt.y >= origin.y && pt.y <= origin.y + size.height);
 }
 
-bool DKRect::IsValid(void) const
+bool DKRect::IsValid() const
 {
 	return size.width >= 0 && size.height >= 0;
 }
@@ -285,10 +284,10 @@ DKRect DKRect::Intersection(const DKRect& rc1, const DKRect& rc2)
 {
 	if (rc1.IsValid() && rc2.IsValid())
 	{
-		float minWidth = DKFoundation::Min(rc1.origin.x + rc1.size.width, rc2.origin.x + rc2.size.width);
-		float minHeight = DKFoundation::Min(rc1.origin.y + rc1.size.height, rc2.origin.y + rc2.size.height);
+		float minWidth = Min(rc1.origin.x + rc1.size.width, rc2.origin.x + rc2.size.width);
+		float minHeight = Min(rc1.origin.y + rc1.size.height, rc2.origin.y + rc2.size.height);
 
-		DKPoint newOrigin = DKPoint(DKFoundation::Max(rc1.origin.x, rc2.origin.x), DKFoundation::Max(rc1.origin.y, rc2.origin.y));
+		DKPoint newOrigin = DKPoint(Max(rc1.origin.x, rc2.origin.x), Max(rc1.origin.y, rc2.origin.y));
 		DKSize newSize = DKSize(minWidth - newOrigin.x, minHeight - newOrigin.y);
 
 		return DKRect(newOrigin, newSize);
@@ -300,10 +299,10 @@ DKRect DKRect::Union(const DKRect& rc1, const DKRect& rc2)
 {
 	if (rc1.IsValid() && rc2.IsValid())
 	{
-		float maxWidth = DKFoundation::Max(rc1.origin.x + rc1.size.width, rc2.origin.x + rc2.size.width);
-		float maxHeight = DKFoundation::Max(rc1.origin.y + rc1.size.height, rc2.origin.x + rc2.size.height);
+		float maxWidth = Max(rc1.origin.x + rc1.size.width, rc2.origin.x + rc2.size.width);
+		float maxHeight = Max(rc1.origin.y + rc1.size.height, rc2.origin.x + rc2.size.height);
 
-		DKPoint newOrigin = DKPoint(DKFoundation::Min(rc1.origin.x, rc2.origin.x), DKFoundation::Max(rc1.origin.y, rc2.origin.y));
+		DKPoint newOrigin = DKPoint(Min(rc1.origin.x, rc2.origin.x), Min(rc1.origin.y, rc2.origin.y));
 		DKSize newSize = DKSize(maxWidth - newOrigin.x, maxHeight - newOrigin.y);
 
 		return DKRect(newOrigin, newSize);	

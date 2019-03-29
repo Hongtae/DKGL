@@ -2,24 +2,20 @@
 //  File: DKTypeList.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../DKInclude.h"
 #include "DKTypes.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKTypeList
-// a type list, based on book 'Modern C++ Design' by Andrei Alexandrescu.
-// (Addison-Wesley Professional, ISBN-10: 0201704315, ISBN-13: 978-0201704310)
-//
-// Note:
-//  Using C++11 variadic-templates instead of macros in this implmentation.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// a type list (adopted C++11 version),
+	/// based on book 'Modern C++ Design' by Andrei Alexandrescu.
+	/// (Addison-Wesley Professional, ISBN-10: 0201704315, ISBN-13: 978-0201704310)
+	///
+	/// This class is used by function traits and tuple
 	template <typename... Types> class DKTypeList
 	{
 		// typedef of type located at Index. (error if index goes out of range)
@@ -264,59 +260,59 @@ namespace DKFoundation
 		};
 
 	public:
-		enum {Length = sizeof...(Types)};
+		enum {Length = sizeof...(Types)}; ///< number of types in this class
 
 		template <template <typename...> class T> using TypesInto = T<Types...>;
 
-		// reversed list.
+		/// reversed list.
 		using Reverse = typename _Reverse<Types...>::Result;
 
-		// defines type at Index.
+		/// defines type at Index.
 		template <int Index> using TypeAt = typename _TypeAt<Index>::Result;
 
-		// get Index of specific type.
-		template <typename T> constexpr static auto IndexOf(void) -> int
+		/// get Index of specific type.
+		template <typename T> constexpr static auto IndexOf() -> int
 		{
 			return _IndexOf<T>::Result;
 		}
 
-		// count number of given type T in list.
-		template <typename T> constexpr static auto Count(void) -> int
+		/// count number of given type T in list.
+		template <typename T> constexpr static auto Count() -> int
 		{
 			return _CountType<T>::Result;
 		}
 
-		// append types into list.
-		// Note:
-		//   If given arguments contains DKTypeList<...> with other types,
-		//   the type list (DKTypeList<...>) will assumed one type.
-		//   (With multiple arguments, type list will not be iterated for each elements.)
+		/// append types into list.
+		/// @note
+		///   If given arguments contains DKTypeList<...> with other types,
+		///   the type list (DKTypeList<...>) will assumed one type.
+		///   (With multiple arguments, type list will not be iterated for each elements.)
 		template <typename... Ts> using Append = typename _Append<Ts...>::Result;
 
-		// insert specific type at Index.
-		// DKTypeList<...> assumed one type. If you need to insert types in other type list,
-		// you should use Append.
+		/// insert specific type at Index.
+		/// DKTypeList<...> assumed one type. If you need to insert types in other type list,
+		/// you should use Append.
 		template <int Index, typename... Ts> using InsertAt = typename _InsertTypesAt<Index, Ts...>::Result;
 
-		// check lists are equal.
-		template <typename... Ts> constexpr static auto IsSame(void) -> bool
+		/// check lists are equal.
+		template <typename... Ts> constexpr static auto IsSame() -> bool
 		{
 			return _IsSame<Ts...>::Reult;
 		}
 
-		// check types in list can be convertible to others.
-		template <typename... Ts> constexpr static auto IsConvertible(void) -> bool
+		/// check types in list can be convertible to others.
+		template <typename... Ts> constexpr static auto IsConvertible() -> bool
 		{
 			return _IsConvertible<Ts...>::Result;
 		}
 
-		// remove specific types in list.
+		/// remove specific types in list.
 		template <typename... Ts> using Remove = typename _Remove<Ts...>::Result;
 		
-		// remove type at Index.
+		/// remove type at Index.
 		template <int Index> using RemoveAt = typename _RemoveIndex<Index>::Result;
 		
-		// generate sub list with given range.
+		/// generate sub list with given range.
 		template <int Begin, int End> using SubList = typename _SubListT<Begin, End>::Result;
 	};
 }

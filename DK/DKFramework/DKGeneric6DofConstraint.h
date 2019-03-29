@@ -1,45 +1,42 @@
-﻿//
+//
 //  File: DKGeneric6DofConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKConstraint.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKGeneric6DofConstraint
-// generic 6 dof constraint. a joint can control 6 degree of freedom limits.
-// (3 linear axis limits, 3 angular axis limits.)
-// (see DKConstraint.h for axis 'ParamAxis')
-//
-// Note:
-//    angular limits have following ranges.
-//     AngularX: -pi ~ pi
-//     AngularY: -pi/2 ~ pi/2
-//     AngularZ: -pi ~ pi
-//
-////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
 {
+	/// @brief
+	/// generic 6 dof constraint. a joint can control 6 degree of freedom limits.
+	/// (3 linear axis limits, 3 angular axis limits.)
+	/// (see DKConstraint.h for axis 'ParamAxis')
+	///
+	/// @note
+	///    angular limits have following ranges.\n
+	///     AngularX: -pi ~ pi					\n
+	///     AngularY: -pi/2 ~ pi/2				\n
+	///     AngularZ: -pi ~ pi					\n
+	///
 	class DKGL_API DKGeneric6DofConstraint : public DKConstraint
 	{
 	public:
 		enum AxisState
 		{
-			StateLocked = 0,		// axis locked.
-			StateFree,				// axis free.
-			StateRanged,			// axis limited free (free within range)
+			StateLocked = 0,		///< axis locked.
+			StateFree,				///< axis free.
+			StateRanged,			///< axis limited free (free within range)
 		};
 
-		// DKNSTransform is rigid body's local transform.
+		/// DKNSTransform is rigid body's local transform.
 		DKGeneric6DofConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKGeneric6DofConstraint(DKRigidBody* bodyB, const DKNSTransform& frameB);
-		DKGeneric6DofConstraint(void);
-		~DKGeneric6DofConstraint(void);
+		DKGeneric6DofConstraint();
+		~DKGeneric6DofConstraint();
 
 		void SetLimit(ParamAxis axis, float lower, float upper);
 		float LowerLimit(ParamAxis axis) const;
@@ -49,18 +46,18 @@ namespace DKFramework
 		void SetLinearUpperLimit(const DKVector3& v);
 		void SetAngularLowerLimit(const DKVector3& v);
 		void SetAngularUpperLimit(const DKVector3& v);
-		DKVector3 LinearLowerLimit(void) const;
-		DKVector3 LinearUpperLimit(void) const;
-		DKVector3 AngularLowerLimit(void) const;
-		DKVector3 AngularUpperLimit(void) const;
+		DKVector3 LinearLowerLimit() const;
+		DKVector3 LinearUpperLimit() const;
+		DKVector3 AngularLowerLimit() const;
+		DKVector3 AngularUpperLimit() const;
 
 		DKVector3 Axis(ParamAxis axis) const;
 		float Angle(ParamAxis axis) const;
 		float RelativePivotPosition(ParamAxis axis) const;
 		AxisState State(ParamAxis axis) const;
 
-		DKNSTransform FrameA(void) const;
-		DKNSTransform FrameB(void) const;
+		DKNSTransform FrameA() const;
+		DKNSTransform FrameB() const;
 		void SetFrameA(const DKNSTransform& t);
 		void SetFrameB(const DKNSTransform& t);
 		void SetFrames(const DKNSTransform& ta, const DKNSTransform& tb);
@@ -68,14 +65,14 @@ namespace DKFramework
 		bool IsValidParam(ParamType type, ParamAxis axis) const override;
 		bool HasParam(ParamType type, ParamAxis axis) const override;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
 		DKGeneric6DofConstraint(LinkType type, DKRigidBody* bodyA, DKRigidBody* bodyB, class btGeneric6DofConstraint* ctxt);
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGeneric6DofConstraint* Copy(UUIDObjectMap&, const DKGeneric6DofConstraint*);
 	};
 }

@@ -2,35 +2,28 @@
 //  File: DKOperation.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../DKInclude.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKOperation
-// an operation class, abstract class.
-//
-// You can perform operation with this object, but you cannot retrieve result.
-// You can use DKInvocation to retrieve result.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief an operation class.
+	/// DKOperation object provides encapsulation of any kind operation. 
+	/// You can obtain DKOperation from a function or value.
+	/// You can also subclass DKOperation.
+	///
+	/// You can perform operation with this object, but you cannot retrieve result.
+	/// You can use DKInvocation to retrieve result.
+	///
+	/// @see DKThread, DKOperationQueue, DKEventLoop
 	class DKOperation
 	{
 	public:
-		virtual ~DKOperation(void) {}
-		virtual void Perform(void) const = 0;
-
-	protected:
-		DKOperation(void) {}
-
-	private:
-		DKOperation(DKOperation&&);
-		DKOperation(const DKOperation&);
-		DKOperation& operator = (DKOperation&&);
-		DKOperation& operator = (const DKOperation&);
+		DKOperation() {}
+		virtual ~DKOperation() {}
+		virtual void Perform() const = 0;
 	};
 }

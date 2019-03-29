@@ -2,7 +2,7 @@
 //  File: DKVector3.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -11,12 +11,11 @@
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
 const DKVector3 DKVector3::zero = DKVector3(0,0,0);
 
-DKVector3::DKVector3(void)
+DKVector3::DKVector3()
 	: x(0), y(0), z(0)
 {
 }
@@ -58,7 +57,7 @@ DKVector3 DKVector3::operator - (const DKVector3& v) const
 	return DKVector3(x - v.x, y - v.y, z - v.z);
 }
 
-DKVector3 DKVector3::operator - (void) const
+DKVector3 DKVector3::operator - () const
 {
 	return DKVector3(-x, -y, -z);
 }
@@ -163,12 +162,12 @@ DKVector3& DKVector3::operator /= (const DKVector3& v)
 	return *this;
 }
 
-float DKVector3::Length(void) const
+float DKVector3::Length() const
 {
 	return sqrt( x*x + y*y + z*z );
 }
 
-float DKVector3::LengthSq(void) const
+float DKVector3::LengthSq() const
 {
 	return x*x + y*y + z*z;
 }
@@ -288,7 +287,7 @@ DKVector3& DKVector3::Transform(const DKMatrix4& m)
 	return *this;
 }
 
-DKVector3& DKVector3::Normalize(void)
+DKVector3& DKVector3::Normalize()
 {
 	float lengthSq = x*x + y*y + z*z;
 	if (lengthSq > 0.0)

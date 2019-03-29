@@ -2,7 +2,7 @@
 //  File: DKAllocator.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <new>
@@ -13,11 +13,11 @@
 
 using namespace DKFoundation;
 
-DKAllocator::DKAllocator(void)
+DKAllocator::DKAllocator()
 {
 }
 
-DKAllocator::~DKAllocator(void)
+DKAllocator::~DKAllocator() noexcept(!DKGL_MEMORY_DEBUG)
 {
 }
 
@@ -27,21 +27,24 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 
 	struct HeapAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryHeapAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryHeapFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationHeap;}
+		void* Alloc(size_t s) override					{ return DKMemoryHeapAlloc(s); }
+		void* Realloc(void* p, size_t s) override		{ return DKMemoryHeapRealloc(p, s); }
+		void Dealloc(void* p) override					{ DKMemoryHeapFree(p); }
+		DKMemoryLocation Location() const override	{ return DKMemoryLocationHeap; }
 	};
 	struct VMemAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryVirtualAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryVirtualFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationVirtual;}
+		void* Alloc(size_t s)override					{ return DKMemoryVirtualAlloc(s); }
+		void* Realloc(void* p, size_t s) override		{ return DKMemoryVirtualRealloc(p, s); }
+		void Dealloc(void* p)override					{ DKMemoryVirtualFree(p); }
+		DKMemoryLocation Location() const override	{ return DKMemoryLocationVirtual; }
 	};
 	struct PoolAllocator : public DKAllocator
 	{
-		void* Alloc(size_t s)					{return DKMemoryPoolAlloc(s);}
-		void Dealloc(void* p)					{DKMemoryPoolFree(p);}
-		DKMemoryLocation Location(void) const	{return DKMemoryLocationPool;}
+		void* Alloc(size_t s) override					{ return DKMemoryPoolAlloc(s); }
+		void* Realloc(void* p, size_t s) override		{ return DKMemoryPoolRealloc(p, s); }
+		void Dealloc(void* p) override					{ DKMemoryPoolFree(p); }
+		DKMemoryLocation Location() const override	{ return DKMemoryLocationPool; }
 	};
 
 	static bool initialized = false;
@@ -81,7 +84,7 @@ DKAllocator& DKAllocator::DefaultAllocator(DKMemoryLocation loc)
 	return *hma;
 }
 
-DKGL_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
+DKGL_API void* operator new (size_t s, DKAllocator& a)
 {
 	void* p = a.Alloc(s);
 	bool b = DKObjectRefCounter::SetRefCounter(p, &a, 0, NULL);
@@ -89,7 +92,7 @@ DKGL_API void* operator new (size_t s, DKFoundation::DKAllocator& a)
 	return p;
 }
 
-DKGL_API void operator delete (void* p, DKFoundation::DKAllocator& a)
+DKGL_API void operator delete (void* p, DKAllocator& a)
 {
 	DKAllocator* alloc = NULL;
 	DKObjectRefCounter::UnsetRefCounter(p, 0, &alloc);

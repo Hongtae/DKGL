@@ -1,19 +1,18 @@
-﻿//
+//
 //  File: DKTriangle.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKTriangle.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
 static_assert( sizeof(DKTriangle) == sizeof(DKVector3) * 3, "size mismatch?");
 
-DKTriangle::DKTriangle(void)
+DKTriangle::DKTriangle()
 {
 }
 
@@ -24,18 +23,18 @@ DKTriangle::DKTriangle(const DKVector3& p1, const DKVector3& p2, const DKVector3
 {
 }
 
-DKTriangle::~DKTriangle(void)
+DKTriangle::~DKTriangle()
 {
 }
 
-float DKTriangle::Area(void) const
+float DKTriangle::Area() const
 {
 	DKVector3 ab = position2 - position1;
 	DKVector3 ac = position3 - position1;
 	return DKVector3::Cross(ab, ac).Length() * 0.5f;
 }
 
-DKAabb DKTriangle::Aabb(void) const
+DKAabb DKTriangle::Aabb() const
 {
 	DKAabb aabb;
 	aabb.positionMin.x = Min(position1.x, position2.x, position3.x);

@@ -2,7 +2,7 @@
 //  File: DKCircularQueue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -14,30 +14,30 @@
 #include "DKFunction.h"
 #include "DKArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCircularQueue
-// circulate limited size of queue.
-// queue object never overflow.
-//
-// items can be added at head, tail only
-// if item count have reached to limited size when adding new item,
-// the item at opposite side will be overwritten.
-//
-// Example:
-//   DKCircularQueue<int> queue(3);		// set maximum length to 3
-//   queue.Append(1);		// [1]
-//   queue.Append(2);		// [1, 2]
-//   queue.Append(3);		// [1, 2, 3]
-//   queue.Append(4);		// [2, 3, 4] item(1) has been truncated. (append)
-//   queue.Prepend(5);		// [5, 2, 3] item(4) has been truncated. (prepend)
-//   queue.Prepend(6);		// [6, 5, 2] item(3) has been truncated. (prepend)
-//
-// Note:
-//  using CopyValue() to retrieve item for thread-safe.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/**
+	 @brief
+	 circulate limited size of queue.
+	 queue object never overflow.
+
+	 items can be added at head, tail only
+	 if item count have reached to limited size when adding new item,
+	 the item at opposite side will be overwritten.
+
+	 @code
+	   DKCircularQueue<int> queue(3);  // set maximum length to 3
+	   queue.Append(1);   // [1]
+	   queue.Append(2);   // [1, 2]
+	   queue.Append(3);   // [1, 2, 3]
+	   queue.Append(4);   // [2, 3, 4] item(1) has been truncated. (append)
+	   queue.Prepend(5);  // [5, 2, 3] item(4) has been truncated. (prepend)
+	   queue.Prepend(6);  // [6, 5, 2] item(3) has been truncated. (prepend)
+	 @endcode
+
+	 @note
+	  using CopyValue() to retrieve item for thread-safe.
+	 */
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKCircularQueue
 	{
@@ -49,11 +49,11 @@ namespace DKFoundation
 		typedef typename Container::Index Index;
 		typedef typename Container::Allocator Allocator;
 
-		constexpr static size_t NodeSize(void)	{ return Allocator::NodeSize(); }
+		constexpr static size_t NodeSize()	{ return Allocator::NodeSize(); }
 
 		explicit DKCircularQueue(size_t capacity_)
 			: position(0)
-			, capacity(Max<size_t>(capacity_, MinimumCapacity))
+			, capacity(Max(capacity_, size_t(MinimumCapacity)))
 		{
 			DKASSERT_DEBUG(capacity_ >= MinimumCapacity);
 			container.Reserve(capacity);
@@ -91,7 +91,7 @@ namespace DKFoundation
 				AppendNL(v);
 		}
 
-		~DKCircularQueue(void)
+		~DKCircularQueue()
 		{
 		}
 
@@ -150,25 +150,25 @@ namespace DKFoundation
 			return *this;
 		}
 
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.IsEmpty();
 		}
 
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return capacity;
 		}
 
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
 
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
@@ -185,22 +185,33 @@ namespace DKFoundation
 			capacity = Max<size_t>(cap, MinimumCapacity);
 			container.Reserve(capacity);			
 		}
-		// append item. if length exceed to limit, front item will be truncated.
+		/// append item. if length exceed to limit, front item will be truncated.
 		void Append(const VALUE& value)
 		{
 			CriticalSection guard(lock);
 			AppendNL(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-		// prepend item, if length exceed to limit, last item will be truncated.
+		void Append(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			AppendNL(static_cast<VALUE&&>(value));
+			DKASSERT_DEBUG(container.Count() <= capacity);
+		}
+		/// prepend item, if length exceed to limit, last item will be truncated.
 		void Prepend(const VALUE& value)
 		{
 			CriticalSection guard(lock);
 			PrependNL(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-
-		void RemoveFront(void)
+		void Prepend(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			PrependNL(static_cast<VALUE&&>(value));
+			DKASSERT_DEBUG(container.Count() <= capacity);
+		}
+		void RemoveFront()
 		{
 			CriticalSection guard(lock);
 			size_t count = container.Count();
@@ -219,7 +230,7 @@ namespace DKFoundation
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
 
-		void RemoveBack(void)
+		void RemoveBack()
 		{
 			CriticalSection guard(lock);
 			size_t count = container.Count();
@@ -262,35 +273,35 @@ namespace DKFoundation
 			return ValueNL(index);
 		}
 
-		VALUE& Front(void)
+		VALUE& Front()
 		{
 			return Value(0);
 		}
 
-		const VALUE& Front(void) const
+		const VALUE& Front() const
 		{
 			return Value(0);
 		}
 
-		VALUE& Back(void)
+		VALUE& Back()
 		{
 			CriticalSection guard(lock);
 			return ValueNL(container.Count() - 1);
 		}
 
-		const VALUE& Back(void) const
+		const VALUE& Back() const
 		{
 			CriticalSection guard(lock);
 			return ValueNL(container.Count() - 1);
 		}
 
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -299,17 +310,17 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
 			
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -318,7 +329,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -416,24 +427,26 @@ namespace DKFoundation
 			}
 			return container.Value(index);
 		}
-		void AppendNL(const VALUE& value)
+		template <typename T>
+		void AppendNL(T&& value)
 		{
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
 			if (count == capacity)
 			{
-				container.Value(position) = value;
+				container.Value(position) = std::forward<T>(value);
 				position = (position+1) % capacity;
 			}
 			else
 			{
-				container.Add(value);
+				container.Add(std::forward<T>(value));
 				count = container.Count();
 				position = (position+1) % capacity;
 			}
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-		void PrependNL(const VALUE& value)
+		template <typename T>
+		void PrependNL(T&& value)
 		{
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
@@ -443,11 +456,11 @@ namespace DKFoundation
 				position--;
 				else
 				position = count - 1;
-				container.Value(position) = value;
+				container.Value(position) = std::forward<T>(value);
 			}
 			else
 			{
-				container.Insert(value, 0);
+				container.Insert(std::forward<T>(value), 0);
 				count = container.Count();
 				position = (position+1) % capacity;
 			}

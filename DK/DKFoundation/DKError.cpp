@@ -2,7 +2,7 @@
 //  File: DKError.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 
@@ -51,12 +51,26 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
+        DKString GetWin32ErrorString(DWORD dwError)
+        {
+            DKString ret = L"";
+            // error!
+            LPVOID lpMsgBuf;
+            ::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
+
+            ret = (const wchar_t*)lpMsgBuf;
+            ::LocalFree(lpMsgBuf);
+            return ret;
+        }
+#endif
 		struct UnexpectedError
 		{
 			DKArray<DKError::StackFrame> callstack;
 			DKString description;
 			unsigned int code;
-			void Dump(void)
+			void Dump()
 			{
 				DKError::DumpUnexpectedError(this);
 			}
@@ -71,7 +85,7 @@ namespace DKFoundation
 			DKSpinLock critFuncLock;
 			DKObject<DKCriticalErrorHandler> criticalErrorFunc = NULL;
 #endif
-			DKObject<DKCriticalErrorHandler> GetCriticalErrorHandler(void)
+			DKObject<DKCriticalErrorHandler> GetCriticalErrorHandler()
 			{
 #if DKERROR_HANDLE_CRITICAL_ERROR
 				DKCriticalSection<DKSpinLock> guard(critFuncLock);
@@ -81,6 +95,26 @@ namespace DKFoundation
 			}
 
 #ifdef _WIN32
+			// DbgHelp.dll is not thread-safe!
+			// We have to synchronize all DLL functions with Win32 CRITICAL_SECTION.
+			struct ScopeDbgHelpDllLock final
+			{
+				struct CriticalSection
+				{
+					CRITICAL_SECTION cs;
+					CriticalSection() { ::InitializeCriticalSection(&cs); }
+					static CRITICAL_SECTION* GetCS()
+					{
+						static CriticalSection cs;
+						return &cs.cs;
+					}
+					static void Enter() { ::EnterCriticalSection(GetCS()); }
+					static void Leave() { ::LeaveCriticalSection(GetCS()); }
+				};
+				ScopeDbgHelpDllLock() { CriticalSection::Enter(); }
+				~ScopeDbgHelpDllLock() { CriticalSection::Leave(); }
+			};
+
 			struct DbgHelpDLL
 			{
 				HMODULE hDLL;
@@ -125,18 +159,6 @@ namespace DKFoundation
 				PFSymGetSearchPathW pSymGetSearchPathW;
 			};
 
-			inline DKString GetErrorString(DWORD dwError)
-			{
-				DKString ret = L"";
-				// error!
-				LPVOID lpMsgBuf;
-				::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-								 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR) &lpMsgBuf, 0, NULL );
-
-				ret = (const wchar_t*)lpMsgBuf;
-				::LocalFree(lpMsgBuf);
-				return ret;
-			}
 			inline DKString GetExceptionString(DWORD ec)
 			{
 				DKString ret = L"";
@@ -218,8 +240,10 @@ namespace DKFoundation
 				return ret;
 			}
 
-			DbgHelpDLL* GetDbgHelpDLL(void)
+			DbgHelpDLL* GetDbgHelpDLL()
 			{
+				ScopeDbgHelpDllLock guard;
+
 				static bool init = false;
 				static DbgHelpDLL dbg;
 
@@ -258,7 +282,7 @@ namespace DKFoundation
 								failed = true;
 								DWORD dwError = ::GetLastError();
 								if (dwError)
-									DKLog("GetProcAddress failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+									DKLog("GetProcAddress failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 								else
 									DKLog("GetProcAddress failed with unknown error.\n");
 								break;
@@ -284,7 +308,7 @@ namespace DKFoundation
 						DWORD dwError = ::GetLastError();
 						if (dwError)
 						{
-							DKLog("LoadLibrary failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+							DKLog("LoadLibrary failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 						}
 					}
 				}
@@ -300,6 +324,8 @@ namespace DKFoundation
 				DbgHelpDLL* dbg = GetDbgHelpDLL();
 				if (dbg)
 				{
+					ScopeDbgHelpDllLock guard;
+
 					HANDLE hProcess = ::GetCurrentProcess();
 					if (dbg->pSymInitializeW(hProcess, NULL, TRUE))
 					{
@@ -376,7 +402,7 @@ namespace DKFoundation
 										{
 											DWORD dwError = ::GetLastError();
 											if (dwError)
-												DKLog("SymFromAddr failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+												DKLog("SymFromAddr failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 											else
 												DKLog("SymFromAddr failed with unknown error!\n");
 										}
@@ -415,7 +441,7 @@ namespace DKFoundation
 							{
 								DWORD dwError = ::GetLastError();
 								if (dwError)
-									DKLog("StackWalk64 failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+									DKLog("StackWalk64 failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 								else
 									DKLog("StackWalk64 failed with unknown error!\n");
 
@@ -429,7 +455,7 @@ namespace DKFoundation
 					{
 						DWORD dwError = ::GetLastError();
 						if (dwError)
-							DKLog("SymInitialize failed with error %d: %ls", dwError, (const wchar_t*)GetErrorString(dwError));
+							DKLog("SymInitialize failed with error %d: %ls", dwError, (const wchar_t*)GetWin32ErrorString(dwError));
 						else
 							DKLog("SymInitialize failed with unknown error!\n");
 					}
@@ -480,7 +506,7 @@ namespace DKFoundation
 				DKCriticalSection<DKSpinLock> guard(traceLock);
 
 				// generate callstack
-				void** callstack = (void**)malloc(sizeof(void*) * maxDepth);
+				void** callstack = (void**)DKMemoryHeapAlloc(sizeof(void*) * maxDepth);
 				int numFrames = backtrace(callstack, maxDepth);
 
 				for (int i = skip; i < numFrames; ++i)
@@ -518,7 +544,7 @@ namespace DKFoundation
 
 					frames.Add(frame);
 				}
-				free(callstack);
+				DKMemoryHeapFree(callstack);
 			}
 #elif defined(__linux__)
 			void __attribute__((noinline)) TraceCallStack(int skip, int maxDepth, DKArray<DKError::StackFrame>& frames)
@@ -576,7 +602,7 @@ namespace DKFoundation
 		}
 	}	// namespace Private
 
-	bool DKGL_API IsDebuggerPresent(void)
+	bool DKGL_API DKIsDebuggerPresent()
 	{
 #ifdef _WIN32
 		return ::IsDebuggerPresent() != FALSE;
@@ -599,7 +625,7 @@ namespace DKFoundation
 		return false;
 #endif
 	}
-	bool DKGL_API IsDebugBuild(void)
+	bool DKGL_API DKIsDebugBuild()
 	{
 #ifdef DKGL_DEBUG_ENABLED
 		return true;
@@ -608,7 +634,7 @@ namespace DKFoundation
 #endif
 	}
 
-	void DKGL_API SetCriticalErrorHandler(DKCriticalErrorHandler* h)
+	void DKGL_API DKSetCriticalErrorHandler(DKCriticalErrorHandler* h)
 	{
 #if DKERROR_HANDLE_CRITICAL_ERROR
 		DKCriticalSection<DKSpinLock> guard(Private::critFuncLock);
@@ -624,7 +650,7 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKError::DKError(void)
+DKError::DKError()
 	: errorCode(0)
 	, functionName(L"")
 	, fileName(L"")
@@ -707,10 +733,9 @@ DKError::DKError(const DKError& e)
 	}
 }
 
-DKError::~DKError(void)
+DKError::~DKError()
 {
-	if (stackFrames)
-		delete[] stackFrames;
+	delete[] stackFrames;
 }
 
 DKError& DKError::operator = (DKError&& e)
@@ -748,9 +773,7 @@ DKError& DKError::operator = (const DKError& e)
 		this->description = e.description;
 		this->threadId = e.threadId;
 
-		if (this->stackFrames)
-			delete[] stackFrames;
-
+		delete[] stackFrames;
 		this->numFrames = 0;
 		this->stackFrames = NULL;
 
@@ -766,32 +789,32 @@ DKError& DKError::operator = (const DKError& e)
 	return *this;
 }
 
-int DKError::Code(void) const
+int DKError::Code() const
 {
 	return errorCode;
 }
 
-const DKString& DKError::Function(void) const
+const DKString& DKError::Function() const
 {
 	return functionName;
 }
 
-const DKString& DKError::File(void) const
+const DKString& DKError::File() const
 {
 	return fileName;
 }
 
-int DKError::Line(void) const
+int DKError::Line() const
 {
 	return lineNo;
 }
 
-const DKString& DKError::Description(void) const
+const DKString& DKError::Description() const
 {
 	return description;
 }
 
-size_t DKError::NumberOfStackFrames(void) const
+size_t DKError::NumberOfStackFrames() const
 {
 	return numFrames;
 }
@@ -829,9 +852,7 @@ size_t DKError::CopyStackFrames(StackFrame* s, size_t maxCount) const
 
 size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 {
-	if (stackFrames)
-		delete[] stackFrames;
-
+	delete[] stackFrames;
 	numFrames = 0;
 	stackFrames = NULL;
 	threadId = DKThread::CurrentThreadId();
@@ -859,9 +880,9 @@ size_t DKError::RetraceStackFrames(int skip, int maxDepth)
 		}
 		catch (...)
 		{
+			delete[] stackFrames;
+			stackFrames = NULL;
 			numFrames = 0;
-			if (stackFrames)
-				delete[] stackFrames;
 			DKLog("[%s] CRITICAL-ERROR: unknown error occurred while copying frame data.\n", DKGL_FUNCTION_NAME);
 		}
 	}
@@ -879,9 +900,9 @@ void DKError::RaiseException(const DKString& func, const DKString& file, unsigne
 	err.RetraceStackFrames(1, 1024);
 
 #ifdef DKGL_DEBUG_ENABLED
-	err.PrintDescriptionWithStackFrames();
+	//err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
@@ -896,9 +917,9 @@ void DKError::RaiseException(int errorCode, const DKString& desc)
 	err.RetraceStackFrames(1, 1024);
 
 #ifdef DKGL_DEBUG_ENABLED
-	err.PrintDescriptionWithStackFrames();
+	//err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
@@ -913,9 +934,9 @@ void DKError::RaiseException(const DKString& desc)
 	err.RetraceStackFrames(1, 1024);
 
 #ifdef DKGL_DEBUG_ENABLED
-	err.PrintDescriptionWithStackFrames();
+	//err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
@@ -932,14 +953,14 @@ void DKError::RaiseException(const DKError& e)
 #ifdef DKGL_DEBUG_ENABLED
 	err.PrintDescriptionWithStackFrames();
 #else
-	if (IsDebuggerPresent())
+	if (DKIsDebuggerPresent())
 		err.PrintDescriptionWithStackFrames();
 #endif
 
 	throw err;
 }
 
-void DKError::PrintDescription(void) const
+void DKError::PrintDescription() const
 {
 	PrintDescription(DKFunction((void (*)(const DKString&))&DKLog));
 }
@@ -950,8 +971,8 @@ void DKError::PrintDescription(const StringOutput* pfn) const
 		return;
 
 	pfn->Invoke(DKString::Format("DKError(%p) Printing Description.\n", this));
-	pfn->Invoke(DKString::Format("Debug Build: %s\n", IsDebugBuild() ? "yes" : "no"));
-	pfn->Invoke(DKString::Format("Debugger Present: %s\n", IsDebuggerPresent() ? "yes" : "no"));
+	pfn->Invoke(DKString::Format("Debug Build: %s\n", DKIsDebugBuild() ? "yes" : "no"));
+	pfn->Invoke(DKString::Format("Debugger Present: %s\n", DKIsDebuggerPresent() ? "yes" : "no"));
 	pfn->Invoke(DKString::Format("Thread-Id: %lu\n", threadId));
 	pfn->Invoke(DKString::Format("Error-Code:%d(0x%x)\n", errorCode, errorCode));
 	if (functionName.Length() > 0)
@@ -962,7 +983,7 @@ void DKError::PrintDescription(const StringOutput* pfn) const
 		pfn->Invoke(DKString::Format("Error description: %ls\n", (const wchar_t*)description));
 }
 
-void DKError::PrintStackFrames(void) const
+void DKError::PrintStackFrames() const
 {
 	PrintStackFrames(DKFunction((void (*)(const DKString&))&DKLog));
 }
@@ -1006,9 +1027,9 @@ void DKError::PrintStackFrames(const StringOutput* pfn) const
 	}
 }
 
-void DKError::PrintDescriptionWithStackFrames(void) const
+void DKError::PrintDescriptionWithStackFrames() const
 {
-	PrintDescriptionWithStackFrames(DKFunction((void (*)(const DKString&))&DKLog));
+	PrintDescriptionWithStackFrames(DKFunction([](const DKString& str) {DKLogE(str);}));
 }
 
 void DKError::PrintDescriptionWithStackFrames(const StringOutput* pfn) const
@@ -1071,7 +1092,7 @@ void DKError::WriteToDescriptor(const Descriptor* d) const
 	}
 }
 
-void DKError::WriteToDefaultDescriptor(void) const
+void DKError::WriteToDefaultDescriptor() const
 {
 	Private::fileLock.Lock();
 	DKObject<Descriptor> d = Private::defaultDescriptor;
@@ -1118,5 +1139,6 @@ void DKError::DumpUnexpectedError(Private::UnexpectedError* e)
 	else
 	{
 		err.WriteToDefaultDescriptor();
+		abort();
 	}
 }

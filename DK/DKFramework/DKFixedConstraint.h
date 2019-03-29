@@ -1,42 +1,38 @@
-﻿//
+//
 //  File: DKFixedConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKConstraint.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKFixedConstraint
-// a constraint fixes reference bodis.
-////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
 {
+	/// @brief a constraint fixes reference bodis.
 	class DKGL_API DKFixedConstraint : public DKConstraint
 	{
 	public:
 		DKFixedConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKFixedConstraint(DKRigidBody* bodyA, const DKNSTransform& frameA);
-		DKFixedConstraint(void);
-		~DKFixedConstraint(void);
+		DKFixedConstraint();
+		~DKFixedConstraint();
 
-		DKNSTransform FrameA(void) const;
-		DKNSTransform FrameB(void) const;
+		DKNSTransform FrameA() const;
+		DKNSTransform FrameB() const;
 		void SetFrameA(const DKNSTransform& t);
 		void SetFrameB(const DKNSTransform& t);
 		void SetFrames(const DKNSTransform& ta, const DKNSTransform& tb);
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKFixedConstraint* Copy(UUIDObjectMap&, const DKFixedConstraint*);
 	};
 }

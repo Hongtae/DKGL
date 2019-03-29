@@ -1,34 +1,31 @@
-﻿//
+//
 //  File: DKCapsuleShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector3.h"
 #include "DKConvexShape.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKCapsuleShape
-// capsule shape for detecting collision.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// capsule shape for detecting collision.
 	class DKGL_API DKCapsuleShape : public DKConvexShape
 	{
 	public:
 		DKCapsuleShape(float radius, float height, UpAxis up = UpAxis::Top);
-		~DKCapsuleShape(void);
+		~DKCapsuleShape();
 
-		float Radius(void) const;
-		float HalfHeight(void) const;
+		float Radius() const;
+		float HalfHeight() const;
 
-		float ScaledRadius(void) const;
-		float ScaledHalfHeight(void) const;
+		float ScaledRadius() const;
+		float ScaledHalfHeight() const;
 
-		UpAxis BaseAxis(void) const;
+		UpAxis BaseAxis() const;
 	};
 }

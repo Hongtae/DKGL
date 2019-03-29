@@ -10,7 +10,7 @@
 
 using namespace DKFoundation;
 
-DKBufferStream::DKBufferStream(void)
+DKBufferStream::DKBufferStream()
 	: offset(0)
 {
 }
@@ -27,26 +27,20 @@ DKBufferStream::DKBufferStream(DKBuffer* b)
 {
 }
 
-DKBufferStream::~DKBufferStream(void)
+DKBufferStream::~DKBufferStream()
 {
 }
 
-DKStream::Position DKBufferStream::SetPos(Position p)
+DKStream::Position DKBufferStream::SetCurrentPosition(Position p)
 {
-	if (this->data)
-	{
-		size_t contentSize = this->data->Length();
-		this->offset = Clamp(p, 0, contentSize);
-	}
+	if (p < TotalLength())
+		this->offset = p;
 	else
-	{
-		this->offset = 0;
-	}
-
+		return PositionError;
 	return this->offset;
 }
 
-DKStream::Position DKBufferStream::GetPos(void) const
+DKStream::Position DKBufferStream::CurrentPosition() const
 {
 	if (this->data)
 	{
@@ -58,7 +52,7 @@ DKStream::Position DKBufferStream::GetPos(void) const
 	return 0;
 }
 
-DKStream::Position DKBufferStream::RemainLength(void) const
+DKStream::Position DKBufferStream::RemainLength() const
 {
 	if (this->data)
 	{
@@ -70,7 +64,7 @@ DKStream::Position DKBufferStream::RemainLength(void) const
 	return 0;
 }
 
-DKStream::Position DKBufferStream::TotalLength(void) const
+DKStream::Position DKBufferStream::TotalLength() const
 {
 	if (this->data)
 	{
@@ -116,26 +110,15 @@ size_t DKBufferStream::Write(const void* p, size_t s)
 			size_t contentSize2 = this->offset + s;
 			if (contentSize2 > contentSize1) // extend
 			{
-				DKObject<DKBuffer> data2 = DKBuffer::Create(NULL, contentSize2);
-
-				const unsigned char* ptr1 = reinterpret_cast<const unsigned char*>(this->data->LockShared());
-				unsigned char* ptr2 = reinterpret_cast<unsigned char*>(data2->LockExclusive());
-
-				::memcpy(ptr2, ptr1, this->offset);
-				::memcpy(&ptr2[this->offset], p, s);
-
-				data2->UnlockExclusive();
-				this->data->UnlockShared();
-
-				//this->data->SetContent(data2);
-				this->data = data2;
+				if (!this->data->SetLength(contentSize2))
+				{
+					return PositionError;
+				}
 			}
-			else
-			{
-				unsigned char* ptr = reinterpret_cast<unsigned char*>(this->data->LockExclusive());
-				::memcpy(&ptr[this->offset], p, s);
-				this->data->UnlockExclusive();
-			}
+
+			unsigned char* ptr = reinterpret_cast<unsigned char*>(this->data->LockExclusive());
+			::memcpy(&ptr[this->offset], p, s);
+			this->data->UnlockExclusive();
 			this->offset = contentSize2;
 		}
 		else
@@ -168,22 +151,22 @@ void DKBufferStream::ResetStream(DKBuffer* d)
 	this->offset = 0;
 }
 
-DKData* DKBufferStream::DataSource(void)
+DKData* DKBufferStream::Data()
 {
-	return BufferObject();
+	return Buffer();
 }
 
-const DKData* DKBufferStream::DataSource(void) const
+const DKData* DKBufferStream::Data() const
 {
-	return BufferObject();
+	return Buffer();
 }
 
-DKBuffer* DKBufferStream::BufferObject(void)
+DKBuffer* DKBufferStream::Buffer()
 {
 	return this->data;
 }
 
-const DKBuffer* DKBufferStream::BufferObject(void) const
+const DKBuffer* DKBufferStream::Buffer() const
 {
 	return this->data;
 }

@@ -2,7 +2,7 @@
 //  File: DKAudioPlayer.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,66 +11,64 @@
 #include "DKAudioStream.h"
 #include "DKAudioSource.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAudioPlayer
-// Audio player class.
-// Using DKAudioSource internally. Provides control interface.
-// To set-up 3d audio environments, you have to get DKAudioSource instance by
-// calling DKAudioPlayer::AudioSource().
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// Audio player class.
+	/// @details
+	/// Using DKAudioSource internally. Provides control interface.
+	/// To set-up 3d audio environments, you have to get DKAudioSource instance by
+	/// calling DKAudioPlayer::AudioSource().
 	class DKGL_API DKAudioPlayer
 	{
 	public:
-		// PCM audio buffer filter.
-		// a function or function object which prototype must be 'void (data, size, time)'
-		typedef DKFoundation::DKFunctionSignature<void (void*, size_t, double)>	StreamFilter;
+		/// PCM audio buffer filter.
+		/// a function or function object which prototype must be 'void (data, size, time)'
+		typedef DKFunctionSignature<void (void*, size_t, double)>	StreamFilter;
 		
 		typedef DKAudioSource::AudioState AudioState;
 
-		DKAudioPlayer(void);
-		virtual ~DKAudioPlayer(void);
+		DKAudioPlayer();
+		virtual ~DKAudioPlayer();
 
-		// create instance from data stream.
-		static DKFoundation::DKObject<DKAudioPlayer> Create(DKFoundation::DKStream* stream);
-		// create instance from file.
-		static DKFoundation::DKObject<DKAudioPlayer> Create(const DKFoundation::DKString& file);
-		// create instance from audio stream.
-		// Note: stream should not be shared.
-		static DKFoundation::DKObject<DKAudioPlayer> Create(DKAudioStream* stream);
+		/// create instance from data stream.
+		static DKObject<DKAudioPlayer> Create(DKStream* stream);
+		/// create instance from file.
+		static DKObject<DKAudioPlayer> Create(const DKString& file);
+		/// create instance from audio stream.
+		/// @note stream should not be shared.
+		static DKObject<DKAudioPlayer> Create(DKAudioStream* stream);
 
-		int Channels(void) const;
-		int Bits(void) const;
-		int Frequency(void) const;
-		double Duration(void) const;
+		int Channels() const;
+		int Bits() const;
+		int Frequency() const;
+		double Duration() const;
 
-		double TimePosition(void) const;
-		AudioState State(void) const;
+		double TimePosition() const;
+		AudioState State() const;
 
-		DKAudioStream* Stream(void)							{return stream;}
-		const DKAudioSource* Source(void) const				{return source;}
+		DKAudioStream* Stream()							{return stream;}
+		const DKAudioSource* Source() const				{return source;}
 
 		void PlayLoop(double pos, int loops);
-		void Play(void);
-		void Stop(void);
-		void Pause(void);
+		void Play();
+		void Stop();
+		void Pause();
 
-		DKAudioSource* AudioSource(void);
-		const DKAudioSource* AudioSource(void) const;
+		DKAudioSource* AudioSource();
+		const DKAudioSource* AudioSource() const;
 
-		// set filter.
+		/// set filter.
 		void SetStreamFilter(StreamFilter* f);
 		
-		// buffer control. (0 for minimum size, smaller buffer could be laggy)
+		/// buffer control. (0 for minimum size, smaller buffer could be laggy)
 		void SetBufferingTime(double t);
-		double BufferingTime(void) const;
+		double BufferingTime() const;
 
 	private:
 		class AudioQueue;
 
-		DKFoundation::DKObject<StreamFilter> filter;
+		DKObject<StreamFilter> filter;
 
 		double			bufferingTime;
 		double			timePosition;
@@ -84,9 +82,9 @@ namespace DKFramework
 		AudioState	playerState;
 		int			queuePlaybackState;
 		int			queueBufferState;
-		DKFoundation::DKObject<DKAudioStream>	stream; // audio data
-		DKFoundation::DKObject<DKAudioSource>	source;
-		DKFoundation::DKObject<AudioQueue>		queue;
-		DKFoundation::DKSpinLock				lock;
+		DKObject<DKAudioStream>	stream; // audio data
+		DKObject<DKAudioSource>	source;
+		DKObject<AudioQueue>		queue;
+		DKSpinLock				lock;
 	};
 }

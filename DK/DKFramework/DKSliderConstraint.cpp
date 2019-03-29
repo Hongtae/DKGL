@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKSliderConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKSliderConstraint.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -33,12 +32,12 @@ DKSliderConstraint::DKSliderConstraint(DKRigidBody* rbB, const DKNSTransform& tb
 {
 }
 
-DKSliderConstraint::DKSliderConstraint(void)
+DKSliderConstraint::DKSliderConstraint()
 : DKSliderConstraint(NULL, NULL, DKNSTransform::identity, DKNSTransform::identity)
 {
 }
 
-DKSliderConstraint::~DKSliderConstraint(void)
+DKSliderConstraint::~DKSliderConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btSliderConstraint*>(this->impl));
 }
@@ -75,32 +74,32 @@ void DKSliderConstraint::SetAngularUpperLimit(float limit)
 	static_cast<btSliderConstraint*>(this->impl)->setUpperAngLimit(limit);
 }
 
-float DKSliderConstraint::LinearLowerLimit(void) const
+float DKSliderConstraint::LinearLowerLimit() const
 {
 	return static_cast<btSliderConstraint*>(this->impl)->getLowerLinLimit();
 }
 
-float DKSliderConstraint::LinearUpperLimit(void) const
+float DKSliderConstraint::LinearUpperLimit() const
 {
 	return static_cast<btSliderConstraint*>(this->impl)->getUpperLinLimit();
 }
 
-float DKSliderConstraint::AngularLowerLimit(void) const
+float DKSliderConstraint::AngularLowerLimit() const
 {
 	return static_cast<btSliderConstraint*>(this->impl)->getLowerAngLimit();
 }
 
-float DKSliderConstraint::AngularUpperLimit(void) const
+float DKSliderConstraint::AngularUpperLimit() const
 {
 	return static_cast<btSliderConstraint*>(this->impl)->getUpperAngLimit();
 }
 
-DKNSTransform DKSliderConstraint::FrameA(void) const
+DKNSTransform DKSliderConstraint::FrameA() const
 {
 	return BulletTransform(static_cast<btSliderConstraint*>(this->impl)->getFrameOffsetA());
 }
 
-DKNSTransform DKSliderConstraint::FrameB(void) const
+DKNSTransform DKSliderConstraint::FrameB() const
 {
 	return BulletTransform(static_cast<btSliderConstraint*>(this->impl)->getFrameOffsetB());
 }
@@ -201,7 +200,7 @@ bool DKSliderConstraint::HasParam(ParamType type, ParamAxis axis) const
 	return false;
 }
 
-void DKSliderConstraint::ResetContext(void)
+void DKSliderConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btSliderConstraint*>(this->impl));
 	btSliderConstraint* c = static_cast<btSliderConstraint*>(this->impl);
@@ -223,7 +222,7 @@ void DKSliderConstraint::ResetContext(void)
 	c->setUpperAngLimit(angularUpperLimit);
 }
 
-void DKSliderConstraint::ResetContextImpl(void)
+void DKSliderConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btSliderConstraint*>(this->impl));
 	btSliderConstraint* c = static_cast<btSliderConstraint*>(this->impl);
@@ -255,7 +254,7 @@ DKSliderConstraint* DKSliderConstraint::Copy(UUIDObjectMap& uuids, const DKSlide
 	return NULL;
 }
 
-DKObject<DKSerializer> DKSliderConstraint::Serializer(void)
+DKObject<DKSerializer> DKSliderConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

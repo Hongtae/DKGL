@@ -2,7 +2,7 @@
 //  File: DKQueue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -14,18 +14,14 @@
 #include "DKMemory.h"
 #include "DKFunction.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKQueue
-// queue class, items can be added or removed from both sides (head, tail).
-//
-// Note:
-//   PushFront() with multiple items: returns first item's pointer. (temporal)
-//   PushBack() with multiple items: returns last item's pointer. (temporal)
-//   Do not store pointer address returned by above functions!
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief queue class, items can be added or removed from both sides (head, tail).
+	///
+	/// @note
+	///   PushFront() with multiple items: returns first item's pointer. (temporal)
+	///   PushBack() with multiple items: returns last item's pointer. (temporal)
+	///   Do not store pointer address returned by above functions!
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKQueue
 	{
@@ -35,13 +31,13 @@ namespace DKFoundation
 		typedef DKCriticalSection<Lock>		CriticalSection;
 		typedef ALLOC						Allocator;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
-		// lock is public. enables object could be locked from outside.
-		// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
+		/// lock is public. enables object could be locked from outside.
+		/// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
 		Lock	lock;
 
-		DKQueue(void)
+		DKQueue()
 			: begin(0)
 			, count(0)
 			, maxSize(0)
@@ -88,13 +84,13 @@ namespace DKFoundation
 		{
 			PushBack(queue);
 		}
-		~DKQueue(void)
+		~DKQueue()
 		{
 			Clear();
 			if (data)
 				Allocator::Free(data);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			if (data && count)
@@ -118,12 +114,12 @@ namespace DKFoundation
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[--begin]) VALUE(values[n - i - 1]);
+				new(std::addressof(data[--begin])) VALUE(values[n - i - 1]);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		VALUE* PushFront(const VALUE& value, size_t n)
@@ -132,17 +128,26 @@ namespace DKFoundation
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[--begin]) VALUE(value);
+				new(std::addressof(data[--begin])) VALUE(value);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		VALUE* PushFront(const VALUE& value)
 		{
 			return PushFront(value, 1);
+		}
+		VALUE* PushFront(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			ReserveFront(1);
+			new(std::addressof(data[--begin])) VALUE(static_cast<VALUE&&>(value));
+			count++;
+			Balance();
+			return std::addressof(data[begin]);
 		}
 		VALUE* PushFront(std::initializer_list<VALUE> il)
 		{
@@ -151,12 +156,12 @@ namespace DKFoundation
 
 			for (const VALUE& v : il)
 			{
-				new(&data[--begin]) VALUE(v);
+				new(std::addressof(data[--begin])) VALUE(v);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
 		VALUE* PushBack(const DKQueue& queue)
@@ -170,12 +175,12 @@ namespace DKFoundation
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[begin+count]) VALUE(values[i]);
+				new(std::addressof(data[begin+count])) VALUE(values[i]);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin+count-1];
+				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
 		VALUE* PushBack(const VALUE& value, size_t n)
@@ -184,17 +189,26 @@ namespace DKFoundation
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
-				new(&data[begin+count]) VALUE(value);
+				new(std::addressof(data[begin+count])) VALUE(value);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin+count-1];
+				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
 		VALUE* PushBack(const VALUE& value)
 		{
 			return PushBack(value, 1);
+		}
+		VALUE* PushBack(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			ReserveBack(1);
+			new(std::addressof(data[begin + count])) VALUE(static_cast<VALUE&&>(value));
+			count++;
+			Balance();
+			return std::addressof(data[begin + count - 1]);
 		}
 		VALUE* PushBack(std::initializer_list<VALUE> il)
 		{
@@ -202,15 +216,15 @@ namespace DKFoundation
 			ReserveBack(il.size());
 			for (const VALUE& v : il)
 			{
-				new(&data[begin+count]) VALUE(v);
+				new(std::addressof(data[begin+count])) VALUE(v);
 				count++;
 			}
 			Balance();
 			if (count > 0)
-				return &data[begin+count-1];
+				return std::addressof(data[begin+count-1]);
 			return NULL;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return count == 0;
@@ -230,7 +244,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		VALUE PopFront(void)
+		VALUE PopFront()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -256,7 +270,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		VALUE PopBack(void)
+		VALUE PopBack()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -267,13 +281,13 @@ namespace DKFoundation
 			Balance();
 			return ret;
 		}
-		VALUE& Front(void)
+		VALUE& Front()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin];
 		}
-		const VALUE& Front(void) const
+		const VALUE& Front() const
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -289,13 +303,13 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		VALUE& Back(void)
+		VALUE& Back()
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin+count-1];
 		}
-		const VALUE& Back(void) const
+		const VALUE& Back() const
 		{
 			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
@@ -311,7 +325,7 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		// copy value. thread-safe.
+		/// copy value. thread-safe.
 		bool CopyValue(VALUE& value, unsigned long index) const
 		{
 			CriticalSection guard(lock);
@@ -322,9 +336,9 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		// since Value() returns reference,
-		// be aware of items modifications by other threads.
-		// Use CopyValue() for multi-threaded.
+		/// since Value() returns reference,
+		/// be aware of items modifications by other threads.
+		/// Use CopyValue() for multi-threaded.
 		VALUE& Value(unsigned long index)
 		{
 			CriticalSection guard(lock);
@@ -337,32 +351,32 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count > index);
 			return data[begin+index];
 		}
-		// type-casting, object should be locked before calling this operator.
-		operator VALUE* (void)
+		/// type-casting, object should be locked before calling this operator.
+		operator VALUE* ()
 		{
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
-		// type-casting, object should be locked before calling this operator.
-		operator const VALUE* (void) const
+		/// type-casting, object should be locked before calling this operator.
+		operator const VALUE* () const
 		{
 			if (count > 0)
-				return &data[begin];
+				return std::addressof(data[begin]);
 			return NULL;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
-		// CountNoLock: counting objects without locking.
-		// Usable when objects has been locked.
-		size_t CountNoLock(void) const
+		/// counting objects without locking.
+		/// Usable when objects has been locked.
+		size_t CountNoLock() const
 		{
 			return count;
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			if (begin > 0 || (begin + count) < maxSize)
@@ -376,7 +390,7 @@ namespace DKFoundation
 						DKASSERT_DESC_DEBUG(tmp, "Out of memory!");
 						if (tmp == NULL)
 							return;
-						memcpy(tmp, &data[begin], sizeof(VALUE) * count);
+						memcpy(tmp, std::addressof(data[begin]), sizeof(VALUE) * count);
 						Allocator::Free(data);
 					}
 					else
@@ -446,7 +460,7 @@ namespace DKFoundation
 				ReserveBack(queue.count);
 				for (size_t i = 0; i < queue.count; i++)
 				{
-					new(&data[i]) VALUE(p[i]);
+					new(std::addressof(data[i])) VALUE(p[i]);
 				}
 				count = queue.count;
 			}
@@ -458,13 +472,13 @@ namespace DKFoundation
 			PushBack(il);
 			return *this;
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -473,17 +487,17 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -492,7 +506,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -571,7 +585,7 @@ namespace DKFoundation
 			if (data)
 			{
 				if (count)
-					memcpy(&dataNew[begin+offset], &data[begin], sizeof(VALUE) * count);
+					memcpy(std::addressof(dataNew[begin+offset]), std::addressof(data[begin]), sizeof(VALUE) * count);
 				Allocator::Free(data);
 			}
 			maxSize += offset;
@@ -592,13 +606,13 @@ namespace DKFoundation
 			if (data)
 			{
 				if (count)
-					memcpy(&dataNew[begin], &data[begin], sizeof(VALUE) * count);
+					memcpy(std::addressof(dataNew[begin]), std::addressof(data[begin]), sizeof(VALUE) * count);
 				Allocator::Free(data);
 			}
 			maxSize = newSize;
 			data = dataNew;
 		}
-		void Balance(void)
+		void Balance()
 		{
 			size_t frontSpace = begin;
 			size_t backSpace = maxSize - (begin+count);
@@ -610,7 +624,7 @@ namespace DKFoundation
 			if (begin2 != begin)
 			{
 				if (count > 0)
-					memmove(&data[begin2], &data[begin], sizeof(VALUE) * count);
+					memmove(std::addressof(data[begin2]), std::addressof(data[begin]), sizeof(VALUE) * count);
 				begin = begin2;
 			}
 		}

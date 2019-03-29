@@ -2,28 +2,22 @@
 //  File: DKBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <ctype.h>
 #include <wctype.h>
 
-#define DKGL_EXTDEPS_ZLIB
-#define DKGL_EXTDEPS_LZ4
-#define DKGL_EXTDEPS_LIBXML
-#include "../lib/ExtDeps.h"
+#define LIBXML_STATIC
+#include "../Libs/libxml2/include/libxml/nanohttp.h"
+#include "../Libs/libxml2/include/libxml/nanoftp.h"
 
-#include "DKEndianness.h"
 #include "DKString.h"
 #include "DKFile.h"
 #include "DKBuffer.h"
-#include "DKHash.h"
 #include "DKMemory.h"
 #include "DKArray.h"
 #include "DKBufferStream.h"
-#include "DKMap.h"
-#include "DKSpinLock.h"
-#include "DKOrderedArray.h"
 #include "DKLog.h"
 
 namespace DKFoundation
@@ -34,7 +28,7 @@ namespace DKFoundation
 		template <typename BaseCharT> struct Base64;
 		template <> struct Base64<char>
 		{
-			static const char* Base64Chars(void)
+			static const char* Base64Chars()
 			{
 				return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 			}
@@ -45,7 +39,7 @@ namespace DKFoundation
 		};
 		template <> struct Base64<wchar_t>
 		{
-			static const wchar_t* Base64Chars(void)
+			static const wchar_t* Base64Chars()
 			{
 				return L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 			}
@@ -178,13 +172,13 @@ namespace DKFoundation
 			int len = xmlNanoHTTPContentLength(ctxt);
 			if (len > 0)
 			{
-				void* buffer = DKMemoryDefaultAllocator::Alloc(len);
+				void* buffer = DKMalloc(len);
 				int recv = xmlNanoHTTPRead(ctxt, buffer, len); // download
 				if (recv == len)
 				{
 					data = DKBuffer::Create(buffer, len, alloc);
 				}
-				DKMemoryDefaultAllocator::Free(buffer);
+				DKFree(buffer);
 			}
 			xmlNanoHTTPClose(ctxt);
 			xmlNanoHTTPCleanup();
@@ -211,11 +205,11 @@ namespace DKFoundation
 
 			size_t	bufferSize = 4096;
 			size_t	received = 0;
-			char*	buffer = (char*)DKMemoryDefaultAllocator::Alloc(bufferSize);
+			char*	buffer = (char*)DKMalloc(bufferSize);
 
 			while (true)
 			{
-				int recv = xmlNanoFTPRead(ctxt, buffer + received, bufferSize - received);
+				int recv = xmlNanoFTPRead(ctxt, buffer + received, static_cast<int>(bufferSize - received));
 				received += recv;
 
 				if (recv < 0)		// error!
@@ -230,7 +224,7 @@ namespace DKFoundation
 				if (received + 100 > bufferSize)
 				{
 					bufferSize += 4096;
-					char* tmp = (char*)DKMemoryDefaultAllocator::Realloc(buffer, bufferSize);
+					char* tmp = (char*)DKRealloc(buffer, bufferSize);
 					if (tmp == NULL)
 					{
 						DKLog("Warning: Out of memory!\n");
@@ -239,7 +233,7 @@ namespace DKFoundation
 					buffer = tmp;
 				}
 			}
-			DKMemoryDefaultAllocator::Free(buffer);
+			DKFree(buffer);
 
 			xmlNanoFTPClose(ctxt);
 			xmlNanoFTPCleanup();
@@ -293,7 +287,7 @@ DKBuffer::DKBuffer(DKBuffer&& b)
 	b.contentLength = 0;
 }
 
-DKBuffer::~DKBuffer(void)
+DKBuffer::~DKBuffer()
 {
 #ifdef DKGL_DEBUG_ENABLED
 	if (sharedLock.TryLock())
@@ -310,9 +304,39 @@ DKBuffer::~DKBuffer(void)
 		allocator->Dealloc(contentPtr);
 }
 
-size_t DKBuffer::Length(void) const
+size_t DKBuffer::Length() const
 {
 	return contentLength;
+}
+
+bool DKBuffer::SetLength(size_t len)
+{
+	if (contentLength != len)
+	{
+		DKCriticalSection<DKSharedLock> guard(this->sharedLock);
+		if (len > 0)
+		{
+			void* p = this->allocator->Realloc(contentPtr, len);
+			if (p)
+			{
+				contentPtr = p;
+				contentLength = len;
+			}
+			else
+			{
+				DKLog("DKBuffer error: Out of memory!");
+				return false;
+			}
+		}
+		else
+		{
+			if (contentPtr)
+				allocator->Dealloc(contentPtr);
+			contentPtr = NULL;
+			contentLength = 0;
+		}
+	}
+	return true;
 }
 
 bool DKBuffer::Base64Encode(DKStringU8& strOut) const
@@ -369,56 +393,27 @@ DKObject<DKBuffer> DKBuffer::Base64Decode(const DKStringW& str, DKAllocator& all
 	return NULL;
 }
 
-DKObject<DKBuffer> DKBuffer::Compress(DKCompressor compressor, DKAllocator& alloc) const
+DKObject<DKBuffer> DKBuffer::Compress(const DKCompressor& compressor, DKAllocator& alloc) const
 {
 	const void* p = this->LockShared();
 	size_t inputLength = this->Length();
-	DKObject<DKBuffer> result = Compress(p, inputLength, compressor, alloc);
+	DKObject<DKBuffer> result = Compress(compressor, p, inputLength, alloc);
 	this->UnlockShared();
 	return result;
 }
 
-DKObject<DKBuffer> DKBuffer::Compress(const void* p, size_t len, DKCompressor compressor, DKAllocator& alloc)
+DKObject<DKBuffer> DKBuffer::Compress(const DKCompressor& compressor, const void* p, size_t len, DKAllocator& alloc)
 {
-	DKObject<DKBuffer> result = NULL;
 	if (p && len > 0)
 	{
-		if (compressor == DKCompressor::LZ4 || compressor == DKCompressor::LZ4HC)
-		{
-			LZ4F_preferences_t prefs;
-			memset(&prefs, 0, sizeof(prefs));
-			prefs.autoFlush = 1;
-			prefs.compressionLevel = compressor == DKCompressor::LZ4 ? 0 : 9;	// 0 for LZ4 fast, 9 for LZ4HC
-			prefs.frameInfo.blockMode = LZ4F_blockLinked;	// for better compression ratio.
-			prefs.frameInfo.contentChecksumFlag = LZ4F_contentChecksumEnabled; // to detect data corruption.
-			prefs.frameInfo.contentSize = len;
+		DKObject<DKBuffer> output = DKBuffer::Create(0, 0, alloc);
+		DKBufferStream outputStream(output);
+		DKDataStream inputStream(DKData::StaticData(p, len));
 
-			size_t bufferSize = LZ4F_compressFrameBound(len, &prefs);
-			void* compressed = DKMemoryDefaultAllocator::Alloc(bufferSize);
-			size_t compressedSize = LZ4F_compressFrame(compressed, bufferSize, p, len, &prefs);
-			if (LZ4F_isError(compressedSize))
-			{
-				DKLog("Compression failed : %s", LZ4F_getErrorName(compressedSize));
-			}
-			else
-			{
-				result = DKBuffer::Create(compressed, compressedSize, alloc);
-			}
-			DKMemoryDefaultAllocator::Free(compressed);
-		}
-		else if (compressor == DKCompressor::Deflate)
-		{
-			int compressLevel = 9;	// Z_DEFAULT_COMPRESSION is 6
-			uLongf compressedSize = len + (len / 10) + 100;
-			void* compressed = DKMemoryDefaultAllocator::Alloc(compressedSize);
-			if (compress2((Bytef*)compressed, &compressedSize, (const Bytef*)p, len, compressLevel) == Z_OK)
-			{
-				result = DKBuffer::Create(compressed, compressedSize, alloc);
-			}
-			DKMemoryDefaultAllocator::Free(compressed);
-		}
+		if (compressor.Compress(&inputStream, &outputStream))
+			return outputStream.Buffer();
 	}
-	return result;
+	return NULL;
 }
 
 
@@ -431,159 +426,18 @@ DKObject<DKBuffer> DKBuffer::Decompress(DKAllocator& alloc) const
 	return result;
 }
 
-//#define COMPRESS_DEFAULT_BLOCK		0x4000
-#define COMPRESS_DEFAULT_BLOCK		0x10000
-
 DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& alloc)
 {
-	DKObject<DKBuffer> result = NULL;
-
 	if (p && len > 4)
 	{
-		const uint32_t lz4_Header = DKSystemToLittleEndian(0x184D2204U);
-		const uint32_t lz4_SkipHeader = DKSystemToLittleEndian(0x184D2A50U);
+		DKObject<DKBuffer> output = DKBuffer::Create(0, 0, alloc);
+		DKBufferStream outputStream(output);
+		DKDataStream inputStream(DKData::StaticData(p, len));
 
-		// LZ7 header: 0x184D2204 (little endian) or 0x184D2250~F for skippable frame
-		if (reinterpret_cast<const uint32_t*>(p)[0] == lz4_Header ||
-			(reinterpret_cast<const uint32_t*>(p)[0] & 0xfffffff0U) == lz4_SkipHeader)
-		{
-			// LZ7 / LZ7HC
-			LZ4F_decompressionContext_t ctxt;
-			LZ4F_errorCode_t errorCode = LZ4F_createDecompressionContext(&ctxt, LZ4F_VERSION);
-
-			if (LZ4F_isError(errorCode))
-			{
-				DKLog("Decompress Error: can't create Lz4 context : %s", LZ4F_getErrorName(errorCode));
-			}
-			else
-			{
-				uint8_t* outData = (uint8_t*)DKMemoryDefaultAllocator::Alloc(COMPRESS_DEFAULT_BLOCK);
-
-				uint32_t header;
-				size_t decoded = 0;
-				size_t processed = 0;
-				size_t inSize = len;
-				const uint8_t* inData = reinterpret_cast<const uint8_t*>(p);
-				size_t outSize = COMPRESS_DEFAULT_BLOCK;
-				bool decodeError = false;
-				LZ4F_errorCode_t nextToLoad;
-
-				while (processed + sizeof(uint32_t) < len && !decodeError)
-				{
-					header = reinterpret_cast<const uint32_t*>(&inData[processed])[0];
-
-					if (header == lz4_Header)
-					{
-						do {
-							inSize = (len - processed);
-							outSize = COMPRESS_DEFAULT_BLOCK;
-							nextToLoad = LZ4F_decompress(ctxt, &outData[decoded], &outSize, &inData[processed], &inSize, NULL);
-							if (LZ4F_isError(nextToLoad))
-							{
-								DKLog("Decompress Error: Lz4 Header Error: %s\n", LZ4F_getErrorName(nextToLoad));
-								decodeError = true;
-								break;
-							}
-							processed += inSize;
-							if (outSize > 0)
-							{
-								decoded += outSize;
-								uint8_t* tmp = (uint8_t*)DKMemoryDefaultAllocator::Realloc(outData, decoded + COMPRESS_DEFAULT_BLOCK);
-								if (tmp == NULL)
-								{
-									DKLog("Decompress Error: Out of memory!");
-									decodeError = true;
-									break;
-								}
-								outData = tmp;
-							}
-						} while (nextToLoad);
-					}
-					else if ((header & 0xfffffff0U) == lz4_SkipHeader)
-					{
-						uint32_t bytesToSkip = reinterpret_cast<const uint32_t*>(&inData[processed])[0];
-						bytesToSkip = DKLittleEndianToSystem(bytesToSkip);
-						size_t remains = len - processed;
-						if (bytesToSkip > remains)	// overflow!
-						{
-							DKLog("Decompress Error: Lz4 skip frame overflow!\n");
-							decodeError = true;
-							break;
-						}
-						processed += bytesToSkip;
-					}
-					else
-					{
-						DKLog("Decompress Error: Lz4 stream followed by unrecognized data\n");
-						decodeError = true;
-						break;
-					}
-				}
-
-				if (!decodeError && decoded > 0)
-				{
-					result = DKBuffer::Create(outData, decoded, alloc);
-				}
-
-				DKMemoryDefaultAllocator::Free(outData);
-
-				errorCode = LZ4F_freeDecompressionContext(ctxt);
-				if (LZ4F_isError(errorCode))
-				{
-					DKLog("Decompress Error: can't free LZ4F context resource : %s", LZ4F_getErrorName(errorCode));
-				}
-			}
-		}
-		else if (reinterpret_cast<const char*>(p)[0] == 0x78)
-		{
-			// zlib
-			uLongf outputLength = COMPRESS_DEFAULT_BLOCK;
-
-			Bytef* inputSource = (Bytef*)p;
-			Bytef* output = (Bytef*)DKMemoryDefaultAllocator::Alloc(outputLength);
-			uLongf inputLength = len;
-
-			z_stream stream;
-			stream.next_in = inputSource;
-			stream.avail_in = inputLength;
-			stream.next_out = output;
-			stream.avail_out = outputLength;
-
-			stream.zalloc = (alloc_func)0;
-			stream.zfree = (free_func)0;
-
-			if (inflateInit(&stream) == Z_OK)
-			{
-				int err = Z_OK;
-				while (err == Z_OK)
-				{
-					err = inflate(&stream, Z_SYNC_FLUSH);
-
-					if (err == Z_STREAM_END)
-					{
-						result = DKBuffer::Create(output, stream.total_out, alloc);
-						break;
-					}
-					else if (err == Z_OK)
-					{
-						Bytef* tmp = (Bytef*)DKMemoryDefaultAllocator::Realloc(output, stream.total_out + COMPRESS_DEFAULT_BLOCK);
-						if (tmp == NULL)
-						{
-							DKLog("Decompress Error: OUT OF MEMORY!");
-							break;
-						}
-						output = tmp;
-
-						stream.avail_out += COMPRESS_DEFAULT_BLOCK;
-						stream.next_out = output + stream.total_out;
-					}
-				}
-				inflateEnd(&stream);
-			}
-			DKMemoryDefaultAllocator::Free(output);
-		}
+		if (DKCompressor::Decompress(&inputStream, &outputStream))
+			return outputStream.Buffer();
 	}
-	return result;
+	return NULL;
 }
 
 DKObject<DKBuffer> DKBuffer::Create(const DKString& url, DKAllocator& alloc)
@@ -778,21 +632,21 @@ void DKBuffer::SwitchAllocator(DKAllocator& alloc)
 	}
 }
 
-DKAllocator& DKBuffer::Allocator(void) const
+DKAllocator& DKBuffer::Allocator() const
 {
 	return *this->allocator;
 }
 
-void* DKBuffer::LockContent(void)
+void* DKBuffer::LockContent()
 {
 	return contentPtr;
 }
 
-void DKBuffer::UnlockContent(void)
+void DKBuffer::UnlockContent()
 {
 }
 
-const void* DKBuffer::LockShared(void) const
+const void* DKBuffer::LockShared() const
 {
 	sharedLock.LockShared();
 	return contentPtr;
@@ -809,12 +663,12 @@ bool DKBuffer::TryLockShared(const void ** ptr) const
 	return false;
 }
 
-void DKBuffer::UnlockShared(void) const
+void DKBuffer::UnlockShared() const
 {
 	sharedLock.UnlockShared();
 }
 
-void* DKBuffer::LockExclusive(void)
+void* DKBuffer::LockExclusive()
 {
 	sharedLock.Lock();
 	return contentPtr;
@@ -831,7 +685,7 @@ bool DKBuffer::TryLockExclusive(void ** ptr)
 	return false;
 }
 
-void DKBuffer::UnlockExclusive(void)
+void DKBuffer::UnlockExclusive()
 {
 	sharedLock.Unlock();
 }

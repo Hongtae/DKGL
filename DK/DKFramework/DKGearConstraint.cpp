@@ -2,13 +2,12 @@
 //  File: DKGeneric6DofConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKGearConstraint.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -30,13 +29,13 @@ DKGearConstraint::DKGearConstraint(DKRigidBody* rbA, DKRigidBody* rbB, const DKV
 	DKASSERT_DEBUG(dynamic_cast<btGearConstraint*>(this->impl));
 }
 
-DKGearConstraint::DKGearConstraint(void)
+DKGearConstraint::DKGearConstraint()
 : DKGearConstraint(NULL, NULL, DKVector3::zero, DKVector3::zero, 1.0)
 {
 	DKASSERT_DEBUG(dynamic_cast<btGearConstraint*>(this->impl));
 }
 
-DKGearConstraint::~DKGearConstraint(void)
+DKGearConstraint::~DKGearConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGearConstraint*>(this->impl));
 }
@@ -53,19 +52,19 @@ void DKGearConstraint::SetAxisInB(const DKVector3& axis)
 	c->m_axisInB = BulletVector3(axis);
 }
 
-DKVector3 DKGearConstraint::AxisInA(void) const
+DKVector3 DKGearConstraint::AxisInA() const
 {
 	GearConstraintExt* c = static_cast<GearConstraintExt*>(this->impl);
 	return BulletVector3(c->m_axisInA);
 }
 
-DKVector3 DKGearConstraint::AxisInB(void) const
+DKVector3 DKGearConstraint::AxisInB() const
 {
 	GearConstraintExt* c = static_cast<GearConstraintExt*>(this->impl);
 	return BulletVector3(c->m_axisInB);
 }
 
-float DKGearConstraint::Ratio(void) const
+float DKGearConstraint::Ratio() const
 {
 	GearConstraintExt* c = static_cast<GearConstraintExt*>(this->impl);
 	return c->m_ratio;
@@ -77,7 +76,7 @@ void DKGearConstraint::SetRatio(float r)
 	c->m_ratio = r;
 }
 
-void DKGearConstraint::ResetContext(void)
+void DKGearConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGearConstraint*>(this->impl));
 	btGearConstraint* c = static_cast<btGearConstraint*>(this->impl);
@@ -93,7 +92,7 @@ void DKGearConstraint::ResetContext(void)
 	static_cast<GearConstraintExt*>(c)->m_axisInB = axisB;
 }
 
-void DKGearConstraint::ResetContextImpl(void)
+void DKGearConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGearConstraint*>(this->impl));
 	btGearConstraint* c = static_cast<btGearConstraint*>(this->impl);
@@ -123,7 +122,7 @@ DKGearConstraint* DKGearConstraint::Copy(UUIDObjectMap& uuids, const DKGearConst
 	return NULL;
 }
 
-DKObject<DKSerializer> DKGearConstraint::Serializer(void)
+DKObject<DKSerializer> DKGearConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

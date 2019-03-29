@@ -1,0 +1,4 @@
+https://github.com/KhronosGroup/SPIRV-Cross.git
+
+Commit: d2928bda707e5000147403c4cb5441b02d8638a8 [d2928bd]
+Date: Friday, October 5, 2018 10:10:49 AM

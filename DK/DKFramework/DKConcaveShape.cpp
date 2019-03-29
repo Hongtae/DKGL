@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKConcaveShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKConcaveShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -18,7 +17,7 @@ DKConcaveShape::DKConcaveShape(ShapeType t, btConcaveShape* impl)
 	DKASSERT_DEBUG( this->impl->isConcave() );
 }
 
-DKConcaveShape::~DKConcaveShape(void)
+DKConcaveShape::~DKConcaveShape()
 {
 	DKASSERT_DEBUG( this->impl->isConcave() );
 }

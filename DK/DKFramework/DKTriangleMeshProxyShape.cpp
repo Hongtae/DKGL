@@ -2,13 +2,12 @@
 //  File: DKTriangleMeshProxyShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKTriangleMeshProxyShape.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -63,7 +62,7 @@ namespace DKFramework
 			{
 				localScale = scaling;
 			}
-			const btVector3& getLocalScaling(void) const override
+			const btVector3& getLocalScaling() const override
 			{
 				return localScale;
 			}
@@ -72,7 +71,7 @@ namespace DKFramework
 				btAssert(0);
 				inertia.setValue(btScalar(0.),btScalar(0.),btScalar(0.));
 			}
-			const char*	getName(void) const override
+			const char*	getName() const override
 			{
 				return "DKTriangleMeshProxyShape";
 			}
@@ -82,11 +81,11 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKTriangleMeshProxyShape::DKTriangleMeshProxyShape(void)
+DKTriangleMeshProxyShape::DKTriangleMeshProxyShape()
 : DKConcaveShape(ShapeType::Custom, new TriangleMeshProxyShape(this))
 {
 }
 
-DKTriangleMeshProxyShape::~DKTriangleMeshProxyShape(void)
+DKTriangleMeshProxyShape::~DKTriangleMeshProxyShape()
 {
 }

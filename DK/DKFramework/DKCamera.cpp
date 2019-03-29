@@ -2,24 +2,23 @@
 //  File: DKCamera.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKCamera.h"
 #include "DKAffineTransform3.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKCamera::DKCamera(void)
+DKCamera::DKCamera()
 	: viewMatrix(DKMatrix4::identity)
 	, projectionMatrix(DKMatrix4::identity)
 {
 	SetOrthographic(2.0, 2.0, -1, 1);
 }
 
-DKCamera::~DKCamera(void)
+DKCamera::~DKCamera()
 {
 }
 
@@ -45,7 +44,7 @@ void DKCamera::SetView(const DKVector3& pos, const DKVector3& dir, const DKVecto
 	SetView(mat);
 }
 
-DKVector3 DKCamera::ViewPosition(void) const
+DKVector3 DKCamera::ViewPosition() const
 {
 	DKVector4 v = viewMatrix.Row4();
 	DKMatrix3 m(
@@ -56,13 +55,13 @@ DKVector3 DKCamera::ViewPosition(void) const
 	return DKVector3(-v.x, -v.y, -v.z) * m.Inverse();
 }
 
-DKVector3 DKCamera::ViewDirection(void) const
+DKVector3 DKCamera::ViewDirection() const
 {
 	DKVector4 v = viewMatrix.Column3();
 	return DKVector3(-v.x, -v.y, -v.z).Normalize();
 }
 
-DKVector3 DKCamera::ViewUp(void) const
+DKVector3 DKCamera::ViewUp() const
 {
 	DKVector4 v = viewMatrix.Column2();
 	return DKVector3(v.x, v.y, v.z).Normalize();
@@ -101,12 +100,12 @@ void DKCamera::SetOrthographic(float width, float height, float nz, float fz)
 	SetProjection(mat);
 }
 
-bool DKCamera::IsPerspective(void) const
+bool DKCamera::IsPerspective() const
 {
 	return projectionMatrix.m[3][3] != 1.0f;
 }
 
-bool DKCamera::IsOrthographic(void) const
+bool DKCamera::IsOrthographic() const
 {
 	return projectionMatrix.m[3][3] == 1.0f;
 }
@@ -155,7 +154,7 @@ void DKCamera::SetViewProjection(const DKMatrix4& v, const DKMatrix4& p)
 	this->UpdateFrustum();
 }
 
-void DKCamera::UpdateFrustum(void)	// update frustum planes
+void DKCamera::UpdateFrustum()	// update frustum planes
 {
 	////////////////////////////////////////////////////////////////////////////////
 	// frustum planes

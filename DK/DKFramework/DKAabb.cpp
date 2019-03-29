@@ -2,7 +2,7 @@
 //  File: DKAabb.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -10,10 +10,9 @@
 #include "DKLine.h"
 #include "DKBox.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKAabb::DKAabb(void)
+DKAabb::DKAabb()
 	: positionMin(DKVector3(FLT_MAX, FLT_MAX, FLT_MAX))
 	, positionMax(DKVector3(-FLT_MAX, -FLT_MAX, -FLT_MAX))
 {
@@ -64,7 +63,7 @@ DKAabb DKAabb::Union(const DKAabb& b1, const DKAabb& b2)
 	return DKAabb();
 }
 
-bool DKAabb::IsValid(void) const
+bool DKAabb::IsValid() const
 {
 	return positionMax.x >= positionMin.x && positionMax.y >= positionMin.y && positionMax.z >= positionMin.z;
 }
@@ -78,18 +77,18 @@ bool DKAabb::IsPointInside(const DKVector3& pos) const
 	return false;
 }
 
-DKVector3 DKAabb::Center(void) const
+DKVector3 DKAabb::Center() const
 {
 	return (positionMin + positionMax) * 0.5f;
 }
 
-float DKAabb::Volume(void) const
+float DKAabb::Volume() const
 {
 	DKVector3 v = positionMax - positionMin;
 	return v.x * v.y * v.z;
 }
 
-DKBox DKAabb::Box(void) const
+DKBox DKAabb::Box() const
 {
 	return DKBox(this->Center(), DKVector3(this->positionMax.x, 0, 0), DKVector3(0, this->positionMax.y, 0), DKVector3(0, 0, this->positionMax.z));
 }

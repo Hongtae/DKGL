@@ -2,56 +2,53 @@
 //  File: DKResource.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKSerializer.h"
 #include "DKVariant.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKResource
-// Resource for system, you can transfer resource data via file of network.
-// You can use DKResourceLoader, DKSerializer to serialize object.
-// A lots of serializable objects inherited from DKResource.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
 	class DKResourceLoader;
+	/// @brief
+	/// Resource for system, you can transfer resource data via file of network
+	/// @details
+	/// You can use DKResourceLoader, DKSerializer to serialize object.
+	/// A lots of serializable objects inherited from DKResource.
 	class DKGL_API DKResource
 	{
 	public:
-		DKResource(void);
-		virtual ~DKResource(void);
+		DKResource();
+		virtual ~DKResource();
 
-		virtual void SetName(const DKFoundation::DKString& name);
-		const DKFoundation::DKString& Name(void) const;
-		virtual void SetUUID(const DKFoundation::DKUuid& uuid);
-		const DKFoundation::DKUuid& UUID(void) const;
+		virtual void SetName(const DKString& name);
+		const DKString& Name() const;
+		virtual void SetUUID(const DKUuid& uuid);
+		const DKUuid& UUID() const;
 
-		virtual DKFoundation::DKObject<DKSerializer> Serializer(void);
-		virtual DKFoundation::DKObject<DKFoundation::DKData> Serialize(DKSerializer::SerializeForm) const;
-		virtual DKFoundation::DKObject<DKFoundation::DKXMLElement> SerializeXML(DKSerializer::SerializeForm) const;
-		virtual bool Deserialize(const DKFoundation::DKData*, DKResourceLoader*);
-		virtual bool Deserialize(const DKFoundation::DKXMLElement*, DKResourceLoader*);
+		virtual DKObject<DKSerializer> Serializer();
+		virtual DKObject<DKData> Serialize(DKSerializer::SerializeForm) const;
+		virtual DKObject<DKXmlElement> SerializeXML(DKSerializer::SerializeForm) const;
+		virtual bool Deserialize(const DKData*, DKResourceLoader*);
+		virtual bool Deserialize(const DKXmlElement*, DKResourceLoader*);
 
-		virtual bool Validate(void); // resource validation
+		virtual bool Validate(); ///< resource validation
 
 		DKVariant::VPairs metadata;
 
 	protected:
-		DKFoundation::DKAllocator& Allocator(void);
+		DKAllocator& Allocator();
 
 	private:
-		DKFoundation::DKString objectName;
-		DKFoundation::DKUuid objectUUID;
-		DKFoundation::DKAllocator* allocator;
+		DKString objectName;
+		DKUuid objectUUID;
+		DKAllocator* allocator;
 
-		DKResource(const DKResource&);
-		DKResource& operator = (const DKResource&);
+		DKResource(const DKResource&) = delete;
+		DKResource& operator = (const DKResource&) = delete;
 
 		friend class DKResourceLoader;
 	};

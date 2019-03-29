@@ -1,27 +1,24 @@
-﻿//
+//
 //  File: DKSize.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector2.h"
-
-///////////////////////////////////////////////////////////////////////////////
-// DKSize
-// a size object, which has width, height. It can be used measured unit size
-// of 2 dimensional logical coordinates.
-///////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief
+	/// a size object, which has width, height. It can be used measured unit size
+	/// of 2 dimensional logical coordinates.
 	class DKGL_API DKSize
 	{
 	public:
-		DKSize(void)
+		DKSize()
 			: width(0), height(0)
 		{
 		}
@@ -121,7 +118,7 @@ namespace DKFramework
 			height /= s;
 			return *this;
 		}
-		DKVector2 Vector(void) const
+		DKVector2 Vector() const
 		{
 			return DKVector2(width, height);
 		}

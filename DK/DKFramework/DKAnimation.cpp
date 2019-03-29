@@ -2,13 +2,12 @@
 //  File: DKAnimation.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKAnimation.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -140,12 +139,12 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-DKAnimation::DKAnimation(void)
+DKAnimation::DKAnimation()
 	: duration(0)
 {
 }
 
-DKAnimation::~DKAnimation(void)
+DKAnimation::~DKAnimation()
 {
 	RemoveAllNodes();
 }
@@ -161,7 +160,7 @@ bool DKAnimation::GetNodeTransform(NodeIndex index, float t, DKTransformUnit& ou
 	return false;
 }
 
-bool DKAnimation::GetNodeTransform(const DKFoundation::DKString& name, float t, DKTransformUnit& output) const
+bool DKAnimation::GetNodeTransform(const DKString& name, float t, DKTransformUnit& output) const
 {
 	return GetNodeTransform(IndexOfNode(name), t, output);
 }
@@ -174,7 +173,7 @@ void DKAnimation::SetDuration(float d)
 		duration = 0;
 }
 
-float DKAnimation::Duration(void) const
+float DKAnimation::Duration() const
 {
 	return duration;
 }
@@ -194,7 +193,7 @@ DKArray<DKAnimation::NodeSnapshot> DKAnimation::CreateSnapshot(float t) const
 	return result;
 }
 
-DKObject<DKAnimation> DKAnimation::Create(DKFoundation::DKArray<SamplingNode>* samples, DKFoundation::DKArray<KeyframeNode>* keyframes, float duration)
+DKObject<DKAnimation> DKAnimation::Create(DKArray<SamplingNode>* samples, DKArray<KeyframeNode>* keyframes, float duration)
 {
 	DKObject<DKAnimation> ani = DKObject<DKAnimation>::New();
 
@@ -208,7 +207,7 @@ DKObject<DKAnimation> DKAnimation::Create(DKFoundation::DKArray<SamplingNode>* s
 	return ani;
 }
 
-DKObject<DKAnimation> DKAnimation::Create(DKFoundation::DKArray<NodeSnapshot>* begin, DKFoundation::DKArray<NodeSnapshot>* end, float duration)
+DKObject<DKAnimation> DKAnimation::Create(DKArray<NodeSnapshot>* begin, DKArray<NodeSnapshot>* end, float duration)
 {
 	DKObject<DKAnimation> ani = DKObject<DKAnimation>::New();
 
@@ -273,7 +272,7 @@ bool DKAnimation::AddSamplingNode(const DKString& name, const DKTransformUnit* f
 		return false;
 	if (frames && numFrames > 0)
 	{
-		SamplingNode* node = new (DKMemoryDefaultAllocator::Alloc(sizeof(SamplingNode))) SamplingNode();
+		SamplingNode* node = new SamplingNode();
 		node->name = name;
 		node->frames.Add(frames, numFrames);
 		nodeIndexMap.Update(node->name, nodes.Add(node)); // add new node, and update indexes.
@@ -291,7 +290,7 @@ bool DKAnimation::AddKeyframeNode(const DKString& name,
 		return false;
 	if ((scaleKeys && numSk > 0) || (rotationKeys && numRk > 0) || (translationKeys && numTk > 0))
 	{
-		KeyframeNode* node = new (DKMemoryDefaultAllocator::Alloc(sizeof(KeyframeNode))) KeyframeNode();
+		KeyframeNode* node = new KeyframeNode();
 		node->name = name;
 		 // filter by time in scale of 0.0 ~ 1.0, and sort, copy frames.
 		node->scaleKeys = ClipKeyframeTimeScale(scaleKeys, numSk);
@@ -305,12 +304,12 @@ bool DKAnimation::AddKeyframeNode(const DKString& name,
 			return true;
 		}
 		node->~KeyframeNode();
-		DKMemoryDefaultAllocator::Free(node);
+		DKFree(node);
 	}
 	return false;
 }
 
-void DKAnimation::RemoveNode(const DKFoundation::DKString& name)
+void DKAnimation::RemoveNode(const DKString& name)
 {
 	DKMap<DKString, size_t>::Pair* indexPtr = nodeIndexMap.Find(name);
 	if (indexPtr)
@@ -318,30 +317,28 @@ void DKAnimation::RemoveNode(const DKFoundation::DKString& name)
 		size_t index = indexPtr->value;
 		Node* n = nodes.Value(index);
 		nodes.Remove(index);
-		n->~Node();
-		DKMemoryDefaultAllocator::Free(n);
+		delete n;
 	}
 	nodeIndexMap.Remove(name);
 }
 
-void DKAnimation::RemoveAllNodes(void)
+void DKAnimation::RemoveAllNodes()
 {
 	for (size_t i = 0; i < nodes.Count(); ++i)
 	{
 		Node* n = nodes.Value(i);
-		n->~Node();
-		DKMemoryDefaultAllocator::Free(n);
+		delete n;
 	}
 	nodes.Clear();
 	nodeIndexMap.Clear();
 }
 
-size_t DKAnimation::NodeCount(void) const
+size_t DKAnimation::NodeCount() const
 {
 	return nodes.Count();
 }
 
-DKAnimation::NodeIndex DKAnimation::IndexOfNode(const DKFoundation::DKString& name) const
+DKAnimation::NodeIndex DKAnimation::IndexOfNode(const DKString& name) const
 {
 	const DKMap<DKString, size_t>::Pair* indexPtr = nodeIndexMap.Find(name);
 	if (indexPtr)
@@ -552,7 +549,7 @@ bool DKAnimation::ResampleNode(const Node& source, unsigned int frames, Sampling
 	return true;
 }
 
-DKObject<DKAnimationController> DKAnimation::CreateLoopController(void)
+DKObject<DKAnimationController> DKAnimation::CreateLoopController()
 {
 	struct Controller : public DKAnimationController
 	{
@@ -576,22 +573,22 @@ DKObject<DKAnimationController> DKAnimation::CreateLoopController(void)
 				return animation->GetNodeTransform(key, frameTime, out);
 			return false;
 		}
-		bool IsPlaying(void) const
+		bool IsPlaying() const
 		{
 			return playing;
 		}
-		float Duration(void) const
+		float Duration() const
 		{
 			if (animation)
 				return animation->Duration();
 			return 0.0f;
 		}
-		void Play(void)
+		void Play()
 		{
 			if (!playing && animation)
 				playing = true;
 		}
-		void Stop(void)
+		void Stop()
 		{
 			playing = false;
 		}
@@ -605,7 +602,7 @@ DKObject<DKAnimationController> DKAnimation::CreateLoopController(void)
 	return con.SafeCast<DKAnimationController>();
 }
 
-DKObject<DKSerializer> DKAnimation::Serializer(void)
+DKObject<DKSerializer> DKAnimation::Serializer()
 {
 	class LocalSerializer : public DKSerializer
 	{
@@ -646,7 +643,7 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 
 			DKVariant frames(DKVariant::TypeStructData);
 			DKVariant::VStructuredData& data = frames.StructuredData();
-			data.data.SetContent((const DKTransformUnit*)sn.frames, sn.frames.Count() * sizeof(DKTransformUnit));
+			data.data = DKOBJECT_NEW DKBuffer((const DKTransformUnit*)sn.frames, sn.frames.Count() * sizeof(DKTransformUnit));
 			data.elementSize = sizeof(DKTransformUnit);
 			data.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(DKTransformUnit) / 4);
 			v.Pairs().Insert(L"frames", frames);
@@ -667,7 +664,7 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 					}
 					else if (pFrames->value.ValueType() == DKVariant::TypeStructData)
 					{
-						frameData = &(pFrames->value.StructuredData().data);
+						frameData = pFrames->value.StructuredData().data;
 					}
 					if (frameData)
 					{
@@ -695,15 +692,15 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 			DKVariant::VStructuredData& rotationData = rotationKeys.StructuredData();
 			DKVariant::VStructuredData& translationData = translationKeys.StructuredData();
 
-			scaleData.data.SetContent((const KeyframeNode::ScaleKey*)kn.scaleKeys, kn.scaleKeys.Count() * sizeof(KeyframeNode::ScaleKey));
+			scaleData.data = DKOBJECT_NEW DKBuffer((const KeyframeNode::ScaleKey*)kn.scaleKeys, kn.scaleKeys.Count() * sizeof(KeyframeNode::ScaleKey));
 			scaleData.elementSize = sizeof(KeyframeNode::ScaleKey);
 			scaleData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::ScaleKey) / 4);
 
-			rotationData.data.SetContent((const KeyframeNode::RotationKey*)kn.rotationKeys, kn.rotationKeys.Count() * sizeof(KeyframeNode::RotationKey));
+			rotationData.data = DKOBJECT_NEW DKBuffer((const KeyframeNode::RotationKey*)kn.rotationKeys, kn.rotationKeys.Count() * sizeof(KeyframeNode::RotationKey));
 			rotationData.elementSize = sizeof(KeyframeNode::RotationKey);
 			rotationData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::RotationKey) / 4);
 
-			translationData.data.SetContent((const KeyframeNode::TranslationKey*)kn.translationKeys, kn.translationKeys.Count() * sizeof(KeyframeNode::TranslationKey));
+			translationData.data = DKOBJECT_NEW DKBuffer((const KeyframeNode::TranslationKey*)kn.translationKeys, kn.translationKeys.Count() * sizeof(KeyframeNode::TranslationKey));
 			translationData.elementSize = sizeof(KeyframeNode::TranslationKey);
 			translationData.layout.Add(DKVariant::StructElem::Arithmetic4, sizeof(KeyframeNode::TranslationKey) / 4);
 
@@ -730,17 +727,17 @@ DKObject<DKSerializer> DKAnimation::Serializer(void)
 					if (pScaleKeys->value.ValueType() == DKVariant::TypeData)
 						scaleData = &(pScaleKeys->value.Data());
 					else if (pScaleKeys->value.ValueType() == DKVariant::TypeStructData)
-						scaleData = &(pScaleKeys->value.StructuredData().data);
+						scaleData = pScaleKeys->value.StructuredData().data;
 
 					if (pRotationKeys->value.ValueType() == DKVariant::TypeData)
 						rotationData = &(pRotationKeys->value.Data());
 					else if (pRotationKeys->value.ValueType() == DKVariant::TypeStructData)
-						rotationData = &(pRotationKeys->value.StructuredData().data);
+						rotationData = pRotationKeys->value.StructuredData().data;
 
 					if (pTranslationKeys->value.ValueType() == DKVariant::TypeData)
 						translationData = &(pTranslationKeys->value.Data());
 					else if (pTranslationKeys->value.ValueType() == DKVariant::TypeStructData)
-						translationData = &(pTranslationKeys->value.StructuredData().data);
+						translationData = pTranslationKeys->value.StructuredData().data;
 
 					if (scaleData && rotationData && translationData)
 					{

@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKTypeInfo.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKTypes.h"
@@ -19,7 +19,7 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKTypeInfo::DKTypeInfo(void)
+DKTypeInfo::DKTypeInfo()
 	: info(&typeid(Private::InvalidType))
 {
 }
@@ -34,11 +34,11 @@ DKTypeInfo::DKTypeInfo(const std::type_info& ti)
 {
 }
 
-DKTypeInfo::~DKTypeInfo(void)
+DKTypeInfo::~DKTypeInfo()
 {
 }
 
-bool DKTypeInfo::IsValid(void) const
+bool DKTypeInfo::IsValid() const
 {
 	return *info != typeid(Private::InvalidType);
 }
@@ -48,12 +48,12 @@ bool DKTypeInfo::Before(const DKTypeInfo& rhs) const
 	return info->before(*rhs.info) != 0;
 }
 
-DKTypeInfo::operator const std::type_info& (void) const
+DKTypeInfo::operator const std::type_info& () const
 {
 	return *info;
 }
 
-DKString DKTypeInfo::Name(void) const
+DKString DKTypeInfo::Name() const
 {
 	return DKString(info->name());
 }

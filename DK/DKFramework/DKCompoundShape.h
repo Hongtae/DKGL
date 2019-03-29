@@ -1,29 +1,25 @@
-﻿//
+//
 //  File: DKCompoundShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCompoundShape
-// a compound shape with one or more collision shapes with transform.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// a compound shape with one or more collision shapes with transform.
 	class DKGL_API DKCompoundShape : public DKCollisionShape
 	{
 	public:
-		DKCompoundShape(void);
-		~DKCompoundShape(void);
+		DKCompoundShape();
+		~DKCompoundShape();
 
-		size_t NumberOfShapes(void) const;
+		size_t NumberOfShapes() const;
 		void AddShape(DKCollisionShape* shape, const DKNSTransform& transform);
 		void RemoveShapeAtIndex(long index);
 		void RemoveShape(DKCollisionShape* shape);
@@ -35,6 +31,6 @@ namespace DKFramework
 		void SetTransformAtIndex(const DKNSTransform& transform, long index);
 
 	private:
-		DKFoundation::DKArray<DKFoundation::DKObject<DKCollisionShape>> shapes;
+		DKArray<DKObject<DKCollisionShape>> shapes;
 	};
 }

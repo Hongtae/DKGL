@@ -2,29 +2,26 @@
 //  File: DKSingleton.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../DKInclude.h"
 #include "DKSpinLock.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSingleton
-// singleton class.
-// Only one instance can be created and exists at run time.
-//
-// Note:
-//  You can define your class with 'typedef' or sublcass from DKSingleton.
-//  subclassing is recommended.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief singleton class.
+	/// Only one instance can be created and exists at run time.
+	///
+	/// @note
+	///  You can define your class with 'typedef' or sublcass from DKSingleton.
+	///  subclassing is recommended.
+	/// @see DKSharedInstance
 	template <class TYPE> class DKSingleton
 	{
 	public:
-		static TYPE& Instance(void)
+		static TYPE& Instance()
 		{
 			static TYPE* instancePtr = NULL;
 			if (instancePtr == NULL)
@@ -40,11 +37,11 @@ namespace DKFoundation
 			}
 			return *instancePtr;
 		}
-	private:
-		DKSingleton(const DKSingleton&);
-		DKSingleton& operator = (const DKSingleton&);
 	protected:
-		DKSingleton(void)					{}
-		virtual ~DKSingleton(void)			{}
+		DKSingleton() {}
+		virtual ~DKSingleton() {}
+	private:
+		DKSingleton(const DKSingleton&) = delete;
+		DKSingleton& operator = (const DKSingleton&) = delete;
 	};
 }

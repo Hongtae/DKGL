@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKGeneric6DofConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKGeneric6DofConstraint.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -34,7 +33,7 @@ DKGeneric6DofConstraint::DKGeneric6DofConstraint(DKRigidBody* rbB, const DKNSTra
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofConstraint*>(this->impl));
 }
 
-DKGeneric6DofConstraint::DKGeneric6DofConstraint(void)
+DKGeneric6DofConstraint::DKGeneric6DofConstraint()
 : DKGeneric6DofConstraint(NULL, NULL, DKNSTransform::identity, DKNSTransform::identity)
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofConstraint*>(this->impl));
@@ -46,7 +45,7 @@ DKGeneric6DofConstraint::DKGeneric6DofConstraint(LinkType type, DKRigidBody* rbA
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofConstraint*>(this->impl));
 }
 
-DKGeneric6DofConstraint::~DKGeneric6DofConstraint(void)
+DKGeneric6DofConstraint::~DKGeneric6DofConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofConstraint*>(this->impl));
 }
@@ -160,7 +159,7 @@ void DKGeneric6DofConstraint::SetAngularUpperLimit(const DKVector3& v)
 	static_cast<btGeneric6DofConstraint*>(this->impl)->setAngularUpperLimit(BulletVector3(v));
 }
 
-DKVector3 DKGeneric6DofConstraint::LinearLowerLimit(void) const
+DKVector3 DKGeneric6DofConstraint::LinearLowerLimit() const
 {
 	btVector3 v(0, 0, 0);
 	btGeneric6DofConstraint* c = static_cast<btGeneric6DofConstraint*>(this->impl);
@@ -168,7 +167,7 @@ DKVector3 DKGeneric6DofConstraint::LinearLowerLimit(void) const
 	return BulletVector3(v);
 }
 
-DKVector3 DKGeneric6DofConstraint::LinearUpperLimit(void) const
+DKVector3 DKGeneric6DofConstraint::LinearUpperLimit() const
 {
 	btVector3 v(0, 0, 0);
 	btGeneric6DofConstraint* c = static_cast<btGeneric6DofConstraint*>(this->impl);
@@ -176,7 +175,7 @@ DKVector3 DKGeneric6DofConstraint::LinearUpperLimit(void) const
 	return BulletVector3(v);
 }
 
-DKVector3 DKGeneric6DofConstraint::AngularLowerLimit(void) const
+DKVector3 DKGeneric6DofConstraint::AngularLowerLimit() const
 {
 	btVector3 v(0, 0, 0);
 	btGeneric6DofConstraint* c = static_cast<btGeneric6DofConstraint*>(this->impl);
@@ -184,7 +183,7 @@ DKVector3 DKGeneric6DofConstraint::AngularLowerLimit(void) const
 	return BulletVector3(v);
 }
 
-DKVector3 DKGeneric6DofConstraint::AngularUpperLimit(void) const
+DKVector3 DKGeneric6DofConstraint::AngularUpperLimit() const
 {
 	btVector3 v(0, 0, 0);
 	btGeneric6DofConstraint* c = static_cast<btGeneric6DofConstraint*>(this->impl);
@@ -204,12 +203,12 @@ DKGeneric6DofConstraint::AxisState DKGeneric6DofConstraint::State(ParamAxis axis
 	return StateFree;
 }
 
-DKNSTransform DKGeneric6DofConstraint::FrameA(void) const
+DKNSTransform DKGeneric6DofConstraint::FrameA() const
 {
 	return BulletTransform(static_cast<btGeneric6DofConstraint*>(this->impl)->getFrameOffsetA());
 }
 
-DKNSTransform DKGeneric6DofConstraint::FrameB(void) const
+DKNSTransform DKGeneric6DofConstraint::FrameB() const
 {
 	return BulletTransform(static_cast<btGeneric6DofConstraint*>(this->impl)->getFrameOffsetB());
 }
@@ -288,7 +287,7 @@ bool DKGeneric6DofConstraint::HasParam(ParamType type, ParamAxis axis) const
 	return false;
 }
 
-void DKGeneric6DofConstraint::ResetContext(void)
+void DKGeneric6DofConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofConstraint*>(this->impl));
 	btGeneric6DofConstraint* c = static_cast<btGeneric6DofConstraint*>(this->impl);
@@ -314,7 +313,7 @@ void DKGeneric6DofConstraint::ResetContext(void)
 	c->setAngularUpperLimit(angularUpperLimit);
 }
 
-void DKGeneric6DofConstraint::ResetContextImpl(void)
+void DKGeneric6DofConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofConstraint*>(this->impl));
 	btGeneric6DofConstraint* c = static_cast<btGeneric6DofConstraint*>(this->impl);
@@ -357,7 +356,7 @@ DKGeneric6DofConstraint* DKGeneric6DofConstraint::Copy(UUIDObjectMap& uuids, con
 	return NULL;
 }
 
-DKObject<DKSerializer> DKGeneric6DofConstraint::Serializer(void)
+DKObject<DKSerializer> DKGeneric6DofConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

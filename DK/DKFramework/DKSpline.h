@@ -2,46 +2,48 @@
 //  File: DKSpline.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKVector2.h"
 #include "DKVector3.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSpline
-// spline class, calculates spline curve.
-// used to get smooth interpolated curve between points.
-//
-// CatmullRom: curve of intersecting two connecting points. this spline
-//     guaranteeing that each point will be hit exactly.
-//     with given 4 points (p0,p1,p2,p3), curve between p1,p2
-//
-// UniformCubic: basis spline (B-spline), this is not interpolation curve.
-//     this curve does not pass through the points.
-//     the curve is completely contained in the convex hull of its control
-//     points.
-//     with given 4 points (p0,p1,p2,p3), curve between p1,p2
-//
-// Hermite: calculate curve with tangent vectors.
-//     with given 4 points (p0,p1,p2,p3), curve between p0,p1
-//     and p2 is tangent vector or p0, p3 is tangent vector of p1.
-//     a tangent vector (p2, p3) can control curve direction and speed.
-//
-// Bezier: 3 degree bezier curve.
-//     the curve is completely contained in the convex hull of its control
-//     points.
-//     with given 4 points (p0,p1,p2,p3), curve between p0,p1,p2,p3.
-//     p1,p2 is control points. (curve not pass this points)
-//
-////////////////////////////////////////////////////////////////////////////////
-
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief spline class, calculates spline curve.
+	///
+	/// used to get smooth interpolated curve between points.
+	///	
+	/// CatmullRom: The curve at two intersection points.
+	///     This spline creates a curve that connects two points.
+	///     Creates a curve between p1 and p2 at the given four points
+	///     (p0, p1, p2, p3).
+	///
+	/// - UniformCubic: Basis spline (B-spline)
+	///     This curve does not pass through the points.
+	///     the curve is completely contained in the convex hull of its control
+	///     points.
+	///     Creates a curve between p1 and p2 at the given four points
+	///     (p0, p1, p2, p3).
+	///
+	/// - Hermite: Calculates a curve with tangent vectors.
+	///     Creates a curve between p0 and p1 with given four points
+	///     (p0, p1, t0, t1).
+	///     Where t0 is a tangent vector of p0, and t1 is a tengent vector of p1
+	///     The tangent vector (t0, t1) can control the curve direction
+	///     and speed.
+	///
+	/// - Bezier: 3 degree bezier curve.
+	///     The curve is completely contained in the convex hull of its control
+	///     points.
+	///     Creates a curve between p0, p1, p2, p3 with the given four points
+	///     (p0, p1, p2, p3).
+	///     Where p1,p2 are control points, and the curve does not pass throuth
+	///     these points.
+
 	class DKGL_API DKSpline
 	{
 	public:
@@ -53,7 +55,7 @@ namespace DKFramework
 			Bezier,
 		};
 
-		DKSpline(void);
+		DKSpline();
 		DKSpline(float p0, float p1, float p2, float p3);
 
 		float Interpolate(float t, Type c) const;
@@ -74,7 +76,7 @@ namespace DKFramework
 	class DKSpline2
 	{
 	public:
-		DKSpline2(void)
+		DKSpline2()
 			:point0(0, 0), point1(0, 0), point2(0, 0), point3(0, 0)
 		{
 		}
@@ -100,7 +102,7 @@ namespace DKFramework
 	class DKSpline3
 	{
 	public:
-		DKSpline3(void)
+		DKSpline3()
 			:point0(0, 0, 0), point1(0, 0, 0), point2(0, 0, 0), point3(0, 0, 0)
 		{
 		}

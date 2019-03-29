@@ -66,27 +66,27 @@
 #		define DKGL_APPLE_IOS 1
 #		ifdef DKGL_DYNAMIC		// dylib or Framework
 #			define DKGL_API	__attribute__((visibility ("default")))
-#			if TARGET_IPHONE_SIMULATOR
+#			if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Dynamic Library for iOS Simulator.
-#			else	//if TARGET_IPHONE_SIMULATOR
+#			else	//if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Dynamic Library for iOS Device.
-#			endif	//if TARGET_IPHONE_SIMULATOR
+#			endif	//if TARGET_OS_SIMULATOR
 #		else
 #			define DKGL_API
-#			if TARGET_IPHONE_SIMULATOR
+#			if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Static Library for iOS Simulator.
-#			else	//if TARGET_IPHONE_SIMULATOR
+#			else	//if TARGET_OS_SIMULATOR
 #				warning Build DK iOS Static Library for iOS Device.
-#			endif	//if TARGET_IPHONE_SIMULATOR
+#			endif	//if TARGET_OS_SIMULATOR
 #		endif
 #	else	//if TARGET_OS_IPHONE
 #		define DKGL_APPLE_OSX 1
 #		ifdef DKGL_DYNAMIC		// dylib or Framework
 #			define DKGL_API	__attribute__((visibility ("default")))
-#			warning Build DK for Mac OS X Dynamic Library.
+#			warning Build DK for macOS Dynamic Library.
 #		else
 #			define DKGL_API
-#			warning Build DK for Mac OS X Static Library.
+#			warning Build DK for macOS Static Library.
 #		endif
 #	endif
 #endif //if defined(__APPLE__) && defined(__MACH__)
@@ -206,7 +206,10 @@ namespace DKFoundation
 
 	DKGL_API void DKErrorRaiseException(const char*, const char*, unsigned int, const char*);
 }
-
+namespace DKFramework
+{
+	using namespace DKFoundation;
+}
 ////////////////////////////////////////////////////////////////////////////////
 // Macros for error, exception (DKError), C++ only.
 

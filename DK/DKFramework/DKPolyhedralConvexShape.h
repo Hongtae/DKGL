@@ -1,31 +1,27 @@
-﻿//
+//
 //  File: DKPolyhedralConvexShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKConvexShape.h"
 #include "DKPlane.h"
 #include "DKLine.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKPolyhedralConvexShape
-// interface class for polyhedral convex shapes.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief interface class for polyhedral convex shapes.
 	class DKGL_API DKPolyhedralConvexShape : public DKConvexShape
 	{
 	public:
-		~DKPolyhedralConvexShape(void);
+		~DKPolyhedralConvexShape();
 		
-		size_t NumberOfVertices(void) const;
-		size_t NumberOfEdges(void) const;
-		size_t NumberOfPlanes(void) const;
+		size_t NumberOfVertices() const;
+		size_t NumberOfEdges() const;
+		size_t NumberOfPlanes() const;
 
 		DKLine EdgeAtIndex(unsigned int index) const;
 		DKVector3 VertexAtIndex(unsigned int index) const;

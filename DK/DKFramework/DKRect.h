@@ -2,37 +2,34 @@
 //  File: DKRect.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKPoint.h"
 #include "DKSize.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKRect
-// represents rectangle on 2D graphics.
-// origin of rect is left-bottom corner and origin is DKPoint object.
-// size of rect is DKSize object and can not be negative.
-////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief represents rectangle on 2D graphics.
+	///
+	/// origin of rect is top-left corner and origin is DKPoint object.
+	/// size of rect is DKSize object and can not be negative.
 	class DKGL_API DKRect
 	{
 	public:
-		DKRect(void);
+		DKRect();
 		DKRect(const DKPoint& p, const DKSize& s);
 		DKRect(float x, float y, float width, float height);
 
-		DKPoint Center(void) const;
+		DKPoint Center() const;
 		DKRect& SetCenter(const DKPoint& p);
 		DKRect& SetCenter(float x, float y);
 		
 		bool IsPointInside(const DKPoint& pt) const;
-		bool IsValid(void) const;
+		bool IsValid() const;
 		bool Intersect(const DKRect& rc) const;
 		bool IntersectLine(const DKPoint& pt1, const DKPoint& pt2) const;
 		bool IntersectTriangle(const DKPoint& pt1, const DKPoint& pt2, const DKPoint& pt3) const;

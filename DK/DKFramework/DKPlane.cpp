@@ -2,7 +2,7 @@
 //  File: DKPlane.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKPlane.h"
@@ -10,10 +10,9 @@
 #include "DKVector4.h"
 #include "DKLine.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKPlane::DKPlane(void)
+DKPlane::DKPlane()
 	: a(0)
 	, b(0)
 	, c(0)
@@ -39,7 +38,7 @@ DKPlane::DKPlane(const DKVector3& n, const DKVector3& p)
 {
 }
 
-DKPlane::~DKPlane(void)
+DKPlane::~DKPlane()
 {
 }
 
@@ -53,7 +52,7 @@ float DKPlane::Dot(const DKVector4& v) const
 	return a*v.x + b*v.y + c*v.z + d*v.w;
 }
 
-DKVector3 DKPlane::Normal(void) const
+DKVector3 DKPlane::Normal() const
 {
 	return DKVector3(a,b,c);
 }

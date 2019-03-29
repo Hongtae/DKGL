@@ -1,26 +1,22 @@
-﻿//
+//
 //  File: DKPoint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector2.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKPoint
-// a point unit. used by 2d graphics to represent a point.
-////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief a point unit. used by 2d graphics to represent a point.
 	class DKGL_API DKPoint
 	{
 	public:
-		DKPoint(void)
+		DKPoint()
 			: x(0), y(0)
 		{
 		}
@@ -120,7 +116,7 @@ namespace DKFramework
 			y /= p;
 			return *this;
 		}
-		DKVector2 Vector(void) const
+		DKVector2 Vector() const
 		{
 			return DKVector2(x, y);
 		}

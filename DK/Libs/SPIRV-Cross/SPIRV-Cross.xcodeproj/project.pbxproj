@@ -1,0 +1,461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		849B23EF1EB4C2150033C44C /* spirv_cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23DD1EB4C2150033C44C /* spirv_cfg.cpp */; };
+		849B23F31EB4C2150033C44C /* spirv_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E01EB4C2150033C44C /* spirv_cpp.cpp */; };
+		849B23F61EB4C2150033C44C /* spirv_cross.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E21EB4C2150033C44C /* spirv_cross.cpp */; };
+		849B23F91EB4C2150033C44C /* spirv_glsl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E41EB4C2150033C44C /* spirv_glsl.cpp */; };
+		849B23FC1EB4C2150033C44C /* spirv_hlsl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E61EB4C2150033C44C /* spirv_hlsl.cpp */; };
+		849B23FF1EB4C2150033C44C /* spirv_msl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E81EB4C2150033C44C /* spirv_msl.cpp */; };
+		84A897BF209D7190001AFDB4 /* spirv_cross_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A897BD209D7190001AFDB4 /* spirv_cross_util.cpp */; };
+		84A897C3209D7197001AFDB4 /* spirv_cross_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84A897BD209D7190001AFDB4 /* spirv_cross_util.cpp */; };
+		84A897C7209D7197001AFDB4 /* spirv_cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23DD1EB4C2150033C44C /* spirv_cfg.cpp */; };
+		84A897CA209D7197001AFDB4 /* spirv_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E01EB4C2150033C44C /* spirv_cpp.cpp */; };
+		84A897CC209D7197001AFDB4 /* spirv_cross.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E21EB4C2150033C44C /* spirv_cross.cpp */; };
+		84A897CE209D7197001AFDB4 /* spirv_glsl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E41EB4C2150033C44C /* spirv_glsl.cpp */; };
+		84A897D0209D7197001AFDB4 /* spirv_hlsl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E61EB4C2150033C44C /* spirv_hlsl.cpp */; };
+		84A897D2209D7197001AFDB4 /* spirv_msl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E81EB4C2150033C44C /* spirv_msl.cpp */; };
+		84A897E0209D7275001AFDB4 /* barrier.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DA209D7274001AFDB4 /* barrier.hpp */; };
+		84A897E1209D7275001AFDB4 /* thread_group.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DB209D7274001AFDB4 /* thread_group.hpp */; };
+		84A897E2209D7275001AFDB4 /* internal_interface.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DC209D7274001AFDB4 /* internal_interface.hpp */; };
+		84A897E3209D7275001AFDB4 /* sampler.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DD209D7274001AFDB4 /* sampler.hpp */; };
+		84A897E4209D7275001AFDB4 /* external_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DE209D7274001AFDB4 /* external_interface.h */; };
+		84A897E5209D7275001AFDB4 /* image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DF209D7274001AFDB4 /* image.hpp */; };
+		84BDD61E2167E15B0009027E /* spirv_reflect.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84BDD61C2167E15B0009027E /* spirv_reflect.hpp */; };
+		84BDD61F2167E15B0009027E /* spirv_reflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BDD61D2167E15B0009027E /* spirv_reflect.cpp */; };
+		84BDD6202167E15B0009027E /* spirv_reflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BDD61D2167E15B0009027E /* spirv_reflect.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		849B23BA1EB4C19F0033C44C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		849B23B11EB4C1870033C44C /* libSPIRV-Cross_macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libSPIRV-Cross_macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		849B23BC1EB4C19F0033C44C /* libSPIRV-Cross_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libSPIRV-Cross_iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		849B23DB1EB4C2150033C44C /* GLSL.std.450.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSL.std.450.h; sourceTree = "<group>"; };
+		849B23DD1EB4C2150033C44C /* spirv_cfg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_cfg.cpp; sourceTree = "<group>"; };
+		849B23DE1EB4C2150033C44C /* spirv_cfg.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cfg.hpp; sourceTree = "<group>"; };
+		849B23DF1EB4C2150033C44C /* spirv_common.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_common.hpp; sourceTree = "<group>"; };
+		849B23E01EB4C2150033C44C /* spirv_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_cpp.cpp; sourceTree = "<group>"; };
+		849B23E11EB4C2150033C44C /* spirv_cpp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cpp.hpp; sourceTree = "<group>"; };
+		849B23E21EB4C2150033C44C /* spirv_cross.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_cross.cpp; sourceTree = "<group>"; };
+		849B23E31EB4C2150033C44C /* spirv_cross.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cross.hpp; sourceTree = "<group>"; };
+		849B23E41EB4C2150033C44C /* spirv_glsl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_glsl.cpp; sourceTree = "<group>"; };
+		849B23E51EB4C2150033C44C /* spirv_glsl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_glsl.hpp; sourceTree = "<group>"; };
+		849B23E61EB4C2150033C44C /* spirv_hlsl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_hlsl.cpp; sourceTree = "<group>"; };
+		849B23E71EB4C2150033C44C /* spirv_hlsl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_hlsl.hpp; sourceTree = "<group>"; };
+		849B23E81EB4C2150033C44C /* spirv_msl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_msl.cpp; sourceTree = "<group>"; };
+		849B23E91EB4C2150033C44C /* spirv_msl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_msl.hpp; sourceTree = "<group>"; };
+		849B23EA1EB4C2150033C44C /* spirv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv.hpp; sourceTree = "<group>"; };
+		84A897BD209D7190001AFDB4 /* spirv_cross_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_cross_util.cpp; sourceTree = "<group>"; };
+		84A897BE209D7190001AFDB4 /* spirv_cross_util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cross_util.hpp; sourceTree = "<group>"; };
+		84A897DA209D7274001AFDB4 /* barrier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = barrier.hpp; sourceTree = "<group>"; };
+		84A897DB209D7274001AFDB4 /* thread_group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = thread_group.hpp; sourceTree = "<group>"; };
+		84A897DC209D7274001AFDB4 /* internal_interface.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = internal_interface.hpp; sourceTree = "<group>"; };
+		84A897DD209D7274001AFDB4 /* sampler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sampler.hpp; sourceTree = "<group>"; };
+		84A897DE209D7274001AFDB4 /* external_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_interface.h; sourceTree = "<group>"; };
+		84A897DF209D7274001AFDB4 /* image.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = image.hpp; sourceTree = "<group>"; };
+		84BDD61C2167E15B0009027E /* spirv_reflect.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_reflect.hpp; sourceTree = "<group>"; };
+		84BDD61D2167E15B0009027E /* spirv_reflect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_reflect.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		849B23AE1EB4C1870033C44C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		849B23B91EB4C19F0033C44C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		849B23A81EB4C1870033C44C = {
+			isa = PBXGroup;
+			children = (
+				84A897D8209D7274001AFDB4 /* include */,
+				84A897D7209D722F001AFDB4 /* src */,
+				849B23B21EB4C1870033C44C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		849B23B21EB4C1870033C44C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				849B23B11EB4C1870033C44C /* libSPIRV-Cross_macOS.a */,
+				849B23BC1EB4C19F0033C44C /* libSPIRV-Cross_iOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84A897D7209D722F001AFDB4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				849B23DB1EB4C2150033C44C /* GLSL.std.450.h */,
+				849B23DD1EB4C2150033C44C /* spirv_cfg.cpp */,
+				849B23DE1EB4C2150033C44C /* spirv_cfg.hpp */,
+				849B23DF1EB4C2150033C44C /* spirv_common.hpp */,
+				849B23E01EB4C2150033C44C /* spirv_cpp.cpp */,
+				849B23E11EB4C2150033C44C /* spirv_cpp.hpp */,
+				84A897BD209D7190001AFDB4 /* spirv_cross_util.cpp */,
+				84A897BE209D7190001AFDB4 /* spirv_cross_util.hpp */,
+				849B23E21EB4C2150033C44C /* spirv_cross.cpp */,
+				849B23E31EB4C2150033C44C /* spirv_cross.hpp */,
+				849B23E41EB4C2150033C44C /* spirv_glsl.cpp */,
+				849B23E51EB4C2150033C44C /* spirv_glsl.hpp */,
+				849B23E61EB4C2150033C44C /* spirv_hlsl.cpp */,
+				849B23E71EB4C2150033C44C /* spirv_hlsl.hpp */,
+				849B23E81EB4C2150033C44C /* spirv_msl.cpp */,
+				849B23E91EB4C2150033C44C /* spirv_msl.hpp */,
+				84BDD61D2167E15B0009027E /* spirv_reflect.cpp */,
+				84BDD61C2167E15B0009027E /* spirv_reflect.hpp */,
+				849B23EA1EB4C2150033C44C /* spirv.hpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		84A897D8209D7274001AFDB4 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				84A897D9209D7274001AFDB4 /* spirv_cross */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		84A897D9209D7274001AFDB4 /* spirv_cross */ = {
+			isa = PBXGroup;
+			children = (
+				84A897DA209D7274001AFDB4 /* barrier.hpp */,
+				84A897DB209D7274001AFDB4 /* thread_group.hpp */,
+				84A897DC209D7274001AFDB4 /* internal_interface.hpp */,
+				84A897DD209D7274001AFDB4 /* sampler.hpp */,
+				84A897DE209D7274001AFDB4 /* external_interface.h */,
+				84A897DF209D7274001AFDB4 /* image.hpp */,
+			);
+			path = spirv_cross;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		849B23AF1EB4C1870033C44C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84A897E1209D7275001AFDB4 /* thread_group.hpp in Headers */,
+				84A897E3209D7275001AFDB4 /* sampler.hpp in Headers */,
+				84A897E5209D7275001AFDB4 /* image.hpp in Headers */,
+				84A897E0209D7275001AFDB4 /* barrier.hpp in Headers */,
+				84A897E2209D7275001AFDB4 /* internal_interface.hpp in Headers */,
+				84A897E4209D7275001AFDB4 /* external_interface.h in Headers */,
+				84BDD61E2167E15B0009027E /* spirv_reflect.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		849B23B01EB4C1870033C44C /* SPIRV-Cross_macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 849B23B51EB4C1870033C44C /* Build configuration list for PBXNativeTarget "SPIRV-Cross_macOS" */;
+			buildPhases = (
+				849B23AD1EB4C1870033C44C /* Sources */,
+				849B23AE1EB4C1870033C44C /* Frameworks */,
+				849B23AF1EB4C1870033C44C /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SPIRV-Cross_macOS";
+			productName = "SPIRV-Cross";
+			productReference = 849B23B11EB4C1870033C44C /* libSPIRV-Cross_macOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		849B23BB1EB4C19F0033C44C /* SPIRV-Cross_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 849B23C21EB4C19F0033C44C /* Build configuration list for PBXNativeTarget "SPIRV-Cross_iOS" */;
+			buildPhases = (
+				849B23B81EB4C19F0033C44C /* Sources */,
+				849B23B91EB4C19F0033C44C /* Frameworks */,
+				849B23BA1EB4C19F0033C44C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SPIRV-Cross_iOS";
+			productName = "SPIRV-Cross_iOS";
+			productReference = 849B23BC1EB4C19F0033C44C /* libSPIRV-Cross_iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		849B23A91EB4C1870033C44C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1000;
+				ORGANIZATIONNAME = "Hongtae Kim";
+				TargetAttributes = {
+					849B23B01EB4C1870033C44C = {
+						CreatedOnToolsVersion = 8.3;
+						ProvisioningStyle = Automatic;
+					};
+					849B23BB1EB4C19F0033C44C = {
+						CreatedOnToolsVersion = 8.3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 849B23AC1EB4C1870033C44C /* Build configuration list for PBXProject "SPIRV-Cross" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 849B23A81EB4C1870033C44C;
+			productRefGroup = 849B23B21EB4C1870033C44C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				849B23BB1EB4C19F0033C44C /* SPIRV-Cross_iOS */,
+				849B23B01EB4C1870033C44C /* SPIRV-Cross_macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		849B23AD1EB4C1870033C44C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84A897D0209D7197001AFDB4 /* spirv_hlsl.cpp in Sources */,
+				84A897CA209D7197001AFDB4 /* spirv_cpp.cpp in Sources */,
+				84BDD6202167E15B0009027E /* spirv_reflect.cpp in Sources */,
+				84A897CE209D7197001AFDB4 /* spirv_glsl.cpp in Sources */,
+				84A897C3209D7197001AFDB4 /* spirv_cross_util.cpp in Sources */,
+				84A897D2209D7197001AFDB4 /* spirv_msl.cpp in Sources */,
+				84A897C7209D7197001AFDB4 /* spirv_cfg.cpp in Sources */,
+				84A897CC209D7197001AFDB4 /* spirv_cross.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		849B23B81EB4C19F0033C44C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				849B23FC1EB4C2150033C44C /* spirv_hlsl.cpp in Sources */,
+				849B23F61EB4C2150033C44C /* spirv_cross.cpp in Sources */,
+				84BDD61F2167E15B0009027E /* spirv_reflect.cpp in Sources */,
+				849B23EF1EB4C2150033C44C /* spirv_cfg.cpp in Sources */,
+				849B23FF1EB4C2150033C44C /* spirv_msl.cpp in Sources */,
+				849B23F31EB4C2150033C44C /* spirv_cpp.cpp in Sources */,
+				849B23F91EB4C2150033C44C /* spirv_glsl.cpp in Sources */,
+				84A897BF209D7190001AFDB4 /* spirv_cross_util.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		849B23B31EB4C1870033C44C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		849B23B41EB4C1870033C44C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = NO;
+			};
+			name = Release;
+		};
+		849B23B61EB4C1870033C44C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		849B23B71EB4C1870033C44C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		849B23C31EB4C19F0033C44C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		849B23C41EB4C19F0033C44C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		849B23AC1EB4C1870033C44C /* Build configuration list for PBXProject "SPIRV-Cross" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				849B23B31EB4C1870033C44C /* Debug */,
+				849B23B41EB4C1870033C44C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		849B23B51EB4C1870033C44C /* Build configuration list for PBXNativeTarget "SPIRV-Cross_macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				849B23B61EB4C1870033C44C /* Debug */,
+				849B23B71EB4C1870033C44C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		849B23C21EB4C19F0033C44C /* Build configuration list for PBXNativeTarget "SPIRV-Cross_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				849B23C31EB4C19F0033C44C /* Debug */,
+				849B23C41EB4C19F0033C44C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 849B23A91EB4C1870033C44C /* Project object */;
+}

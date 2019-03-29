@@ -1,15 +1,14 @@
-﻿//
+//
 //  File: DKTransform.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKTransform.h"
 #include "DKAffineTransform3.h"
 #include "DKLinearTransform3.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
 const DKTransformUnit DKTransformUnit::identity = DKTransformUnit().Identity();
@@ -19,7 +18,7 @@ const DKNSTransform DKNSTransform::identity = DKNSTransform().Identity();
 ////////////////////////////////////////////////////////////////////////////////
 // class DKTransformUnit
 ////////////////////////////////////////////////////////////////////////////////
-DKTransformUnit::DKTransformUnit(void)
+DKTransformUnit::DKTransformUnit()
 	: scale(1.0f, 1.0f, 1.0f)
 	, rotation(0.0f, 0.0f, 0.0f, 1.0f)
 	, translation(0.0f, 0.0f, 0.0f)
@@ -53,7 +52,7 @@ DKMatrix3 DKTransformUnit::Matrix3() const
 	return mat3;
 }
 
-DKMatrix4 DKTransformUnit::Matrix4(void) const
+DKMatrix4 DKTransformUnit::Matrix4() const
 {
 	DKMatrix3 mat3 = Matrix3();
 	return DKMatrix4(
@@ -71,7 +70,7 @@ DKTransformUnit DKTransformUnit::Interpolate(const DKTransformUnit& target, floa
 		translation + ((target.translation - translation) * t));
 }
 
-DKTransformUnit& DKTransformUnit::Identity(void)
+DKTransformUnit& DKTransformUnit::Identity()
 {
 	scale = DKVector3(1.0f, 1.0f, 1.0f);
 	rotation = DKQuaternion(0.0f, 0.0f, 0.0f, 1.0f);
@@ -93,7 +92,7 @@ bool DKTransformUnit::operator != (const DKTransformUnit& t) const
 // class DKUSTransform
 ////////////////////////////////////////////////////////////////////////////////
 
-DKUSTransform::DKUSTransform(void)
+DKUSTransform::DKUSTransform()
 	: scale(1.0f)
 	, orientation(0.0f, 0.0f, 0.0f, 1.0f)
 	, position(0.0f, 0.0f, 0.0f)
@@ -107,12 +106,12 @@ DKUSTransform::DKUSTransform(float s, const DKQuaternion& r, const DKVector3& t)
 {
 }
 
-DKMatrix3 DKUSTransform::Matrix3(void) const
+DKMatrix3 DKUSTransform::Matrix3() const
 {
 	return orientation.Matrix3() * scale;
 }
 
-DKMatrix4 DKUSTransform::Matrix4(void) const
+DKMatrix4 DKUSTransform::Matrix4() const
 {
 	DKMatrix3 mat3 = orientation.Matrix3() * scale;
 	return DKMatrix4(
@@ -130,7 +129,7 @@ DKUSTransform DKUSTransform::Interpolate(const DKUSTransform& target, float t) c
 		position + ((target.position - position) * t));
 }
 
-DKUSTransform& DKUSTransform::Identity(void)
+DKUSTransform& DKUSTransform::Identity()
 {
 	scale = 1.0f;
 	orientation = DKQuaternion(0.0f, 0.0f, 0.0f, 1.0f);
@@ -138,7 +137,7 @@ DKUSTransform& DKUSTransform::Identity(void)
 	return *this;
 }
 
-DKUSTransform& DKUSTransform::Inverse(void)
+DKUSTransform& DKUSTransform::Inverse()
 {
 	scale = 1.0 / scale;
 	orientation.Conjugate();
@@ -192,7 +191,7 @@ DKNSTransform::DKNSTransform(const DKVector3& t)
 {
 }
 
-DKNSTransform& DKNSTransform::Identity(void)
+DKNSTransform& DKNSTransform::Identity()
 {
 	orientation.Identity();
 	position.x = 0;
@@ -201,7 +200,7 @@ DKNSTransform& DKNSTransform::Identity(void)
 	return *this;
 }
 
-DKNSTransform& DKNSTransform::Inverse(void)
+DKNSTransform& DKNSTransform::Inverse()
 {
 	orientation.Conjugate();
 	position = -position * orientation;
@@ -215,12 +214,12 @@ DKNSTransform DKNSTransform::Interpolate(const DKNSTransform& target, float t) c
 		this->position + ((target.position - this->position) * t));
 }
 
-DKMatrix3 DKNSTransform::Matrix3(void) const
+DKMatrix3 DKNSTransform::Matrix3() const
 {
 	return orientation.Matrix3();
 }
 
-DKMatrix4 DKNSTransform::Matrix4(void) const
+DKMatrix4 DKNSTransform::Matrix4() const
 {
 	DKMatrix3 mat3 = orientation.Matrix3();
 	return DKMatrix4(

@@ -2,7 +2,7 @@
 //  File: DKStaticArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,34 +11,18 @@
 #include "DKFunction.h"
 
 #ifndef DKSTATICARRAY_USE_STL_SORT
-// Set 1 if you want to use stl sort (std::sort) as your default sort function.
-// std::sort could be faster.
+/// Set 1 if you want to use stl sort (std::sort) as your default sort function.
+/// std::sort could be faster.
 #define DKSTATICARRAY_USE_STL_SORT	0
-#endif
-
-#ifndef DKSTATICARRAY_USE_STATIC_ROTATE
-// Set 1 if you don't want additional memory allocation for item rotation.
-// For lots of elements, memory allocated rotation is faster normally.
-#define DKSTATICARRAY_USE_STATIC_ROTATE	0
 #endif
 
 #if DKSTATICARRAY_USE_STL_SORT
 #include <algorithm>
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-// DKStaticArray
-// A simple array with fixed length (non-allocationg).
-// This class provides sorting algorithm.
-// You can use std::sort for default sorting algorithm
-// by defining DKSTATICARRAY_USE_STL_SORT=1
-//
-// This class using external array (by pointer), of course, not thread safe.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
-	// iterator class for range-based for loop
+	/// DKStaticArray iterator class for range-based for loop
 	template <typename CONTAINER, typename ITEMREF>
 	struct DKArrayRBIterator
 	{
@@ -56,37 +40,46 @@ namespace DKFoundation
 		{
 			return this->position != it.position;
 		}
-		DKArrayRBIterator& operator ++ (void)	// prefix++
+		DKArrayRBIterator& operator ++ ()	// prefix++
 		{
 			++position;
 			return *this;
 		}
-		ITEMREF operator * (void)
+		ITEMREF operator * ()
 		{
 			DKASSERT_DEBUG(container.Count() >= position);
 			return container.Value(position);
 		}
 	};
 
+	/// A simple array with fixed length (static).
+	/// This class provides sorting algorithm.
+	/// You can use std::sort for default sorting algorithm
+	/// by defining DKSTATICARRAY_USE_STL_SORT=1
+	///
+	/// This class using external array (by pointer), not thread safe.
 	template <typename VALUE> class DKStaticArray
 	{
 	public:
 		typedef size_t					Index;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum { UseMemoryCopy = 0 };
+		using SwapMethod = DKNumber<UseMemoryCopy>;
 
-		// Iterator class for range-based for loop
+		enum : Index { IndexNotFound = ~Index(0) };
+
+		/// Iterator class for range-based for loop
 		typedef DKArrayRBIterator<DKStaticArray, VALUE&>				RBIterator;
 		typedef DKArrayRBIterator<const DKStaticArray, const VALUE&>	ConstRBIterator;
-		RBIterator begin(void)				{return RBIterator(*this, 0);}
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}
+		RBIterator begin()				{return RBIterator(*this, 0);}
+		ConstRBIterator begin() const	{return ConstRBIterator(*this, 0);}
+		RBIterator end()				{return RBIterator(*this, this->Count());}
+		ConstRBIterator end() const		{return ConstRBIterator(*this, this->Count());}
 
-		DKStaticArray(void)
+		DKStaticArray()
 			: data(NULL), count(0)
 		{
 		}
@@ -100,18 +93,18 @@ namespace DKFoundation
 		{
 			Reset(v);
 		}
-		~DKStaticArray(void)
+		~DKStaticArray()
 		{
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			return count == 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			return count;
 		}
-		void Clear(void)
+		void Clear()
 		{
 			Reset(NULL, 0);
 		}
@@ -125,13 +118,13 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count > index);
 			return data[index];
 		}
-		operator VALUE* (void)
+		operator VALUE* ()
 		{
 			if (count > 0)
 				return data;
 			return NULL;
 		}
-		operator const VALUE* (void) const
+		operator const VALUE* () const
 		{
 			if (count > 0)
 				return data;
@@ -163,43 +156,7 @@ namespace DKFoundation
 		{
 			if (count > 1)
 			{
-				size_t left = n % count;
-				if (left > 0)
-				{
-#if DKSTATICARRAY_USE_STATIC_ROTATE
-					size_t first = 0;
-					size_t next = left;
-					size_t mid = left;
-					while (first != next)
-					{
-						Swap(first, next);
-						++first;
-						++next;
-						if (next == count)
-							next = mid;
-						else if (first == mid)
-							mid = next;						
-					}
-#else
-					size_t right = count - left;
-					if (right < left)
-					{
-						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * right);
-						memcpy(tmp, &data[left], sizeof(VALUE) * right);
-						memmove(&data[right], data, sizeof(VALUE) * left);
-						memcpy(data, tmp, sizeof(VALUE) * right);
-						DKMemoryDefaultAllocator::Free(tmp);
-					}
-					else
-					{
-						void* tmp = DKMemoryDefaultAllocator::Alloc(sizeof(VALUE) * left);
-						memcpy(tmp, data, sizeof(VALUE) * left);
-						memmove(data, &data[left], sizeof(VALUE) * right);
-						memcpy(&data[right], tmp, sizeof(VALUE) * left);
-						DKMemoryDefaultAllocator::Free(tmp);
-					}
-#endif
-				}
+				LeftRotate(n, SwapMethod());
 			}
 		}
 		void RightRotate(size_t n)
@@ -254,14 +211,7 @@ namespace DKFoundation
 
 			if (v1 != v2)
 			{
-				unsigned char* p1 = reinterpret_cast<unsigned char*>(&data[v1]);
-				unsigned char* p2 = reinterpret_cast<unsigned char*>(&data[v2]);
-				for (int i = 0; i < sizeof(VALUE); ++i)
-				{
-					unsigned char tmp = p1[i];
-					p1[i] = p2[i];
-					p2[i] = tmp;
-				}
+				Swap(v1, v2, SwapMethod());
 			}
 		}
 		void Sort(const DKFunctionSignature<bool (const VALUE&, const VALUE&)>* cmp)
@@ -273,18 +223,24 @@ namespace DKFoundation
 			if (count > 1)
 			{
 #if DKSTATICARRAY_USE_STL_SORT
-			std::sort(&data[0], &data[0] + count, cmp);
+				std::sort(std::addressof(data[0]), std::addressof(data[count]), cmp);
 #else
-			SortLoop<CompareFunc>(0, count, cmp);
+				size_t depth = 1;
+				for (size_t n = count; n; n >>= 1)
+					++depth;
+				depth = (depth << 1);
+
+				using CompareFuncRef = typename DKTypeTraits<CompareFunc>::ReferredType&;
+				SortLoop<CompareFuncRef>(0, count-1, depth, cmp);
 #endif
 			}
 		}
-		// enumerate all items.
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// enumerate all items.
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -293,17 +249,17 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -312,7 +268,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -369,6 +325,52 @@ namespace DKFoundation
 			for (Index i = 1; i <= count && !stop; ++i)
 				enumerator(data[count - i], &stop);
 		}
+
+		FORCEINLINE void LeftRotate(size_t n, const DKNumber<0>&)
+		{
+			size_t left = n % count;
+			if (left > 0)
+			{
+				size_t first = 0;
+				size_t next = left;
+				size_t mid = left;
+				while (first != next)
+				{
+					Swap(first, next, SwapMethod());
+					++first;
+					++next;
+					if (next == count)
+						next = mid;
+					else if (first == mid)
+						mid = next;
+				}
+			}
+		}
+		FORCEINLINE void LeftRotate(size_t n, const DKNumber<1>&)
+		{
+			size_t left = n % count;
+			if (left > 0)
+			{
+				size_t right = count - left;
+				if (right < left)
+				{
+					void* tmp = DKMalloc(sizeof(VALUE) * right);
+					memcpy(tmp, std::addressof(data[left]), sizeof(VALUE) * right);
+					memmove(std::addressof(data[right]), data, sizeof(VALUE) * left);
+					memcpy(data, tmp, sizeof(VALUE) * right);
+					DKFree(tmp);
+				}
+				else
+				{
+					void* tmp = DKMalloc(sizeof(VALUE) * left);
+					memcpy(tmp, data, sizeof(VALUE) * left);
+					memmove(data, std::addressof(data[left]), sizeof(VALUE) * right);
+					memcpy(std::addressof(data[right]), tmp, sizeof(VALUE) * left);
+					DKFree(tmp);
+				}
+			}
+		}
+
 		struct Comparator
 		{
 			typedef DKFunctionSignature<bool (const VALUE&, const VALUE&)> Function;
@@ -379,39 +381,74 @@ namespace DKFoundation
 			}
 			const Function* func;
 		};
-		template <typename CompareFunc> Index Partition(Index begin, Index end, Index pivot, CompareFunc cmp)
-		{
-			Index store = begin;
-			Swap(pivot, end);
-			for (Index i = begin; i < end; i++)
-			{
-				if (cmp(data[i], data[end]))
-				{
-					Swap(store, i);
-					store++;
-				}
-			}
-			Swap(end, store);
-			return store;
-		}
-		// determines position of sorting pivot.
-		// TODO: a better algorithm needed.
-		template <typename CompareFunc> Index PivotMedian(Index begin, Index end, CompareFunc cmp)
-		{
-			Index pivot = begin + (end - begin)/2;
 
-			if (cmp(data[begin], data[pivot]) && cmp(data[end], data[begin]))
-				pivot = begin;
-			else if (cmp(data[end], data[pivot]) && cmp(data[begin], data[end]))
-				pivot = end;
-			return pivot;
+		FORCEINLINE void Swap(Index v1, Index v2, const DKNumber<0>&)
+		{
+			DKASSERT_DEBUG(v1 < count);
+			DKASSERT_DEBUG(v2 < count);
+			DKASSERT_DEBUG(v1 != v2);
+
+			VALUE tmp = std::move(data[v1]);
+			data[v1] = std::move(data[v2]);
+			data[v2] = std::move(tmp);
+		}
+		FORCEINLINE void Swap(Index v1, Index v2, const DKNumber<1>&)
+		{
+			DKASSERT_DEBUG(v1 < count);
+			DKASSERT_DEBUG(v2 < count);
+			DKASSERT_DEBUG(v1 != v2);
+
+			uint8_t tmp[sizeof(VALUE)];
+			memcpy(tmp, std::addressof(data[v1]), sizeof(VALUE));
+			memcpy(std::addressof(data[v1]), std::addressof(data[v2]), sizeof(VALUE));
+			memcpy(std::addressof(data[v2]), tmp, sizeof(VALUE));
+		}
+
+		template <typename CompareFunc> Index Partition(Index begin, Index end, CompareFunc cmp)
+		{
+			Index medium = begin + ((end - begin + 1) >> 1);
+
+			Index pivotIndex;
+			if (cmp(data[begin], data[medium]))
+			{
+				if (cmp(data[medium], data[end]))
+					pivotIndex = medium;
+				else if (cmp(data[begin], data[end]))
+					pivotIndex = end;
+				else
+					pivotIndex = begin;
+			}
+			else if (cmp(data[begin], data[end]))
+				pivotIndex = begin;
+			else if (cmp(data[medium], data[end]))
+				pivotIndex = end;
+			else
+				pivotIndex = medium;
+
+			VALUE pivot = data[pivotIndex];
+
+			while (true)
+			{
+				while (cmp(data[begin], pivot))
+					++begin;
+				while (cmp(pivot, data[end]))
+					--end;
+				if (!(begin < end))
+					break;
+
+				Swap(begin, end, SwapMethod());
+
+				++begin;
+				--end;
+			}
+			return begin;
 		}
 		template <typename CompareFunc> void InsertionSort(Index begin, Index end, CompareFunc cmp)
 		{
-			for (Index i = begin + 1; i < end; i++)
+			for (Index i = begin + 1; i <= end; ++i)
 			{
-				for (Index k = i ; k > begin && cmp(data[k], data[k-1]); k--)
-					Swap(k, k-1);
+				for (Index k = i ; k > begin && cmp(data[k], data[k-1]); --k)
+					Swap(k, k-1, SwapMethod());
 			}
 		}
 		template <typename CompareFunc> void Heapify(Index begin, Index pos, size_t size, CompareFunc cmp)
@@ -430,49 +467,71 @@ namespace DKFoundation
 			}
 			if (great != pos)
 			{
-				Swap(pos, great);
+				Swap(pos, great, SwapMethod());
 				Heapify<CompareFunc>(begin, great, size, cmp);
 			}
 		}
 		template <typename CompareFunc> void BuildHeap(Index begin, size_t size, CompareFunc cmp)
 		{
-			for (size_t i = ((size - 1) / 2) + 1; i > 0; --i)
+			for (size_t i = ((size - 1) >> 1) + 1; i > 0; --i)
 				Heapify<CompareFunc>(begin, begin+(i-1), size, cmp);
 		}
 		template <typename CompareFunc> void HeapSort(Index begin, Index end, CompareFunc cmp)
 		{
-			size_t size = end - begin;
+			size_t size = end - begin + 1;
 			BuildHeap<CompareFunc>(begin, size, cmp);
-			for (size_t i = size; i > 0; i--)
+			while (--size)
 			{
-				Swap(begin, begin+size-1);
-				size--;
+				Swap(begin, begin + size, SwapMethod());
 				Heapify<CompareFunc>(begin, begin, size, cmp);
 			}
-		}
-		template <typename CompareFunc> void SortLoop(Index begin, Index end, CompareFunc cmp)
-		{
-			Index factor = end - begin;
-			if (factor > 32)
-			{
-				Index pivot = PivotMedian<CompareFunc>(begin, end-1, cmp);
-				pivot = Partition<CompareFunc>(begin, end-1, pivot, cmp);
+		} 
 
-				SortLoop<CompareFunc>(begin, pivot, cmp);
-				SortLoop<CompareFunc>(pivot+1, end, cmp);
-			}
-			else if (factor > 16)
+		template <typename CompareFunc> void SortLoop(Index begin, Index end, size_t depth, CompareFunc cmp)
+		{
+			Index c = end - begin + 1;
+#if 0
+			while (c > 16)
 			{
-				HeapSort<CompareFunc>(begin, end, cmp);
+				if (depth)
+				{
+					--depth;
+					Index pivot = Partition<CompareFunc>(begin, end, cmp);
+					SortLoop<CompareFunc>(pivot, end, depth, cmp);
+					end = pivot - 1;
+					c = end - begin + 1;
+				}
+				else
+				{
+					HeapSort<CompareFunc>(begin, end, cmp);
+					return;
+				}
 			}
-			else if (factor > 2)
+#else
+			if (c > 16)
+			{
+				if (depth)
+				{
+					--depth;
+					Index pivot = Partition<CompareFunc>(begin, end, cmp);
+					SortLoop<CompareFunc>(begin, pivot-1, depth, cmp);
+					SortLoop<CompareFunc>(pivot, end, depth, cmp);
+				}
+				else
+				{
+					HeapSort<CompareFunc>(begin, end, cmp);
+				}
+			}
+			else
+#endif
+			if (c > 2)
 			{
 				InsertionSort<CompareFunc>(begin, end, cmp);
 			}
-			else if (factor > 1)
+			else if (c > 1)
 			{
-				if (cmp(data[begin+1], data[begin]))
-					Swap(begin, begin+1);
+				if (cmp(data[end], data[begin]))
+					Swap(begin, end, SwapMethod());
 			}
 		}
 

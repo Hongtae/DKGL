@@ -1,36 +1,33 @@
-﻿//
+//
 //  File: DKModel.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKResource.h"
 #include "DKTransform.h"
 #include "DKAnimationController.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// DKModel
-// a skeletal node object for scene (DKScene).
-// this object can be structured hierarchical. (parent-children relationship)
-// this is basic entry for scene.
-// this object can be animated with DKAnimationController.
-//
-// Note:
-//    On serialize, world-transform will not saved, calculated with local
-//    transform after restored.
-//    If you subclass, you should override Clone() with your inherited type.
-//    In case of constraint (DKConstraint), not all objects can be accepted as
-//    parent which is DKConstraint's reference bodies. You can overrides this
-//    behavior.
-///////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
-	class DKScene;
+	class DKWorld;
+	/// @brief
+	/// a skeletal node object for scene (DKWorld).
+	/// @details
+	/// this object can be structured hierarchical. (parent-children relationship)
+	/// this is basic entry for scene.
+	/// this object can be animated with DKAnimationController.
+	///
+	/// @note
+	///    On serialize, world-transform will not saved, calculated with local
+	///    transform after restored.
+	///    If you subclass, you should override Clone() with your inherited type.
+	///    In case of constraint (DKConstraint), not all objects can be accepted as
+	///    parent which is DKConstraint's reference bodies. You can overrides this
+	///    behavior.
 	class DKGL_API DKModel : public DKResource
 	{
 	public:
@@ -42,89 +39,87 @@ namespace DKFramework
 			TypeConstraint,
 			TypeAction,
 		};
-		using NamedObjectMap = DKFoundation::DKMap<DKFoundation::DKString, DKModel*>;
-		using UUIDObjectMap = DKFoundation::DKMap<DKFoundation::DKUuid, DKModel*>;
+		using NamedObjectMap = DKMap<DKString, DKModel*>;
+		using UUIDObjectMap = DKMap<DKUuid, DKModel*>;
 
-		using Enumerator = DKFoundation::DKFunctionSignature<bool(DKModel*)>;
-		using EnumeratorLoop = DKFoundation::DKFunctionSignature<void(DKModel*)>;
-		using ConstEnumerator = DKFoundation::DKFunctionSignature<bool(const DKModel*)>;
-		using ConstEnumeratorLoop = DKFoundation::DKFunctionSignature<void(const DKModel*)>;
+		using Enumerator = DKFunctionSignature<bool(DKModel*)>;
+		using EnumeratorLoop = DKFunctionSignature<void(DKModel*)>;
+		using ConstEnumerator = DKFunctionSignature<bool(const DKModel*)>;
+		using ConstEnumeratorLoop = DKFunctionSignature<void(const DKModel*)>;
 
 		const Type type;
 
-		DKModel(void);
-		virtual ~DKModel(void);
+		DKModel();
+		virtual ~DKModel();
 
-		DKScene* Scene(void)					{ return scene; }
-		const DKScene* Scene(void) const		{ return scene; }
-		virtual void RemoveFromScene(void);
+		DKWorld* Scene()					{ return scene; }
+		const DKWorld* Scene() const		{ return scene; }
+		virtual void RemoveFromScene();
 
 		bool AddChild(DKModel*);
-		void RemoveFromParent(void);
+		void RemoveFromParent();
 
-		DKModel* RootObject(void);
-		const DKModel* RootObject(void) const;
+		DKModel* RootObject();
+		const DKModel* RootObject() const;
 
-		DKModel* Parent(void)				{ return parent; }
-		const DKModel* Parent(void) const	{ return parent; }
+		DKModel* Parent()				{ return parent; }
+		const DKModel* Parent() const	{ return parent; }
 
 		bool IsDescendantOf(const DKModel* obj) const;
-		size_t NumberOfDescendants(void) const;
-		DKModel* FindDescendant(const DKFoundation::DKString&);
-		const DKModel* FindDescendant(const DKFoundation::DKString&) const;
+		size_t NumberOfDescendants() const;
+		DKModel* FindDescendant(const DKString&);
+		const DKModel* FindDescendant(const DKString&) const;
 		DKModel* FindCommonAncestor(DKModel*, DKModel*, Type t = TypeCustom);
 
 		DKModel* ChildAtIndex(unsigned int i)					{ return children.Value(i); }
 		const DKModel* ChildAtIndex(unsigned int i) const		{ return children.Value(i); }
-		size_t NumberOfChildren(void) const						{ return children.Count(); }
+		size_t NumberOfChildren() const						{ return children.Count(); }
 
-		// show/hide all descendants (not self)
+		/// show/hide all descendants (not self)
 		void SetDescendantsHidden(bool hidden)			{ hideDescendants = hidden; }
-		bool AreDescendantsHidden(void) const			{ return hideDescendants; }
-		bool DidAncestorHideDescendants(void) const;
+		bool AreDescendantsHidden() const			{ return hideDescendants; }
+		bool DidAncestorHideDescendants() const;
 
 		void Enumerate(Enumerator* e)					{ EnumerateInternal(e); }
 		void Enumerate(EnumeratorLoop* e)				{ EnumerateInternal(e); }
 		void Enumerate(ConstEnumerator* e) const		{ EnumerateInternal(e); }
 		void Enumerate(ConstEnumeratorLoop* e) const	{ EnumerateInternal(e); }
 
-		DKAnimatedTransform* Animation(void)				{ return animation; }
-		const DKAnimatedTransform* Animation(void) const	{ return animation; }
+		DKAnimatedTransform* Animation()				{ return animation; }
+		const DKAnimatedTransform* Animation() const	{ return animation; }
 		void SetAnimation(DKAnimatedTransform*, bool recursive = true);
 
 		virtual void SetWorldTransform(const DKNSTransform&);
 		virtual void SetLocalTransform(const DKNSTransform&);
-		const DKNSTransform& WorldTransform(void) const		{ return worldTransform; }
-		const DKNSTransform& LocalTransform(void) const		{ return localTransform; }
+		const DKNSTransform& WorldTransform() const		{ return worldTransform; }
+		const DKNSTransform& LocalTransform() const		{ return localTransform; }
 
-		void CreateNamedObjectMap(NamedObjectMap&); // building object map for search by name.
-		void CreateUUIDObjectMap(UUIDObjectMap&);   // building object map for search by UUID.
+		void CreateNamedObjectMap(NamedObjectMap&); ///< building object map for search by name.
+		void CreateUUIDObjectMap(UUIDObjectMap&);   ///< building object map for search by UUID.
 
-		// UpdateKinematic : before simulate
-		// UpdateSceneState : after simulate, before rendering
-		void UpdateKinematic(double timeDelta, DKFoundation::DKTimeTick tick);
-		void UpdateSceneState(const DKNSTransform&);
+		void UpdateKinematic(double timeDelta, DKTimeTick tick); ///< update before simulate begin
+		void UpdateSceneState(const DKNSTransform&);			 ///< update after simulate, before render begin
 
 		void UpdateLocalTransform(bool recursive = true);
 		void UpdateWorldTransform(bool recursive = true);
 
-		// clone object. (internal resources are shared)
-		DKFoundation::DKObject<DKModel> Clone(void) const;
-		// serializer
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		/// clone object. (internal resources are shared)
+		DKObject<DKModel> Clone() const;
+		/// serializer
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		virtual void OnAddedToScene(void) {}
-		virtual void OnRemovedFromScene(void) {}
-		virtual void OnAddedToParent(void) {}
-		virtual void OnRemovedFromParent(void) {}
+		virtual void OnAddedToScene() {}
+		virtual void OnRemovedFromScene() {}
+		virtual void OnAddedToParent() {}
+		virtual void OnRemovedFromParent() {}
 		virtual void OnSetAnimation(DKAnimatedTransform*) {}
 
 		// OnUpdateTreeReferences: called on tree changed or restored.
 		virtual void OnUpdateTreeReferences(NamedObjectMap&, UUIDObjectMap&) {}
 
 		// OnUpdateKinematic: called before simulate.
-		virtual void OnUpdateKinematic(double timeDelta, DKFoundation::DKTimeTick tick);
+		virtual void OnUpdateKinematic(double timeDelta, DKTimeTick tick);
 
 		// OnUpdateSceneState: called after simulate, before render.
 		virtual void OnUpdateSceneState(const DKNSTransform& parentWorldTransform);
@@ -137,14 +132,14 @@ namespace DKFramework
 		// if object be in scene, temporary removed from scene and calls given
 		// operation(op) then add to scene again.
 		// parameter op must have object-reset routines.
-		void ReloadSceneContext(DKFoundation::DKOperation* op);
+		void ReloadSceneContext(DKOperation* op);
 
 		DKModel(Type t); // t = TypeCustom for custom subclass.
 
 		// Clone: clone node tree. (current object's clone will be root of cloned tree)
 		// clone operation does save object's UUIDs to given parameter (UUIDObjectMap&)
 		// You can find cloned object with original object's UUID with UUIDObjectMap
-		virtual DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const;
+		virtual DKObject<DKModel> Clone(UUIDObjectMap&) const;
 		DKModel* Copy(UUIDObjectMap&, const DKModel*);
 
 		// UpdateCopiedReferenceUUIDs: called on object has been cloned. (UUID has changed).
@@ -164,9 +159,9 @@ namespace DKFramework
 
 	private:
 		DKModel* parent;
-		DKScene* scene;
-		DKFoundation::DKArray<DKFoundation::DKObject<DKModel>> children;
-		DKFoundation::DKObject<DKAnimatedTransform> animation;
+		DKWorld* scene;
+		DKArray<DKObject<DKModel>> children;
+		DKObject<DKAnimatedTransform> animation;
 
 		bool hideDescendants;
 
@@ -180,6 +175,6 @@ namespace DKFramework
 
 		DKModel& operator = (const DKModel&);
 
-		friend class DKScene;
+		friend class DKWorld;
 	};
 }

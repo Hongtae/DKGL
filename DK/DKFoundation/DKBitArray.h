@@ -2,28 +2,23 @@
 //  File: DKBitArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <initializer_list>
+#include "../DKInclude.h"
 #include "DKTypeTraits.h"
 #include "DKDummyLock.h"
 #include "DKCriticalSection.h"
 #include "DKMemory.h"
 #include "DKFunction.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// DKBitArray
-// A special array that contains bit data.
-// This class does not support enumeration or pointer-casting operator,
-// because of only two values (true, false) are acceptable.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief A special array that contains bit data.
+	/// This class does not support enumeration or pointer-casting operator,
+	/// because of only two values (true, false) are acceptable.
 	template <typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKBitArray
 	{
@@ -36,19 +31,18 @@ namespace DKFoundation
 		using Unit = size_t;
 		enum { BitsPerUnit = sizeof(Unit) * 8 };
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum : Index { IndexNotFound = ~Index(0) };
 
 		Lock lock;
 
-		// implementation for range-based-for-loop.
-		typedef DKArrayRBIterator<DKBitArray, bool>				RBIterator;
-		typedef DKArrayRBIterator<const DKBitArray, bool>		ConstRBIterator;
-		RBIterator begin(void)				{ return RBIterator(*this, 0); }
-		ConstRBIterator begin(void) const	{ return ConstRBIterator(*this, 0); }
-		RBIterator end(void)				{ return RBIterator(*this, this->Count()); }
-		ConstRBIterator end(void) const		{ return ConstRBIterator(*this, this->Count()); }
+		typedef DKArrayRBIterator<DKBitArray, bool>				RBIterator;						///<  implementation for range-based-for-loop.
+		typedef DKArrayRBIterator<const DKBitArray, bool>		ConstRBIterator;				///<  implementation for range-based-for-loop.
+		RBIterator begin()				{ return RBIterator(*this, 0); }					///<  implementation for range-based-for-loop.
+		ConstRBIterator begin() const	{ return ConstRBIterator(*this, 0); }				///<  implementation for range-based-for-loop.
+		RBIterator end()				{ return RBIterator(*this, this->Count()); }		///<  implementation for range-based-for-loop.
+		ConstRBIterator end() const		{ return ConstRBIterator(*this, this->Count()); }	///<  implementation for range-based-for-loop.
 
-		DKBitArray(void) : data(NULL), count(0), capacity(0)
+		DKBitArray() : data(NULL), count(0), capacity(0)
 		{
 		}
 		DKBitArray(const bool* values, size_t count) : data(NULL), count(0), capacity(0)
@@ -81,22 +75,22 @@ namespace DKFoundation
 				}
 			}
 		}
-		~DKBitArray(void)
+		~DKBitArray()
 		{
 			if (data)
 				Allocator::Free(data);
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return count == 0;
 		}
-		// append one item to tail.
+		/// append one item to tail.
 		Index Add(bool value)
 		{
 			return Add(value, 1);
 		}
-		// append 's' length of values to tail.
+		/// append 's' length of values to tail.
 		Index Add(const bool* values, size_t s)
 		{
 			CriticalSection guard(lock);
@@ -107,7 +101,7 @@ namespace DKFoundation
 				SetValueAtIndexNL(offset + i, values[i]);
 			return offset;
 		}
-		// append value to tail 's' times. (value x s)
+		/// append value to tail 's' times. (value x s)
 		Index Add(bool value, size_t s)
 		{
 			CriticalSection guard(lock);
@@ -118,7 +112,7 @@ namespace DKFoundation
 				SetValueAtIndexNL(offset + i, value);
 			return offset;
 		}
-		// append other array's elements to tail.
+		/// append other array's elements to tail.
 		template <typename T, typename U>
 		Index Add(const DKBitArray<T, U>& value)
 		{
@@ -131,7 +125,7 @@ namespace DKFoundation
 				SetValueAtIndexNL(offset + i, value.Value(i));
 			return offset;
 		}
-		// append initializer-list items to tail.
+		/// append initializer-list items to tail.
 		Index Add(std::initializer_list<bool> il)
 		{
 			CriticalSection guard(lock);
@@ -145,7 +139,7 @@ namespace DKFoundation
 			}
 			return offset;
 		}
-		// insert array's elements into position 'pos'.
+		/// insert array's elements into position 'pos'.
 		template <typename ...Args>
 		Index Insert(const DKBitArray<Args...>& value, Index pos)
 		{
@@ -169,7 +163,7 @@ namespace DKFoundation
 			}
 			return pos;
 		}
-		// insert one value into position 'pos'.
+		/// insert one value into position 'pos'.
 		Index Insert(bool value, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -184,7 +178,7 @@ namespace DKFoundation
 			SetValueAtIndexNL(pos, value);
 			return pos;
 		}
-		// insert 's' length of values into position 'pos'.
+		/// insert 's' length of values into position 'pos'.
 		Index Insert(const bool* values, size_t s, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -200,7 +194,7 @@ namespace DKFoundation
 				SetValueAtIndexNL(pos + i, values[i]);
 			return pos;
 		}
-		// insert value 's' times into position 'pos'.
+		/// insert value 's' times into position 'pos'.
 		Index Insert(bool value, size_t s, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -216,7 +210,7 @@ namespace DKFoundation
 				SetValueAtIndexNL(pos + i, value);
 			return pos;
 		}
-		// insert initializer-list into position 'pos'.
+		/// insert initializer-list into position 'pos'.
 		Index Insert(std::initializer_list<bool> il, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -235,7 +229,7 @@ namespace DKFoundation
 			}
 			return pos - s;
 		}
-		// remove 'c' items at pos. (c = count)
+		/// remove 'c' items at pos. (c = count)
 		size_t Remove(Index pos, size_t c = 1)
 		{
 			CriticalSection guard(lock);
@@ -244,22 +238,22 @@ namespace DKFoundation
 			return count;
 		}
 
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			count = 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return capacity;
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			size_t countBytes = UnitLengthForBits(count);

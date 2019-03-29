@@ -54,9 +54,21 @@ __pycache__/
 .idea/workspace.xml
 .idea/dictionaries/
 
-# Sphinx documentation
-docs/_build/
+# auto generated documents
+docs/*/
 
 # project settings
-Build/**
+Build/
+DK/Libs/Build/
+
+# Visual Studio 2015 and later
+*.VC.db
+*.VC.opendb
+**/.vs/
+
+# separated workspace file inside xcodeproj
+**/*.xcodeproj/project.xcworkspace
+
+# no xc shared
+**/*.xcodeproj/xcshareddata/
 

@@ -2,28 +2,27 @@
 //  File: DKRigidBody.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKCollisionObject.h"
 #include "DKCollisionShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKRigidBody
-// a rigid body. a node object which can be used by DKScene.
-// object should have CollisionShape to interact.
-// this class not designed for subclassing.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief
+	/// a rigid body. a node object which can be used by DKWorld.
+	/// @details
+	/// object should have CollisionShape to interact.
+	/// @note
+	/// this class not designed for subclassing.
 	class DKGL_API DKRigidBody : public DKCollisionObject
 	{
 		friend class DKConstraint;
 	public:
+		/// internal object properties
 		struct DKGL_API ObjectData
 		{
 			ObjectData(float mass = 0.0f, const DKVector3& localInertia = DKVector3::zero);
@@ -43,50 +42,50 @@ namespace DKFramework
 			float additionalAngularDampingFactor;
 		};
 
-		DKRigidBody(const DKFoundation::DKString& name = L"");
+		DKRigidBody(const DKString& name = L"");
 		DKRigidBody(DKCollisionShape* shape, float mass = 0.0f);
 		DKRigidBody(DKCollisionShape* shape, float mass, const DKVector3& localInertia);
 		DKRigidBody(DKCollisionShape* shape, const ObjectData& data);
-		~DKRigidBody(void);
+		~DKRigidBody();
 
 		void SetWorldTransform(const DKNSTransform& t) override;
 		void SetLocalTransform(const DKNSTransform& t) override;
-		DKNSTransform CenterOfMassTransform(void) const;
-		DKVector3 CenterOfMassPosition(void) const;
+		DKNSTransform CenterOfMassTransform() const;
+		DKVector3 CenterOfMassPosition() const;
 
-		// mass (0 for static object)
+		/// mass (0 for static object)
 		void SetMass(float mass);
-		float Mass(void) const;
-		float InverseMass(void) const;
+		float Mass() const;
+		float InverseMass() const;
 
-		// local inertia, can be calculated by CollisionShape
+		/// local inertia, can be calculated by CollisionShape
 		void SetLocalInertia(const DKVector3& inertia);
-		DKVector3 LocalInertia(void) const;
-		DKVector3 InverseDiagLocalInertia(void) const;
-		DKMatrix3 InverseWorldInertiaTensor(void) const;
+		DKVector3 LocalInertia() const;
+		DKVector3 InverseDiagLocalInertia() const;
+		DKMatrix3 InverseWorldInertiaTensor() const;
 
 		// linear velocity
 		void SetLinearVelocity(const DKVector3&);
-		DKVector3 LinearVelocity(void) const;
+		DKVector3 LinearVelocity() const;
 
 		// angular velocity
 		void SetAngularVelocity(const DKVector3&);
-		DKVector3 AngularVelocity(void) const;
+		DKVector3 AngularVelocity() const;
 
 		void SetLinearFactor(const DKVector3&);
-		DKVector3 LinearFactor(void) const;
+		DKVector3 LinearFactor() const;
 
 		void SetAngularFactor(const DKVector3&);
-		DKVector3 AngularFactor(void) const;
+		DKVector3 AngularFactor() const;
 
 		void SetLinearDamping(float);
-		float LinearDamping(void) const;
+		float LinearDamping() const;
 
 		void SetAngularDamping(float);
-		float AngularDamping(void) const;
+		float AngularDamping() const;
 
-		DKVector3 TotalForce(void) const;
-		DKVector3 TotalTorque(void) const;
+		DKVector3 TotalForce() const;
+		DKVector3 TotalTorque() const;
 
 		DKVector3 VelocityInLocalPoint(const DKVector3& pos) const;
 
@@ -106,19 +105,19 @@ namespace DKFramework
 
 		void SetLinearSleepingThreshold(float);
 		void SetAngularSleepingThreshold(float);
-		float LinearSleepingThreshold(void) const;
-		float AngularSleepingThreshold(void) const;
+		float LinearSleepingThreshold() const;
+		float AngularSleepingThreshold() const;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;  
+		DKObject<DKSerializer> Serializer() override;  
 
 	protected:
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKRigidBody* Copy(UUIDObjectMap&, const DKRigidBody*);
 
 		bool ResetObject(DKCollisionShape* shape, const ObjectData& data);
 		bool GetObjectData(ObjectData& data) const;
 
-		void OnAddedToParent(void) override;
+		void OnAddedToParent() override;
 		void OnSetAnimation(DKAnimatedTransform*) override;
 		void OnUpdateSceneState(const DKNSTransform& parentWorldTransform) override;
 

@@ -2,44 +2,39 @@
 //  File: DKMatrix3.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKMatrix3
-// 3x3 matrix
-//
-// Note:
-//   This matrix order is Row-major.
-//   transform of Vector3 V is V' = V * Matrix
-////////////////////////////////////////////////////////////////////////////////
+#include "../DKFoundation.h"
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector3;
-
+	/// @brief 3x3 matrix
+	///
+	/// @note
+	///   This matrix order is Row-major.
+	///   transform of Vector3 V is V' = V * Matrix
 	class DKGL_API DKMatrix3
 	{
 	public:
-		DKMatrix3(void);
+		DKMatrix3();
 		DKMatrix3(const DKVector3& row1, const DKVector3& row2, const DKVector3& row3);
 		DKMatrix3(float e11, float e12, float e13, float e21, float e22, float e23, float e31, float e32, float e33);
 
-		DKMatrix3& Zero(void);
-		DKMatrix3& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKMatrix3& SetIdentity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
-		DKMatrix3& Inverse(void);
-		DKMatrix3& Transpose(void);
+		DKMatrix3& Inverse(bool* result = nullptr);
+		DKMatrix3& Transpose();
 		DKMatrix3& Multiply(const DKMatrix3& m);
 
-		float Determinant(void) const;
-		bool GetInverseMatrix(DKMatrix3& matOut, float *pDeterminant) const;
+		float Determinant() const;
+        DKMatrix3 InverseMatrix(bool* result = nullptr, float* determinant = nullptr) const;
+        DKMatrix3 TransposeMatrix() const;
 
 		DKMatrix3 operator * (const DKMatrix3& m) const;
 		DKMatrix3 operator + (const DKMatrix3& m) const;
@@ -56,12 +51,12 @@ namespace DKFramework
 		bool operator == (const DKMatrix3& m) const;
 		bool operator != (const DKMatrix3& m) const;
 
-		DKVector3 Row1(void) const;
-		DKVector3 Row2(void) const;
-		DKVector3 Row3(void) const;
-		DKVector3 Column1(void) const;
-		DKVector3 Column2(void) const;
-		DKVector3 Column3(void) const;
+		DKVector3 Row1() const;
+		DKVector3 Row2() const;
+		DKVector3 Row3() const;
+		DKVector3 Column1() const;
+		DKVector3 Column2() const;
+		DKVector3 Column3() const;
 
 		union
 		{

@@ -2,7 +2,7 @@
 //  File: DKLinearTransform3.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -15,10 +15,9 @@
 #define copysign _copysign
 #endif
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKLinearTransform3::DKLinearTransform3(void)
+DKLinearTransform3::DKLinearTransform3()
 	: matrix3(DKMatrix3::identity)
 {
 }
@@ -46,18 +45,18 @@ DKLinearTransform3::DKLinearTransform3(const DKMatrix3& m)
 {
 }
 
-DKLinearTransform3& DKLinearTransform3::Identity(void)
+DKLinearTransform3& DKLinearTransform3::Identity()
 {
-	matrix3.Identity();
+	matrix3.SetIdentity();
 	return *this;
 }
 
-bool DKLinearTransform3::IsIdentity(void) const
+bool DKLinearTransform3::IsIdentity() const
 {
 	return matrix3.IsIdentity();
 }
 
-bool DKLinearTransform3::IsDiagonal(void) const
+bool DKLinearTransform3::IsDiagonal() const
 {
 	return matrix3.IsDiagonal();
 }
@@ -103,7 +102,7 @@ DKLinearTransform3& DKLinearTransform3::RotateX(float r)
 	float sinR = sin(r);
 
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 	mat.m[1][1] = cosR;
 	mat.m[1][2] = sinR;
 	mat.m[2][1] = -sinR;
@@ -124,7 +123,7 @@ DKLinearTransform3& DKLinearTransform3::RotateY(float r)
 	float sinR = sin(r);
 
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 	mat.m[0][0] = cosR;
 	mat.m[0][2] = -sinR;
 	mat.m[2][0] = sinR;
@@ -145,7 +144,7 @@ DKLinearTransform3& DKLinearTransform3::RotateZ(float r)
 	float sinR = sin(r);
 
 	DKMatrix3 mat;
-	mat.Identity();
+	mat.SetIdentity();
 	mat.m[0][0] = cosR;
 	mat.m[0][1] = sinR;
 	mat.m[1][0] = -sinR;
@@ -216,7 +215,7 @@ bool DKLinearTransform3::operator != (const DKLinearTransform3& t) const
 	return matrix3 != t.matrix3;
 }
 
-DKQuaternion DKLinearTransform3::Rotation(void) const
+DKQuaternion DKLinearTransform3::Rotation() const
 {
 	float x = sqrt( Max( float(0), 1 + matrix3.m[0][0] - matrix3.m[1][1] - matrix3.m[2][2] ) ) / 2;
 	float y = sqrt( Max( float(0), 1 - matrix3.m[0][0] + matrix3.m[1][1] - matrix3.m[2][2] ) ) / 2;
@@ -241,8 +240,7 @@ bool DKLinearTransform3::Decompose(DKVector3& scale, DKQuaternion& rotate) const
 
 	scale = vScale;
 
-	DKMatrix3 normalized;
-	normalized.Zero();
+    DKMatrix3 normalized = {};
 
 	normalized.m[0][0] = matrix3.m[0][0]/scale.x; 
 	normalized.m[0][1] = matrix3.m[0][1]/scale.x; 
@@ -259,7 +257,7 @@ bool DKLinearTransform3::Decompose(DKVector3& scale, DKQuaternion& rotate) const
 	return true;
 }
 
-DKLinearTransform3& DKLinearTransform3::Inverse(void)
+DKLinearTransform3& DKLinearTransform3::Inverse()
 {
 	matrix3.Inverse();
 	return *this;

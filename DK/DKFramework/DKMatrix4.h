@@ -2,45 +2,40 @@
 //  File: DKMatrix4.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKMatrix4
-// 4x4 matrix
-//
-// Note:
-//   This matrix order is Row-major.
-//   transform of Vector4 V is V' = V * Matrix
-////////////////////////////////////////////////////////////////////////////////
+#include "../DKFoundation.h"
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector4;
-
+	/// @brief 4x4 matrix
+	///
+	/// @note
+	///   This matrix order is Row-major.
+	///   transform of Vector4 V is V' = V * Matrix
 	class DKGL_API DKMatrix4
 	{
 	public:
-		DKMatrix4(void);
+		DKMatrix4();
 		DKMatrix4(const DKVector4& row1, const DKVector4& row2, const DKVector4& row3, const DKVector4& row4);
 		DKMatrix4(float e11, float e12, float e13, float e14, float e21, float e22, float e23, float e24,
 			float e31, float e32, float e33, float e34, float e41, float e42, float e43, float e44);
 
-		DKMatrix4& Zero(void);
-		DKMatrix4& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKMatrix4& SetIdentity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
-		DKMatrix4& Inverse(void);
-		DKMatrix4& Transpose(void);
+		DKMatrix4& Inverse(bool* result = nullptr);
+		DKMatrix4& Transpose();
 		DKMatrix4& Multiply(const DKMatrix4& m);
 
-		float Determinant(void) const;
-		bool GetInverseMatrix(DKMatrix4& matOut, float *pDeterminant) const;
+		float Determinant() const;
+        DKMatrix4 InverseMatrix(bool* result = nullptr, float* determinant = nullptr) const;
+        DKMatrix4 TransposeMatrix() const;
 
 		DKMatrix4 operator * (const DKMatrix4& m) const;
 		DKMatrix4 operator + (const DKMatrix4& m) const;
@@ -57,14 +52,14 @@ namespace DKFramework
 		bool operator == (const DKMatrix4& m) const;
 		bool operator != (const DKMatrix4& m) const;
 
-		DKVector4 Row1(void) const;
-		DKVector4 Row2(void) const;
-		DKVector4 Row3(void) const;
-		DKVector4 Row4(void) const;
-		DKVector4 Column1(void) const;
-		DKVector4 Column2(void) const;
-		DKVector4 Column3(void) const;
-		DKVector4 Column4(void) const;
+		DKVector4 Row1() const;
+		DKVector4 Row2() const;
+		DKVector4 Row3() const;
+		DKVector4 Row4() const;
+		DKVector4 Column1() const;
+		DKVector4 Column2() const;
+		DKVector4 Column3() const;
+		DKVector4 Column4() const;
 
 		union
 		{

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,56 +22,53 @@
     <ProjectGuid>{C7312831-A3F6-4E7D-962B-6786972F0A6A}</ProjectGuid>
     <RootNamespace>DK</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <CharacterSet>NotSet</CharacterSet>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Libs.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -91,37 +88,20 @@
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <BuildLog>
@@ -132,37 +112,21 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;DEBUG=1;_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog>
@@ -170,14 +134,9 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       </Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
@@ -185,22 +144,10 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BuildLog>
@@ -211,13 +158,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib/ExtDeps/FreeType/include;lib/ExtDeps/libxml2/include;lib/ExtDeps/libogg/include;lib/ExtDeps/zlib;lib/ExtDeps/bzip2;lib/BulletPhysics/src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1</PreprocessorDefinitions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;DKGL_STATIC;NDEBUG=1;_NDEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
@@ -225,24 +167,214 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib</AdditionalDependencies>
-    </Lib>
+    <Lib />
     <ProjectReference />
     <ProjectReference />
-    <PostBuildEvent>
-      <Command>echo "Copying Header Files..."
-xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
-</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="DKFoundation\DKUtils.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\AppEventLoop.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\Application.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\View.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\ViewController.mm" />
+    <None Include="DKFramework\Private\CocoaTouch\Window.mm" />
+    <None Include="DKFramework\Private\Cocoa\AppEventLoop.mm" />
+    <None Include="DKFramework\Private\Cocoa\Application.mm" />
+    <None Include="DKFramework\Private\Cocoa\View.mm" />
+    <None Include="DKFramework\Private\Cocoa\Window.mm" />
+    <None Include="DKFramework\Private\Metal\CopyCommandEncoder.mm" />
+    <None Include="DKFramework\Private\Metal\Buffer.mm" />
+    <None Include="DKFramework\Private\Metal\CommandBuffer.mm" />
+    <None Include="DKFramework\Private\Metal\CommandQueue.mm" />
+    <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm" />
+    <None Include="DKFramework\Private\Metal\ComputePipelineState.mm" />
+    <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
+    <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
+    <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
+    <None Include="DKFramework\Private\Metal\SamplerState.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderBindingSet.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
+    <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
+    <None Include="DKFramework\Private\Metal\SwapChain.mm" />
+    <None Include="DKFramework\Private\Metal\Texture.mm" />
+    <None Include="Libs.props" />
+    <None Include="LICENSE" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DKFramework\Private\Direct3D12\CopyCommandEncoder.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandBuffer.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandQueue.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\ComputeCommandEncoder.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\GraphicsDevice.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\PixelFormat.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\RenderCommandEncoder.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\SwapChain.cpp" />
+    <ClCompile Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\Texture.cpp" />
+    <ClCompile Include="DKFoundation\DKAllocator.cpp" />
+    <ClCompile Include="DKFoundation\DKAllocatorChain.cpp" />
+    <ClCompile Include="DKFoundation\DKAtomicNumber32.cpp" />
+    <ClCompile Include="DKFoundation\DKAtomicNumber64.cpp" />
+    <ClCompile Include="DKFoundation\DKBuffer.cpp" />
+    <ClCompile Include="DKFoundation\DKBufferStream.cpp" />
+    <ClCompile Include="DKFoundation\DKCompressor.cpp" />
+    <ClCompile Include="DKFoundation\DKCondition.cpp" />
+    <ClCompile Include="DKFoundation\DKData.cpp" />
+    <ClCompile Include="DKFoundation\DKDataStream.cpp" />
+    <ClCompile Include="DKFoundation\DKDateTime.cpp" />
+    <ClCompile Include="DKFoundation\DKDirectory.cpp" />
+    <ClCompile Include="DKFoundation\DKError.cpp" />
+    <ClCompile Include="DKFoundation\DKEventLoop.cpp" />
+    <ClCompile Include="DKFoundation\DKEventLoopTimer.cpp" />
+    <ClCompile Include="DKFoundation\DKFence.cpp" />
+    <ClCompile Include="DKFoundation\DKFile.cpp" />
+    <ClCompile Include="DKFoundation\DKFileMap.cpp" />
+    <ClCompile Include="DKFoundation\DKFloat16.cpp" />
+    <ClCompile Include="DKFoundation\DKHash.cpp" />
+    <ClCompile Include="DKFoundation\DKLock.cpp" />
+    <ClCompile Include="DKFoundation\DKLog.cpp" />
+    <ClCompile Include="DKFoundation\DKLogger.cpp" />
+    <ClCompile Include="DKFoundation\DKMemory.cpp" />
+    <ClCompile Include="DKFoundation\DKMutex.cpp" />
+    <ClCompile Include="DKFoundation\DKObjectRefCounter.cpp" />
+    <ClCompile Include="DKFoundation\DKOperationQueue.cpp" />
+    <ClCompile Include="DKFoundation\DKRationalNumber.cpp" />
+    <ClCompile Include="DKFoundation\DKSharedLock.cpp" />
+    <ClCompile Include="DKFoundation\DKSpinLock.cpp" />
+    <ClCompile Include="DKFoundation\DKStringU8.cpp" />
+    <ClCompile Include="DKFoundation\DKStringUE.cpp" />
+    <ClCompile Include="DKFoundation\DKStringW.cpp" />
+    <ClCompile Include="DKFoundation\DKThread.cpp" />
+    <ClCompile Include="DKFoundation\DKTimer.cpp" />
+    <ClCompile Include="DKFoundation\DKTypeInfo.cpp" />
+    <ClCompile Include="DKFoundation\DKUtils.cpp" />
+    <ClCompile Include="DKFoundation\DKUuid.cpp" />
+    <ClCompile Include="DKFoundation\DKXmlDocument.cpp" />
+    <ClCompile Include="DKFoundation\DKXmlParser.cpp" />
+    <ClCompile Include="DKFoundation\DKZipArchiver.cpp" />
+    <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp" />
+    <ClCompile Include="DKFramework\DKAabb.cpp" />
+    <ClCompile Include="DKFramework\DKAffineTransform2.cpp" />
+    <ClCompile Include="DKFramework\DKAffineTransform3.cpp" />
+    <ClCompile Include="DKFramework\DKAnimation.cpp" />
+    <ClCompile Include="DKFramework\DKAnimationController.cpp" />
+    <ClCompile Include="DKFramework\DKApplication.cpp" />
+    <ClCompile Include="DKFramework\DKAudioDevice.cpp" />
+    <ClCompile Include="DKFramework\DKAudioListener.cpp" />
+    <ClCompile Include="DKFramework\DKAudioPlayer.cpp" />
+    <ClCompile Include="DKFramework\DKAudioSource.cpp" />
+    <ClCompile Include="DKFramework\DKAudioStream.cpp" />
+    <ClCompile Include="DKFramework\DKBox.cpp" />
+    <ClCompile Include="DKFramework\DKBoxShape.cpp" />
+    <ClCompile Include="DKFramework\DKBvh.cpp" />
+    <ClCompile Include="DKFramework\DKCamera.cpp" />
+    <ClCompile Include="DKFramework\DKCapsuleShape.cpp" />
+    <ClCompile Include="DKFramework\DKCollisionObject.cpp" />
+    <ClCompile Include="DKFramework\DKCollisionShape.cpp" />
+    <ClCompile Include="DKFramework\DKCompoundShape.cpp" />
+    <ClCompile Include="DKFramework\DKConcaveShape.cpp" />
+    <ClCompile Include="DKFramework\DKConeShape.cpp" />
+    <ClCompile Include="DKFramework\DKConeTwistConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKConvexHullShape.cpp" />
+    <ClCompile Include="DKFramework\DKConvexShape.cpp" />
+    <ClCompile Include="DKFramework\DKCylinderShape.cpp" />
+    <ClCompile Include="DKFramework\DKDynamicsWorld.cpp" />
+    <ClCompile Include="DKFramework\DKFixedConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKFont.cpp" />
+    <ClCompile Include="DKFramework\DKFrame.cpp" />
+    <ClCompile Include="DKFramework\DKGearConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKGeneric6DofConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKGpuBuffer.cpp" />
+    <ClCompile Include="DKFramework\DKGraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\DKHingeConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKImage.cpp" />
+    <ClCompile Include="DKFramework\DKLine.cpp" />
+    <ClCompile Include="DKFramework\DKLinearTransform2.cpp" />
+    <ClCompile Include="DKFramework\DKLinearTransform3.cpp" />
+    <ClCompile Include="DKFramework\DKMatrix2.cpp" />
+    <ClCompile Include="DKFramework\DKMatrix3.cpp" />
+    <ClCompile Include="DKFramework\DKMatrix4.cpp" />
+    <ClCompile Include="DKFramework\DKModel.cpp" />
+    <ClCompile Include="DKFramework\DKMultiSphereShape.cpp" />
+    <ClCompile Include="DKFramework\DKPlane.cpp" />
+    <ClCompile Include="DKFramework\DKPoint2PointConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKPolyhedralConvexShape.cpp" />
+    <ClCompile Include="DKFramework\DKPropertySet.cpp" />
+    <ClCompile Include="DKFramework\DKQuaternion.cpp" />
+    <ClCompile Include="DKFramework\DKRect.cpp" />
+    <ClCompile Include="DKFramework\DKResource.cpp" />
+    <ClCompile Include="DKFramework\DKResourceLoader.cpp" />
+    <ClCompile Include="DKFramework\DKResourcePool.cpp" />
+    <ClCompile Include="DKFramework\DKRigidBody.cpp" />
+    <ClCompile Include="DKFramework\DKScreen.cpp" />
+    <ClCompile Include="DKFramework\DKSerializer.cpp" />
+    <ClCompile Include="DKFramework\DKShader.cpp" />
+    <ClCompile Include="DKFramework\DKSliderConstraint.cpp" />
+    <ClCompile Include="DKFramework\DKSoftBody.cpp" />
+    <ClCompile Include="DKFramework\DKSphere.cpp" />
+    <ClCompile Include="DKFramework\DKSphereShape.cpp" />
+    <ClCompile Include="DKFramework\DKSpline.cpp" />
+    <ClCompile Include="DKFramework\DKStaticPlaneShape.cpp" />
+    <ClCompile Include="DKFramework\DKStaticTriangleMeshShape.cpp" />
+    <ClCompile Include="DKFramework\DKTransform.cpp" />
+    <ClCompile Include="DKFramework\DKTriangle.cpp" />
+    <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp" />
+    <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp" />
+    <ClCompile Include="DKFramework\DKUpdateQueue.cpp" />
+    <ClCompile Include="DKFramework\DKVariant.cpp" />
+    <ClCompile Include="DKFramework\DKVector2.cpp" />
+    <ClCompile Include="DKFramework\DKVector3.cpp" />
+    <ClCompile Include="DKFramework\DKVector4.cpp" />
+    <ClCompile Include="DKFramework\DKWindow.cpp" />
+    <ClCompile Include="DKFramework\DKWorld.cpp" />
+    <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
+    <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
+    <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
+    <ClCompile Include="DKFramework\Private\GraphicsAPI.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\BufferView.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\CopyCommandEncoder.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Buffer.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\CommandBuffer.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\CommandQueue.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPool.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\DescriptorPoolChain.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\DescriptorSet.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\DeviceMemory.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Image.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ImageView.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderCommandEncoder.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Sampler.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderBindingSet.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\SwapChain.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\GraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\QueueFamily.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\AppEventLoop.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\Application.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\AppLogger.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\DropTarget.cpp" />
+    <ClCompile Include="DKFramework\Private\Win32\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DKFramework\Private\Direct3D12\CopyCommandEncoder.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandAllocator.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandBuffer.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\CommandQueue.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\ComputeCommandEncoder.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\d3d12_headers.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\d3dx12.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\GraphicsDevice.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\PixelFormat.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\RenderCommandEncoder.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\SwapChain.h" />
+    <ClInclude Include="..\..\DKGL2\DK\DKFramework\Private\Direct3D12\Texture.h" />
     <ClInclude Include="DK.h" />
     <ClInclude Include="DKFoundation.h" />
     <ClInclude Include="DKFoundation\DKAllocator.h" />
@@ -254,8 +386,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKBitArray.h" />
     <ClInclude Include="DKFoundation\DKBuffer.h" />
     <ClInclude Include="DKFoundation\DKBufferStream.h" />
-    <ClInclude Include="DKFoundation\DKCallback.h" />
     <ClInclude Include="DKFoundation\DKCircularQueue.h" />
+    <ClInclude Include="DKFoundation\DKCompressor.h" />
     <ClInclude Include="DKFoundation\DKCondition.h" />
     <ClInclude Include="DKFoundation\DKCriticalSection.h" />
     <ClInclude Include="DKFoundation\DKData.h" />
@@ -265,6 +397,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKDummyLock.h" />
     <ClInclude Include="DKFoundation\DKEndianness.h" />
     <ClInclude Include="DKFoundation\DKError.h" />
+    <ClInclude Include="DKFoundation\DKEventLoop.h" />
+    <ClInclude Include="DKFoundation\DKEventLoopTimer.h" />
     <ClInclude Include="DKFoundation\DKFence.h" />
     <ClInclude Include="DKFoundation\DKFile.h" />
     <ClInclude Include="DKFoundation\DKFileMap.h" />
@@ -273,9 +407,10 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKFunction.h" />
     <ClInclude Include="DKFoundation\DKHash.h" />
     <ClInclude Include="DKFoundation\DKInvocation.h" />
-    <ClInclude Include="DKFoundation\DKList.h" />
+    <ClInclude Include="DKFoundation\DKLinkedList.h" />
     <ClInclude Include="DKFoundation\DKLock.h" />
     <ClInclude Include="DKFoundation\DKLog.h" />
+    <ClInclude Include="DKFoundation\DKLogger.h" />
     <ClInclude Include="DKFoundation\DKMap.h" />
     <ClInclude Include="DKFoundation\DKMemory.h" />
     <ClInclude Include="DKFoundation\DKMutex.h" />
@@ -285,9 +420,7 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKOperationQueue.h" />
     <ClInclude Include="DKFoundation\DKOrderedArray.h" />
     <ClInclude Include="DKFoundation\DKQueue.h" />
-    <ClInclude Include="DKFoundation\DKRational.h" />
-    <ClInclude Include="DKFoundation\DKRunLoop.h" />
-    <ClInclude Include="DKFoundation\DKRunLoopTimer.h" />
+    <ClInclude Include="DKFoundation\DKRationalNumber.h" />
     <ClInclude Include="DKFoundation\DKSet.h" />
     <ClInclude Include="DKFoundation\DKSharedInstance.h" />
     <ClInclude Include="DKFoundation\DKSharedLock.h" />
@@ -310,8 +443,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFoundation\DKUtils.h" />
     <ClInclude Include="DKFoundation\DKUuid.h" />
     <ClInclude Include="DKFoundation\DKValue.h" />
-    <ClInclude Include="DKFoundation\DKXMLDocument.h" />
-    <ClInclude Include="DKFoundation\DKXMLParser.h" />
+    <ClInclude Include="DKFoundation\DKXmlDocument.h" />
+    <ClInclude Include="DKFoundation\DKXmlParser.h" />
     <ClInclude Include="DKFoundation\DKZipArchiver.h" />
     <ClInclude Include="DKFoundation\DKZipUnarchiver.h" />
     <ClInclude Include="DKFramework.h" />
@@ -322,11 +455,12 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFramework\DKAnimation.h" />
     <ClInclude Include="DKFramework\DKAnimationController.h" />
     <ClInclude Include="DKFramework\DKApplication.h" />
+    <ClInclude Include="DKFramework\DKAudioDevice.h" />
     <ClInclude Include="DKFramework\DKAudioListener.h" />
     <ClInclude Include="DKFramework\DKAudioPlayer.h" />
     <ClInclude Include="DKFramework\DKAudioSource.h" />
     <ClInclude Include="DKFramework\DKAudioStream.h" />
-    <ClInclude Include="DKFramework\DKBlendState.h" />
+    <ClInclude Include="DKFramework\DKCopyCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKBox.h" />
     <ClInclude Include="DKFramework\DKBoxShape.h" />
     <ClInclude Include="DKFramework\DKBvh.h" />
@@ -335,7 +469,12 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFramework\DKCollisionObject.h" />
     <ClInclude Include="DKFramework\DKCollisionShape.h" />
     <ClInclude Include="DKFramework\DKColor.h" />
+    <ClInclude Include="DKFramework\DKCommandBuffer.h" />
+    <ClInclude Include="DKFramework\DKCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKCommandQueue.h" />
     <ClInclude Include="DKFramework\DKCompoundShape.h" />
+    <ClInclude Include="DKFramework\DKComputeCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKComputePipeline.h" />
     <ClInclude Include="DKFramework\DKConcaveShape.h" />
     <ClInclude Include="DKFramework\DKConeShape.h" />
     <ClInclude Include="DKFramework\DKConeTwistConstraint.h" />
@@ -343,292 +482,141 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     <ClInclude Include="DKFramework\DKConvexHullShape.h" />
     <ClInclude Include="DKFramework\DKConvexShape.h" />
     <ClInclude Include="DKFramework\DKCylinderShape.h" />
-    <ClInclude Include="DKFramework\DKDynamicsScene.h" />
+    <ClInclude Include="DKFramework\DKDepthStencil.h" />
+    <ClInclude Include="DKFramework\DKDynamicsWorld.h" />
     <ClInclude Include="DKFramework\DKFixedConstraint.h" />
     <ClInclude Include="DKFramework\DKFont.h" />
     <ClInclude Include="DKFramework\DKFrame.h" />
     <ClInclude Include="DKFramework\DKGearConstraint.h" />
     <ClInclude Include="DKFramework\DKGeneric6DofConstraint.h" />
     <ClInclude Include="DKFramework\DKGeneric6DofSpringConstraint.h" />
-    <ClInclude Include="DKFramework\DKGeometryBuffer.h" />
+    <ClInclude Include="DKFramework\DKGpuBuffer.h" />
+    <ClInclude Include="DKFramework\DKGpuResource.h" />
+    <ClInclude Include="DKFramework\DKGraphicsDevice.h" />
     <ClInclude Include="DKFramework\DKHingeConstraint.h" />
-    <ClInclude Include="DKFramework\DKIndexBuffer.h" />
+    <ClInclude Include="DKFramework\DKImage.h" />
     <ClInclude Include="DKFramework\DKLine.h" />
     <ClInclude Include="DKFramework\DKLinearTransform2.h" />
     <ClInclude Include="DKFramework\DKLinearTransform3.h" />
-    <ClInclude Include="DKFramework\DKMaterial.h" />
     <ClInclude Include="DKFramework\DKMath.h" />
     <ClInclude Include="DKFramework\DKMatrix2.h" />
     <ClInclude Include="DKFramework\DKMatrix3.h" />
     <ClInclude Include="DKFramework\DKMatrix4.h" />
-    <ClInclude Include="DKFramework\DKMesh.h" />
     <ClInclude Include="DKFramework\DKModel.h" />
     <ClInclude Include="DKFramework\DKMultiSphereShape.h" />
-    <ClInclude Include="DKFramework\DKOpenALContext.h" />
-    <ClInclude Include="DKFramework\DKOpenGLContext.h" />
+    <ClInclude Include="DKFramework\DKPipelineReflection.h" />
+    <ClInclude Include="DKFramework\DKPixelFormat.h" />
     <ClInclude Include="DKFramework\DKPlane.h" />
     <ClInclude Include="DKFramework\DKPoint.h" />
     <ClInclude Include="DKFramework\DKPoint2PointConstraint.h" />
     <ClInclude Include="DKFramework\DKPolyhedralConvexShape.h" />
-    <ClInclude Include="DKFramework\DKPrimitiveIndex.h" />
     <ClInclude Include="DKFramework\DKPropertySet.h" />
     <ClInclude Include="DKFramework\DKQuaternion.h" />
     <ClInclude Include="DKFramework\DKRect.h" />
-    <ClInclude Include="DKFramework\DKRenderer.h" />
-    <ClInclude Include="DKFramework\DKRenderState.h" />
-    <ClInclude Include="DKFramework\DKRenderTarget.h" />
+    <ClInclude Include="DKFramework\DKRenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKRenderPass.h" />
+    <ClInclude Include="DKFramework\DKRenderPipeline.h" />
     <ClInclude Include="DKFramework\DKResource.h" />
     <ClInclude Include="DKFramework\DKResourceLoader.h" />
     <ClInclude Include="DKFramework\DKResourcePool.h" />
     <ClInclude Include="DKFramework\DKRigidBody.h" />
-    <ClInclude Include="DKFramework\DKScene.h" />
-    <ClInclude Include="DKFramework\DKSceneState.h" />
+    <ClInclude Include="DKFramework\DKSampler.h" />
     <ClInclude Include="DKFramework\DKScreen.h" />
     <ClInclude Include="DKFramework\DKSerializer.h" />
     <ClInclude Include="DKFramework\DKShader.h" />
+    <ClInclude Include="DKFramework\DKShaderBindingSet.h" />
     <ClInclude Include="DKFramework\DKShaderConstant.h" />
-    <ClInclude Include="DKFramework\DKShaderProgram.h" />
+    <ClInclude Include="DKFramework\DKShaderFunction.h" />
+    <ClInclude Include="DKFramework\DKShaderModule.h" />
+    <ClInclude Include="DKFramework\DKShaderResource.h" />
     <ClInclude Include="DKFramework\DKSize.h" />
-    <ClInclude Include="DKFramework\DKSkinMesh.h" />
     <ClInclude Include="DKFramework\DKSliderConstraint.h" />
     <ClInclude Include="DKFramework\DKSoftBody.h" />
     <ClInclude Include="DKFramework\DKSphere.h" />
     <ClInclude Include="DKFramework\DKSphereShape.h" />
     <ClInclude Include="DKFramework\DKSpline.h" />
-    <ClInclude Include="DKFramework\DKStaticMesh.h" />
     <ClInclude Include="DKFramework\DKStaticPlaneShape.h" />
     <ClInclude Include="DKFramework\DKStaticTriangleMeshShape.h" />
+    <ClInclude Include="DKFramework\DKSwapChain.h" />
     <ClInclude Include="DKFramework\DKTexture.h" />
-    <ClInclude Include="DKFramework\DKTexture2D.h" />
-    <ClInclude Include="DKFramework\DKTexture3D.h" />
-    <ClInclude Include="DKFramework\DKTextureCube.h" />
-    <ClInclude Include="DKFramework\DKTextureSampler.h" />
     <ClInclude Include="DKFramework\DKTransform.h" />
     <ClInclude Include="DKFramework\DKTriangle.h" />
     <ClInclude Include="DKFramework\DKTriangleMesh.h" />
     <ClInclude Include="DKFramework\DKTriangleMeshBvh.h" />
     <ClInclude Include="DKFramework\DKTriangleMeshProxyShape.h" />
+    <ClInclude Include="DKFramework\DKUpdateQueue.h" />
     <ClInclude Include="DKFramework\DKVariant.h" />
     <ClInclude Include="DKFramework\DKVector2.h" />
     <ClInclude Include="DKFramework\DKVector3.h" />
     <ClInclude Include="DKFramework\DKVector4.h" />
-    <ClInclude Include="DKFramework\DKVertexBuffer.h" />
-    <ClInclude Include="DKFramework\DKVertexStream.h" />
+    <ClInclude Include="DKFramework\DKVertexDescriptor.h" />
     <ClInclude Include="DKFramework\DKVKey.h" />
-    <ClInclude Include="DKFramework\DKVoxel32FileStorage.h" />
-    <ClInclude Include="DKFramework\DKVoxel32SparseVolume.h" />
-    <ClInclude Include="DKFramework\DKVoxel32Storage.h" />
-    <ClInclude Include="DKFramework\DKVoxelIsosurfacePolygonizer.h" />
-    <ClInclude Include="DKFramework\DKVoxelPolygonizer.h" />
-    <ClInclude Include="DKFramework\DKVoxelVolume.h" />
     <ClInclude Include="DKFramework\DKWindow.h" />
+    <ClInclude Include="DKFramework\DKWorld.h" />
     <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h" />
-    <ClInclude Include="DKFramework\Interface\DKOpenGLInterface.h" />
+    <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h" />
-    <ClInclude Include="DKFramework\Private\BulletUtils.h" />
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKApplicationImpl.h" />
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKOpenGLImpl.h" />
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKWindowImpl.h" />
-    <ClInclude Include="DKFramework\Private\CocoaTouch\DKWindowView.h" />
-    <ClInclude Include="DKFramework\Private\Cocoa\DKApplicationImpl.h" />
-    <ClInclude Include="DKFramework\Private\Cocoa\DKOpenGLImpl.h" />
-    <ClInclude Include="DKFramework\Private\Cocoa\DKWindowImpl.h" />
-    <ClInclude Include="DKFramework\Private\Cocoa\DKWindowView.h" />
-    <ClInclude Include="DKFramework\Private\DKAudioStreamFLAC.h" />
-    <ClInclude Include="DKFramework\Private\DKAudioStreamVorbis.h" />
-    <ClInclude Include="DKFramework\Private\DKAudioStreamWave.h" />
-    <ClInclude Include="DKFramework\Private\Win32\DKApplicationImpl.h" />
-    <ClInclude Include="DKFramework\Private\Win32\DKLoggerImpl.h" />
-    <ClInclude Include="DKFramework\Private\Win32\DKOpenGLImpl.h" />
-    <ClInclude Include="DKFramework\Private\Win32\DKWindowImpl.h" />
+    <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamFLAC.h" />
+    <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamVorbis.h" />
+    <ClInclude Include="DKFramework\Private\AudioStream\AudioStreamWave.h" />
+    <ClInclude Include="DKFramework\Private\BulletPhysics.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Application.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\View.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\ViewController.h" />
+    <ClInclude Include="DKFramework\Private\CocoaTouch\Window.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\Application.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\View.h" />
+    <ClInclude Include="DKFramework\Private\Cocoa\Window.h" />
+    <ClInclude Include="DKFramework\Private\GraphicsAPI.h" />
+    <ClInclude Include="DKFramework\Private\Metal\CopyCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Buffer.h" />
+    <ClInclude Include="DKFramework\Private\Metal\CommandBuffer.h" />
+    <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ComputePipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\SamplerState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderBindingSet.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
+    <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
+    <ClInclude Include="DKFramework\Private\Metal\SwapChain.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Texture.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Types.h" />
+    <ClInclude Include="DKFramework\Private\OpenAL.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\BufferView.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\CopyCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Buffer.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\CommandBuffer.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\CommandQueue.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ComputeCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPool.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\DescriptorPoolChain.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\DescriptorSet.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\DeviceMemory.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Image.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ImageView.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Sampler.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderBindingSet.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\SwapChain.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Extensions.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\GraphicsDevice.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\QueueFamily.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Types.h" />
+    <ClInclude Include="DKFramework\Private\Win32\AppEventLoop.h" />
+    <ClInclude Include="DKFramework\Private\Win32\Application.h" />
+    <ClInclude Include="DKFramework\Private\Win32\AppLogger.h" />
+    <ClInclude Include="DKFramework\Private\Win32\DropTarget.h" />
+    <ClInclude Include="DKFramework\Private\Win32\Window.h" />
     <ClInclude Include="DKInclude.h" />
-    <ClInclude Include="lib\BulletPhysics.h" />
-    <ClInclude Include="lib\ExtDeps.h" />
-    <ClInclude Include="lib\OpenAL.h" />
-    <ClInclude Include="lib\OpenGL.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="DKFoundation\DKAllocator.cpp" />
-    <ClCompile Include="DKFoundation\DKAllocatorChain.cpp" />
-    <ClCompile Include="DKFoundation\DKAtomicNumber32.cpp" />
-    <ClCompile Include="DKFoundation\DKAtomicNumber64.cpp" />
-    <ClCompile Include="DKFoundation\DKBuffer.cpp" />
-    <ClCompile Include="DKFoundation\DKBufferStream.cpp" />
-    <ClCompile Include="DKFoundation\DKCondition.cpp" />
-    <ClCompile Include="DKFoundation\DKData.cpp" />
-    <ClCompile Include="DKFoundation\DKDataStream.cpp" />
-    <ClCompile Include="DKFoundation\DKDateTime.cpp" />
-    <ClCompile Include="DKFoundation\DKDirectory.cpp" />
-    <ClCompile Include="DKFoundation\DKError.cpp" />
-    <ClCompile Include="DKFoundation\DKFence.cpp" />
-    <ClCompile Include="DKFoundation\DKFile.cpp" />
-    <ClCompile Include="DKFoundation\DKFileMap.cpp" />
-    <ClCompile Include="DKFoundation\DKFloat16.cpp" />
-    <ClCompile Include="DKFoundation\DKHash.cpp" />
-    <ClCompile Include="DKFoundation\DKLock.cpp" />
-    <ClCompile Include="DKFoundation\DKLog.cpp" />
-    <ClCompile Include="DKFoundation\DKMemory.cpp" />
-    <ClCompile Include="DKFoundation\DKMutex.cpp" />
-    <ClCompile Include="DKFoundation\DKObjectRefCounter.cpp" />
-    <ClCompile Include="DKFoundation\DKOperationQueue.cpp" />
-    <ClCompile Include="DKFoundation\DKRational.cpp" />
-    <ClCompile Include="DKFoundation\DKRunLoop.cpp" />
-    <ClCompile Include="DKFoundation\DKRunLoopTimer.cpp" />
-    <ClCompile Include="DKFoundation\DKSharedLock.cpp" />
-    <ClCompile Include="DKFoundation\DKSpinLock.cpp" />
-    <ClCompile Include="DKFoundation\DKStringU8.cpp" />
-    <ClCompile Include="DKFoundation\DKStringUE.cpp" />
-    <ClCompile Include="DKFoundation\DKStringW.cpp" />
-    <ClCompile Include="DKFoundation\DKThread.cpp" />
-    <ClCompile Include="DKFoundation\DKTimer.cpp" />
-    <ClCompile Include="DKFoundation\DKTypeInfo.cpp" />
-    <ClCompile Include="DKFoundation\DKUtils.cpp" />
-    <ClCompile Include="DKFoundation\DKUuid.cpp" />
-    <ClCompile Include="DKFoundation\DKXMLDocument.cpp" />
-    <ClCompile Include="DKFoundation\DKXMLParser.cpp" />
-    <ClCompile Include="DKFoundation\DKZipArchiver.cpp" />
-    <ClCompile Include="DKFoundation\DKZipUnarchiver.cpp" />
-    <ClCompile Include="DKFramework\DKAabb.cpp" />
-    <ClCompile Include="DKFramework\DKAffineTransform2.cpp" />
-    <ClCompile Include="DKFramework\DKAffineTransform3.cpp" />
-    <ClCompile Include="DKFramework\DKAnimation.cpp" />
-    <ClCompile Include="DKFramework\DKAnimationController.cpp" />
-    <ClCompile Include="DKFramework\DKApplication.cpp" />
-    <ClCompile Include="DKFramework\DKAudioListener.cpp" />
-    <ClCompile Include="DKFramework\DKAudioPlayer.cpp" />
-    <ClCompile Include="DKFramework\DKAudioSource.cpp" />
-    <ClCompile Include="DKFramework\DKAudioStream.cpp" />
-    <ClCompile Include="DKFramework\DKBlendState.cpp" />
-    <ClCompile Include="DKFramework\DKBox.cpp" />
-    <ClCompile Include="DKFramework\DKBoxShape.cpp" />
-    <ClCompile Include="DKFramework\DKBvh.cpp" />
-    <ClCompile Include="DKFramework\DKCamera.cpp" />
-    <ClCompile Include="DKFramework\DKCapsuleShape.cpp" />
-    <ClCompile Include="DKFramework\DKCollisionObject.cpp" />
-    <ClCompile Include="DKFramework\DKCollisionShape.cpp" />
-    <ClCompile Include="DKFramework\DKCompoundShape.cpp" />
-    <ClCompile Include="DKFramework\DKConcaveShape.cpp" />
-    <ClCompile Include="DKFramework\DKConeShape.cpp" />
-    <ClCompile Include="DKFramework\DKConeTwistConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKConvexHullShape.cpp" />
-    <ClCompile Include="DKFramework\DKConvexShape.cpp" />
-    <ClCompile Include="DKFramework\DKCylinderShape.cpp" />
-    <ClCompile Include="DKFramework\DKDynamicsScene.cpp" />
-    <ClCompile Include="DKFramework\DKFixedConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKFont.cpp" />
-    <ClCompile Include="DKFramework\DKFrame.cpp" />
-    <ClCompile Include="DKFramework\DKGearConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKGeneric6DofConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKGeometryBuffer.cpp" />
-    <ClCompile Include="DKFramework\DKHingeConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKIndexBuffer.cpp" />
-    <ClCompile Include="DKFramework\DKLine.cpp" />
-    <ClCompile Include="DKFramework\DKLinearTransform2.cpp" />
-    <ClCompile Include="DKFramework\DKLinearTransform3.cpp" />
-    <ClCompile Include="DKFramework\DKMaterial.cpp" />
-    <ClCompile Include="DKFramework\DKMatrix2.cpp" />
-    <ClCompile Include="DKFramework\DKMatrix3.cpp" />
-    <ClCompile Include="DKFramework\DKMatrix4.cpp" />
-    <ClCompile Include="DKFramework\DKMesh.cpp" />
-    <ClCompile Include="DKFramework\DKModel.cpp" />
-    <ClCompile Include="DKFramework\DKMultiSphereShape.cpp" />
-    <ClCompile Include="DKFramework\DKOpenALContext.cpp" />
-    <ClCompile Include="DKFramework\DKOpenGLContext.cpp" />
-    <ClCompile Include="DKFramework\DKPlane.cpp" />
-    <ClCompile Include="DKFramework\DKPoint2PointConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKPolyhedralConvexShape.cpp" />
-    <ClCompile Include="DKFramework\DKPrimitiveIndex.cpp" />
-    <ClCompile Include="DKFramework\DKPropertySet.cpp" />
-    <ClCompile Include="DKFramework\DKQuaternion.cpp" />
-    <ClCompile Include="DKFramework\DKRect.cpp" />
-    <ClCompile Include="DKFramework\DKRenderer.cpp" />
-    <ClCompile Include="DKFramework\DKRenderState.cpp" />
-    <ClCompile Include="DKFramework\DKRenderTarget.cpp" />
-    <ClCompile Include="DKFramework\DKResource.cpp" />
-    <ClCompile Include="DKFramework\DKResourceLoader.cpp" />
-    <ClCompile Include="DKFramework\DKResourcePool.cpp" />
-    <ClCompile Include="DKFramework\DKRigidBody.cpp" />
-    <ClCompile Include="DKFramework\DKScene.cpp" />
-    <ClCompile Include="DKFramework\DKSceneState.cpp" />
-    <ClCompile Include="DKFramework\DKScreen.cpp" />
-    <ClCompile Include="DKFramework\DKSerializer.cpp" />
-    <ClCompile Include="DKFramework\DKShader.cpp" />
-    <ClCompile Include="DKFramework\DKShaderProgram.cpp" />
-    <ClCompile Include="DKFramework\DKSkinMesh.cpp" />
-    <ClCompile Include="DKFramework\DKSliderConstraint.cpp" />
-    <ClCompile Include="DKFramework\DKSoftBody.cpp" />
-    <ClCompile Include="DKFramework\DKSphere.cpp" />
-    <ClCompile Include="DKFramework\DKSphereShape.cpp" />
-    <ClCompile Include="DKFramework\DKSpline.cpp" />
-    <ClCompile Include="DKFramework\DKStaticMesh.cpp" />
-    <ClCompile Include="DKFramework\DKStaticPlaneShape.cpp" />
-    <ClCompile Include="DKFramework\DKStaticTriangleMeshShape.cpp" />
-    <ClCompile Include="DKFramework\DKTexture.cpp" />
-    <ClCompile Include="DKFramework\DKTexture2D.cpp" />
-    <ClCompile Include="DKFramework\DKTexture3D.cpp" />
-    <ClCompile Include="DKFramework\DKTextureCube.cpp" />
-    <ClCompile Include="DKFramework\DKTextureSampler.cpp" />
-    <ClCompile Include="DKFramework\DKTransform.cpp" />
-    <ClCompile Include="DKFramework\DKTriangle.cpp" />
-    <ClCompile Include="DKFramework\DKTriangleMeshBvh.cpp" />
-    <ClCompile Include="DKFramework\DKTriangleMeshProxyShape.cpp" />
-    <ClCompile Include="DKFramework\DKVariant.cpp" />
-    <ClCompile Include="DKFramework\DKVector2.cpp" />
-    <ClCompile Include="DKFramework\DKVector3.cpp" />
-    <ClCompile Include="DKFramework\DKVector4.cpp" />
-    <ClCompile Include="DKFramework\DKVertexBuffer.cpp" />
-    <ClCompile Include="DKFramework\DKVoxel32FileStorage.cpp" />
-    <ClCompile Include="DKFramework\DKVoxel32SparseVolume.cpp" />
-    <ClCompile Include="DKFramework\DKVoxelIsosurfacePolygonizer.cpp" />
-    <ClCompile Include="DKFramework\DKVoxelPolygonizer.cpp" />
-    <ClCompile Include="DKFramework\DKWindow.cpp" />
-    <ClCompile Include="DKFramework\Private\DKAudioStreamFLAC.cpp" />
-    <ClCompile Include="DKFramework\Private\DKAudioStreamVorbis.cpp" />
-    <ClCompile Include="DKFramework\Private\DKAudioStreamWave.cpp" />
-    <ClCompile Include="DKFramework\Private\Win32\DKApplicationImpl.cpp" />
-    <ClCompile Include="DKFramework\Private\Win32\DKLoggerImpl.cpp" />
-    <ClCompile Include="DKFramework\Private\Win32\DKOpenGLExtensions.cpp" />
-    <ClCompile Include="DKFramework\Private\Win32\DKOpenGLImpl.cpp" />
-    <ClCompile Include="DKFramework\Private\Win32\DKWindowImpl.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DKFoundation\DKUtils.mm" />
-    <None Include="DKFramework\Private\CocoaTouch\DKApplicationImpl.mm" />
-    <None Include="DKFramework\Private\CocoaTouch\DKOpenGLImpl.mm" />
-    <None Include="DKFramework\Private\CocoaTouch\DKWindowImpl.mm" />
-    <None Include="DKFramework\Private\CocoaTouch\DKWindowView.mm" />
-    <None Include="DKFramework\Private\Cocoa\DKApplicationImpl.mm" />
-    <None Include="DKFramework\Private\Cocoa\DKOpenGLImpl.mm" />
-    <None Include="DKFramework\Private\Cocoa\DKWindowImpl.mm" />
-    <None Include="DKFramework\Private\Cocoa\DKWindowView.mm" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="lib\BulletPhysics\BulletPhysics.vcxproj">
-      <Project>{e4c03a61-856a-4285-a734-ede229c617f3}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="lib\ExtDeps\ExtDeps.vcxproj">
-      <Project>{b748dbfc-45ea-4c3f-8d2b-58f6c42fb2b2}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="lib\OpenAL\OpenAL.vcxproj">
-      <Project>{5a9d1eb1-c8d8-4eb8-a60e-7bc6009cd709}</Project>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

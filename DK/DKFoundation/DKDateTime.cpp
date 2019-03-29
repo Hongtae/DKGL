@@ -2,7 +2,7 @@
 //  File: DKDateTime.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
@@ -58,7 +58,7 @@ namespace DKFoundation
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKDateTime DKDateTime::Now(void)
+DKDateTime DKDateTime::Now()
 {
 	timeval tm;
 	gettimeofday(&tm, NULL);
@@ -120,13 +120,13 @@ DKDateTime::DKDateTime(const DKDateTime& time)
 {
 }
 
-DKDateTime::DKDateTime(void)
+DKDateTime::DKDateTime()
 	: seconds(0)
 	, microseconds(0)
 {
 }
 
-DKDateTime::~DKDateTime(void)
+DKDateTime::~DKDateTime()
 {
 }
 
@@ -162,88 +162,88 @@ void DKDateTime::GetLocalComponent(Component& c) const
 	c.microsecond = microseconds;
 }
 
-int DKDateTime::Year(void) const
+int DKDateTime::Year() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_year + 1900;
 }
 
-int DKDateTime::Month(void) const
+int DKDateTime::Month() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_mon + 1;
 }
 
-int DKDateTime::Day(void) const
+int DKDateTime::Day() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_mday;
 }
 
-int DKDateTime::DayOfYear(void) const
+int DKDateTime::DayOfYear() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_yday;
 }
 
-int DKDateTime::DayOfWeek(void) const
+int DKDateTime::DayOfWeek() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_wday;
 }
 
-int DKDateTime::Hour(void) const
+int DKDateTime::Hour() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_hour;
 }
 
-int DKDateTime::Minute(void) const
+int DKDateTime::Minute() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_min;
 }
 
-int DKDateTime::Second(void) const
+int DKDateTime::Second() const
 {
 	const time_t t = (time_t)seconds;
 	struct tm date = *localtime(&t);
 	return date.tm_sec;
 }
 
-int DKDateTime::Microsecond(void) const
+int DKDateTime::Microsecond() const
 {
 	return microseconds;
 }
 
-int64_t DKDateTime::DaysSinceEpoch(void) const
+int64_t DKDateTime::DaysSinceEpoch() const
 {
 	return seconds / (60*60*24);
 }
 
-int64_t DKDateTime::HoursSinceEpoch(void) const
+int64_t DKDateTime::HoursSinceEpoch() const
 {
 	return seconds / (60*60);
 }
 
-int64_t DKDateTime::MinutesSinceEpoch(void) const
+int64_t DKDateTime::MinutesSinceEpoch() const
 {
 	return seconds / 60;
 }
 
-int64_t DKDateTime::SecondsSinceEpoch(void) const
+int64_t DKDateTime::SecondsSinceEpoch() const
 {
 	return seconds;
 }
 
-long DKDateTime::TimezoneOffset(void)
+long DKDateTime::TimezoneOffset()
 {
 	time_t utc = time(0);
 	struct tm date = *gmtime(&utc);
@@ -325,7 +325,7 @@ double DKDateTime::Interval(const DKDateTime& t) const
 	return this->IntervalSinceEpoch() - t.IntervalSinceEpoch();
 }
 
-double DKDateTime::IntervalSinceEpoch(void) const
+double DKDateTime::IntervalSinceEpoch() const
 {
 	return static_cast<double>(this->seconds) + (static_cast<double>(this->microseconds) * 0.000001);
 }

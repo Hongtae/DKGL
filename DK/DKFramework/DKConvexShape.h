@@ -1,26 +1,22 @@
-﻿//
+//
 //  File: DKConvexShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKCollisionShape.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKConvexShape
-// abstract class, convex shape for detecting collision.
-////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
 {
 	class DKLine;
+	/// @brief convex shape for detecting collision.
 	class DKGL_API DKConvexShape : public DKCollisionShape
 	{
 	public:
-		~DKConvexShape(void);
+		~DKConvexShape();
 
 		void Project(const DKNSTransform& t, const DKVector3& dir, float& min, float& max) const;
 

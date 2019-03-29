@@ -2,31 +2,28 @@
 //  File: DKAnimation.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKResource.h"
 #include "DKTransform.h"
 #include "DKAnimationController.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAnimation
-// Animation object. It has frame data as DKTransformUnit objects.
-// object can contains multiple nodes, which can be used for skinning animation.
-// Each node has it's own animation data as DKTransformUnit objects.
-//
-// You need to create controller object (DKAnimationController) to animate
-// any kind of DKModel. (don't have to create controller for calculation only)
-//
-// Note:
-//   This class can handles affine-transform only.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief Animation object.
+	/// 
+	/// It has frame data as DKTransformUnit objects.
+	/// Object can contains multiple nodes, which can be used for skinning animation.
+	/// Each node has it's own animation data as DKTransformUnit objects.
+	///
+	/// You need to create controller object (DKAnimationController) to animate
+	/// any kind of DKModel. (don't have to create controller for calculation only)
+	///
+	/// @note
+	///   This class can handles affine-transform only.
 	class DKGL_API DKAnimation : public DKResource
 	{
 	public:
@@ -38,21 +35,21 @@ namespace DKFramework
 		{
 			enum NodeType
 			{
-				NodeTypeSampling,
-				NodeTypeKeyframe,
+				NodeTypeSampling, ///< sampling node (full-sampled by time slices)
+				NodeTypeKeyframe, ///< key-frame node
 			};
-			DKFoundation::DKString	name;
+			DKString	name;
 			const NodeType	type;
 
 			Node(NodeType t) : type(t) {}
-			virtual ~Node(void) {}
-			virtual bool IsEmpty(void) const = 0;
+			virtual ~Node() {}
+			virtual bool IsEmpty() const = 0;
 		};
 		struct SamplingNode : public Node
 		{
-			DKFoundation::DKArray<DKTransformUnit>	frames;
-			SamplingNode(void) : Node(NodeTypeSampling) {}
-			bool IsEmpty(void) const			{return frames.IsEmpty();}
+			DKArray<DKTransformUnit>	frames;
+			SamplingNode() : Node(NodeTypeSampling) {}
+			bool IsEmpty() const			{return frames.IsEmpty();}
 		};
 		struct KeyframeNode : public Node
 		{
@@ -65,70 +62,71 @@ namespace DKFramework
 			typedef Key<DKQuaternion>	RotationKey;
 			typedef Key<DKVector3>		TranslationKey;
 
-			DKFoundation::DKArray<ScaleKey>			scaleKeys;
-			DKFoundation::DKArray<RotationKey>		rotationKeys;
-			DKFoundation::DKArray<TranslationKey>	translationKeys;
+			DKArray<ScaleKey>			scaleKeys;
+			DKArray<RotationKey>		rotationKeys;
+			DKArray<TranslationKey>	translationKeys;
 
-			KeyframeNode(void) : Node(NodeTypeKeyframe) {}
-			bool IsEmpty(void) const		{return translationKeys.IsEmpty() && rotationKeys.IsEmpty() && scaleKeys.IsEmpty();}
+			KeyframeNode() : Node(NodeTypeKeyframe) {}
+			bool IsEmpty() const		{return translationKeys.IsEmpty() && rotationKeys.IsEmpty() && scaleKeys.IsEmpty();}
 		};
 		struct NodeSnapshot
 		{
-			DKFoundation::DKString	name;
+			DKString	name;
 			DKTransformUnit			transform;
 		};
 #pragma pack(pop)
 
-		DKAnimation(void);
-		~DKAnimation(void);
+		DKAnimation();
+		~DKAnimation();
 
 		// Node insertion
 		bool		AddNode(const Node* node);
-		bool		AddSamplingNode(const DKFoundation::DKString& name, const DKTransformUnit* frames, size_t numFrames);
-		bool		AddKeyframeNode(const DKFoundation::DKString& name,
+		bool		AddSamplingNode(const DKString& name, const DKTransformUnit* frames, size_t numFrames);
+		bool		AddKeyframeNode(const DKString& name,
 									const KeyframeNode::ScaleKey* scaleKeys, size_t numSk,
 									const KeyframeNode::RotationKey* rotationKeys, size_t numRk,
 									const KeyframeNode::TranslationKey* translationKeys, size_t numTk);
 
-		void		RemoveNode(const DKFoundation::DKString& name);
-		void		RemoveAllNodes(void);
-		size_t		NodeCount(void) const;
-		NodeIndex	IndexOfNode(const DKFoundation::DKString& name) const;
+		void		RemoveNode(const DKString& name);
+		void		RemoveAllNodes();
+		size_t		NodeCount() const;
+		NodeIndex	IndexOfNode(const DKString& name) const;
 		const Node*	NodeAtIndex(NodeIndex index) const;
 
-		// calculate transform at time ( 0.0 <= t <= 1.0 )
+		/// calculate transform at time ( 0.0 <= t <= 1.0 )
 		bool GetNodeTransform(NodeIndex index, float t, DKTransformUnit& output) const;
-		bool GetNodeTransform(const DKFoundation::DKString& name, float t, DKTransformUnit& output) const;
+		/// calculate transform at time ( 0.0 <= t <= 1.0 )
+		bool GetNodeTransform(const DKString& name, float t, DKTransformUnit& output) const;
 
-		// generate snap-shot.
-		// snap-shot can be combined with other animation object. (interpolated altogether)
-		DKFoundation::DKArray<NodeSnapshot> CreateSnapshot(float t) const;
+		/// generate snap-shot.
+		/// snap-shot can be combined with other animation object. (interpolated altogether)
+		DKArray<NodeSnapshot> CreateSnapshot(float t) const;
 
-		// create object from snap-shots (useful to interpolate transition of two animations)
-		static DKFoundation::DKObject<DKAnimation> Create(DKFoundation::DKArray<SamplingNode>* samples, DKFoundation::DKArray<KeyframeNode>* keyframes, float duration);
-		static DKFoundation::DKObject<DKAnimation> Create(DKFoundation::DKArray<NodeSnapshot>* begin, DKFoundation::DKArray<NodeSnapshot>* end, float duration);
+		/// create object from snap-shots (useful to interpolate transition of two animations)
+		static DKObject<DKAnimation> Create(DKArray<SamplingNode>* samples, DKArray<KeyframeNode>* keyframes, float duration);
+		static DKObject<DKAnimation> Create(DKArray<NodeSnapshot>* begin, DKArray<NodeSnapshot>* end, float duration);
 
-		// get affine-transform of specified node at time.
+		/// get affine-transform of specified node at time.
 		static DKTransformUnit GetTransform(const Node& node, float time);
 
-		// convert node (keyframe to sampling, or vice versa.)
-		// for converting to key-frame, timing tick is 1.0/(frames-1) unit. (first frame:0, last frame:frames-1)
+		/// convert node (keyframe to sampling, or vice versa.)
+		/// for converting to key-frame, timing tick is 1.0/(frames-1) unit. (first frame:0, last frame:frames-1)
 		static bool ResampleNode(const Node& source, unsigned int frames, KeyframeNode& output, float threshold = 0.000001f);
 		static bool ResampleNode(const Node& source, unsigned int frames, SamplingNode& output);
 
-		// set animation duration.
+		/// set animation duration.
 		void	SetDuration(float d);
-		float	Duration(void) const;
+		float	Duration() const;
 
-		// create loop controller. (useful to apply repeated animation to DKModel)
-		DKFoundation::DKObject<DKAnimationController> CreateLoopController(void);
+		/// create loop controller. (useful to apply repeated animation to DKModel)
+		DKObject<DKAnimationController> CreateLoopController();
 
-		// serializer object.
-		DKFoundation::DKObject<DKSerializer> Serializer(void);
+		/// serializer object.
+		DKObject<DKSerializer> Serializer();
 	private:
 		float	duration;
 
-		DKFoundation::DKMap<DKFoundation::DKString, size_t> nodeIndexMap; // for fast search
-		DKFoundation::DKArray<Node*>	nodes;
+		DKMap<DKString, size_t> nodeIndexMap; // for fast search
+		DKArray<Node*>	nodes;
 	};
 }

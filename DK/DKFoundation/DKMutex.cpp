@@ -2,7 +2,7 @@
 //  File: DKMutex.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -15,15 +15,15 @@
 #include "DKMutex.h"
 #include "DKLog.h"
 
-#ifdef _WIN32
 namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
 		class MutexImpl
 		{
 		public:
-			MutexImpl(void)
+			MutexImpl()
 				: mutex(::CreateMutex(NULL, FALSE, NULL))
 #ifdef DKGL_DEBUG_ENABLED
 				, ownerId(0)
@@ -31,11 +31,11 @@ namespace DKFoundation
 			{
 				DKASSERT_DEBUG(mutex != NULL);
 			}
-			~MutexImpl(void)
+			~MutexImpl()
 			{
 				::CloseHandle(mutex);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				::WaitForSingleObject(mutex, INFINITE);
 #ifdef DKGL_DEBUG_ENABLED
@@ -43,7 +43,7 @@ namespace DKFoundation
 				ownerId = ::GetCurrentThreadId();
 #endif
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				if (::WaitForSingleObject(mutex, 0) == WAIT_OBJECT_0)
 				{
@@ -55,7 +55,7 @@ namespace DKFoundation
 				}
 				return false;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 #ifdef DKGL_DEBUG_ENABLED
 				DKASSERT_DESC_DEBUG(ownerId == ::GetCurrentThreadId(), "The current thread does not own the mutex!");
@@ -69,17 +69,11 @@ namespace DKFoundation
 			mutable DWORD ownerId;
 #endif
 		};
-	}
-}
 #else
-namespace DKFoundation
-{
-	namespace Private
-	{
 		class MutexImpl
 		{
 		public:
-			MutexImpl(void)
+			MutexImpl()
 			{
 				pthread_mutexattr_init(&attr);
 #ifdef DKGL_DEBUG_ENABLED
@@ -89,12 +83,12 @@ namespace DKFoundation
 #endif
 				pthread_mutex_init(&mutex, &attr);
 			}
-			~MutexImpl(void)
+			~MutexImpl()
 			{
 				pthread_mutex_destroy(&mutex);
 				pthread_mutexattr_destroy(&attr);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				int ret = pthread_mutex_lock(&mutex);
 				if (ret == EINVAL)
@@ -108,11 +102,11 @@ namespace DKFoundation
 					DKERROR_THROW_DEBUG("dead lock detected.");
 				}
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				return pthread_mutex_trylock(&mutex) == 0;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 				int ret = pthread_mutex_unlock(&mutex);
 				if (ret == EPERM)
@@ -127,38 +121,38 @@ namespace DKFoundation
 			pthread_mutexattr_t attr;
 			mutable pthread_mutex_t mutex;
 		};
+#endif
 	}
 }
-#endif
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKMutex::DKMutex(void)
+DKMutex::DKMutex()
 {
-	impl = reinterpret_cast<void*>(new MutexImpl);
+	impl = reinterpret_cast<void*>(new MutexImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
-DKMutex::~DKMutex(void)
+DKMutex::~DKMutex()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	delete reinterpret_cast<MutexImpl*>(impl);
 }
 
-void DKMutex::Lock(void) const
+void DKMutex::Lock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<MutexImpl*>(impl)->Lock();
 }
 
-bool DKMutex::TryLock(void) const
+bool DKMutex::TryLock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<MutexImpl*>(impl)->TryLock();
 }
 
-void DKMutex::Unlock(void) const
+void DKMutex::Unlock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<MutexImpl*>(impl)->Unlock();

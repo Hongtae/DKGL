@@ -1,11 +1,11 @@
-﻿//
+//
 //  File: DKCollisionShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKCollisionShape.h"
 #include "DKAffineTransform3.h"
 #include "DKLinearTransform3.h"
@@ -21,7 +21,6 @@
 #include "DKStaticPlaneShape.h"
 #include "DKStaticTriangleMeshShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -32,7 +31,7 @@ DKCollisionShape::DKCollisionShape(ShapeType t, btCollisionShape* c)
 	impl->setUserPointer(this);
 }
 
-DKCollisionShape::~DKCollisionShape(void)
+DKCollisionShape::~DKCollisionShape()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -65,7 +64,7 @@ void DKCollisionShape::Aabb(const DKNSTransform& transform, DKVector3& aabbMin, 
 	aabbMax = BulletVector3(vmax);
 }
 
-DKSphere DKCollisionShape::BoundingSphere(void) const
+DKSphere DKCollisionShape::BoundingSphere() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -86,7 +85,7 @@ void DKCollisionShape::SetMargin(float m)
 	impl->setMargin(m);
 }
 
-float DKCollisionShape::Margin(void) const
+float DKCollisionShape::Margin() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -102,7 +101,7 @@ void DKCollisionShape::SetLocalScale(const DKVector3& s)
 	impl->setLocalScaling(BulletVector3(s));
 }
 
-DKVector3 DKCollisionShape::LocalScale(void) const
+DKVector3 DKCollisionShape::LocalScale() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserPointer() == this);
@@ -121,27 +120,27 @@ DKVector3 DKCollisionShape::CalculateLocalInertia(float mass) const
 	return DKVector3(localInertia.x(), localInertia.y(), localInertia.z());
 }
 
-bool DKCollisionShape::IsCompund(void) const
+bool DKCollisionShape::IsCompund() const
 {
 	return impl->isCompound();
 }
 
-bool DKCollisionShape::IsConvex(void) const
+bool DKCollisionShape::IsConvex() const
 {
 	return impl->isConvex();
 }
 
-bool DKCollisionShape::IsConcave(void) const
+bool DKCollisionShape::IsConcave() const
 {
 	return impl->isConcave();
 }
 
-bool DKCollisionShape::IsPolyhedral(void) const
+bool DKCollisionShape::IsPolyhedral() const
 {
 	return impl->isPolyhedral();
 }
 
-DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
+DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{
@@ -318,7 +317,7 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 						DKVariant::StructElem::Arithmetic4,
 						DKVariant::StructElem::Arithmetic4
 					};
-					vertsData.data.SetContent(vertices, numVertices * sizeof(DKVector3));
+					vertsData.data = DKOBJECT_NEW DKBuffer(vertices, numVertices * sizeof(DKVector3));
 					DKVariant::VStructuredData& indicesData = pairs.Value(L"indices").StructuredData();
 					indicesData.elementSize = meshShape->IndexSize();
 					if (meshShape->IndexSize() == 4)
@@ -329,7 +328,7 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 					{
 						indicesData.layout = { DKVariant::StructElem::Arithmetic2 };
 					}
-					indicesData.data.SetContent(indices, indexSize * numIndices);
+					indicesData.data = DKOBJECT_NEW DKBuffer(indices, indexSize * numIndices);
 					pairs.Insert(L"indexSize", (DKVariant::VInteger)indexSize);
 					pairs.Insert(L"aabbMin", (const DKVariant::VVector3&)aabb.positionMin);
 					pairs.Insert(L"aabbMax", (const DKVariant::VVector3&)aabb.positionMax);
@@ -571,16 +570,19 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer(void)
 							{
 								const DKVariant::VStructuredData& vertexData = vertices->value.StructuredData();
 								const DKVariant::VStructuredData& indexData = indices->value.StructuredData();
-								if (idxSize == 4)
-								*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-									(const DKVector3*)vertexData.data.LockShared(), numVerts,
-									(const unsigned int*)indexData.data.LockShared(), numIndices, aabb);
-								else
-									*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-									(const DKVector3*)vertexData.data.LockShared(), numVerts,
-									(const unsigned short*)indexData.data.LockShared(), numIndices, aabb);
-								vertexData.data.UnlockShared();
-								indexData.data.UnlockShared();
+								if (vertexData.data && indexData.data)
+								{
+									if (idxSize == 4)
+										*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
+										(const DKVector3*)vertexData.data->LockShared(), numVerts,
+										(const unsigned int*)indexData.data->LockShared(), numIndices, aabb);
+									else
+										*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
+										(const DKVector3*)vertexData.data->LockShared(), numVerts,
+										(const unsigned short*)indexData.data->LockShared(), numIndices, aabb);
+									vertexData.data->UnlockShared();
+									indexData.data->UnlockShared();
+								}
 							}
 							break;
 						}

@@ -1,24 +1,13 @@
-﻿//
+//
 //  File: DKPoint2PointConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKPoint2PointConstraint.h"
 
-using namespace DKFoundation;
-namespace DKFramework
-{
-	namespace Private
-	{
-		struct Point2PointConstraintExt : public btPoint2PointConstraint
-		{
-			using btPoint2PointConstraint::m_flags;
-		};
-	}
-}
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -33,22 +22,22 @@ DKPoint2PointConstraint::DKPoint2PointConstraint(DKRigidBody* rbA, const DKVecto
 {
 }
 
-DKPoint2PointConstraint::DKPoint2PointConstraint(void)
+DKPoint2PointConstraint::DKPoint2PointConstraint()
 : DKPoint2PointConstraint(NULL, NULL, DKVector3::zero, DKVector3::zero)
 {
 }
 
-DKPoint2PointConstraint::~DKPoint2PointConstraint(void)
+DKPoint2PointConstraint::~DKPoint2PointConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btPoint2PointConstraint*>(this->impl));
 }
 
-DKVector3 DKPoint2PointConstraint::PivotInA(void) const
+DKVector3 DKPoint2PointConstraint::PivotInA() const
 {
 	return BulletVector3(static_cast<btPoint2PointConstraint*>(this->impl)->getPivotInA());
 }
 
-DKVector3 DKPoint2PointConstraint::PivotInB(void) const
+DKVector3 DKPoint2PointConstraint::PivotInB() const
 {
 	return BulletVector3(static_cast<btPoint2PointConstraint*>(this->impl)->getPivotInB());
 }
@@ -83,7 +72,7 @@ bool DKPoint2PointConstraint::HasParam(ParamType type, ParamAxis axis) const
 {
 	if (axis == ParamAxis::Default)
 	{
-		int flags = static_cast<Point2PointConstraintExt*>(this->impl)->m_flags;
+		int flags = static_cast<btPoint2PointConstraint*>(this->impl)->getFlags();
 
 		switch (type)
 		{
@@ -98,7 +87,7 @@ bool DKPoint2PointConstraint::HasParam(ParamType type, ParamAxis axis) const
 	return false;
 }
 
-void DKPoint2PointConstraint::ResetContext(void)
+void DKPoint2PointConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btPoint2PointConstraint*>(this->impl));
 	btPoint2PointConstraint* c = static_cast<btPoint2PointConstraint*>(this->impl);
@@ -112,7 +101,7 @@ void DKPoint2PointConstraint::ResetContext(void)
 	c->setPivotB(pivotB);
 }
 
-void DKPoint2PointConstraint::ResetContextImpl(void)
+void DKPoint2PointConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btPoint2PointConstraint*>(this->impl));
 	btPoint2PointConstraint* c = static_cast<btPoint2PointConstraint*>(this->impl);
@@ -141,7 +130,7 @@ DKPoint2PointConstraint* DKPoint2PointConstraint::Copy(UUIDObjectMap& uuids, con
 	return NULL;
 }
 
-DKObject<DKSerializer> DKPoint2PointConstraint::Serializer(void)
+DKObject<DKSerializer> DKPoint2PointConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

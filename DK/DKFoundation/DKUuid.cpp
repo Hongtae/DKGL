@@ -2,7 +2,7 @@
 //  File: DKUuid.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -25,7 +25,7 @@
 
 using namespace DKFoundation;
 
-DKUuid::DKUuid(void)
+DKUuid::DKUuid()
 {
 	int* v = reinterpret_cast<int*>(data);
 	v[0] = 0;
@@ -44,7 +44,7 @@ DKUuid::DKUuid(const DKUuid& uuid)
 	v1[3] = v2[3];
 }
 
-void DKUuid::SetZero(void)
+void DKUuid::SetZero()
 {
 	int* v = reinterpret_cast<int*>(data);
 	v[0] = 0;
@@ -103,7 +103,7 @@ DKUuid::DKUuid(const DKString& str)
 	}
 }
 
-DKUuid DKUuid::Create(void)
+DKUuid DKUuid::Create()
 {
 	DKUuid uuid;
 	static DKSpinLock lock;
@@ -131,7 +131,7 @@ DKUuid DKUuid::Create(void)
 	return uuid;
 }
 
-DKString DKUuid::String(void) const
+DKString DKUuid::String() const
 {
 	char buff[40];
 
@@ -191,12 +191,12 @@ DKUuid& DKUuid::operator = (const DKUuid& uuid)
 	return *this;
 }
 
-bool DKUuid::IsValid(void) const
+bool DKUuid::IsValid() const
 {
 	return IsZero() == false;
 }
 
-bool DKUuid::IsZero(void) const
+bool DKUuid::IsZero() const
 {
 	const int* iv = reinterpret_cast<const int*>(this->data);
 	return iv[0] == 0 && iv[1] == 0 && iv[2] == 0 && iv[3] == 0;

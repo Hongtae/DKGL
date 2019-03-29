@@ -2,18 +2,18 @@
 //  File: DKFont.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_FREETYPE
-#include "../lib/ExtDeps.h"
-#include "../lib/OpenGL.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_BITMAP_H
+#include FT_OUTLINE_H
+#include FT_STROKER_H
+#include FT_BBOX_H
+
 #include "DKMath.h"
 #include "DKFont.h"
-#include "DKTexture2D.h"
-
-using namespace DKFoundation;
-using namespace DKFramework;
 
 namespace DKFramework
 {
@@ -25,17 +25,17 @@ namespace DKFramework
 			class FTLibrary
 			{
 			public:
-				static FT_Library& GetLibrary(void)
+				static FT_Library& GetLibrary()
 				{
 					static FTLibrary	lib;
 					return lib.library;
 				}
 			private:
-				FTLibrary(void)
+				FTLibrary()
 				{
 					FT_Init_FreeType(&library);
 				}
-				~FTLibrary(void)
+				~FTLibrary()
 				{
 					FT_Done_FreeType(library);
 				}
@@ -45,7 +45,9 @@ namespace DKFramework
 	}
 }
 
-DKFont::DKFont(void)
+using namespace DKFramework;
+
+DKFont::DKFont()
 	: ftFace(NULL)
 	, outline(0)
 	, embolden(0)
@@ -57,7 +59,7 @@ DKFont::DKFont(void)
 {
 }
 
-DKFont::~DKFont(void)
+DKFont::~DKFont()
 {
 	if (ftFace)
 		FT_Done_Face(reinterpret_cast<FT_Face>(ftFace));
@@ -144,7 +146,7 @@ DKObject<DKFont> DKFont::Create(DKStream* stream)
 			}
 			else if (ds)
 			{
-				DKObject<DKFont> font = Create(const_cast<DKData*>(ds->DataSource()));
+				DKObject<DKFont> font = Create(const_cast<DKData*>(ds->Data()));
 				if (font)
 					return font;
 			}
@@ -234,7 +236,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			ftBitmap.num_grays	= 256; 
 			ftBitmap.pixel_mode	= FT_PIXEL_MODE_GRAY; 
 			size_t bufferSize = ftBitmap.pitch * ftBitmap.rows;
-			ftBitmap.buffer		= (unsigned char*)DKMemoryDefaultAllocator::Alloc(bufferSize);
+			ftBitmap.buffer		= (unsigned char*)DKMalloc(bufferSize);
 			memset(ftBitmap.buffer, 0, bufferSize);
 
 			FT_Outline_Translate(&ftOutline, -x_shift, -y_shift);
@@ -247,7 +249,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.rect);
 			}
 
-			DKMemoryDefaultAllocator::Free(ftBitmap.buffer);
+			DKFree(ftBitmap.buffer);
 			ftBitmap.buffer = NULL;
 			FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &ftBitmap);
 			FT_Outline_Done(Private::FTLibrary::GetLibrary(), &ftOutline);
@@ -291,9 +293,9 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				unsigned int offsetX = (outer.width - inner.width)/2;
 				unsigned int offsetY = (outer.rows - inner.rows)/2;
 
-				for (int y = 0; y < inner.rows; y++)
+				for (unsigned int y = 0; y < inner.rows; y++)
 				{
-					for (int x = 0; x < inner.width; x++)
+					for (unsigned int x = 0; x < inner.width; x++)
 					{
 						int value1 = outer.buffer[ (y + offsetY) * outer.width + x + offsetX];
 						int value2 = inner.buffer[ y * inner.width + x];
@@ -320,6 +322,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	return &glyphMap.Value(c);
 }
 
+#if 0
 DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const
 {
 	// keep padding between each glyphs.
@@ -333,7 +336,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 	DKObject<DKTexture2D> tex = NULL;
 
-	char* buff = (char*)DKMemoryDefaultAllocator::Alloc(width * height);
+	char* buff = (char*)DKMalloc(width * height);
 	for (int i = 0; i < height; i++)
 	{
 		memcpy(&buff[i * width] , &((char*)data)[(height - i -1) * width], width);
@@ -344,14 +347,14 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 	bool createNewTexture = true;
 	for (int i = 0; i < textures.Count(); i++)
 	{
-		SharedTextures& st = textures.Value(i);
-		if (st.freeSpaceWidth >= (width + padding))
+		GlyphTextureAtlas& gta = textures.Value(i);
+		if (gta.freeSpaceWidth >= (width + padding))
 		{
-			rect = DKRect(st.texture->Width() - st.freeSpaceWidth, 0, width, height);
-			st.texture->SetPixelData(rect, buff);
-			DKASSERT_DEBUG((width + padding) <= st.freeSpaceWidth);
-			st.freeSpaceWidth -= width + padding; // add padding next to glyph
-			tex = st.texture;
+			rect = DKRect(gta.texture->Width() - gta.freeSpaceWidth, 0, width, height);
+			gta.texture->SetPixelData(rect, buff);
+			DKASSERT_DEBUG((width + padding) <= gta.freeSpaceWidth);
+			gta.freeSpaceWidth -= width + padding; // add padding next to glyph
+			tex = gta.texture;
 			createNewTexture = false;
 			break;
 		}
@@ -360,6 +363,7 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 	{
 		// create new texture.
 		int reqWidth = (Width() + padding) * (face->num_glyphs - numGlyphsLoaded); // padding for each glyphs.
+
 		static int maxTextureSize = 0;
 		if (maxTextureSize == 0)
 			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
@@ -370,24 +374,25 @@ DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect
 
 		int newTexHeight = Height() + padding;
 
-		void* initialData = DKMemoryDefaultAllocator::Alloc(newTexWidth * newTexHeight);
+		void* initialData = DKMalloc(newTexWidth * newTexHeight);
 		memset(initialData, 0, newTexWidth * newTexHeight);
 		tex = DKTexture2D::Create(newTexWidth, newTexHeight, DKTexture::FormatR8, DKTexture::TypeUnsignedByte, initialData);
-		DKMemoryDefaultAllocator::Free(initialData);
+		DKFree(initialData);
 
 		rect = DKRect(0,0,width,height);
 		tex->SetPixelData(rect, buff);
 		DKASSERT_DEBUG((newTexWidth - width - padding) > 0);
-		SharedTextures st = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
-		textures.Add(st);
+		GlyphTextureAtlas gta = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
+		textures.Add(gta);
 	}
-	DKMemoryDefaultAllocator::Free(buff);
+	DKFree(buff);
 	numGlyphsLoaded++;
 
 	return tex;
 }
+#endif
 
-float DKFont::Baseline(void) const
+float DKFont::Baseline() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -407,7 +412,7 @@ float DKFont::Baseline(void) const
 	return ceilf(baseline + embolden);
 }
 
-float DKFont::Height(void) const
+float DKFont::Height() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -427,7 +432,7 @@ float DKFont::Height(void) const
 	return ceilf(height + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f));
 }
 
-float DKFont::Width(void) const
+float DKFont::Width() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -447,7 +452,7 @@ float DKFont::Width(void) const
 	return ceilf(width + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f));
 }
 
-float DKFont::LineHeight(void) const
+float DKFont::LineHeight() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -484,7 +489,7 @@ float DKFont::LineWidth(const DKString& str) const
 	return ceilf(lineLength);
 }
 
-DKRect DKFont::Bounds(const DKFoundation::DKString& str) const
+DKRect DKFont::Bounds(const DKString& str) const
 {
 	DKPoint bboxMin(0, 0);
 	DKPoint bboxMax(0, 0);
@@ -620,7 +625,7 @@ bool DKFont::SetStyle(int point, float embolden, float outline, DKPoint dpi, boo
 	return true;
 }
 
-void DKFont::ClearCache(void)
+void DKFont::ClearCache()
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	glyphMap.Clear();
@@ -629,14 +634,14 @@ void DKFont::ClearCache(void)
 	numGlyphsLoaded = 0;
 }
 
-bool DKFont::IsValid(void) const
+bool DKFont::IsValid() const
 {
 	if (ftFace && pointSize > 0)
 		return true;
 	return false;
 }
 
-DKString DKFont::FamilyName(void) const
+DKString DKFont::FamilyName() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face)
@@ -644,7 +649,7 @@ DKString DKFont::FamilyName(void) const
 	return L"";
 }
 
-DKString DKFont::StyleName(void) const
+DKString DKFont::StyleName() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face)

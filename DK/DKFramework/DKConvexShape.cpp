@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKConvexShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKConvexShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -18,15 +17,18 @@ DKConvexShape::DKConvexShape(ShapeType t, btConvexShape* impl)
 	DKASSERT_DEBUG( this->impl->isConvex() );
 }
 
-DKConvexShape::~DKConvexShape(void)
+DKConvexShape::~DKConvexShape()
 {
 	DKASSERT_DEBUG( this->impl->isConvex() );
 }
 
 void DKConvexShape::Project(const DKNSTransform& t, const DKVector3& dir, float& min, float& max) const
 {
+	btVector3 witnesPtMin;
+	btVector3 witnesPtMax;
+
 	static_cast<const btConvexShape*>(this->impl)->project(
-		BulletTransform(t), BulletVector3(dir), min, max);
+		BulletTransform(t), BulletVector3(dir), min, max, witnesPtMin, witnesPtMax);
 }
 
 bool DKConvexShape::Intersect(const DKConvexShape* shapeA, const DKNSTransform& ta, const DKConvexShape* shapeB, const DKNSTransform& tb)

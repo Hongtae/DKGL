@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKSphereShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKSphereShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -17,11 +16,11 @@ DKSphereShape::DKSphereShape(float radius)
 {
 }
 
-DKSphereShape::~DKSphereShape(void)
+DKSphereShape::~DKSphereShape()
 {
 }
 
-float DKSphereShape::Radius(void) const
+float DKSphereShape::Radius() const
 {
 	btSphereShape* shape = static_cast<btSphereShape*>(this->impl);
 	float r = shape->getRadius();
@@ -30,7 +29,7 @@ float DKSphereShape::Radius(void) const
 	return r / s;
 }
 
-float DKSphereShape::ScaledRadius(void) const
+float DKSphereShape::ScaledRadius() const
 {
 	return static_cast<btSphereShape*>(this->impl)->getRadius();
 }

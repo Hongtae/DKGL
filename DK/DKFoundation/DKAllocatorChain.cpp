@@ -2,20 +2,24 @@
 //  File: DKAllocatorChain.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include <new>
 #include "DKAllocatorChain.h"
 #include "DKSpinLock.h"
 #include "DKCriticalSection.h"
+#include "DKMemory.h"
 
 namespace DKFoundation
 {
 	namespace Private
 	{
-		void CreateAllocationTable(void);
-		void DestroyAllocationTable(void);
+		// default Chain-Holder
+		static DKAllocatorChain::Maintainer maintainer;
+
+		void CreateAllocationTable();
+		void DestroyAllocationTable();
 
 		using ScopedSpinLock = DKCriticalSection<DKSpinLock>;
 		struct Chain
@@ -27,7 +31,7 @@ namespace DKFoundation
 			RefCount refCount;
 			static Chain* instance;
 
-			Chain(void)
+			Chain()
 			{
 				CreateAllocationTable();
 				lock.Lock();
@@ -36,47 +40,57 @@ namespace DKFoundation
 				refCount = 0;
 				lock.Unlock();
 			}
-			~Chain(void)
+			~Chain()
 			{
-				DestroyAllocationTable();
-				while (true)
+				while (true) // delete allocators in reverse order.
 				{
 					lock.Lock();
 					DKAllocatorChain* p = first;
 					lock.Unlock();
+
 					if (p)
+					{
+						while (p->NextAllocator())
+							p = p->NextAllocator();
 						delete p;
+					}
 					else
 						break;
 				}
+				DestroyAllocationTable();
 
 				lock.Lock();
 				instance = NULL;
 				first = NULL;
 				lock.Unlock();
 			}
-			static Chain* Instance(void)
+			static Chain* Instance()
 			{
 				static Chain* p = new Chain();
 				return p->instance;
 			}
-			RefCount IncrementRef(void)
+			RefCount IncrementRef()
 			{
 				ScopedSpinLock guard(lock);
 				this->refCount++;
 				return this->refCount;
 			}
-			RefCount DecrementRef(void)
+			RefCount DecrementRef()
 			{
 				ScopedSpinLock guard(lock);
 				this->refCount--;
 				return this->refCount;
 			}
+			void* operator new (size_t s)
+			{
+				return DKMemoryHeapAlloc(s);
+			}
+			void operator delete (void* p) noexcept
+			{
+				DKMemoryHeapFree(p);
+			}
 		};
 		Chain* Chain::instance;
-
-		// default Chain-Holder
-		static DKAllocatorChain::Maintainer init;
 	}
 }
 
@@ -84,7 +98,7 @@ using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
 
-DKAllocatorChain::DKAllocatorChain(void)
+DKAllocatorChain::DKAllocatorChain()
 : next(NULL)
 {
 	Chain* c = Chain::Instance();
@@ -102,7 +116,7 @@ DKAllocatorChain::DKAllocatorChain(void)
 	}
 }
 
-DKAllocatorChain::~DKAllocatorChain(void) noexcept(!DKGL_MEMORY_DEBUG)
+DKAllocatorChain::~DKAllocatorChain() noexcept(!DKGL_MEMORY_DEBUG)
 {
 	Chain* c = Chain::Instance();
 	ScopedSpinLock guard(c->lock);
@@ -121,7 +135,7 @@ DKAllocatorChain::~DKAllocatorChain(void) noexcept(!DKGL_MEMORY_DEBUG)
 	}
 }
 
-size_t DKAllocatorChain::Cleanup(void)
+size_t DKAllocatorChain::Cleanup()
 {
 	size_t purged = 0;
 	Chain* c = Chain::Instance();
@@ -133,19 +147,19 @@ size_t DKAllocatorChain::Cleanup(void)
 	return purged;
 }
 
-DKAllocatorChain* DKAllocatorChain::FirstAllocator(void)
+DKAllocatorChain* DKAllocatorChain::FirstAllocator()
 {
 	Chain* c = Chain::Instance();
 	ScopedSpinLock guard(c->lock);
 	return c->first;
 }
 
-DKAllocatorChain* DKAllocatorChain::NextAllocator(void)
+DKAllocatorChain* DKAllocatorChain::NextAllocator()
 {
 	return next;
 }
 
-DKAllocatorChain::Maintainer::Maintainer(void)
+DKAllocatorChain::Maintainer::Maintainer()
 {
 	Chain* c = Chain::Instance();
 	DKASSERT_STD_DEBUG( c != NULL );
@@ -153,7 +167,7 @@ DKAllocatorChain::Maintainer::Maintainer(void)
 	DKASSERT_STD_DEBUG( ref >= 0);
 }
 
-DKAllocatorChain::Maintainer::~Maintainer(void) noexcept(!DKGL_MEMORY_DEBUG)
+DKAllocatorChain::Maintainer::~Maintainer() noexcept(!DKGL_MEMORY_DEBUG)
 {
 	Chain* c = Chain::Instance();
 	DKASSERT_STD_DEBUG( c != NULL );
@@ -165,11 +179,10 @@ DKAllocatorChain::Maintainer::~Maintainer(void) noexcept(!DKGL_MEMORY_DEBUG)
 
 void* DKAllocatorChain::operator new (size_t s)
 {
-	return ::malloc(s);
+	return DKMemoryHeapAlloc(s);
 }
 
 void DKAllocatorChain::operator delete (void* p) noexcept
 {
-	::free(p);
+	DKMemoryHeapFree(p);
 }
-

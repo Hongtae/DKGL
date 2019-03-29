@@ -3,48 +3,55 @@
 //  Platform: OSX, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
-
 #import <TargetConditionals.h>
+
 #if TARGET_OS_IPHONE
 #warning Compiling DKUtils for iOS
 #import <UIKit/UIKit.h>
 #else
-#warning Compiling DKUtils for Mac OS X
+#warning Compiling DKUtils for macOS
 #import <AppKit/AppKit.h>
 #endif	// if TARGET_OS_IPHONE
 
+#include <sys/types.h>
+#include <sys/sysctl.h>
 #include "DKUtils.h"
 
 namespace DKFoundation
 {
 	namespace Private
 	{
+		bool InitializeMultiThreadedEnvironment()
+		{
+			if ([NSThread isMultiThreaded] == NO)
+			{
+				@autoreleasepool
+				{
+					NSThread *thread = [[[NSThread alloc] init] autorelease];
+					[thread start];
+				}
+			}
+			return [NSThread isMultiThreaded] != NO;		
+		}
+
 		void PerformOperationInsidePool(DKOperation* op)
 		{
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-			// initialize multi-threading mode for Cocoa
-			if ([NSThread isMultiThreaded] == NO)
-			{
-				NSThread *thread = [[[NSThread alloc] init] autorelease];
-				[thread start];
-			}
-
 			op->Perform();
 			[pool release];
 		}
 	}
 
-	DKGL_API unsigned int DKRandom(void)
+	DKGL_API uint32_t DKRandom()
 	{
 		return arc4random();
 	}
 
-	DKGL_API DKString DKTemporaryDirectory(void)
+	DKGL_API DKString DKTemporaryDirectory()
 	{
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 		NSString* tmp = NSTemporaryDirectory();
@@ -54,7 +61,7 @@ namespace DKFoundation
 		return ret;
 	}
 	
-	DKGL_API DKArray<DKString> DKProcessArguments(void)
+	DKGL_API DKArray<DKString> DKProcessArguments()
 	{
 		DKArray<DKString> result;
 		
@@ -70,7 +77,7 @@ namespace DKFoundation
 		return result;
 	}
 	
-	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments(void)
+	DKGL_API DKMap<DKString, DKString> DKProcessEnvironments()
 	{
 		__block DKMap<DKString, DKString> result;
 
@@ -89,6 +96,48 @@ namespace DKFoundation
 		 }];
 		[pool release];
 		return result;
+	}
+
+	DKGL_API uint32_t DKNumberOfCpuCores()
+	{
+		static int ncpu = []()
+		{
+			int num = 0;
+			size_t len = sizeof(num);
+			if (!sysctlbyname("hw.physicalcpu", &num, &len, nullptr, 0))
+				return num;
+			if (!sysctlbyname("hw.physicalcpu_max", &num, &len, nullptr, 0))
+				return num;
+			return 1;
+		}();
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
+	}
+
+	DKGL_API uint32_t DKNumberOfProcessors()
+	{
+		static int ncpu = []()
+		{
+			int num = 0;
+			int mib[2] = { CTL_HW, HW_AVAILCPU };
+			size_t len = sizeof(num);
+			if (!sysctl(mib, 2, &num, &len, NULL, 0))
+				return num;
+			mib[1] = HW_NCPU;
+			if (!sysctl(mib, 2, &num, &len, NULL, 0))
+				return num;
+			if (!sysctlbyname("hw.logicalcpu", &num, &len, nullptr, 0))
+				return num;
+			if (!sysctlbyname("hw.logicalcpu_max", &num, &len, nullptr, 0))
+				return num;
+			return 1;
+		}();
+
+		if (ncpu >= 1)
+			return ncpu;
+		return 1;
 	}
 }
 #endif //if defined(__APPLE__) && defined(__MACH__)

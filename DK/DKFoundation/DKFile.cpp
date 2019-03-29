@@ -30,18 +30,7 @@ namespace DKFoundation
 	namespace Private
 	{
 #ifdef _WIN32
-		inline DKString GetErrorString(DWORD dwError)
-		{
-			DKString ret = L"";
-			// error!
-			LPVOID lpMsgBuf;
-			::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
-
-			ret = (const wchar_t*)lpMsgBuf;
-			::LocalFree(lpMsgBuf);
-			return ret;
-		}
+        DKString GetWin32ErrorString(DWORD dwError);
 #endif
 	}
 }
@@ -49,20 +38,21 @@ namespace DKFoundation
 #define DKFILE_INVALID_FILE_HANDLE		(-1)
 
 using namespace DKFoundation;
+using namespace DKFoundation::Private;
 
-DKFile::DKFile(void)
+DKFile::DKFile()
 	: file(DKFILE_INVALID_FILE_HANDLE)
 {
 }
 
-DKFile::~DKFile(void)
+DKFile::~DKFile()
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
 #ifdef _WIN32
 		if (::CloseHandle((HANDLE)this->file) == 0)
 		{
-			DKLog("CloseHandle failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("CloseHandle failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		if (::close((int)this->file) != 0)
@@ -142,7 +132,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 	}
 	else
 	{
-		DKLog("CreateFile(%ls) failed:%ls\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(::GetLastError()));
+		DKLog("CreateFile(%ls) failed:%ls\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetWin32ErrorString(::GetLastError()));
 	}
 #else
 	int nOpenMode = 0;
@@ -232,7 +222,7 @@ DKObject<DKFile> DKFile::Create(const DKString& file, ModeOpen mod, ModeShare sh
 	return NULL;
 }
 
-DKObject<DKFile> DKFile::CreateTemporary(void)
+DKObject<DKFile> DKFile::CreateTemporary()
 {
 #ifdef _WIN32
 	DKString tmpPath = DKTemporaryDirectory();
@@ -249,7 +239,7 @@ DKObject<DKFile> DKFile::CreateTemporary(void)
 			DWORD err = ::GetLastError();
 			if (err != ERROR_FILE_EXISTS)
 			{
-				DKLog("CreateFile(%ls) failed:%s\n", (const wchar_t*)filePath, (const wchar_t*)Private::GetErrorString(err));
+				DKLog("CreateFile(%ls) failed:%s\n", (const wchar_t*)filePath, (const wchar_t*)GetWin32ErrorString(err));
 				break;
 			}
 		}
@@ -319,7 +309,7 @@ DKObject<DKFile> DKFile::CreateTemporary(void)
 	return NULL;
 }
 
-DKFile::Position DKFile::SetPos(Position p)
+DKFile::Position DKFile::SetCurrentPosition(Position p)
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
@@ -334,7 +324,7 @@ DKFile::Position DKFile::SetPos(Position p)
 		else
 		{
 			pos.QuadPart = 0;
-			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 
 		pos.QuadPart = 0;
@@ -347,7 +337,7 @@ DKFile::Position DKFile::SetPos(Position p)
 	return -1;
 }
 
-DKFile::Position DKFile::GetPos(void) const
+DKFile::Position DKFile::CurrentPosition() const
 {
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
@@ -360,7 +350,7 @@ DKFile::Position DKFile::GetPos(void) const
 		}
 		else
 		{
-			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("SetFilePointer failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		return ::lseek((int)this->file, 0, SEEK_CUR);
@@ -369,15 +359,15 @@ DKFile::Position DKFile::GetPos(void) const
 	return -1;
 }
 
-DKFile::Position DKFile::RemainLength(void) const
+DKFile::Position DKFile::RemainLength() const
 {
 	FileInfo info;
 	if (GetInfo(info))
-		return info.size - GetPos();
+		return info.size - CurrentPosition();
 	return 0;
 }
 
-DKFile::Position DKFile::TotalLength(void) const
+DKFile::Position DKFile::TotalLength() const
 {
 	FileInfo info;
 	if (GetInfo(info))
@@ -562,10 +552,10 @@ size_t DKFile::Write(DKStream* s)
 		size_t len = s->RemainLength();
 		if (len > 0)
 		{
-			void* p = DKMemoryDefaultAllocator::Alloc(len);
+			void* p = DKMalloc(len);
 			size_t numRead = s->Read(p, len);
 			size_t numWritten = this->Write(p, numRead);
-			DKMemoryDefaultAllocator::Free(p);
+			DKFree(p);
 
 			return numWritten;
 		}
@@ -672,7 +662,7 @@ bool DKFile::GetInfo(DKFile::FileInfo& info) const
 	return true;
 }
 
-DKFile::FileInfo DKFile::GetInfo(void) const
+DKFile::FileInfo DKFile::GetInfo() const
 {
 	FileInfo info;
 	if (GetInfo(info) == false)
@@ -721,23 +711,23 @@ bool DKFile::SetLength(size_t len)
 					// back to previous position.
 					if (::SetFilePointerEx((HANDLE)this->file, out, NULL, FILE_BEGIN) == 0)
 					{
-						DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+						DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 					}
 					return true;
 				}
 				else
 				{
-					DKLog("SetEndOfFile failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+					DKLog("SetEndOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 				}
 			}
 			else
 			{
-				DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+				DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 			}
 		}
 		else
 		{
-			DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("SetFilePointerEx failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		if (::ftruncate((int)this->file, len) == 0)
@@ -753,22 +743,22 @@ bool DKFile::SetLength(size_t len)
 	return false;
 }
 
-bool DKFile::IsReadable(void) const
+bool DKFile::IsReadable() const
 {
 	return (this->file != DKFILE_INVALID_FILE_HANDLE);
 }
 
-bool DKFile::IsWritable(void) const
+bool DKFile::IsWritable() const
 {
 	return (this->file != DKFILE_INVALID_FILE_HANDLE) && (this->modeOpen != ModeOpenReadOnly);
 }
 
-bool DKFile::IsSeekable(void) const
+bool DKFile::IsSeekable() const
 {
 	return IsReadable();
 }
 
-const DKString& DKFile::Path(void) const
+const DKString& DKFile::Path() const
 {
 	return this->path;
 }
@@ -780,25 +770,26 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 #ifdef _WIN32
 		struct MappedContent : public DKData
 		{
-			~MappedContent(void)
+			~MappedContent()
 			{
 				if (::UnmapViewOfFile(ptr) == 0)
 				{
-					DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+					DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 				}
 				if (::CloseHandle(hMap) == 0)
 				{
-					DKLog("CloseHandle failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+					DKLog("CloseHandle failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 				}
 			}
 
-			size_t Length(void) const { return length; }
-			virtual bool IsReadable(void) const { return readable; }
-			virtual bool IsWritable(void) const { return writable; }
-			virtual bool IsExcutable(void) const { return false; }
+			size_t Length() const override { return length; }
+			bool IsReadable() const override { return readable; }
+			bool IsWritable() const override { return writable; }
+			bool IsExcutable() const override { return false; }
+			bool IsTransient() const override { return false; }
 
-			const void* LockShared(void) const { lock.LockShared(); return &ptr[offset]; }
-			bool TryLockShared(const void** ptr) const
+			const void* LockShared() const override { lock.LockShared(); return &ptr[offset]; }
+			bool TryLockShared(const void** ptr) const override
 			{
 				if (lock.TryLockShared())
 				{
@@ -808,9 +799,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const { lock.UnlockShared(); }
+			void UnlockShared() const override { lock.UnlockShared(); }
 
-			void* LockExclusive(void) { lock.Lock(); return &ptr[offset]; }
+			void* LockExclusive() override { lock.Lock(); return &ptr[offset]; }
 			bool TryLockExclusive(void** ptr)
 			{
 				if (lock.TryLock())
@@ -821,7 +812,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void) { lock.Unlock(); }
+			void UnlockExclusive() override { lock.Unlock(); }
 
 			size_t length;
 			size_t offset;
@@ -875,18 +866,18 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			}
 			else
 			{
-				DKLog("MapViewOfFile failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+				DKLog("MapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 			}
 			::CloseHandle(hMap);
 		}
 		else
 		{
-			DKLog("CreateFileMapping failed:%ls\n", (const wchar_t*)Private::GetErrorString(::GetLastError()));
+			DKLog("CreateFileMapping failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
 		struct MappedContent : public DKData
 		{
-			~MappedContent(void)
+			~MappedContent()
 			{
 				if (::munmap(ptr, length + offset) != 0)
 				{
@@ -894,12 +885,13 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 			}
 
-			size_t Length(void) const { return length; }
-			bool IsReadable(void) const { return (prot & PROT_READ) != 0; }
-			bool IsWritable(void) const { return (prot & PROT_WRITE) != 0; }
-			bool IsExcutable(void) const { return false; }
+			size_t Length() const override { return length; }
+			bool IsReadable() const override { return (prot & PROT_READ) != 0; }
+			bool IsWritable() const override { return (prot & PROT_WRITE) != 0; }
+			bool IsExcutable() const override { return false; }
+			bool IsTransient() const override { return false; }
 
-			const void* LockShared(void) const { lock.LockShared(); return &ptr[offset]; }
+			const void* LockShared() const override { lock.LockShared(); return &ptr[offset]; }
 			bool TryLockShared(const void** ptr) const
 			{
 				if (lock.TryLockShared())
@@ -910,10 +902,10 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockShared(void) const { lock.UnlockShared(); }
+			void UnlockShared() const override { lock.UnlockShared(); }
 
-			void* LockExclusive(void) { lock.Lock(); return &ptr[offset]; }
-			bool TryLockExclusive(void** ptr)
+			void* LockExclusive() override { lock.Lock(); return &ptr[offset]; }
+			bool TryLockExclusive(void** ptr) override
 			{
 				if (lock.TryLock())
 				{
@@ -923,7 +915,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 				}
 				return false;
 			}
-			void UnlockExclusive(void) { lock.Unlock(); }
+			void UnlockExclusive() override { lock.Unlock(); }
 
 			int prot;
 			size_t length;
@@ -938,7 +930,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 		if (this->IsWritable())
 			prot |= PROT_WRITE;
 
-		long pageSize = getpagesize();
+		long pageSize = DKMemoryPageSize();
 		DKASSERT_DEBUG(pageSize > 0);
 		size_t mapOffset = offset & ~(pageSize - 1);
 		DKASSERT_DEBUG(offset >= mapOffset);

@@ -1,60 +1,39 @@
-﻿//
+//
 //  File: DKConvexHullShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector3.h"
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
 #include "DKPolyhedralConvexShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKConvexHullShape
-//  convex hull collision shape.
-//  You can create convex hull by points or
-//  convex decomposition from triangle mesh.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
 	class DKTriangle;
+	/// @brief
+	/// convex hull collision shape.
+	/// @details
+	///  You can create convex hull by points or
+	///  convex decomposition from triangle mesh.
+	/// @note
+	///  Use V-HACD for better quality. (https://github.com/kmammou/v-hacd)
 	class DKGL_API DKConvexHullShape : public DKPolyhedralConvexShape
 	{
 	public:
 		DKConvexHullShape(const DKVector3* vertices, size_t numVerts);
-		~DKConvexHullShape(void);
+		~DKConvexHullShape();
 
 		void AddPoint(const DKVector3& p);
-		size_t NumberOfPoints(void) const;
+		size_t NumberOfPoints() const;
 		DKVector3 PointAtIndex(unsigned int index) const;
 		DKVector3 ScaledPointAtIndex(unsigned int index) const;
 
-		// create convex-hull using HACD convex decomposition library.
-		// more info: https://code.google.com/p/v-hacd/
-		static DKFoundation::DKObject<DKConvexHullShape> CreateHull(const DKTriangle* tri, size_t num);
-
-		struct ConvexHull
-		{
-			DKFoundation::DKObject<DKConvexHullShape> shape;
-			DKNSTransform offset;
-		};
-		typedef DKFoundation::DKArray<ConvexHull> ConvexHullArray;
-
-		static ConvexHullArray DecomposeTriangleMesh(
-			const DKVector3* verts,
-			size_t numVerts,
-			const long* indices,				// triangle indices
-			size_t numIndices,					// number of indices ( number of triangles * 3 )
-			size_t minClusters = 2,				// minimum number of clusters
-			size_t maxVertsPerCH = 100,			// max vertices per convex-hull
-			double maxConcavity = 100,			// maximum concavity
-			bool addExtraDistPoints = false,
-			bool addNeighboursDistPoints = false,
-			bool addFacesPoints = false);
+		static DKObject<DKConvexHullShape> CreateHull(const DKTriangle* tri, size_t num);
 
 	protected:
 		DKConvexHullShape(ShapeType t, class btConvexHullShape* context);

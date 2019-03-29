@@ -2,7 +2,7 @@
 //  File: DKAllocator.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKObjectRefCounter.h"
@@ -17,7 +17,7 @@ namespace DKFoundation
 {
 	namespace Private
 	{
-		static DKAllocator::Maintainer init;
+		static DKAllocator::Maintainer maintainer;
 
 		enum {AllocatorTableLength = 977}; // should be prime-number.
 		struct AllocationNode
@@ -74,10 +74,18 @@ namespace DKFoundation
 			{
 				AllocationNode node[AllocatorTableLength];
 				DKSpinLock lock;
-				static AllocationTable*& Instance(void)
+				static AllocationTable*& Instance()
 				{
 					static AllocationTable* table = NULL;
 					return table;
+				}
+				void* operator new (size_t s)
+				{
+					return DKMemoryHeapAlloc(s);
+				}
+				void operator delete (void* p) noexcept
+				{
+					DKMemoryHeapFree(p);
 				}
 			};
 
@@ -90,7 +98,7 @@ namespace DKFoundation
 				DKCriticalSection<DKSpinLock> guard(table->lock);
 				return table->node[reinterpret_cast<uintptr_t>(ptr) % AllocatorTableLength];
 			}
-			DKObjectRefCounter::RefIdValue GenerateRefId(void)
+			DKObjectRefCounter::RefIdValue GenerateRefId()
 			{
 				// Maintainer will initialize AllocationTable (see DKAllocatorChain.cpp)
 				static DKAllocator::Maintainer init;
@@ -104,7 +112,7 @@ namespace DKFoundation
 			}
 		}
 
-		void CreateAllocationTable(void) // called by Maintainer
+		void CreateAllocationTable() // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			if (table == NULL)
@@ -113,7 +121,7 @@ namespace DKFoundation
 				AllocationTable::Instance() = table;
 			}
 		}
-		void DestroyAllocationTable(void) // called by Maintainer
+		void DestroyAllocationTable() // called by Maintainer
 		{
 			AllocationTable* table = AllocationTable::Instance();
 			AllocationTable::Instance() = NULL;
@@ -337,7 +345,7 @@ DKAllocator* DKObjectRefCounter::Allocator(void* p)
 	return NULL;	
 }
 
-size_t DKObjectRefCounter::TableSize(void)
+size_t DKObjectRefCounter::TableSize()
 {
 	return Private::AllocatorTableLength;	
 }

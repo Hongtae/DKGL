@@ -1,30 +1,26 @@
-﻿//
+//
 //  File: DKGeneric6DofSpringConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKGeneric6DofConstraint.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKGeneric6DofSpringConstraint
-// generic 6 dof constraint with spring motors for any axis.
-// (see DKGeneric6DofConstraint.h)
-////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
 {
+	/// @brief generic 6 dof constraint with spring motors for any axis.
+	/// (see DKGeneric6DofConstraint.h)
 	class DKGL_API DKGeneric6DofSpringConstraint : public DKGeneric6DofConstraint
 	{
 	public:
-		// DKNSTransform is rigid body's local transform.
+		/// DKNSTransform is rigid body's local transform.
 		DKGeneric6DofSpringConstraint(DKRigidBody* bodyA, DKRigidBody* bodyB, const DKNSTransform& frameA, const DKNSTransform& frameB);
 		DKGeneric6DofSpringConstraint(DKRigidBody* bodyB, const DKNSTransform& frameB);
-		DKGeneric6DofSpringConstraint(void);
-		~DKGeneric6DofSpringConstraint(void);
+		DKGeneric6DofSpringConstraint();
+		~DKGeneric6DofSpringConstraint();
 
 		void EnableSpring(ParamAxis axis, bool enable);
 		bool IsSpringEnabled(ParamAxis axis) const;
@@ -35,20 +31,20 @@ namespace DKFramework
 		void SetDamping(ParamAxis axis, float damping);
 		float Damping(ParamAxis axis) const;
 
-		// set the current constraint position/orientation as an equilibrium point for all DOF
-		void SetEquilibriumPoint(void);
-		// set the current constraint position/orientation as an equilibrium point for given DOF
+		/// set the current constraint position/orientation as an equilibrium point for all DOF
+		void SetEquilibriumPoint();
+		/// set the current constraint position/orientation as an equilibrium point for given DOF
 		void SetEquilibriumPoint(ParamAxis axis);
 		void SetEquilibriumPoint(ParamAxis axis, float val);
 		float EquilibriumPoint(ParamAxis axis) const;
 
-		DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		DKObject<DKSerializer> Serializer() override;
 
 	protected:
-		void ResetContext(void) override;
-		void ResetContextImpl(void) override;
+		void ResetContext() override;
+		void ResetContextImpl() override;
 
-		DKFoundation::DKObject<DKModel> Clone(UUIDObjectMap&) const override;
+		DKObject<DKModel> Clone(UUIDObjectMap&) const override;
 		DKGeneric6DofSpringConstraint* Copy(UUIDObjectMap&, const DKGeneric6DofSpringConstraint*);
 	};
 }

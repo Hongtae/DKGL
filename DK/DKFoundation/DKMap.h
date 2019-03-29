@@ -2,7 +2,7 @@
 //  File: DKMap.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -13,35 +13,6 @@
 #include "DKCriticalSection.h"
 #include "DKTypeTraits.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKMap
-// balancing tree class (using AVLTree internally, see DKAVLTree.h).
-// this is simple wrapper of DKAVLTree.
-//
-// Insert: insert value if key is not exists.
-// Update: set value for key whether key is exists or not.
-//
-// insertion, deletion, lookup is thread-safe.
-// If you need to modify value directly, you should have lock object.
-//
-// Example:
-//	{
-//		typename MyMapType::CriticalSection section(map.lock);	// lock with critical-section
-//		MyMapType::Pair* p = map.Find(something);
-//		.... // do something with p
-//	}	// auto-unlock by critical-section end
-//
-// To enumerate items:
-//
-//  typedef DKMap<Key,Value> MyMap;
-//  MyMap map;
-//  auto enumerator1 = [](const MyMap::Pair& pair) {...}
-//  auto enumerator2 = [](const MyMap::Pair& pair, bool* stop) {...}
-//  map.EnumerateForward(enumerator1);
-//  map.EnumerateForward(enumerator2);	// cancellable by set bool to true.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
 	template <typename Key, typename Value> class DKMapPair
@@ -49,6 +20,8 @@ namespace DKFoundation
 	public:
 		DKMapPair(const Key& k, const Value& v)
 			: key(k), value(v) {}
+		DKMapPair(const Key& k, Value&& v)
+			: key(k), value(static_cast<Value&&>(v)) {}
 		DKMapPair(const DKMapPair& p)
 			: key(p.key), value(p.value) {}
 		DKMapPair(DKMapPair&& p)
@@ -76,6 +49,44 @@ namespace DKFoundation
 		}
 	};
 
+	/**
+	 @brief
+	 balancing tree class (using AVLTree internally, see DKAVLTree.h).
+	 this is simple wrapper of DKAVLTree.
+
+	 Insert: insert value if key is not exists.
+	 Update: set value for key whether key is exists or not.
+
+	 insertion, deletion, lookup is thread-safe.
+	 If you need to modify value directly, you should have lock object.
+
+	 Example:
+	 @code
+		{
+			typename MyMapType::CriticalSection section(map.lock);	// lock with critical-section
+			MyMapType::Pair* p = map.Find(something);
+			.... // do something with p
+		}	// auto-unlock by critical-section end
+	 @endcode
+
+	 To enumerate items:
+	 @code
+	  typedef DKMap<Key,Value> MyMap;
+	  MyMap map;
+	  auto enumerator1 = [](const MyMap::Pair& pair) {...}
+	  auto enumerator2 = [](const MyMap::Pair& pair, bool* stop) {...}
+	  map.EnumerateForward(enumerator1);
+	  map.EnumerateForward(enumerator2);	// cancellable by set bool to true.
+	 @endcode
+
+	 @tparam Key            key type
+	 @tparam ValueT         value type
+	 @tparam Lock           locking class
+	 @tparam KeyComparator  key comparison function
+	 @tparam ValueReplacer  value copy/swap function
+
+	 @see DKAVLTree
+	 */
 	template <
 		typename Key,											// key type
 		typename ValueT,										// value type
@@ -109,15 +120,15 @@ namespace DKFoundation
 			ValueReplacer replacer;
 		};
 		typedef DKAVLTree<Pair, PairComparator, PairValueReplacer, Allocator> Container;
-		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
+		constexpr static size_t NodeSize() { return Container::NodeSize(); }
 
 		KeyComparator comparator;
 
-		// lock is public. to provde lock object from outside!
-		// FindNoLock, CountNoLock is usable regardless of locking.
+		/// lock is public. to provde lock object from outside!
+		/// FindNoLock, CountNoLock is usable regardless of locking.
 		Lock	lock;
 
-		DKMap(void)
+		DKMap()
 		{
 		}
 		DKMap(DKMap&& m)
@@ -136,26 +147,50 @@ namespace DKFoundation
 			for (const Pair& p : il)
 				container.Insert(p);
 		}
-		~DKMap(void)
+		template <typename K, typename V>
+		DKMap(std::initializer_list<K> keys, std::initializer_list<V> values)
+		{
+			DKASSERT_DEBUG(keys.size() == values.size());
+			auto k = keys.begin();
+			auto k_end = keys.end();
+			auto v = values.begin();
+			auto v_end = values.end();
+			while (k != k_end && v != v_end)
+			{
+				Insert(*k, *v);
+				++k; ++v;
+			}
+		}
+		~DKMap()
 		{
 			Clear();
 		}
-		// Update: overwrite value if key is exists, or insert item.
+		/// overwrite value if key is exists, or insert item.
 		void Update(const Pair& p)
 		{
 			CriticalSection guard(lock);
 			container.Update(p);			
 		}
+		void Update(Pair&& p)
+		{
+			CriticalSection guard(lock);
+			container.Update(static_cast<Pair&&>(p));			
+		}
 		void Update(const Key& k, const ValueT& v)
 		{
 			Update(Pair(k,v));
+		}
+		void Update(const Key& k, ValueT&& v)
+		{
+			Update(Pair(k,static_cast<ValueT&&>(v)));
 		}
 		void Update(const Pair* p, size_t size)
 		{
 			for (size_t i = 0; i < size; i++)
 				Update(p[i]);
 		}
-		template <typename ...Args> void Update(const DKMap<Key, ValueT, Args...>& m)
+		template <typename ...Args>
+		void Update(const DKMap<Key, ValueT, Args...>& m)
 		{
 			CriticalSection guard(lock);
 			m.EnumerateForward([this](const typename DKMap<Key, ValueT, Args...>::Pair& pair)
@@ -169,23 +204,41 @@ namespace DKFoundation
 			for (const Pair& p : il)
 				container.Update(p);
 		}
-		// Insert: insert item if key is not exist, fails otherwise.
+		template <typename K, typename V>
+		void Update(std::initializer_list<K> keys, std::initializer_list<V> values)
+		{
+			DKASSERT_DEBUG(keys.size() == values.size());
+
+			auto k = keys.begin();
+			auto k_end = keys.end();
+			auto v = values.begin();
+			auto v_end = values.end();
+
+			CriticalSection guard(lock);
+			while (k != k_end && v != v_end)
+			{
+				Update(*k, *v);
+				++k; ++v;
+			}
+		}
+		/// insert item if key is not exist, fails otherwise.
 		bool Insert(const Pair& p)
 		{
 			CriticalSection guard(lock);
 			return container.Insert(p) != NULL;
 		}
+		bool Insert(Pair&& p)
+		{
+			CriticalSection guard(lock);
+			return container.Insert(static_cast<Pair&&>(p)) != NULL;
+		}
 		bool Insert(const Key& k, const ValueT& v)
 		{
 			return Insert(Pair(k, v));
 		}
-		size_t Insert(const Pair* p, size_t size)
+		bool Insert(const Key& k, ValueT&& v)
 		{
-			size_t ret = 0;
-			for (size_t i = 0; i < size; i++)
-				if (Insert(p[i]))
-					ret++;
-			return ret;
+			return Insert(Pair(k, static_cast<ValueT&&>(v)));
 		}
 		template <typename ...Args> size_t Insert(const DKMap<Key, ValueT, Args...>& m)
 		{
@@ -209,6 +262,25 @@ namespace DKFoundation
 			}
 			return n;
 		}
+		template <typename K, typename V>
+		size_t Insert(std::initializer_list<K> keys, std::initializer_list<V> values)
+		{
+			DKASSERT_DEBUG(keys.size() == values.size());
+			size_t n = 0;
+			auto k = keys.begin();
+			auto k_end = keys.end();
+			auto v = values.begin();
+			auto v_end = values.end();
+
+			CriticalSection guard(lock);
+			while (k != k_end && v != v_end)
+			{
+				if (container.Insert(Pair(*k, *v)))
+					n++;
+				++k; ++v;
+			}
+			return n;
+		}
 		void Remove(const Key& k)
 		{
 			CriticalSection guard(lock);
@@ -223,7 +295,7 @@ namespace DKFoundation
 			for (const Key& k : il)
 				container.Remove(k);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
@@ -237,8 +309,8 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return FindNoLock(k);
 		}
-		// Perform search operation without locking.
-		// useful if you have locked already in your context.
+		/// Perform search operation without locking.
+		/// useful if you have locked already in your context.
 		Pair* FindNoLock(const Key& k)
 		{
 			return const_cast<Pair*>(static_cast<const DKMap&>(*this).FindNoLock(k));
@@ -250,7 +322,7 @@ namespace DKFoundation
 				return comparator(lhs.key, key);
 			});
 		}
-		// if key 'k' is not exist, an new value inserted and returns.
+		/// if key 'k' is not exist, an new value inserted and returns.
 		ValueT& Value(const Key& k)
 		{
 			CriticalSection guard(lock);
@@ -259,17 +331,17 @@ namespace DKFoundation
 				p = const_cast<Pair*>(container.Insert(Pair(k, ValueT())));
 			return p->value;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.Count() == 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return container.Count();
 		}
@@ -303,13 +375,13 @@ namespace DKFoundation
 				container.Insert(p);
 			return *this;
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<Pair&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<Pair&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -318,17 +390,17 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<Pair&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<Pair&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const Pair&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const Pair&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -337,7 +409,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const Pair&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const Pair&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");

@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKAtomicNumber64.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -16,7 +16,7 @@
 
 using namespace DKFoundation;
 
-DKAtomicNumber64::Value DKAtomicNumber64::Increment(void)
+DKAtomicNumber64::Value DKAtomicNumber64::Increment()
 {
 	Value prev;
 #ifdef _WIN32
@@ -31,7 +31,7 @@ DKAtomicNumber64::Value DKAtomicNumber64::Increment(void)
 	return prev;
 }
 
-DKAtomicNumber64::Value DKAtomicNumber64::Decrement(void)
+DKAtomicNumber64::Value DKAtomicNumber64::Decrement()
 {
 	Value prev;
 #ifdef _WIN32
@@ -93,7 +93,7 @@ DKAtomicNumber64::DKAtomicNumber64(Value initialValue)
 {
 }
 
-DKAtomicNumber64::~DKAtomicNumber64(void)
+DKAtomicNumber64::~DKAtomicNumber64()
 {
 }
 
@@ -109,7 +109,7 @@ DKAtomicNumber64& DKAtomicNumber64::operator += (Value value)
 	return *this;
 }
 
-DKAtomicNumber64::operator Value (void) const
+DKAtomicNumber64::operator Value () const
 {
 	return (Value)atomic;
 }

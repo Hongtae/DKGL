@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKStaticTriangleMeshShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKStaticTriangleMeshShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -22,12 +21,12 @@ public:
 	size_t numIndices;
 	PHY_ScalarType indexType;
 
-	~IndexedTriangleData(void)
+	~IndexedTriangleData()
 	{
 		if (vertices)
-			free(vertices);
+			DKFree(vertices);
 		if (indices)
-			free(indices);
+			DKFree(indices);
 	}
 
 	template <typename IndexType>
@@ -57,14 +56,14 @@ public:
 		this->numVertices = numVertices;
 		this->numIndices = numIndices;
 
-		this->vertices = malloc(numVertices * sizeof(DKVector3));
+		this->vertices = DKMalloc(numVertices * sizeof(DKVector3));
 		memcpy(this->vertices, vertices, numVertices * sizeof(DKVector3));
 
 		if (sizeof(IndexType) == 4 && numVertices <= 0xffff)
 		{
 			this->indexType = PHY_SHORT;
 
-			this->indices = malloc(numIndices * sizeof(unsigned short));
+			this->indices = DKMalloc(numIndices * sizeof(unsigned short));
 			for (size_t i = 0; i < numIndices; ++i)
 				reinterpret_cast<unsigned short*>(this->indices)[i] = static_cast<unsigned short>(indices[i]);
 		}
@@ -72,7 +71,7 @@ public:
 		{
 			this->indexType = (sizeof(IndexType) == 4) ? PHY_INTEGER : PHY_SHORT;
 
-			this->indices = malloc(numIndices * sizeof(IndexType));
+			this->indices = DKMalloc(numIndices * sizeof(IndexType));
 			memcpy(this->indices, indices, numIndices * sizeof(IndexType));
 		}
 
@@ -151,27 +150,27 @@ DKStaticTriangleMeshShape::DKStaticTriangleMeshShape(IndexedTriangleData* data)
 {
 }
 
-DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape(void)
+DKStaticTriangleMeshShape::~DKStaticTriangleMeshShape()
 {
 	delete meshData;
 }
 
-size_t DKStaticTriangleMeshShape::NumberOfVertices(void) const
+size_t DKStaticTriangleMeshShape::NumberOfVertices() const
 {
 	return this->meshData->numVertices;
 }
 
-size_t DKStaticTriangleMeshShape::NumberOfIndices(void) const
+size_t DKStaticTriangleMeshShape::NumberOfIndices() const
 {
 	return this->meshData->numIndices;
 }
 
-size_t DKStaticTriangleMeshShape::IndexSize(void) const
+size_t DKStaticTriangleMeshShape::IndexSize() const
 {
 	return (this->meshData->indexType == PHY_INTEGER) ? 4 : 2;
 }
 
-size_t DKStaticTriangleMeshShape::NumberOfTriangles(void) const
+size_t DKStaticTriangleMeshShape::NumberOfTriangles() const
 {
 	return this->meshData->numTriangles;
 }
@@ -204,17 +203,17 @@ DKTriangle DKStaticTriangleMeshShape::TriangleAtIndex(int index) const
 	return triangle;
 }
 
-DKAabb DKStaticTriangleMeshShape::Aabb(void) const
+DKAabb DKStaticTriangleMeshShape::Aabb() const
 {
 	return DKAabb(BulletVector3(this->meshData->aabbMin), BulletVector3(this->meshData->aabbMax));
 }
 
-const DKVector3* DKStaticTriangleMeshShape::VertexData(void) const
+const DKVector3* DKStaticTriangleMeshShape::VertexData() const
 {
 	return (DKVector3*)this->meshData->vertices;
 }
 
-const void* DKStaticTriangleMeshShape::IndexData(void) const
+const void* DKStaticTriangleMeshShape::IndexData() const
 {
 	return this->meshData->indices;
 }

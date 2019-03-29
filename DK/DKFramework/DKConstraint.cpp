@@ -1,16 +1,15 @@
-﻿//
+//
 //  File: DKConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKConstraint.h"
 #include "DKRigidBody.h"
-#include "DKScene.h"
+#include "DKWorld.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -28,7 +27,7 @@ DKConstraint::DKConstraint(LinkType t, DKRigidBody* rbA, DKRigidBody* rbB, class
 	impl->setBreakingImpulseThreshold(SIMD_INFINITY);
 }
 
-DKConstraint::~DKConstraint(void)
+DKConstraint::~DKConstraint()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	DKASSERT_DEBUG(impl->getUserConstraintPtr() == this);
@@ -126,12 +125,12 @@ void DKConstraint::SetBreakingImpulseThreshold(float threshold)
 	impl->setBreakingImpulseThreshold(threshold);
 }
 
-float DKConstraint::BreakingImpulseThreshold(void) const
+float DKConstraint::BreakingImpulseThreshold() const
 {
 	return impl->getBreakingImpulseThreshold();
 }
 
-bool DKConstraint::IsEnabled(void) const
+bool DKConstraint::IsEnabled() const
 {
 	return impl->isEnabled();
 }
@@ -170,12 +169,12 @@ bool DKConstraint::Retarget(DKRigidBody* a, DKRigidBody* b)
 	return false;
 }
 
-void DKConstraint::ResetObject(void)
+void DKConstraint::ResetObject()
 {
 	struct ReloadConstraint : public DKOperation
 	{
 		DKConstraint* con;
-		void Perform(void) const
+		void Perform() const
 		{
 			con->ResetContext();
 		}
@@ -186,7 +185,7 @@ void DKConstraint::ResetObject(void)
 	ReloadSceneContext(&rc);
 }
 
-void DKConstraint::ResetContext(void)
+void DKConstraint::ResetContext()
 {
 	bool enabled = impl->isEnabled();
 	float breaking = impl->getBreakingImpulseThreshold();
@@ -212,8 +211,7 @@ void DKConstraint::RestoreTargets(UUIDObjectMap& uuids)
 {
 	auto find = [&uuids](const DKUuid& uuid) -> DKRigidBody*
 	{
-		auto p = uuids.Find(uuid);
-		if (p)
+		if (auto p = uuids.Find(uuid); p)
 		{
 			if (p->value->type == DKModel::TypeCollision)
 			{
@@ -284,7 +282,7 @@ DKConstraint* DKConstraint::Copy(UUIDObjectMap& uuids, const DKConstraint* obj)
 	return NULL;
 }
 
-DKObject<DKSerializer> DKConstraint::Serializer(void)
+DKObject<DKSerializer> DKConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

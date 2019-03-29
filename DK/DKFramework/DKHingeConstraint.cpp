@@ -1,25 +1,14 @@
-﻿//
+//
 //  File: DKHingeConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKHingeConstraint.h"
 
-using namespace DKFoundation;
-namespace DKFramework
-{
-	namespace Private
-	{
-		struct HingeConstraintExt : public btHingeConstraint
-		{
-			using btHingeConstraint::m_limit;
-			using btHingeConstraint::m_flags;
-		};
-	}
-}
+
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -47,13 +36,13 @@ DKHingeConstraint::DKHingeConstraint(DKRigidBody* rbA, const DKVector3& pivotInA
 	DKASSERT_DEBUG(dynamic_cast<btHingeConstraint*>(this->impl));
 }
 
-DKHingeConstraint::DKHingeConstraint(void)
+DKHingeConstraint::DKHingeConstraint()
 : DKConstraint(LinkType::Hinge, NULL, NULL, NewConstraintImpl<btHingeConstraint>::Create(nullptr, DKNSTransform::identity))
 {
 	DKASSERT_DEBUG(dynamic_cast<btHingeConstraint*>(this->impl));
 }
 
-DKHingeConstraint::~DKHingeConstraint(void)
+DKHingeConstraint::~DKHingeConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btHingeConstraint*>(this->impl));
 }
@@ -63,29 +52,29 @@ void DKHingeConstraint::SetLimit(float lower, float upper, float softness, float
 	static_cast<btHingeConstraint*>(this->impl)->setLimit(lower, upper, softness, biasFactor, relaxationFactor);
 }
 
-float DKHingeConstraint::LowerLimit(void) const
+float DKHingeConstraint::LowerLimit() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getLowerLimit();
 }
 
-float DKHingeConstraint::UpperLimit(void) const
+float DKHingeConstraint::UpperLimit() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getUpperLimit();
 }
 
-float DKHingeConstraint::Softness(void) const
+float DKHingeConstraint::Softness() const
 {
-	return static_cast<HingeConstraintExt*>(this->impl)->m_limit.getSoftness();
+	return static_cast<btHingeConstraint*>(this->impl)->getLimitSoftness();
 }
 
-float DKHingeConstraint::BiasFactor(void) const
+float DKHingeConstraint::BiasFactor() const
 {
-	return static_cast<HingeConstraintExt*>(this->impl)->m_limit.getBiasFactor();
+	return static_cast<btHingeConstraint*>(this->impl)->getLimitBiasFactor();
 }
 
-float DKHingeConstraint::RelaxationFactor(void) const
+float DKHingeConstraint::RelaxationFactor() const
 {
-	return static_cast<HingeConstraintExt*>(this->impl)->m_limit.getRelaxationFactor();
+	return static_cast<btHingeConstraint*>(this->impl)->getLimitRelaxationFactor();
 }
 
 void DKHingeConstraint::SetAngularOnly(bool angularOnly)
@@ -93,7 +82,7 @@ void DKHingeConstraint::SetAngularOnly(bool angularOnly)
 	static_cast<btHingeConstraint*>(this->impl)->setAngularOnly(angularOnly);
 }
 
-bool DKHingeConstraint::IsAngularOnly(void) const
+bool DKHingeConstraint::IsAngularOnly() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getAngularOnly();
 }
@@ -108,22 +97,22 @@ void DKHingeConstraint::EnableAngularMotor(bool enable)
 	static_cast<btHingeConstraint*>(this->impl)->enableMotor(enable);
 }
 
-bool DKHingeConstraint::IsAngularMotorEnabled(void) const
+bool DKHingeConstraint::IsAngularMotorEnabled() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getEnableAngularMotor();
 }
 
-float DKHingeConstraint::MaxMotorImpulse(void) const
+float DKHingeConstraint::MaxMotorImpulse() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getMaxMotorImpulse();
 }
 
-float DKHingeConstraint::MotorTargetVelocity(void) const
+float DKHingeConstraint::MotorTargetVelocity() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getMotorTargetVelosity();
 }
 
-float DKHingeConstraint::HingeAngle(void) const
+float DKHingeConstraint::HingeAngle() const
 {
 	return static_cast<btHingeConstraint*>(this->impl)->getHingeAngle();
 }
@@ -134,12 +123,12 @@ float DKHingeConstraint::HingeAngle(const DKNSTransform& ta, const DKNSTransform
 		BulletTransform(ta), BulletTransform(tb));
 }
 
-DKNSTransform DKHingeConstraint::FrameA(void) const
+DKNSTransform DKHingeConstraint::FrameA() const
 {
 	return BulletTransform(static_cast<btHingeConstraint*>(this->impl)->getFrameOffsetA());
 }
 
-DKNSTransform DKHingeConstraint::FrameB(void) const
+DKNSTransform DKHingeConstraint::FrameB() const
 {
 	return BulletTransform(static_cast<btHingeConstraint*>(this->impl)->getFrameOffsetB());
 }
@@ -187,7 +176,7 @@ bool DKHingeConstraint::HasParam(ParamType type, ParamAxis axis) const
 {
 	if (axis == ParamAxis::Default || axis == ParamAxis::AngularZ)
 	{
-		int flags = static_cast<HingeConstraintExt*>(this->impl)->m_flags;
+		int flags = static_cast<btHingeConstraint*>(this->impl)->getFlags();
 
 		switch (type)
 		{
@@ -202,7 +191,7 @@ bool DKHingeConstraint::HasParam(ParamType type, ParamAxis axis) const
 	return false;
 }
 
-void DKHingeConstraint::ResetContext(void)
+void DKHingeConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btHingeConstraint*>(this->impl));
 	btHingeConstraint* c = static_cast<btHingeConstraint*>(this->impl);
@@ -211,9 +200,9 @@ void DKHingeConstraint::ResetContext(void)
 	btTransform frameB = c->getFrameOffsetB();
 	float lowerLimit = c->getLowerLimit();
 	float upperLimit = c->getUpperLimit();
-	float softness = static_cast<HingeConstraintExt*>(c)->m_limit.getSoftness();
-	float biasFactor = static_cast<HingeConstraintExt*>(c)->m_limit.getBiasFactor();
-	float relaxationFactor = static_cast<HingeConstraintExt*>(c)->m_limit.getRelaxationFactor();
+	float softness = static_cast<btHingeConstraint*>(c)->getLimitSoftness();
+	float biasFactor = static_cast<btHingeConstraint*>(c)->getLimitBiasFactor();
+	float relaxationFactor = static_cast<btHingeConstraint*>(c)->getLimitRelaxationFactor();
 	float motorTargetVelocity = c->getMotorTargetVelosity();
 	float maxMotorImpulse = c->getMaxMotorImpulse();
 	bool angularOnly = c->getAngularOnly();
@@ -227,7 +216,7 @@ void DKHingeConstraint::ResetContext(void)
 	c->enableAngularMotor(angularMotorEnabled, motorTargetVelocity, maxMotorImpulse);
 }
 
-void DKHingeConstraint::ResetContextImpl(void)
+void DKHingeConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btHingeConstraint*>(this->impl));
 	btHingeConstraint* c = static_cast<btHingeConstraint*>(this->impl);
@@ -246,11 +235,15 @@ DKHingeConstraint* DKHingeConstraint::Copy(UUIDObjectMap& uuids, const DKHingeCo
 {
 	if (DKConstraint::Copy(uuids, obj))
 	{
-		HingeConstraintExt* dst = static_cast<HingeConstraintExt*>(this->impl);
-		HingeConstraintExt* src = static_cast<HingeConstraintExt*>(obj->impl);
+		btHingeConstraint* dst = static_cast<btHingeConstraint*>(this->impl);
+		btHingeConstraint* src = static_cast<btHingeConstraint*>(obj->impl);
 
 		dst->setFrames(src->getFrameOffsetA(), src->getFrameOffsetB());
-		dst->setLimit(src->getLowerLimit(), src->getUpperLimit(), src->m_limit.getSoftness(), src->m_limit.getBiasFactor(), src->m_limit.getRelaxationFactor());
+		dst->setLimit(src->getLowerLimit(),
+					  src->getUpperLimit(),
+					  src->getLimitSoftness(),
+					  src->getLimitBiasFactor(),
+					  src->getLimitRelaxationFactor());
 		dst->setAngularOnly(src->getAngularOnly());
 		dst->enableAngularMotor(src->getEnableAngularMotor(), src->getMotorTargetVelosity(), src->getMaxMotorImpulse());
 		return this;
@@ -258,7 +251,7 @@ DKHingeConstraint* DKHingeConstraint::Copy(UUIDObjectMap& uuids, const DKHingeCo
 	return NULL;
 }
 
-DKObject<DKSerializer> DKHingeConstraint::Serializer(void)
+DKObject<DKSerializer> DKHingeConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

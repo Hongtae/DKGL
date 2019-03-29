@@ -1,55 +1,57 @@
-﻿//
+//
 //  File: DKConstraint.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKModel.h"
 #include "DKRigidBody.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKConstraint
-// join constraint for dynamics of rigid bodies.
-// 
-// ERP : error reduction parameter
-// CFM : constraint force mixing
-//
-// if CFM = 0 (default), constraint become hard.
-// if CFM > 0, constraint become soft. (bigger value makes softer)
-// if CFM < 0, become unstable. don't use.
-//
-// if ERP = 0, no correction for join error occurred.
-//             object slipping could happen.
-// if ERP = 1, all errors will be corrected while simulation process.
-//             but not all objects could be corrected actually,
-//             use ERP=1 is not recommended.
-//             (0.1 ~ 0.8 is recommended, 0.2 is default)
-//
-// Note:
-//    deserialize using DKSerializer, bodyA, bodyB is restored from UUIDs.
-//    If reference bodies are not in same Node-tree (DKModel tree), reference
-//    bodies will not be restored. (non seekable with UUIDs if not in group)
-//    If constraint failed to recover reference bodies, recover-info still
-//    remains in object until Retarget() has called. this makes object able to
-//    restore references later (when UUIDs is available.),
-//    reference bodies recovered by OnUpdateTreeReferences().
-//
-//    cloning object by Clone(), reference bodies (bodyA, bodyB) will not be
-//    cloned directly. object will try to recover references by UUIDs after
-//    clone completed if bodyA, bodyB has been cloned.
-//    reference bodies recovered by UpdateCopiedReferenceUUIDs().
-//
-//    reference bodies (bodyA, bodyB) must not be parent of constraint object.
-//    constraint object has reference as DKObject, which has ownership.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/**
+	 @brief
+	 joint constraint for dynamics of rigid bodies.
+	 
+	 @details
+	 ERP : error reduction parameter
+	 CFM : constraint force mixing
+	
+	 @verbatim
+	 if CFM = 0 (default), constraint become hard.
+	 if CFM > 0, constraint become soft. (bigger value makes softer)
+	 if CFM < 0, become unstable. don't use.
+	
+	 if ERP = 0, no correction for join error occurred.
+	             object slipping could happen.
+	 if ERP = 1, all errors will be corrected while simulation process.
+	             but not all objects could be corrected actually,
+	             use ERP=1 is not recommended.
+	             (0.1 ~ 0.8 is recommended, 0.2 is default)
+	 @endverbatim
+	
+	 @note
+	    deserialize using DKSerializer, bodyA, bodyB is restored from UUIDs.
+	    If reference bodies are not in same Node-tree (DKModel tree), reference
+	    bodies will not be restored. (non seekable with UUIDs if not in group)
+	    If constraint failed to recover reference bodies, recover-info still
+	    remains in object until Retarget() has called. this makes object able to
+	    restore references later (when UUIDs is available.),
+	    reference bodies recovered by OnUpdateTreeReferences().
+	
+	 @note
+	    cloning object by Clone(), reference bodies (bodyA, bodyB) will not be
+	    cloned directly. object will try to recover references by UUIDs after
+	    clone completed if bodyA, bodyB has been cloned.
+	    reference bodies recovered by UpdateCopiedReferenceUUIDs().
+	
+	 @note
+	    reference bodies (bodyA, bodyB) must not be parent of constraint object.
+	    constraint object has reference as DKObject, which has ownership.
+	 */
 	class DKGL_API DKConstraint : public DKModel
 	{
 	public:
@@ -84,7 +86,7 @@ namespace DKFramework
 		};
 		const LinkType type;
 
-		virtual ~DKConstraint(void);
+		virtual ~DKConstraint();
 
 		bool disableCollisionsBetweenLinkedBodies;
 
@@ -94,45 +96,45 @@ namespace DKFramework
 		virtual float GetParam(ParamType type, ParamAxis axis);
 
 		void SetBreakingImpulseThreshold(float threshold);
-		float BreakingImpulseThreshold(void) const;
+		float BreakingImpulseThreshold() const;
 
-		bool IsEnabled(void) const;
+		bool IsEnabled() const;
 		void SetEnabled(bool e);
 
-		void Enable(void)				{SetEnabled(true);}
-		void Disable(void)				{SetEnabled(false);}
+		void Enable()				{SetEnabled(true);}
+		void Disable()				{SetEnabled(false);}
 
-		DKRigidBody* BodyA(void)				{ return bodyA; }
-		DKRigidBody* BodyB(void)				{ return bodyB; }
-		const DKRigidBody* BodyA(void) const	{ return bodyA; }
-		const DKRigidBody* BodyB(void) const	{ return bodyB; }
+		DKRigidBody* BodyA()				{ return bodyA; }
+		DKRigidBody* BodyB()				{ return bodyB; }
+		const DKRigidBody* BodyA() const	{ return bodyA; }
+		const DKRigidBody* BodyB() const	{ return bodyB; }
 
 		virtual bool Retarget(DKRigidBody* a, DKRigidBody* b);
 
-		virtual DKFoundation::DKObject<DKSerializer> Serializer(void) override;
+		virtual DKObject<DKSerializer> Serializer() override;
 
 	protected:
 		DKConstraint(LinkType type, DKRigidBody* rbA, DKRigidBody* rbB, class btTypedConstraint* p);
 
-		void ResetObject(void);
-		// ResetContext, ResetContextImpl should be overriden by subclass.
-		// invoked by ResetObject.
-		virtual void ResetContext(void);
-		virtual void ResetContextImpl(void) = 0;
+		void ResetObject();
+		/// ResetContext, ResetContextImpl should be overriden by subclass.
+		/// invoked by ResetObject.
+		virtual void ResetContext();
+		virtual void ResetContextImpl() = 0;
 
-		DKFoundation::DKObject<DKRigidBody> bodyA;
-		DKFoundation::DKObject<DKRigidBody> bodyB;
+		DKObject<DKRigidBody> bodyA;
+		DKObject<DKRigidBody> bodyB;
 
-		// called on object has restored.
+		/// called on object has restored.
 		void OnUpdateTreeReferences(NamedObjectMap&, UUIDObjectMap&) override;
 	
-		// called on object has cloned.
+		/// called on object has cloned.
 		void UpdateCopiedReferenceUUIDs(UUIDObjectMap&) override;
 		DKConstraint* Copy(UUIDObjectMap&, const DKConstraint*);
 
-		// verify argument object (DKModel) can be parent of this.
-		// if argument object (DKModel) is refered by this,
-		// it can not be ancestor.
+		/// verify argument object (DKModel) can be parent of this.
+		/// if argument object (DKModel) is refered by this,
+		/// it can not be ancestor.
 		bool CanAcceptObjectAsParent(DKModel*) const override;
 
 		class btTypedConstraint* impl;
@@ -143,10 +145,10 @@ namespace DKFramework
 
 		struct TargetRestoreInfo
 		{
-			DKFoundation::DKUuid bodyA;
-			DKFoundation::DKUuid bodyB;
+			DKUuid bodyA;
+			DKUuid bodyB;
 		};
-		DKFoundation::DKObject<TargetRestoreInfo> restoreInfo; // restore-info
+		DKObject<TargetRestoreInfo> restoreInfo; // restore-info
 		void RestoreTargets(UUIDObjectMap&);
 	};
 }

@@ -2,7 +2,7 @@
 //  File: DKLog.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -19,72 +19,26 @@
 
 #include "DKLog.h"
 #include "DKString.h"
-#include "DKSpinLock.h"
+#include "DKLogger.h"
 
 namespace DKFoundation
 {
-	namespace Private
+	DKGL_API void DKLog(DKLogCategory c, const DKString& str)
 	{
-		static DKSpinLock spinLock;
-		static DKObject<DKLogger> defaultLogger = NULL;
+#ifndef DKGL_DEBUG_ENABLED
+		if (c == DKLogCategory::Debug) return;
+#endif
+		if (!DKLogger::Broadcast(c, str))
+			fprintf(stderr, "%ls", (const wchar_t*)str);
 	}
-
-	DKGL_API void DKLoggerSet(DKLogger* logger)
+	DKGL_API void DKLog(DKLogCategory c, const char* fmt, ...)
 	{
-		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
-		Private::defaultLogger = logger;
-	}
-	DKGL_API DKLogger* DKLoggerCurrent(void)
-	{
-		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
-		return Private::defaultLogger;
-	}
-	DKGL_API bool DKLoggerCompareAndReplace(DKLogger* cmp, DKLogger* repl)
-	{
-		DKCriticalSection<DKSpinLock> guard(Private::spinLock);
-		if (Private::defaultLogger == cmp)
-		{
-			Private::defaultLogger = repl;
-			return true;
-		}
-		return false;
-	}
-
-	DKGL_API void DKLogInit(DKLogCallbackProc proc)
-	{
-		struct Logger : public DKLogger
-		{
-			Logger(DKLogCallbackProc p) : proc(p) {}
-			DKLogCallbackProc proc;
-			void Log(const DKString& msg) override
-			{
-				proc(msg);
-			}
-		};
-		if (proc)
-			DKLoggerSet(DKObject<Logger>::New(proc));
-		else
-			DKLoggerSet(NULL);
-	}
-	DKGL_API void DKLog(const DKFoundation::DKString& str)
-	{
-		Private::spinLock.Lock();
-		if (Private::defaultLogger)
-		{
-			Private::defaultLogger->Log(str);
-			Private::spinLock.Unlock();
-			return;
-		}
-		Private::spinLock.Unlock();
-		fprintf(stderr, "%ls", (const wchar_t*)str);
-	}
-	DKGL_API void DKLog(const char* fmt, ...)
-	{
-		if (fmt == NULL || fmt[0] == '\0')
-			return;
+#ifndef DKGL_DEBUG_ENABLED
+		if (c == DKLogCategory::Debug) return;
+#endif
 		va_list ap;
 		va_start(ap, fmt);
-		DKLog(DKString::FormatV(fmt, ap));
+		DKLog(c, DKString::FormatV(fmt, ap));
 		va_end(ap);
 	}
 }

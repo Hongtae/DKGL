@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKSpinLock.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKSpinLock.h"
@@ -23,27 +23,27 @@ namespace DKFoundation
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKSpinLock::DKSpinLock(void)
+DKSpinLock::DKSpinLock()
 	: state(SpinLockStateFree)
 {
 }
 
-DKSpinLock::~DKSpinLock(void)
+DKSpinLock::~DKSpinLock()
 {
 }
 
-void DKSpinLock::Lock(void) const
+void DKSpinLock::Lock() const
 {
 	while (!TryLock())
 		DKThread::Yield();
 }
 
-bool DKSpinLock::TryLock(void) const
+bool DKSpinLock::TryLock() const
 {
 	return state.CompareAndSet(SpinLockStateFree, SpinLockStateLocked);
 }
 
-void DKSpinLock::Unlock(void) const
+void DKSpinLock::Unlock() const
 {
 	state = SpinLockStateFree;
 }

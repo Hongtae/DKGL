@@ -1,33 +1,22 @@
-﻿//
+//
 //  File: DKResourceLoader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKResource.h"
 #include "DKResourceLoader.h"
 #include "DKSerializer.h"
 
-// 2011-08-16
-// includes resource class headers
-// to register default handler.
 #include "DKAnimation.h"
-#include "DKMaterial.h"
-#include "DKTexture.h"
-#include "DKTexture2D.h"
-#include "DKTexture3D.h"
-#include "DKTextureCube.h"
-#include "DKVertexBuffer.h"
-#include "DKIndexBuffer.h"
-
 #include "DKCollisionShape.h"
 
-#include "DKModel.h"
 #include "DKRigidBody.h"
 #include "DKSoftBody.h"
-#include "DKStaticMesh.h"
-#include "DKSkinMesh.h"
+#include "DKModel.h"
+
+#include "DKImage.h"
 
 // constraints
 #include "DKConeTwistConstraint.h"
@@ -38,37 +27,33 @@
 #include "DKPoint2PointConstraint.h"
 #include "DKSliderConstraint.h"
 
-// others
-#include "DKRenderTarget.h"
 
-
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
 	{
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceAllocator>>	AllocatorMap;
-		typedef DKMap<DKString, AllocatorMap, DKFoundation::DKDummyLock>		AllocatorURIMap;
+		typedef DKMap<DKString, AllocatorMap, DKDummyLock>		AllocatorURIMap;
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceLoader>>		LoaderMap;
 
-		DKSpinLock& GetAllocatorURIMapLock(void)
+		DKSpinLock& GetAllocatorURIMapLock()
 		{
 			static DKSpinLock lock;
 			return lock;
 		}
-		AllocatorURIMap& GetAllocatorURIMap(void)
+		AllocatorURIMap& GetAllocatorURIMap()
 		{
 			static DKAllocator::Maintainer init;
 
 			static AllocatorURIMap map;
 			return map;
 		}
-		DKSpinLock& GetLoaderMapLock(void)
+		DKSpinLock& GetLoaderMapLock()
 		{
 			static DKSpinLock lock;
 			return lock;
 		}
-		LoaderMap& GetLoaderMap(void)
+		LoaderMap& GetLoaderMap()
 		{
 			static DKAllocator::Maintainer init;
 
@@ -116,31 +101,21 @@ namespace DKFramework
 			return NULL;
 		}
 
-		bool InitBuiltinResourceTypes(void)
+		bool InitBuiltinResourceTypes()
 		{
 #define REGISTER_RESOURCE_CLASS(CLASS)		DKResourceLoader::SetResourceAllocator(L"", #CLASS, DKFunction(DKResourceAlloc<CLASS>))
 
 			// make sure to allocator exists before register class-types.
 			static DKAllocator::Maintainer init;
 
-
 			REGISTER_RESOURCE_CLASS(DKAnimation);
-			REGISTER_RESOURCE_CLASS(DKMaterial);
-
-			REGISTER_RESOURCE_CLASS(DKTexture);
-			REGISTER_RESOURCE_CLASS(DKTexture2D);
-			REGISTER_RESOURCE_CLASS(DKTexture3D);
-			REGISTER_RESOURCE_CLASS(DKTextureCube);
-
-			REGISTER_RESOURCE_CLASS(DKVertexBuffer);
-			REGISTER_RESOURCE_CLASS(DKIndexBuffer);
+			REGISTER_RESOURCE_CLASS(DKImage);
 
 			// collision shape helper
 			REGISTER_RESOURCE_CLASS(DKCollisionShape::SerializeHelper);
+
 			// model object
 			REGISTER_RESOURCE_CLASS(DKModel);
-			REGISTER_RESOURCE_CLASS(DKStaticMesh);
-			REGISTER_RESOURCE_CLASS(DKSkinMesh);
 			REGISTER_RESOURCE_CLASS(DKCollisionObject);
 			REGISTER_RESOURCE_CLASS(DKRigidBody);
 			REGISTER_RESOURCE_CLASS(DKSoftBody);
@@ -162,11 +137,11 @@ namespace DKFramework
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKResourceLoader::DKResourceLoader(void)
+DKResourceLoader::DKResourceLoader()
 {
 }
 
-DKResourceLoader::~DKResourceLoader(void)
+DKResourceLoader::~DKResourceLoader()
 {
 }
 
@@ -194,7 +169,7 @@ void DKResourceLoader::SetResourceFileExtension(const DKString& ext, ResourceLoa
 	}
 }
 
-DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXMLElement* e)
+DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 {
 	DKObject<DKResource> res = NULL;
 	if (e)
@@ -275,8 +250,8 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 		}
 		if (res == NULL)
 		{
-			// try to open with XML (DKXMLDocument)
-			DKObject<DKXMLDocument> xmlDoc = DKXMLDocument::Open(DKXMLDocument::TypeXML, data);
+			// try to open with XML (DKXmlDocument)
+			DKObject<DKXmlDocument> xmlDoc = DKXmlDocument::Open(DKXmlDocument::TypeXML, data);
 			if (xmlDoc)
 			{
 				res = this->ResourceFromXML(xmlDoc->RootElement());
@@ -329,15 +304,15 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 			}
 		}
 
-		DKStream::Position pos = stream->GetPos();
-		DKObject<DKXMLDocument> xmlDoc = DKXMLDocument::Open(DKXMLDocument::TypeXML, stream);
+		DKStream::Position pos = stream->CurrentPosition();
+		DKObject<DKXmlDocument> xmlDoc = DKXmlDocument::Open(DKXmlDocument::TypeXML, stream);
 		if (xmlDoc && xmlDoc->RootElement())
 		{
 			return this->ResourceFromXML(xmlDoc->RootElement());
 		}
 		else
 		{
-			stream->SetPos(pos);
+			stream->SetCurrentPosition(pos);
 			// Open with DKSerializer.
 			DKAllocator& alloc = this->Allocator();
 			DKObject<DKResource> obj = NULL;
@@ -383,7 +358,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromFile(const DKString& path, co
 	return NULL;
 }
 
-DKAllocator& DKResourceLoader::Allocator(void) const
+DKAllocator& DKResourceLoader::Allocator() const
 {
 	return DKAllocator::DefaultAllocator();
 }

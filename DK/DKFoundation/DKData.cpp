@@ -2,7 +2,7 @@
 //  File: DKData.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKData.h"
@@ -20,19 +20,20 @@ DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperat
 		size_t len;
 		DKObject<DKOperation> cleanup;
 
-		~ReadOnlyData(void)
+		~ReadOnlyData()
 		{
 			if (cleanup)
 				cleanup->Perform();
 		}
-		size_t Length(void) const					{return len;}
-		bool IsReadable(void) const					{return true;}
-		bool IsWritable(void) const					{return false;}
-		bool IsExcutable(void) const				{return false;}
+		size_t Length() const override { return len; }
+		bool IsReadable() const override { return true; }
+		bool IsWritable() const override { return false; }
+		bool IsExcutable() const override { return false; }
+		bool IsTransient() const override { return len > 0 && cleanup == nullptr; }
 
-		const void* LockShared(void) const			{ return p; }
-		bool TryLockShared(const void** ptr) const	{ *ptr = p; return true; }
-		void UnlockShared(void) const				{}
+		const void* LockShared() const override { return p; }
+		bool TryLockShared(const void** ptr) const override { *ptr = p; return true; }
+		void UnlockShared() const override {}
 	};
 	struct WritableData : public DKData
 	{
@@ -41,19 +42,20 @@ DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperat
 		DKObject<DKOperation> cleanup;
 		DKSharedLock lock;
 
-		~WritableData(void)
+		~WritableData()
 		{
 			if (cleanup)
 				cleanup->Perform();
 		}
 
-		size_t Length(void) const				{return len;}
-		bool IsReadable(void) const				{return true;}
-		bool IsWritable(void) const				{return true;}
-		bool IsExcutable(void) const			{return false;}
+		size_t Length() const override { return len; }
+		bool IsReadable() const override { return true; }
+		bool IsWritable() const override { return true; }
+		bool IsExcutable() const override { return false; }
+		bool IsTransient() const override { return len > 0 && cleanup == nullptr; }
 
-		const void* LockShared(void) const		{ lock.LockShared(); return p; }
-		bool TryLockShared(const void** ptr) const
+		const void* LockShared() const override { lock.LockShared(); return p; }
+		bool TryLockShared(const void** ptr) const override
 		{
 			if (lock.TryLockShared())
 			{
@@ -63,10 +65,10 @@ DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperat
 			}
 			return false;
 		}
-		void UnlockShared(void) const			{ lock.UnlockShared(); }
+		void UnlockShared() const override { lock.UnlockShared(); }
 
-		virtual void* LockExclusive(void)		{ lock.Lock(); return p; }
-		virtual bool TryLockExclusive(void** ptr)
+		virtual void* LockExclusive() override { lock.Lock(); return p; }
+		virtual bool TryLockExclusive(void** ptr) override
 		{
 			if (lock.TryLock())
 			{
@@ -76,7 +78,7 @@ DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperat
 			}
 			return false;
 		}
-		virtual void UnlockExclusive(void)		{ lock.Unlock(); }
+		virtual void UnlockExclusive() override { lock.Unlock(); }
 	};
 
 	if (p && len > 0)
@@ -100,6 +102,14 @@ DKObject<DKData> DKData::StaticData(void* p, size_t len, bool readonly, DKOperat
 		}
 		return output;
 	}
+	else if (readonly)
+	{
+		DKObject<ReadOnlyData> data = DKObject<ReadOnlyData>::New();
+		data->p = NULL;
+		data->len = 0;
+		data->cleanup = cleanup;
+		return data.SafeCast<DKData>();
+	}
 	return NULL;
 }
 
@@ -108,11 +118,11 @@ DKObject<DKData> DKData::StaticData(const void* p, size_t len, DKOperation* clea
 	return StaticData(const_cast<void*>(p), len, true, cleanup);
 }
 
-DKData::DKData(void)
+DKData::DKData()
 {
 }
 
-DKData::~DKData(void)
+DKData::~DKData()
 {
 }
 
@@ -152,4 +162,46 @@ bool DKData::WriteToStream(DKStream* stream) const
 		return true;
 	}
 	return false;
+}
+
+DKObject<DKData> DKData::ImmutableData() const
+{
+	if (IsReadable())
+	{
+		if (IsWritable() || IsTransient())
+		{
+			struct ReadOnlyData : public DKData
+			{
+				void* p;
+				size_t len;
+				ReadOnlyData() : p(NULL), len(0) {}
+				~ReadOnlyData()
+				{
+					if (p)
+						DKFree(p);
+				}
+				size_t Length() const override { return len; }
+				bool IsReadable() const override { return true; }
+				bool IsWritable() const override { return false; }
+				bool IsExcutable() const override { return false; }
+				bool IsTransient() const override { return false; }
+
+				const void* LockShared() const override { return p; }
+				bool TryLockShared(const void** ptr) const override { *ptr = p; return true; }
+				void UnlockShared() const override {}
+			};
+			DKDataReader reader((DKData*)this);
+			DKObject<ReadOnlyData> target = DKOBJECT_NEW ReadOnlyData();
+			target->len = reader.Length();
+			if (target->len > 0)
+			{
+				target->p = DKMalloc(target->len);
+				memcpy(target->p, reader, target->len);
+			}
+			return target.SafeCast<DKData>();
+		}
+		else
+			return (DKData*)this;
+	}
+	return NULL;
 }

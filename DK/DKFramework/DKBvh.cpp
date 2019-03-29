@@ -2,7 +2,7 @@
 //  File: DKBvh.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <algorithm>
@@ -12,14 +12,13 @@
 
 #define MAX_NODE_COUNT (0x7fffffff >> 1)
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKBvh::DKBvh(void) : volume(NULL)
+DKBvh::DKBvh() : volume(NULL)
 {
 }
 
-DKBvh::~DKBvh(void)
+DKBvh::~DKBvh()
 {
 }
 
@@ -29,12 +28,12 @@ void DKBvh::Build(VolumeInterface* vi)
 	BuildInternal();
 }
 
-void DKBvh::Rebuild(void)
+void DKBvh::Rebuild()
 {
 	BuildInternal();
 }
 
-void DKBvh::BuildInternal(void)
+void DKBvh::BuildInternal()
 {
 	if (this->volume)
 	{
@@ -116,7 +115,7 @@ void DKBvh::BuildInternal(void)
 		nodes.Clear();
 }
 
-DKAabb DKBvh::Aabb(void) const
+DKAabb DKBvh::Aabb() const
 {
 	if (volume)
 	{

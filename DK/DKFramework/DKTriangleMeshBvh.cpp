@@ -2,24 +2,23 @@
 //  File: DKTriangleMeshBvh.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKTriangleMeshBvh.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKTriangleMeshBvh::DKTriangleMeshBvh(void) : mesh(NULL)
+DKTriangleMeshBvh::DKTriangleMeshBvh() : mesh(NULL)
 {
 }
 
-DKTriangleMeshBvh::~DKTriangleMeshBvh(void)
+DKTriangleMeshBvh::~DKTriangleMeshBvh()
 {
 }
 
-DKAabb DKTriangleMeshBvh::Aabb(void) const
+DKAabb DKTriangleMeshBvh::Aabb() const
 {
 	return bvh.Aabb();
 }
@@ -28,7 +27,7 @@ void DKTriangleMeshBvh::Build(DKTriangleMesh* m)
 {
 	struct TriangleAabb : public DKBvh::VolumeInterface
 	{
-		int NumberOfObjects(void) const override
+		int NumberOfObjects() const override
 		{
 			return mesh->NumberOfTriangles();
 		}
@@ -39,11 +38,11 @@ void DKTriangleMeshBvh::Build(DKTriangleMesh* m)
 				return tri.Aabb();
 			return DKAabb();
 		}
-		void Lock(void)
+		void Lock() override
 		{
 			mesh->Lock();
 		}
-		void Unlock(void)
+		void Unlock() override
 		{
 			mesh->Unlock();
 		}
@@ -55,7 +54,7 @@ void DKTriangleMeshBvh::Build(DKTriangleMesh* m)
 	bvh.Build(vol.SafeCast<DKBvh::VolumeInterface>());
 }
 
-void DKTriangleMeshBvh::Rebuild(void)
+void DKTriangleMeshBvh::Rebuild()
 {
 	bvh.Rebuild();
 }

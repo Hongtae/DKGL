@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKMultiSphereShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKMultiSphereShape.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -49,11 +48,11 @@ DKMultiSphereShape::DKMultiSphereShape(const DKVector3* centers, const float* ra
 {
 }
 
-DKMultiSphereShape::~DKMultiSphereShape(void)
+DKMultiSphereShape::~DKMultiSphereShape()
 {
 }
 
-size_t DKMultiSphereShape::NumberOfSpheres(void) const
+size_t DKMultiSphereShape::NumberOfSpheres() const
 {
 	btMultiSphereShape* shape = static_cast<btMultiSphereShape*>(this->impl);
 	int c = shape->getSphereCount();

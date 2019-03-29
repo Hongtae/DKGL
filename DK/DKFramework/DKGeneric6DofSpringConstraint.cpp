@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKGeneric6DofSpringConstraint.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKGeneric6DofSpringConstraint.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -37,13 +36,13 @@ DKGeneric6DofSpringConstraint::DKGeneric6DofSpringConstraint(DKRigidBody* rbB, c
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofSpringConstraint*>(this->impl));
 }
 
-DKGeneric6DofSpringConstraint::DKGeneric6DofSpringConstraint(void)
+DKGeneric6DofSpringConstraint::DKGeneric6DofSpringConstraint()
 : DKGeneric6DofSpringConstraint(NULL, NULL, DKNSTransform::identity, DKNSTransform::identity)
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofSpringConstraint*>(this->impl));
 }
 
-DKGeneric6DofSpringConstraint::~DKGeneric6DofSpringConstraint(void)
+DKGeneric6DofSpringConstraint::~DKGeneric6DofSpringConstraint()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofSpringConstraint*>(this->impl));
 }
@@ -135,7 +134,7 @@ float DKGeneric6DofSpringConstraint::Damping(ParamAxis axis) const
 	return 1.0f;
 }
 
-void DKGeneric6DofSpringConstraint::SetEquilibriumPoint(void)
+void DKGeneric6DofSpringConstraint::SetEquilibriumPoint()
 {
 	static_cast<btGeneric6DofSpringConstraint*>(this->impl)->setEquilibriumPoint();
 }
@@ -183,7 +182,7 @@ float DKGeneric6DofSpringConstraint::EquilibriumPoint(ParamAxis axis) const
 	return 0.0f;
 }
 
-void DKGeneric6DofSpringConstraint::ResetContext(void)
+void DKGeneric6DofSpringConstraint::ResetContext()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofSpringConstraint*>(this->impl));
 	btGeneric6DofSpringConstraint* c = static_cast<btGeneric6DofSpringConstraint*>(this->impl);
@@ -212,7 +211,7 @@ void DKGeneric6DofSpringConstraint::ResetContext(void)
 	}
 }
 
-void DKGeneric6DofSpringConstraint::ResetContextImpl(void)
+void DKGeneric6DofSpringConstraint::ResetContextImpl()
 {
 	DKASSERT_DEBUG(dynamic_cast<btGeneric6DofSpringConstraint*>(this->impl));
 	btGeneric6DofSpringConstraint* c = static_cast<btGeneric6DofSpringConstraint*>(this->impl);
@@ -246,7 +245,7 @@ DKGeneric6DofSpringConstraint* DKGeneric6DofSpringConstraint::Copy(UUIDObjectMap
 	return NULL;
 }
 
-DKObject<DKSerializer> DKGeneric6DofSpringConstraint::Serializer(void)
+DKObject<DKSerializer> DKGeneric6DofSpringConstraint::Serializer()
 {
 	struct LocalSerializer : public DKSerializer
 	{

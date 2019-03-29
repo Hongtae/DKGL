@@ -2,7 +2,7 @@
 //  File: DKVector2.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -10,12 +10,11 @@
 #include "DKMatrix2.h"
 #include "DKMatrix3.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
 const DKVector2 DKVector2::zero = DKVector2(0,0);
 
-DKVector2::DKVector2(void)
+DKVector2::DKVector2()
 	: x(0), y(0)
 {
 }
@@ -50,7 +49,7 @@ DKVector2 DKVector2::operator - (const DKVector2& v) const
 	return DKVector2(x - v.x, y - v.y);
 }
 
-DKVector2 DKVector2::operator - (void) const
+DKVector2 DKVector2::operator - () const
 {
 	return DKVector2(-x, -y);
 }
@@ -139,12 +138,12 @@ DKVector2& DKVector2::operator /= (const DKVector2& v)
 	return *this;
 }
 
-float DKVector2::Length(void) const
+float DKVector2::Length() const
 {
 	return sqrt( x*x + y*y );
 }
 
-float DKVector2::LengthSq(void) const
+float DKVector2::LengthSq() const
 {
 	return x*x + y*y;
 }
@@ -169,7 +168,7 @@ DKVector2& DKVector2::Transform(const DKMatrix3& m)
 	return *this;
 }
 
-DKVector2& DKVector2::Normalize(void)
+DKVector2& DKVector2::Normalize()
 {
 	float lengthSq = x*x + y*y;
 	if (lengthSq > 0.0)

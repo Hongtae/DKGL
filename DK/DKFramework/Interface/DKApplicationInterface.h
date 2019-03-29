@@ -2,58 +2,45 @@
 //  File: DKApplicationInterface.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../../DKFoundation.h"
 #include "../DKApplication.h"
-
-///////////////////////////////////////////////////////////////////////////////
-// DKApplicationInterface
-// An abstract class, interface for application environment controls.
-// You may need to subclass for your platform, If you have plan to use
-// DKApplication.
-///////////////////////////////////////////////////////////////////////////////
 
 namespace DKFramework
 {
+	/// @brief Interface for platform dependent application environment control.
+	///
+	/// Microsoft Windows, Apple macOS/iOS is builtin supported at this time.
+	/// You may need to your own subclass for your platform if you have plan
+	/// to use DKApplication.
 	class DKApplicationInterface
 	{
 	public:
+		virtual ~DKApplicationInterface() {}
+
 		using SystemPath = DKApplication::SystemPath;
+		using ProcessInfo = DKApplication::ProcessInfo;
 
-		virtual ~DKApplicationInterface(void) {}
+		virtual DKEventLoop* EventLoop() = 0;
+		virtual DKLogger* DefaultLogger() = 0;
 
-		virtual int Run(DKFoundation::DKArray<char*>& args) = 0;
-		virtual void Terminate(int exitCode) = 0;
+		virtual DKString DefaultPath(SystemPath) = 0;
+		virtual DKString ProcessInfoString(ProcessInfo) = 0;
 
-		virtual DKFoundation::DKLogger& DefaultLogger(void) = 0;
-		virtual DKFoundation::DKString EnvironmentPath(SystemPath) = 0;
-		virtual DKFoundation::DKString ModulePath(void) = 0;
-
-		virtual DKFoundation::DKObject<DKFoundation::DKData> LoadResource(const DKFoundation::DKString& res, DKFoundation::DKAllocator& alloc) = 0;		// read-writable
-		virtual DKFoundation::DKObject<DKFoundation::DKData> LoadStaticResource(const DKFoundation::DKString& res) = 0;	// read-only
+		/// Load dll/exe resource as writable copy.
+		virtual DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) = 0;		// read-writable
+		/// Load dll/exe resource (read-only)
+		virtual DKObject<DKData> LoadStaticResource(const DKString& res) = 0;	// read-only
 
 		virtual DKRect DisplayBounds(int displayId) const = 0;
 		virtual DKRect ScreenContentBounds(int displayId) const = 0;
 
-		virtual DKFoundation::DKString HostName(void) const = 0;
-		virtual DKFoundation::DKString OSName(void) const = 0;
-		virtual DKFoundation::DKString UserName(void) const = 0;
+		static DKApplicationInterface* CreateInterface(DKApplication*, int argc, char* argv[]);
+		static DKApplicationInterface* Instance(DKApplication* app) { return app->impl; }
 
-		static DKApplicationInterface* CreateInterface(DKApplication*);
-
-		static DKApplicationInterface* SharedInstance(void)
-		{
-			DKApplication* app = DKApplication::Instance();
-			if (app)
-				return app->impl;
-			return NULL;
-		}
-
-	protected:
-		static void AppInitialize(DKApplication* app)	{app->Initialize();}
-		static void AppFinalize(DKApplication* app)		{app->Finalize();}
+		static void AppInitialize(DKApplication* app)	{ app->Initialize(); }
+		static void AppFinalize(DKApplication* app)		{ app->Finalize(); }
 	};
 }

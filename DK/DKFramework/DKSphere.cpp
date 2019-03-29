@@ -2,17 +2,16 @@
 //  File: DKSphere.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKSphere.h"
 #include "DKLine.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKSphere::DKSphere(void)
+DKSphere::DKSphere()
 : center(DKVector3(0,0,0))
 , radius(-FLT_MAX)
 {
@@ -73,7 +72,7 @@ DKSphere DKSphere::Intersection(const DKSphere&s1, const DKSphere& s2)
 	return DKSphere();
 }
 
-bool DKSphere::IsValid(void) const
+bool DKSphere::IsValid() const
 {
 	return radius >= 0;
 }
@@ -83,7 +82,7 @@ bool DKSphere::IsPointInside(const DKVector3& pos) const
 	return (pos - center).LengthSq() <= (radius * radius);
 }
 
-float DKSphere::Volume(void) const
+float DKSphere::Volume() const
 {
 	return (4.0f / 3.0f) * radius * radius * radius * static_cast<float>(DKGL_PI);	// (4/3 PI * R cubed )
 }

@@ -2,11 +2,10 @@
 //  File: DKOrderedArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
 #include "DKDummyLock.h"
@@ -14,18 +13,14 @@
 #include "DKMemory.h"
 #include "DKArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKOrderedArray
-// simple array class, items be ordered always.
-// provides fast bisectional search operation.
-//
-// You must provide compare-function of your items
-// You can use DKArraySortAscending, DKArraySortDescending for your items
-// comparison function, if your item(VALUE) has comparison operators.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// simple array class, items be ordered always.
+	/// provides fast bisectional search operation.
+	///
+	/// You must provide compare-function of your items
+	/// You can use DKArraySortAscending, DKArraySortDescending for your items
+	/// comparison function, if your item(VALUE) has comparison operators.
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKOrderedArray
 	{
@@ -37,32 +32,32 @@ namespace DKFoundation
 		typedef DKCriticalSection<LOCK>		CriticalSection;
 		typedef DKTypeTraits<VALUE>			ValueTraits;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
-		// OrderFunc, comparison function returns boolean,
-		// for ascending array, return lhs < rhs,
-		// for descending array, return lhs > rhs.
+		/// OrderFunc, comparison function returns boolean,
+		/// for ascending array, return lhs < rhs,
+		/// for descending array, return lhs > rhs.
 		typedef bool (*OrderFunc)(const VALUE& lhs, const VALUE& rhs);
 
-		// EqualFunc, test items are equal. return true if both items are equal.
+		/// EqualFunc, test items are equal. return true if both items are equal.
 		typedef bool (*EqualFunc)(const VALUE& lhs, const VALUE& rhs);
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum : Index { IndexNotFound = ~Index(0) };
 
-		// lock is public. lock object from outside!
-		// You can call type-casting operator and CountNoLock() only while object is locked.
+		/// lock is public. lock object from outside!
+		/// You can call type-casting operator and CountNoLock() only while object is locked.
 		LOCK	lock;
 
-		// iterator class for range-based for loop
-		// Note:
-		//  while iterating by range-based-iterator, object is not locked state.
-		//  And you can retrieve item as const VALUE& type (READ-ONLY) while iterating.
+		/// iterator class for range-based for loop
+		/// @note
+		///  while iterating by range-based-iterator, object is not locked state.
+		///  And you can retrieve item as const VALUE& type (READ-ONLY) while iterating.
 		typedef DKArrayRBIterator<DKOrderedArray, const VALUE&>			RBIterator;
 		typedef DKArrayRBIterator<const DKOrderedArray, const VALUE&>	ConstRBIterator;
-		RBIterator begin(void)				{return RBIterator(*this, 0);}
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}
+		RBIterator begin()				{return RBIterator(*this, 0);}
+		ConstRBIterator begin() const	{return ConstRBIterator(*this, 0);}
+		RBIterator end()				{return RBIterator(*this, this->Count());}
+		ConstRBIterator end() const		{return ConstRBIterator(*this, this->Count());}
 
 		DKOrderedArray(OrderFunc func)
 			: orderFunc(func)
@@ -105,7 +100,7 @@ namespace DKFoundation
 		{
 			DKASSERT_DEBUG(orderFunc);
 		}
-		~DKOrderedArray(void)
+		~DKOrderedArray()
 		{
 		}
 		DKOrderedArray& operator = (DKOrderedArray&& v)
@@ -128,7 +123,7 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.IsEmpty();
@@ -148,7 +143,12 @@ namespace DKFoundation
 		size_t Insert(const VALUE& value)
 		{
 			CriticalSection guard(lock);
-			return InsertContainer(value, 1);
+			return InsertContainer(value);
+		}
+		size_t Insert(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			return InsertContainer(static_cast<VALUE&&>(value));
 		}
 		size_t Insert(const VALUE& value, size_t s)
 		{
@@ -181,27 +181,27 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Remove(pos, c);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
-		// CountNoLock: call this function when object has been locked already.
-		size_t CountNoLock(void) const
+		/// call this function when object has been locked already.
+		size_t CountNoLock() const
 		{
 			return container.Count();
 		}
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return container.Capacity();
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			container.ShrinkToFit();
@@ -216,18 +216,18 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			return container.Value(index);
 		}
-		// to access items directly, when object has been locked already.
-		operator const VALUE* (void) const
+		/// to access items directly, when object has been locked already.
+		operator const VALUE* () const
 		{
 			return (const VALUE*)container;
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -237,7 +237,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -245,10 +245,10 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.EnumerateBackward(std::forward<T>(enumerator));
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -258,7 +258,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -299,8 +299,8 @@ namespace DKFoundation
 			}
 			return IndexNotFound;
 		}
-		// Find approximal value. (returns Index of value found.)
-		// if greater is true, the result will be index of value or least greater value.
+		/// Find approximal value. (returns Index of value found.)
+		/// if greater is true, the result will be index of value or least greater value.
 		Index FindApprox(const VALUE& value, bool greater) const
 		{
 			CriticalSection guard(lock);
@@ -359,7 +359,7 @@ namespace DKFoundation
 		}
 	private:
 		// Insert one value 'VALUE', 'c' times. (value x c)
-		size_t InsertContainer(const VALUE& value, size_t c)
+		FORCEINLINE size_t InsertContainer(const VALUE& value, size_t c)
 		{
 			Index index = 0;
 			size_t count = container.Count();
@@ -386,7 +386,34 @@ namespace DKFoundation
 			container.Insert(value, c, index);
 			return container.Count();
 		}
-
+		// Insert one value 'VALUE'
+		template <typename T> FORCEINLINE size_t InsertContainer(T&& value)
+		{
+			Index index = 0;
+			size_t count = container.Count();
+			while (count > 2)
+			{
+				Index middle = index + count /2;
+				if (orderFunc(value, container.Value(middle)))
+				{
+					count = middle - index;
+				}
+				else
+				{
+					Index right = middle+1;
+					count -= right - index;
+					index = right;
+				}
+			}
+			for (size_t i = 0; i < count; i++)
+			{
+				if (orderFunc(value, container.Value(index)))
+					break;
+				index++;
+			}
+			container.Insert(std::forward<T>(value), index);
+			return container.Count();
+		}
 		OrderFunc	orderFunc;
 		Container	container;
 	};

@@ -2,21 +2,19 @@
 //  File: DKAudioSource.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include "../DKFoundation.h"
 #include "DKVector3.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAudioSource
-// audio source class. interface for OpenAL source control.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief 
+	/// audio source class. interface for DKAudioDevice source control.
+	/// @details
+	/// Audio-Source can play audio with input buffer
 	class DKGL_API DKAudioSource
 	{
 	public:
@@ -28,80 +26,81 @@ namespace DKFramework
 			StatePaused,
 		};
 
-		DKAudioSource(void);
-		virtual ~DKAudioSource(void);
+		DKAudioSource();
+		virtual ~DKAudioSource();
 
-		bool Play(void);
-		bool Stop(void);
-		bool Pause(void);
+		bool Play();
+		bool Stop();
+		bool Pause();
 
+		/// enqueue audio stream buffer
 		bool EnqueueBuffer(int frequency, int bits, int channels, const void* data, size_t bytes, double timeStamp);
-		void UnqueueBuffers(void) const;
-		size_t QueuedBuffers(void) const;
+		void UnqueueBuffers() const;
+		size_t QueuedBuffers() const;
 
-		double TimePosition(void) const;
+		double TimePosition() const;
 		void SetTimePosition(double t);
-		double TimeOffset(void) const;
+		double TimeOffset() const;
 		void SetTimeOffset(double t);
 
-		AudioState State(void) const;
+		AudioState State() const;
 
 		// pitch control
 		void SetPitch(float f);
-		float Pitch(void) const;
+		float Pitch() const;
 
 		// audio gain
 		void SetGain(float f);
-		float Gain(void) const;
+		float Gain() const;
 
 		// min gain
 		void SetMinGain(float f);
-		float MinGain(void) const;
+		float MinGain() const;
 
 		// max gain
 		void SetMaxGain(float f);
-		float MaxGain(void) const;
+		float MaxGain() const;
 
 		// max distance
 		void SetMaxDistance(float f);
-		float MaxDistance(void) const;
+		float MaxDistance() const;
 
 		// rolloff factor
 		void SetRolloffFactor(float f);
-		float RolloffFactor(void) const;
+		float RolloffFactor() const;
 
 		// cone outer gain
 		void SetConeOuterGain(float f);
-		float ConeOuterGain(void) const;
+		float ConeOuterGain() const;
 
 		// cone inner angle
 		void SetConeInnerAngle(float f);
-		float ConeInnerAngle(void) const;
+		float ConeInnerAngle() const;
 
 		// cone outer angle
 		void SetConeOuterAngle(float f);
-		float ConeOuterAngle(void) const;
+		float ConeOuterAngle() const;
 
 		// reference distance
 		void SetReferenceDistance(float f);
-		float ReferenceDistance(void) const;
+		float ReferenceDistance() const;
 
 		// source position
 		void SetPosition(const DKVector3& v);
-		DKVector3 Position(void) const;
+		DKVector3 Position() const;
 
 		// source velocity
 		void SetVelocity(const DKVector3& v);
-		DKVector3 Velocity(void) const;
+		DKVector3 Velocity() const;
 
 		// source direction
 		void SetDirection(const DKVector3& v);
-		DKVector3 Direction(void) const;
+		DKVector3 Direction() const;
 
 
 		static int Format(int bits, int channels);
-		static int ErrorCode(void);
-		static DKFoundation::DKString ErrorString(int errCode);
+		static int ErrorCode();
+		static DKString ErrorString(int errCode);
 		
 	private:
 		unsigned int sourceId;
@@ -113,7 +112,7 @@ namespace DKFramework
 			size_t bytesSecond;
 			unsigned int bufferId;
 		};
-		DKFoundation::DKSpinLock bufferLock;
-		mutable DKFoundation::DKArray<BufferInfo> buffers;
+		DKSpinLock bufferLock;
+		mutable DKArray<BufferInfo> buffers;
 	};
 }

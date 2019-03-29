@@ -1,6 +1,28 @@
 #pragma once
 #include "DKInclude.h"
 
+/// @brief
+///  Classes for supporting common platform features like file-system,
+///  threading, date and time, etc.\n
+///  Template data collection and abstration for generic data models are also
+///  supported.
+/// 
+///  Supports following features:
+///  - Object & Memory management
+///  - Unicode string (UTF-8,16,32)
+///  - Data Collection
+///  - Hash, UUID
+///  - Thread and Synchronization Objects. (Mutex, Cond, etc.)
+///  - Stream, File, Buffer, File-system directory
+///  - XML reader / writer
+///  - Date Time (ISO-8601 support)
+///  - Float16(half), Rational math type
+///  - Event-Loop, Loop Timer, Scheduler
+///  - Operation Queue, Thread Pool
+///  - Error handler
+///  - Process and environments info
+namespace DKFoundation {}
+
 // basic object templates and memory management.
 #include "DKFoundation/DKMemory.h"
 #include "DKFoundation/DKObject.h"
@@ -22,7 +44,7 @@
 #include "DKFoundation/DKArray.h"
 #include "DKFoundation/DKBitArray.h"
 #include "DKFoundation/DKCircularQueue.h"
-#include "DKFoundation/DKList.h"
+#include "DKFoundation/DKLinkedList.h"
 #include "DKFoundation/DKMap.h"
 #include "DKFoundation/DKOrderedArray.h"
 #include "DKFoundation/DKSet.h"
@@ -48,21 +70,26 @@
 #include "DKFoundation/DKThread.h"
 #include "DKFoundation/DKCondition.h"
 
-// stream, file, buffer, directory (file-system)
+// stream, buffer, compressor
 #include "DKFoundation/DKData.h"
 #include "DKFoundation/DKStream.h"
 #include "DKFoundation/DKDataStream.h"
 #include "DKFoundation/DKBuffer.h"
 #include "DKFoundation/DKBufferStream.h"
-#include "DKFoundation/DKDirectory.h"
+
+// file, file-map, and directory
 #include "DKFoundation/DKFile.h"
 #include "DKFoundation/DKFileMap.h"
+#include "DKFoundation/DKDirectory.h"
+
+// compressor, archiver
+#include "DKFoundation/DKCompressor.h"
 #include "DKFoundation/DKZipArchiver.h"
 #include "DKFoundation/DKZipUnarchiver.h"
 
 // XML
-#include "DKFoundation/DKXMLParser.h"
-#include "DKFoundation/DKXMLDocument.h"
+#include "DKFoundation/DKXmlParser.h"
+#include "DKFoundation/DKXmlDocument.h"
 
 // date time, timer
 #include "DKFoundation/DKTimer.h"
@@ -70,22 +97,22 @@
 
 // math types
 #include "DKFoundation/DKFloat16.h"
-#include "DKFoundation/DKRational.h"
+#include "DKFoundation/DKRationalNumber.h"
 
 // operation, invocation (function utilities)
 #include "DKFoundation/DKFunction.h"
 #include "DKFoundation/DKInvocation.h"
-#include "DKFoundation/DKCallback.h"
 #include "DKFoundation/DKOperation.h"
 #include "DKFoundation/DKValue.h"
 
-// run-loop, operation queue, message-handler
+// event-loop, event-loop timer, operation queue
+#include "DKFoundation/DKEventLoop.h"
+#include "DKFoundation/DKEventLoopTimer.h"
 #include "DKFoundation/DKOperationQueue.h"
-#include "DKFoundation/DKRunLoop.h"
-#include "DKFoundation/DKRunLoopTimer.h"
 
 // etc
 #include "DKFoundation/DKEndianness.h"
 #include "DKFoundation/DKError.h"
 #include "DKFoundation/DKLog.h"
+#include "DKFoundation/DKLogger.h"
 #include "DKFoundation/DKUtils.h"

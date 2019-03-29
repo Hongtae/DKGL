@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKAffineTransform2.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -15,7 +15,6 @@
 #define copysign _copysign
 #endif
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
 DKAffineTransform2::DKAffineTransform2(const DKVector2& trans)
@@ -48,22 +47,22 @@ DKAffineTransform2::DKAffineTransform2(const DKMatrix3& m)
 {
 }
 
-DKAffineTransform2& DKAffineTransform2::Identity(void)
+DKAffineTransform2& DKAffineTransform2::Identity()
 {
-	matrix2.Identity();
+	matrix2.SetIdentity();
 	translation.x = 0.0f;
 	translation.y = 0.0f;
 	return *this;
 }
 
-bool DKAffineTransform2::IsIdentity(void) const
+bool DKAffineTransform2::IsIdentity() const
 {
 	if (translation.x == 0.0f && translation.y == 0.0f)
 		return matrix2.IsIdentity();
 	return false;
 }
 
-bool DKAffineTransform2::IsDiagonal(void) const
+bool DKAffineTransform2::IsDiagonal() const
 {
 	if (translation.x == 0.0f && translation.y == 0.0f)
 		return matrix2.IsDiagonal();
@@ -88,7 +87,7 @@ DKAffineTransform2& DKAffineTransform2::Translate(const DKVector2& v)
 	return Translate(v.x, v.y);
 }
 
-DKAffineTransform2& DKAffineTransform2::Inverse(void)
+DKAffineTransform2& DKAffineTransform2::Inverse()
 {
 	matrix2.Inverse();
 	translation = -translation * matrix2;
@@ -143,7 +142,7 @@ bool DKAffineTransform2::operator != (const DKAffineTransform2& t) const
 	return matrix2 != t.matrix2;
 }
 
-DKMatrix3 DKAffineTransform2::Matrix3(void) const
+DKMatrix3 DKAffineTransform2::Matrix3() const
 {
 	return DKMatrix3( 
 		matrix2.m[0][0], matrix2.m[0][1], 0.0f, 

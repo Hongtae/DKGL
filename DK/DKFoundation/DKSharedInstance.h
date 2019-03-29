@@ -2,7 +2,7 @@
 //  File: DKSharedInstance.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -12,23 +12,23 @@
 #include "DKCondition.h"
 #include "DKCriticalSection.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSharedInstance
-// a shared instance interface.
-// Object can be shared like singleton, but deleted automatically if no objects has references.
-// You can re-create instance by calling SharedInstance() after previous object deleted.
-//
-// You can define your type by 'typedef' with DKSharedInstance or
-// You can subclass inheritanced from DKSharedInstance.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// @brief a shared instance interface.
+	/// Object can be shared like singleton, but deleted automatically if no objects has references.
+	/// You can re-create instance by calling SharedInstance() after previous object deleted.
+	///
+	/// You can define your type by 'typedef' with DKSharedInstance or
+	/// You can subclass inheritanced from DKSharedInstance.
+	///
+	/// @warning
+	///  This is not singleton type.
+	///  Instance will be destroyed automatically if no one refers to this instance.
+	/// @see DKSingleton
 	template <class TYPE> class DKSharedInstance
 	{
 	public:
-		static DKObject<TYPE> SharedInstance(void)
+		static DKObject<TYPE> SharedInstance()
 		{
 			DKCriticalSection<DKSpinLock> cs(creatorLock);
 
@@ -63,7 +63,7 @@ namespace DKFoundation
 			DKASSERT_DESC_DEBUG(obj != NULL, "Object creation failure!");
 			return obj;
 		}
-		static DKObject<TYPE> GetSharedInstanceIfExist(void)
+		static DKObject<TYPE> GetSharedInstanceIfExist()
 		{
 			DKCriticalSection<DKSpinLock> guard(sharedRefLock);
 			if (creator)
@@ -75,10 +75,10 @@ namespace DKFoundation
 			return NULL;
 		}
 	protected:
-		DKSharedInstance(void)
+		DKSharedInstance()
 		{
 		}
-		virtual ~DKSharedInstance(void)
+		virtual ~DKSharedInstance()
 		{
 			DKCriticalSection<DKSpinLock> guard(sharedRefLock);
 			if (creator == this)

@@ -1,45 +1,43 @@
-﻿//
+//
 //  File: DKColor.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector3.h"
 #include "DKVector4.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKColor
-// color object contains a, r, g, b floats. (transferred to GPU directly)
-// object can create with 32bit integer also.
-////////////////////////////////////////////////////////////////////////////////
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
+	/// @brief
+	/// color object contains a, r, g, b floats. (transferred to GPU directly)
+	/// @details
+	/// object can create with 32bit integer also.
 	class DKColor
 	{
 	public:
-		union RGBA32  // 32bit int format (RGBA order).
+		union RGBA32  ///< 32bit int format (RGBA order).
 		{
 			struct {
-				unsigned char r, g, b, a;
+				uint8_t r, g, b, a;
 			};
-			unsigned char bytes[4];
-			unsigned int value;
+			uint8_t bytes[4];
+			uint32_t value;
 		};
-		union ARGB32  // 32bit int format (ARGB order).
+		union ARGB32  ///< 32bit int format (ARGB order).
 		{
 			struct {
-				unsigned char a, r, g, b;
+				uint8_t a, r, g, b;
 			};
-			unsigned char bytes[4];
-			unsigned int value;
+			uint8_t bytes[4];
+			uint32_t value;
 		};
 
-		DKColor(void)
+		DKColor()
 			: r(0.0f), g(0.0f), b(0.0f), a(1.0f)
 		{
 		}
@@ -74,24 +72,24 @@ namespace DKFramework
 		{
 		}
 
-		RGBA32 RGBA32Value(void) const
+		RGBA32 RGBA32Value() const
 		{
 			RGBA32 val = {
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(b * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(a * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(r * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(g * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(b * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(a * 255.0f), 0, 0xff)),
 			};
 			return val;
 		}
 
-		ARGB32 ARGB32Value(void) const
+		ARGB32 ARGB32Value() const
 		{
 			ARGB32 val = {
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(a * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(r * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(g * 255.0f, 0, 0xff)),
-				static_cast<unsigned char>(DKFoundation::Clamp<int>(b * 255.0f, 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(a * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(r * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(g * 255.0f), 0, 0xff)),
+				static_cast<uint8_t>(Clamp<int>(static_cast<int>(b * 255.0f), 0, 0xff)),
 			};
 			return val;
 		}
@@ -211,11 +209,11 @@ namespace DKFramework
 			float inv = 1.0f / f;
 			return DKColor(r * inv, g * inv, b * inv, a * inv);
 		}
-		DKVector3 Vector3(void) const
+		DKVector3 Vector3() const
 		{
 			return DKVector3(r, g, b);
 		}
-		DKVector4 Vector4(void) const
+		DKVector4 Vector4() const
 		{
 			return DKVector4(r, g, b, a);
 		}

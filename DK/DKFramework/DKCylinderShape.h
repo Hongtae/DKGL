@@ -1,37 +1,33 @@
-﻿//
+//
 //  File: DKCylinderShape.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector3.h"
 #include "DKMatrix4.h"
 #include "DKQuaternion.h"
 #include "DKConvexShape.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKCylinderShape
-//  cylinder shape for detecting collision.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief cylinder shape for detecting collision.
 	class DKGL_API DKCylinderShape : public DKConvexShape
 	{
 	public:
 		DKCylinderShape(float u, float v, float w, UpAxis up = UpAxis::Top);
 		DKCylinderShape(const DKVector3& halfExtents, UpAxis up = UpAxis::Top);
-		~DKCylinderShape(void);
+		~DKCylinderShape();
 
-		DKVector3 HalfExtents(void) const;
-		DKVector3 HalfExtentsWithMargin(void) const;
+		DKVector3 HalfExtents() const;
+		DKVector3 HalfExtentsWithMargin() const;
 
-		DKVector3 ScaledHalfExtents(void) const;
-		DKVector3 ScaledHalfExtentsWithMargin(void) const;
+		DKVector3 ScaledHalfExtents() const;
+		DKVector3 ScaledHalfExtentsWithMargin() const;
 
-		UpAxis BaseAxis(void) const;
+		UpAxis BaseAxis() const;
 	};
 }

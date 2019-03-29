@@ -1,25 +1,24 @@
-﻿//
+//
 //  File: DKAnimationController.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKAnimationController.h"
 #include "DKAffineTransform3.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKAnimationController::DKAnimationController(void)
+DKAnimationController::DKAnimationController()
 	: lastUpdatedTick(0)
 	, frame(0)
 	, speed(1.0)
 {
 }
 
-DKAnimationController::~DKAnimationController(void)
+DKAnimationController::~DKAnimationController()
 {
 }
 

@@ -2,7 +2,7 @@
 //  File: DKMemory.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include <stdio.h>
@@ -21,7 +21,6 @@
 #include <sys/mman.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -44,6 +43,8 @@ namespace DKFoundation
 {
 	namespace Private
 	{
+		static DKAllocator::Maintainer maintainer;
+
 		struct SystemHeapAllocator
 		{
 #ifdef _WIN32
@@ -90,7 +91,7 @@ namespace DKFoundation
 		// BackendAllocator : allocates all front-end allocators chunks.
 		struct BackendAllocator
 		{
-			enum { UnitSize = (1 << 16) };
+			enum { UnitSize = (1 << 18) }; // 256 KB
 			enum { IndexTableAlignment = 64 };
 			static_assert((IndexTableAlignment & (IndexTableAlignment-1)) == 0, "Alignment should be power of two.");
 			using Allocator = DKFixedSizeAllocator<UnitSize, 1, 64, DKDummyLock, SystemHeapAllocator, SystemLargeHeapAllocator>;
@@ -98,7 +99,7 @@ namespace DKFoundation
 			static BackendAllocator* Instance();	// init by main allocator. (AllocatorPool)
 
 			using Index = short;
-			enum { IndexNotFound = (Index)-1 };
+			enum { IndexNotFound = ~Index(0) };
 
 #pragma pack(push, 2)
 			struct IndexedAddress
@@ -216,18 +217,18 @@ namespace DKFoundation
 				}
 				return r;
 			}
-			size_t Size(void) const
+			size_t Size() const
 			{
 				ScopedLock guard(lock);
 				return (sizeof(IndexedAddress) * indexAddrsCapacity) + allocator.Size();
 			}
-			BackendAllocator(void)
+			BackendAllocator()
 				: numIndexAddrs(0)
 				, indexAddrsCapacity(0)
 				, indexAddrs(NULL)
 			{
 			}
-			~BackendAllocator(void)
+			~BackendAllocator()
 			{
 				if (indexAddrsCapacity > 0)
 					SystemHeapAllocator::Free(indexAddrs);
@@ -254,7 +255,7 @@ namespace DKFoundation
 				}
 				if (count > 0 && addr >= indexAddrs[start].address)
 					return start;
-				return (size_t)-1;
+				return ~size_t(0);
 			}
 
 			using Lock = DKSpinLock;
@@ -288,19 +289,20 @@ namespace DKFoundation
 
 		struct AllocatorInterface
 		{
-			virtual ~AllocatorInterface(void) noexcept(!DKGL_MEMORY_DEBUG) {}
+			virtual ~AllocatorInterface() noexcept(!DKGL_MEMORY_DEBUG) {}
 			virtual void* Alloc(size_t) = 0;
 			virtual void Dealloc(void*) = 0;
-			virtual size_t Purge(void) = 0;
+			virtual size_t Purge() = 0;
 			virtual void Reserve(size_t) = 0;
 			virtual void* AlignedChunkAddress(void*) const = 0;
-			virtual size_t ChunkSize(void) const = 0;
+			virtual size_t ChunkSize() const = 0;
 
 			virtual bool ConditionalDealloc(void*) = 0;
 			virtual size_t ConditionalPurge(size_t) = 0;
 			virtual bool ConditionalDeallocAndPurge(void*, size_t, size_t*) = 0;
 
-			virtual size_t NumberOfAllocatedUnits(void) const = 0;
+			virtual size_t NumberOfAllocatedUnits() const = 0;
+			virtual size_t NumberOfUnits() const = 0;
 		};
 
 		struct AllocatorUnit
@@ -330,10 +332,10 @@ namespace DKFoundation
 			{
 				void* Alloc(size_t s) override						{ return allocator.Alloc(s); }
 				void Dealloc(void* p) override						{ return allocator.Dealloc(p); }
-				size_t Purge(void) override							{ return allocator.Purge(); }
+				size_t Purge() override							{ return allocator.Purge(); }
 				void Reserve(size_t s) override						{ return allocator.Reserve(s); }
 				void* AlignedChunkAddress(void* p) const override	{ return allocator.AlignedChunkAddress(p); }
-				size_t ChunkSize(void) const override				{ return allocator.AlignedChunkSize; }
+				size_t ChunkSize() const override				{ return allocator.AlignedChunkSize; }
 
 				bool ConditionalDealloc(void* p) override			{ return allocator.ConditionalDealloc(p); }
 				size_t ConditionalPurge(size_t c) override			{ return allocator.ConditionalPurge(c); }
@@ -342,7 +344,8 @@ namespace DKFoundation
 					return allocator.ConditionalDeallocAndPurge(p, s, bp);
 				}
 
-				size_t NumberOfAllocatedUnits(void) const override	{ return allocator.NumberOfAllocatedUnits(); }
+				size_t NumberOfAllocatedUnits() const override	{ return allocator.NumberOfAllocatedUnits(); }
+				size_t NumberOfUnits() const override			{ return allocator.NumberOfUnits(); }
 
 				using Allocator = DKFixedSizeAllocator<UnitSize, Alignment, NumUnits, DKSpinLock, SystemHeapAllocator, UnitAllocator>;
 				Allocator allocator;
@@ -351,9 +354,11 @@ namespace DKFoundation
 
 			static int Init(AllocatorUnit* units)
 			{
-				DKLog("Allocator[%d]: (size:%d, alignment:%d, units:%d, chunkSize:%d/%d usage:%.2f%%)\n",
-					  Index, UnitSize, Alignment, NumUnits, Wrapper::Allocator::AlignedChunkSize, MaxChunkSize,
-					  ((double)Wrapper::Allocator::AlignedChunkSize / (double)MaxChunkSize) * 100.0);
+#if DKGL_MEMORY_DEBUG
+				//DKLog("Allocator[%d]: (size:%d, alignment:%d, units:%d, chunkSize:%d/%d usage:%.2f%%)\n",
+				//	  Index, UnitSize, Alignment, NumUnits, Wrapper::Allocator::AlignedChunkSize, MaxChunkSize,
+				//	  ((double)Wrapper::Allocator::AlignedChunkSize / (double)MaxChunkSize) * 100.0);
+#endif
 				units[Index].unitSize = UnitSize;
 				units[Index].allocator = ::new (SystemHeapAllocator::Alloc(sizeof(Wrapper))) Wrapper();
 				return 1 + Initializer<UnitSize + SizeOffset, SizeOffset, Alignment, Index+1, Count-1>::Init(units);
@@ -367,28 +372,36 @@ namespace DKFoundation
 
 		struct AllocatorPool : public DKAllocator
 		{
-			enum { NumAllocators = 136 };
+			enum { NumAllocators = 128 };	// allocator buckets
 
-			AllocatorPool(void) : backend(NULL)
+			AllocatorPool() : backend(NULL)
 			{
 #ifdef _WIN32
-				// reserve 16MB heap
-				SystemHeapAllocator::heap = ::HeapCreate(0, (1<<24), 0);
+				// reserve 64 MB heap
+				SystemHeapAllocator::heap = ::HeapCreate(0, (1<<26), 0);
 #endif
 				backend = ::new (SystemHeapAllocator::Alloc(sizeof(BackendAllocator))) BackendAllocator();
 
 				// Initializer < Size, SizeOffset, Alignment, Index, Count>
 
 				int count = 0;
-				// 16 ~ 1024 (16 bytes offsets)
-				count += Initializer< (1 << 4), 16, 1, 0, 64>::Init(allocators);
-				// 1088 ~ 4096 (64 bytes offsets)
-				count += Initializer< (1 << 10) + 64, 64, 1, 64, 48>::Init(allocators);
-				// 4532 ~ 8192 (256 bytes offsets)
-				count += Initializer< (1 << 12) + 256, 256, 1, 112, 16>::Init(allocators);
-				// 9216 ~ 16384 (1024 bytes offset)
-				count += Initializer< (1 << 13) + 1024, 1024, 1, 128, 8>::Init(allocators);
-
+				// 16 ~ 256 (16 bytes offset, 16 units)
+				count += Initializer<16, 16, 1, 0, 16>::Init(allocators);
+				// 256+16 ~ 512 (16 bytes offset, 16 units)
+				count += Initializer<256 + 16, 16, 1, 16, 16>::Init(allocators);
+				// 512+32 ~ 1024 (32 bytes offset, 16 units)
+				count += Initializer<512 + 32, 32, 1, 32, 16>::Init(allocators);
+				// 1024+64 ~ 2048 (64 bytes offset, 16 units)
+				count += Initializer<1024 + 64, 64, 1, 48, 16>::Init(allocators);
+				// 2048+128 ~ 4096 (128 bytes offset, 16 units)
+				count += Initializer<2048 + 128, 128, 1, 64, 16>::Init(allocators);
+				// 4096+256 ~ 8192 (256 bytes offset, 16 units)
+				count += Initializer<4096 + 256, 256, 1, 80, 16>::Init(allocators);
+				// 8192+512 ~ 16384 (512 bytes offset, 16 units)
+				count += Initializer<8192 + 512, 512, 1, 96, 16>::Init(allocators);
+				// 16384+1024 ~ 32768 (1024 bytes offset, 16 units)
+				count += Initializer<16384 + 1024, 1024, 1, 112, 16>::Init(allocators);
+				
 				DKASSERT_MEM_DEBUG(count == NumAllocators);
 
 				size_t chunkSize = 0;
@@ -396,17 +409,17 @@ namespace DKFoundation
 				{
 					chunkSize += allocators[i].allocator->ChunkSize();
 				}
-
+#if DKGL_MEMORY_DEBUG
 				DKLog("AllocatorPool Initialized. (%lu - %lu, Units: %d, ChunkSize: %lu)\n",
 					  allocators[0].unitSize,
 					  allocators[NumAllocators-1].unitSize,
 					  NumAllocators,
 					  chunkSize);
-
+#endif
 				maxUnitSize = allocators[NumAllocators-1].unitSize;
 			}
 
-			~AllocatorPool(void)
+			~AllocatorPool()
 			{
 				bool cleanupHeap = true;
 				for (int i = 0; i < NumAllocators; ++i)
@@ -525,7 +538,7 @@ namespace DKFoundation
 				}
 			}
 
-			size_t Purge(void)
+			size_t Purge()
 			{
 				size_t bytesPurged = 0;
 				for (int i = 0; i < NumAllocators; ++i)
@@ -539,19 +552,24 @@ namespace DKFoundation
 				return 0;
 			}
 
-			FORCEINLINE size_t Size(void) const
+			FORCEINLINE size_t Size() const
 			{
 				return backend->Size();
 			}
 
-			FORCEINLINE DKMemoryLocation Location(void) const
+			FORCEINLINE DKMemoryLocation Location() const
 			{
 				return DKMemoryLocationPool;
 			}
 
-			FORCEINLINE BackendAllocator* Backend(void)
+			FORCEINLINE BackendAllocator* Backend()
 			{
 				return backend;
+			}
+
+			const AllocatorUnit& GetAllocatorUnit(size_t index) const
+			{
+				return allocators[index];
 			}
 
 		private:
@@ -604,7 +622,7 @@ namespace DKFoundation
 			size_t maxUnitSize;
 		};
 
-		AllocatorPool* GetAllocatorPool(void)
+		AllocatorPool* GetAllocatorPool()
 		{
 			static DKAllocatorChain::Maintainer init;
 
@@ -634,7 +652,7 @@ namespace DKFoundation
 		{
 			enum { SizeOffset = 64 };
 			using Index = size_t;
-			enum : Index { IndexNotFound = (Index)-1 };
+			enum : Index { IndexNotFound = ~Index(0) };
 
 			FORCEINLINE static bool Set(void* p, size_t s)
 			{
@@ -667,7 +685,7 @@ namespace DKFoundation
 				if (table.capacity <= table.count + 1)
 				{
 					size_t cap = table.capacity + SizeOffset;
-					Info* p = (Info*)::realloc(table.data, cap * sizeof(Info));
+					Info* p = (Info*)DKMemoryHeapRealloc(table.data, cap * sizeof(Info));
 					if (p == NULL)		// out of memory.
 						return false;
 					table.capacity = cap;
@@ -712,7 +730,7 @@ namespace DKFoundation
 				}
 				else
 				{
-					::free(table.data);
+					DKMemoryHeapFree(table.data);
 					table.data = NULL;
 					table.capacity = 0;
 				}
@@ -739,12 +757,12 @@ namespace DKFoundation
 				size_t count;
 				size_t capacity;
 			};
-			static VMTable& Table(void)
+			static VMTable& Table()
 			{
 				static VMTable table = {0, 0, 0};
 				return table;
 			};
-			static DKSpinLock& Lock(void)
+			static DKSpinLock& Lock()
 			{
 				static DKSpinLock lock;
 				return lock;
@@ -898,10 +916,10 @@ namespace DKFoundation
 					void* p2 = ::VirtualAlloc(0, s, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 					if (p2)
 					{
-						memcpy(p2, p, (alignedSize > memInfo.RegionSize ? memInfo.RegionSize : s));
-						::VirtualFree(p, 0, MEM_RELEASE);
 						DKASSERT_MEM_DEBUG(VMSizeInfo::Unset(p));
 						DKASSERT_MEM_DEBUG(VMSizeInfo::Set(p2, alignedSize));
+						memcpy(p2, p, (alignedSize > memInfo.RegionSize ? memInfo.RegionSize : s));
+						::VirtualFree(p, 0, MEM_RELEASE);
 					}
 					p = p2;
 				}
@@ -973,6 +991,7 @@ namespace DKFoundation
 			}
 			else
 			{
+				VMSizeInfo::Unset(p);
 				VMSizeInfo::Set(p2, alignedSize);
 
 				size_t bytesCopy = Min(sizeOrig, alignedSize);
@@ -983,7 +1002,6 @@ namespace DKFoundation
 				{
 					DKLog("munmap failed: %s\n", strerror(errno));
 				}
-				VMSizeInfo::Unset(p);
 				p = p2;
 			}
 #endif
@@ -1006,11 +1024,8 @@ namespace DKFoundation
 		if (p)
 		{
 #ifdef _WIN32
-			if (::VirtualFree(p, 0, MEM_RELEASE))
-			{
-				DKASSERT_MEM_DEBUG(VMSizeInfo::Unset(p));
-			}
-			else
+			DKASSERT_MEM_DEBUG(VMSizeInfo::Unset(p));
+			if (!::VirtualFree(p, 0, MEM_RELEASE))
 			{
 				DKASSERT_MEM_DESC_DEBUG(0, "VirtualFree failed");
 				DKLog("VirtualFree failed:%ls\n", Win32GetErrorString(::GetLastError()).c_str());
@@ -1020,12 +1035,12 @@ namespace DKFoundation
 			DKASSERT_MEM_DESC_DEBUG(s > 0, "Unallocated address.");
 			if (s > 0)
 			{
-				DKASSERT_MEM_DEBUG((s % getpagesize()) == 0);
+				DKASSERT_MEM_DEBUG((s % DKMemoryPageSize()) == 0);
+				VMSizeInfo::Unset(p);
 				if (::munmap(p, s) != 0)
 				{
 					DKLog("munmap failed: %s\n", strerror(errno));
 				}
-				VMSizeInfo::Unset(p);
 			}
 #endif
 		}
@@ -1055,7 +1070,7 @@ namespace DKFoundation
 	}
 
 	// system-paing functions.
-	DKGL_API size_t DKMemoryPageSize(void)
+	DKGL_API size_t DKMemoryPageSize()
 	{
 		static size_t pageSize = [](){
 #ifdef _WIN32
@@ -1063,7 +1078,10 @@ namespace DKFoundation
 			GetSystemInfo(&sysInfo);
 			return sysInfo.dwPageSize;
 #else
-			return getpagesize();
+			long pg = sysconf(_SC_PAGESIZE);
+			if (pg == -1)
+				return (long)getpagesize();
+			return pg;
 #endif
 		}();
 		return pageSize;
@@ -1083,7 +1101,7 @@ namespace DKFoundation
 		DKASSERT_MEM_DEBUG((s % pageSize) == 0);
 #ifdef _WIN32
 		ptr = ::VirtualAlloc(p, s, MEM_RESERVE, PAGE_READWRITE);
-		if (ptr == NULL)
+		if (ptr == NULL && GetLastError() == ERROR_INVALID_ADDRESS)
 			ptr = ::VirtualAlloc(0, s, MEM_RESERVE, PAGE_READWRITE);
 
 		if (ptr)
@@ -1093,7 +1111,9 @@ namespace DKFoundation
 
 #else
 		// mmap
-		ptr = ::mmap(0, s, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		ptr = ::mmap(p, s, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (ptr == MAP_FAILED && errno == EINVAL)
+			ptr = ::mmap(0, s, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
 		if (ptr == MAP_FAILED)
 		{
 			DKLog("mmap failed: %s\n", strerror(errno));
@@ -1127,11 +1147,8 @@ namespace DKFoundation
 				DKLog("VirtualQuery failed:%ls\n", Win32GetErrorString(::GetLastError()).c_str());
 			}
 #endif
-			if (::VirtualFree(p, 0, MEM_RELEASE))
-			{
-				DKASSERT_MEM_DEBUG(VMSizeInfo::Unset(p));
-			}
-			else
+			DKASSERT_MEM_DEBUG(VMSizeInfo::Unset(p));
+			if (!::VirtualFree(p, 0, MEM_RELEASE))
 			{
 				DKASSERT_MEM_DESC_DEBUG(0, "VirtualFree failed");
 				DKLog("VirtualFree failed:%ls\n", Win32GetErrorString(::GetLastError()).c_str());
@@ -1141,12 +1158,12 @@ namespace DKFoundation
 			if (s > 0)
 			{
 				//mumap..
+				VMSizeInfo::Unset(p);
 				if (::munmap(p, s) != 0)
 				{
 					DKASSERT_MEM_DESC_DEBUG(0, "munmap failed");
 					DKLog("munmap failed:%s\n", strerror(errno));
 				}
-				VMSizeInfo::Unset(p);
 			}
 			else
 			{
@@ -1271,13 +1288,96 @@ namespace DKFoundation
 		GetAllocatorPool()->Dealloc(p);
 	}
 	
-	DKGL_API size_t DKMemoryPoolPurge(void)
+	DKGL_API size_t DKMemoryPoolPurge()
 	{
 		return GetAllocatorPool()->Purge();
 	}
 	
-	DKGL_API size_t DKMemoryPoolSize(void)
+	DKGL_API size_t DKMemoryPoolSize()
 	{
 		return GetAllocatorPool()->Size();
 	}
+
+	DKGL_API size_t DKMemoryPoolNumberOfBuckets()
+	{
+		return AllocatorPool::NumAllocators;
+	}
+
+	DKGL_API void DKMemoryPoolQueryAllocationStatus(DKMemoryPoolBucketStatus* status, size_t numBuckets)
+	{
+		size_t count = Min(numBuckets, (size_t)AllocatorPool::NumAllocators);
+		for (size_t i = 0; i < count; ++i)
+		{
+			const AllocatorUnit& unit = GetAllocatorPool()->GetAllocatorUnit(i);
+			status[i].chunkSize = unit.unitSize;
+			status[i].totalChunks = unit.allocator->NumberOfUnits();
+			status[i].usedChunks = unit.allocator->NumberOfAllocatedUnits();
+		}
+	}
 }
+
+#ifndef DKGL_OPERATOR_NEW
+#ifdef DKGL_DYNAMIC
+#define DKGL_OPERATOR_NEW 1
+#endif
+#endif
+
+#ifdef DKGL_OPERATOR_NEW
+void* operator new (std::size_t size)
+{
+	if (size == 0)
+		size = 1;
+	void* p = nullptr;
+	while ((p = DKFoundation::DKMalloc(size)) == nullptr)
+	{
+		std::new_handler handler = std::get_new_handler();
+		if (handler)
+			handler();
+		else
+			throw std::bad_alloc();
+	}
+	return p;
+}
+
+void* operator new(size_t size, const std::nothrow_t&) noexcept
+{
+    void* p = nullptr;
+    try
+    {
+        p = ::operator new(size);
+    }
+	catch (...) {}
+    return p;
+}
+
+void* operator new[] (std::size_t size)
+{
+	return ::operator new(size);
+}
+
+void* operator new[] (size_t size, const std::nothrow_t& tag) noexcept
+{
+	return ::operator new(size, tag);
+}
+
+void operator delete (void* ptr) noexcept
+{
+	if (ptr)
+		DKFoundation::DKFree(ptr);
+}
+
+void operator delete (void* ptr, const std::nothrow_t&) noexcept
+{
+	::operator delete(ptr);
+}
+
+void operator delete[] (void* ptr) noexcept
+{
+	::operator delete(ptr);
+}
+
+void operator delete[] (void* ptr, const std::nothrow_t&) noexcept
+{
+	::operator delete(ptr);
+}
+#endif //ifdef DKGL_OPERATOR_NEW

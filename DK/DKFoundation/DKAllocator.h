@@ -2,33 +2,28 @@
 //  File: DKAllocator.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKinclude.h"
+#include "../DKInclude.h"
 #include "DKMemory.h"
 #include "DKAllocatorChain.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKAllocator
-// interface class for memory allocation, deallocation.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// Interface class for memory allocation, deallocation.
 	class DKGL_API DKAllocator : public DKAllocatorChain
 	{
 	public:
-		virtual ~DKAllocator(void) noexcept(!DKGL_MEMORY_DEBUG);
-		virtual void* Alloc(size_t) = 0;
-		virtual void Dealloc(void*) = 0;
-		virtual DKMemoryLocation Location(void) const = 0;
+		virtual ~DKAllocator() noexcept(!DKGL_MEMORY_DEBUG);
+		virtual DKMemoryLocation Location() const = 0;
 
-		static DKAllocator& DefaultAllocator(DKMemoryLocation loc = DKMemoryLocationHeap);
+		/// Default allocator instance for given location
+		static DKAllocator& DefaultAllocator(DKMemoryLocation loc = DKMemoryLocationDefault);
 
 	protected:
-		DKAllocator(void);
+		DKAllocator();
 
 	private:
 		DKAllocator(const DKAllocator&) = delete;
@@ -36,12 +31,8 @@ namespace DKFoundation
 	};
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// operator new, delete
-//
-// allocate memory and tracking reference-count by DKAllocator object.
-// You need DKAllocator or inherited object.
-////////////////////////////////////////////////////////////////////////////////
-
-DKGL_API void* operator new (size_t, DKFoundation::DKAllocator&);	// to generation internal ref-count.
-DKGL_API void operator delete (void*, DKFoundation::DKAllocator&);	// invoked when allocation failed.
+/// allocate memory and tracking reference count by DKAllocator object.
+/// You have to provide your allocator (DKAllocator subclass) object.
+DKGL_API void* operator new (size_t, DKFoundation::DKAllocator&);
+/// Invoked when allocation failed.
+DKGL_API void operator delete (void*, DKFoundation::DKAllocator&);

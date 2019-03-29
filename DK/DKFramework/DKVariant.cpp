@@ -7,8 +7,6 @@
 
 #include "DKVariant.h"
 
-using namespace DKFoundation;
-
 namespace DKFramework
 {
 	namespace Private
@@ -38,14 +36,13 @@ namespace DKFramework
 				static T* Alloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
-					pptr[0] = new (DKMemoryDefaultAllocator::Alloc(sizeof(T))) T();
+					pptr[0] = new T();
 					return pptr[0];
 				}
 				static void Dealloc(void* p)
 				{
 					T** pptr = reinterpret_cast<T**>(p);
-					pptr[0]->~T();
-					DKMemoryDefaultAllocator::Free(pptr[0]);
+					delete pptr[0];
 				}
 				static T& Value(void* p)
 				{
@@ -116,10 +113,12 @@ namespace DKFramework
 		}
 		static bool ConvertStructuredDataByteOrder(VStructuredData& sd, DKByteOrder bo)
 		{
-			size_t len = sd.data.Length();
+			size_t len = 0;
+			if (sd.data)
+				len = sd.data->Length();
 			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.elementSize <= len && sd.layout.Count() > 0)
 			{
-				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data.LockExclusive());
+				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data->LockExclusive());
 				if (p)
 				{
 					size_t pos = 0;
@@ -131,16 +130,13 @@ namespace DKFramework
 						{
 							uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
 							n += fieldSize;
-							if (n >= sd.elementSize)
+							if (n > sd.elementSize)
 								break;
 
 							if ((static_cast<uint8_t>(e) & 0xf0) == 0)
 							{
 								switch (fieldSize)
 								{
-								case 1:
-									reinterpret_cast<uint8_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint8_t*>(p2)[0]);
-									break;
 								case 2:
 									reinterpret_cast<uint16_t*>(p2)[0] = DKSwitchIntegralByteOrder(reinterpret_cast<uint16_t*>(p2)[0]);
 									break;
@@ -157,13 +153,18 @@ namespace DKFramework
 						}
 						pos += sd.elementSize;
 					}
-					sd.data.UnlockExclusive();
+					sd.data->UnlockExclusive();
 					return true;
 				}
 				return false;
 			}
 			return true;
 		}
+
+		struct DataProxy
+		{
+			DKObject<DKData> data;
+		};
 	}
 }
 
@@ -255,11 +256,11 @@ DKVariant::DKVariant(const VQuaternion& v)
 	this->SetQuaternion(v);
 }
 
-DKVariant::DKVariant(const VRational& v)
-	: valueType(TypeRational)
+DKVariant::DKVariant(const VRationalNumber& v)
+	: valueType(TypeRationalNumber)
 {
 	memset(vblock, 0, sizeof(vblock));
-	this->SetRational(v);
+	this->SetRationalNumber(v);
 }
 
 DKVariant::DKVariant(const VString& v)
@@ -320,14 +321,14 @@ DKVariant::DKVariant(DKVariant&& v)
 	v.valueType = TypeUndefined;
 }
 
-DKVariant::DKVariant(const DKXMLElement* e)
+DKVariant::DKVariant(const DKXmlElement* e)
 	: valueType(TypeUndefined)
 {
 	memset(vblock, 0, sizeof(vblock));
 	this->ImportXML(e);
 }
 
-DKVariant::~DKVariant(void)
+DKVariant::~DKVariant()
 {
 	SetValueType(TypeUndefined);
 }
@@ -366,14 +367,14 @@ DKVariant& DKVariant::SetValueType(Type t)
 	case TypeQuaternion:
 		VariantBlock<VQuaternion, sizeof(vblock)>::Dealloc(vblock);
 		break;
-	case TypeRational:
-		VariantBlock<VRational, sizeof(vblock)>::Dealloc(vblock);
+	case TypeRationalNumber:
+		VariantBlock<VRationalNumber, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeString:
 		VariantBlock<VString, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeData:
-		VariantBlock<VData, sizeof(vblock)>::Dealloc(vblock);
+		VariantBlock<DataProxy, sizeof(vblock)>::Dealloc(vblock);
 		break;
 	case TypeStructData:
 		VariantBlock<VStructuredData, sizeof(vblock)>::Dealloc(vblock);
@@ -420,14 +421,15 @@ DKVariant& DKVariant::SetValueType(Type t)
 	case TypeQuaternion:
 		VariantBlock<VQuaternion, sizeof(vblock)>::Alloc(vblock);
 		break;
-	case TypeRational:
-		VariantBlock<VRational, sizeof(vblock)>::Alloc(vblock);
+	case TypeRationalNumber:
+		VariantBlock<VRationalNumber, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeString:
 		VariantBlock<VString, sizeof(vblock)>::Alloc(vblock);
 		break;
 	case TypeData:
-		VariantBlock<VData, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<DataProxy, sizeof(vblock)>::Alloc(vblock);
+		VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock).data = DKData::StaticData(0, 0);
 		break;
 	case TypeStructData:
 		VariantBlock<VStructuredData, sizeof(vblock)>::Alloc(vblock);
@@ -445,18 +447,18 @@ DKVariant& DKVariant::SetValueType(Type t)
 	return *this;
 }
 
-DKVariant::Type DKVariant::ValueType(void) const
+DKVariant::Type DKVariant::ValueType() const
 {
 	return valueType;
 }
 
 #define DKVARIANT_XML_ELEMENT	L"DKVariant"
 
-DKObject<DKXMLElement> DKVariant::ExportXML(void) const
+DKObject<DKXmlElement> DKVariant::ExportXML() const
 {
-	DKObject<DKXMLElement> e = DKObject<DKXMLElement>::New();
+	DKObject<DKXmlElement> e = DKObject<DKXmlElement>::New();
 	e->name = DKVARIANT_XML_ELEMENT;
-	DKXMLAttribute attrType;
+	DKXmlAttribute attrType;
 	attrType.name = L"type";
 
 	switch (valueType)
@@ -470,7 +472,7 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 	case TypeMatrix3:			attrType.value = L"matrix3";		break;
 	case TypeMatrix4:			attrType.value = L"matrix4";		break;
 	case TypeQuaternion:		attrType.value = L"quaternion";		break;
-	case TypeRational:			attrType.value = L"rational";		break;
+	case TypeRationalNumber:	attrType.value = L"rationalnumber";	break;
 	case TypeString:			attrType.value = L"string";			break;
 	case TypeDateTime:			attrType.value = L"datetime";		break;
 	case TypeData:				attrType.value = L"data";			break;
@@ -486,52 +488,55 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 	{
 		for (const DKVariant& var : this->Array())
 		{
-			DKObject<DKXMLElement> node = var.ExportXML();
+			DKObject<DKXmlElement> node = var.ExportXML();
 			if (node != NULL)
-				e->nodes.Add(node.SafeCast<DKXMLNode>());
+				e->nodes.Add(node.SafeCast<DKXmlNode>());
 		}
 	}
 	else if (valueType == TypePairs)
 	{
 		this->Pairs().EnumerateForward([&](const VPairs::Pair& pair)
 		{
-			DKObject<DKXMLElement> value = pair.value.ExportXML();
+			DKObject<DKXmlElement> value = pair.value.ExportXML();
 			if (value != NULL)
 			{
-				DKObject<DKXMLElement> node = DKObject<DKXMLElement>::New();
-				DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
-				DKObject<DKXMLPCData> pcdata = DKObject<DKXMLPCData>::New();
+				DKObject<DKXmlElement> node = DKObject<DKXmlElement>::New();
+				DKObject<DKXmlElement> key = DKObject<DKXmlElement>::New();
+				DKObject<DKXmlPCData> pcdata = DKObject<DKXmlPCData>::New();
 
 				node->name = L"Node";
 				key->name = L"Key";
 				pcdata->value = pair.key;
 
-				key->nodes.Add(pcdata.SafeCast<DKXMLNode>());
-				node->nodes.Add(key.SafeCast<DKXMLNode>());
-				node->nodes.Add(value.SafeCast<DKXMLNode>());
+				key->nodes.Add(pcdata.SafeCast<DKXmlNode>());
+				node->nodes.Add(key.SafeCast<DKXmlNode>());
+				node->nodes.Add(value.SafeCast<DKXmlNode>());
 
-				e->nodes.Add(node.SafeCast<DKXMLNode>());
+				e->nodes.Add(node.SafeCast<DKXmlNode>());
 			}
 		});
 	}
 	else if (valueType == TypeData)
 	{
-		DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-		DKObject<DKBuffer> compressed = this->Data().Compress(DKCompressor::Deflate);
+		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
+		const VData& data = this->Data();
+		const void* p = data.LockShared();
+		DKObject<DKBuffer> compressed = DKBuffer::Compress(DKCompressor::Default, p, data.Length());
+		data.UnlockShared();
 		if (compressed)
 			compressed->Base64Encode(cdata->value);
-		e->nodes.Add(cdata.SafeCast<DKXMLCData>());
+		e->nodes.Add(cdata.SafeCast<DKXmlCData>());
 	}
 	else if (valueType == TypeStructData)
 	{
 		const VStructuredData& stData = this->StructuredData();
-		DKXMLAttribute byteorder, elementSize;
+		DKXmlAttribute byteorder, elementSize;
 		byteorder.name = "byteorder";
 		byteorder.value = (DKRuntimeByteOrder() == DKByteOrder::BigEndian) ? "BE" : "LE";
 		elementSize.name = "elementSize";
 		elementSize.value = DKString::Format("%llu", stData.elementSize);
 
-		DKObject<DKXMLElement> layout = DKObject<DKXMLElement>::New();
+		DKObject<DKXmlElement> layout = DKObject<DKXmlElement>::New();
 		layout->name = "layout";
 		layout->attributes.Add(elementSize);
 		layout->attributes.Add(byteorder);
@@ -540,7 +545,7 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		{
 			if (ValidateStructElementLayout(stData))
 			{
-				DKObject<DKXMLPCData> layoutData = DKObject<DKXMLPCData>::New();
+				DKObject<DKXmlPCData> layoutData = DKObject<DKXmlPCData>::New();
 				layoutData->value = StructElementToString(stData.layout.Value(0));
 
 				size_t numElements = stData.layout.Count();
@@ -549,22 +554,27 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 					layoutData->value.Append(DKString::Format(", %ls",
 						(const wchar_t*)StructElementToString(stData.layout.Value(i))));
 				}
-				layout->nodes.Add(layoutData.SafeCast<DKXMLNode>());
+				layout->nodes.Add(layoutData.SafeCast<DKXmlNode>());
 			}
 			else
 			{
 				DKLog("Warning: DKVariant::VStructuredData.layout is invalid!\n");
 			}
 		}
-		e->nodes.Add(layout.SafeCast<DKXMLNode>());
+		e->nodes.Add(layout.SafeCast<DKXmlNode>());
 
-		DKObject<DKXMLCData> cdata = DKObject<DKXMLCData>::New();
-		DKObject<DKBuffer> compressed = stData.data.Compress(DKCompressor::Deflate);
-		if (compressed)
+		if (stData.data)
 		{
-			compressed->Base64Encode(cdata->value);
+			DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
+			const void* p = stData.data->LockShared();
+			DKObject<DKBuffer> compressed = DKBuffer::Compress(DKCompressor::Default, p, stData.data->Length());
+			stData.data->UnlockShared();
+			if (compressed)
+			{
+				compressed->Base64Encode(cdata->value);
+			}
+			e->nodes.Add(cdata.SafeCast<DKXmlNode>());
 		}
-		e->nodes.Add(cdata.SafeCast<DKXMLNode>());
 	}
 	else
 	{
@@ -614,9 +624,9 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		{
 			data = DKString::Format("%.16g, %.16g, %.16g, %.16g", this->Quaternion().val[0], this->Quaternion().val[1], this->Quaternion().val[2], this->Quaternion().val[3]);
 		}
-		else if (valueType == TypeRational)
+		else if (valueType == TypeRationalNumber)
 		{
-			data = DKString::Format("%lld/%lld", this->Rational().Numerator(), this->Rational().Denominator());
+			data = DKString::Format("%lld/%lld", this->RationalNumber().Numerator(), this->RationalNumber().Denominator());
 		}
 		else if (valueType == TypeString)
 		{
@@ -628,24 +638,24 @@ DKObject<DKXMLElement> DKVariant::ExportXML(void) const
 		}
 		if (data.Length() > 0)
 		{
-			DKObject<DKXMLPCData> pcdata = DKObject<DKXMLPCData>::New();
+			DKObject<DKXmlPCData> pcdata = DKObject<DKXmlPCData>::New();
 			pcdata->value = data;
 
-			e->nodes.Add(pcdata.SafeCast<DKXMLNode>());
+			e->nodes.Add(pcdata.SafeCast<DKXmlNode>());
 		}
 	}
 
 	return e;
 }
 
-bool DKVariant::ImportXML(const DKXMLElement* e)
+bool DKVariant::ImportXML(const DKXmlElement* e)
 {
 	if (e->name.CompareNoCase(DKVARIANT_XML_ELEMENT) == 0)
 	{
 		this->SetValueType(TypeUndefined);
 		for (int i = 0; i < e->attributes.Count(); ++i)
 		{
-			const DKXMLAttribute& attr = e->attributes.Value(i);
+			const DKXmlAttribute& attr = e->attributes.Value(i);
 			if (attr.name.CompareNoCase(L"type") == 0)
 			{
 				if (attr.value.CompareNoCase(L"integer") == 0)
@@ -666,8 +676,8 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 					this->SetValueType(TypeMatrix4);
 				else if (attr.value.CompareNoCase(L"quaternion") == 0)
 					this->SetValueType(TypeQuaternion);
-				else if (attr.value.CompareNoCase(L"rational") == 0)
-					this->SetValueType(TypeRational);
+				else if (attr.value.CompareNoCase(L"rationalnumber") == 0)
+					this->SetValueType(TypeRationalNumber);
 				else if (attr.value.CompareNoCase(L"string") == 0)
 					this->SetValueType(TypeString);
 				else if (attr.value.CompareNoCase(L"datetime") == 0)
@@ -689,9 +699,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			VArray va;
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 				{
-					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					const DKXmlElement* node = e->nodes.Value(i).SafeCast<DKXmlElement>();
 					if (node->name.CompareNoCase(DKVARIANT_XML_ELEMENT) == 0)
 					{
 						va.Add(DKVariant(node));
@@ -705,9 +715,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			VPairs vm;
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 				{
-					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					const DKXmlElement* node = e->nodes.Value(i).SafeCast<DKXmlElement>();
 					if (node->name.CompareNoCase(L"Node") == 0)
 					{
 						bool keyFound = false;
@@ -715,17 +725,17 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 						DKVariant value;
 						for (int k = 0; k < node->nodes.Count(); ++k)
 						{
-							if (node->nodes.Value(k)->Type() == DKXMLNode::NodeTypeElement)
+							if (node->nodes.Value(k)->Type() == DKXmlNode::NodeTypeElement)
 							{
-								const DKXMLElement* node2 = node->nodes.Value(k).SafeCast<DKXMLElement>();
+								const DKXmlElement* node2 = node->nodes.Value(k).SafeCast<DKXmlElement>();
 								if (node2->name.CompareNoCase(L"Key") == 0)
 								{
 									for (int x = 0; x < node2->nodes.Count(); ++x)
 									{
-										if (node2->nodes.Value(x)->Type() == DKXMLNode::NodeTypeCData)
-											key += node2->nodes.Value(x).SafeCast<DKXMLCData>()->value;
-										else if (node2->nodes.Value(x)->Type() == DKXMLNode::NodeTypePCData)
-											key += node2->nodes.Value(x).SafeCast<DKXMLPCData>()->value;
+										if (node2->nodes.Value(x)->Type() == DKXmlNode::NodeTypeCData)
+											key += node2->nodes.Value(x).SafeCast<DKXmlCData>()->value;
+										else if (node2->nodes.Value(x)->Type() == DKXmlNode::NodeTypePCData)
+											key += node2->nodes.Value(x).SafeCast<DKXmlPCData>()->value;
 									}
 									keyFound = true;
 								}
@@ -747,19 +757,20 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			DKStringU8 value;
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeCData)
 				{
-					value = e->nodes.Value(i).SafeCast<DKXMLCData>()->value;
+					value = e->nodes.Value(i).SafeCast<DKXmlCData>()->value;
 					break;
 				}
 			}
-			DKObject<VData> compressed = VData::Base64Decode(value);
+			DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(value);
 			if (compressed)
 			{
-				DKObject<VData> d = compressed->Decompress();
-				if (d)
-					this->Data() = static_cast<VData&&>(*d);
+				DKObject<DKBuffer> d = compressed->Decompress();
+				this->SetData(d);
 			}
+			else
+				this->SetData(0);
 		}
 		else if (this->ValueType() == TypeStructData)
 		{
@@ -768,12 +779,12 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 				{
-					const DKXMLElement* node = e->nodes.Value(i).SafeCast<DKXMLElement>();
+					const DKXmlElement* node = e->nodes.Value(i).SafeCast<DKXmlElement>();
 					if (node->name.CompareNoCase(L"layout") == 0)
 					{
-						for (const DKXMLAttribute& attr : node->attributes)
+						for (const DKXmlAttribute& attr : node->attributes)
 						{
 							if (attr.name.CompareNoCase("elementSize") == 0)
 							{
@@ -791,9 +802,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 						DKString layoutData;
 						for (int j = 0; j < node->nodes.Count(); ++j)
 						{
-							if (node->nodes.Value(j)->Type() == DKXMLNode::NodeTypePCData)
+							if (node->nodes.Value(j)->Type() == DKXmlNode::NodeTypePCData)
 							{
-								const DKXMLPCData* pcData = node->nodes.Value(j).SafeCast<DKXMLPCData>();
+								const DKXmlPCData* pcData = node->nodes.Value(j).SafeCast<DKXmlPCData>();
 								if (pcData)
 								{
 									layoutData.Append(pcData->value);
@@ -820,9 +831,9 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			}
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeCData)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeCData)
 				{
-					const DKXMLCData* cData = e->nodes.Value(i).SafeCast<DKXMLCData>();
+					const DKXmlCData* cData = e->nodes.Value(i).SafeCast<DKXmlCData>();
 					if (cData)
 					{
 						DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(cData->value);
@@ -831,10 +842,10 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 							DKObject<DKBuffer> data = compressed->Decompress();
 							if (data)
 							{
-								stData.data = static_cast<DKBuffer&&>(*data); // move!
+								stData.data = data;
 								if (!ConvertStructuredDataByteOrder(stData, dataByteOrder))
 								{
-									DKLog("Error: DKVariant::VStructuredData data byte order error!\n");
+									DKLogE("Error: DKVariant::VStructuredData data byte order error!\n");
 								}
 								break;
 							}
@@ -848,22 +859,22 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 			DKString value = L"";
 			for (int i = 0; i < e->nodes.Count(); ++i)
 			{
-				if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypePCData)
+				if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypePCData)
 				{
-					value.Append(e->nodes.Value(i).SafeCast<DKXMLPCData>()->value);
+					value.Append(e->nodes.Value(i).SafeCast<DKXmlPCData>()->value);
 				}
 			}
 			if (this->ValueType() == TypeString)
 			{
 				this->String() = static_cast<DKString&&>(value);
 			}
-			else if (this->ValueType() == TypeRational)
+			else if (this->ValueType() == TypeRationalNumber)
 			{
 				DKString::IntegerArray intArray = value.ToIntegerArray(L"/");
-				VRational::Integer val[2] = { 0LL, 1LL };
+				VRationalNumber::Integer val[2] = { 0LL, 1LL };
 				for (size_t i = 0; i < 2 && i < intArray.Count(); ++i)
 					val[i] = intArray.Value(i);
-				this->Rational() = VRational(val[0], val[1]);
+				this->RationalNumber() = VRationalNumber(val[0], val[1]);
 			}
 			else if (this->ValueType() == TypeDateTime)
 			{
@@ -907,7 +918,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 				else if (this->ValueType() == TypeMatrix2)
 				{
 					if (floatArray.Count() < 4)
-						this->Matrix2().Identity();
+						this->Matrix2().SetIdentity();
 					else
 					{
 						for (int i = 0; i < 4; ++i)
@@ -917,7 +928,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 				else if (this->ValueType() == TypeMatrix3)
 				{
 					if (floatArray.Count() < 9)
-						this->Matrix3().Identity();
+						this->Matrix3().SetIdentity();
 					else
 					{
 						for (int i = 0; i < 9; ++i)
@@ -927,7 +938,7 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 				else if (this->ValueType() == TypeMatrix4)
 				{
 					if (floatArray.Count() < 16)
-						this->Matrix4().Identity();
+						this->Matrix4().SetIdentity();
 					else
 					{
 						for (int i = 0; i < 16; ++i)
@@ -994,13 +1005,6 @@ bool DKVariant::ImportXML(const DKXMLElement* e)
 #define DKVARIANT_HEADER_STRING_BIG_ENDIAN		"DKVariantB"
 #define DKVARIANT_HEADER_STRING_LITTLE_ENDIAN	"DKVariantL"
 
-
-#if __LITTLE_ENDIAN__
-#define DKVARIANT_HEADER_STRING		DKVARIANT_HEADER_STRING_LITTLE_ENDIAN
-#else
-#define DKVARIANT_HEADER_STRING		DKVARIANT_HEADER_STRING_BIG_ENDIAN
-#endif
-
 #pragma pack(push, 4)
 
 static_assert(sizeof(uint32_t) == sizeof(float), "Size mismatch!");
@@ -1008,7 +1012,7 @@ static_assert(sizeof(uint64_t) == sizeof(DKVariant::VFloat), "Size mismatch!");
 static_assert(sizeof(uint64_t) == sizeof(DKVariant::VInteger), "Size mismatch!");
 
 
-bool DKVariant::ExportStream(DKStream* stream) const
+bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 {
 	DKString errorDesc = L"Unknown error";
 	bool validType = false;
@@ -1031,7 +1035,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 	case TypeMatrix3:
 	case TypeMatrix4:
 	case TypeQuaternion:
-	case TypeRational:
+	case TypeRationalNumber:
 	case TypeString:
 	case TypeDateTime:
 	case TypeData:
@@ -1043,20 +1047,47 @@ bool DKVariant::ExportStream(DKStream* stream) const
 	}
 	if (validType)
 	{
-		size_t headerLen = strlen(DKVARIANT_HEADER_STRING);
-		if (stream->Write(DKVARIANT_HEADER_STRING, headerLen) != headerLen)
+		if (byteOrder == DKByteOrder::Unknown)
+			byteOrder = DKRuntimeByteOrder();
+
+		// write file header
+		const char* headerString = byteOrder == DKByteOrder::BigEndian ?
+			DKVARIANT_HEADER_STRING_BIG_ENDIAN : DKVARIANT_HEADER_STRING_LITTLE_ENDIAN;
+		size_t headerLen = strlen(headerString);
+		if (stream->Write(headerString, headerLen) != headerLen)
 		{
 			errorDesc = L"Failed to write to stream.";
 			goto FAILED;
 		}
-		const unsigned short version = DKVARIANT_VERSION;
-		if (stream->Write(&version, sizeof(version)) != sizeof(version))
+
+		struct ByteOrderedStream
+		{
+			DKStream* stream;
+			bool bigEndian;
+			bool Write(uint16_t v)
+			{
+				v = this->bigEndian ? DKSystemToBigEndian(v) : DKSystemToLittleEndian(v);
+				return stream->Write(&v, sizeof(uint16_t)) == sizeof(uint16_t);
+			}
+			bool Write(uint32_t v)
+			{
+				v = this->bigEndian ? DKSystemToBigEndian(v) : DKSystemToLittleEndian(v);
+				return stream->Write(&v, sizeof(uint32_t)) == sizeof(uint32_t);
+			}
+			bool Write(uint64_t v)
+			{
+				v = this->bigEndian ? DKSystemToBigEndian(v) : DKSystemToLittleEndian(v);
+				return stream->Write(&v, sizeof(uint64_t)) == sizeof(uint64_t);
+			}
+		} output = { stream, byteOrder == DKByteOrder::BigEndian };
+
+		// version
+		if (!output.Write(uint16_t(DKVARIANT_VERSION)))
 		{
 			errorDesc = L"Failed to write to stream.";
 			goto FAILED;
 		}
-		const unsigned int type = static_cast<unsigned int>(valueType);
-		if (stream->Write(&type, sizeof(type)) != sizeof(type))
+		if (!output.Write(uint32_t(valueType)))
 		{
 			errorDesc = L"Failed to write to stream.";
 			goto FAILED;
@@ -1066,8 +1097,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypeInteger)
 		{
-			uint64_t v = static_cast<uint64_t>(this->Integer());
-			if (stream->Write(&v, sizeof(v)) != sizeof(v))
+			if (!output.Write(uint64_t(this->Integer())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1076,8 +1106,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeFloat)
 		{
 			VFloat value = this->Float();
-			uint64_t v = (*reinterpret_cast<uint64_t*>(&value));
-			if (stream->Write(&v, sizeof(v)) != sizeof(v))
+			if (!output.Write(*reinterpret_cast<uint64_t*>(&value)))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1086,95 +1115,95 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeVector2)
 		{
 			VVector2 value = this->Vector2();
-			unsigned int v[2];
 			for (int i = 0; i < 2; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeVector3)
 		{
 			VVector3 value = this->Vector3();
-			unsigned int v[3];
 			for (int i = 0; i < 3; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeVector4)
 		{
 			VVector4 value = this->Vector4();
-			unsigned int v[4];
 			for (int i = 0; i < 4; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeMatrix2)
 		{
 			VMatrix2 value = this->Matrix2();
-			unsigned int v[4];
 			for (int i = 0; i < 4; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeMatrix3)
 		{
 			VMatrix3 value = this->Matrix3();
-			unsigned int v[9];
 			for (int i = 0; i < 9; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeMatrix4)
 		{
 			VMatrix4 value = this->Matrix4();
-			unsigned int v[16];
 			for (int i = 0; i < 16; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
 		}
 		else if (valueType == TypeQuaternion)
 		{
 			VQuaternion value = this->Quaternion();
-			unsigned int v[4];
 			for (int i = 0; i < 4; ++i)
-				v[i] = (*reinterpret_cast<unsigned int*>(&value.val[i]));
-			if (stream->Write(v, sizeof(v)) != sizeof(v))
+			{
+				if (!output.Write(*reinterpret_cast<uint32_t*>(&value.val[i])))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
+			}
+		}
+		else if (valueType == TypeRationalNumber)
+		{
+			if (!output.Write(uint64_t(this->RationalNumber().Numerator())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-		}
-		else if (valueType == TypeRational)
-		{
-			struct
-			{
-				int64_t n, d;
-			} r = { this->Rational().Numerator(), this->Rational().Denominator() };
-
-			if (stream->Write(&r, sizeof(r)) != sizeof(r))
+			if (!output.Write(uint64_t(this->RationalNumber().Denominator())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1184,7 +1213,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			DKStringU8 str(this->String());
 			uint64_t len = str.Bytes();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1197,16 +1226,12 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypeDateTime)
 		{
-			struct
+			if (!output.Write(uint64_t(this->DateTime().SecondsSinceEpoch())))
 			{
-				int64_t s;
-				int32_t ms;
-			} dt = {
-				this->DateTime().SecondsSinceEpoch(),
-				this->DateTime().Microsecond()
-			};
-
-			if (stream->Write(&dt, sizeof(dt)) != sizeof(dt))
+				errorDesc = L"Failed to write to stream.";
+				goto FAILED;
+			}
+			if (!output.Write(uint32_t(this->DateTime().Microsecond())))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
@@ -1216,7 +1241,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		{
 			const void* ptr = this->Data().LockShared();
 			uint64_t len = this->Data().Length();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				this->Data().UnlockShared();
 				errorDesc = L"Failed to write to stream.";
@@ -1233,42 +1258,100 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		else if (valueType == TypeStructData)
 		{
 			const VStructuredData& stData = this->StructuredData();
-			struct
+			size_t length = 0;
+			size_t numLayouts = stData.layout.Count();
+			if (stData.data)
+				length = stData.data->Length();
+			for (uint64_t hdr : { uint64_t(stData.elementSize), uint64_t(numLayouts), uint64_t(length)})
 			{
-				uint64_t elementSize;
-				uint64_t numLayouts;
-				uint64_t dataLength;
-			} stInfo = { stData.elementSize, stData.layout.Count(), stData.data.Length() };
-			if (stream->Write(&stInfo, sizeof(stInfo)) != sizeof(stInfo))
+				if (!output.Write(hdr))
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
+			}
+			if (stream->Write(stData.layout, numLayouts) != numLayouts)
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			if (stream->Write(stData.layout, stInfo.numLayouts) != stInfo.numLayouts)
+			if (length > 0)
 			{
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
+				const uint8_t* dataPtr = reinterpret_cast<const uint8_t*>(stData.data->LockShared());
+				bool succeeded = true;
+
+				if (byteOrder != DKRuntimeByteOrder())
+				{
+					size_t pos = 0;
+					while (pos < length && succeeded)
+					{
+						size_t n = 0;
+						const uint8_t* p2 = &(dataPtr[pos]);
+						for (StructElem e : stData.layout)
+						{
+							uint8_t fieldSize = static_cast<uint8_t>(e) & 0x0f;
+							if ((n + fieldSize) > stData.elementSize)
+								break;
+
+							if ((static_cast<uint8_t>(e) & 0xf0) == 0)
+							{
+								switch (fieldSize)
+								{
+								case 1:
+									succeeded = stream->Write(p2, 1) == 1;
+								case 2:
+									succeeded = output.Write(reinterpret_cast<const uint16_t*>(p2)[0]); break;
+								case 4:
+									succeeded = output.Write(reinterpret_cast<const uint32_t*>(p2)[0]); break;
+								case 8:
+									succeeded = output.Write(reinterpret_cast<const uint64_t*>(p2)[0]); break;
+								}
+							}
+							else
+							{
+								succeeded = stream->Write(p2, fieldSize) == fieldSize;
+							}
+							p2 += fieldSize;
+							n += fieldSize;
+
+							if (!succeeded)
+								break;
+						}
+						if (n < stData.elementSize && succeeded) // no entry in layout. (Raw-data)
+						{
+							size_t r = stData.elementSize - n;
+							succeeded = stream->Write(p2, r) == r;
+						}
+						pos += stData.elementSize;
+					}
+				}
+				else // same byte-order, just write data at once
+				{
+					succeeded = stream->Write(dataPtr, length) == length;
+				}
+
+				stData.data->UnlockShared();
+				if (!succeeded)
+				{
+					errorDesc = L"Failed to write to stream.";
+					goto FAILED;
+				}
 			}
-			if (stream->Write(stData.data.LockShared(), stInfo.dataLength) != stInfo.dataLength)
-			{
-				stData.data.UnlockShared();
-				errorDesc = L"Failed to write to stream.";
-				goto FAILED;
-			}
-			stData.data.UnlockShared();
 		}
 		else if (valueType == TypeArray)
 		{
 			const VArray& a = this->Array();
+			VArray::CriticalSection gaurd(a.lock);
+
 			uint64_t len = a.Count();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			for (size_t i = 0; i < a.Count(); ++i)
+			for (size_t i = 0; i < len; ++i)
 			{
-				if (a.Value(i).ExportStream(stream) == false)
+				if (a.Value(i).ExportStream(stream, byteOrder) == false)
 				{
 					errorDesc = L"Failed to extract array into stream.";
 					goto FAILED;
@@ -1277,23 +1360,29 @@ bool DKVariant::ExportStream(DKStream* stream) const
 		}
 		else if (valueType == TypePairs)
 		{
+			const VPairs& pairs = this->Pairs();
+			VPairs::CriticalSection guard(pairs.lock);
+
 			DKArray<const VPairs::Pair*> a;
-			a.Reserve(this->Pairs().Count());
-			this->Pairs().EnumerateForward([&a](const VPairs::Pair& pair) {a.Add(&pair);});
+			a.Reserve(pairs.Count());
+			pairs.EnumerateForward([&a](const VPairs::Pair& pair)
+			{
+				a.Add(&pair); 
+			});
 
 			uint64_t len = a.Count();
-			if (stream->Write(&len, sizeof(len)) != sizeof(len))
+			if (!output.Write(len))
 			{
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			for (size_t i = 0; i < a.Count(); ++i)
+			for (size_t i = 0; i < len; ++i)
 			{
 				const VPairs::Pair* pair = a.Value(i);
 				DKStringU8 key(pair->key);
 
 				uint64_t keyLen = key.Bytes();
-				if (stream->Write(&keyLen, sizeof(keyLen)) != sizeof(keyLen))		// key length
+				if (!output.Write(keyLen))  // key length
 				{
 					errorDesc = L"Failed to write to stream.";
 					goto FAILED;
@@ -1303,7 +1392,7 @@ bool DKVariant::ExportStream(DKStream* stream) const
 					errorDesc = L"Failed to write to stream.";
 					goto FAILED;
 				}
-				if (pair->value.ExportStream(stream) == false)		// value (DKVariant)
+				if (pair->value.ExportStream(stream, byteOrder) == false)		// value (DKVariant)
 				{
 					errorDesc = L"Failed to extract array into stream.";
 					goto FAILED;
@@ -1330,7 +1419,8 @@ FAILED:
 
 bool DKVariant::ImportStream(DKStream* stream)
 {
-	size_t headerLen = strlen(DKVARIANT_HEADER_STRING);
+	size_t headerLen = strlen(DKVARIANT_HEADER_STRING_BIG_ENDIAN);
+	DKASSERT_DEBUG(headerLen == strlen(DKVARIANT_HEADER_STRING_LITTLE_ENDIAN));
 
 	DKString errorDesc = L"Unknown error";
 
@@ -1419,7 +1509,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 			case TypeMatrix3:
 			case TypeMatrix4:
 			case TypeQuaternion:
-			case TypeRational:
+			case TypeRationalNumber:
 			case TypeString:
 			case TypeDateTime:
 			case TypeData:
@@ -1568,7 +1658,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					}
 					this->SetValueType(TypeQuaternion).Quaternion() = val;
 				}
-				else if (type == TypeRational)
+				else if (type == TypeRationalNumber)
 				{
 					struct
 					{
@@ -1584,7 +1674,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					r.n = byteorder(static_cast<uint64_t>(r.n));
 					r.d = byteorder(static_cast<uint64_t>(r.d));
 
-					this->SetValueType(TypeRational).Rational() = VRational(r.n, r.d);
+					this->SetValueType(TypeRationalNumber).RationalNumber() = VRationalNumber(r.n, r.d);
 				}
 				else if (type == TypeString)
 				{
@@ -1598,15 +1688,15 @@ bool DKVariant::ImportStream(DKStream* stream)
 					DKString str = L"";
 					if (len > 0)
 					{
-						void* p = DKMemoryDefaultAllocator::Alloc(len);
+						void* p = DKMalloc(len);
 						if (stream->Read(p, len) != len)
 						{
-							DKMemoryDefaultAllocator::Free(p);
+							DKFree(p);
 							errorDesc = L"Failed to read from stream.";
 							goto FAILED;
 						}
 						str.SetValue((const DKUniChar8*)p, len);
-						DKMemoryDefaultAllocator::Free(p);
+						DKFree(p);
 					}
 					this->SetValueType(TypeString).String() = static_cast<DKString&&>(str);
 				}
@@ -1642,7 +1732,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 					{
 						if (stream->RemainLength() >= len)
 						{
-							VData val;
+							DKBuffer val;
 							val.SetContent(0, len);
 							void* p = val.LockExclusive();
 							if (stream->Read(p, len) != len)
@@ -1652,7 +1742,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 								goto FAILED;
 							}
 							val.UnlockExclusive();
-							this->SetValueType(TypeData).Data() = static_cast<VData&&>(val);
+							this->SetData(val);
 						}
 						else
 						{
@@ -1661,7 +1751,7 @@ bool DKVariant::ImportStream(DKStream* stream)
 						}
 					}
 					else
-						this->SetValueType(TypeData).Data().SetContent(0);
+						this->SetData(0);
 				}
 				else if (type == TypeStructData)
 				{
@@ -1709,15 +1799,15 @@ bool DKVariant::ImportStream(DKStream* stream)
 					{
 						if (stream->RemainLength() >= stInfo.dataLength)
 						{
-							stData.data.SetContent(0, stInfo.dataLength);
-							void* p = stData.data.LockExclusive();
+							stData.data = DKOBJECT_NEW DKBuffer(0, stInfo.dataLength);
+							void* p = stData.data->LockExclusive();
 							if (stream->Read(p, stInfo.dataLength) != stInfo.dataLength)
 							{
-								stData.data.UnlockExclusive();
+								stData.data->UnlockExclusive();
 								errorDesc = L"Failed to read from stream.";
 								goto FAILED;
 							}
-							stData.data.UnlockExclusive();
+							stData.data->UnlockExclusive();
 						}
 						else
 						{
@@ -1782,15 +1872,15 @@ bool DKVariant::ImportStream(DKStream* stream)
 						DKString key = L"";
 						if (keyLen > 0)
 						{
-							void* p = DKMemoryDefaultAllocator::Alloc(keyLen);
+							void* p = DKMalloc(keyLen);
 							if (stream->Read(p, keyLen) != keyLen)
 							{
-								DKMemoryDefaultAllocator::Free(p);
+								DKFree(p);
 								errorDesc = L"Failed to read from stream.";
 								goto FAILED;
 							}
 							key.SetValue((const DKUniChar8*)p, keyLen);
-							DKMemoryDefaultAllocator::Free(p);
+							DKFree(p);
 						}
 						DKVariant variant;
 						if (variant.ImportStream(stream) == false)
@@ -1852,194 +1942,194 @@ DKVariant& DKVariant::operator = (DKVariant&& v)
 	return *this;
 }
 
-DKVariant::VInteger& DKVariant::Integer(void)
+DKVariant::VInteger& DKVariant::Integer()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeInteger);
 	DKASSERT_DEBUG(ValueType() == TypeInteger);
 	return VariantBlock<VInteger, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VInteger& DKVariant::Integer(void) const
+const DKVariant::VInteger& DKVariant::Integer() const
 {
 	return const_cast<DKVariant*>(this)->Integer();
 }
 
-DKVariant::VFloat& DKVariant::Float(void)
+DKVariant::VFloat& DKVariant::Float()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeFloat);
 	DKASSERT_DEBUG(ValueType() == TypeFloat);
 	return VariantBlock<VFloat, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VFloat& DKVariant::Float(void) const
+const DKVariant::VFloat& DKVariant::Float() const
 {
 	return const_cast<DKVariant*>(this)->Float();
 }
 
-DKVariant::VVector2& DKVariant::Vector2(void)
+DKVariant::VVector2& DKVariant::Vector2()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector2);
 	DKASSERT_DEBUG(ValueType() == TypeVector2);
 	return VariantBlock<VVector2, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VVector2& DKVariant::Vector2(void) const
+const DKVariant::VVector2& DKVariant::Vector2() const
 {
 	return const_cast<DKVariant*>(this)->Vector2();
 }
 
-DKVariant::VVector3& DKVariant::Vector3(void)
+DKVariant::VVector3& DKVariant::Vector3()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector3);
 	DKASSERT_DEBUG(ValueType() == TypeVector3);
 	return VariantBlock<VVector3, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VVector3& DKVariant::Vector3(void) const
+const DKVariant::VVector3& DKVariant::Vector3() const
 {
 	return const_cast<DKVariant*>(this)->Vector3();
 }
 
-DKVariant::VVector4& DKVariant::Vector4(void)
+DKVariant::VVector4& DKVariant::Vector4()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeVector4);
 	DKASSERT_DEBUG(ValueType() == TypeVector4);
 	return VariantBlock<VVector4, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VVector4& DKVariant::Vector4(void) const
+const DKVariant::VVector4& DKVariant::Vector4() const
 {
 	return const_cast<DKVariant*>(this)->Vector4();
 }
 
-DKVariant::VMatrix2& DKVariant::Matrix2(void)
+DKVariant::VMatrix2& DKVariant::Matrix2()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix2);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix2);
 	return VariantBlock<VMatrix2, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VMatrix2& DKVariant::Matrix2(void) const
+const DKVariant::VMatrix2& DKVariant::Matrix2() const
 {
 	return const_cast<DKVariant*>(this)->Matrix2();
 }
 
-DKVariant::VMatrix3& DKVariant::Matrix3(void)
+DKVariant::VMatrix3& DKVariant::Matrix3()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix3);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix3);
 	return VariantBlock<VMatrix3, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VMatrix3& DKVariant::Matrix3(void) const
+const DKVariant::VMatrix3& DKVariant::Matrix3() const
 {
 	return const_cast<DKVariant*>(this)->Matrix3();
 }
 
-DKVariant::VMatrix4& DKVariant::Matrix4(void)
+DKVariant::VMatrix4& DKVariant::Matrix4()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeMatrix4);
 	DKASSERT_DEBUG(ValueType() == TypeMatrix4);
 	return VariantBlock<VMatrix4, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VMatrix4& DKVariant::Matrix4(void) const
+const DKVariant::VMatrix4& DKVariant::Matrix4() const
 {
 	return const_cast<DKVariant*>(this)->Matrix4();
 }
 
-DKVariant::VQuaternion& DKVariant::Quaternion(void)
+DKVariant::VQuaternion& DKVariant::Quaternion()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeQuaternion);
 	DKASSERT_DEBUG(ValueType() == TypeQuaternion);
 	return VariantBlock<VQuaternion, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VQuaternion& DKVariant::Quaternion(void) const
+const DKVariant::VQuaternion& DKVariant::Quaternion() const
 {
 	return const_cast<DKVariant*>(this)->Quaternion();
 }
 
-DKVariant::VRational& DKVariant::Rational(void)
+DKVariant::VRationalNumber& DKVariant::RationalNumber()
 {
-	if (ValueType() == TypeUndefined)	SetValueType(TypeRational);
-	DKASSERT_DEBUG(ValueType() == TypeRational);
-	return VariantBlock<VRational, sizeof(vblock)>::Value(vblock);
+	if (ValueType() == TypeUndefined)	SetValueType(TypeRationalNumber);
+	DKASSERT_DEBUG(ValueType() == TypeRationalNumber);
+	return VariantBlock<VRationalNumber, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VRational& DKVariant::Rational(void) const
+const DKVariant::VRationalNumber& DKVariant::RationalNumber() const
 {
-	return const_cast<DKVariant*>(this)->Rational();
+	return const_cast<DKVariant*>(this)->RationalNumber();
 }
 
-DKVariant::VString& DKVariant::String(void)
+DKVariant::VString& DKVariant::String()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeString);
 	DKASSERT_DEBUG(ValueType() == TypeString);
 	return VariantBlock<VString, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VString& DKVariant::String(void) const
+const DKVariant::VString& DKVariant::String() const
 {
 	return const_cast<DKVariant*>(this)->String();
 }
 
-DKVariant::VDateTime& DKVariant::DateTime(void)
+DKVariant::VDateTime& DKVariant::DateTime()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeDateTime);
 	DKASSERT_DEBUG(ValueType() == TypeDateTime);
 	return VariantBlock<VDateTime, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VDateTime& DKVariant::DateTime(void) const
+const DKVariant::VDateTime& DKVariant::DateTime() const
 {
 	return const_cast<DKVariant*>(this)->DateTime();
 }
 
-DKVariant::VData& DKVariant::Data(void)
+DKVariant::VData& DKVariant::Data()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeData);
 	DKASSERT_DEBUG(ValueType() == TypeData);
-	return VariantBlock<VData, sizeof(vblock)>::Value(vblock);
+	return *(VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock).data);
 }
 
-const DKVariant::VData& DKVariant::Data(void) const
+const DKVariant::VData& DKVariant::Data() const
 {
 	return const_cast<DKVariant*>(this)->Data();
 }
 
-DKVariant::VStructuredData& DKVariant::StructuredData(void)
+DKVariant::VStructuredData& DKVariant::StructuredData()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeStructData);
 	DKASSERT_DEBUG(ValueType() == TypeStructData);
 	return VariantBlock<VStructuredData, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VStructuredData& DKVariant::StructuredData(void) const
+const DKVariant::VStructuredData& DKVariant::StructuredData() const
 {
 	return const_cast<DKVariant*>(this)->StructuredData();
 }
 
-DKVariant::VArray& DKVariant::Array(void)
+DKVariant::VArray& DKVariant::Array()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypeArray);
 	DKASSERT_DEBUG(ValueType() == TypeArray);
 	return VariantBlock<VArray, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VArray& DKVariant::Array(void) const
+const DKVariant::VArray& DKVariant::Array() const
 {
 	return const_cast<DKVariant*>(this)->Array();
 }
 
-DKVariant::VPairs& DKVariant::Pairs(void)
+DKVariant::VPairs& DKVariant::Pairs()
 {
 	if (ValueType() == TypeUndefined)	SetValueType(TypePairs);
 	DKASSERT_DEBUG(ValueType() == TypePairs);
 	return VariantBlock<VPairs, sizeof(vblock)>::Value(vblock);
 }
 
-const DKVariant::VPairs& DKVariant::Pairs(void) const
+const DKVariant::VPairs& DKVariant::Pairs() const
 {
 	return const_cast<DKVariant*>(this)->Pairs();
 }
@@ -2098,9 +2188,9 @@ DKVariant& DKVariant::SetQuaternion(const VQuaternion& v)
 	return *this;
 }
 
-DKVariant& DKVariant::SetRational(const VRational& v)
+DKVariant& DKVariant::SetRationalNumber(const VRationalNumber& v)
 {
-	SetValueType(TypeRational).Rational() = v;
+	SetValueType(TypeRationalNumber).RationalNumber() = v;
 	return *this;
 }
 
@@ -2118,26 +2208,37 @@ DKVariant& DKVariant::SetDateTime(const VDateTime& v)
 
 DKVariant& DKVariant::SetData(const VData& v)
 {
-	SetValueType(TypeData).Data() = v;
+	return SetData(&v);
+}
+
+DKVariant& DKVariant::SetData(const VData* v)
+{
+	SetValueType(TypeData);
+	DataProxy& proxy = VariantBlock<DataProxy, sizeof(vblock)>::Value(vblock);
+	if (v)
+		proxy.data = v->ImmutableData();
+	else
+		proxy.data = DKData::StaticData(0, 0);
 	return *this;
 }
 
 DKVariant& DKVariant::SetData(const void* p, size_t s)
 {
-	SetValueType(TypeData).Data().SetContent(p, s);
-	return *this;
+	return SetData(DKBuffer::Create(p, s));
 }
 
 DKVariant& DKVariant::SetStructuredData(const VStructuredData& v)
 {
 	SetValueType(TypeStructData).StructuredData() = v;
+	if (v.data)
+		StructuredData().data = v.data->ImmutableData();
 	return *this;
 }
 
 DKVariant& DKVariant::SetStructuredData(const void* p, size_t elementSize, size_t count, std::initializer_list<StructElem> layout)
 {
 	VStructuredData& data = SetValueType(TypeStructData).StructuredData();
-	data.data.SetContent(p, elementSize * count);
+	data.data = DKOBJECT_NEW DKBuffer(p, elementSize * count);
 	data.elementSize = elementSize;
 	data.layout = layout;
 	return *this;
@@ -2157,59 +2258,69 @@ DKVariant& DKVariant::SetPairs(const VPairs& v)
 
 DKVariant& DKVariant::SetValue(const DKVariant& v)
 {
-	SetValueType(v.ValueType());
-
-	switch (valueType)
+	switch (v.ValueType())
 	{
 	case TypeInteger:
-		this->Integer() = v.Integer();
+		this->SetInteger(v.Integer());
 		break;
 	case TypeFloat:
-		this->Float() = v.Float();
+		this->SetFloat(v.Float());
 		break;
 	case TypeVector2:
-		this->Vector2() = v.Vector2();
+		this->SetVector2(v.Vector2());
 		break;
 	case TypeVector3:
-		this->Vector3() = v.Vector3();
+		this->SetVector3(v.Vector3());
 		break;
 	case TypeVector4:
-		this->Vector4() = v.Vector4();
+		this->SetVector4(v.Vector4());
 		break;
 	case TypeMatrix2:
-		this->Matrix2() = v.Matrix2();
+		this->SetMatrix2(v.Matrix2());
 		break;
 	case TypeMatrix3:
-		this->Matrix3() = v.Matrix3();
+		this->SetMatrix3(v.Matrix3());
 		break;
 	case TypeMatrix4:
-		this->Matrix4() = v.Matrix4();
+		this->SetMatrix4(v.Matrix4());
 		break;
 	case TypeQuaternion:
-		this->Quaternion() = v.Quaternion();
+		this->SetQuaternion(v.Quaternion());
 		break;
-	case TypeRational:
-		this->Rational() = v.Rational();
+	case TypeRationalNumber:
+		this->SetRationalNumber(v.RationalNumber());
 		break;
 	case TypeString:
-		this->String() = v.String();
+		this->SetString(v.String());
 		break;
 	case TypeDateTime:
-		this->DateTime() = v.DateTime();
+		this->SetDateTime(v.DateTime());
 		break;
 	case TypeData:
-		this->Data() = v.Data();
+		this->SetData(v.Data());
 		break;
 	case TypeStructData:
-		this->StructuredData() = v.StructuredData();
+		this->SetStructuredData(v.StructuredData());
 		break;
 	case TypeArray:
-		this->Array() = v.Array();
+		this->SetArray(v.Array());
 		break;
 	case TypePairs:
-		this->Pairs() = v.Pairs();
+		this->SetPairs(v.Pairs());
 		break;
 	}
+	return *this;
+}
+
+DKVariant& DKVariant::SetValue(DKVariant&& v)
+{
+	SetValueType(TypeUndefined);
+
+	valueType = v.valueType;
+	memcpy(vblock, v.vblock, sizeof(vblock));
+	memset(v.vblock, 0, sizeof(v.vblock));
+	v.valueType = TypeUndefined;
+
 	return *this;
 }
 
@@ -2257,7 +2368,9 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 			result = this->DateTime() == v.DateTime();
 			break;
 		case TypeData:
-			if (this->Data().Length() == v.Data().Length())
+			if (&this->Data() == &v.Data())
+				result = true;
+			else if (this->Data().Length() == v.Data().Length())
 			{
 				size_t length = this->Data().Length();
 				const void* ptr1 = this->Data().LockShared();
@@ -2276,7 +2389,7 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 				const VStructuredData& s2 = v.StructuredData();
 				if (s1.elementSize == s2.elementSize &&
 					s1.layout.Count() == s2.layout.Count() &&
-					s1.data.Length() == s2.data.Length())
+					s1.data->Length() == s2.data->Length())
 				{
 					result = true;
 					for (size_t i = 0; i < s1.layout.Count(); ++i)
@@ -2289,14 +2402,14 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 					}
 					if (result)
 					{
-						size_t length = s1.data.Length();
-						const void* ptr1 = s1.data.LockShared();
-						const void* ptr2 = s2.data.LockShared();
+						size_t length = s1.data->Length();
+						const void* ptr1 = s1.data->LockShared();
+						const void* ptr2 = s2.data->LockShared();
 
 						result = memcmp(ptr1, ptr2, length) == 0;
 
-						s1.data.UnlockShared();
-						s2.data.UnlockShared();
+						s1.data->UnlockShared();
+						s2.data->UnlockShared();
 					}
 				}
 			}
@@ -2354,4 +2467,119 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 		}
 	}
 	return result;
+}
+
+#define KEY_PATH_DELIMITER	'.'
+
+bool DKVariant::FindObjectAtKeyPath(const DKString& path, KeyPathEnumerator* callback)
+{
+	if (path.Length() > 0)
+	{
+		if (this->ValueType() == TypePairs)
+		{
+			VPairs& map = this->Pairs();
+
+			DKString key = path;
+			DKString rest = "";
+			while (true)
+			{
+				VPairs::Pair* pair = map.Find(key);
+				if (pair)
+				{
+					if (pair->value.FindObjectAtKeyPath(rest, callback))
+						return true;
+				}
+				// continue to next search
+				long findResult = -1;
+				for (long f = key.Find(KEY_PATH_DELIMITER, findResult + 1);
+					 f >= 0;
+					 f = key.Find(KEY_PATH_DELIMITER, findResult + 1))
+				{
+					findResult = f;
+				}
+				if (findResult >= 0)
+				{
+					key = key.Left(findResult);
+					rest = path.Right(findResult+1);
+				}
+				else
+					break;
+			}
+		}
+		return false;
+	}
+	if (callback)
+		return callback->Invoke(*this);
+	return true;
+}
+
+bool DKVariant::FindObjectAtKeyPath(const DKString& path, ConstKeyPathEnumerator* callback) const
+{
+	if (path.Length() > 0)
+	{
+		if (this->ValueType() == TypePairs)
+		{
+			const VPairs& map = this->Pairs();
+
+			DKString key = path;
+			DKString rest = "";
+			while (true)
+			{
+				const VPairs::Pair* pair = map.Find(key);
+				if (pair)
+				{
+					if (pair->value.FindObjectAtKeyPath(rest, callback))
+						return true;
+				}
+				// continue to next search
+				long findResult = -1;
+				for (long f = key.Find(KEY_PATH_DELIMITER, findResult + 1);
+					 f >= 0;
+					 f = key.Find(KEY_PATH_DELIMITER, findResult + 1))
+				{
+					findResult = f;
+				}
+				if (findResult >= 0)
+				{
+					key = key.Left(findResult);
+					rest = path.Right(findResult+1);
+				}
+				else
+					break;
+			}
+		}
+		return false;
+	}
+	if (callback)
+		return callback->Invoke(*this);
+	return true;
+}
+
+DKVariant* DKVariant::NewValueAtKeyPath(const DKString& path, const DKVariant& value)
+{
+	if (this->ValueType() == TypePairs || this->ValueType() == TypeUndefined)
+	{
+		VPairs& pair = this->Pairs();
+		for (long findResult = path.Find(KEY_PATH_DELIMITER, 0);
+			 findResult >= 0;
+			 findResult = path.Find(KEY_PATH_DELIMITER, findResult + 1))
+		{
+			DKString key = path.Left(findResult);
+			DKString rest = path.Right(findResult + 1);
+			if (auto p = pair.Find(key); p)
+			{
+				DKVariant* result = p->value.NewValueAtKeyPath(rest, value);
+				if (result)
+					return result;
+			}
+			else
+			{
+				if (pair.Insert(key, TypePairs))
+					return pair.Value(key).NewValueAtKeyPath(rest, value);
+			}
+		}
+		if (pair.Insert(path, value))
+			return &pair.Value(path);
+	}
+	return NULL;
 }

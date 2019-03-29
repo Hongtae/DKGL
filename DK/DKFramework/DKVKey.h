@@ -2,20 +2,17 @@
 //  File: DKVKey.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 
-////////////////////////////////////////////////////////////////////////////////
-// DKVirtualKey
-// virtual key map.
-// keyboard event can contains key-info mapped with Virtual-Key.
-// this Virtual-Key make easy to build cross-platform.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief virtual key map.
+	///
+	/// keyboard event can contains key-info mapped with Virtual-Key.
+	/// this Virtual-Key make easy to build cross-platform.
 	enum DKVirtualKey
 	{
 		DKVK_NONE = 0,
@@ -140,6 +137,6 @@ namespace DKFramework
 		DKVK_PAD_EQUAL,
 		DKVK_PAD_PERIOD,
 
-		DKVK_MAXVALUE,
+		DKVK_MAXVALUE, ///< for counting number of items in enum
 	};
 }

@@ -2,11 +2,15 @@
 //  File: DKZipUnarchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_ZLIB
-#include "../lib/ExtDeps.h"
+#include "../Libs/zlib/zlib.h"
+#include "../Libs/zlib/contrib/minizip/zip.h"
+#include "../Libs/zlib/contrib/minizip/unzip.h"
+#ifdef _WIN32
+#include "../Libs/zlib/contrib/minizip/iowin32.h"
+#endif
 #include "DKZipUnarchiver.h"
 #include "DKString.h"
 #include "DKLog.h"
@@ -66,7 +70,7 @@ namespace DKFoundation
 				}
 				return NULL;
 			}
-			~UnZipFile(void)
+			~UnZipFile()
 			{
 				if (unzCloseCurrentFile(handle) != UNZ_OK)
 					DKERROR_THROW_DEBUG("unzCloseCurrentFile failed!");
@@ -87,9 +91,9 @@ namespace DKFoundation
 					password.Add(0);
 				}				
 			}
-			Position SetPos(Position p)
+			Position SetCurrentPosition(Position p) override
 			{
-				Position currentPos = GetPos();
+				Position currentPos = CurrentPosition();
 				if (p == currentPos)
 					return p;
 				if (p <= fileInfo.uncompressed_size)
@@ -109,27 +113,27 @@ namespace DKFoundation
 
 					if (readBytes > 0)
 					{
-						void* tmp = DKMemoryDefaultAllocator::Alloc(readBytes);
+						void* tmp = DKMalloc(readBytes);
 						unzReadCurrentFile(handle, tmp, readBytes);
-						DKMemoryDefaultAllocator::Free(tmp);
+						DKFree(tmp);
 					}
-					return GetPos();
+					return CurrentPosition();
 				}
 				return -1;
 			}
-			Position GetPos(void) const
+			Position CurrentPosition() const override
 			{
 				return unztell64(handle);
 			}
-			Position RemainLength(void) const
+			Position RemainLength() const override
 			{
-				return fileInfo.uncompressed_size - GetPos();
+				return fileInfo.uncompressed_size - CurrentPosition();
 			}
-			Position TotalLength(void) const
+			Position TotalLength() const override
 			{
 				return fileInfo.uncompressed_size;
 			}
-			size_t Read(void* p, size_t s)
+			size_t Read(void* p, size_t s) override
 			{
 				if (s == 0)
 					return 0;
@@ -151,14 +155,14 @@ namespace DKFoundation
 				}
 				return totalRead;
 			}
-			size_t Write(const void* p, size_t s)
+			size_t Write(const void* p, size_t s) override
 			{
 				return 0;
 			}
 
-			bool IsReadable(void) const	{return true;}
-			bool IsWritable(void) const	{return false;}
-			bool IsSeekable(void) const	{return true;}
+			bool IsReadable() const override {return true;}
+			bool IsWritable() const override {return false;}
+			bool IsSeekable() const override {return true;}
 		private:
 			unzFile					handle;
 			const unz_file_info64	fileInfo;
@@ -169,12 +173,12 @@ namespace DKFoundation
 
 using namespace DKFoundation;
 
-DKZipUnarchiver::DKZipUnarchiver(void)
+DKZipUnarchiver::DKZipUnarchiver()
 : zipHandle(NULL)
 {
 }
 
-DKZipUnarchiver::~DKZipUnarchiver(void)
+DKZipUnarchiver::~DKZipUnarchiver()
 {
 	if (zipHandle)
 	{
@@ -258,7 +262,7 @@ DKObject<DKZipUnarchiver> DKZipUnarchiver::Create(const DKString& file)
 				}
 				else
 				{
-					DKLog("zip[%d] error.\n", i);
+					DKLogE("zip[%d] error.\n", i);
 				}
 
 				err = unzGoToNextFile(uf);
@@ -266,7 +270,7 @@ DKObject<DKZipUnarchiver> DKZipUnarchiver::Create(const DKString& file)
 					break;
 				if (err != UNZ_OK)
 				{
-					DKLog("error %d with zipfile in unzGoToNextFile\n",err);
+					DKLogE("error %d with zipfile in unzGoToNextFile\n",err);
 					return NULL;
 				}
 			}

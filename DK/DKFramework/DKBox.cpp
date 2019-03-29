@@ -2,7 +2,7 @@
 //  File: DKBox.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -13,10 +13,9 @@
 #include "DKMatrix4.h"
 #include "DKAabb.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKBox::DKBox(void)
+DKBox::DKBox()
 	: center(0,0,0), u(0,0,0), v(0,0,0), w(0,0,0), hu(-FLT_MAX), hv(-FLT_MAX), hw(-FLT_MAX)
 {
 }
@@ -74,12 +73,12 @@ DKBox::DKBox(const DKMatrix4& m)
 	hw = z.Length();
 }
 
-bool DKBox::IsValid(void) const
+bool DKBox::IsValid() const
 {
 	return (hu > 0.0 && hv > 0.0 && hw > 0.0);
 }
 
-float DKBox::Volume(void) const
+float DKBox::Volume() const
 {
 	if (hu > 0.0 && hv > 0.0 && hw > 0.0)
 		return hu * hv * hw * 8.0f;
@@ -101,7 +100,7 @@ bool DKBox::IsPointInside(const DKVector3& pos) const
 	return false;
 }
 
-DKMatrix4 DKBox::LocalTransform(void) const
+DKMatrix4 DKBox::LocalTransform() const
 {
 	return DKMatrix4(
 		DKVector4(u.x * hu, u.y * hu, u.z * hu, 0),
@@ -110,7 +109,7 @@ DKMatrix4 DKBox::LocalTransform(void) const
 		DKVector4(center.x, center.y, center.z, 1));
 }
 
-DKMatrix4 DKBox::AffineTransform(void) const
+DKMatrix4 DKBox::AffineTransform() const
 {
 	return DKMatrix4(
 		DKVector4(u.x, u.y, u.z, 0),
@@ -119,7 +118,7 @@ DKMatrix4 DKBox::AffineTransform(void) const
 		DKVector4(center.x, center.y, center.z, 1));
 }
 
-DKQuaternion DKBox::Orientation(void) const
+DKQuaternion DKBox::Orientation() const
 {
 	// rotate by axis-x
 	return DKQuaternion(DKVector3(0,1,0) * DKQuaternion(DKVector3(1,0,0), u, 1.0f), v, 1.0f);

@@ -2,7 +2,7 @@
 //  File: DKOperationQueue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -13,62 +13,63 @@
 #include "DKCondition.h"
 #include "DKSpinLock.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKOperationQueue
-// processing operations with multi-threaded.
-// this class manages thread pool automatically.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// Processing operations with multi-threaded.
+	/// This class manages thread pool automatically.
 	class DKGL_API DKOperationQueue
 	{
 	public:
+		/// retrieve operation state which is enqueued by DKOperationQueue::Post
 		struct OperationSync
 		{
 			enum State
 			{
                 StateUnknown = 0,
-				StatePending,
-				StateProcessed,
-				StateCancelled,
+				StatePending,	///< operation is pending and not processed yet.
+				StateExecuting, ///< operation is currently executing and cannot be cancelled.
+				StateProcessed,	///< operation has been processed.
+				StateCancelled,	///< operation was cancelled by system or user
 			};
 
-			virtual ~OperationSync(void) {}
-			virtual bool Sync(void) = 0;
-			virtual bool Cancel(void) = 0;
-			virtual State OperationState(void) = 0;
+			virtual ~OperationSync() {}
+			virtual bool Sync() = 0;	///< Wait until operation finished
+			virtual bool Cancel() = 0;	///< Cancellation request
+			virtual State OperationState() = 0; ///< Query state
 		};
 
+		/// threading filter.
+		/// Use this class to override behavior of background thread.
 		class ThreadFilter
 		{
 			friend class DKOperationQueue;
 		public:
-			virtual ~ThreadFilter(void) {}
+			virtual ~ThreadFilter() {}
 		protected:
-			virtual void OnThreadInitialized(void) {}
-			virtual void OnThreadTerminate(void) {}
-			virtual void PerformOperation(DKOperation* op)
+			virtual void OnThreadInitialized() {}	///< invoked on initialize thread
+			virtual void OnThreadTerminate() {}		///< invoked on finialize thread
+			virtual void PerformOperation(DKOperation* op) ///< invoked on processing operation
 			{
 				op->Perform();
 			}
 		};
 
 		DKOperationQueue(ThreadFilter* filter = NULL);
-		~DKOperationQueue(void);
+		~DKOperationQueue();
 
 		void SetMaxConcurrentOperations(size_t maxConcurrent);
-		size_t MaxConcurrentOperations(void) const;
+		size_t MaxConcurrentOperations() const;
 
 		void Post(DKOperation* operation);
 		DKObject<OperationSync> ProcessAsync(DKOperation* operation);
-		bool Process(DKOperation* operation);	// wait until done.
-		void CancelAllOperations(void);			// cancel all operations.
-		void WaitForCompletion(void) const;		// wait until all operations are done.
+		bool Process(DKOperation* operation);	///< wait until done.
+		void CancelAllOperations();			///< cancel all operations.
+		void WaitForCompletion() const;		///< wait until all operations are done.
+		bool WaitForAnyOperation(double timeout) const; ///< wait for any single operation has done or time-out.
 
-		size_t QueueLength(void) const;
-		size_t RunningOperations(void) const;
-		size_t RunningThreads(void) const;
+		size_t QueueLength() const;			///< Number of operations in queue.
+		size_t RunningOperations() const;	///< Number of operations currently in process.
+		size_t RunningThreads() const;		///< Number of active threads.
 
 	private:
 		struct Operation
@@ -85,10 +86,10 @@ namespace DKFoundation
 		DKCondition threadCond;
 		DKObject<ThreadFilter> filter;
 
-		void UpdateThreadPool(void);
-		void OperationProc(void);
+		void UpdateThreadPool();
+		void OperationProc();
 
 		DKOperationQueue(const DKOperationQueue&);
-		DKOperationQueue& operator = (const DKOperationQueue&);
+		DKOperationQueue& operator = (const DKOperationQueue&) = delete;
 	};
 }

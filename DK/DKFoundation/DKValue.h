@@ -2,7 +2,7 @@
 //  File: DKValue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -10,13 +10,6 @@
 #include "DKTypeTraits.h"
 #include "DKObject.h"
 #include "DKInvocation.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKValue
-//
-// Binds variable or constant to DKInvocation object. (see DKInvocation.h)
-// a variable or constant bounds, will become result of invocation.
-////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFoundation
 {
@@ -27,7 +20,7 @@ namespace DKFoundation
 		{
 		}
 	protected:
-		T Invoke(void) const
+		T Invoke() const
 		{
 			return value;
 		}
@@ -41,7 +34,7 @@ namespace DKFoundation
 		{
 		}
 	protected:
-		T* Invoke(void) const
+		T* Invoke() const
 		{
 			return const_cast<T*>((const T*)value);
 		}
@@ -49,6 +42,8 @@ namespace DKFoundation
 		DKObject<T> value;
 	};
 
+	/// Binds variable or constant to DKInvocation object. (see DKInvocation.h)
+	/// a variable or constant bounds, will become result of invocation.
 	template <typename T> DKObject<DKInvocation<T>> DKValue(T value)
 	{
 		DKObject<DKInvocationValue<T>> invocation = DKOBJECT_NEW DKInvocationValue<T>(value);

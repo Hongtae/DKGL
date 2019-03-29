@@ -2,25 +2,25 @@
 //  File: DKPropertySet.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #include "DKPropertySet.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-DKPropertySet::DKPropertySet(void)
+DKPropertySet::DKPropertySet()
+	: dataSet(DKVariant::TypePairs)
 {
 }
 
-DKPropertySet::~DKPropertySet(void)
+DKPropertySet::~DKPropertySet()
 {
 }
 
 int DKPropertySet::Import(const DKString& url, bool overwrite)
 {
-	DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, url);
+	DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, url);
 	if (doc)
 	{
 		return Import(doc->RootElement(), overwrite);
@@ -33,7 +33,7 @@ int DKPropertySet::Import(const DKPropertySet& prop, bool overwrite)
 	DKCriticalSection<DKSpinLock> gaurd(prop.lock);
 
 	int imported = 0;
-	prop.properties.EnumerateForward([&](const PropertyMap::Pair& pair)
+	prop.dataSet.Pairs().EnumerateForward([&](const PropertyMap::Pair& pair)
 	{
 		if (overwrite)
 		{
@@ -48,16 +48,16 @@ int DKPropertySet::Import(const DKPropertySet& prop, bool overwrite)
 	return imported;
 }
 
-int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
+int DKPropertySet::Import(const DKXmlElement* e, bool overwrite)
 {
 	if (e && e->name.CompareNoCase(L"DKPropertySet") == 0)
 	{
 		int imported = 0;
 		for (int i = 0; i < e->nodes.Count(); i++)
 		{
-			if (e->nodes.Value(i)->Type() == DKXMLNode::NodeTypeElement)
+			if (e->nodes.Value(i)->Type() == DKXmlNode::NodeTypeElement)
 			{
-				const DKXMLElement* pnode = e->nodes.Value(i).SafeCast<DKXMLElement>();
+				const DKXmlElement* pnode = e->nodes.Value(i).SafeCast<DKXmlElement>();
 				if (pnode->name.CompareNoCase(L"Property") == 0)
 				{			
 					bool keyFound = false;
@@ -65,17 +65,17 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 					DKVariant value;
 					for (int k = 0; k < pnode->nodes.Count(); ++k)
 					{
-						if (pnode->nodes.Value(k)->Type() == DKXMLNode::NodeTypeElement)
+						if (pnode->nodes.Value(k)->Type() == DKXmlNode::NodeTypeElement)
 						{
-							const DKXMLElement* node = pnode->nodes.Value(k).SafeCast<DKXMLElement>();
+							const DKXmlElement* node = pnode->nodes.Value(k).SafeCast<DKXmlElement>();
 							if (node->name.CompareNoCase(L"Key") == 0)
 							{
 								for (int x = 0; x < node->nodes.Count(); ++x)
 								{
-									if (node->nodes.Value(x)->Type() == DKXMLNode::NodeTypeCData)
-										key += node->nodes.Value(x).SafeCast<DKXMLCData>()->value;
-									else if (node->nodes.Value(x)->Type() == DKXMLNode::NodeTypePCData)
-										key += node->nodes.Value(x).SafeCast<DKXMLPCData>()->value;
+									if (node->nodes.Value(x)->Type() == DKXmlNode::NodeTypeCData)
+										key += node->nodes.Value(x).SafeCast<DKXmlCData>()->value;
+									else if (node->nodes.Value(x)->Type() == DKXmlNode::NodeTypePCData)
+										key += node->nodes.Value(x).SafeCast<DKXmlPCData>()->value;
 								}
 								keyFound = true;
 							}
@@ -84,9 +84,9 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 								value.ImportXML(node);
 							}
 						}
-						else if (pnode->nodes.Value(k)->Type() == DKXMLNode::NodeTypeCData)		// DKVariant-binary
+						else if (pnode->nodes.Value(k)->Type() == DKXmlNode::NodeTypeCData)		// DKVariant-binary
 						{
-							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(pnode->nodes.Value(k).SafeCast<DKXMLCData>()->value);
+							DKObject<DKBuffer> compressed = DKBuffer::Base64Decode(pnode->nodes.Value(k).SafeCast<DKXmlCData>()->value);
 							if (compressed)
 							{
 								DKObject<DKBuffer> data = compressed->Decompress();
@@ -120,7 +120,7 @@ int DKPropertySet::Import(const DKXMLElement* e, bool overwrite)
 
 int DKPropertySet::Import(DKStream* stream, bool overwrite)
 {
-	DKObject<DKXMLDocument> doc = DKXMLDocument::Open(DKXMLDocument::TypeXML, stream);
+	DKObject<DKXmlDocument> doc = DKXmlDocument::Open(DKXmlDocument::TypeXML, stream);
 	if (doc)
 	{
 		return Import(doc->RootElement(), overwrite);
@@ -131,10 +131,10 @@ int DKPropertySet::Import(DKStream* stream, bool overwrite)
 int DKPropertySet::Export(const DKString& file, bool exportXML) const
 {
 	int exported = 0;
-	DKObject<DKXMLElement> e = Export(exportXML, &exported);
+	DKObject<DKXmlElement> e = Export(exportXML, &exported);
 	if (e)
 	{
-		DKObject<DKData> buffer = DKXMLDocument(NULL, e).Export(DKStringEncoding::UTF8);
+		DKObject<DKData> buffer = DKXmlDocument(NULL, e).Export(DKStringEncoding::UTF8);
 		if (buffer && buffer->Length() > 0)
 		{
 			DKObject<DKFile> f = DKFile::Create(file, DKFile::ModeOpenNew, DKFile::ModeShareExclusive);
@@ -153,10 +153,10 @@ int DKPropertySet::Export(DKStream* stream, bool exportXML) const
 	if (stream && stream->IsWritable())
 	{
 		int exported = 0;
-		DKObject<DKXMLElement> e = Export(exportXML, &exported);
+		DKObject<DKXmlElement> e = Export(exportXML, &exported);
 		if (e)
 		{
-			DKObject<DKData> buffer = DKXMLDocument(NULL, e).Export(DKStringEncoding::UTF8);
+			DKObject<DKData> buffer = DKXmlDocument(NULL, e).Export(DKStringEncoding::UTF8);
 			if (buffer && buffer->Length() > 0)
 			{
 				stream->Write(buffer->LockShared(), buffer->Length());
@@ -168,35 +168,35 @@ int DKPropertySet::Export(DKStream* stream, bool exportXML) const
 	return -1;
 }
 
-DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) const
+DKObject<DKXmlElement> DKPropertySet::Export(bool exportXML, int* numExported) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 
 	int exported = 0;
-	DKObject<DKXMLElement> e = DKObject<DKXMLElement>::New();
+	DKObject<DKXmlElement> e = DKObject<DKXmlElement>::New();
 	e->name = L"DKPropertySet";
 
 	bool exportFailed = false;
 
-	this->properties.EnumerateForward([&](const PropertyMap::Pair& pair, bool* stop)
+	this->dataSet.Pairs().EnumerateForward([&](const PropertyMap::Pair& pair, bool* stop)
 	{
-		DKObject<DKXMLElement> pnode = NULL;
+		DKObject<DKXmlElement> pnode = NULL;
 		if (exportXML)
 		{
-			DKObject<DKXMLElement> value = pair.value.ExportXML();
+			DKObject<DKXmlElement> value = pair.value.ExportXML();
 			if (value != NULL)
 			{
-				pnode = DKObject<DKXMLElement>::New();
+				pnode = DKObject<DKXmlElement>::New();
 				pnode->name = L"Property";
 
-				DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
+				DKObject<DKXmlElement> key = DKObject<DKXmlElement>::New();
 				key->name = L"Key";
-				DKObject<DKXMLPCData> keyPCData = DKObject<DKXMLPCData>::New();
+				DKObject<DKXmlPCData> keyPCData = DKObject<DKXmlPCData>::New();
 				keyPCData->value = pair.key;
-				key->nodes.Add(keyPCData.SafeCast<DKXMLNode>());
+				key->nodes.Add(keyPCData.SafeCast<DKXmlNode>());
 
-				pnode->nodes.Add(key.SafeCast<DKXMLNode>());
-				pnode->nodes.Add(value.SafeCast<DKXMLNode>());
+				pnode->nodes.Add(key.SafeCast<DKXmlNode>());
+				pnode->nodes.Add(value.SafeCast<DKXmlNode>());
 			}
 		}
 		else
@@ -204,26 +204,26 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 			DKBufferStream stream;
 			if (pair.value.ExportStream(&stream))
 			{
-				const DKBuffer* buffer = stream.BufferObject();
+				const DKBuffer* buffer = stream.Buffer();
 				if (buffer && buffer->Length() > 0)
 				{
-					DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Deflate);
+					DKObject<DKBuffer> compressed = buffer->Compress(DKCompressor::Default);
 					if (compressed)
 					{
-						DKObject<DKXMLCData> value = DKObject<DKXMLCData>::New();
+						DKObject<DKXmlCData> value = DKObject<DKXmlCData>::New();
 						if (compressed->Base64Encode(value->value))
 						{
-							pnode = DKObject<DKXMLElement>::New();
+							pnode = DKObject<DKXmlElement>::New();
 							pnode->name = L"Property";
 
-							DKObject<DKXMLElement> key = DKObject<DKXMLElement>::New();
+							DKObject<DKXmlElement> key = DKObject<DKXmlElement>::New();
 							key->name = L"Key";
-							DKObject<DKXMLPCData> keyPCData = DKObject<DKXMLPCData>::New();
+							DKObject<DKXmlPCData> keyPCData = DKObject<DKXmlPCData>::New();
 							keyPCData->value = pair.key;
-							key->nodes.Add(keyPCData.SafeCast<DKXMLNode>());
+							key->nodes.Add(keyPCData.SafeCast<DKXmlNode>());
 
-							pnode->nodes.Add(key.SafeCast<DKXMLNode>());
-							pnode->nodes.Add(value.SafeCast<DKXMLNode>());
+							pnode->nodes.Add(key.SafeCast<DKXmlNode>());
+							pnode->nodes.Add(value.SafeCast<DKXmlNode>());
 						}
 					}
 				}
@@ -231,7 +231,7 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 		}
 		if (pnode != NULL)
 		{
-			e->nodes.Add(pnode.SafeCast<DKXMLNode>());
+			e->nodes.Add(pnode.SafeCast<DKXmlNode>());
 			exported++;
 		}
 		else
@@ -256,14 +256,14 @@ DKObject<DKXMLElement> DKPropertySet::Export(bool exportXML, int* numExported) c
 bool DKPropertySet::HasValue(const DKString& key) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
-	return properties.Find(key) != NULL;
+	return dataSet.Pairs().Find(key) != NULL;
 }
 
 const DKVariant& DKPropertySet::Value(const DKString& key) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 
-	const PropertyMap::Pair* p = properties.Find(key);
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
 	if (p)
 	{
 		return p->value;
@@ -275,14 +275,12 @@ const DKVariant& DKPropertySet::Value(const DKString& key) const
 bool DKPropertySet::SetInitialValue(const DKString& key, const DKVariant& value)
 {
 	lock.Lock();
-	bool result = properties.Insert(key, value);
+	bool result = dataSet.Pairs().Insert(key, value);
 	lock.Unlock();
 
 	if (result)
 	{
-		auto p = insertionCallbacks.Find(key);
-		if (p)
-			p->value.PostInvocation(key, value);
+		CallbackObservers(key, insertionCallbacks, value);
 	}
 
 	return result;
@@ -295,27 +293,58 @@ void DKPropertySet::SetValue(const DKString& key, const DKVariant& value)
 	DKVariant oldValue;
 	bool modification = false;
 
-	const PropertyMap::Pair* p = properties.Find(key);
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
 	if (p)
 	{
 		oldValue = p->value;
 		modification = true;
 	}
-	properties.Update(key, value);
+	dataSet.Pairs().Update(key, value);
 
 	lock.Unlock();
 
 	if (modification)
 	{
-		auto p = modificationCallbacks.Find(key);
-		if (p)
-			p->value.PostInvocation(key, oldValue, value);
+		CallbackObservers(key, modificationCallbacks, oldValue, value);
 	}
 	else
 	{
-		auto p = insertionCallbacks.Find(key);
-		if (p)
-			p->value.PostInvocation(key, value);
+		CallbackObservers(key, insertionCallbacks, value);
+	}
+}
+
+void DKPropertySet::ReplaceValue(const DKString& key, Replacer* replacer)
+{
+	lock.Lock();
+
+	DKVariant oldValue;
+	bool modification = false;
+	bool removed = false;
+
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
+	if (p)
+	{
+		oldValue = p->value;
+		modification = true;
+	}
+	DKVariant value = replacer->Invoke(oldValue);
+	removed = value.ValueType() == DKVariant::TypeUndefined;
+	if (removed)
+		dataSet.Pairs().Remove(key);
+	else
+		dataSet.Pairs().Update(key, value);
+	lock.Unlock();
+
+	if (modification)
+	{
+		if (removed)
+			CallbackObservers(key, deletionCallbacks, oldValue);
+		else
+			CallbackObservers(key, modificationCallbacks, oldValue, value);
+	}
+	else if (!removed)
+	{
+		CallbackObservers(key, insertionCallbacks, value);
 	}
 }
 
@@ -326,59 +355,77 @@ void DKPropertySet::Remove(const DKString& key)
 	DKVariant oldValue;
 	bool deletion = false;
 
-	const PropertyMap::Pair* p = properties.Find(key);
+	const PropertyMap::Pair* p = dataSet.Pairs().Find(key);
 	if (p)
 	{
 		oldValue = p->value;
 		deletion = true;
 
-		properties.Remove(key);
+		dataSet.Pairs().Remove(key);
 	}
 
 	lock.Unlock();
 
 	if (deletion)
 	{
-			auto p = deletionCallbacks.Find(key);
-			if (p)
-				p->value.PostInvocation(key, oldValue);
+		CallbackObservers(key, deletionCallbacks, oldValue);
 	}
 }
 
-size_t DKPropertySet::NumberOfEntries(void) const
+size_t DKPropertySet::NumberOfEntries() const
 {
-	return properties.Count();
+	return dataSet.Pairs().Count();
 }
 
-DKPropertySet& DKPropertySet::DefaultSet(void)
+bool DKPropertySet::LookUpValueForKeyPath(const DKString& path, DKVariant::ConstKeyPathEnumerator* callback) const
 {
-	static DKPropertySet	p;
-	return p;
+	DKCriticalSection<DKSpinLock> guard(lock);
+	return dataSet.FindObjectAtKeyPath(path, callback);
 }
 
-void DKPropertySet::SetCallback(const DKString& key, InsertionCallback* insertion, ModificationCallback* modification, DeletionCallback* deletion, DKRunLoop* runLoop, void* context)
+DKPropertySet& DKPropertySet::DefaultSet()
+{
+	static DKPropertySet ps;
+	return ps;
+}
+
+DKPropertySet& DKPropertySet::SystemConfig()
+{
+	static DKPropertySet ps;
+	return ps;
+}
+
+void DKPropertySet::AddObserver(ObserverContext context,
+								const DKString& key,
+								InsertionCallback* insertion,
+								ModificationCallback* modification,
+								DeletionCallback* deletion)
 {
 	if (context)
 	{
+		DKCriticalSection<DKSpinLock> guard(callbackLock);
+
 		if (insertion)
-			insertionCallbacks.Value(key).SetCallback(insertion, runLoop, context);
+			insertionCallbacks.Value(key).Update(context, insertion);
 		else if (insertionCallbacks.Find(key))
 			insertionCallbacks.Value(key).Remove(context);
 		if (modification)
-			modificationCallbacks.Value(key).SetCallback(modification, runLoop, context);
+			modificationCallbacks.Value(key).Update(context, modification);
 		else if (modificationCallbacks.Find(key))
 			modificationCallbacks.Value(key).Remove(context);
 		if (deletion)
-			deletionCallbacks.Value(key).SetCallback(deletion, runLoop, context);
+			deletionCallbacks.Value(key).Update(context, deletion);
 		else if (deletionCallbacks.Find(key))
 			deletionCallbacks.Value(key).Remove(context);
 	}
 }
 
-void DKPropertySet::RemoveCallback(const DKString& key, void* context)
+void DKPropertySet::RemoveObserver(ObserverContext context, const DKString& key)
 {
 	if (context)
 	{
+		DKCriticalSection<DKSpinLock> guard(callbackLock);
+
 		auto p1 = insertionCallbacks.Find(key);
 		if (p1)
 			p1->value.Remove(context);
@@ -391,19 +438,21 @@ void DKPropertySet::RemoveCallback(const DKString& key, void* context)
 	}
 }
 
-void DKPropertySet::RemoveCallback(void* context)
+void DKPropertySet::RemoveObserver(ObserverContext context)
 {
 	if (context)
 	{
-		insertionCallbacks.EnumerateForward([context](InsertionCallbackMap::Pair& pair)
+		DKCriticalSection<DKSpinLock> guard(callbackLock);
+
+		insertionCallbacks.EnumerateForward([context](decltype(insertionCallbacks)::Pair& pair)
 		{
 			pair.value.Remove(context);
 		});
-		modificationCallbacks.EnumerateForward([context](ModificationCallbackMap::Pair& pair)
+		modificationCallbacks.EnumerateForward([context](decltype(modificationCallbacks)::Pair& pair)
 		{
 			pair.value.Remove(context);
 		});
-		deletionCallbacks.EnumerateForward([context](DeletionCallbackMap::Pair& pair)
+		deletionCallbacks.EnumerateForward([context](decltype(deletionCallbacks)::Pair& pair)
 		{
 			pair.value.Remove(context);
 		});
@@ -415,7 +464,10 @@ void DKPropertySet::EnumerateForward(const Enumerator* e) const
 	if (e)
 	{
 		DKCriticalSection<DKSpinLock> guard(lock);
-		properties.EnumerateForward([e](const PropertyMap::Pair& pair) {e->Invoke(pair.key, pair.value);} );
+		dataSet.Pairs().EnumerateForward([e](const PropertyMap::Pair& pair)
+		{
+			e->Invoke(pair.key, pair.value);
+		});
 	}
 }
 
@@ -424,7 +476,26 @@ void DKPropertySet::EnumerateBackward(const Enumerator* e) const
 	if (e)
 	{
 		DKCriticalSection<DKSpinLock> guard(lock);
-		properties.EnumerateBackward([e](const PropertyMap::Pair& pair) {e->Invoke(pair.key, pair.value);} );
-	}	
+		dataSet.Pairs().EnumerateBackward([e](const PropertyMap::Pair& pair)
+		{
+			e->Invoke(pair.key, pair.value);
+		});
+	}
 }
 
+template <typename T, typename... Args>
+void DKPropertySet::CallbackObservers(const DKString& key, const DKMap<DKString, ObserverMap<DKObject<T>>>& target, Args&&... args) const
+{
+	callbackLock.Lock();
+	DKArray<DKObject<T>> callbacks;
+	if (auto p = target.Find(key); p)
+	{
+		callbacks.Reserve(p->value.Count());
+		p->value.EnumerateForward([&callbacks](const typename decltype(p->value)::Pair& pair) {
+			callbacks.Add(pair.value);
+		});
+	}
+	callbackLock.Unlock();
+	for (T* cb : callbacks)
+		cb->Invoke(key, std::forward<Args>(args)...);
+}

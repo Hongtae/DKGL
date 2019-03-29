@@ -1,36 +1,32 @@
-﻿//
+//
 //  File: DKTypeInfo.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <typeinfo>
+#include "../DKInclude.h"
 #include "DKString.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKTypeInfo
-// a wrapper class for std::type_info
-// You can use std::type_info directly.
-////////////////////////////////////////////////////////////////////////////////
 
 namespace DKFoundation
 {
+	/// a wrapper class for std::type_info
+	/// You can use std::type_info directly.
 	class DKGL_API DKTypeInfo
 	{
 	public:
-		DKTypeInfo(void);
+		DKTypeInfo();
 		DKTypeInfo(const DKTypeInfo& ti);
 		DKTypeInfo(const std::type_info&);
-		~DKTypeInfo(void);
+		~DKTypeInfo();
 
-		bool IsValid(void) const;
+		bool IsValid() const;
 
-		DKString Name(void) const;
+		DKString Name() const;
 		bool Before(const DKTypeInfo& rhs) const;
-		operator const std::type_info& (void) const;
+		operator const std::type_info& () const;
 
 		DKTypeInfo& operator = (const DKTypeInfo& ti);
 

@@ -2,7 +2,7 @@
 //  File: DKCondition.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -16,24 +16,24 @@
 #include "DKCondition.h"
 #include "DKLog.h"
 
-#ifdef _WIN32
 namespace DKFoundation
 {
 	namespace Private
 	{
+#ifdef _WIN32
 		class ConditionImpl
 		{
 		public:
-			ConditionImpl(void)
+			ConditionImpl()
 			{
 				::InitializeCriticalSectionAndSpinCount(&section, 1024);
 				::InitializeConditionVariable(&cond);
 			}
-			~ConditionImpl(void)
+			~ConditionImpl()
 			{
 				::DeleteCriticalSection(&section);
 			}
-			void Wait(void) const
+			void Wait() const
 			{
 				DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock.");
 				::SleepConditionVariableCS(&cond, &section, INFINITE);
@@ -43,24 +43,24 @@ namespace DKFoundation
 				DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock.");
 				return ::SleepConditionVariableCS(&cond, &section, static_cast<DWORD>(t * 1000)) != 0;
 			}
-			void Signal(void) const
+			void Signal() const
 			{
 				::WakeConditionVariable(&cond);
 			}
-			void Broadcast(void) const
+			void Broadcast() const
 			{
 				::WakeAllConditionVariable(&cond);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				::EnterCriticalSection(&section);
 				DKASSERT_DESC_DEBUG(section.RecursionCount == 1, "dead lock detected.");
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				return ::TryEnterCriticalSection(&section) != 0;
 			}
-			void Unlock(void) const
+			void Unlock() const
 			{
 				DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock.");
 				::LeaveCriticalSection(&section);
@@ -68,17 +68,11 @@ namespace DKFoundation
 			mutable CRITICAL_SECTION section;
 			mutable CONDITION_VARIABLE cond;
 		};
-	}
-}
 #else
-namespace DKFoundation
-{
-	namespace Private
-	{
 		class ConditionImpl
 		{
 		public:
-			ConditionImpl(void)
+			ConditionImpl()
 			{
 				pthread_mutexattr_init(&attr);
 #ifdef DKGL_DEBUG_ENABLED
@@ -89,13 +83,13 @@ namespace DKFoundation
 				pthread_mutex_init(&mutex, &attr);
 				pthread_cond_init(&cond, NULL);
 			}
-			~ConditionImpl(void)
+			~ConditionImpl()
 			{
 				pthread_mutex_destroy(&mutex);
 				pthread_cond_destroy(&cond);
 				pthread_mutexattr_destroy(&attr);
 			}
-			void Wait(void) const
+			void Wait() const
 			{
 				pthread_cond_wait(&cond, &mutex);
 			}
@@ -117,15 +111,15 @@ namespace DKFoundation
 				
 				return pthread_cond_timedwait(&cond, &mutex, &ts) == 0;
 			}
-			void Signal(void) const
+			void Signal() const
 			{
 				pthread_cond_signal(&cond);
 			}
-			void Broadcast(void) const
+			void Broadcast() const
 			{
 				pthread_cond_broadcast(&cond);
 			}
-			void Lock(void) const
+			void Lock() const
 			{
 				int ret = pthread_mutex_lock(&mutex);
 				if (ret == EINVAL)
@@ -139,11 +133,11 @@ namespace DKFoundation
 					DKERROR_THROW_DEBUG("dead lock detected.");
 				}
 			}
-			bool TryLock(void) const
+			bool TryLock() const
 			{
 				return pthread_mutex_trylock(&mutex) == 0;
 			}			
-			void Unlock(void) const
+			void Unlock() const
 			{
 				int ret = pthread_mutex_unlock(&mutex);
 				if (ret == EPERM)
@@ -159,26 +153,26 @@ namespace DKFoundation
 			mutable pthread_mutex_t mutex;
 			mutable pthread_cond_t cond;
 		};
+#endif
 	}
 }
-#endif
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
-DKCondition::DKCondition(void)
+DKCondition::DKCondition()
 {
-	impl = reinterpret_cast<void*>(new ConditionImpl);
+	impl = reinterpret_cast<void*>(new ConditionImpl());
 	DKASSERT_DEBUG(impl != NULL);
 }
 
-DKCondition::~DKCondition(void)
+DKCondition::~DKCondition()
 {
 	DKASSERT_DEBUG(impl != NULL);
 	delete reinterpret_cast<ConditionImpl*>(impl);
 }
 
-void DKCondition::Wait(void) const
+void DKCondition::Wait() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<ConditionImpl*>(impl)->Wait();
@@ -190,31 +184,31 @@ bool DKCondition::WaitTimeout(double t) const
 	return reinterpret_cast<ConditionImpl*>(impl)->WaitTimeout(Max(t, 0.0));
 }
 
-void DKCondition::Signal(void) const
+void DKCondition::Signal() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<ConditionImpl*>(impl)->Signal();
 }
 
-void DKCondition::Broadcast(void) const
+void DKCondition::Broadcast() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<ConditionImpl*>(impl)->Broadcast();
 }
 
-void DKCondition::Lock(void) const
+void DKCondition::Lock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<ConditionImpl*>(impl)->Lock();
 }
 
-bool DKCondition::TryLock(void) const
+bool DKCondition::TryLock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	return reinterpret_cast<ConditionImpl*>(impl)->TryLock();
 }
 
-void DKCondition::Unlock(void) const
+void DKCondition::Unlock() const
 {
 	DKASSERT_DEBUG(impl != NULL);
 	reinterpret_cast<ConditionImpl*>(impl)->Unlock();

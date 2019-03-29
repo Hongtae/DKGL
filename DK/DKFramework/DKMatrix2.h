@@ -2,44 +2,39 @@
 //  File: DKMatrix2.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKMatrix2
-// 2x2 matrix
-//
-// Note:
-//   This matrix order is Row-major.
-//   transform of Vector2 V is V' = V * Matrix
-////////////////////////////////////////////////////////////////////////////////
+#include "../DKFoundation.h"
 
 #pragma pack(push, 4)
 namespace DKFramework
 {
 	class DKVector2;
-
+	/// @brief 2x2 matrix
+	///
+	/// @note
+	///   This matrix order is Row-major.
+	///   transform of Vector2 V is V' = V * Matrix
 	class DKGL_API DKMatrix2
 	{
 	public:
-		DKMatrix2(void);
+		DKMatrix2();
 		DKMatrix2(const DKVector2& row1, const DKVector2& row2);
 		DKMatrix2(float e11, float e12, float e21, float e22);
 
-		DKMatrix2& Zero(void);
-		DKMatrix2& Identity(void);
-		bool IsIdentity(void) const;
-		bool IsDiagonal(void) const;
+		DKMatrix2& SetIdentity();
+		bool IsIdentity() const;
+		bool IsDiagonal() const;
 
-		DKMatrix2& Inverse(void);
-		DKMatrix2& Transpose(void);
+		DKMatrix2& Inverse(bool* result = nullptr);
+		DKMatrix2& Transpose();
 		DKMatrix2& Multiply(const DKMatrix2& m);
 
-		float Determinant(void) const;
-		bool GetInverseMatrix(DKMatrix2& matOut, float *pDeterminant) const;
+		float Determinant() const;
+        DKMatrix2 InverseMatrix(bool* result = nullptr, float* determinant = nullptr) const;
+        DKMatrix2 TransposeMatrix() const;
 
 		DKMatrix2 operator * (const DKMatrix2& m) const;
 		DKMatrix2 operator + (const DKMatrix2& m) const;
@@ -56,10 +51,10 @@ namespace DKFramework
 		bool operator == (const DKMatrix2& m) const;
 		bool operator != (const DKMatrix2& m) const;
 
-		DKVector2 Row1(void) const;
-		DKVector2 Row2(void) const;
-		DKVector2 Column1(void) const;
-		DKVector2 Column2(void) const;
+		DKVector2 Row1() const;
+		DKVector2 Row2() const;
+		DKVector2 Column1() const;
+		DKVector2 Column2() const;
 
 		union
 		{

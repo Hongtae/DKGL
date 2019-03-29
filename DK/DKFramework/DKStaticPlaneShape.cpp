@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKStaticPlaneShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKStaticPlaneShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -17,16 +16,16 @@ DKStaticPlaneShape::DKStaticPlaneShape(const DKVector3& planeNormal, float plane
 {
 }
 
-DKStaticPlaneShape::~DKStaticPlaneShape(void)
+DKStaticPlaneShape::~DKStaticPlaneShape()
 {
 }
 
-DKVector3 DKStaticPlaneShape::PlaneNormal(void) const
+DKVector3 DKStaticPlaneShape::PlaneNormal() const
 {
 	return BulletVector3(static_cast<btStaticPlaneShape*>(this->impl)->getPlaneNormal());
 }
 
-float DKStaticPlaneShape::PlaneConstant(void) const
+float DKStaticPlaneShape::PlaneConstant() const
 {
 	return static_cast<btStaticPlaneShape*>(this->impl)->getPlaneConstant();
 }

@@ -2,7 +2,7 @@
 //  File: DKAVLTree.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -10,21 +10,6 @@
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
 #include "DKFunction.h"
-
-////////////////////////////////////////////////////////////////////////////////
-// DKAVLTree
-// AVL(Georgy Adelson-Velsky and Landis') tree template implementation.
-//
-// perform re-balance when both nodes weights diff > 1
-//
-// Note:
-//  value's pointer will not be changed after balancing process.
-//  You can save pointer if you wish.
-//
-//  This class is not thread-safe. You need to use synchronization object
-//  to serialize of access in multi-threaded environment.
-//  You can use DKMap, DKSet instead, they are thread safe.
-//
 
 namespace DKFoundation
 {
@@ -45,17 +30,36 @@ namespace DKFoundation
 		}
 	};
 
+	/// @brief
+	///  AVL(Georgy Adelson-Velsky and Landis') tree template implementation.
+	///
+	///  perform re-balance when both nodes weights diff > 1
+	///
+	/// @note
+	///  value's pointer will not be changed after balancing process.
+	///  You can save pointer if you wish.
+	///
+	/// @note
+	///  This class is not thread-safe. You need to use synchronization object
+	///  to serialize of access in multi-threaded environment.\n
+	///  You can use DKMap, DKSet instead, they are thread safe.
+	///
+	/// @tparam Value element type
+	/// @tparam Comparator element comparison function
+	/// @tparam Replacer element replacement(swap) function
+	/// @tparam Allocator memory allocator
 	template <
-		typename Value,												// value-type
-		typename Comparator = DKTreeItemComparator<Value, Value>,	// value comparison
-		typename Replacer = DKTreeItemReplacer<Value>,				// value replacement
-		typename Allocator = DKMemoryDefaultAllocator				// memory allocator
+		typename Value,
+		typename Comparator = DKTreeItemComparator<Value, Value>,
+		typename Replacer = DKTreeItemReplacer<Value>,
+		typename Allocator = DKMemoryDefaultAllocator
 	>
 	class DKAVLTree
 	{
 		struct Node
 		{
 			Node(const Value& v) : value(v), left(NULL), right(NULL), leftHeight(0), rightHeight(0) {}
+			Node(Value&& v) : value(static_cast<Value&&>(v)), left(NULL), right(NULL), leftHeight(0), rightHeight(0) {}
 
 			Value		value;
 			Node*		left;
@@ -63,11 +67,11 @@ namespace DKFoundation
 			uint16_t	leftHeight;		// left-tree weights
 			uint16_t	rightHeight;	// right-tree weights
 
-			FORCEINLINE uint16_t Height(void) const
+			FORCEINLINE uint16_t Height() const
 			{
 				return leftHeight > rightHeight ? (leftHeight + 1) : (rightHeight + 1);
 			}
-			Node* Duplicate(void) const
+			Node* Duplicate() const
 			{
 				Node* node = new(Allocator::Alloc(sizeof(Node))) Node(value);
 				if (left)
@@ -118,9 +122,9 @@ namespace DKFoundation
 		Comparator		comparator;
 		Replacer		replacer;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(Node); }
+		constexpr static size_t NodeSize()	{ return sizeof(Node); }
 
-		DKAVLTree(void)
+		DKAVLTree()
 			: rootNode(NULL), count(0)
 		{
 		}
@@ -134,8 +138,7 @@ namespace DKFoundation
 			tree.rootNode = NULL;
 			tree.count = 0;
 		}
-		// Copy constructor. accepts same type of class.
-		// templates not works on MSVC (bug?)
+		/// Copy constructor. accepts same type of class.
 		DKAVLTree(const DKAVLTree& tree)
 			: rootNode(NULL), count(0)
 			, comparator(tree.comparator)
@@ -145,11 +148,11 @@ namespace DKFoundation
 				rootNode = tree.rootNode->Duplicate();
 			count = tree.count;
 		}
-		~DKAVLTree(void)
+		~DKAVLTree()
 		{
 			Clear();
 		}
-		// Update: insertion if not exist or overwrite if exists.
+		/// insertion if not exist or overwrite if exists.
 		FORCEINLINE const Value* Update(const Value& v)
 		{
 			if (rootNode)
@@ -166,8 +169,24 @@ namespace DKFoundation
 			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(v);
 			return &(rootNode->value);
 		}
-		// Insert: insert if not exist or fail if exists.
-		//  returns NULL if function failed. (already exists)
+		FORCEINLINE const Value* Update(Value&& v)
+		{
+			if (rootNode)
+			{
+				LocationContext ctxt = {&v};
+				LocateNodeForValue(rootNode, &ctxt);
+				if (ctxt.balancedNode)
+					rootNode = ctxt.balancedNode;
+				else
+					replacer(ctxt.locatedNode->value, v);
+				return &(ctxt.locatedNode->value);
+			}
+			count = 1;
+			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(static_cast<Value&&>(v));
+			return &(rootNode->value);
+		}
+		/// insert if not exist or fail if exists.
+		///  returns NULL if function failed. (already exists)
 		FORCEINLINE const Value* Insert(const Value& v)
 		{
 			if (rootNode)
@@ -186,6 +205,24 @@ namespace DKFoundation
 			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(v);
 			return &(rootNode->value);
 		}
+		FORCEINLINE const Value* Insert(Value&& v)
+		{
+			if (rootNode)
+			{
+				size_t c = this->count;
+				LocationContext ctxt = {&v};
+				LocateNodeForValue(rootNode, &ctxt);
+				if (ctxt.balancedNode)
+					rootNode = ctxt.balancedNode;
+
+				if (this->count != c)	// new item.
+					return &(ctxt.locatedNode->value);
+				return NULL;
+			}
+			count = 1;
+			rootNode = new(Allocator::Alloc(sizeof(Node))) Node(static_cast<Value&&>(v));
+			return &(rootNode->value);
+		}
 		template <typename Key, typename KeyValueComparator>
 		FORCEINLINE void Remove(const Key& k, KeyValueComparator&& comp)
 		{
@@ -201,7 +238,7 @@ namespace DKFoundation
 				}
 			}
 		}
-		FORCEINLINE void Clear(void)
+		FORCEINLINE void Clear()
 		{
 			if (rootNode)
 				DeleteNode(rootNode);
@@ -216,7 +253,7 @@ namespace DKFoundation
 				return &node->value;
 			return NULL;
 		}
-		FORCEINLINE size_t Count(void) const
+		FORCEINLINE size_t Count() const
 		{
 			return count;
 		}
@@ -249,10 +286,10 @@ namespace DKFoundation
 			replacer = tree.replacer;
 			return *this;
 		}
-		// lambda enumerator (VALUE&, bool*)
+		/// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (VALUE&, bool*)");
 
 			if (count > 0)
@@ -264,7 +301,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (VALUE&, bool*)");
 
 			if (count > 0)
@@ -274,10 +311,10 @@ namespace DKFoundation
 				rootNode->EnumerateBackward(func);
 			}
 		}
-		// lambda enumerator bool (const VALUE&, bool*)
+		/// lambda enumerator bool (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (const VALUE&, bool*)");
 
 			if (count > 0)
@@ -289,7 +326,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			static_assert(DKFunctionType<T&&>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
+			static_assert(DKFunctionType<T>::Signature::template CanInvokeWithParameterTypes<const Value&, bool*>(),
 						  "enumerator's parameter is not compatible with (const VALUE&, bool*)");
 
 			if (count > 0)

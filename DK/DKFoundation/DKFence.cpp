@@ -2,7 +2,7 @@
 //  File: DKFence.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKFence.h"
@@ -55,8 +55,7 @@ DKFence::DKFence(const void* p, bool exclusive)
 
 		while (true)
 		{
-			auto p = b.Find(key);
-			if (p)
+			if (auto p = b.Find(key); p)
 			{
 				if (p->value.threadId == tid)
 				{
@@ -76,7 +75,7 @@ DKFence::DKFence(const void* p, bool exclusive)
 	}
 }
 
-DKFence::~DKFence(void)
+DKFence::~DKFence()
 {
 	DKCriticalSection<DKCondition> guard(cond);
 	Bucket& b = buckets[reinterpret_cast<uintptr_t>(key) % BUCKET_SIZE];

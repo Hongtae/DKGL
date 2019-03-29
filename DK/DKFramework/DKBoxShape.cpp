@@ -1,14 +1,13 @@
-﻿//
+//
 //  File: DKBoxShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "Private/BulletUtils.h"
+#include "Private/BulletPhysics.h"
 #include "DKBoxShape.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
@@ -22,11 +21,11 @@ DKBoxShape::DKBoxShape(const DKVector3& v)
 {
 }
 
-DKBoxShape::~DKBoxShape(void)
+DKBoxShape::~DKBoxShape()
 {
 }
 
-DKVector3 DKBoxShape::HalfExtents(void) const
+DKVector3 DKBoxShape::HalfExtents() const
 {
 	btBoxShape* shape = static_cast<btBoxShape*>(this->impl);
 	const btVector3& halfExt = shape->getHalfExtentsWithoutMargin();
@@ -35,7 +34,7 @@ DKVector3 DKBoxShape::HalfExtents(void) const
 	return BulletVector3(halfExt / scale);
 }
 
-DKVector3 DKBoxShape::HalfExtentsWithMargin(void) const
+DKVector3 DKBoxShape::HalfExtentsWithMargin() const
 {
 	btBoxShape* shape = static_cast<btBoxShape*>(this->impl);
 	const btVector3& halfExt = shape->getHalfExtentsWithoutMargin();
@@ -45,12 +44,12 @@ DKVector3 DKBoxShape::HalfExtentsWithMargin(void) const
 	return BulletVector3( halfExt / scale + margin );
 }
 
-DKVector3 DKBoxShape::ScaledHalfExtents(void) const
+DKVector3 DKBoxShape::ScaledHalfExtents() const
 {
 	return BulletVector3(static_cast<btBoxShape*>(this->impl)->getHalfExtentsWithoutMargin());
 }
 
-DKVector3 DKBoxShape::ScaledHalfExtentsWithMargin(void) const
+DKVector3 DKBoxShape::ScaledHalfExtentsWithMargin() const
 {
 	return BulletVector3(static_cast<btBoxShape*>(this->impl)->getHalfExtentsWithMargin());
 }

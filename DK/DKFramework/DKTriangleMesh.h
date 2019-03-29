@@ -2,29 +2,25 @@
 //  File: DKTriangleMesh.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 
 
 #pragma once
-#include "../DKInclude.h"
+#include "../DKFoundation.h"
 #include "DKVector3.h"
 #include "DKTriangle.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKTriangleMesh
-// an abstract class, defines triangle-mesh.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFramework
 {
+	/// @brief triangle mesh interface
 	struct DKTriangleMesh
 	{
-		virtual ~DKTriangleMesh(void) {}
+		virtual ~DKTriangleMesh() {}
 
-		virtual int NumberOfTriangles(void) const = 0;
+		virtual int NumberOfTriangles() const = 0;
 		virtual bool GetTriangleAtIndex(int index, DKTriangle&) const = 0;
 
-		virtual void Lock(void) {}
-		virtual void Unlock(void) {}
+		virtual void Lock() {}
+		virtual void Unlock() {}
 	};
 }

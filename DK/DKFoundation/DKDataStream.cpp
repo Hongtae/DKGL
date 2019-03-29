@@ -2,7 +2,7 @@
 //  File: DKDataStream.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -10,7 +10,7 @@
 
 using namespace DKFoundation;
 
-DKDataStream::DKDataStream(void)
+DKDataStream::DKDataStream()
 	: offset(0)
 {
 }
@@ -27,26 +27,20 @@ DKDataStream::DKDataStream(DKData& d)
 {
 }
 
-DKDataStream::~DKDataStream(void)
+DKDataStream::~DKDataStream()
 {
 }
 
-DKStream::Position DKDataStream::SetPos(Position p)
+DKStream::Position DKDataStream::SetCurrentPosition(Position p)
 {
-	if (this->data)
-	{
-		size_t contentSize = this->data->Length();
-		this->offset = Clamp(p, 0, contentSize);
-	}
+	if (p < TotalLength())
+		this->offset = p;
 	else
-	{
-		this->offset = 0;
-	}
-
+		return PositionError;
 	return this->offset;
 }
 
-DKStream::Position DKDataStream::GetPos(void) const
+DKStream::Position DKDataStream::CurrentPosition() const
 {
 	if (this->data)
 	{
@@ -58,7 +52,7 @@ DKStream::Position DKDataStream::GetPos(void) const
 	return 0;
 }
 
-DKStream::Position DKDataStream::RemainLength(void) const
+DKStream::Position DKDataStream::RemainLength() const
 {
 	if (this->data)
 	{
@@ -70,7 +64,7 @@ DKStream::Position DKDataStream::RemainLength(void) const
 	return 0;
 }
 
-DKStream::Position DKDataStream::TotalLength(void) const
+DKStream::Position DKDataStream::TotalLength() const
 {
 	if (this->data)
 	{
@@ -111,12 +105,12 @@ size_t DKDataStream::Write(const void* p, size_t s)
 	return 0;
 }
 
-DKData* DKDataStream::DataSource(void)
+DKData* DKDataStream::Data()
 {
 	return this->data;
 }
 
-const DKData* DKDataStream::DataSource(void) const
+const DKData* DKDataStream::Data() const
 {
 	return this->data;
 }

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)Build\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediates\$(ProjectName)_$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <PostBuildEvent>
+      <Command>echo Copying Header Files...
+xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
+xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
+xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
+xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
+xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"</Command>
+    </PostBuildEvent>
+    <CustomBuildStep />
+    <PreBuildEvent>
+      <Command>echo Building external libraries...
+MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(Configuration);Platform=$(Platform) /m:$(NUMBER_OF_PROCESSORS) /t:Build Libs\Libs.sln</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src;Libs/Vulkan/include</AdditionalIncludeDirectories>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PreprocessorDefinitions>NOMINMAX;VK_USE_PLATFORM_WIN32_KHR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;zstd.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;zstd.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+  <Target Name="CleanLibs" BeforeTargets="Clean;BeforeClean">
+    <Exec Command="echo Cleaning external libraries..." />
+    <MSBuild Projects="Libs\Libs.sln" Properties="SolutionDir=$(SolutionDir);Configuration=$(Configuration);Platform=$(Platform)" Targets="Clean" />
+  </Target>
+</Project>

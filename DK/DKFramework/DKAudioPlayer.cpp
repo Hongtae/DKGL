@@ -2,17 +2,16 @@
 //  File: DKAudioPlayer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#include "../lib/OpenAL.h"
+#include "Private/OpenAL.h"
 #include "../DKFoundation.h"
 #include "DKAudioPlayer.h"
 #include "DKAudioStream.h"
 #include "DKAudioSource.h"
-#include "DKOpenALContext.h"
+#include "DKAudioDevice.h"
 
-using namespace DKFoundation;
 namespace DKFramework
 {
 	namespace Private
@@ -30,8 +29,8 @@ namespace DKFramework
 				QueueStateBufferFeeding,
 			};
 			typedef DKAudioSource::AudioState AudioState;
-			typedef DKFoundation::DKFunctionSignature<void(void*, size_t, double)> StreamCallback;
-			typedef DKFoundation::DKFunctionSignature<void(int, double)> StateCallback;
+			typedef DKFunctionSignature<void(void*, size_t, double)> StreamCallback;
+			typedef DKFunctionSignature<void(int, double)> StateCallback;
 
 			struct SourceStream
 			{
@@ -63,11 +62,11 @@ class DKAudioPlayer::AudioQueue : public DKSharedInstance<AudioQueue>
 {
 public:
 	enum { MaxBufferCount = 3 };
-	AudioQueue(void) : terminate(false), activeSources(0)
+	AudioQueue() : terminate(false), activeSources(0)
 	{
 		playbackThread = DKThread::Create(DKFunction(this, &AudioQueue::Playback)->Invocation());
 	}
-	~AudioQueue(void)
+	~AudioQueue()
 	{
 		DKASSERT_DEBUG(playbackThread && playbackThread->IsAlive());
 		terminate = true;
@@ -199,11 +198,11 @@ private:
 		ss.source->Stop();
 		ss.source->UnqueueBuffers();
 	}
-	void Playback(void)
+	void Playback()
 	{
 		DKLog("AudioQueue thread initialized.\n");
 
-		DKObject<DKOpenALContext> alContext = DKOpenALContext::SharedInstance();
+		DKObject<DKAudioDevice> alContext = DKAudioDevice::SharedInstance();
 		alContext->Bind();
 
 		playbackCond.Lock();
@@ -243,7 +242,7 @@ private:
 	bool terminate;
 };
 
-DKAudioPlayer::DKAudioPlayer(void)
+DKAudioPlayer::DKAudioPlayer()
 : queue(NULL)
 , source(NULL)
 , stream(0)
@@ -258,7 +257,7 @@ DKAudioPlayer::DKAudioPlayer(void)
 	queue = AudioQueue::SharedInstance();
 }
 
-DKAudioPlayer::~DKAudioPlayer(void)
+DKAudioPlayer::~DKAudioPlayer()
 {
 	if (true)
 	{
@@ -362,7 +361,7 @@ void DKAudioPlayer::PlayLoop(double pos, int loops)
 	}
 }
 
-void DKAudioPlayer::Play(void)
+void DKAudioPlayer::Play()
 {
 	if (this->source && this->stream)
 	{
@@ -401,7 +400,7 @@ void DKAudioPlayer::Play(void)
 	}
 }
 
-void DKAudioPlayer::Stop(void)
+void DKAudioPlayer::Stop()
 {
 	if (this->source && this->stream)
 	{
@@ -424,7 +423,7 @@ void DKAudioPlayer::Stop(void)
 	}
 }
 
-void DKAudioPlayer::Pause(void)
+void DKAudioPlayer::Pause()
 {
 	if (this->source && this->stream)
 	{
@@ -445,38 +444,38 @@ void DKAudioPlayer::Pause(void)
 	}
 }
 
-int DKAudioPlayer::Channels(void) const
+int DKAudioPlayer::Channels() const
 {
 	if (stream)
 		return stream->Channels();
 	return 0;
 }
 
-int DKAudioPlayer::Bits(void) const
+int DKAudioPlayer::Bits() const
 {
 	if (stream)
 		return stream->Bits();
 	return 0;
 }
 
-int DKAudioPlayer::Frequency(void) const
+int DKAudioPlayer::Frequency() const
 {
 	if (stream)
 		return stream->Frequency();
 	return 0;
 }
 
-double DKAudioPlayer::Duration(void) const
+double DKAudioPlayer::Duration() const
 {
 	return duration;
 }
 
-double DKAudioPlayer::TimePosition(void) const
+double DKAudioPlayer::TimePosition() const
 {
 	return timePosition;
 }
 
-DKAudioPlayer::AudioState DKAudioPlayer::State(void) const
+DKAudioPlayer::AudioState DKAudioPlayer::State() const
 {
 	return playerState;
 }
@@ -508,12 +507,12 @@ void DKAudioPlayer::ProcessStream(void *data, size_t size, double time)
 		filter->Invoke(data, size, time);
 }
 
-DKAudioSource* DKAudioPlayer::AudioSource(void)
+DKAudioSource* DKAudioPlayer::AudioSource()
 {
 	return source;
 }
 
-const DKAudioSource* DKAudioPlayer::AudioSource(void) const
+const DKAudioSource* DKAudioPlayer::AudioSource() const
 {
 	return source;
 }
@@ -530,7 +529,7 @@ void DKAudioPlayer::SetBufferingTime(double t)
 	bufferingTime = Max(t, 0.05);
 }
 
-double DKAudioPlayer::BufferingTime(void) const
+double DKAudioPlayer::BufferingTime() const
 {
 	return bufferingTime;
 }

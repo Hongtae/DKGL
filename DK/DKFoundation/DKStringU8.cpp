@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKStringU8.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include <stdlib.h>
@@ -76,12 +76,12 @@ using namespace DKFoundation;
 
 const DKStringU8 DKStringU8::empty = "";
 
-DKStringEncoding DKStringU8::SystemEncoding(void)
+DKStringEncoding DKStringU8::SystemEncoding()
 {
 	return DKStringU8Encoding();
 }
 
-DKStringU8::DKStringU8(void)
+DKStringU8::DKStringU8()
 	: stringData(NULL)
 {
 }
@@ -129,10 +129,10 @@ DKStringU8::DKStringU8(DKUniChar8 c)
 	this->SetValue(&c, 1);
 }
 
-DKStringU8::~DKStringU8(void)
+DKStringU8::~DKStringU8()
 {
 	if (stringData)
-		DKMemoryDefaultAllocator::Free(stringData);
+		DKFree(stringData);
 }
 
 DKStringU8 DKStringU8::Format(const DKUniChar8* fmt, ...)
@@ -211,7 +211,7 @@ DKStringU8& DKStringU8::Append(const DKUniChar8* str, size_t len)
 		size_t totalLen = len1 + len2;
 		if (totalLen > 0)
 		{
-			DKUniChar8* buff = (DKUniChar8*)DKMemoryDefaultAllocator::Alloc(totalLen + 1);
+			DKUniChar8* buff = (DKUniChar8*)DKMalloc(totalLen + 1);
 			DKUniChar8* p = buff;
 			if (len1 > 0)
 			{
@@ -226,7 +226,7 @@ DKStringU8& DKStringU8::Append(const DKUniChar8* str, size_t len)
 			*p = 0;
 
 			if (stringData)
-				DKMemoryDefaultAllocator::Free(stringData);
+				DKFree(stringData);
 			stringData = buff;
 		}
 	}
@@ -253,14 +253,14 @@ DKStringU8& DKStringU8::SetValue(const DKStringU8& str)
 		return *this;
 	
 	if (this->stringData)
-		DKMemoryDefaultAllocator::Free(this->stringData);
+		DKFree(this->stringData);
 	this->stringData = NULL;
 	
 	size_t len = str.Length();
 	if (len > 0)
 	{
 		DKASSERT_DEBUG(str.stringData != NULL);
-		this->stringData = (DKUniChar8*)DKMemoryDefaultAllocator::Alloc(len+1);
+		this->stringData = (DKUniChar8*)DKMalloc(len+1);
 		memcpy(this->stringData, str.stringData, len);
 		this->stringData[len] = 0;
 	}
@@ -288,13 +288,13 @@ DKStringU8& DKStringU8::SetValue(const DKUniChar8* str, size_t len)
 		
 		if (len > 0)
 		{
-			buff = (DKUniChar8*)DKMemoryDefaultAllocator::Alloc(len+1);
+			buff = (DKUniChar8*)DKMalloc(len+1);
 			memcpy(buff, str, len);
 			buff[len] = NULL;
 		}
 	}
 	if (stringData)
-		DKMemoryDefaultAllocator::Free(stringData);
+		DKFree(stringData);
 	stringData = buff;
 	
 	return *this;
@@ -309,7 +309,7 @@ DKStringU8& DKStringU8::SetValue(const DKUniCharW* str, size_t len)
 	else
 	{
 		if (stringData)
-			DKMemoryDefaultAllocator::Free(stringData);
+			DKFree(stringData);
 		stringData = NULL;
 	}
 	return *this;
@@ -328,12 +328,12 @@ DKObject<DKData> DKStringU8::Encode(DKStringEncoding e) const
 	return data.SafeCast<DKData>();
 }
 
-size_t DKStringU8::Length(void) const
+size_t DKStringU8::Length() const
 {
 	return Private::NumberOfCharactersInUTF8(stringData, Bytes());
 }
 
-size_t DKStringU8::Bytes(void) const
+size_t DKStringU8::Bytes() const
 {
 	size_t len = 0;
 	if (stringData)
@@ -370,7 +370,7 @@ DKStringU8& DKStringU8::operator = (DKStringU8&& str)
 	if (this != &str)
 	{
 		if (stringData)
-			DKMemoryDefaultAllocator::Free(stringData);
+			DKFree(stringData);
 
 		stringData = str.stringData;
 		str.stringData = NULL;
@@ -406,7 +406,7 @@ DKStringU8& DKStringU8::operator = (DKUniChar8 ch)
 }
 
 // conversion operators
-DKStringU8::operator const DKUniChar8* (void) const
+DKStringU8::operator const DKUniChar8* () const
 {
 	if (stringData)
 		return stringData;
@@ -467,21 +467,21 @@ DKStringU8 DKStringU8::operator + (DKUniChar8 c) const
 }
 
 // convert numeric values.
-int64_t DKStringU8::ToInteger(void) const
+int64_t DKStringU8::ToInteger() const
 {
 	if (stringData && stringData[0])
 		return strtoll(stringData, 0, 0);
 	return 0LL;
 }
 
-uint64_t DKStringU8::ToUnsignedInteger(void) const
+uint64_t DKStringU8::ToUnsignedInteger() const
 {
 	if (stringData && stringData[0])
 		return strtoull(stringData, 0, 0);
 	return 0ULL;
 }
 
-double DKStringU8::ToRealNumber(void) const
+double DKStringU8::ToRealNumber() const
 {
 	if (stringData && stringData[0])
 		return strtod(stringData, 0);

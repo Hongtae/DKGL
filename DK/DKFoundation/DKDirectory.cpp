@@ -2,7 +2,7 @@
 //  File: DKDirectory.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -24,13 +24,13 @@
 
 using namespace DKFoundation;
 
-DKDirectory::DKDirectory(void)
+DKDirectory::DKDirectory()
 : currentPath(L"")
 , reloadRequired(true)
 {
 }
 
-DKDirectory::~DKDirectory(void)
+DKDirectory::~DKDirectory()
 {
 }
 
@@ -92,7 +92,7 @@ bool DKDirectory::IsDirExist(const DKString& path)
 	return false;
 }
 
-const DKString& DKDirectory::AbsolutePath(void) const
+const DKString& DKDirectory::AbsolutePath() const
 {
 	return currentPath;
 }
@@ -281,7 +281,7 @@ DKObject<DKDirectory> DKDirectory::CreateDir(const DKString& name) const
 	return NULL;
 }
 
-DKObject<DKDirectory> DKDirectory::OpenParent(void) const
+DKObject<DKDirectory> DKDirectory::OpenParent() const
 {
 	if (IsValid())
 	{
@@ -297,12 +297,12 @@ DKObject<DKDirectory> DKDirectory::OpenParent(void) const
 	return NULL;
 }
 
-bool DKDirectory::IsValid(void) const
+bool DKDirectory::IsValid() const
 {
 	return (this && this->IsDirExist(currentPath));
 }
 
-bool DKDirectory::IsReadable(void) const
+bool DKDirectory::IsReadable() const
 {
 	if (currentPath.Length() == 0)
 		return false;
@@ -320,7 +320,7 @@ bool DKDirectory::IsReadable(void) const
 	return false;
 }
 
-bool DKDirectory::IsWritable(void) const
+bool DKDirectory::IsWritable() const
 {
 	if (currentPath.Length() == 0)
 		return false;
@@ -338,7 +338,7 @@ bool DKDirectory::IsWritable(void) const
 	return false;
 }
 
-bool DKDirectory::Reload(void) const
+bool DKDirectory::Reload() const
 {
 	if (currentPath.Length() == 0)
 		return false;
@@ -360,7 +360,7 @@ bool DKDirectory::Reload(void) const
 		DWORD dwLen = GetLogicalDriveStringsW(buffer_len-1, buffer);
 		if (dwLen > buffer_len-1)
 		{
-			DKLog("Error: GetLogicalDriveStringsW failed.\n");
+			DKLogE("Error: GetLogicalDriveStringsW failed.\n");
 			return false;
 		}
 
@@ -384,7 +384,7 @@ bool DKDirectory::Reload(void) const
 		HANDLE hFind = FindFirstFileW((const wchar_t*)str, &findData);
 		if (hFind == INVALID_HANDLE_VALUE)
 		{
-			DKLog("Error: FindFirstFileW failed.\n");
+			DKLogE("Error: FindFirstFileW failed.\n");
 			return false;
 		}
 		else
@@ -405,6 +405,7 @@ bool DKDirectory::Reload(void) const
 				}
 			}
 			while (FindNextFileW(hFind, &findData));
+			FindClose(hFind);
 		}
 	}
 #else
@@ -434,13 +435,13 @@ bool DKDirectory::Reload(void) const
 		}
 		else
 		{
-			DKLog("Error: opendir failed.\n");
+			DKLogE("Error: opendir failed.\n");
 			return false;
 		}
 	}
 	else
 	{
-		DKLog("Error: invalid path (%ls).\n", (const wchar_t*)currentPath);
+		DKLogE("Error: invalid path (%ls).\n", (const wchar_t*)currentPath);
 		return false;
 	}
 #endif
@@ -452,13 +453,13 @@ bool DKDirectory::Reload(void) const
 	return true;
 }
 
-size_t DKDirectory::NumberOfFiles(void) const
+size_t DKDirectory::NumberOfFiles() const
 {
 	this->ReloadIfNeeded();
 	return files.Count();
 }
 
-size_t DKDirectory::NumberOfSubdirs(void) const
+size_t DKDirectory::NumberOfSubdirs() const
 {
 	this->ReloadIfNeeded();
 	return directories.Count();
@@ -506,7 +507,7 @@ bool DKDirectory::DeleteSubDir(const DKString& name) const
 	return false;
 }
 
-void DKDirectory::ReloadIfNeeded(void) const
+void DKDirectory::ReloadIfNeeded() const
 {
 	if (this->reloadRequired)
 		this->Reload();

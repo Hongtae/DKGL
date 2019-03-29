@@ -2,17 +2,15 @@
 //  File: DKLine.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKLine.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-
-DKLine::DKLine(void)
+DKLine::DKLine()
 	: begin(DKVector3(-FLT_MAX, -FLT_MAX, -FLT_MAX))
 	, end(DKVector3(FLT_MAX, FLT_MAX, FLT_MAX))
 {
@@ -34,17 +32,17 @@ DKLine DKLine::operator * (const DKQuaternion& q) const
 	return DKLine(begin * q, end * q);
 }
 
-DKVector3 DKLine::Direction(void) const
+DKVector3 DKLine::Direction() const
 {
 	return (end - begin).Normalize();
 }
 
-float DKLine::Length(void) const
+float DKLine::Length() const
 {
 	return (end - begin).Length();
 }
 
-float DKLine::LengthSq(void) const
+float DKLine::LengthSq() const
 {
 	return (end - begin).LengthSq();
 }

@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKMatrix3.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -11,12 +11,11 @@
 #include "DKVector4.h"
 #include "DKQuaternion.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-const DKMatrix3 DKMatrix3::identity = DKMatrix3().Identity();
+const DKMatrix3 DKMatrix3::identity = DKMatrix3().SetIdentity();
 
-DKMatrix3::DKMatrix3(void)
+DKMatrix3::DKMatrix3()
 	: _11(1), _12(0), _13(0)
 	, _21(0), _22(1), _23(0)
 	, _31(0), _32(0), _33(1)
@@ -39,15 +38,7 @@ DKMatrix3::DKMatrix3(float e11, float e12, float e13,
 {
 }
 
-DKMatrix3& DKMatrix3::Zero(void)
-{
-	m[0][0] = m[0][1] = m[0][2] = 0.0f;
-	m[1][0] = m[1][1] = m[1][2] = 0.0f;
-	m[2][0] = m[2][1] = m[2][2] = 0.0f;
-	return *this;
-}
-
-DKMatrix3& DKMatrix3::Identity(void)
+DKMatrix3& DKMatrix3::SetIdentity()
 {
 	m[0][0] = m[1][1] = m[2][2] = 1.0f;
 	m[0][1] = m[0][2] = 0.0f;
@@ -56,7 +47,7 @@ DKMatrix3& DKMatrix3::Identity(void)
 	return *this;
 }
 
-bool DKMatrix3::IsIdentity(void) const
+bool DKMatrix3::IsIdentity() const
 {
 	return
 		m[0][0] == 1.0f && m[0][1] == 0.0f && m[0][2] == 0.0f &&
@@ -64,7 +55,7 @@ bool DKMatrix3::IsIdentity(void) const
 		m[2][0] == 0.0f && m[2][1] == 0.0f && m[2][2] == 1.0f;
 }
 
-bool DKMatrix3::IsDiagonal(void) const
+bool DKMatrix3::IsDiagonal() const
 {
 	return
 		m[0][1] == 0.0f && m[0][2] == 0.0f &&
@@ -248,7 +239,7 @@ bool DKMatrix3::operator != (const DKMatrix3& m) const
 		this->val[8] != m.val[8];
 }
 
-float DKMatrix3::Determinant(void) const
+float DKMatrix3::Determinant() const
 {
 	return
 		m[0][0]*m[1][1]*m[2][2] +
@@ -259,41 +250,61 @@ float DKMatrix3::Determinant(void) const
 		m[0][2]*m[1][1]*m[2][0];
 }
 
-bool DKMatrix3::GetInverseMatrix(DKMatrix3& matOut, float *pDeterminant) const
+DKMatrix3 DKMatrix3::InverseMatrix(bool* r, float* d) const
 {
-	float det = Determinant();
+    DKMatrix3 mat;
+    float det = Determinant();
+    bool result = false;
 
-	if (det != 0.0f)
-	{
-		if (pDeterminant)
-			*pDeterminant = det;
+    if (det != 0.0f)
+    {
+        float detInv = 1.0f / det;
 
-		float detInv = 1.0f / det;
+        mat.m[0][0] = (m[1][1] * m[2][2] - m[1][2] * m[2][1]) * detInv;
+        mat.m[0][1] = (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * detInv;
+        mat.m[0][2] = (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * detInv;
+        mat.m[1][0] = (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * detInv;
+        mat.m[1][1] = (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * detInv;
+        mat.m[1][2] = (m[0][2] * m[1][0] - m[0][0] * m[1][2]) * detInv;
+        mat.m[2][0] = (m[1][0] * m[2][1] - m[1][1] * m[2][0]) * detInv;
+        mat.m[2][1] = (m[0][1] * m[2][0] - m[0][0] * m[2][1]) * detInv;
+        mat.m[2][2] = (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * detInv;
 
-		matOut.m[0][0] = (m[1][1]*m[2][2] - m[1][2]*m[2][1]) * detInv;
-		matOut.m[0][1] = (m[0][2]*m[2][1] - m[0][1]*m[2][2]) * detInv;
-		matOut.m[0][2] = (m[0][1]*m[1][2] - m[0][2]*m[1][1]) * detInv;
-		matOut.m[1][0] = (m[1][2]*m[2][0] - m[1][0]*m[2][2]) * detInv;
-		matOut.m[1][1] = (m[0][0]*m[2][2] - m[0][2]*m[2][0]) * detInv;
-		matOut.m[1][2] = (m[0][2]*m[1][0] - m[0][0]*m[1][2]) * detInv;
-		matOut.m[2][0] = (m[1][0]*m[2][1] - m[1][1]*m[2][0]) * detInv;
-		matOut.m[2][1] = (m[0][1]*m[2][0] - m[0][0]*m[2][1]) * detInv;
-		matOut.m[2][2] = (m[0][0]*m[1][1] - m[0][1]*m[1][0]) * detInv;
-		return true;
-	}
-	return false;
+        result = true;
+        if (d)
+            *d = det;
+    }
+    else
+        mat.SetIdentity();
+    if (r)
+        *r = result;
+    return mat;
 }
 
-DKMatrix3& DKMatrix3::Inverse(void)
+DKMatrix3 DKMatrix3::TransposeMatrix() const
 {
-	DKMatrix3 mat;
-	mat.Identity();
-	if (GetInverseMatrix(mat, 0))
-		*this = mat;
+    DKMatrix3 mat(*this);
+    return mat.Transpose();
+}
+
+DKMatrix3& DKMatrix3::Inverse(bool* r)
+{
+    bool b;
+    DKMatrix3 mat = this->InverseMatrix(&b, nullptr);
+    if (b)
+        *this = mat;
+    if (r)
+        *r = b;
+    else
+    {
+#ifdef DKGL_DEBUG_ENABLED
+        DKLogE("DKMatrix3::Inverse failed");
+#endif
+    }
 	return *this;
 }
 
-DKMatrix3& DKMatrix3::Transpose(void)
+DKMatrix3& DKMatrix3::Transpose()
 {
 	DKMatrix3 mat(*this);
 	this->m[0][1] = mat.m[1][0];
@@ -320,32 +331,32 @@ DKMatrix3& DKMatrix3::Multiply(const DKMatrix3& m)
 	return *this;
 }
 
-DKVector3 DKMatrix3::Row1(void) const
+DKVector3 DKMatrix3::Row1() const
 {
 	return DKVector3(m[0][0], m[0][1], m[0][2]);
 }
 
-DKVector3 DKMatrix3::Row2(void) const
+DKVector3 DKMatrix3::Row2() const
 {
 	return DKVector3(m[1][0], m[1][1], m[1][2]);
 }
 
-DKVector3 DKMatrix3::Row3(void) const
+DKVector3 DKMatrix3::Row3() const
 {
 	return DKVector3(m[2][0], m[2][1], m[2][2]);
 }
 
-DKVector3 DKMatrix3::Column1(void) const
+DKVector3 DKMatrix3::Column1() const
 {
 	return DKVector3(m[0][0], m[1][0], m[2][0]);
 }
 
-DKVector3 DKMatrix3::Column2(void) const
+DKVector3 DKMatrix3::Column2() const
 {
 	return DKVector3(m[0][1], m[1][1], m[2][1]);
 }
 
-DKVector3 DKMatrix3::Column3(void) const
+DKVector3 DKMatrix3::Column3() const
 {
 	return DKVector3(m[0][2], m[1][2], m[2][2]);
 }

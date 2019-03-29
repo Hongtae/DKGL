@@ -2,12 +2,12 @@
 //  File: DKArray.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
-#include "../DKInclude.h"
 #include <initializer_list>
+#include "../DKInclude.h"
 #include "DKTypeTraits.h"
 #include "DKDummyLock.h"
 #include "DKCriticalSection.h"
@@ -15,46 +15,54 @@
 #include "DKFunction.h"
 #include "DKStaticArray.h"
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// DKArray
-// basic array class.
-//
-// thread-safe for element insertion or deletion.
-// but you may need to lock from outside to modify element directly,
-//
-// ex:
-//	{
-//		typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
-//		array[x] = .... // do something with array[]
-//	}	// auto-unlock by critical-section end
-//
-// NOTE:
-//  When two objects has same VALUE type and different LOCK type,
-//  ONLY Add(), Insert() can be used.
-//
-//  If you have to obtain element's pointer or reference, beware of thread-safety.
-//  CopyValue() function is always thread-safe.
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DKFoundation
 {
+	/// sort function for ascending order
 	template <typename T>
 	bool DKArraySortAscending(const T& lhs, const T& rhs) // ascending, smaller first
 	{
 		return lhs < rhs;
 	}
+	/// sort function for descending order
 	template <typename T>
 	bool DKArraySortDescending(const T& lhs, const T& rhs) // descending, bigger first
 	{
 		return lhs > rhs;
 	}
+	/// DKArray element comparision function
 	template <typename T>
 	bool DKArrayCompareEqual(const T& lhs, const T& rhs) // equal (comparision)
 	{
 		return lhs == rhs;
 	}
 
+	/**
+	 @brief basic array class.
+	 If you put a lock into template parameter LOCK, It provides thread-safe
+	 insertion, deletion.
+	 @note
+	  following types are locking class:
+	  DKSpinLock, DKLock, DKMutex, DKCondition, DKSharedLock \n
+	  You can implement your own locking class, see DKDummyLock.
+	
+	 You can also lock array object from outside to modify element directly.
+	
+	 @code
+		{
+			typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
+			array[x] = .... // do something with array[]
+		}	// auto-unlock by critical-section end
+	 @endcode
+	
+	 @note
+	  When two objects has same VALUE type and different LOCK type,
+	  ONLY Add(), Insert() can be used.
+	
+	 @note
+	  If you have to obtain element's pointer or reference, beware of thread-safety.
+	  CopyValue() function is always thread-safe. 
+	  (assume that template parameter LOCK is not DKDummyLock)
+	 */
 	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKArray
 	{
@@ -66,34 +74,35 @@ namespace DKFoundation
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 		typedef ALLOC					Allocator;
 
-		constexpr static size_t NodeSize(void)	{ return sizeof(VALUE); }
+		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
-		enum : Index { IndexNotFound = (Index)-1 };
+		enum : Index { IndexNotFound = ~Index(0) };
 
-		// lock is public. (object can be locked from outside, to use modify element directly.)
-		// in this case, You can use VALUE* casting-operator and CountNoLock() only.
+		/// lock is public. (object can be locked from outside, to use modify element directly.)
+		/// in this case, You can use VALUE* casting-operator and CountNoLock() only.
 		Lock	lock;
 
-		// implementation for range-based-for-loop.
-		typedef DKArrayRBIterator<DKArray, VALUE&>				RBIterator;
-		typedef DKArrayRBIterator<const DKArray, const VALUE&>	ConstRBIterator;
-		RBIterator begin(void)				{return RBIterator(*this, 0);}
-		ConstRBIterator begin(void) const	{return ConstRBIterator(*this, 0);}
-		RBIterator end(void)				{return RBIterator(*this, this->Count());}
-		ConstRBIterator end(void) const		{return ConstRBIterator(*this, this->Count());}
+		typedef DKArrayRBIterator<DKArray, VALUE&>				RBIterator;					///< implemented for range-based loop
+		typedef DKArrayRBIterator<const DKArray, const VALUE&>	ConstRBIterator;			///< implemented for range-based loop
+		RBIterator begin()				{return RBIterator(*this, 0);}					///< implemented for range-based loop
+		ConstRBIterator begin() const	{return ConstRBIterator(*this, 0);}				///< implemented for range-based loop
+		RBIterator end()				{return RBIterator(*this, this->Count());}		///< implemented for range-based loop
+		ConstRBIterator end() const		{return ConstRBIterator(*this, this->Count());}	///< implemented for range-based loop
 
-		DKArray(void)
+		DKArray()
 			: data(NULL), count(0), capacity(0)
 		{
 		}
 		DKArray(const VALUE* v, size_t c)
 			: data(NULL), count(0), capacity(0)
 		{
+			ReserveNL(c);
 			Add(v, c);
 		}
 		DKArray(const VALUE& v, size_t c)
 			: data(NULL), count(0), capacity(0)
 		{
+			ReserveNL(c);
 			Add(v, c);
 		}
 		DKArray(DKArray&& v)
@@ -109,69 +118,87 @@ namespace DKFoundation
 		DKArray(const DKArray& v)
 			: data(NULL), count(0), capacity(0)
 		{
-			Add(v);
+			CriticalSection guard(v.lock);
+			ReserveNL(v.count);
+			Add((const VALUE*)v, v.count);
+		}
+		template <typename ...Args>
+		DKArray(const DKArray<VALUE, Args...>& v)
+			: data(NULL), count(0), capacity(0)
+		{
+			typename DKArray<VALUE, Args...>::CriticalSection guard(v.lock);
+			ReserveNL(v.count);
+			Add((const VALUE*)v, v.count);
 		}
 		DKArray(std::initializer_list<VALUE> il)
 			: data(NULL), count(0), capacity(0)
 		{
 			if (il.size() > 0)
 			{
-				ReserveItemCapsNL(il.size());
+				ReserveNL(il.size());
 				for (const VALUE& v : il)
 				{
-					new(&data[count]) VALUE(v);
+					new(std::addressof(data[count])) VALUE(v);
 					count++;
 				}
 			}
 		}
-		~DKArray(void)
+		~DKArray()
 		{
 			Clear();
 
 			if (data)
 				Allocator::Free(data);
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return count == 0;
 		}
-		// append other array's elements to tail.
+		/// append other array's elements to tail.
 		template <typename ...Args>
 		Index Add(const DKArray<VALUE, Args...>& value)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
-			return Add((const VALUE*)value, value.Count());
+			return Add((const VALUE*)value, value.count);
 		}
-		// append one item to tail.
+		/// append one item to tail.
 		Index Add(const VALUE& value)
 		{
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(1);
-			new(&data[count]) VALUE(value);
+			new(std::addressof(data[count])) VALUE(value);
 			return count++;
 		}
-		// append 's' length of value to tail.
+		/// move one item into array's tail
+		Index Add(VALUE&& value)
+		{
+			CriticalSection guard(lock);
+			ReserveItemCapsNL(1);
+			new(std::addressof(data[count])) VALUE(static_cast<VALUE&&>(value));
+			return count++;
+		}
+		/// append 's' length of value to tail.
 		Index Add(const VALUE* value, size_t s)
 		{
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(s);
 			for (Index i = 0; i < s; i++)
-				new(&data[count+i]) VALUE(value[i]);
+				new(std::addressof(data[count+i])) VALUE(value[i]);
 			count += s;
 			return count - s;
 		}
-		// append value to tail 's' times. (value x s)
+		/// append value to tail 's' times. (value x s)
 		Index Add(const VALUE& value, size_t s)
 		{
 			CriticalSection guard(lock);
 			ReserveItemCapsNL(s);
 			for (Index i = 0; i < s; i++)
-				new(&data[count+i]) VALUE(value);
+				new(std::addressof(data[count+i])) VALUE(value);
 			count += s;
 			return count - s;
 		}
-		// append initializer-list items to tail.
+		/// append initializer-list items to tail.
 		Index Add(std::initializer_list<VALUE> il)
 		{
 			size_t s = il.size();
@@ -179,19 +206,19 @@ namespace DKFoundation
 			ReserveItemCapsNL(s);
 			for (const VALUE& v : il)
 			{
-				new(&data[count]) VALUE(v);
+				new(std::addressof(data[count])) VALUE(v);
 				count++;
 			}
 			return count - s;
 		}
-		// insert array's elements into position 'pos'.
+		/// insert array's elements into position 'pos'.
 		template <typename ...Args>
 		Index Insert(const DKArray<VALUE, Args...>& value, Index pos)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
-			return Insert((const VALUE*)value, pos);
+			return Insert((const VALUE*)value, value.count, pos);
 		}
-		// insert one value into position 'pos'.
+		/// insert one value into position 'pos'.
 		Index Insert(const VALUE& value, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -199,12 +226,25 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+1], (void*)&data[pos], sizeof(VALUE) * (count - pos));
-			new(&data[pos]) VALUE(value);
+				memmove(std::addressof(data[pos+1]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
+			new(std::addressof(data[pos])) VALUE(value);
 			count++;
 			return pos;
 		}
-		// insert 's' length of value into position 'pos'.
+		/// move one value into position 'pos'.
+		Index Insert(VALUE&& value, Index pos)
+		{
+			CriticalSection guard(lock);
+			ReserveItemCapsNL(1);
+			if (pos > count)
+				pos = count;
+			if (pos < count)
+				memmove(std::addressof(data[pos+1]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
+			new(std::addressof(data[pos])) VALUE(static_cast<VALUE&&>(value));
+			count++;
+			return pos;
+		}
+		/// insert 's' length of value into position 'pos'.
 		Index Insert(const VALUE* value, size_t s, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -212,13 +252,13 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
+				memmove(std::addressof(data[pos+s]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			for (Index i = 0; i < s; i++)
-				new(&data[pos+i]) VALUE(value[i]);
+				new(std::addressof(data[pos+i])) VALUE(value[i]);
 			count += s;
 			return pos;
 		}
-		// insert value 's' times into position 'pos'.
+		/// insert value 's' times into position 'pos'.
 		Index Insert(const VALUE& value, size_t s, Index pos)
 		{
 			CriticalSection guard(lock);
@@ -226,13 +266,13 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
+				memmove(std::addressof(data[pos+s]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			for (Index i = 0; i < s; i++)
-				new(&data[pos+i]) VALUE(value);
+				new(std::addressof(data[pos+i])) VALUE(value);
 			count += s;
 			return pos;
 		}
-		// insert initializer-list into position 'pos'.
+		/// insert initializer-list into position 'pos'.
 		Index Insert(std::initializer_list<VALUE> il, Index pos)
 		{
 			size_t s = il.size();
@@ -241,16 +281,16 @@ namespace DKFoundation
 			if (pos > count)
 				pos = count;
 			if (pos < count)
-				memmove((void*)&data[pos+s], (void*)&data[pos], sizeof(VALUE) * (count - pos));
+				memmove(std::addressof(data[pos+s]), std::addressof(data[pos]), sizeof(VALUE) * (count - pos));
 			for (const VALUE& v : il)
 			{
-				new(&data[pos]) VALUE(v);
+				new(std::addressof(data[pos])) VALUE(v);
 				pos++;
 			}
 			count += s;
 			return pos - s;
 		}
-		// remove one element at pos.
+		/// remove one element at pos.
 		size_t Remove(Index pos)
 		{
 			CriticalSection guard(lock);
@@ -258,12 +298,12 @@ namespace DKFoundation
 			{
 				data[pos].~VALUE();
 				if (count - pos > 1)
-					memmove((void*)&data[pos], (void*)&data[pos+1], sizeof(VALUE) * (count-pos-1));
+					memmove(std::addressof(data[pos]), std::addressof(data[pos+1]), sizeof(VALUE) * (count-pos-1));
 				count--;
 			}
 			return count;
 		}
-		// remove 'c' items at pos. (c = count)
+		/// remove 'c' items at pos. (c = count)
 		size_t Remove(Index pos, size_t c)
 		{
 			CriticalSection guard(lock);
@@ -273,12 +313,12 @@ namespace DKFoundation
 				for (; i < count - pos && i < c; i++)
 					data[pos+i].~VALUE();
 				if (i > 0)
-					memmove((void*)&data[pos], &data[pos+i], sizeof(VALUE) * (count-pos-i));
+					memmove(std::addressof(data[pos]), std::addressof(data[pos+i]), sizeof(VALUE) * (count-pos-i));
 				count -= i;
 			}
 			return count;
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			for (Index i = 0; i < count; i++)
@@ -286,17 +326,17 @@ namespace DKFoundation
 
 			count = 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return count;
 		}
-		size_t Capacity(void) const
+		size_t Capacity() const
 		{
 			CriticalSection guard(lock);
 			return capacity;
 		}
-		void ShrinkToFit(void)
+		void ShrinkToFit()
 		{
 			CriticalSection guard(lock);
 			if (count < capacity)
@@ -332,7 +372,7 @@ namespace DKFoundation
 			{
 				ReserveNL(s);
 				for (Index i = count; i < s; i++)
-					new(&data[i]) VALUE();
+					new(std::addressof(data[i])) VALUE();
 			}
 			count = s;
 		}
@@ -348,7 +388,7 @@ namespace DKFoundation
 			{
 				ReserveNL(s);
 				for (Index i = count; i < s; i++)
-					new(&data[i]) VALUE(val);
+					new(std::addressof(data[i])) VALUE(val);
 			}
 			count = s;
 		}
@@ -381,14 +421,14 @@ namespace DKFoundation
 			DKASSERT_DEBUG(count > index);
 			return data[index];
 		}
-		// To use items directly (You may need lock array.)
-		operator VALUE* (void)
+		/// To use items directly (You may need lock array.)
+		operator VALUE* ()
 		{
 			if (count > 0)
 				return data;
 			return NULL;
 		}
-		operator const VALUE* (void) const
+		operator const VALUE* () const
 		{
 			if (count > 0)
 				return data;
@@ -422,9 +462,10 @@ namespace DKFoundation
 				for (Index i = 0; i < count; i++)
 					data[i].~VALUE();
 
+				count = 0;
 				ReserveNL(value.count);
 				for (Index i = 0; i < value.count; i++)
-					new(&data[i]) VALUE(value.data[i]);
+					new(std::addressof(data[i])) VALUE(value.data[i]);
 				count = value.count;
 			}
 			return *this;
@@ -435,13 +476,13 @@ namespace DKFoundation
 			for (Index i = 0; i < count; i++)
 				data[i].~VALUE();
 
-			size_t s = il.size();
-			ReserveNL(s);
+			count = 0;
+			ReserveNL(il.size());
 			for (const VALUE& v : il)
 			{
-				new(&data[count]) VALUE(v);
+				new(std::addressof(data[count])) VALUE(v);
+				count++;
 			}
-			count = s;
 			return *this;
 		}
 		DKArray operator + (const VALUE& v) const
@@ -532,7 +573,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			if (count > 1 && (start + count) <= this->count)
 			{
-				DKStaticArray<VALUE>(&data[start], count).Sort(cmp);
+				DKStaticArray<VALUE>(std::addressof(data[start]), count).Sort(cmp);
 			}			
 		}
 		template <typename CompareFunc> void Sort(CompareFunc cmp)
@@ -544,16 +585,16 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			if (count > 1 && (start + count) <= this->count)
 			{
-				DKStaticArray<VALUE>(&data[start], count).template Sort<CompareFunc>(cmp);
+				DKStaticArray<VALUE>(std::addressof(data[start]), count).template Sort<CompareFunc>(cmp);
 			}
 		}
-		// EnumerateForward / EnumerateBackward: enumerate all items.
-		// You cannot insert, remove items while enumerating. (container is read-only)
-		// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
-		// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
+		/// EnumerateForward / EnumerateBackward: enumerate all items.
+		/// You cannot insert, remove items while enumerating. (container is read-only)
+		/// enumerator can be lambda or any function type that can receive arguments (VALUE&) or (VALUE&, bool*)
+		/// (VALUE&, bool*) type can cancel iteration by set boolean value to true.
 		template <typename T> void EnumerateForward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
@@ -562,17 +603,17 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator)
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (VALUE&) or (VALUE&,bool*)");
 
 			EnumerateBackward(std::forward<T>(enumerator), typename Func::ParameterNumber());
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) function type.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -581,7 +622,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const VALUE&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const VALUE&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");

@@ -1,8 +1,8 @@
-﻿//
+//
 //  File: DKMatrix4.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -11,12 +11,11 @@
 #include "DKVector4.h"
 #include "DKQuaternion.h"
 
-using namespace DKFoundation;
 using namespace DKFramework;
 
-const DKMatrix4 DKMatrix4::identity = DKMatrix4().Identity();
+const DKMatrix4 DKMatrix4::identity = DKMatrix4().SetIdentity();
 
-DKMatrix4::DKMatrix4(void)
+DKMatrix4::DKMatrix4()
 	: _11(1), _12(0), _13(0), _14(0)
 	, _21(0), _22(1), _23(0), _24(0)
 	, _31(0), _32(0), _33(1), _34(0)
@@ -43,16 +42,7 @@ DKMatrix4::DKMatrix4(float e11, float e12, float e13, float e14,
 {
 }
 
-DKMatrix4& DKMatrix4::Zero(void)
-{
-	m[0][0] = m[0][1] = m[0][2] = m[0][3] = 0.0f;
-	m[1][0] = m[1][1] = m[1][2] = m[1][3] = 0.0f;
-	m[2][0] = m[2][1] = m[2][2] = m[2][3] = 0.0f;
-	m[3][0] = m[3][1] = m[3][2] = m[3][3] = 0.0f;
-	return *this;
-}
-
-DKMatrix4& DKMatrix4::Identity(void)
+DKMatrix4& DKMatrix4::SetIdentity()
 {
 	m[0][0] = m[1][1] = m[2][2] = m[3][3] = 1.0f;
 	m[0][1] = m[0][2] = m[0][3] = m[1][0] = 0.0f;
@@ -61,7 +51,7 @@ DKMatrix4& DKMatrix4::Identity(void)
 	return *this;
 }
 
-bool DKMatrix4::IsIdentity(void) const
+bool DKMatrix4::IsIdentity() const
 {
 	return
 		m[0][0] == 1.0f && m[0][1] == 0.0f && m[0][2] == 0.0f && m[0][3] == 0.0f &&
@@ -70,7 +60,7 @@ bool DKMatrix4::IsIdentity(void) const
 		m[3][0] == 0.0f && m[3][1] == 0.0f && m[3][2] == 0.0f && m[3][3] == 1.0f;
 }
 
-bool DKMatrix4::IsDiagonal(void) const
+bool DKMatrix4::IsDiagonal() const
 {
 	return
 		m[0][1] == 0.0f && m[0][2] == 0.0f && m[0][3] == 0.0f &&
@@ -339,7 +329,7 @@ bool DKMatrix4::operator != (const DKMatrix4& m) const
 		this->val[0xf] != m.val[0xf];
 }
 
-float DKMatrix4::Determinant(void) const
+float DKMatrix4::Determinant() const
 {
 	return
 		m[0][3] * m[1][2] * m[2][1] * m[3][0]-m[0][2] * m[1][3] * m[2][1] * m[3][0]-m[0][3] * m[1][1] * m[2][2] * m[3][0]+m[0][1] * m[1][3] * m[2][2] * m[3][0]+
@@ -350,47 +340,68 @@ float DKMatrix4::Determinant(void) const
 		m[0][2] * m[1][0] * m[2][1] * m[3][3]-m[0][0] * m[1][2] * m[2][1] * m[3][3]-m[0][1] * m[1][0] * m[2][2] * m[3][3]+m[0][0] * m[1][1] * m[2][2] * m[3][3];
 }
 
-bool DKMatrix4::GetInverseMatrix(DKMatrix4& matOut, float *pDeterminant) const
+DKMatrix4 DKMatrix4::InverseMatrix(bool* r, float* d) const
 {
+    DKMatrix4 mat;
 	float det = Determinant();
+    bool result = false;
 
 	if (det != 0.0f)
 	{
-		if (pDeterminant)
-			*pDeterminant = det;
+		mat.m[0][0] = (m[1][2]*m[2][3]*m[3][1] - m[1][3]*m[2][2]*m[3][1] + m[1][3]*m[2][1]*m[3][2] - m[1][1]*m[2][3]*m[3][2] - m[1][2]*m[2][1]*m[3][3] + m[1][1]*m[2][2]*m[3][3]) / det;
+		mat.m[0][1] = (m[0][3]*m[2][2]*m[3][1] - m[0][2]*m[2][3]*m[3][1] - m[0][3]*m[2][1]*m[3][2] + m[0][1]*m[2][3]*m[3][2] + m[0][2]*m[2][1]*m[3][3] - m[0][1]*m[2][2]*m[3][3]) / det;
+		mat.m[0][2] = (m[0][2]*m[1][3]*m[3][1] - m[0][3]*m[1][2]*m[3][1] + m[0][3]*m[1][1]*m[3][2] - m[0][1]*m[1][3]*m[3][2] - m[0][2]*m[1][1]*m[3][3] + m[0][1]*m[1][2]*m[3][3]) / det;
+		mat.m[0][3] = (m[0][3]*m[1][2]*m[2][1] - m[0][2]*m[1][3]*m[2][1] - m[0][3]*m[1][1]*m[2][2] + m[0][1]*m[1][3]*m[2][2] + m[0][2]*m[1][1]*m[2][3] - m[0][1]*m[1][2]*m[2][3]) / det;
+		mat.m[1][0] = (m[1][3]*m[2][2]*m[3][0] - m[1][2]*m[2][3]*m[3][0] - m[1][3]*m[2][0]*m[3][2] + m[1][0]*m[2][3]*m[3][2] + m[1][2]*m[2][0]*m[3][3] - m[1][0]*m[2][2]*m[3][3]) / det;
+		mat.m[1][1] = (m[0][2]*m[2][3]*m[3][0] - m[0][3]*m[2][2]*m[3][0] + m[0][3]*m[2][0]*m[3][2] - m[0][0]*m[2][3]*m[3][2] - m[0][2]*m[2][0]*m[3][3] + m[0][0]*m[2][2]*m[3][3]) / det;
+		mat.m[1][2] = (m[0][3]*m[1][2]*m[3][0] - m[0][2]*m[1][3]*m[3][0] - m[0][3]*m[1][0]*m[3][2] + m[0][0]*m[1][3]*m[3][2] + m[0][2]*m[1][0]*m[3][3] - m[0][0]*m[1][2]*m[3][3]) / det;
+		mat.m[1][3] = (m[0][2]*m[1][3]*m[2][0] - m[0][3]*m[1][2]*m[2][0] + m[0][3]*m[1][0]*m[2][2] - m[0][0]*m[1][3]*m[2][2] - m[0][2]*m[1][0]*m[2][3] + m[0][0]*m[1][2]*m[2][3]) / det;
+		mat.m[2][0] = (m[1][1]*m[2][3]*m[3][0] - m[1][3]*m[2][1]*m[3][0] + m[1][3]*m[2][0]*m[3][1] - m[1][0]*m[2][3]*m[3][1] - m[1][1]*m[2][0]*m[3][3] + m[1][0]*m[2][1]*m[3][3]) / det;
+		mat.m[2][1] = (m[0][3]*m[2][1]*m[3][0] - m[0][1]*m[2][3]*m[3][0] - m[0][3]*m[2][0]*m[3][1] + m[0][0]*m[2][3]*m[3][1] + m[0][1]*m[2][0]*m[3][3] - m[0][0]*m[2][1]*m[3][3]) / det;
+		mat.m[2][2] = (m[0][1]*m[1][3]*m[3][0] - m[0][3]*m[1][1]*m[3][0] + m[0][3]*m[1][0]*m[3][1] - m[0][0]*m[1][3]*m[3][1] - m[0][1]*m[1][0]*m[3][3] + m[0][0]*m[1][1]*m[3][3]) / det;
+		mat.m[2][3] = (m[0][3]*m[1][1]*m[2][0] - m[0][1]*m[1][3]*m[2][0] - m[0][3]*m[1][0]*m[2][1] + m[0][0]*m[1][3]*m[2][1] + m[0][1]*m[1][0]*m[2][3] - m[0][0]*m[1][1]*m[2][3]) / det;
+		mat.m[3][0] = (m[1][2]*m[2][1]*m[3][0] - m[1][1]*m[2][2]*m[3][0] - m[1][2]*m[2][0]*m[3][1] + m[1][0]*m[2][2]*m[3][1] + m[1][1]*m[2][0]*m[3][2] - m[1][0]*m[2][1]*m[3][2]) / det;
+		mat.m[3][1] = (m[0][1]*m[2][2]*m[3][0] - m[0][2]*m[2][1]*m[3][0] + m[0][2]*m[2][0]*m[3][1] - m[0][0]*m[2][2]*m[3][1] - m[0][1]*m[2][0]*m[3][2] + m[0][0]*m[2][1]*m[3][2]) / det;
+		mat.m[3][2] = (m[0][2]*m[1][1]*m[3][0] - m[0][1]*m[1][2]*m[3][0] - m[0][2]*m[1][0]*m[3][1] + m[0][0]*m[1][2]*m[3][1] + m[0][1]*m[1][0]*m[3][2] - m[0][0]*m[1][1]*m[3][2]) / det;
+		mat.m[3][3] = (m[0][1]*m[1][2]*m[2][0] - m[0][2]*m[1][1]*m[2][0] + m[0][2]*m[1][0]*m[2][1] - m[0][0]*m[1][2]*m[2][1] - m[0][1]*m[1][0]*m[2][2] + m[0][0]*m[1][1]*m[2][2]) / det;
 
-		matOut.m[0][0] = (m[1][2]*m[2][3]*m[3][1] - m[1][3]*m[2][2]*m[3][1] + m[1][3]*m[2][1]*m[3][2] - m[1][1]*m[2][3]*m[3][2] - m[1][2]*m[2][1]*m[3][3] + m[1][1]*m[2][2]*m[3][3]) / det;
-		matOut.m[0][1] = (m[0][3]*m[2][2]*m[3][1] - m[0][2]*m[2][3]*m[3][1] - m[0][3]*m[2][1]*m[3][2] + m[0][1]*m[2][3]*m[3][2] + m[0][2]*m[2][1]*m[3][3] - m[0][1]*m[2][2]*m[3][3]) / det;
-		matOut.m[0][2] = (m[0][2]*m[1][3]*m[3][1] - m[0][3]*m[1][2]*m[3][1] + m[0][3]*m[1][1]*m[3][2] - m[0][1]*m[1][3]*m[3][2] - m[0][2]*m[1][1]*m[3][3] + m[0][1]*m[1][2]*m[3][3]) / det;
-		matOut.m[0][3] = (m[0][3]*m[1][2]*m[2][1] - m[0][2]*m[1][3]*m[2][1] - m[0][3]*m[1][1]*m[2][2] + m[0][1]*m[1][3]*m[2][2] + m[0][2]*m[1][1]*m[2][3] - m[0][1]*m[1][2]*m[2][3]) / det;
-		matOut.m[1][0] = (m[1][3]*m[2][2]*m[3][0] - m[1][2]*m[2][3]*m[3][0] - m[1][3]*m[2][0]*m[3][2] + m[1][0]*m[2][3]*m[3][2] + m[1][2]*m[2][0]*m[3][3] - m[1][0]*m[2][2]*m[3][3]) / det;
-		matOut.m[1][1] = (m[0][2]*m[2][3]*m[3][0] - m[0][3]*m[2][2]*m[3][0] + m[0][3]*m[2][0]*m[3][2] - m[0][0]*m[2][3]*m[3][2] - m[0][2]*m[2][0]*m[3][3] + m[0][0]*m[2][2]*m[3][3]) / det;
-		matOut.m[1][2] = (m[0][3]*m[1][2]*m[3][0] - m[0][2]*m[1][3]*m[3][0] - m[0][3]*m[1][0]*m[3][2] + m[0][0]*m[1][3]*m[3][2] + m[0][2]*m[1][0]*m[3][3] - m[0][0]*m[1][2]*m[3][3]) / det;
-		matOut.m[1][3] = (m[0][2]*m[1][3]*m[2][0] - m[0][3]*m[1][2]*m[2][0] + m[0][3]*m[1][0]*m[2][2] - m[0][0]*m[1][3]*m[2][2] - m[0][2]*m[1][0]*m[2][3] + m[0][0]*m[1][2]*m[2][3]) / det;
-		matOut.m[2][0] = (m[1][1]*m[2][3]*m[3][0] - m[1][3]*m[2][1]*m[3][0] + m[1][3]*m[2][0]*m[3][1] - m[1][0]*m[2][3]*m[3][1] - m[1][1]*m[2][0]*m[3][3] + m[1][0]*m[2][1]*m[3][3]) / det;
-		matOut.m[2][1] = (m[0][3]*m[2][1]*m[3][0] - m[0][1]*m[2][3]*m[3][0] - m[0][3]*m[2][0]*m[3][1] + m[0][0]*m[2][3]*m[3][1] + m[0][1]*m[2][0]*m[3][3] - m[0][0]*m[2][1]*m[3][3]) / det;
-		matOut.m[2][2] = (m[0][1]*m[1][3]*m[3][0] - m[0][3]*m[1][1]*m[3][0] + m[0][3]*m[1][0]*m[3][1] - m[0][0]*m[1][3]*m[3][1] - m[0][1]*m[1][0]*m[3][3] + m[0][0]*m[1][1]*m[3][3]) / det;
-		matOut.m[2][3] = (m[0][3]*m[1][1]*m[2][0] - m[0][1]*m[1][3]*m[2][0] - m[0][3]*m[1][0]*m[2][1] + m[0][0]*m[1][3]*m[2][1] + m[0][1]*m[1][0]*m[2][3] - m[0][0]*m[1][1]*m[2][3]) / det;
-		matOut.m[3][0] = (m[1][2]*m[2][1]*m[3][0] - m[1][1]*m[2][2]*m[3][0] - m[1][2]*m[2][0]*m[3][1] + m[1][0]*m[2][2]*m[3][1] + m[1][1]*m[2][0]*m[3][2] - m[1][0]*m[2][1]*m[3][2]) / det;
-		matOut.m[3][1] = (m[0][1]*m[2][2]*m[3][0] - m[0][2]*m[2][1]*m[3][0] + m[0][2]*m[2][0]*m[3][1] - m[0][0]*m[2][2]*m[3][1] - m[0][1]*m[2][0]*m[3][2] + m[0][0]*m[2][1]*m[3][2]) / det;
-		matOut.m[3][2] = (m[0][2]*m[1][1]*m[3][0] - m[0][1]*m[1][2]*m[3][0] - m[0][2]*m[1][0]*m[3][1] + m[0][0]*m[1][2]*m[3][1] + m[0][1]*m[1][0]*m[3][2] - m[0][0]*m[1][1]*m[3][2]) / det;
-		matOut.m[3][3] = (m[0][1]*m[1][2]*m[2][0] - m[0][2]*m[1][1]*m[2][0] + m[0][2]*m[1][0]*m[2][1] - m[0][0]*m[1][2]*m[2][1] - m[0][1]*m[1][0]*m[2][2] + m[0][0]*m[1][1]*m[2][2]) / det;
-
-		return true;
+        result = true;
+        if (d)
+            *d = det;
 	}
-	return false;
-}
+    else
+        mat.SetIdentity();
 
-DKMatrix4& DKMatrix4::Inverse(void)
+    if (r)
+        *r = result;
+
+    return mat;
+}
+    
+DKMatrix4 DKMatrix4::TransposeMatrix() const
 {
-	DKMatrix4 mat;
-	mat.Identity();
-	if (GetInverseMatrix(mat, 0))
-		*this = mat;
-	return *this;
+    DKMatrix4 mat(*this);
+    return mat.Transpose();
 }
 
-DKMatrix4& DKMatrix4::Transpose(void)
+DKMatrix4& DKMatrix4::Inverse(bool* r)
+{
+    bool b;
+    DKMatrix4 mat = this->InverseMatrix(&b, nullptr);
+    if (b)
+        *this = mat;
+    if (r)
+        *r = b;
+    else
+    {
+#ifdef DKGL_DEBUG_ENABLED
+        DKLogE("DKMatrix4::Inverse failed");
+#endif
+    }
+    return *this;
+}
+
+DKMatrix4& DKMatrix4::Transpose()
 {
 	DKMatrix4 mat(*this);
 
@@ -435,42 +446,42 @@ DKMatrix4& DKMatrix4::Multiply(const DKMatrix4& m)
 	return *this;
 }
 
-DKVector4 DKMatrix4::Row1(void) const
+DKVector4 DKMatrix4::Row1() const
 {
 	return DKVector4(m[0][0], m[0][1], m[0][2], m[0][3]);
 }
 
-DKVector4 DKMatrix4::Row2(void) const
+DKVector4 DKMatrix4::Row2() const
 {
 	return DKVector4(m[1][0], m[1][1], m[1][2], m[1][3]);
 }
 
-DKVector4 DKMatrix4::Row3(void) const
+DKVector4 DKMatrix4::Row3() const
 {
 	return DKVector4(m[2][0], m[2][1], m[2][2], m[2][3]);
 }
 
-DKVector4 DKMatrix4::Row4(void) const
+DKVector4 DKMatrix4::Row4() const
 {
 	return DKVector4(m[3][0], m[3][1], m[3][2], m[3][3]);
 }
 
-DKVector4 DKMatrix4::Column1(void) const
+DKVector4 DKMatrix4::Column1() const
 {
 	return DKVector4(m[0][0], m[1][0], m[2][0], m[3][0]);
 }
 
-DKVector4 DKMatrix4::Column2(void) const
+DKVector4 DKMatrix4::Column2() const
 {
 	return DKVector4(m[0][1], m[1][1], m[2][1], m[3][1]);
 }
 
-DKVector4 DKMatrix4::Column3(void) const
+DKVector4 DKMatrix4::Column3() const
 {
 	return DKVector4(m[0][2], m[1][2], m[2][2], m[3][2]);
 }
 
-DKVector4 DKMatrix4::Column4(void) const
+DKVector4 DKMatrix4::Column4() const
 {
 	return DKVector4(m[0][3], m[1][3], m[2][3], m[3][3]);
 }

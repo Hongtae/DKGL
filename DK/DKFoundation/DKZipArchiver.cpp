@@ -1,12 +1,16 @@
-﻿//
+//
 //  File: DKZipArchiver.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
-#define DKGL_EXTDEPS_ZLIB
-#include "../lib/ExtDeps.h"
+#include "../Libs/zlib/zlib.h"
+#include "../Libs/zlib/contrib/minizip/zip.h"
+#include "../Libs/zlib/contrib/minizip/unzip.h"
+#ifdef _WIN32
+#include "../Libs/zlib/contrib/minizip/iowin32.h"
+#endif
 #include "DKZipArchiver.h"
 #include "DKCriticalSection.h"
 #include "DKString.h"
@@ -14,12 +18,12 @@
 
 using namespace DKFoundation;
 
-DKZipArchiver::DKZipArchiver(void)
+DKZipArchiver::DKZipArchiver()
 : zipHandle(NULL)
 {
 }
 
-DKZipArchiver::~DKZipArchiver(void)
+DKZipArchiver::~DKZipArchiver()
 {
 	if (zipHandle)
 	{
@@ -74,7 +78,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 		if (filenameUTF8.Bytes() == 0)
 			return false;
 
-		DKStream::Position streamOffset = stream->GetPos();
+		DKStream::Position streamOffset = stream->CurrentPosition();
 		uint64_t streamLength = stream->RemainLength();
 
 		char* buffer[0x4000];
@@ -85,7 +89,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 		uLong crcForCrypting = 0;
 		if (password)
 		{
-			stream->SetPos(streamOffset);
+			stream->SetCurrentPosition(streamOffset);
 
 			streamLength = 0;
 
@@ -97,7 +101,7 @@ bool DKZipArchiver::Write(const DKString& file, DKStream* stream, int compressio
 				crcForCrypting = crc32(crcForCrypting, (const Bytef *)buffer, read);
 				streamLength += read;
 			}
-			stream->SetPos(streamOffset);
+			stream->SetCurrentPosition(streamOffset);
 		}
 
 		int zip64 = (streamLength >= 0xffffffff) ? 1 : 0;

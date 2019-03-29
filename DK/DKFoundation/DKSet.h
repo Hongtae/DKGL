@@ -2,7 +2,7 @@
 //  File: DKSet.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -13,23 +13,9 @@
 #include "DKCriticalSection.h"
 #include "DKTypeTraits.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKSet
-// a set container class. using AVLTree (see DKAVLTree.h) internally.
-//
-// VALUE: value type
-// LOCK: thread-lock type
-// COMPARE: value comparison function
-//
-// Note:
-//   if two set objects has same VALUE but different LOCK, COMPARE,
-//   Union(), Intersect() are available only.
-////////////////////////////////////////////////////////////////////////////////
-
-
 namespace DKFoundation
 {
-	// compare Value, Value
+	/// DKSet value comparator
 	template <typename Value> struct DKSetComparator
 	{
 		int operator () (const Value& lhs, const Value& rhs) const
@@ -42,6 +28,12 @@ namespace DKFoundation
 		}
 	};
 
+	/// @brief A set container class. using AVLTree (see DKAVLTree.h) internally.
+	///
+	/// @tparam Value		value type
+	/// @tparam Lock		thread-lock type
+	/// @tparam Comparator	element comparison function
+	/// @tparam Allocator	element allocator
 	template <
 		typename Value,
 		typename Lock = DKDummyLock,
@@ -55,15 +47,15 @@ namespace DKFoundation
 		typedef DKTypeTraits<Value>			ValueTraits;
 		typedef DKAVLTree<Value, Comparator, DKTreeItemReplacer<Value>, Allocator>	Container;
 
-		constexpr static size_t NodeSize(void) { return Container::NodeSize(); }
+		constexpr static size_t NodeSize() { return Container::NodeSize(); }
 
 		Comparator& comparator;
 
-		// lock is public. allow object being locked manually.
-		// ContainsNoLock(), CountNoLock() is available when object has been locked.
+		/// lock is public. allow object being locked manually.
+		/// ContainsNoLock(), CountNoLock() is available when object has been locked.
 		Lock	lock;
 
-		DKSet(void)
+		DKSet()
 			: comparator(container.comparator)
 		{
 		}
@@ -72,8 +64,7 @@ namespace DKFoundation
 			, comparator(container.comparator)
 		{
 		}
-		// copy constructor. same type of DKSet object are allowed only.
-		// template constructor not works on MSVC
+		/// copy constructor. same type of DKSet object are allowed only.
 		DKSet(const DKSet& s)
 			: comparator(container.comparator)
 		{
@@ -92,13 +83,18 @@ namespace DKFoundation
 			for (const Value& v : il)
 				container.Insert(v);
 		}
-		~DKSet(void)
+		~DKSet()
 		{
 		}
 		void Insert(const Value& v)
 		{
 			CriticalSection guard(lock);
 			container.Insert(v);
+		}
+		void Insert(Value&& v)
+		{
+			CriticalSection guard(lock);
+			container.Insert(static_cast<Value&&>(v));
 		}
 		void Insert(const Value* v, size_t n)
 		{
@@ -112,12 +108,16 @@ namespace DKFoundation
 			for (const Value& v : il)
 				container.Insert(v);
 		}
+		/// import other set.
+		/// The other set can have different template parameters except Value.
 		template <typename ...Args> DKSet& Union(const DKSet<Value, Args...>& s)
 		{
 			CriticalSection guard(lock);
 			s.EnumerateForward([this](const Value& val) { container.Insert(val); });
 			return *this;
 		}
+		/// exclude elements in other set 
+		/// The other set can have different template parameters except Value
 		template <typename ...Args> DKSet& Intersect(const DKSet<Value, Args...>& s)
 		{
 			CriticalSection guard(lock);
@@ -134,7 +134,7 @@ namespace DKFoundation
 			CriticalSection guard(lock);
 			container.Remove(il);
 		}
-		void Clear(void)
+		void Clear()
 		{
 			CriticalSection guard(lock);
 			container.Clear();
@@ -148,17 +148,17 @@ namespace DKFoundation
 		{
 			return container.Find(v) != NULL;
 		}
-		bool IsEmpty(void) const
+		bool IsEmpty() const
 		{
 			CriticalSection guard(lock);
 			return container.Count() == 0;
 		}
-		size_t Count(void) const
+		size_t Count() const
 		{
 			CriticalSection guard(lock);
 			return container.Count();
 		}
-		size_t CountNoLock(void) const
+		size_t CountNoLock() const
 		{
 			return container.Count();
 		}
@@ -190,11 +190,11 @@ namespace DKFoundation
 				container.Insert(v);
 			return *this;
 		}
-		// lambda enumerator (const VALUE&) or (const VALUE&, bool*) are allowed.
-		// enumerating objects are READ-ONLY. values cannot be modified.
+		/// lambda enumerator (const VALUE&) or (const VALUE&, bool*) are allowed.
+		/// enumerating objects are READ-ONLY. values cannot be modified.
 		template <typename T> void EnumerateForward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const Value&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const Value&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");
@@ -203,7 +203,7 @@ namespace DKFoundation
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator) const
 		{
-			using Func = typename DKFunctionType<T&&>::Signature;
+			using Func = typename DKFunctionType<T>::Signature;
 			enum {ValidatePType1 = Func::template CanInvokeWithParameterTypes<const Value&>()};
 			enum {ValidatePType2 = Func::template CanInvokeWithParameterTypes<const Value&, bool*>()};
 			static_assert(ValidatePType1 || ValidatePType2, "enumerator's parameter is not compatible with (const VALUE&) or (const VALUE&,bool*)");

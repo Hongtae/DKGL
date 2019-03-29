@@ -2,7 +2,7 @@
 //  File: DKWindow.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -11,188 +11,259 @@
 #include "DKRect.h"
 #include "DKVKey.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// DKWindow
-// System GUI window class. You can create GUI window with this class.
-// You can also create proxy-window for window that was created by
-// other frameworks or libraries.
-//
-// Call Create() to create your own window, or call CreateProxy() to proxy-
-// window for wrapping DKWindow to existing window.
-// A proxy window is very useful to use small part of application, which need
-// to render with DK,
-//
-// origin of content coordinates is lower left corner.
-//
-// Note:
-//   This class using system provided GUI system window.
-//   Microsoft Windows, Apple Mac OS X, Apple iOS are supported by default.
-//   You need to implement window interface class to use on other platforms.
-//   (see DKFramework/Interface/DKWindowInterface.h)
-//
-////////////////////////////////////////////////////////////////////////////////
-
-
 namespace DKFramework
 {
 	class DKWindowInterface;
+	/// @brief System GUI window class.
+	///
+	/// You can create GUI window with this class.
+	/// You can also create proxy-window for window that was created by
+	/// other frameworks or libraries.
+	///
+	/// Call Create() to create your own window, or call CreateProxy() to proxy-
+	/// window for wrapping DKWindow to existing window.
+	/// A proxy window is very useful to use small part of application, which need
+	/// to render with DK,
+	///
+	/// origin of content coordinates is lower left corner.
+	///
+	/// @note
+	///   This class using system provided GUI system window.
+	///   Microsoft Windows, Apple macOS, Apple iOS are supported by default.
+	///   You need to implement window interface class to use on other platforms.
+	///   (see DKFramework/Interface/DKWindowInterface.h)
+	/// @see DKWindowInterface
 	class DKGL_API DKWindow
 	{
 	public:
-		DKWindow(void);
-		~DKWindow(void);
+		DKWindow();
+		~DKWindow();
 
-		enum Style : int // Window style
+		/// Window Style
+		enum Style : uint32_t
 		{
 			StyleTitle = 1,
 			StyleCloseButton = 1 << 1,
 			StyleMinimizeButton = 1 << 2,
 			StyleMaximizeButton = 1 << 3,
 			StyleResizableBorder = 1 << 4,
-			StyleAcceptFileDrop = 1 << 8,
-			StyleGeneralWindow = 0xff,	// all above without StyleAcceptFileDrop
+			StyleAutoResize = 1 << 5,	///< resize on rotate or DPI change, etc.
+			StyleGenericWindow = 0xff,	///< includes all but StyleAcceptFileDrop
+			StyleAcceptFileDrop = 1 << 8, ///< enables file drag & drop
 		};
 
-		enum EventMouse // mouse event
+		/// Mouse, (Multi) Touch, Table Stylus pen event.
+		struct MouseEvent
 		{
-			EventMouseNothing = 0,
-			EventMouseDown,
-			EventMouseUp,
-			EventMouseMove,
-			EventMouseWheel,
+			enum Type
+			{
+				ButtonDown = 0,
+				ButtonUp,
+				Move,
+				Wheel,
+				Pointing,
+			};
+			enum Device
+			{
+				GenericMouse = 0,
+				Stylus,
+				Touch,
+				Unknown,
+			};
+			Type type;
+			Device device;
+			int deviceId;
+			int buttonId;
+			DKPoint location;	///< location in window
+			DKVector2 delta;
+			float pressure;		///< for stylus-pen
+			float tilt;///< radian value of stylus-pen and screen angle. 0 is parallel, PI/2 is perpendicular to the surface.
 		};
-		enum EventKeyboard  // keyboard event
+
+		/// Keyboard and text event.
+		struct KeyboardEvent
 		{
-			EventKeyboardNothing = 0,
-			EventKeyboardDown,
-			EventKeyboardUp,
-			EventKeyboardTextInput,
-			EventKeyboardTextInputCandidate, // text composition in progress
+			enum Type
+			{
+				KeyDown = 0,
+				KeyUp,
+				TextInput,
+				TextComposition, ///< text composition in progress
+			};
+			Type type;
+			int deviceId;
+			DKVirtualKey key;
+			DKString text;
 		};
-		enum EventWindow // window event
+
+		/// Window event, reposition, resize etc.
+		struct WindowEvent
 		{
-			EventWindowCreated = 0,
-			EventWindowClosed,
-			EventWindowHidden,
-			EventWindowShown,
-			EventWindowActivated,
-			EventWindowInactivated,
-			EventWindowMinimized,
-			EventWindowMoved,				
-			EventWindowResized,			
-			EventWindowUpdate,
+			enum Type
+			{
+				WindowCreated = 0,	///< To receive this event, you must start the window event system asynchronously using 'DKEventLoop'.
+				WindowClosed,
+				WindowHidden,
+				WindowShown,
+				WindowActivated,
+				WindowInactivated,
+				WindowMinimized,
+				WindowMoved,
+				WindowResized,
+				WindowUpdate,
+			};
+			Type type;
+			DKRect windowRect;	///< on parent space coords (can be screen space)
+			DKRect contentRect;	///< on parent space coords (can be screen space)
+			double contentScaleFactor;
 		};
+
 		// function or function object type for event handlers.
-		typedef void WindowProc(EventWindow, DKSize, DKPoint);
-		typedef void KeyboardProc(EventKeyboard, int, DKVirtualKey, DKFoundation::DKString);
-		typedef void MouseProc(EventMouse, int, int, DKPoint, DKVector2);
+		typedef void WindowProc(const WindowEvent&); ///< Windoe event handler function type
+		typedef void KeyboardProc(const KeyboardEvent&); ///< Keyboard event handler function type
+		typedef void MouseProc(const MouseEvent&); ///< Mouse event handler function type
 
-		typedef DKFoundation::DKFunctionSignature<WindowProc> WindowEventHandler;
-		typedef DKFoundation::DKFunctionSignature<KeyboardProc> KeyboardEventHandler;
-		typedef DKFoundation::DKFunctionSignature<MouseProc> MouseEventHandler;
+		typedef DKFunctionSignature<WindowProc> WindowEventHandler;
+		typedef DKFunctionSignature<KeyboardProc> KeyboardEventHandler;
+		typedef DKFunctionSignature<MouseProc> MouseEventHandler;
 
-		// Window Callback
-		// Callback function is required for some events that cannot be
-		// processed asynchronously.
+		/// drag and drop (files only)
+		enum DraggingState 
+		{
+			DraggingEntered = 0,
+			DraggingUpdated,
+			DraggingExited,
+			DraggingDropped,
+		};
+		/// drag and drop operation
+		enum DragOperation
+		{
+			DragOperationNone = 0,	///< drag & drop not allowed
+			DragOperationCopy,		///< Inform the user that a copy operation will be performed.
+			DragOperationMove,		///< Inform the user that a move operation will be performed.
+			DragOperationLink,		///< Inform the user that a link operation will be performed.
+		};
+
+		/// @brief Window Callback
+		/// @details Callback function is required for some events that cannot be
+		/// processed asynchronously.
 		struct WindowCallback
 		{
-			template <typename T> using Function = DKFoundation::DKObject<DKFoundation::DKFunctionSignature<T>>;
-			using StringArray = DKFoundation::DKArray<DKFoundation::DKString>;
-
-			Function<void (DKWindow*, const DKPoint&, const StringArray&)> filesDropped;
+			template <typename T> using Function = DKObject<DKFunctionSignature<T>>;
+			using DragOperationCallback = Function<DragOperation (DKWindow*, DraggingState, const DKPoint&, const DKStringArray&)>;
+			DragOperationCallback draggingFeedback;
 			Function<DKSize (DKWindow*)> contentMinSize;
 			Function<DKSize (DKWindow*)> contentMaxSize;
 			Function<bool (DKWindow*)> closeRequest;
 		};
 
-		// Create window.
-		// if origin is undefinedOrigin, then using OS default value.
-		// if contentSize is smaller than 1, then using OS default value.
-		static const DKPoint undefinedOrigin;
-		static DKFoundation::DKObject<DKWindow> Create(const DKFoundation::DKString& title,		// window title
-													   const DKSize& contentSize,				// content size (system coordinates)
-													   const DKPoint& origin = undefinedOrigin,	// window origin (system coordinates)
-													   int style = StyleGeneralWindow,			// window style
-													   const WindowCallback& cb = WindowCallback());
-		// Create proxy window. (can be used to interface of existing window)
-		static DKFoundation::DKObject<DKWindow> CreateProxy(void* systemHandle);
-		void UpdateProxy(void);							// update proxy window status
-		bool IsProxy(void) const;
+		/// Create window with system default size, position and hidden state.
+		/// @param name Window title
+		/// @param style Window style, see DKWindow::Style
+		/// @param eventLoop Event-loop to notify window events asynchronously.
+		///                  If you specify NULL, all event handlers are invoked directly.
+		/// @param cb Window callback
+		static DKObject<DKWindow> Create(const DKString& name,
+										 uint32_t style = StyleGenericWindow,
+										 DKEventLoop* eventLoop = NULL,
+										 const WindowCallback& cb = WindowCallback());
+		/// Create proxy window. (can be used to interface of existing window)
+		/// You have to post all events manually.
+		/// @param systemHandle HWND for Win32, NSView for macOS, UIView subclass for iOS
+		/// @note
+		///  on iOS systemHandle should be UIView subclass object.
+		///  [UIView layerClass] should return CAMetalLayer, otherwise
+		///  function will fail.
+		static DKObject<DKWindow> CreateProxy(void* systemHandle);
+		void UpdateProxy();							///< update proxy window status
+		bool IsProxy() const;
 		void SetCallback(const WindowCallback& cb);
-		const WindowCallback& Callback(void) const;
+		const WindowCallback& Callback() const;
 
-		void Close(void);
-		void Show(void);
-		void Hide(void);
-		void Activate(void);
-		void Minimize(void);
+		void Close();
+		void Show();
+		void Hide();
+		void Activate();
+		void Minimize();
 		void Resize(const DKSize&);
 		void Resize(const DKSize&, const DKPoint&);
 		void SetOrigin(const DKPoint&);
-		void SetTitle(const DKFoundation::DKString&);
-		DKFoundation::DKString Title(void) const;
+		void SetTitle(const DKString&);
+		DKString Title() const;
 
-		// add event handler.
-		// (a event that can be processed asynchronously, and dont need to response)
-		void AddObserver(void* context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*, DKFoundation::DKRunLoop*);
-		void RemoveObserver(void* context);
+		/// Add event handler.
+		/// (a event that can be processed asynchronously, and dont need to response)
+		using EventHandlerContext = const void*;
+		void AddEventHandler(EventHandlerContext context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*);
+		/// Removes the event handler and any associated pending events.
+		void RemoveEventHandler(EventHandlerContext context);
 
 		// control keyboard state
 		// Keyboard has two states: raw-key input mode, text composition mode.
 		bool IsTextInputEnabled(int deviceId) const;
-		void SetTextInputEnabled(int deviceId, bool enabled);
+		void SetTextInputEnabled(int deviceId, bool enabled); ///< change keyboard for text input mode
 		bool KeyState(int deviceId, const DKVirtualKey& k) const;
 		void SetKeyState(int deviceId, const DKVirtualKey& k, bool down);
 		void ResetKeyState(int deviceId);
-		void ResetKeyStateForAllDevices(void);
-		static DKFoundation::DKString GetVKName(DKVirtualKey lKey); // get key name for debugging
+		void ResetKeyStateForAllDevices();
+		static DKString GetVKName(DKVirtualKey lKey); ///< get key name for debugging
 
 		// control mouse state
 		void ShowMouse(int deviceId, bool bShow);
-		void HoldMouse(int deviceId, bool bHold); // hold position, but still receiving delta.
+		void HoldMouse(int deviceId, bool bHold); ///< hold position, but still receiving delta.
 		bool IsMouseVisible(int deviceId) const;
 		bool IsMouseHeld(int deviceId) const;
 		DKPoint MousePosition(int deviceId) const;
 		void SetMousePosition(int deviceId, const DKPoint& pt);
 
 		// window state
-		DKPoint Origin(void) const;				// window's origin (OS coords unit)
-		DKSize ContentSize(void) const;			// content size (OS coords unit)
-		double ContentScaleFactor(void) const;	// content unit, pixel ratio
+		DKRect WindowRect() const;			///< window's rect (OS coords unit)
+		DKRect ContentRect() const;			///< content rect on window (OS coords unit)
+		double ContentScaleFactor() const;	///< content unit scale, pixel ratio
 
-		bool IsVisible(void) const					{return visible;}
-		bool IsActive(void) const					{return activated;}
-		bool IsValid(void) const;
+		bool IsVisible() const	{ return visible; }
+		bool IsActive() const	{ return activated; }
+		bool IsValid() const;
 
-		// platform handle:
-		// HWD for Win32, NSView/NSWindow for Cocoa, UIView for CocoaTouch.
-		void* PlatformHandle(void) const;
+		/// HWD for Win32, NSView for Cocoa, UIView for CocoaTouch.
+		/// On macOS/iOS, You can reuse view (NSView/UIView).
+		/// You can detach from window (NSWindow/UIWindow) and attach to other window.
+		void* PlatformHandle() const;
 
 		// call event handler manually.
-		void PostMouseEvent(EventMouse type, int deviceId, int buttonId, const DKPoint& pos, const DKVector2& delta, bool sync = false);
-		void PostKeyboardEvent(EventKeyboard type, int deviceId, DKVirtualKey key, const DKFoundation::DKString& textInput, bool sync = false);
-		void PostWindowEvent(EventWindow type, const DKSize& contentSize, const DKPoint& windowOrigin, bool sync = false);
+		void PostMouseEvent(const MouseEvent&);	///< call mouse event handlers manually
+		void PostKeyboardEvent(const KeyboardEvent&); ///< call keyboard event handlers manually
+		void PostWindowEvent(const WindowEvent&); ///< call window event handlers manually
 
 	private:
-		DKFoundation::DKCallback<WindowProc, void*, DKFoundation::DKSpinLock>		windowEventHandlers;
-		DKFoundation::DKCallback<KeyboardProc, void*, DKFoundation::DKSpinLock>		keyboardEventHandlers;
-		DKFoundation::DKCallback<MouseProc, void*, DKFoundation::DKSpinLock>		mouseEventHandlers;
+		DKSpinLock handlerLock;
+		DKMap<EventHandlerContext, DKObject<WindowEventHandler>> windowEventHandlers;
+		DKMap<EventHandlerContext, DKObject<KeyboardEventHandler>> keyboardEventHandlers;
+		DKMap<EventHandlerContext, DKObject<MouseEventHandler>> mouseEventHandlers;
+		struct PendingEvent
+		{
+			EventHandlerContext context;
+			DKObject<DKEventLoop::PendingState> state;
+		};
+		DKArray<PendingEvent> pendingEvents; // valid only if user's EventLoop have been provided.
+		void ClearCompletedEvents(); // cleanup completed events
 
 		struct KeyboardState
 		{
-			bool textInputEnabled;  // keyboard input state (key input or text input)
 			unsigned char keyStateBits[DKVK_MAXVALUE / 8 + 1]; // save raw-key state (1:down, 0:up)
 		};
-		mutable DKFoundation::DKMap<int, KeyboardState>		keyboardStateMap;
+		mutable DKMap<int, KeyboardState>		keyboardStateMap;
 		KeyboardState& GetKeyboardState(int deviceId) const;	// Get key states without lock
-		DKFoundation::DKSpinLock keyboardLock;
+		DKSpinLock stateLock;
 
-		DKPoint origin;			// window's origin (including border, system coordinates)
-		DKSize contentSize;		// content size
+		DKRect windowRect;		// window's origin, size (including border, system coordinates)
+		DKRect contentRect;		// content origin, size in window space (or parent view space)
 		bool activated;			// true if window is activated
 		bool visible;
 
+		DKObject<DKEventLoop> eventLoop;
 		WindowCallback callback;
 		DKWindowInterface*	impl;
+		friend class DKWindowInterface;
 	};
 }
