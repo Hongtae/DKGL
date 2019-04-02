@@ -2,7 +2,7 @@
 //  File: AudioStreamFLAC.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2010-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2010-2019 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -13,153 +13,149 @@
 
 using namespace DKFramework;
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		struct FLAC_Context
-		{
-			FLAC_Context() : decoder(NULL), stream(NULL), totalSamples(0), sampleNumber(0), sampleRate(0), channels(0), bps(0) {}
-			FLAC__StreamDecoder* decoder;
-			DKObject<DKStream> stream;
+    struct FLAC_Context
+    {
+        FLAC_Context() : decoder(NULL), stream(NULL), totalSamples(0), sampleNumber(0), sampleRate(0), channels(0), bps(0) {}
+        FLAC__StreamDecoder* decoder;
+        DKObject<DKStream> stream;
 
-			FLAC__uint64 totalSamples;
-			FLAC__uint64 sampleNumber;
-			unsigned int sampleRate;
-			unsigned int channels;
-			unsigned int bps;
+        FLAC__uint64 totalSamples;
+        FLAC__uint64 sampleNumber;
+        unsigned int sampleRate;
+        unsigned int channels;
+        unsigned int bps;
 
-			DKArray<FLAC__int32> buffer;
-		};
+        DKArray<FLAC__int32> buffer;
+    };
 
-		FLAC__StreamDecoderReadStatus FLAC_Read(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], size_t *bytes, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			if (ctxt->stream)
-			{
-				if (*bytes > 0)
-				{
-					*bytes = ctxt->stream->Read(buffer, *bytes);
-					if (*bytes == (size_t)-1)
-						return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
-					else if (*bytes == 0)
-						return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
-					else
-						return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
-				}
-			}
-			return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
-		}
+    FLAC__StreamDecoderReadStatus FLAC_Read(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], size_t *bytes, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        if (ctxt->stream)
+        {
+            if (*bytes > 0)
+            {
+                *bytes = ctxt->stream->Read(buffer, *bytes);
+                if (*bytes == (size_t)-1)
+                return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
+                else if (*bytes == 0)
+                return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
+                else
+                return FLAC__STREAM_DECODER_READ_STATUS_CONTINUE;
+            }
+        }
+        return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
+    }
 
-		FLAC__StreamDecoderSeekStatus FLAC_Seek(const FLAC__StreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			if (ctxt->stream)
-			{
-				if (ctxt->stream->IsSeekable())
-				{
-					DKStream::Position pos = ctxt->stream->SetCurrentPosition(absolute_byte_offset);
-					if (pos == absolute_byte_offset)
-						return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
-					return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
-				}
-				return FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED;
-			}
-			return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
-		}
+    FLAC__StreamDecoderSeekStatus FLAC_Seek(const FLAC__StreamDecoder *decoder, FLAC__uint64 absolute_byte_offset, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        if (ctxt->stream)
+        {
+            if (ctxt->stream->IsSeekable())
+            {
+                DKStream::Position pos = ctxt->stream->SetCurrentPosition(absolute_byte_offset);
+                if (pos == absolute_byte_offset)
+                return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
+                return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
+            }
+            return FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED;
+        }
+        return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;
+    }
 
-		FLAC__StreamDecoderTellStatus FLAC_Tell(const FLAC__StreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			if (ctxt->stream)
-			{
-				if (ctxt->stream->IsSeekable())
-				{
-					*absolute_byte_offset = (FLAC__uint64)ctxt->stream->CurrentPosition();
-					return FLAC__STREAM_DECODER_TELL_STATUS_OK;
-				}
-				return FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED;
-			}
-			return FLAC__STREAM_DECODER_TELL_STATUS_ERROR;
-		}
+    FLAC__StreamDecoderTellStatus FLAC_Tell(const FLAC__StreamDecoder *decoder, FLAC__uint64 *absolute_byte_offset, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        if (ctxt->stream)
+        {
+            if (ctxt->stream->IsSeekable())
+            {
+                *absolute_byte_offset = (FLAC__uint64)ctxt->stream->CurrentPosition();
+                return FLAC__STREAM_DECODER_TELL_STATUS_OK;
+            }
+            return FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED;
+        }
+        return FLAC__STREAM_DECODER_TELL_STATUS_ERROR;
+    }
 
-		FLAC__StreamDecoderLengthStatus FLAC_Length(const FLAC__StreamDecoder *decoder, FLAC__uint64 *stream_length, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			if (ctxt->stream)
-			{
-				if (ctxt->stream->IsSeekable())
-				{
-					*stream_length = (FLAC__uint64)ctxt->stream->TotalLength();
-					return FLAC__STREAM_DECODER_LENGTH_STATUS_OK;
-				}
-				return FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED;
-			}
-			return FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR;
-		}
+    FLAC__StreamDecoderLengthStatus FLAC_Length(const FLAC__StreamDecoder *decoder, FLAC__uint64 *stream_length, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        if (ctxt->stream)
+        {
+            if (ctxt->stream->IsSeekable())
+            {
+                *stream_length = (FLAC__uint64)ctxt->stream->TotalLength();
+                return FLAC__STREAM_DECODER_LENGTH_STATUS_OK;
+            }
+            return FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED;
+        }
+        return FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR;
+    }
 
-		FLAC__bool FLAC_IsEOF(const FLAC__StreamDecoder *decoder, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			if (ctxt->stream)
-			{
-				return (ctxt->stream->RemainLength() > 0) ? false : true;
-			}
-			return false;
-		}
+    FLAC__bool FLAC_IsEOF(const FLAC__StreamDecoder *decoder, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        if (ctxt->stream)
+        {
+            return (ctxt->stream->RemainLength() > 0) ? false : true;
+        }
+        return false;
+    }
 
-		FLAC__StreamDecoderWriteStatus FLAC_Write(const FLAC__StreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 *const buffer[], void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			if (ctxt->channels == frame->header.channels && ctxt->bps == frame->header.bits_per_sample && ctxt->sampleRate == frame->header.sample_rate)
-			{
-				// add to audio buffer.
-				size_t blockSize = frame->header.blocksize;
-				size_t buffSize = ctxt->buffer.Count();
+    FLAC__StreamDecoderWriteStatus FLAC_Write(const FLAC__StreamDecoder *decoder, const FLAC__Frame *frame, const FLAC__int32 *const buffer[], void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        if (ctxt->channels == frame->header.channels && ctxt->bps == frame->header.bits_per_sample && ctxt->sampleRate == frame->header.sample_rate)
+        {
+            // add to audio buffer.
+            size_t blockSize = frame->header.blocksize;
+            size_t buffSize = ctxt->buffer.Count();
 
-				ctxt->sampleNumber = frame->header.number.sample_number;
-				ctxt->buffer.Reserve(buffSize + (blockSize * frame->header.channels));
-				for (unsigned int i = 0; i < frame->header.blocksize; ++i)
-				{
-					for (unsigned int ch = 0; ch < frame->header.channels; ++ch)
-					{
-						ctxt->buffer.Add(buffer[ch][i]);
-					}
-				}
-				return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
-			}
-			return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
-		}
+            ctxt->sampleNumber = frame->header.number.sample_number;
+            ctxt->buffer.Reserve(buffSize + (blockSize * frame->header.channels));
+            for (unsigned int i = 0; i < frame->header.blocksize; ++i)
+            {
+                for (unsigned int ch = 0; ch < frame->header.channels; ++ch)
+                {
+                    ctxt->buffer.Add(buffer[ch][i]);
+                }
+            }
+            return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
+        }
+        return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
+    }
 
-		void FLAC_Metadata(const FLAC__StreamDecoder *decoder, const FLAC__StreamMetadata *metadata, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			DKASSERT_DEBUG(ctxt != NULL);
+    void FLAC_Metadata(const FLAC__StreamDecoder *decoder, const FLAC__StreamMetadata *metadata, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        DKASSERT_DEBUG(ctxt != NULL);
 
-			DKLog("FLAC_Metadata (contxt:%p):%s \n", ctxt, FLAC__MetadataTypeString[metadata->type]);
+        DKLog("FLAC_Metadata (contxt:%p):%s \n", ctxt, FLAC__MetadataTypeString[metadata->type]);
 
-			if(metadata->type == FLAC__METADATA_TYPE_STREAMINFO)
-			{
-				ctxt->totalSamples = metadata->data.stream_info.total_samples;
-				ctxt->sampleRate = metadata->data.stream_info.sample_rate;
-				ctxt->channels = metadata->data.stream_info.channels;
-				ctxt->bps = metadata->data.stream_info.bits_per_sample;
+        if(metadata->type == FLAC__METADATA_TYPE_STREAMINFO)
+        {
+            ctxt->totalSamples = metadata->data.stream_info.total_samples;
+            ctxt->sampleRate = metadata->data.stream_info.sample_rate;
+            ctxt->channels = metadata->data.stream_info.channels;
+            ctxt->bps = metadata->data.stream_info.bits_per_sample;
 
-				DKLog("FLAC_Metadata total samples: %llu\n", ctxt->totalSamples);
-				DKLog("FLAC_Metadata sample rate: %u Hz\n", ctxt->sampleRate);
-				DKLog("FLAC_Metadata channels: %u\n", ctxt->channels);
-				DKLog("FLAC_Metadata bits per sample: %u\n", ctxt->bps);
-			}
-		}
+            DKLog("FLAC_Metadata total samples: %llu\n", ctxt->totalSamples);
+            DKLog("FLAC_Metadata sample rate: %u Hz\n", ctxt->sampleRate);
+            DKLog("FLAC_Metadata channels: %u\n", ctxt->channels);
+            DKLog("FLAC_Metadata bits per sample: %u\n", ctxt->bps);
+        }
+    }
 
-		void FLAC_Error(const FLAC__StreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data)
-		{
-			FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
-			DKLog("FLAC_Error (context:%p): %s\n", ctxt, FLAC__StreamDecoderErrorStatusString[status]);
-		}
-	}
+    void FLAC_Error(const FLAC__StreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data)
+    {
+        FLAC_Context* ctxt = reinterpret_cast<FLAC_Context*>(client_data);
+        DKLog("FLAC_Error (context:%p): %s\n", ctxt, FLAC__StreamDecoderErrorStatusString[status]);
+    }
 }
-
 
 using namespace DKFramework;
 using namespace DKFramework::Private;

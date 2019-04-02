@@ -10,53 +10,47 @@
 #include <stdlib.h>
 #include "DKRationalNumber.h"
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
-		namespace
-		{
-			// Greatest common divisor (unsigned integer)
-			template <typename T> inline T GCDUInt(T a, T b)
-			{
-				const T zero = static_cast<T>(0);
+    // Greatest common divisor (unsigned integer)
+    template <typename T> inline T GCDUInt(T a, T b)
+    {
+        const T zero = static_cast<T>(0);
 
-				while (true)
-				{
-					if (a == zero)
-						return b;
-					b %= a;
-					if (b == zero)
-						return a;
-					a %= b;
-				}
-				return 1;
-			}
-			// Greatest common divisor (signed integer)
-			template <typename T> inline T GCDSInt(T a, T b)
-			{
-				const T zero = static_cast<T>(0);
-				const T r = GCDUInt(a, b);
-				return (r < zero) ? -r : r;
-			}
-			// Least common multiple (unsigned integer)
-			template <typename T> inline T LCMUInt(T a, T b)
-			{
-				const T zero = static_cast<T>(0);
-				const T tmp = GCDUInt(a, b);
+        while (true)
+        {
+            if (a == zero)
+            return b;
+            b %= a;
+            if (b == zero)
+            return a;
+            a %= b;
+        }
+        return 1;
+    }
+    // Greatest common divisor (signed integer)
+    template <typename T> inline T GCDSInt(T a, T b)
+    {
+        const T zero = static_cast<T>(0);
+        const T r = GCDUInt(a, b);
+        return (r < zero) ? -r : r;
+    }
+    // Least common multiple (unsigned integer)
+    template <typename T> inline T LCMUInt(T a, T b)
+    {
+        const T zero = static_cast<T>(0);
+        const T tmp = GCDUInt(a, b);
 
-				return (tmp != zero) ? (a / tmp * b) : zero;
-			}
-			// Least common multiple (signed integer)
-			template <typename T> inline T LCMSInt(T a, T b)
-			{
-				const T zero = static_cast<T>(0);
-				const T r = LCMUInt(a, b);
-				
-				return (r < zero) ? -r : r;
-			}
-		}
-	}
+        return (tmp != zero) ? (a / tmp * b) : zero;
+    }
+    // Least common multiple (signed integer)
+    template <typename T> inline T LCMSInt(T a, T b)
+    {
+        const T zero = static_cast<T>(0);
+        const T r = LCMUInt(a, b);
+
+        return (r < zero) ? -r : r;
+    }
 }
 
 using namespace DKFoundation;

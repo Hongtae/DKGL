@@ -2,7 +2,7 @@
 //  File: AudioStreamWave.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -19,90 +19,87 @@ using namespace DKFramework;
 
 #pragma pack(push, 4)
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		enum WaveFormatType
-		{
-			WaveFormatTypeUnknown = 0,
-			WaveFormatTypePCM = 1,			// WAVE_FORMAT_PCM
-			WaveFormatTypeEXT = 0xFFFE,		// WAVE_FORMAT_EXTENSIBLE
-		};
-		struct WaveFileHeader
-		{
-			char riff[4];
-			unsigned int riffSize;
-			char wave[4];
-		};
-		struct RiffChunk
-		{
-			char name[4];
-			unsigned int size;
-		};
-		struct WaveFormat
-		{
-			unsigned short formatTag;
-			unsigned short channels;
-			unsigned int samplesPerSec;
-			unsigned int avgBytesPerSec;
-			unsigned short blockAlign;
-			unsigned short bitsPerSample;
-			unsigned short size;
-			unsigned short reserved;
-			unsigned int channelMask;
-			unsigned char subformatGuid[16];
-		};
-		struct WaveFormatPCM
-		{
-			unsigned short tag;
-			unsigned short channels;
-			unsigned int samplesPerSec;
-			unsigned int avgBytesPerSec;
-			unsigned short blockAlign;
-			unsigned short bitsPerSample;
-		};
-		struct WaveFormatEX
-		{
-			unsigned short tag;
-			unsigned short channels;
-			unsigned int samplesPerSec;
-			unsigned int avgBytesPerSec;
-			unsigned short blockAlign;
-			unsigned short bitsPerSample;
-			unsigned short size;
-			char unused[2];
-		};
-		struct WaveFormatExt
-		{
-			WaveFormatEX format;
-			union
-			{
-				unsigned short validBitsPerSample;
-				unsigned short samplesPerBlock;
-				unsigned short reserved;
-			} samples;
-			unsigned int channelMask;
+    enum WaveFormatType
+    {
+        WaveFormatTypeUnknown = 0,
+        WaveFormatTypePCM = 1,			// WAVE_FORMAT_PCM
+        WaveFormatTypeEXT = 0xFFFE,		// WAVE_FORMAT_EXTENSIBLE
+    };
+    struct WaveFileHeader
+    {
+        char riff[4];
+        unsigned int riffSize;
+        char wave[4];
+    };
+    struct RiffChunk
+    {
+        char name[4];
+        unsigned int size;
+    };
+    struct WaveFormat
+    {
+        unsigned short formatTag;
+        unsigned short channels;
+        unsigned int samplesPerSec;
+        unsigned int avgBytesPerSec;
+        unsigned short blockAlign;
+        unsigned short bitsPerSample;
+        unsigned short size;
+        unsigned short reserved;
+        unsigned int channelMask;
+        unsigned char subformatGuid[16];
+    };
+    struct WaveFormatPCM
+    {
+        unsigned short tag;
+        unsigned short channels;
+        unsigned int samplesPerSec;
+        unsigned int avgBytesPerSec;
+        unsigned short blockAlign;
+        unsigned short bitsPerSample;
+    };
+    struct WaveFormatEX
+    {
+        unsigned short tag;
+        unsigned short channels;
+        unsigned int samplesPerSec;
+        unsigned int avgBytesPerSec;
+        unsigned short blockAlign;
+        unsigned short bitsPerSample;
+        unsigned short size;
+        char unused[2];
+    };
+    struct WaveFormatExt
+    {
+        WaveFormatEX format;
+        union
+        {
+            unsigned short validBitsPerSample;
+            unsigned short samplesPerBlock;
+            unsigned short reserved;
+        } samples;
+        unsigned int channelMask;
 
-			struct
-			{
-				unsigned int	data1;
-				unsigned short	data2;
-				unsigned short	data3;
-				unsigned char	data4[8];
-			} subFormatGUID;
-		};
-		struct WaveFileContext
-		{
-			DKObject<DKStream>	stream;
-			WaveFormatType		formatType;
-			WaveFormatExt		formatExt;
+        struct
+        {
+            unsigned int	data1;
+            unsigned short	data2;
+            unsigned short	data3;
+            unsigned char	data4[8];
+        } subFormatGUID;
+    };
+    struct WaveFileContext
+    {
+        DKObject<DKStream>	stream;
+        WaveFormatType		formatType;
+        WaveFormatExt		formatExt;
 
-			char* data;
-			size_t dataSize;
-			size_t dataOffset;
-		};
-	}
+        char* data;
+        size_t dataSize;
+        size_t dataOffset;
+    };
 }
 
 #pragma pack(pop)
