@@ -3,7 +3,7 @@
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -16,81 +16,74 @@
 
 #pragma comment(lib, "version.lib")
 
-namespace DKFramework
+namespace DKFramework::Private::Win32
 {
-	namespace Private
-	{
-		namespace Win32
-		{
-			struct MonitorHandleWithIndex
-			{
-				HMONITOR hMonitor;
-				int index;
-			};
-			static BOOL CALLBACK EnumMonitorProc(HMONITOR hMonitor, HDC hDC, LPRECT lprc, LPARAM pData)
-			{
-				MonitorHandleWithIndex* mi = reinterpret_cast<MonitorHandleWithIndex*>(pData);
-				if (mi->index == 0)
-				{
-					mi->hMonitor = hMonitor;
-					return FALSE;
-				}
-				mi->hMonitor = NULL;
-				mi->index--;
-				return TRUE;
-			}
-			static HMONITOR GetMonitorHandleByIndex(int index)
-			{
-				if (index >= 0)
-				{
-					MonitorHandleWithIndex target = { NULL, index };
-					if (EnumDisplayMonitors(0, 0, EnumMonitorProc, (LPARAM)&target))
-					{
-						return target.hMonitor;
-					}
-				}
-				return NULL;
-			}
-			static bool GetOSVersionFromKernel32DLL(DKString& name, DKString& version)
-			{
-				bool result = false;
-				DWORD bufferSize = GetFileVersionInfoSizeW(L"kernel32.dll", 0);
-				if (bufferSize > 0)
-				{
-					// 1033-1200 / English-UTF16 / Hex: 409-4b0 
-					LPCWSTR subBlockPName = L"\\StringFileInfo\\040904b0\\ProductName";
-					LPCWSTR subBlockPVer = L"\\StringFileInfo\\040904b0\\ProductVersion";
-					DKString prdName, prdVersion;
+    struct MonitorHandleWithIndex
+    {
+        HMONITOR hMonitor;
+        int index;
+    };
+    static BOOL CALLBACK EnumMonitorProc(HMONITOR hMonitor, HDC hDC, LPRECT lprc, LPARAM pData)
+    {
+        MonitorHandleWithIndex* mi = reinterpret_cast<MonitorHandleWithIndex*>(pData);
+        if (mi->index == 0)
+        {
+            mi->hMonitor = hMonitor;
+            return FALSE;
+        }
+        mi->hMonitor = NULL;
+        mi->index--;
+        return TRUE;
+    }
+    static HMONITOR GetMonitorHandleByIndex(int index)
+    {
+        if (index >= 0)
+        {
+            MonitorHandleWithIndex target = { NULL, index };
+            if (EnumDisplayMonitors(0, 0, EnumMonitorProc, (LPARAM)& target))
+            {
+                return target.hMonitor;
+            }
+        }
+        return NULL;
+    }
+    static bool GetOSVersionFromKernel32DLL(DKString& name, DKString& version)
+    {
+        bool result = false;
+        DWORD bufferSize = GetFileVersionInfoSizeW(L"kernel32.dll", 0);
+        if (bufferSize > 0)
+        {
+            // 1033-1200 / English-UTF16 / Hex: 409-4b0 
+            LPCWSTR subBlockPName = L"\\StringFileInfo\\040904b0\\ProductName";
+            LPCWSTR subBlockPVer = L"\\StringFileInfo\\040904b0\\ProductVersion";
+            DKString prdName, prdVersion;
 
-					void* buffer = DKMalloc(bufferSize);
-					do
-					{
-						if (!GetFileVersionInfoW(L"kernel32.dll", NULL, bufferSize, buffer))
-							break;
+            void* buffer = DKMalloc(bufferSize);
+            do
+            {
+                if (!GetFileVersionInfoW(L"kernel32.dll", NULL, bufferSize, buffer))
+                    break;
 
-						UINT len = 0; // for string value, number of characters (not bytes)
-						void* ptr = 0;
-						if (!VerQueryValueW(buffer, subBlockPName, &ptr, &len))
-							break;
+                UINT len = 0; // for string value, number of characters (not bytes)
+                void* ptr = 0;
+                if (!VerQueryValueW(buffer, subBlockPName, &ptr, &len))
+                    break;
 
-						prdName = DKString(ptr, len * sizeof(wchar_t), DKStringEncoding::UTF16);
-						if (!VerQueryValueW(buffer, subBlockPVer, &ptr, &len))
-							break;
+                prdName = DKString(ptr, len * sizeof(wchar_t), DKStringEncoding::UTF16);
+                if (!VerQueryValueW(buffer, subBlockPVer, &ptr, &len))
+                    break;
 
-						prdVersion = DKString(ptr, len * sizeof(wchar_t), DKStringEncoding::UTF16);
+                prdVersion = DKString(ptr, len * sizeof(wchar_t), DKStringEncoding::UTF16);
 
-						name = std::move(prdName);
-						version = std::move(prdVersion);
-						result = true;
-					} while (0);
-					DKFree(buffer);
-				}
-				return result;
-			}
-		}
-	}
+                name = std::move(prdName);
+                version = std::move(prdVersion);
+                result = true;
+            } while (0);
+            DKFree(buffer);
+        }
+        return result;
+    }
 }
-
 using namespace DKFramework;
 using namespace DKFramework::Private::Win32;
 

@@ -2,7 +2,7 @@
 //  File: DKEventLoop.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include "DKObject.h"
@@ -14,136 +14,132 @@
 #include "DKLog.h"
 #include "DKCondition.h"
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
 #if defined(__APPLE__) && defined(__MACH__)
-		void PerformOperationInsidePool(DKOperation* op);
+    void PerformOperationInsidePool(DKOperation* op);
 #else
-		FORCEINLINE void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
+    FORCEINLINE void PerformOperationInsidePool(DKOperation* op) { op->Perform(); }
 #endif
 
-		typedef DKMap<DKThread::ThreadId, DKObject<DKEventLoop>, DKDummyLock> EventLoopMap;
-		static EventLoopMap& GetEventLoopMap()
-		{
-			static EventLoopMap eventLoopMap;
-			return eventLoopMap;
-		}
-		static DKSpinLock& GetEventLoopMapLock()
-		{
-			static DKSpinLock lock;
-			return lock;
-		}
-		static bool RegisterEventLoop(DKThread::ThreadId id, DKEventLoop* eventLoop)
-		{
-			bool ret = false;
-			GetEventLoopMapLock().Lock();
-			ret = GetEventLoopMap().Insert(id, eventLoop);
-			GetEventLoopMapLock().Unlock();
-			return ret;
-		}
-		static void UnregisterEventLoop(DKThread::ThreadId id)
-		{
-			GetEventLoopMapLock().Lock();
-			GetEventLoopMap().Remove(id);
-			GetEventLoopMapLock().Unlock();
-		}
-		static DKObject<DKEventLoop> GetEventLoop(DKThread::ThreadId id)
-		{
-			DKObject<DKEventLoop> ret = NULL;
-			GetEventLoopMapLock().Lock();
-			EventLoopMap::Pair* p = GetEventLoopMap().Find(id);
-			if (p)
-				ret = p->value;
-			GetEventLoopMapLock().Unlock();
-			return ret;
-		}
-		static bool IsEventLoopExist(const DKEventLoop* eventLoop)
-		{
-			bool found = false;
-			GetEventLoopMapLock().Lock();
-			GetEventLoopMap().EnumerateForward([&](EventLoopMap::Pair& pair, bool* stop)
-			{
-				if (pair.value == eventLoop)
-				{
-					*stop = true;
-					found = true;
-				}
-			});
-			GetEventLoopMapLock().Unlock();
-			return found;
-		}
+    typedef DKMap<DKThread::ThreadId, DKObject<DKEventLoop>, DKDummyLock> EventLoopMap;
+    static EventLoopMap& GetEventLoopMap()
+    {
+        static EventLoopMap eventLoopMap;
+        return eventLoopMap;
+    }
+    static DKSpinLock& GetEventLoopMapLock()
+    {
+        static DKSpinLock lock;
+        return lock;
+    }
+    static bool RegisterEventLoop(DKThread::ThreadId id, DKEventLoop* eventLoop)
+    {
+        bool ret = false;
+        GetEventLoopMapLock().Lock();
+        ret = GetEventLoopMap().Insert(id, eventLoop);
+        GetEventLoopMapLock().Unlock();
+        return ret;
+    }
+    static void UnregisterEventLoop(DKThread::ThreadId id)
+    {
+        GetEventLoopMapLock().Lock();
+        GetEventLoopMap().Remove(id);
+        GetEventLoopMapLock().Unlock();
+    }
+    static DKObject<DKEventLoop> GetEventLoop(DKThread::ThreadId id)
+    {
+        DKObject<DKEventLoop> ret = NULL;
+        GetEventLoopMapLock().Lock();
+        EventLoopMap::Pair* p = GetEventLoopMap().Find(id);
+        if (p)
+            ret = p->value;
+        GetEventLoopMapLock().Unlock();
+        return ret;
+    }
+    static bool IsEventLoopExist(const DKEventLoop* eventLoop)
+    {
+        bool found = false;
+        GetEventLoopMapLock().Lock();
+        GetEventLoopMap().EnumerateForward([&](EventLoopMap::Pair & pair, bool* stop)
+                                           {
+                                               if (pair.value == eventLoop)
+                                               {
+                                                   *stop = true;
+                                                   found = true;
+                                               }
+                                           });
+        GetEventLoopMapLock().Unlock();
+        return found;
+    }
 
-		static DKCondition resultCond;
-		struct EventLoopPendingState : public DKEventLoop::PendingState
-		{
-			enum State
-			{
-				StatePending,
-				StateProcessing,
-				StateProcessed,
-				StateRevoked,
-			};
-			mutable State state;
+    static DKCondition resultCond;
+    struct EventLoopPendingState : public DKEventLoop::PendingState
+    {
+        enum State
+        {
+            StatePending,
+            StateProcessing,
+            StateProcessed,
+            StateRevoked,
+        };
+        mutable State state;
 
-			EventLoopPendingState() : state(StatePending)
-			{
-			}
-			bool EnterOperation() const
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				if (state == StatePending)
-				{
-					state = StateProcessing;
-					return true;
-				}
-				return false;
-			}
-			void LeaveOperation() const
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				DKASSERT(state == StateProcessing);
-				state = StateProcessed;
-				resultCond.Broadcast();
-			}
-			bool Revoke() const override
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				if (state == StatePending)
-				{
-					state = StateRevoked;
-					resultCond.Broadcast();
-				}
-				return state == StateRevoked;
-			}
-			bool Result() const override
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				while (state != StateProcessed && state != StateRevoked)
-					resultCond.Wait();
+        EventLoopPendingState() : state(StatePending)
+        {
+        }
+        bool EnterOperation() const
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            if (state == StatePending)
+            {
+                state = StateProcessing;
+                return true;
+            }
+            return false;
+        }
+        void LeaveOperation() const
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            DKASSERT(state == StateProcessing);
+            state = StateProcessed;
+            resultCond.Broadcast();
+        }
+        bool Revoke() const override
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            if (state == StatePending)
+            {
+                state = StateRevoked;
+                resultCond.Broadcast();
+            }
+            return state == StateRevoked;
+        }
+        bool Result() const override
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            while (state != StateProcessed && state != StateRevoked)
+                resultCond.Wait();
 
-				return state == StateProcessed;
-			}
-			bool IsDone() const override
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				return state == StateProcessed;
-			}
-			bool IsRevoked() const override
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				return state == StateRevoked;
-			}
-			bool IsPending() const override
-			{
-				DKCriticalSection<DKCondition> guard(resultCond);
-				return state == StatePending;
-			}
-		};
-	}
+            return state == StateProcessed;
+        }
+        bool IsDone() const override
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            return state == StateProcessed;
+        }
+        bool IsRevoked() const override
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            return state == StateRevoked;
+        }
+        bool IsPending() const override
+        {
+            DKCriticalSection<DKCondition> guard(resultCond);
+            return state == StatePending;
+        }
+    };
 }
-
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 

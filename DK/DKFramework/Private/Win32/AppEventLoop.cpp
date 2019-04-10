@@ -3,62 +3,56 @@
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
 #include <windows.h>
 #include "AppEventLoop.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Win32
 {
-	namespace Private
-	{
-		namespace Win32
-		{
-			// Note: 
-			// We are using Keyboard-Hook instead of RawInput(WM_INPUT) to
-			// disable the pop-up menu by pressing Win-Key.
-			// Since RawInput works on application-wide, RawInput can conflict
-			// with other frameworks.
-			static HHOOK keyboardHook = NULL;
-			static bool disableWindowKey = true;
+    // Note: 
+    // We are using Keyboard-Hook instead of RawInput(WM_INPUT) to
+    // disable the pop-up menu by pressing Win-Key.
+    // Since RawInput works on application-wide, RawInput can conflict
+    // with other frameworks.
+    static HHOOK keyboardHook = NULL;
+    static bool disableWindowKey = true;
 
-			// number of active windows.
-			// disable Window-Key only if numActiveWindows > 0.
-			DKAtomicNumber32 numActiveWindows = 0;
+    // number of active windows.
+    // disable Window-Key only if numActiveWindows > 0.
+    DKAtomicNumber32 numActiveWindows = 0;
 
-			// Hook window-key for prevent a window being disabled when window-key pressed.
-			// To use window-key, save key-state with SetKeyboardState().
-			static LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
-			{
-				bool hook = disableWindowKey && numActiveWindows > 0;
-				if (nCode == HC_ACTION && hook)
-				{
-					KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *)lParam;
-					if (pkbhs->vkCode == VK_LWIN || pkbhs->vkCode == VK_RWIN)
-					{
-						static BYTE keyState[256];
-						// To use window-key as regular key, update keyState.
-						if (wParam == WM_KEYDOWN)
-						{
-							GetKeyboardState(keyState);
-							keyState[pkbhs->vkCode] = 0x80;
-							SetKeyboardState(keyState);
-						}
-						else if (wParam == WM_KEYUP)
-						{
-							GetKeyboardState(keyState);
-							keyState[pkbhs->vkCode] = 0x00;
-							SetKeyboardState(keyState);
-						}
-						return 1;
-					}
-				}
-				return CallNextHookEx(keyboardHook, nCode, wParam, lParam);
-			}
-		}
-	}
+    // Hook window-key for prevent a window being disabled when window-key pressed.
+    // To use window-key, save key-state with SetKeyboardState().
+    static LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+    {
+        bool hook = disableWindowKey && numActiveWindows > 0;
+        if (nCode == HC_ACTION && hook)
+        {
+            KBDLLHOOKSTRUCT* pkbhs = (KBDLLHOOKSTRUCT*)lParam;
+            if (pkbhs->vkCode == VK_LWIN || pkbhs->vkCode == VK_RWIN)
+            {
+                static BYTE keyState[256];
+                // To use window-key as regular key, update keyState.
+                if (wParam == WM_KEYDOWN)
+                {
+                    GetKeyboardState(keyState);
+                    keyState[pkbhs->vkCode] = 0x80;
+                    SetKeyboardState(keyState);
+                }
+                else if (wParam == WM_KEYUP)
+                {
+                    GetKeyboardState(keyState);
+                    keyState[pkbhs->vkCode] = 0x00;
+                    SetKeyboardState(keyState);
+                }
+                return 1;
+            }
+        }
+        return CallNextHookEx(keyboardHook, nCode, wParam, lParam);
+    }
 }
 using namespace DKFramework;
 using namespace DKFramework::Private::Win32;

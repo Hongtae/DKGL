@@ -2,7 +2,7 @@
 //  File: DKBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include <ctype.h>
@@ -20,229 +20,225 @@
 #include "DKBufferStream.h"
 #include "DKLog.h"
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
-		// base64 encode/decode
-		template <typename BaseCharT> struct Base64;
-		template <> struct Base64<char>
-		{
-			static const char* Base64Chars()
-			{
-				return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-			}
-			static FORCEINLINE bool IsBase64(char c)
-			{
-				return ((c == '+') || (c == '/') || isalnum(c));
-			}
-		};
-		template <> struct Base64<wchar_t>
-		{
-			static const wchar_t* Base64Chars()
-			{
-				return L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-			}
-			static FORCEINLINE bool IsBase64(wchar_t c)
-			{
-				return ((c == L'+') || (c == '/') || iswalnum(c));
-			}
-		};
+    // base64 encode/decode
+    template <typename BaseCharT> struct Base64;
+    template <> struct Base64<char>
+    {
+        static const char* Base64Chars()
+        {
+            return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        }
+        static FORCEINLINE bool IsBase64(char c)
+        {
+            return ((c == '+') || (c == '/') || isalnum(c));
+        }
+    };
+    template <> struct Base64<wchar_t>
+    {
+        static const wchar_t* Base64Chars()
+        {
+            return L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        }
+        static FORCEINLINE bool IsBase64(wchar_t c)
+        {
+            return ((c == L'+') || (c == '/') || iswalnum(c));
+        }
+    };
 
-		template <typename BaseCharT> void Base64Encode(unsigned char const* bytes_to_encode, size_t in_len, DKArray<BaseCharT>& output)
-		{
-			output.Clear();
-			output.Reserve(((in_len * 4) / 3) + 3);
+    template <typename BaseCharT> void Base64Encode(unsigned char const* bytes_to_encode, size_t in_len, DKArray<BaseCharT>& output)
+    {
+        output.Clear();
+        output.Reserve(((in_len * 4) / 3) + 3);
 
-			int i = 0;
-			int j = 0;
-			unsigned char char_array_3[3];
-			unsigned char char_array_4[4];
+        int i = 0;
+        int j = 0;
+        unsigned char char_array_3[3];
+        unsigned char char_array_4[4];
 
-			while (in_len--) {
-				char_array_3[i++] = *(bytes_to_encode++);
-				if (i == 3) {
-					char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-					char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-					char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-					char_array_4[3] = char_array_3[2] & 0x3f;
+        while (in_len--) {
+            char_array_3[i++] = *(bytes_to_encode++);
+            if (i == 3) {
+                char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+                char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+                char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+                char_array_4[3] = char_array_3[2] & 0x3f;
 
-					for (i = 0; (i < 4); i++)
-						output.Add(Base64<BaseCharT>::Base64Chars()[char_array_4[i]]);
-					i = 0;
-				}
-			}
+                for (i = 0; (i < 4); i++)
+                    output.Add(Base64<BaseCharT>::Base64Chars()[char_array_4[i]]);
+                i = 0;
+            }
+        }
 
-			if (i)
-			{
-				for (j = i; j < 3; j++)
-					char_array_3[j] = '\0';
+        if (i)
+        {
+            for (j = i; j < 3; j++)
+                char_array_3[j] = '\0';
 
-				char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-				char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-				char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-				char_array_4[3] = char_array_3[2] & 0x3f;
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
 
-				for (j = 0; (j < i + 1); j++)
-					output.Add(Base64<BaseCharT>::Base64Chars()[char_array_4[j]]);
+            for (j = 0; (j < i + 1); j++)
+                output.Add(Base64<BaseCharT>::Base64Chars()[char_array_4[j]]);
 
-				while ((i++ < 3))
-					output.Add('=');
-			}
-			//return output;
-		}
+            while ((i++ < 3))
+                output.Add('=');
+        }
+        //return output;
+    }
 
-		template <typename BaseCharT> bool Base64Decode(const BaseCharT* encoded_string, size_t in_len, DKBuffer* output)
-		{
-			auto IndexOfBase64Char = [](BaseCharT c) -> int
-			{
-				for (int i = 0; i < 64; ++i)
-					if (c == Base64<BaseCharT>::Base64Chars()[i])
-						return i;
-				return -1;
-			};
+    template <typename BaseCharT> bool Base64Decode(const BaseCharT* encoded_string, size_t in_len, DKBuffer* output)
+    {
+        auto IndexOfBase64Char = [](BaseCharT c) -> int
+        {
+            for (int i = 0; i < 64; ++i)
+                if (c == Base64<BaseCharT>::Base64Chars()[i])
+                    return i;
+            return -1;
+        };
 
-			int i = 0;
-			int j = 0;
-			int in_ = 0;
-			char char_array_4[4], char_array_3[3];
-			DKArray<char> result;
-			result.Reserve((in_len * 3) / 4 + 3);
+        int i = 0;
+        int j = 0;
+        int in_ = 0;
+        char char_array_4[4], char_array_3[3];
+        DKArray<char> result;
+        result.Reserve((in_len * 3) / 4 + 3);
 
-			while (in_len-- && (encoded_string[in_] != '=') && Base64<BaseCharT>::IsBase64(encoded_string[in_]))
-			{
-				char_array_4[i++] = static_cast<char>(encoded_string[in_]); in_++;
-				if (i == 4)
-				{
-					for (i = 0; i < 4; ++i)
-						char_array_4[i] = IndexOfBase64Char(char_array_4[i]);
+        while (in_len-- && (encoded_string[in_] != '=') && Base64<BaseCharT>::IsBase64(encoded_string[in_]))
+        {
+            char_array_4[i++] = static_cast<char>(encoded_string[in_]); in_++;
+            if (i == 4)
+            {
+                for (i = 0; i < 4; ++i)
+                    char_array_4[i] = IndexOfBase64Char(char_array_4[i]);
 
-					char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-					char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-					char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+                char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+                char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+                char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-					for (i = 0; (i < 3); i++)
-						result.Add(char_array_3[i]);
+                for (i = 0; (i < 3); i++)
+                    result.Add(char_array_3[i]);
 
-					i = 0;
-				}
-			}
+                i = 0;
+            }
+        }
 
-			if (i) {
-				for (j = i; j < 4; j++)
-					char_array_4[j] = 0;
+        if (i) {
+            for (j = i; j < 4; j++)
+                char_array_4[j] = 0;
 
-				for (j = 0; j < 4; j++)
-					char_array_4[j] = IndexOfBase64Char(char_array_4[j]);
+            for (j = 0; j < 4; j++)
+                char_array_4[j] = IndexOfBase64Char(char_array_4[j]);
 
-				char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-				char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-				char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-				for (j = 0; (j < i - 1); j++)
-					result.Add(char_array_3[j]);
-			}
-			if (result.Count())
-			{
-				output->SetContent((const char*)result, result.Count());
-				return true;
-			}
-			return false;
-		}
+            for (j = 0; (j < i - 1); j++)
+                result.Add(char_array_3[j]);
+        }
+        if (result.Count())
+        {
+            output->SetContent((const char*)result, result.Count());
+            return true;
+        }
+        return false;
+    }
 
-		static DKObject<DKBuffer> GetHTTPContent(const DKString& url, DKAllocator& alloc)
-		{
-			if (url.Length() == 0)
-				return NULL;
+    static DKObject<DKBuffer> GetHTTPContent(const DKString& url, DKAllocator& alloc)
+    {
+        if (url.Length() == 0)
+            return NULL;
 
-			DKStringU8 filenameUTF8(url);
-			if (filenameUTF8 == "" || filenameUTF8.Bytes() == 0)
-				return NULL;
+        DKStringU8 filenameUTF8(url);
+        if (filenameUTF8 == "" || filenameUTF8.Bytes() == 0)
+            return NULL;
 
-			// initialize http
-			xmlNanoHTTPInit();
+        // initialize http
+        xmlNanoHTTPInit();
 
-			// connect
-			void* ctxt = xmlNanoHTTPOpen((const char*)filenameUTF8, NULL);
-			if (ctxt == NULL)
-				return NULL;
+        // connect
+        void* ctxt = xmlNanoHTTPOpen((const char*)filenameUTF8, NULL);
+        if (ctxt == NULL)
+            return NULL;
 
-			DKObject<DKBuffer> data = NULL;
+        DKObject<DKBuffer> data = NULL;
 
-			int len = xmlNanoHTTPContentLength(ctxt);
-			if (len > 0)
-			{
-				void* buffer = DKMalloc(len);
-				int recv = xmlNanoHTTPRead(ctxt, buffer, len); // download
-				if (recv == len)
-				{
-					data = DKBuffer::Create(buffer, len, alloc);
-				}
-				DKFree(buffer);
-			}
-			xmlNanoHTTPClose(ctxt);
-			xmlNanoHTTPCleanup();
+        int len = xmlNanoHTTPContentLength(ctxt);
+        if (len > 0)
+        {
+            void* buffer = DKMalloc(len);
+            int recv = xmlNanoHTTPRead(ctxt, buffer, len); // download
+            if (recv == len)
+            {
+                data = DKBuffer::Create(buffer, len, alloc);
+            }
+            DKFree(buffer);
+        }
+        xmlNanoHTTPClose(ctxt);
+        xmlNanoHTTPCleanup();
 
-			return data;
-		}
+        return data;
+    }
 
-		static DKObject<DKBuffer> GetFTPContent(const DKString& url, DKAllocator& alloc)
-		{
-			if (url.Length() == 0)
-				return NULL;
+    static DKObject<DKBuffer> GetFTPContent(const DKString& url, DKAllocator& alloc)
+    {
+        if (url.Length() == 0)
+            return NULL;
 
-			DKStringU8 filenameUTF8(url);
-			if (filenameUTF8 == "" || filenameUTF8.Bytes() == 0)
-				return NULL;
+        DKStringU8 filenameUTF8(url);
+        if (filenameUTF8 == "" || filenameUTF8.Bytes() == 0)
+            return NULL;
 
-			xmlNanoFTPInit();
+        xmlNanoFTPInit();
 
-			void* ctxt = xmlNanoFTPOpen((const char*)filenameUTF8);
-			if (ctxt == NULL)
-				return NULL;
+        void* ctxt = xmlNanoFTPOpen((const char*)filenameUTF8);
+        if (ctxt == NULL)
+            return NULL;
 
-			DKObject<DKBuffer> data = NULL;
+        DKObject<DKBuffer> data = NULL;
 
-			size_t	bufferSize = 4096;
-			size_t	received = 0;
-			char*	buffer = (char*)DKMalloc(bufferSize);
+        size_t	bufferSize = 4096;
+        size_t	received = 0;
+        char* buffer = (char*)DKMalloc(bufferSize);
 
-			while (true)
-			{
-				int recv = xmlNanoFTPRead(ctxt, buffer + received, static_cast<int>(bufferSize - received));
-				received += recv;
+        while (true)
+        {
+            int recv = xmlNanoFTPRead(ctxt, buffer + received, static_cast<int>(bufferSize - received));
+            received += recv;
 
-				if (recv < 0)		// error!
-				{
-					break;
-				}
-				else if (recv == 0)	// succeeded.
-				{
-					data = DKBuffer::Create(buffer, received, alloc);
-					break;
-				}
-				if (received + 100 > bufferSize)
-				{
-					bufferSize += 4096;
-					char* tmp = (char*)DKRealloc(buffer, bufferSize);
-					if (tmp == NULL)
-					{
-						DKLog("Warning: Out of memory!\n");
-						break;
-					}
-					buffer = tmp;
-				}
-			}
-			DKFree(buffer);
+            if (recv < 0)		// error!
+            {
+                break;
+            }
+            else if (recv == 0)	// succeeded.
+            {
+                data = DKBuffer::Create(buffer, received, alloc);
+                break;
+            }
+            if (received + 100 > bufferSize)
+            {
+                bufferSize += 4096;
+                char* tmp = (char*)DKRealloc(buffer, bufferSize);
+                if (tmp == NULL)
+                {
+                    DKLog("Warning: Out of memory!\n");
+                    break;
+                }
+                buffer = tmp;
+            }
+        }
+        DKFree(buffer);
 
-			xmlNanoFTPClose(ctxt);
-			xmlNanoFTPCleanup();
+        xmlNanoFTPClose(ctxt);
+        xmlNanoFTPCleanup();
 
-			return data;
-		}
-	}
+        return data;
+    }
 }
-
 using namespace DKFoundation;
 
 DKBuffer::DKBuffer(DKAllocator& alloc)

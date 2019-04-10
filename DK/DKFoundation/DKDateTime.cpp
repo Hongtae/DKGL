@@ -2,7 +2,7 @@
 //  File: DKDateTime.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
@@ -31,27 +31,21 @@
 #include "DKSet.h"
 
 #ifdef _WIN32
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
-		namespace
-		{
-			inline void gettimeofday(struct timeval* p, void* tz)
-			{
-				union
-				{
-					int64_t ns100; // time since 1 Jan 1601 in 100ns units
-					FILETIME ft;
-				} timeUTC;
+    inline void gettimeofday(struct timeval* p, void* tz)
+    {
+        union
+        {
+            int64_t ns100; // time since 1 Jan 1601 in 100ns units
+            FILETIME ft;
+        } timeUTC;
 
-				GetSystemTimeAsFileTime(&timeUTC.ft);
+        GetSystemTimeAsFileTime(&timeUTC.ft);
 
-				p->tv_usec = (long)((timeUTC.ns100 / 10LL) % 1000000LL );
-				p->tv_sec =  (long)((timeUTC.ns100-(116444736000000000LL))/10000000LL);
-			}
-		}
-	}
+        p->tv_usec = (long)((timeUTC.ns100 / 10LL) % 1000000LL);
+        p->tv_sec = (long)((timeUTC.ns100 - (116444736000000000LL)) / 10000000LL);
+    }
 }
 #endif
 

@@ -2,7 +2,7 @@
 //  File: DKAllocatorChain.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include <new>
@@ -11,92 +11,88 @@
 #include "DKCriticalSection.h"
 #include "DKMemory.h"
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
-		// default Chain-Holder
-		static DKAllocatorChain::Maintainer maintainer;
+    // default Chain-Holder
+    static DKAllocatorChain::Maintainer maintainer;
 
-		void CreateAllocationTable();
-		void DestroyAllocationTable();
+    void CreateAllocationTable();
+    void DestroyAllocationTable();
 
-		using ScopedSpinLock = DKCriticalSection<DKSpinLock>;
-		struct Chain
-		{
-			using RefCount = unsigned int;
+    using ScopedSpinLock = DKCriticalSection<DKSpinLock>;
+    struct Chain
+    {
+        using RefCount = unsigned int;
 
-			DKAllocatorChain* first;
-			DKSpinLock lock;
-			RefCount refCount;
-			static Chain* instance;
+        DKAllocatorChain* first;
+        DKSpinLock lock;
+        RefCount refCount;
+        static Chain* instance;
 
-			Chain()
-			{
-				CreateAllocationTable();
-				lock.Lock();
-				first = NULL;
-				instance = this;
-				refCount = 0;
-				lock.Unlock();
-			}
-			~Chain()
-			{
-				while (true) // delete allocators in reverse order.
-				{
-					lock.Lock();
-					DKAllocatorChain* p = first;
-					lock.Unlock();
+        Chain()
+        {
+            CreateAllocationTable();
+            lock.Lock();
+            first = NULL;
+            instance = this;
+            refCount = 0;
+            lock.Unlock();
+        }
+        ~Chain()
+        {
+            while (true) // delete allocators in reverse order.
+            {
+                lock.Lock();
+                DKAllocatorChain* p = first;
+                lock.Unlock();
 
-					if (p)
-					{
-						while (p->NextAllocator())
-							p = p->NextAllocator();
-						delete p;
-					}
-					else
-						break;
-				}
-				DestroyAllocationTable();
+                if (p)
+                {
+                    while (p->NextAllocator())
+                        p = p->NextAllocator();
+                    delete p;
+                }
+                else
+                    break;
+            }
+            DestroyAllocationTable();
 
-				lock.Lock();
-				instance = NULL;
-				first = NULL;
-				lock.Unlock();
-			}
-			static Chain* Instance()
-			{
-				static Chain* p = new Chain();
-				return p->instance;
-			}
-			RefCount IncrementRef()
-			{
-				ScopedSpinLock guard(lock);
-				this->refCount++;
-				return this->refCount;
-			}
-			RefCount DecrementRef()
-			{
-				ScopedSpinLock guard(lock);
-				this->refCount--;
-				return this->refCount;
-			}
-			void* operator new (size_t s)
-			{
-				return DKMemoryHeapAlloc(s);
-			}
-			void operator delete (void* p) noexcept
-			{
-				DKMemoryHeapFree(p);
-			}
-		};
-		Chain* Chain::instance;
-	}
+            lock.Lock();
+            instance = NULL;
+            first = NULL;
+            lock.Unlock();
+        }
+        static Chain* Instance()
+        {
+            static Chain* p = new Chain();
+            return p->instance;
+        }
+        RefCount IncrementRef()
+        {
+            ScopedSpinLock guard(lock);
+            this->refCount++;
+            return this->refCount;
+        }
+        RefCount DecrementRef()
+        {
+            ScopedSpinLock guard(lock);
+            this->refCount--;
+            return this->refCount;
+        }
+        void* operator new (size_t s)
+        {
+            return DKMemoryHeapAlloc(s);
+        }
+        void operator delete (void* p) noexcept
+        {
+            DKMemoryHeapFree(p);
+        }
+    };
+    Chain* Chain::instance;
 }
 
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
-
 
 DKAllocatorChain::DKAllocatorChain()
 : next(NULL)
