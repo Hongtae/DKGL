@@ -149,4 +149,13 @@ void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
     encoder->pipelineStateObjects.Add(pipeline);
 }
 
+void ComputeCommandEncoder::Dispatch(uint32_t numGroupsX, uint32_t numGroupsY, uint32_t numGroupsZ)
+{
+    DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState & state) mutable
+    {
+        vkCmdDispatch(commandBuffer, numGroupsX, numGroupsY, numGroupsZ);
+    });
+    encoder->commands.Add(command);
+}
+
 #endif //#if DKGL_ENABLE_VULKAN

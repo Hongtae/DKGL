@@ -30,7 +30,8 @@ namespace DKFramework::Private::Metal
 		// DKComputeCommandEncoder
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
         void SetComputePipelineState(DKComputePipelineState*) override;
-
+        void Dispatch(uint32_t, uint32_t, uint32_t) override;
+        
 	private:
         struct EncodingState
         {
