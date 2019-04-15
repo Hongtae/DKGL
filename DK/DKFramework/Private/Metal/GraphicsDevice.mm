@@ -504,6 +504,14 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	DKObject<RenderPipelineState> state = NULL;
 	@autoreleasepool {
 		NSError* error = nil;
+        // Create MTLDepthStencilState object.
+        MTLDepthStencilDescriptor* depthStencilDescriptor = [[[MTLDepthStencilDescriptor alloc] init] autorelease];
+
+        id<MTLDepthStencilState> depthStencilState = [device newDepthStencilStateWithDescriptor:depthStencilDescriptor];
+        DKASSERT_DEBUG(depthStencilState);
+        [depthStencilState autorelease];
+
+        // Create MTLRenderPipelineState object.
 		MTLRenderPipelineDescriptor* descriptor = [[[MTLRenderPipelineDescriptor alloc] init] autorelease];
 
         NSUInteger vertexAttributeOffset = 0;
@@ -778,7 +786,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 		if (pipelineState)
 		{
-			state = DKOBJECT_NEW RenderPipelineState(dev, pipelineState);
+			state = DKOBJECT_NEW RenderPipelineState(dev, pipelineState, depthStencilState);
 			state->primitiveType = primitiveType;
             if (vertexFunction)
                 state->vertexBindings = vertexFunction->module.StaticCast<ShaderModule>()->bindings;

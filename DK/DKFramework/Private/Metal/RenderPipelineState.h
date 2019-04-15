@@ -19,14 +19,16 @@ namespace DKFramework::Private::Metal
 	class RenderPipelineState : public DKRenderPipelineState
 	{
 	public:
-		RenderPipelineState(DKGraphicsDevice*, id<MTLRenderPipelineState>);
+		RenderPipelineState(DKGraphicsDevice*, id<MTLRenderPipelineState>, id<MTLDepthStencilState>);
 		~RenderPipelineState();
 
 		DKGraphicsDevice* Device() override { return device; }
 
+        id<MTLRenderPipelineState> pipelineState;
+        id<MTLDepthStencilState> depthStencilState;
+
 		MTLPrimitiveType primitiveType;
 		DKObject<DKGraphicsDevice> device;
-		id<MTLRenderPipelineState> pipelineState;
 
         StageResourceBindingMap vertexBindings;
         StageResourceBindingMap fragmentBindings;
