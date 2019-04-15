@@ -98,7 +98,8 @@ DKMatrix2& DKMatrix2::Inverse(bool* r)
     else
     {
 #ifdef DKGL_DEBUG_ENABLED
-        DKLogE("DKMatrix2::Inverse failed");
+        if (!b)
+            DKLogE("DKMatrix2::Inverse failed");
 #endif
     }
     return *this;
