@@ -15,36 +15,30 @@
 
 #include "../../Interface/DKApplicationInterface.h"
 
-namespace DKFramework
+namespace DKFramework::Private::macOS
 {
-	namespace Private
-	{
-		namespace macOS
-		{
-			class AppEventLoop : public DKEventLoop
-			{
-			public:
-				AppEventLoop(DKApplication* app);
-				~AppEventLoop();
+    class AppEventLoop : public DKEventLoop
+    {
+    public:
+        AppEventLoop(DKApplication* app);
+        ~AppEventLoop();
 
-				bool Run() override;
-				void Stop() override;
+        bool Run() override;
+        void Stop() override;
 
-				DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
-				DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
+        DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
+        DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
+        
+    private:
+        void DispatchAndInstallTimer();
 
-			private:
-				void DispatchAndInstallTimer();
-				
-				DKApplication* appInstance;
-				bool running;
-				NSTimer* timer;
+        DKApplication* appInstance;
+        bool running;
+        NSTimer* timer;
 
-				DKSpinLock lock;	// lock for runLoop pointer.
-				CFRunLoopRef runLoop;
-			};
-		}
-	}
+        DKSpinLock lock;	// lock for runLoop pointer.
+        CFRunLoopRef runLoop;
+    };
 }
 #endif //if !TARGET_OS_IPHONE
 #endif //if defined(__APPLE__) && defined(__MACH__)

@@ -2,7 +2,7 @@
 //  File: AudioStreamVorbis.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -15,56 +15,53 @@
 
 using namespace DKFramework;
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		struct VorbisStream
-		{
-			DKObject<DKStream>	stream;
-			size_t currentPos;
-		};
-		size_t VorbisStreamRead(void *ptr, size_t size, size_t nmemb, void *datasource)
-		{
-			VorbisStream *pSource = reinterpret_cast<VorbisStream*>(datasource);
+    struct VorbisStream
+    {
+        DKObject<DKStream>	stream;
+        size_t currentPos;
+    };
+    size_t VorbisStreamRead(void *ptr, size_t size, size_t nmemb, void *datasource)
+    {
+        VorbisStream *pSource = reinterpret_cast<VorbisStream*>(datasource);
 
-			size_t validSize = size*nmemb;
+        size_t validSize = size*nmemb;
 
-			return pSource->stream->Read(ptr, validSize);
-		}
-		int VorbisStreamSeek(void *datasource, ogg_int64_t offset, int whence)
-		{
-			VorbisStream *pSource = reinterpret_cast<VorbisStream*>(datasource);
-			switch (whence)
-			{
-				case SEEK_SET:
-					return pSource->stream->SetCurrentPosition(offset);
-					break;
-				case SEEK_CUR:
-					return pSource->stream->SetCurrentPosition(pSource->stream->CurrentPosition() + offset);
-					break;
-				case SEEK_END:
-					return pSource->stream->SetCurrentPosition(pSource->stream->TotalLength() + offset);
-					break;
-			}
-			return -1;
-		}
-		int VorbisStreamClose(void *datasource)
-		{
-			VorbisStream *pSource = reinterpret_cast<VorbisStream*>(datasource);
-			pSource->stream = NULL;
-			return 0;
-		}
-		long VorbisStreamTell(void *datasource)
-		{
-			return reinterpret_cast<VorbisStream*>(datasource)->stream->CurrentPosition();
-		}
-		struct VorbisFileContext
-		{
-			OggVorbis_File		vorbis;
-			VorbisStream*		stream;
-		};
-	}
+        return pSource->stream->Read(ptr, validSize);
+    }
+    int VorbisStreamSeek(void *datasource, ogg_int64_t offset, int whence)
+    {
+        VorbisStream *pSource = reinterpret_cast<VorbisStream*>(datasource);
+        switch (whence)
+        {
+                case SEEK_SET:
+                return pSource->stream->SetCurrentPosition(offset);
+                break;
+                case SEEK_CUR:
+                return pSource->stream->SetCurrentPosition(pSource->stream->CurrentPosition() + offset);
+                break;
+                case SEEK_END:
+                return pSource->stream->SetCurrentPosition(pSource->stream->TotalLength() + offset);
+                break;
+        }
+        return -1;
+    }
+    int VorbisStreamClose(void *datasource)
+    {
+        VorbisStream *pSource = reinterpret_cast<VorbisStream*>(datasource);
+        pSource->stream = NULL;
+        return 0;
+    }
+    long VorbisStreamTell(void *datasource)
+    {
+        return reinterpret_cast<VorbisStream*>(datasource)->stream->CurrentPosition();
+    }
+    struct VorbisFileContext
+    {
+        OggVorbis_File		vorbis;
+        VorbisStream*		stream;
+    };
 }
 
 using namespace DKFramework;

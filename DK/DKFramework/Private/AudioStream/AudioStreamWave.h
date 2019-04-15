@@ -2,7 +2,7 @@
 //  File: AudioStreamWave.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -14,35 +14,32 @@
 // This class supports audio stream for Wave format.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		struct WaveFileContext;
-		class AudioStreamWave : public DKAudioStream
-		{
-		public:
-			AudioStreamWave();
-			~AudioStreamWave();
+    struct WaveFileContext;
+    class AudioStreamWave : public DKAudioStream
+    {
+    public:
+        AudioStreamWave();
+        ~AudioStreamWave();
 
-			bool Open(const DKString& file);
-			bool Open(DKStream* stream);
+        bool Open(const DKString& file);
+        bool Open(DKStream* stream);
 
-			size_t Read(void* pBuffer, size_t nSize);
+        size_t Read(void* pBuffer, size_t nSize);
 
-			Position SeekRaw(Position nPos);
-			Position SeekPcm(Position nPos);
-			double SeekTime(double s);
+        Position SeekRaw(Position nPos);
+        Position SeekPcm(Position nPos);
+        double SeekTime(double s);
 
-			Position RawPos() const;
-			Position PcmPos() const;
-			double TimePos() const;
+        Position RawPos() const;
+        Position PcmPos() const;
+        double TimePos() const;
 
-			Position RawTotal() const;
-			Position PcmTotal() const;
-			double TimeTotal() const;
-		private:
-			WaveFileContext* context;
-		};
-	}
+        Position RawTotal() const;
+        Position PcmTotal() const;
+        double TimeTotal() const;
+    private:
+        WaveFileContext* context;
+    };
 }

@@ -9,26 +9,23 @@
 #include "DKWindow.h"
 #include "Interface/DKWindowInterface.h"
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		static inline bool _GetUCArrayBit(const unsigned char* bytes, int index)
-		{
-			unsigned char v = 1 << (index % 8);
-			unsigned char c = bytes[index / 8];
-			return (c & v) != 0;
-		}
-		static inline void _SetUCArrayBit(unsigned char* bytes, int index, bool value)
-		{
-			unsigned char v = 1 << (index % 8);
-			unsigned char& c = bytes[index / 8];
-			if (value)
-				c |= v;
-			else
-				c &= ~v;
-		}
-	}
+    static inline bool _GetUCArrayBit(const unsigned char* bytes, int index)
+    {
+        unsigned char v = 1 << (index % 8);
+        unsigned char c = bytes[index / 8];
+        return (c & v) != 0;
+    }
+    static inline void _SetUCArrayBit(unsigned char* bytes, int index, bool value)
+    {
+        unsigned char v = 1 << (index % 8);
+        unsigned char& c = bytes[index / 8];
+        if (value)
+        c |= v;
+        else
+        c &= ~v;
+    }
 }
 
 using namespace DKFramework;

@@ -17,8 +17,9 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     </PostBuildEvent>
     <CustomBuildStep />
     <PreBuildEvent>
-      <Command>echo Building external libraries...
-MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(Configuration);Platform=$(Platform) /m:$(NUMBER_OF_PROCESSORS) /t:Build Libs\Libs.sln</Command>
+      <Command>
+        echo Building external libraries...
+MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(Configuration);Platform=$(Platform);WindowsTargetPlatformVersion=$(WindowsTargetPlatformVersion);OutDir=$(OutDir)\Libs /m:$(NUMBER_OF_PROCESSORS) /t:Build Libs\Libs.sln</Command>
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src;Libs/Vulkan/include</AdditionalIncludeDirectories>
@@ -28,11 +29,11 @@ MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(C
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir)/Libs;Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
       <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;zstd.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(OutDir);Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir)/Libs;Libs/Vulkan/lib/Win32/$(PlatformTarget)</AdditionalLibraryDirectories>
       <AdditionalDependencies>BulletPhysics.lib;bzip2.lib;FreeType.lib;jpeg.lib;libFLAC.lib;libogg.lib;libpng.lib;libvorbis.lib;libxml2.lib;lz4.lib;OpenAL.lib;SPIRV-Cross.lib;zlib.lib;zstd.lib;vulkan-1.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Manifest>
@@ -42,6 +43,6 @@ MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(C
   <ItemGroup />
   <Target Name="CleanLibs" BeforeTargets="Clean;BeforeClean">
     <Exec Command="echo Cleaning external libraries..." />
-    <MSBuild Projects="Libs\Libs.sln" Properties="SolutionDir=$(SolutionDir);Configuration=$(Configuration);Platform=$(Platform)" Targets="Clean" />
+    <MSBuild Projects="Libs\Libs.sln" Properties="SolutionDir=$(SolutionDir);Configuration=$(Configuration);Platform=$(Platform);WindowsTargetPlatformVersion=$(WindowsTargetPlatformVersion);OutDir=$(OutDir)\Libs" Targets="Clean" />
   </Target>
 </Project>

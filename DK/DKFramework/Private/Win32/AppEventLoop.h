@@ -11,30 +11,24 @@
 #include <Windows.h>
 #include "../../Interface/DKApplicationInterface.h"
 
-namespace DKFramework
+namespace DKFramework::Private::Win32
 {
-	namespace Private
-	{
-		namespace Win32
-		{
-			class AppEventLoop : public DKEventLoop
-			{
-			public:
-				AppEventLoop(DKApplication* app);
-				~AppEventLoop();
+    class AppEventLoop : public DKEventLoop
+    {
+    public:
+        AppEventLoop(DKApplication* app);
+        ~AppEventLoop();
 
-				bool Run() override;
-				void Stop() override;
+        bool Run() override;
+        void Stop() override;
 
-				DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
-				DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
+        DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
+        DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
 
-			private:
-				DKApplication* appInstance;
-				DWORD threadId;
-				bool running;
-			};
-		}
-	}
+    private:
+        DKApplication* appInstance;
+        DWORD threadId;
+        bool running;
+    };
 }
 #endif // _WIN32

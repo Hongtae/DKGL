@@ -247,7 +247,7 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 
         image->SetLayout(layout,
                          accessMask,
-                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                         VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
                          VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                          state.encoder->commandBuffer->QueueFamily()->familyIndex,
                          commandBuffer);

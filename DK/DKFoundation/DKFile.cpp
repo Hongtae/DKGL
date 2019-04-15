@@ -2,7 +2,7 @@
 //  File: DKFile.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include <fcntl.h>
@@ -25,14 +25,11 @@
 #include "DKUtils.h"
 #include "DKUuid.h"
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
 #ifdef _WIN32
-        DKString GetWin32ErrorString(DWORD dwError);
+    DKString GetWin32ErrorString(DWORD dwError);
 #endif
-	}
 }
 
 #define DKFILE_INVALID_FILE_HANDLE		(-1)

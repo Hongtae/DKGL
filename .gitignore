@@ -72,3 +72,5 @@ DK/Libs/Build/
 # no xc shared
 **/*.xcodeproj/xcshareddata/
 
+DK/*.log
+

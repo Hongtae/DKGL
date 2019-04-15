@@ -113,4 +113,23 @@ void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
     encoder->commands.Add(command);
 }
 
+void ComputeCommandEncoder::Dispatch(uint32_t numGroupsX, uint32_t numGroupsY, uint32_t numGroupsZ)
+{
+    DKASSERT_DEBUG(!IsCompleted());
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState & state)
+    {
+        if (state.pipelineState)
+        {
+            [encoder dispatchThreadgroups:MTLSizeMake(numGroupsX, numGroupsY, numGroupsZ)
+                    threadsPerThreadgroup:state.pipelineState->workgroupSize] ;
+        }
+        else
+        {
+            DKASSERT_DEBUG(0);
+        }
+    });
+    encoder->commands.Add(command);
+}
+
 #endif //#if DKGL_ENABLE_METAL

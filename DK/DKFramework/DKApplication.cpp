@@ -2,32 +2,25 @@
 //  File: DKApplication.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include "DKApplication.h"
 #include "Interface/DKApplicationInterface.h"
 
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
-		void PerformOperationWithErrorHandler(const DKOperation*, size_t);
-	}
+    void PerformOperationWithErrorHandler(const DKOperation*, size_t);
 }
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		using namespace DKFoundation::Private;
-		static DKCondition appCond;
-		static DKApplication *application = NULL;
-		static bool disableLogger = false;
-	}
+    using namespace DKFoundation::Private;
+    static DKCondition appCond;
+    static DKApplication* application = NULL;
+    static bool disableLogger = false;
 }
-
 using namespace DKFramework;
 
 DKApplication::DKApplication(int argc, char* argv[])

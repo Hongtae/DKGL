@@ -9,77 +9,74 @@
 #include "DKMath.h"
 #include "DKDynamicsWorld.h"
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		struct CollisionDispatcher : public btCollisionDispatcher
-		{
-			typedef DKFunctionSignature<bool (DKCollisionObject*, DKCollisionObject*)> CollisionHandler;
-			DKObject<CollisionHandler> collisionFunc;
-			DKObject<CollisionHandler> responseFunc;
+    struct CollisionDispatcher : public btCollisionDispatcher
+    {
+        typedef DKFunctionSignature<bool (DKCollisionObject*, DKCollisionObject*)> CollisionHandler;
+        DKObject<CollisionHandler> collisionFunc;
+        DKObject<CollisionHandler> responseFunc;
 
-			CollisionDispatcher(btCollisionConfiguration* config) : btCollisionDispatcher(config) {}
+        CollisionDispatcher(btCollisionConfiguration* config) : btCollisionDispatcher(config) {}
 
-			bool needsCollision(const btCollisionObject* body0,const btCollisionObject* body1)
-			{
-				if (btCollisionDispatcher::needsCollision(body0, body1))
-				{
-					if (collisionFunc)
-					{
-						DKCollisionObject* obj0 = (DKCollisionObject*)body0->getUserPointer();
-						DKCollisionObject* obj1 = (DKCollisionObject*)body1->getUserPointer();
+        bool needsCollision(const btCollisionObject* body0,const btCollisionObject* body1)
+        {
+            if (btCollisionDispatcher::needsCollision(body0, body1))
+            {
+                if (collisionFunc)
+                {
+                    DKCollisionObject* obj0 = (DKCollisionObject*)body0->getUserPointer();
+                    DKCollisionObject* obj1 = (DKCollisionObject*)body1->getUserPointer();
 
-						return collisionFunc->Invoke(obj0, obj1);
-					}					
-					return true;
-				}
-				return false;
-			}	
-			bool needsResponse(const btCollisionObject* body0,const btCollisionObject* body1)
-			{
-				if (btCollisionDispatcher::needsResponse(body0, body1))
-				{
-					if (responseFunc)
-					{
-						DKCollisionObject* obj0 = (DKCollisionObject*)body0->getUserPointer();
-						DKCollisionObject* obj1 = (DKCollisionObject*)body1->getUserPointer();
+                    return collisionFunc->Invoke(obj0, obj1);
+                }
+                return true;
+            }
+            return false;
+        }
+        bool needsResponse(const btCollisionObject* body0,const btCollisionObject* body1)
+        {
+            if (btCollisionDispatcher::needsResponse(body0, body1))
+            {
+                if (responseFunc)
+                {
+                    DKCollisionObject* obj0 = (DKCollisionObject*)body0->getUserPointer();
+                    DKCollisionObject* obj1 = (DKCollisionObject*)body1->getUserPointer();
 
-						return responseFunc->Invoke(obj0, obj1);
-					}
-					return true;
-				}
-				return false;
-			}
-			//void dispatchAllCollisionPairs(btOverlappingPairCache* pairCache,const btDispatcherInfo& dispatchInfo,btDispatcher* dispatcher)
-			//{
-			//	btCollisionDispatcher::dispatchAllCollisionPairs(pairCache, dispatchInfo, dispatcher);
-			//}
-		};
+                    return responseFunc->Invoke(obj0, obj1);
+                }
+                return true;
+            }
+            return false;
+        }
+        //void dispatchAllCollisionPairs(btOverlappingPairCache* pairCache,const btDispatcherInfo& dispatchInfo,btDispatcher* dispatcher)
+        //{
+        //	btCollisionDispatcher::dispatchAllCollisionPairs(pairCache, dispatchInfo, dispatcher);
+        //}
+    };
 
-		CollisionWorldContext* CreateDynamicsWorldContext()
-		{
-			CollisionWorldContext* ctxt = new CollisionWorldContext();
-			ctxt->configuration = new btDefaultCollisionConfiguration();
-			ctxt->dispatcher = new CollisionDispatcher(ctxt->configuration);
-			ctxt->broadphase = new btDbvtBroadphase();
-			ctxt->solver = new btSequentialImpulseConstraintSolver();
-			ctxt->world = new btDiscreteDynamicsWorld(ctxt->dispatcher, ctxt->broadphase, ctxt->solver, ctxt->configuration);
-			ctxt->tick = 0;
-			return ctxt;
-		}
+    CollisionWorldContext* CreateDynamicsWorldContext()
+    {
+        CollisionWorldContext* ctxt = new CollisionWorldContext();
+        ctxt->configuration = new btDefaultCollisionConfiguration();
+        ctxt->dispatcher = new CollisionDispatcher(ctxt->configuration);
+        ctxt->broadphase = new btDbvtBroadphase();
+        ctxt->solver = new btSequentialImpulseConstraintSolver();
+        ctxt->world = new btDiscreteDynamicsWorld(ctxt->dispatcher, ctxt->broadphase, ctxt->solver, ctxt->configuration);
+        ctxt->tick = 0;
+        return ctxt;
+    }
 
-		struct ActionInterface : public btActionInterface
-		{
-			typedef DKFunctionSignature<void (double)>	Updater;
-			typedef DKFunctionSignature<void>			Drawer;
+    struct ActionInterface : public btActionInterface
+    {
+        typedef DKFunctionSignature<void (double)>	Updater;
+        typedef DKFunctionSignature<void>			Drawer;
 
-			DKObject<Updater> updater;
+        DKObject<Updater> updater;
 
-			void updateAction( btCollisionWorld*, btScalar delta)	{updater->Invoke(delta);}
-			void debugDraw(btIDebugDraw* debugDrawer)				{}
-		};
-	}
+        void updateAction( btCollisionWorld*, btScalar delta)	{updater->Invoke(delta);}
+        void debugDraw(btIDebugDraw* debugDrawer)				{}
+    };
 }
 
 using namespace DKFramework;

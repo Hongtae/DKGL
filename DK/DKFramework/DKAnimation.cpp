@@ -2,142 +2,135 @@
 //  File: DKAnimation.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
 #include "DKAnimation.h"
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		namespace
-		{
-			inline DKVector3 Interpolate(const DKVector3& v1, const DKVector3& v2, float t)
-			{
-				if (t <= 0)
-					return v1;
-				else if (t >= 1)
-					return v2;
-				return v1 + ((v2 - v1) * t);
-			}
-			inline DKQuaternion Interpolate(const DKQuaternion& q1, const DKQuaternion& q2, float t)
-			{
-				if (t <= 0)
-					return q1;
-				else if (t >= 1)
-					return q2;
-				return DKQuaternion::Slerp(q1, q2, t);
-			}
-			template <typename T> inline T Interpolate(const T& key1, const T& key2, float t)	// T = KeyframeNode::TranslationKey, KeyFrameNode::RotationKey, KeyFrameNode::ScaleKey
-			{
-				float interval = key2.time - key1.time;
-				float delta = t - key1.time;
+    inline DKVector3 Interpolate(const DKVector3& v1, const DKVector3& v2, float t)
+    {
+        if (t <= 0)
+            return v1;
+        else if (t >= 1)
+            return v2;
+        return v1 + ((v2 - v1) * t);
+    }
+    inline DKQuaternion Interpolate(const DKQuaternion & q1, const DKQuaternion & q2, float t)
+    {
+        if (t <= 0)
+            return q1;
+        else if (t >= 1)
+            return q2;
+        return DKQuaternion::Slerp(q1, q2, t);
+    }
+    template <typename T> inline T Interpolate(const T & key1, const T & key2, float t)	// T = KeyframeNode::TranslationKey, KeyFrameNode::RotationKey, KeyFrameNode::ScaleKey
+    {
+        float interval = key2.time - key1.time;
+        float delta = t - key1.time;
 
-				T ret = {t, Interpolate(key1.key, key2.key, delta / interval)};
-				return ret;
-			}
-			template <typename T> inline bool SortKeyframeByTime(const T& lhs, const T& rhs) // sort by time asc
-			{
-				return lhs.time < rhs.time;
-			}
-			// Clipping key frame with time scale ( 0 <= frame <= 1 ) and sort by time ascending.
-			// first, last key frame will be interpolated.
-			template <typename T> inline DKArray<T> ClipKeyframeTimeScale(const T* frames, size_t numFrames)
-			{
-				DKArray<T> output;
-				output.Reserve(numFrames);
+        T ret = { t, Interpolate(key1.key, key2.key, delta / interval) };
+        return ret;
+    }
+    template <typename T> inline bool SortKeyframeByTime(const T & lhs, const T & rhs) // sort by time asc
+    {
+        return lhs.time < rhs.time;
+    }
+    // Clipping key frame with time scale ( 0 <= frame <= 1 ) and sort by time ascending.
+    // first, last key frame will be interpolated.
+    template <typename T> inline DKArray<T> ClipKeyframeTimeScale(const T * frames, size_t numFrames)
+    {
+        DKArray<T> output;
+        output.Reserve(numFrames);
 
-				const T* beforeBeginning = NULL; // key frame just before the first. (biggest and smaller than 0.0)
-				const T* beginning = NULL;       // first frame (greater or equals to 0.0)
-				const T* afterEnding = NULL;     // key frame just after the last. (smallest and bigger than 1.0)
-				const T* ending = NULL;          // last frame (smaller or equals to 1.0)
+        const T* beforeBeginning = NULL; // key frame just before the first. (biggest and smaller than 0.0)
+        const T* beginning = NULL;       // first frame (greater or equals to 0.0)
+        const T* afterEnding = NULL;     // key frame just after the last. (smallest and bigger than 1.0)
+        const T* ending = NULL;          // last frame (smaller or equals to 1.0)
 
-				for (size_t i = 0; i < numFrames; ++i)
-				{
-					const T& f = frames[i];
+        for (size_t i = 0; i < numFrames; ++i)
+        {
+            const T& f = frames[i];
 
-					if (f.time < 0.0f)
-					{
-						// finding nearest to 0.0 from all frames smaller than 0.0
-						if (beforeBeginning == NULL || beforeBeginning->time < f.time)
-							beforeBeginning = &f;
-					}
-					else if (f.time > 1.0f)
-					{
-						// finding nearest to 1.0 from all frames bigger than 1.0
-						if (afterEnding == NULL || afterEnding->time < f.time)
-							afterEnding = &f;
-					}
-					else		// 0 <= f.time <= 1
-					{
-						if (beginning == NULL || beginning->time > f.time)
-							beginning = &f;
-						if (ending == NULL || ending->time < f.time)
-							ending = &f;
+            if (f.time < 0.0f)
+            {
+                // finding nearest to 0.0 from all frames smaller than 0.0
+                if (beforeBeginning == NULL || beforeBeginning->time < f.time)
+                    beforeBeginning = &f;
+            }
+            else if (f.time > 1.0f)
+            {
+                // finding nearest to 1.0 from all frames bigger than 1.0
+                if (afterEnding == NULL || afterEnding->time < f.time)
+                    afterEnding = &f;
+            }
+            else		// 0 <= f.time <= 1
+            {
+                if (beginning == NULL || beginning->time > f.time)
+                    beginning = &f;
+                if (ending == NULL || ending->time < f.time)
+                    ending = &f;
 
-						output.Add(f);
-					}
-				}
+                output.Add(f);
+            }
+        }
 
-				// generate interpolated first key frame with time = minT
-				if (beforeBeginning && beginning && beginning->time > 0.0f)
-				{
-					T frm = Interpolate(*beforeBeginning, *beginning, 0.0f);
-					output.Add(frm);
-				}
-				// generate interpolated last key frame with time = maxT
-				if (afterEnding && ending && ending->time < 1.0f)
-				{
-					T frm = Interpolate(*ending, *afterEnding, 1.0f);
-					output.Add(frm);
-				}
+        // generate interpolated first key frame with time = minT
+        if (beforeBeginning && beginning && beginning->time > 0.0f)
+        {
+            T frm = Interpolate(*beforeBeginning, *beginning, 0.0f);
+            output.Add(frm);
+        }
+        // generate interpolated last key frame with time = maxT
+        if (afterEnding && ending && ending->time < 1.0f)
+        {
+            T frm = Interpolate(*ending, *afterEnding, 1.0f);
+            output.Add(frm);
+        }
 
-				// sort by time ascending.
-				output.Sort(0, output.Count(), SortKeyframeByTime<T>);
-				return output;
-			}
-			template <typename T> inline DKArray<T> ClipKeyframeTimeScale(const DKArray<T>& frame)		
-			{
-				return ClipKeyframeTimeScale((const T*)frame, frame.Count());
-			}
-			// finding nearest two key frames (before the first, after the last)
-			// with (begin <= t < end)
-			template <typename T> inline bool FindNearKeyFrames(const DKArray<T>& frames, size_t begin, size_t count, T& prev, T& next, float time)
-			{
-				while (count > 2)
-				{
-					size_t middle = begin + count / 2;
-					if (frames.Value(middle).time < time)
-					{
-						count = begin + count - middle;
-						begin = middle;
-					}
-					else
-					{
-						count = middle - begin + 1;
-					}
-				}
-				if (count > 1)
-				{
-					prev = frames.Value(begin);
-					next = frames.Value(begin+1);
-					return true;
-				}
-				return false;
-			}
-			template <typename T> inline bool FindNearKeyFrames(const DKArray<T>& frames, T& prev, T& next, float time)
-			{
-				return FindNearKeyFrames(frames, 0, frames.Count(), prev, next, time);
-			}
-		}
-	}
+        // sort by time ascending.
+        output.Sort(0, output.Count(), SortKeyframeByTime<T>);
+        return output;
+    }
+    template <typename T> inline DKArray<T> ClipKeyframeTimeScale(const DKArray<T> & frame)
+    {
+        return ClipKeyframeTimeScale((const T*)frame, frame.Count());
+    }
+    // finding nearest two key frames (before the first, after the last)
+    // with (begin <= t < end)
+    template <typename T> inline bool FindNearKeyFrames(const DKArray<T> & frames, size_t begin, size_t count, T & prev, T & next, float time)
+    {
+        while (count > 2)
+        {
+            size_t middle = begin + count / 2;
+            if (frames.Value(middle).time < time)
+            {
+                count = begin + count - middle;
+                begin = middle;
+            }
+            else
+            {
+                count = middle - begin + 1;
+            }
+        }
+        if (count > 1)
+        {
+            prev = frames.Value(begin);
+            next = frames.Value(begin + 1);
+            return true;
+        }
+        return false;
+    }
+    template <typename T> inline bool FindNearKeyFrames(const DKArray<T> & frames, T & prev, T & next, float time)
+    {
+        return FindNearKeyFrames(frames, 0, frames.Count(), prev, next, time);
+    }
 }
 
 using namespace DKFramework;
 using namespace DKFramework::Private;
-
 
 DKAnimation::DKAnimation()
 	: duration(0)

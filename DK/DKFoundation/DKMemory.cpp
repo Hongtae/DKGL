@@ -974,7 +974,7 @@ namespace DKFoundation
 					}
 					else
 					{
-						DKLog("mmap returns unwanted location(%lu != %p). unmap and realloc\n", p2, p3);
+						DKLog("mmap returns unwanted location(%p != %p). unmap and realloc\n", (const void*)p2, (const void*)p3);
 						if (::munmap(p3, len) != 0)
 						{
 							DKLog("munmap failed: %s\n", strerror(errno));
@@ -996,7 +996,6 @@ namespace DKFoundation
 
 				size_t bytesCopy = Min(sizeOrig, alignedSize);
 				::memcpy(p2, p, bytesCopy);
-				p = p2;
 
 				if (::munmap(p, sizeOrig) != 0)
 				{

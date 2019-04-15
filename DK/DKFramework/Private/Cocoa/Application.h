@@ -18,35 +18,29 @@
 #include "AppEventLoop.h"
 #include "../../Interface/DKApplicationInterface.h"
 
-namespace DKFramework
+namespace DKFramework::Private::macOS
 {
-	namespace Private
-	{
-		namespace macOS
-		{
-			class Application : public DKApplicationInterface
-			{
-			public:
-				Application(DKApplication* app);
-				~Application();
+    class Application : public DKApplicationInterface
+    {
+    public:
+        Application(DKApplication* app);
+        ~Application();
 
-				DKEventLoop* EventLoop() override;
-				DKLogger* DefaultLogger() override;
+        DKEventLoop* EventLoop() override;
+        DKLogger* DefaultLogger() override;
 
-				DKString DefaultPath(SystemPath) override;
-				DKString ProcessInfoString(ProcessInfo) override;
+        DKString DefaultPath(SystemPath) override;
+        DKString ProcessInfoString(ProcessInfo) override;
 
-				DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) override;		// read-writable
-				DKObject<DKData> LoadStaticResource(const DKString& res) override;	// read-only
+        DKObject<DKData> LoadResource(const DKString& res, DKAllocator& alloc) override;		// read-writable
+        DKObject<DKData> LoadStaticResource(const DKString& res) override;	// read-only
 
-				DKRect DisplayBounds(int displayId) const override;
-				DKRect ScreenContentBounds(int displayId) const override;
+        DKRect DisplayBounds(int displayId) const override;
+        DKRect ScreenContentBounds(int displayId) const override;
 
-			private:
-				AppEventLoop mainLoop;
-			};
-		}
-	}
+    private:
+        AppEventLoop mainLoop;
+    };
 }
 #endif //if !TARGET_OS_IPHONE
 #endif //if defined(__APPLE__) && defined(__MACH__)

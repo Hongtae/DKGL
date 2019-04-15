@@ -2,7 +2,7 @@
 //  File: DKFence.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include "DKFence.h"
@@ -13,21 +13,17 @@
 
 #define BUCKET_SIZE		17
 
-namespace DKFoundation
+namespace DKFoundation::Private
 {
-	namespace Private
-	{
-		struct FData
-		{
-			DKThread::ThreadId threadId;
-			size_t count;
-		};
-		typedef DKMap<const void*, FData> Bucket;
-		static Bucket buckets[BUCKET_SIZE];
-		static DKCondition cond;
-	}
+    struct FData
+    {
+        DKThread::ThreadId threadId;
+        size_t count;
+    };
+    typedef DKMap<const void*, FData> Bucket;
+    static Bucket buckets[BUCKET_SIZE];
+    static DKCondition cond;
 }
-
 using namespace DKFoundation;
 using namespace DKFoundation::Private;
 

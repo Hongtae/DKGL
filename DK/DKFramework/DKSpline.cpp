@@ -8,43 +8,40 @@
 #include "DKMath.h"
 #include "DKSpline.h"
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
-		inline float CatmullRom(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
-		{
-			return (
-					(-1.0f*u_3 + 2.0f*u_2 - 1.0f*u + 0.0f) * cntrl0 +
-					( 3.0f*u_3 - 5.0f*u_2 + 0.0f*u + 2.0f) * cntrl1 +
-					(-3.0f*u_3 + 4.0f*u_2 + 1.0f*u + 0.0f) * cntrl2 +
-					( 1.0f*u_3 - 1.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 ) / 2.0f;
-		}
-		inline float UniformCubic(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
-		{
-			return (
-					(-1.0f*u_3 + 3.0f*u_2 - 3.0f*u + 1.0f) * cntrl0 +
-					( 3.0f*u_3 - 6.0f*u_2 + 0.0f*u + 4.0f) * cntrl1 +
-					(-3.0f*u_3 + 3.0f*u_2 + 3.0f*u + 1.0f) * cntrl2 +
-					( 1.0f*u_3 + 0.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 ) / 6.0f;
-		}
-		inline float Hermite(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
-		{
-			return (
-					( 2.0f*u_3 - 3.0f*u_2 + 0.0f*u + 1.0f) * cntrl0 +
-					(-2.0f*u_3 + 3.0f*u_2 + 0.0f*u + 0.0f) * cntrl1 +
-					( 1.0f*u_3 - 2.0f*u_2 + 1.0f*u + 0.0f) * cntrl2 +
-					( 1.0f*u_3 - 1.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 );
-		}
-		inline float Bezier(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
-		{
-			return (
-					(-1.0f*u_3 + 3.0f*u_2 - 3.0f*u + 1.0f) * cntrl0 +
-					( 3.0f*u_3 - 6.0f*u_2 + 3.0f*u + 0.0f) * cntrl1 +
-					(-3.0f*u_3 + 3.0f*u_2 + 0.0f*u + 0.0f) * cntrl2 +
-					( 1.0f*u_3 + 0.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 );
-		}
-	}
+    inline float CatmullRom(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
+    {
+        return (
+                (-1.0f*u_3 + 2.0f*u_2 - 1.0f*u + 0.0f) * cntrl0 +
+                ( 3.0f*u_3 - 5.0f*u_2 + 0.0f*u + 2.0f) * cntrl1 +
+                (-3.0f*u_3 + 4.0f*u_2 + 1.0f*u + 0.0f) * cntrl2 +
+                ( 1.0f*u_3 - 1.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 ) / 2.0f;
+    }
+    inline float UniformCubic(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
+    {
+        return (
+                (-1.0f*u_3 + 3.0f*u_2 - 3.0f*u + 1.0f) * cntrl0 +
+                ( 3.0f*u_3 - 6.0f*u_2 + 0.0f*u + 4.0f) * cntrl1 +
+                (-3.0f*u_3 + 3.0f*u_2 + 3.0f*u + 1.0f) * cntrl2 +
+                ( 1.0f*u_3 + 0.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 ) / 6.0f;
+    }
+    inline float Hermite(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
+    {
+        return (
+                ( 2.0f*u_3 - 3.0f*u_2 + 0.0f*u + 1.0f) * cntrl0 +
+                (-2.0f*u_3 + 3.0f*u_2 + 0.0f*u + 0.0f) * cntrl1 +
+                ( 1.0f*u_3 - 2.0f*u_2 + 1.0f*u + 0.0f) * cntrl2 +
+                ( 1.0f*u_3 - 1.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 );
+    }
+    inline float Bezier(float u, float u_2, float u_3, float cntrl0, float cntrl1, float cntrl2, float cntrl3)
+    {
+        return (
+                (-1.0f*u_3 + 3.0f*u_2 - 3.0f*u + 1.0f) * cntrl0 +
+                ( 3.0f*u_3 - 6.0f*u_2 + 3.0f*u + 0.0f) * cntrl1 +
+                (-3.0f*u_3 + 3.0f*u_2 + 0.0f*u + 0.0f) * cntrl2 +
+                ( 1.0f*u_3 + 0.0f*u_2 + 0.0f*u + 0.0f) * cntrl3 );
+    }
 }
 using namespace DKFramework;
 

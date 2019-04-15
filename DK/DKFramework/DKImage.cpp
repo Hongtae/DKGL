@@ -2,7 +2,7 @@
 //  File: DKImage.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
 //
 
 #include "../Libs/libpng/png.h"
@@ -14,232 +14,229 @@
 #define JPEG_BUFFER_SIZE	4096
 #define BMP_DEFAULT_PPM		96
 
-namespace DKFramework
+namespace DKFramework::Private
 {
-	namespace Private
-	{
 #pragma pack(push, 1)
-		enum BMPCompression : uint32_t
-		{
-			BMPCompressionRGB = 0L,
-			BMPCompressionRLE8 = 1L,
-			BMPCompressionRLE4 = 2L,
-			BMPCompressionBITFIELDS = 3L,
-		};
-		struct BMPFileHeader // little-endian
-		{
-			uint8_t    b; // = 'B'
-			uint8_t    m; // = 'M'
-			uint32_t   size;
-			uint16_t   reserved1;
-			uint16_t   reserved2;
-			uint32_t   offBits;
-		};
-		struct BMPCoreHeader
-		{
-			uint32_t   size;
-			uint16_t   width;
-			uint16_t   height;
-			uint16_t   planes;
-			uint16_t   bitCount;
-		};
-		static_assert(sizeof(BMPFileHeader) == 14, "Wrong BMP header!");
-		static_assert(sizeof(BMPCoreHeader) == 12, "Wrong BMP header!");
+    enum BMPCompression : uint32_t
+    {
+        BMPCompressionRGB = 0L,
+        BMPCompressionRLE8 = 1L,
+        BMPCompressionRLE4 = 2L,
+        BMPCompressionBITFIELDS = 3L,
+    };
+    struct BMPFileHeader // little-endian
+    {
+        uint8_t    b; // = 'B'
+        uint8_t    m; // = 'M'
+        uint32_t   size;
+        uint16_t   reserved1;
+        uint16_t   reserved2;
+        uint32_t   offBits;
+    };
+    struct BMPCoreHeader
+    {
+        uint32_t   size;
+        uint16_t   width;
+        uint16_t   height;
+        uint16_t   planes;
+        uint16_t   bitCount;
+    };
+    static_assert(sizeof(BMPFileHeader) == 14, "Wrong BMP header!");
+    static_assert(sizeof(BMPCoreHeader) == 12, "Wrong BMP header!");
 
-		struct BMPInfoHeader
-		{
-			uint32_t   size;
-			int32_t    width;
-			int32_t    height;
-			uint16_t   planes;
-			uint16_t   bitCount;
-			uint32_t   compression;
-			uint32_t   sizeImage;
-			int32_t    xPelsPerMeter;
-			int32_t    yPelsPerMeter;
-			uint32_t   clrUsed;
-			uint32_t   clrImportant;
-		};
+    struct BMPInfoHeader
+    {
+        uint32_t   size;
+        int32_t    width;
+        int32_t    height;
+        uint16_t   planes;
+        uint16_t   bitCount;
+        uint32_t   compression;
+        uint32_t   sizeImage;
+        int32_t    xPelsPerMeter;
+        int32_t    yPelsPerMeter;
+        uint32_t   clrUsed;
+        uint32_t   clrImportant;
+    };
 #pragma pack(pop)
 
-		struct JpegErrorMgr
-		{
-			struct jpeg_error_mgr pub;
-			jmp_buf setjmpBuffer;
-			char buffer[JMSG_LENGTH_MAX];
-		};
+    struct JpegErrorMgr
+    {
+        struct jpeg_error_mgr pub;
+        jmp_buf setjmpBuffer;
+        char buffer[JMSG_LENGTH_MAX];
+    };
 
-		enum ImageFormat
-		{
-			FormatPNG,
-			FormatJPEG,
-			FormatBMP
-		};
+    enum ImageFormat
+    {
+        FormatPNG,
+        FormatJPEG,
+        FormatBMP
+    };
 
-		inline bool IsFormatValid(DKImage::PixelFormat format)
-		{
-			switch (format)
-			{
-			case DKImage::R8:
-			case DKImage::RG8:
-			case DKImage::RGB8:
-			case DKImage::RGBA8:
-			case DKImage::R16:
-			case DKImage::RG16:
-			case DKImage::RGB16:
-			case DKImage::RGBA16:
-			case DKImage::R32:
-			case DKImage::RG32:
-			case DKImage::RGB32:
-			case DKImage::RGBA32:
-			case DKImage::R32F:
-			case DKImage::RG32F:
-			case DKImage::RGB32F:
-			case DKImage::RGBA32F:
-				return true;
-			}
-			return false;
-		}
+    inline bool IsFormatValid(DKImage::PixelFormat format)
+    {
+        switch (format)
+        {
+        case DKImage::R8:
+        case DKImage::RG8:
+        case DKImage::RGB8:
+        case DKImage::RGBA8:
+        case DKImage::R16:
+        case DKImage::RG16:
+        case DKImage::RGB16:
+        case DKImage::RGBA16:
+        case DKImage::R32:
+        case DKImage::RG32:
+        case DKImage::RGB32:
+        case DKImage::RGBA32:
+        case DKImage::R32F:
+        case DKImage::RG32F:
+        case DKImage::RGB32F:
+        case DKImage::RGBA32F:
+            return true;
+        }
+        return false;
+    }
 
-		inline bool IdentifyImageFormatFromString(const DKString& str, ImageFormat& f)
-		{
-			DKString str2 = str.LowercaseString();
-			struct {
-				const char* suffix;
-				ImageFormat format;
-			} suffixFormats[] =
-			{
-				{ ".png", FormatPNG },
-				{ ".jpg", FormatJPEG },
-				{ ".jpe", FormatJPEG },
-				{ ".jpeg", FormatJPEG },
-				{ ".bmp", FormatBMP },
-			};
-			struct {
-				const char* ext;
-				ImageFormat format;
-			} extFormats[] =
-			{
-				{ "png", FormatPNG },
-				{ "jpg", FormatJPEG },
-				{ "jpe", FormatJPEG },
-				{ "jpeg", FormatJPEG },
-				{ "bmp", FormatBMP },
-				{ "image/png", FormatPNG },
-				{ "image/jpeg", FormatJPEG },
-				{ "image/bmp", FormatBMP },
-			};
-			for (auto& fmt : suffixFormats)
-			{
-				if (str2.HasSuffix(fmt.suffix))
-				{
-					f = fmt.format;
-					return true;
-				}
-			}
-			for (auto& fmt : extFormats)
-			{
-				if (str2.Compare(fmt.ext) == 0)
-				{
-					f = fmt.format;
-					return true;
-				}
-			}
-			return false;
-		}
+    inline bool IdentifyImageFormatFromString(const DKString& str, ImageFormat& f)
+    {
+        DKString str2 = str.LowercaseString();
+        struct {
+            const char* suffix;
+            ImageFormat format;
+        } suffixFormats[] =
+        {
+            { ".png", FormatPNG },
+            { ".jpg", FormatJPEG },
+            { ".jpe", FormatJPEG },
+            { ".jpeg", FormatJPEG },
+            { ".bmp", FormatBMP },
+        };
+        struct {
+            const char* ext;
+            ImageFormat format;
+        } extFormats[] =
+        {
+            { "png", FormatPNG },
+            { "jpg", FormatJPEG },
+            { "jpe", FormatJPEG },
+            { "jpeg", FormatJPEG },
+            { "bmp", FormatBMP },
+            { "image/png", FormatPNG },
+            { "image/jpeg", FormatJPEG },
+            { "image/bmp", FormatBMP },
+        };
+        for (auto& fmt : suffixFormats)
+        {
+            if (str2.HasSuffix(fmt.suffix))
+            {
+                f = fmt.format;
+                return true;
+            }
+        }
+        for (auto& fmt : extFormats)
+        {
+            if (str2.Compare(fmt.ext) == 0)
+            {
+                f = fmt.format;
+                return true;
+            }
+        }
+        return false;
+    }
 
-		inline bool IdentifyImageFormatFromHeader(const uint8_t* p, size_t s, ImageFormat& f)
-		{
-			if (p && s > 0)
-			{
-				if (s >= sizeof(BMPFileHeader))
-				{
-					if (p[0] == 'B' && p[1] == 'M')
-					{
-						f = FormatBMP;
-						return true;
-					}
-				}
-				if (s >= 8)
-				{
-					const png_byte png_signature[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
-					bool png = true;
-					for (int i = 0; i < 8; ++i)
-					{
-						if (png_signature[i] != p[i])
-							png = false;
-						break;
-					}
-					if (png)
-					{
-						f = FormatPNG;
-						return true;
-					}
-				}
-				if (s > 3)
-				{
-					if (p[0] == 0xff && p[1] == 0xd8 && p[2] == 0xff)
-					{
-						f = FormatJPEG;
-						return true;
-					}
-				}
-			}
-			return false;
-		};
+    inline bool IdentifyImageFormatFromHeader(const uint8_t* p, size_t s, ImageFormat& f)
+    {
+        if (p && s > 0)
+        {
+            if (s >= sizeof(BMPFileHeader))
+            {
+                if (p[0] == 'B' && p[1] == 'M')
+                {
+                    f = FormatBMP;
+                    return true;
+                }
+            }
+            if (s >= 8)
+            {
+                const png_byte png_signature[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
+                bool png = true;
+                for (int i = 0; i < 8; ++i)
+                {
+                    if (png_signature[i] != p[i])
+                        png = false;
+                    break;
+                }
+                if (png)
+                {
+                    f = FormatPNG;
+                    return true;
+                }
+            }
+            if (s > 3)
+            {
+                if (p[0] == 0xff && p[1] == 0xd8 && p[2] == 0xff)
+                {
+                    f = FormatJPEG;
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
 
-		inline size_t BytesPerPixel(DKImage::PixelFormat format)
-		{
-			switch (format)
-			{
-			case DKImage::R8:		return 1;
-			case DKImage::RG8:		return 2;
-			case DKImage::RGB8:		return 3;
-			case DKImage::RGBA8:	return 4;
-			case DKImage::R16:		return 2;
-			case DKImage::RG16:		return 4;
-			case DKImage::RGB16:	return 6;
-			case DKImage::RGBA16:	return 8;
-			case DKImage::R32:		return 4;
-			case DKImage::RG32:		return 8;
-			case DKImage::RGB32:	return 12;
-			case DKImage::RGBA32:	return 16;
-			case DKImage::R32F:		return 4;
-			case DKImage::RG32F:	return 8;
-			case DKImage::RGB32F:	return 12;
-			case DKImage::RGBA32F:	return 16;
-			}
-			return 0;
-		}
+    inline size_t BytesPerPixel(DKImage::PixelFormat format)
+    {
+        switch (format)
+        {
+        case DKImage::R8:		return 1;
+        case DKImage::RG8:		return 2;
+        case DKImage::RGB8:		return 3;
+        case DKImage::RGBA8:	return 4;
+        case DKImage::R16:		return 2;
+        case DKImage::RG16:		return 4;
+        case DKImage::RGB16:	return 6;
+        case DKImage::RGBA16:	return 8;
+        case DKImage::R32:		return 4;
+        case DKImage::RG32:		return 8;
+        case DKImage::RGB32:	return 12;
+        case DKImage::RGBA32:	return 16;
+        case DKImage::R32F:		return 4;
+        case DKImage::RG32F:	return 8;
+        case DKImage::RGB32F:	return 12;
+        case DKImage::RGBA32F:	return 16;
+        }
+        return 0;
+    }
 
-		// register image extensions to resource-loader.
-		int RegisterImageFileExts()
-		{
-			const wchar_t* exts[] = {
-				L"bmp",
-				L"jpg", L"jpeg", L"jpe",
-				L"png",
-				L"tga",
-				NULL };
+    // register image extensions to resource-loader.
+    int RegisterImageFileExts()
+    {
+        const wchar_t* exts[] = {
+            L"bmp",
+            L"jpg", L"jpeg", L"jpe",
+            L"png",
+            L"tga",
+            NULL };
 
-			auto loaderProc = [](DKStream* stream, DKAllocator&)->DKObject<DKResource>
-			{
-				return DKImage::Create(stream).SafeCast<DKResource>();
-			};
-			DKObject<DKResourceLoader::ResourceLoader> loader = DKFunction(loaderProc);
+        auto loaderProc = [](DKStream * stream, DKAllocator&)->DKObject<DKResource>
+        {
+            return DKImage::Create(stream).SafeCast<DKResource>();
+        };
+        DKObject<DKResourceLoader::ResourceLoader> loader = DKFunction(loaderProc);
 
-			int num = 0;
-			while (exts[num])
-			{
-				DKResourceLoader::SetResourceFileExtension(exts[num], loader);
-				num++;
-			}
-			return num;
-		}
-		// make sure to allocator exists before register ext-types.
-		static DKAllocator::Maintainer init;
-		int numRegisteredImageExts = RegisterImageFileExts();
-	}
+        int num = 0;
+        while (exts[num])
+        {
+            DKResourceLoader::SetResourceFileExtension(exts[num], loader);
+            num++;
+        }
+        return num;
+    }
+    // make sure to allocator exists before register ext-types.
+    static DKAllocator::Maintainer init;
+    int numRegisteredImageExts = RegisterImageFileExts();
 }
 using namespace DKFramework;
 using namespace DKFramework::Private;
