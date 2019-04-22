@@ -34,7 +34,7 @@ namespace DKFramework
         DKStencilOperationDecrementWrap,
     };
 
-	class DKStencilDescriptor
+	struct DKStencilDescriptor
 	{
         DKCompareFunction stencilCompareFunction = DKCompareFunctionAlways;
         DKStencilOperation stencilFailureOperation = DKStencilOperationKeep;
@@ -44,7 +44,7 @@ namespace DKFramework
         uint32_t writeMask;
 	};
 
-	class DKDepthStencilDescriptor
+	struct DKDepthStencilDescriptor
 	{
         DKCompareFunction depthCompareFunction = DKCompareFunctionAlways;
         DKStencilDescriptor frontFaceStencil;
