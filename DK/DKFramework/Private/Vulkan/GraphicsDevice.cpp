@@ -1030,7 +1030,7 @@ DKObject<DescriptorSet> GraphicsDevice::CreateDescriptorSet(DKGraphicsDevice* de
     if (poolId.mask)
     {
         DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
-        uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+        uint32_t index = hash.digest[0] % NumDescriptorPoolChainBuckets;
 
         DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
 
@@ -1068,7 +1068,7 @@ void GraphicsDevice::DestroyDescriptorSets(DescriptorPool* pool, VkDescriptorSet
     DKASSERT_DEBUG(poolId.mask);
 
     DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
-    uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+    uint32_t index = hash.digest[0] % NumDescriptorPoolChainBuckets;
 
     DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
 
