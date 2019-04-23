@@ -32,7 +32,7 @@ namespace DKFramework::Private::Metal
 
     DKShaderResource ShaderResourceFromMTLArgument(MTLArgument* arg, const DKArray<ResourceBinding>& bindingMap, DKShaderStage stage)
     {
-        struct GetStructTypeData
+        struct StructTypeData
         {
             DKString name;
             DKShaderResource& base;
@@ -70,7 +70,7 @@ namespace DKFramework::Private::Metal
                     if (memberStruct)
                     {
                         DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
-                        mb.typeInfoKey = GetStructTypeData{ typeKey, base }.operator() (memberStruct);
+                        mb.typeInfoKey = StructTypeData{ typeKey, base }.operator() (memberStruct);
                     }
                     output.members.Add(mb);
                 }
@@ -108,7 +108,7 @@ namespace DKFramework::Private::Metal
                 res.typeInfo.buffer.dataType = ShaderDataType(arg.bufferDataType);
                 if (arg.bufferDataType == MTLDataTypeStruct)
                 {
-                    res.typeInfoKey = GetStructTypeData{res.name, res}.operator()(arg.bufferStructType);
+                    res.typeInfoKey = StructTypeData{res.name, res}.operator()(arg.bufferStructType);
                 }
                 else
                 {
@@ -504,8 +504,54 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	DKObject<RenderPipelineState> state = NULL;
 	@autoreleasepool {
 		NSError* error = nil;
+        auto compareFunction = [](DKCompareFunction fn)->MTLCompareFunction
+        {
+            switch (fn)
+            {
+                case DKCompareFunctionNever:            return MTLCompareFunctionNever;
+                case DKCompareFunctionLess:             return MTLCompareFunctionLess;
+                case DKCompareFunctionEqual:            return MTLCompareFunctionEqual;
+                case DKCompareFunctionLessEqual:        return MTLCompareFunctionLessEqual;
+                case DKCompareFunctionGreater:          return MTLCompareFunctionGreater;
+                case DKCompareFunctionNotEqual:         return MTLCompareFunctionNotEqual;
+                case DKCompareFunctionGreaterEqual:     return MTLCompareFunctionGreaterEqual;
+                case DKCompareFunctionAlways:           return MTLCompareFunctionAlways;
+            }
+            DKASSERT_DEBUG(0);
+            return MTLCompareFunctionNever;
+        };
+        auto stencilOperation = [](DKStencilOperation op)->MTLStencilOperation
+        {
+            switch (op)
+            {
+                case DKStencilOperationKeep:            return MTLStencilOperationKeep;
+                case DKStencilOperationZero:            return MTLStencilOperationZero;
+                case DKStencilOperationReplace:         return MTLStencilOperationReplace;
+                case DKStencilOperationIncrementClamp:  return MTLStencilOperationIncrementClamp;
+                case DKStencilOperationDecrementClamp:  return MTLStencilOperationDecrementClamp;
+                case DKStencilOperationInvert:          return MTLStencilOperationInvert;
+                case DKStencilOperationIncrementWrap:   return MTLStencilOperationIncrementWrap;
+                case DKStencilOperationDecrementWrap:   return MTLStencilOperationDecrementWrap;
+            }
+            DKASSERT_DEBUG(0);
+            return MTLStencilOperationKeep;
+        };
+        auto setStencilDescriptor = [&](MTLStencilDescriptor* stencil, const DKStencilDescriptor& desc)
+        {
+            stencil.stencilFailureOperation = stencilOperation(desc.stencilFailureOperation);
+            stencil.depthFailureOperation = stencilOperation(desc.depthFailOperation);
+            stencil.depthStencilPassOperation = stencilOperation(desc.depthStencilPassOperation);
+            stencil.stencilCompareFunction = compareFunction(desc.stencilCompareFunction);
+            stencil.readMask = desc.readMask;
+            stencil.writeMask = desc.writeMask;
+        };
+
         // Create MTLDepthStencilState object.
         MTLDepthStencilDescriptor* depthStencilDescriptor = [[[MTLDepthStencilDescriptor alloc] init] autorelease];
+        depthStencilDescriptor.depthCompareFunction = compareFunction(desc.depthStencilDescriptor.depthCompareFunction);
+        depthStencilDescriptor.depthWriteEnabled = desc.depthStencilDescriptor.depthWriteEnabled;
+        setStencilDescriptor(depthStencilDescriptor.frontFaceStencil, desc.depthStencilDescriptor.frontFaceStencil);
+        setStencilDescriptor(depthStencilDescriptor.backFaceStencil, desc.depthStencilDescriptor.backFaceStencil);
 
         id<MTLDepthStencilState> depthStencilState = [device newDepthStencilStateWithDescriptor:depthStencilDescriptor];
         DKASSERT_DEBUG(depthStencilState);
@@ -536,7 +582,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
             descriptor.fragmentFunction = fragmentFunction->function;
         }
 
-		auto GetVertexFormat = [](DKVertexFormat f)->MTLVertexFormat
+		auto vertexFormat = [](DKVertexFormat f)->MTLVertexFormat
 		{
 			switch (f)
 			{
@@ -585,7 +631,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			return MTLVertexFormatInvalid;
 		};
 
-		auto GetVertexStepFunction = [](DKVertexStepRate fn)->MTLVertexStepFunction
+		auto vertexStepFunction = [](DKVertexStepRate fn)->MTLVertexStepFunction
 		{
 			switch (fn)
 			{
@@ -596,7 +642,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			return MTLVertexStepFunctionConstant;
 		};
 
-		auto GetBlendFactor = [](DKBlendFactor f)->MTLBlendFactor
+		auto blendFactor = [](DKBlendFactor f)->MTLBlendFactor
 		{
 			switch (f)
 			{
@@ -617,7 +663,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				case DKBlendFactor::OneMinusBlendAlpha:			return MTLBlendFactorOneMinusBlendAlpha;
 			}
 		};
-		auto GetBlendOperation = [](DKBlendOperation o)->MTLBlendOperation
+		auto blendOperation = [](DKBlendOperation o)->MTLBlendOperation
 		{
 			switch (o)
 			{
@@ -628,7 +674,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 				case DKBlendOperation::Max:				return MTLBlendOperationMax;
 			}
 		};
-		auto GetColorWriteMask = [](DKColorWriteMask mask)->MTLColorWriteMask
+		auto colorWriteMask = [](DKColorWriteMask mask)->MTLColorWriteMask
 		{
 			MTLColorWriteMask value = MTLColorWriteMaskNone;
 			if (mask & DKColorWriteMaskRed)		value |= MTLColorWriteMaskRed;
@@ -638,27 +684,37 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			return value;
 		};
 
+        // setup color-attachments
 		for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
 		{
 			MTLRenderPipelineColorAttachmentDescriptor* colorAttachmentDesc = [descriptor.colorAttachments objectAtIndexedSubscript:attachment.index];
 			colorAttachmentDesc.pixelFormat = PixelFormat(attachment.pixelFormat);
-			colorAttachmentDesc.writeMask = GetColorWriteMask(attachment.writeMask);
+			colorAttachmentDesc.writeMask = colorWriteMask(attachment.writeMask);
 			colorAttachmentDesc.blendingEnabled = attachment.blendingEnabled;
-			colorAttachmentDesc.alphaBlendOperation = GetBlendOperation(attachment.alphaBlendOperation);
-			colorAttachmentDesc.rgbBlendOperation = GetBlendOperation(attachment.rgbBlendOperation);
-			colorAttachmentDesc.sourceRGBBlendFactor = GetBlendFactor(attachment.sourceRGBBlendFactor);
-			colorAttachmentDesc.sourceAlphaBlendFactor = GetBlendFactor(attachment.sourceAlphaBlendFactor);
-			colorAttachmentDesc.destinationRGBBlendFactor = GetBlendFactor(attachment.destinationRGBBlendFactor);
-			colorAttachmentDesc.destinationAlphaBlendFactor = GetBlendFactor(attachment.destinationAlphaBlendFactor);
+			colorAttachmentDesc.alphaBlendOperation = blendOperation(attachment.alphaBlendOperation);
+			colorAttachmentDesc.rgbBlendOperation = blendOperation(attachment.rgbBlendOperation);
+			colorAttachmentDesc.sourceRGBBlendFactor = blendFactor(attachment.sourceRGBBlendFactor);
+			colorAttachmentDesc.sourceAlphaBlendFactor = blendFactor(attachment.sourceAlphaBlendFactor);
+			colorAttachmentDesc.destinationRGBBlendFactor = blendFactor(attachment.destinationRGBBlendFactor);
+			colorAttachmentDesc.destinationAlphaBlendFactor = blendFactor(attachment.destinationAlphaBlendFactor);
 		}
 
+        // setup depth attachment.
+        descriptor.depthAttachmentPixelFormat = MTLPixelFormatInvalid;
+        descriptor.stencilAttachmentPixelFormat = MTLPixelFormatInvalid;
+        if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat))
+            descriptor.depthAttachmentPixelFormat = PixelFormat(desc.depthStencilAttachmentPixelFormat);
+        if (DKPixelFormatIsStencilFormat(desc.depthStencilAttachmentPixelFormat))
+            descriptor.stencilAttachmentPixelFormat = PixelFormat(desc.depthStencilAttachmentPixelFormat);
+
+        // setup vertex buffer and attributes.
         if (desc.vertexDescriptor.attributes.Count() > 0 || desc.vertexDescriptor.layouts.Count() > 0)
 		{
 			MTLVertexDescriptor *vertexDescriptor = [MTLVertexDescriptor vertexDescriptor];
 			for (const DKVertexAttributeDescriptor& attrDesc : desc.vertexDescriptor.attributes)
 			{
 				MTLVertexAttributeDescriptor* attr = [vertexDescriptor.attributes objectAtIndexedSubscript:attrDesc.location];
-				attr.format = GetVertexFormat(attrDesc.format);
+				attr.format = vertexFormat(attrDesc.format);
 				attr.offset = attrDesc.offset;
 				NSUInteger bufferIndex = vertexAttributeOffset + attrDesc.bufferIndex;
 				attr.bufferIndex = bufferIndex;
@@ -667,7 +723,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			{
 				NSUInteger bufferIndex = vertexAttributeOffset + layoutDesc.bufferIndex;
 				MTLVertexBufferLayoutDescriptor* layout = [vertexDescriptor.layouts objectAtIndexedSubscript:bufferIndex];
-				layout.stepFunction = GetVertexStepFunction(layoutDesc.step);
+				layout.stepFunction = vertexStepFunction(layoutDesc.step);
 				layout.stepRate = 1;
 				layout.stride = layoutDesc.stride;
 			}
@@ -960,15 +1016,15 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
         texDesc.storageMode = MTLStorageModePrivate;
         texDesc.allowGPUOptimizedContents = YES;
 
-        MTLTextureUsage usage = 0; // MTLTextureUsageUnknown;
+        texDesc.usage = 0; // MTLTextureUsageUnknown;
         if (desc.usage & (DKTexture::UsageSampled | DKTexture::UsageShaderRead))
-            usage |= MTLTextureUsageShaderRead;
+            texDesc.usage |= MTLTextureUsageShaderRead;
         if (desc.usage & (DKTexture::UsageStorage | DKTexture::UsageShaderWrite))
-            usage |= MTLTextureUsageShaderWrite;
+            texDesc.usage |= MTLTextureUsageShaderWrite;
         if (desc.usage & DKTexture::UsageRenderTarget)
-            usage |= MTLTextureUsageRenderTarget;
+            texDesc.usage |= MTLTextureUsageRenderTarget;
         if (desc.usage & DKTexture::UsagePixelFormatView)
-            usage |= MTLTextureUsagePixelFormatView; // view with a different pixel format.
+            texDesc.usage |= MTLTextureUsagePixelFormatView; // view with a different pixel format.
 
         id<MTLTexture> texture = [device newTextureWithDescriptor:texDesc];
         if (texture)
