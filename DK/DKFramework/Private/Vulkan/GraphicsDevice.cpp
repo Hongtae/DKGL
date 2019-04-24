@@ -963,7 +963,7 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
     if (poolId.mask)
     {
         DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
-        uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+        uint32_t index = hash.digest[0] % NumDescriptorPoolChainBuckets;
 
         DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
 
@@ -1030,7 +1030,7 @@ DKObject<DescriptorSet> GraphicsDevice::CreateDescriptorSet(DKGraphicsDevice* de
     if (poolId.mask)
     {
         DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
-        uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+        uint32_t index = hash.digest[0] % NumDescriptorPoolChainBuckets;
 
         DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
 
@@ -1068,7 +1068,7 @@ void GraphicsDevice::DestroyDescriptorSets(DescriptorPool* pool, VkDescriptorSet
     DKASSERT_DEBUG(poolId.mask);
 
     DKHashResult32 hash = DKHashCRC32(&poolId, sizeof(poolId));
-    uint32_t index = hash.digest[9] % NumDescriptorPoolChainBuckets;
+    uint32_t index = hash.digest[0] % NumDescriptorPoolChainBuckets;
 
     DescriptorPoolChainMap& dpChainMap = descriptorPoolChainMaps[index];
 
@@ -1638,8 +1638,72 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// setup depth-stencil
 	VkPipelineDepthStencilStateCreateInfo depthStencilState = { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO };
-	pipelineCreateInfo.pDepthStencilState = &depthStencilState;
+    auto compareOp = [](DKCompareFunction f)->VkCompareOp
+    {
+        switch (f)
+        {
+        case DKCompareFunctionNever:        return VK_COMPARE_OP_NEVER;
+        case DKCompareFunctionLess:         return VK_COMPARE_OP_LESS;
+        case DKCompareFunctionEqual:        return VK_COMPARE_OP_EQUAL;
+        case DKCompareFunctionLessEqual:    return VK_COMPARE_OP_LESS_OR_EQUAL;
+        case DKCompareFunctionGreater:      return VK_COMPARE_OP_GREATER;
+        case DKCompareFunctionNotEqual:     return VK_COMPARE_OP_NOT_EQUAL;
+        case DKCompareFunctionGreaterEqual: return VK_COMPARE_OP_GREATER_OR_EQUAL;
+        case DKCompareFunctionAlways:       return VK_COMPARE_OP_ALWAYS;
+        }
+        DKASSERT_DEBUG(0);
+        return VK_COMPARE_OP_ALWAYS;
+    };
+    auto stencilOp = [](DKStencilOperation o)->VkStencilOp
+    {
+        switch (o)
+        {
+        case DKStencilOperationKeep:            return VK_STENCIL_OP_KEEP;
+        case DKStencilOperationZero:            return VK_STENCIL_OP_ZERO;
+        case DKStencilOperationReplace:         return VK_STENCIL_OP_REPLACE;
+        case DKStencilOperationIncrementClamp:  return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
+        case DKStencilOperationDecrementClamp:  return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
+        case DKStencilOperationInvert:          return VK_STENCIL_OP_INVERT;
+        case DKStencilOperationIncrementWrap:   return VK_STENCIL_OP_INCREMENT_AND_WRAP;
+        case DKStencilOperationDecrementWrap:   return VK_STENCIL_OP_DECREMENT_AND_WRAP;
+        }
+        DKASSERT_DEBUG(0);
+        return VK_STENCIL_OP_KEEP;
+    };
+    auto setStencilOpState = [&](VkStencilOpState & state, const DKStencilDescriptor & stencil)
+    {
+        state.failOp = stencilOp(stencil.stencilFailureOperation);
+        state.passOp = stencilOp(stencil.depthStencilPassOperation);
+        state.depthFailOp = stencilOp(stencil.depthFailOperation);
+        state.compareOp = compareOp(stencil.stencilCompareFunction);
+        state.compareMask = stencil.readMask;
+        state.writeMask = stencil.writeMask;
+        state.reference = 0; // use dynamic state (VK_DYNAMIC_STATE_STENCIL_REFERENCE)
+    };
+    depthStencilState.depthTestEnable = VK_TRUE;
+    depthStencilState.depthWriteEnable = desc.depthStencilDescriptor.depthWriteEnabled;
+    depthStencilState.depthCompareOp = compareOp(desc.depthStencilDescriptor.depthCompareFunction);
+    depthStencilState.depthBoundsTestEnable = VK_FALSE;
+    setStencilOpState(depthStencilState.front, desc.depthStencilDescriptor.frontFaceStencil);
+    setStencilOpState(depthStencilState.back, desc.depthStencilDescriptor.backFaceStencil);
+    depthStencilState.stencilTestEnable = VK_TRUE;
 
+    if (depthStencilState.front.failOp == VK_STENCIL_OP_KEEP &&
+        depthStencilState.front.passOp == VK_STENCIL_OP_KEEP &&
+        depthStencilState.front.depthFailOp == VK_STENCIL_OP_KEEP &&
+        depthStencilState.back.failOp == VK_STENCIL_OP_KEEP &&
+        depthStencilState.back.passOp == VK_STENCIL_OP_KEEP &&
+        depthStencilState.back.depthFailOp == VK_STENCIL_OP_KEEP)
+    {
+        depthStencilState.stencilTestEnable = VK_FALSE;
+    }
+    if (depthStencilState.depthWriteEnable == VK_FALSE &&
+        depthStencilState.depthCompareOp == VK_COMPARE_OP_ALWAYS)
+    {
+        depthStencilState.depthTestEnable = VK_FALSE;
+    }
+
+	pipelineCreateInfo.pDepthStencilState = &depthStencilState;
 
 	// dynamic states
 	VkDynamicState dynamicStateEnables[] = {
@@ -1673,7 +1737,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	colorBlendAttachmentStates.Reserve(desc.colorAttachments.Count());
 
 
-	auto GetBlendOperation = [](DKBlendOperation o)->VkBlendOp
+	auto blendOperation = [](DKBlendOperation o)->VkBlendOp
 	{
 		switch (o)
 		{
@@ -1684,9 +1748,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		case DKBlendOperation::Max:					return VK_BLEND_OP_MAX;
 		}
 		DKASSERT_DEBUG(0);
-		return VkBlendOp(0);
+		return VK_BLEND_OP_ADD;
 	};
-	auto GetBlendFactor = [](DKBlendFactor f)->VkBlendFactor
+	auto blendFactor = [](DKBlendFactor f)->VkBlendFactor
 	{
 		switch (f)
 		{
@@ -1707,7 +1771,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		case DKBlendFactor::OneMinusBlendAlpha:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
 		}
 		DKASSERT_DEBUG(0);
-		return VkBlendFactor(0);
+		return VK_BLEND_FACTOR_ZERO;
 	};
 
 	uint32_t colorAttachmentRefCount = 0;
@@ -1738,12 +1802,12 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 		VkPipelineColorBlendAttachmentState blendState;
 		blendState.blendEnable = attachment.blendingEnabled;
-		blendState.srcColorBlendFactor = GetBlendFactor(attachment.sourceRGBBlendFactor);
-		blendState.dstColorBlendFactor = GetBlendFactor(attachment.destinationRGBBlendFactor);
-		blendState.colorBlendOp = GetBlendOperation(attachment.rgbBlendOperation);
-		blendState.srcAlphaBlendFactor = GetBlendFactor(attachment.sourceAlphaBlendFactor);
-		blendState.dstAlphaBlendFactor = GetBlendFactor(attachment.destinationAlphaBlendFactor);
-		blendState.alphaBlendOp = GetBlendOperation(attachment.alphaBlendOperation);
+		blendState.srcColorBlendFactor = blendFactor(attachment.sourceRGBBlendFactor);
+		blendState.dstColorBlendFactor = blendFactor(attachment.destinationRGBBlendFactor);
+		blendState.colorBlendOp = blendOperation(attachment.rgbBlendOperation);
+		blendState.srcAlphaBlendFactor = blendFactor(attachment.sourceAlphaBlendFactor);
+		blendState.dstAlphaBlendFactor = blendFactor(attachment.destinationAlphaBlendFactor);
+		blendState.alphaBlendOp = blendOperation(attachment.alphaBlendOperation);
 
 		blendState.colorWriteMask = 0;
 		if (attachment.writeMask & DKColorWriteMaskRed)		blendState.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
@@ -1764,6 +1828,17 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	subpassDesc.pInputAttachments = subpassInputAttachmentRefs;
 	if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat))
 	{
+        subpassDepthStencilAttachment.attachment = (uint32_t)attachmentDescriptions.Count();
+        subpassDepthStencilAttachment.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        // add depth-stencil attachment description
+        VkAttachmentDescription attachmentDesc = {};
+        attachmentDesc.format = PixelFormat(desc.depthStencilAttachmentPixelFormat);
+        attachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
+        attachmentDesc.loadOp = attachmentDesc.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        attachmentDesc.storeOp = attachmentDesc.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        attachmentDesc.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        attachmentDesc.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        attachmentDescriptions.Add(attachmentDesc);
 		subpassDesc.pDepthStencilAttachment = &subpassDepthStencilAttachment;
 	}
 

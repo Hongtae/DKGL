@@ -395,7 +395,8 @@ DKMatrix4& DKMatrix4::Inverse(bool* r)
     else
     {
 #ifdef DKGL_DEBUG_ENABLED
-        DKLogE("DKMatrix4::Inverse failed");
+        if (!b)
+            DKLogE("DKMatrix4::Inverse failed");
 #endif
     }
     return *this;

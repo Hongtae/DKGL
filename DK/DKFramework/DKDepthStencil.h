@@ -34,16 +34,21 @@ namespace DKFramework
         DKStencilOperationDecrementWrap,
     };
 
-
-	class DKStencilDescriptor
+	struct DKStencilDescriptor
 	{
+        DKCompareFunction stencilCompareFunction = DKCompareFunctionAlways;
+        DKStencilOperation stencilFailureOperation = DKStencilOperationKeep;
+        DKStencilOperation depthFailOperation = DKStencilOperationKeep;
+        DKStencilOperation depthStencilPassOperation = DKStencilOperationKeep;
+        uint32_t readMask;
+        uint32_t writeMask;
 	};
 
-	class DKDepthStencilDescriptor
+    struct DKDepthStencilDescriptor
 	{
-	};
-
-	class DKDepthStencilState
-	{
+        DKCompareFunction depthCompareFunction = DKCompareFunctionAlways;
+        DKStencilDescriptor frontFaceStencil;
+        DKStencilDescriptor backFaceStencil;
+        bool depthWriteEnabled = false;
 	};
 }

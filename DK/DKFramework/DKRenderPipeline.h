@@ -10,6 +10,7 @@
 #include "DKPixelFormat.h"
 #include "DKShaderFunction.h"
 #include "DKVertexDescriptor.h"
+#include "DKDepthStencil.h"
 
 namespace DKFramework
 {
@@ -109,6 +110,8 @@ namespace DKFramework
 		DKVertexDescriptor vertexDescriptor;
 		DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
 		DKPixelFormat depthStencilAttachmentPixelFormat;
+
+        DKDepthStencilDescriptor depthStencilDescriptor;
 
 		DKPrimitiveType primitiveTopology;
 		DKTriangleFillMode triangleFillMode = DKTriangleFillMode::Fill;

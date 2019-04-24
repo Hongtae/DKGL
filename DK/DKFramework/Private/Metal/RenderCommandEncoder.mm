@@ -170,6 +170,7 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 	{
 		id<MTLRenderPipelineState> pipelineState = pipeline->pipelineState;
 		[encoder setRenderPipelineState:pipelineState];
+        [encoder setDepthStencilState:pipeline->depthStencilState];
 		state.pipelineState = pipeline;
 	});
 	encoder->commands.Add(command);
