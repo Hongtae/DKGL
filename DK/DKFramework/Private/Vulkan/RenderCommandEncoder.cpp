@@ -151,11 +151,11 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
             }
             switch (depthStencilAttachment.storeAction)
             {
-            case DKRenderPassAttachmentDescriptor::StoreActionDontCare:
-                attachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-                break;
             case DKRenderPassAttachmentDescriptor::StoreActionStore:
                 attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+                break;
+            default:
+                attachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
                 break;
             }
             attachment.stencilLoadOp = attachment.loadOp;

@@ -1826,9 +1826,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	subpassDesc.pResolveAttachments = subpassResolveAttachmentRefs;
 	subpassDesc.inputAttachmentCount = (uint32_t)subpassInputAttachmentRefs.Count();
 	subpassDesc.pInputAttachments = subpassInputAttachmentRefs;
-	if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat))
+	if (DKPixelFormatIsDepthFormat(desc.depthStencilAttachmentPixelFormat) ||
+        DKPixelFormatIsStencilFormat(desc.depthStencilAttachmentPixelFormat))
 	{
-        subpassDepthStencilAttachment.attachment = (uint32_t)attachmentDescriptions.Count();
+        subpassDepthStencilAttachment.attachment = (uint32_t)attachmentDescriptions.Count(); // attachment index
         subpassDepthStencilAttachment.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
         // add depth-stencil attachment description
         VkAttachmentDescription attachmentDesc = {};
