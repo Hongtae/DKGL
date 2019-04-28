@@ -989,7 +989,7 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
             VkDescriptorSetLayoutBinding  layoutBinding = {};
             layoutBinding.binding = binding.binding;
             layoutBinding.descriptorType = DescriptorType(binding.type);
-            layoutBinding.descriptorCount = binding.length;
+            layoutBinding.descriptorCount = binding.arrayLength;
 
             // input-attachment is for the fragment shader only! (framebuffer load operation)
             if (layoutBinding.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT &&
