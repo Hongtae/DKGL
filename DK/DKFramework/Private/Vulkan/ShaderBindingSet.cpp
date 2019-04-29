@@ -490,12 +490,7 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
                 imageLayout = VK_IMAGE_LAYOUT_GENERAL;
                 break;
             case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-                if (DKPixelFormatIsColorFormat(pixelFormat))
-                    imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-                else if (DKPixelFormatIsDepthFormat(pixelFormat))
-                    imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-                else if (DKPixelFormatIsStencilFormat(pixelFormat))
-                    imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+                imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                 break;
             default:
                 imageLayout = VK_IMAGE_LAYOUT_GENERAL;
@@ -523,6 +518,14 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
                 DKASSERT_DEBUG(dynamic_cast<ImageView*>(textureArray[i]) != nullptr);
                 ImageView* imageView = static_cast<ImageView*>(textureArray[i]);
                 DKASSERT_DEBUG(imageView->imageView);
+
+                if (descriptor.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT)
+                {
+                    if (!(imageView->image->usage & VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT))
+                    {
+                        DKLogE("ImageView image does not have usage flag:VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT");
+                    }
+                }
 
                 VkDescriptorImageInfo& imageInfo = descriptorBinding->imageInfos.Value(i);
                 imageInfo.imageView = imageView->imageView;

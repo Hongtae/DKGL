@@ -1265,11 +1265,13 @@ DKObject<DKTexture> GraphicsDevice::CreateTexture(DKGraphicsDevice* dev, const D
         imageCreateInfo.usage |= VK_IMAGE_USAGE_STORAGE_BIT;
     if (desc.usage & DKTexture::UsageRenderTarget)
     {
+        imageCreateInfo.usage |= VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
         if (DKPixelFormatIsDepthFormat(desc.pixelFormat) || DKPixelFormatIsStencilFormat(desc.pixelFormat))
             imageCreateInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
         else
             imageCreateInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
     }
+
     imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     // Set initial layout of the image to undefined
     imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
