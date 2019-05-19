@@ -101,14 +101,6 @@ VkImageLayout Image::SetLayout(VkImageLayout layout,
         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.image = image;
 
-        if (queueFamilyIndex != layoutInfo.queueFamilyIndex &&
-            layoutInfo.queueFamilyIndex != VK_QUEUE_FAMILY_IGNORED &&
-            queueFamilyIndex != VK_QUEUE_FAMILY_IGNORED)
-        {
-            barrier.srcQueueFamilyIndex = layoutInfo.queueFamilyIndex;
-            barrier.dstQueueFamilyIndex = queueFamilyIndex;
-        }
-
         DKPixelFormat pixelFormat = PixelFormat();
         if (DKPixelFormatIsColorFormat(pixelFormat))
             barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -125,7 +117,8 @@ VkImageLayout Image::SetLayout(VkImageLayout layout,
         barrier.subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
 
         VkPipelineStageFlags srcStageMask = layoutInfo.stageMaskEnd;
-        if (barrier.srcQueueFamilyIndex != barrier.dstQueueFamilyIndex)
+
+        if (layoutInfo.queueFamilyIndex != queueFamilyIndex)
         {
             srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
             barrier.srcAccessMask = 0;
