@@ -11,6 +11,7 @@
 #include "ComputePipelineState.h"
 #include "ShaderBindingSet.h"
 #include "GraphicsDevice.h"
+#include "Semaphore.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -77,6 +78,26 @@ void ComputeCommandEncoder::EndEncoding()
 {
     commandBuffer->EndEncoder(this, encoder);
     encoder = nullptr;
+}
+
+void ComputeCommandEncoder::WaitEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+
+    encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages);
+    encoder->events.Add(event);
+}
+
+void ComputeCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    encoder->AddSignalSemaphore(semaphore->semaphore);
+    encoder->events.Add(event);
 }
 
 void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)

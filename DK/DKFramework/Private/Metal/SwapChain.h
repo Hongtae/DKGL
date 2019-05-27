@@ -34,7 +34,7 @@ namespace DKFramework::Private::Metal
 
 		DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
 
-		bool Present() override;
+        bool Present(DKGpuEvent**, size_t) override;
 
 		void SetupFrame();
 

@@ -13,6 +13,7 @@
 #include "GraphicsDevice.h"
 #include "RenderPipelineState.h"
 #include "ShaderBindingSet.h"
+#include "Semaphore.h"
 
 #define FLIP_VIEWPORT_Y	1
 
@@ -28,6 +29,24 @@ RenderCommandEncoder::Encoder::Encoder(class CommandBuffer* cb, const DKRenderPa
     commands.Reserve(InitialNumberOfCommands);
     setupCommands.Reserve(InitialNumberOfCommands);
     cleanupCommands.Reserve(InitialNumberOfCommands);
+
+    for (const DKRenderPassColorAttachmentDescriptor& colorAttachment : renderPassDescriptor.colorAttachments)
+    {
+        if (const ImageView * rt = colorAttachment.renderTarget.SafeCast<ImageView>(); rt && rt->image)
+        {
+            this->AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+            this->AddSignalSemaphore(rt->signalSemaphore);
+        }
+    }
+    if (renderPassDescriptor.depthStencilAttachment.renderTarget)
+    {
+        const DKRenderPassDepthStencilAttachmentDescriptor& depthStencilAttachment = renderPassDescriptor.depthStencilAttachment;
+        if (const ImageView * rt = depthStencilAttachment.renderTarget.SafeCast<ImageView>(); rt && rt->image)
+        {
+            this->AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+            this->AddSignalSemaphore(rt->signalSemaphore);
+        }
+    }
 }
 
 RenderCommandEncoder::Encoder::~Encoder()
@@ -66,9 +85,6 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
     {
         if (const ImageView* rt = colorAttachment.renderTarget.SafeCast<ImageView>(); rt && rt->image)
         {
-            this->commandBuffer->AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
-            this->commandBuffer->AddSignalSemaphore(rt->signalSemaphore);
-
             VkAttachmentDescription attachment = {};
             attachment.format = rt->image->format;
             attachment.samples = VK_SAMPLE_COUNT_1_BIT; // 1 sample per pixel
@@ -131,9 +147,6 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
         const DKRenderPassDepthStencilAttachmentDescriptor& depthStencilAttachment = renderPassDescriptor.depthStencilAttachment;
         if (const ImageView* rt = depthStencilAttachment.renderTarget.SafeCast<ImageView>(); rt && rt->image)
         {
-            this->commandBuffer->AddWaitSemaphore(rt->waitSemaphore, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
-            this->commandBuffer->AddSignalSemaphore(rt->signalSemaphore);
-
             VkAttachmentDescription attachment = {};
             attachment.format = rt->image->format;
             attachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -308,6 +321,35 @@ void RenderCommandEncoder::EndEncoding()
 {
     commandBuffer->EndEncoder(this, encoder);
     encoder = nullptr;
+}
+
+void RenderCommandEncoder::WaitEvent(DKGpuEvent* event, DKRenderStages stage)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    switch (stage)
+    {
+    case DKRenderStageVertrex:
+        pipelineStages = VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
+        break;
+    case DKRenderStageFragment:
+        pipelineStages = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+        break;
+    }
+
+    encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages);
+    encoder->events.Add(event);
+}
+
+void RenderCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    encoder->AddSignalSemaphore(semaphore->semaphore);
+    encoder->events.Add(event);
 }
 
 void RenderCommandEncoder::SetViewport(const DKViewport& v)

@@ -8,7 +8,7 @@
 #pragma once
 #include "../DKFoundation.h"
 
-#ifdef FindResource
+#ifdef _WIN32
 #undef FindResource
 #endif
 

@@ -43,6 +43,9 @@ namespace DKFramework
 
         virtual ~DKCopyCommandEncoder() {}
 
+        virtual void WaitEvent(DKGpuEvent*) = 0;
+        virtual void SignalEvent(DKGpuEvent*) = 0;
+
         /// Copying Data Between Buffers
         virtual void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
                                             DKGpuBuffer* dst, size_t dstOffset,

@@ -189,6 +189,7 @@
     <None Include="DKFramework\Private\Metal\CommandQueue.mm" />
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\ComputePipelineState.mm" />
+    <None Include="DKFramework\Private\Metal\Fence.mm" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
@@ -342,6 +343,7 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\Sampler.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Semaphore.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderBindingSet.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
@@ -556,6 +558,7 @@
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputePipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Fence.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
@@ -583,6 +586,7 @@
     <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Sampler.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Semaphore.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderBindingSet.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />

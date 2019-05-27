@@ -11,6 +11,7 @@
 #include "ComputeCommandEncoder.h"
 #include "ComputePipelineState.h"
 #include "ShaderBindingSet.h"
+#include "Fence.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -46,6 +47,30 @@ void ComputeCommandEncoder::EndEncoding()
 	encoder->commands.ShrinkToFit();
 	commandBuffer->EndEncoder(this, encoder);
 	encoder = NULL;
+}
+
+void ComputeCommandEncoder::WaitEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
+    Fence* fence = static_cast<Fence*>(event);
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
+    {
+        [encoder waitForFence:fence->fence];
+    });
+    encoder->commands.Add(command);
+}
+
+void ComputeCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
+    Fence* fence = static_cast<Fence*>(event);
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
+    {
+        [encoder updateFence:fence->fence];
+    });
+    encoder->commands.Add(command);
 }
 
 void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)

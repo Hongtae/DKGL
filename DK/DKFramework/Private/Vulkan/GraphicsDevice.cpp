@@ -17,6 +17,7 @@
 #include "DeviceMemory.h"
 #include "BufferView.h"
 #include "ImageView.h"
+#include "Semaphore.h"
 #include "Types.h"
 #include "../../DKPropertySet.h"
 
@@ -1447,6 +1448,22 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
 
     DKObject<Sampler> s = DKOBJECT_NEW Sampler(dev, sampler);
     return s.SafeCast<DKSamplerState>();
+}
+
+DKObject<DKGpuEvent> GraphicsDevice::CreateEvent(DKGraphicsDevice* dev)
+{
+    VkSemaphoreCreateInfo createInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+    VkSemaphore semaphore = VK_NULL_HANDLE;
+    VkResult result = vkCreateSemaphore(device, &createInfo, allocationCallbacks, &semaphore);
+
+    if (result != VK_SUCCESS)
+    {
+        DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(result));
+        return nullptr;
+    }
+
+    DKObject<Semaphore> s = DKOBJECT_NEW Semaphore(dev, semaphore);
+    return s.SafeCast<DKGpuEvent>();
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)

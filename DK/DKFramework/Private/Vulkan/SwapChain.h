@@ -30,7 +30,7 @@ namespace DKFramework::Private::Vulkan
 		void SetDepthStencilPixelFormat(DKPixelFormat) override;
 		DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
 
-		bool Present() override;
+		bool Present(DKGpuEvent**, size_t) override;
 
 		DKPixelFormat ColorPixelFormat() const override;
 		DKPixelFormat DepthStencilPixelFormat() const override;
@@ -41,9 +41,7 @@ namespace DKFramework::Private::Vulkan
 		VkSwapchainKHR swapchain;
 		DKArray<VkSurfaceFormatKHR> availableSurfaceFormats;
 
-		VkSemaphore presentCompleteSemaphore;
-		VkSemaphore renderCompleteSemaphore;
-
+        VkSemaphore frameReadySemaphore;
 
         DKArray<DKObject<ImageView>> imageViews;
 

@@ -11,6 +11,7 @@
 #include "CopyCommandEncoder.h"
 #include "Buffer.h"
 #include "Texture.h"
+#include "Fence.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -46,6 +47,30 @@ void CopyCommandEncoder::EndEncoding()
 	encoder->commands.ShrinkToFit();
 	commandBuffer->EndEncoder(this, encoder);
 	encoder = NULL;
+}
+
+void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
+    Fence* fence = static_cast<Fence*>(event);
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLBlitCommandEncoder> encoder, EncodingState& state)
+    {
+        [encoder waitForFence:fence->fence];
+    });
+    encoder->commands.Add(command);
+}
+
+void CopyCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
+    Fence* fence = static_cast<Fence*>(event);
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLBlitCommandEncoder> encoder, EncodingState& state)
+    {
+        [encoder updateFence:fence->fence];
+    });
+    encoder->commands.Add(command);
 }
 
 void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,

@@ -19,6 +19,10 @@
 #include "DKGpuResource.h"
 #include "DKShaderBindingSet.h"
 
+#ifdef _WIN32
+#undef CreateEvent
+#endif
+
 namespace DKFramework
 {
 	class DKGraphicsDeviceInterface;
@@ -39,6 +43,7 @@ namespace DKFramework
 		DKObject<DKGpuBuffer> CreateBuffer(size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode);
 		DKObject<DKTexture> CreateTexture(const DKTextureDescriptor&);
         DKObject<DKSamplerState> CreateSamplerState(const DKSamplerDescriptor&);
+        DKObject<DKGpuEvent> CreateEvent();
 
 	private:
 		DKGraphicsDeviceInterface* impl;

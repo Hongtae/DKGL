@@ -27,6 +27,9 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         // DKCopyCommandEncoder
+        void WaitEvent(DKGpuEvent*) override;
+        void SignalEvent(DKGpuEvent*) override;
+
         void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
                                     DKGpuBuffer* dst, size_t dstOffset,
                                     size_t size) override;

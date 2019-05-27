@@ -11,6 +11,7 @@
 #include "BufferView.h"
 #include "ImageView.h"
 #include "GraphicsDevice.h"
+#include "Semaphore.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -58,6 +59,26 @@ void CopyCommandEncoder::EndEncoding()
 {
     commandBuffer->EndEncoder(this, encoder);
     encoder = nullptr;
+}
+
+void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+    encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages);
+    encoder->events.Add(event);
+}
+
+void CopyCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    encoder->AddSignalSemaphore(semaphore->semaphore);
+    encoder->events.Add(event);
 }
 
 void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,

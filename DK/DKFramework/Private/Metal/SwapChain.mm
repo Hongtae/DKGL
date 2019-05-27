@@ -17,6 +17,7 @@
 
 #include "SwapChain.h"
 #include "Texture.h"
+#include "Fence.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -146,9 +147,30 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 	return renderPassDescriptor;
 }
 
-bool SwapChain::Present()
+bool SwapChain::Present(DKGpuEvent** waitEvents, size_t numEvents)
 {
-	if (currentDrawable)
+    if (numEvents)
+    {
+        @autoreleasepool
+        {
+            id<MTLCommandBuffer> buffer = [queue->queue commandBuffer];
+            id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
+
+            for (size_t i = 0; i < numEvents; ++i)
+            {
+                DKASSERT_DEBUG(dynamic_cast<Fence*>(waitEvents[i]));
+                Fence* fence = static_cast<Fence*>(waitEvents[i]);
+                [encoder waitForFence:fence->fence];
+            }
+            [encoder endEncoding];
+
+            if (currentDrawable)
+                [buffer presentDrawable:currentDrawable];
+            [buffer commit];
+        }
+        return currentDrawable != nil;
+    }
+    else if (currentDrawable)
 	{
 		@autoreleasepool
 		{

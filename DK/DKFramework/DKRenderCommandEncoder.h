@@ -30,12 +30,20 @@ namespace DKFramework
 		float nearZ;
 		float farZ;
 	};
+    enum DKRenderStages : uint8_t
+    {
+        DKRenderStageVertrex    = 0,
+        DKRenderStageFragment   = 0x1,
+    };
 
 	/// @brief Command encoder for GPU render operation.
 	class DKRenderCommandEncoder : public DKCommandEncoder
 	{
 	public:
 		virtual ~DKRenderCommandEncoder() {}
+
+        virtual void WaitEvent(DKGpuEvent*, DKRenderStages) = 0;
+        virtual void SignalEvent(DKGpuEvent*) = 0;
 
         virtual void SetResources(uint32_t set, DKShaderBindingSet*) = 0;
 		virtual void SetViewport(const DKViewport&) = 0;

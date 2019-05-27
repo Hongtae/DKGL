@@ -43,6 +43,7 @@ namespace DKFramework::Private::Vulkan
             DKArray<DKObject<ShaderBindingSet>> shaderBindingSets;
             DKArray<DKObject<DescriptorSet>> descriptorSets;
             DKArray<DKObject<DKGpuBuffer>> buffers;
+            DKArray<DKObject<DKGpuEvent>> events;
 
             DKRenderPassDescriptor renderPassDescriptor;
 
@@ -62,6 +63,9 @@ namespace DKFramework::Private::Vulkan
 		void EndEncoding() override;
 		bool IsCompleted() const override { return encoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
+
+        void WaitEvent(DKGpuEvent*, DKRenderStages) override;
+        void SignalEvent(DKGpuEvent*) override;
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
 

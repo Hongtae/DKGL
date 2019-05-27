@@ -21,8 +21,27 @@ namespace DKFramework::Private::Vulkan
     {
     public:
         enum { InitialNumberOfCommands = 128 };
+
+        DKMap<VkSemaphore, VkPipelineStageFlags> waitStageSemaphores;
+        DKSet<VkSemaphore> signalSemaphores;
+
         virtual ~CommandEncoder() {}
         virtual bool Encode(VkCommandBuffer) = 0;
+
+        void AddWaitSemaphore(VkSemaphore semaphore, VkPipelineStageFlags flags)
+        {
+            if (semaphore != VK_NULL_HANDLE)
+            {
+                if (!waitStageSemaphores.Insert(semaphore, flags))
+                    waitStageSemaphores.Value(semaphore) |= flags;
+            }
+        }
+
+        void AddSignalSemaphore(VkSemaphore semaphore)
+        {
+            if (semaphore != VK_NULL_HANDLE)
+                signalSemaphores.Insert(semaphore);
+        }
     };
 
 	class CommandBuffer : public DKCommandBuffer
@@ -40,21 +59,19 @@ namespace DKFramework::Private::Vulkan
 		DKCommandQueue* Queue() override { return queue; };
 
         QueueFamily* QueueFamily();
-        void AddWaitSemaphore(VkSemaphore, VkPipelineStageFlags);
-        void AddSignalSemaphore(VkSemaphore);
 
         void EndEncoder(DKCommandEncoder*, CommandEncoder*);
 
     private:
         VkCommandPool commandPool;
         DKObject<DKCommandQueue> queue;
-
         DKArray<DKObject<CommandEncoder>> encoders;
 
-        DKMap<VkSemaphore, VkPipelineStageFlags> semaphorePipelineStageMasks;
-        DKSet<VkSemaphore> signalSemaphores;
-
-        VkCommandBuffer commandBuffer;
-	};
+        DKArray<VkSubmitInfo>           submitInfos;
+        DKArray<VkCommandBuffer>        submitCommandBuffers;
+        DKArray<VkSemaphore>			submitWaitSemaphores;
+        DKArray<VkPipelineStageFlags>	submitWaitStageMasks;
+        DKArray<VkSemaphore>			submitSignalSemaphores;
+    };
 }
 #endif //#if DKGL_ENABLE_VULKAN

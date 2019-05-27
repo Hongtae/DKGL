@@ -12,6 +12,7 @@
 #include "RenderPipelineState.h"
 #include "ShaderBindingSet.h"
 #include "GraphicsDevice.h"
+#include "Fence.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -62,6 +63,39 @@ void RenderCommandEncoder::EndEncoding()
 	encoder->commands.ShrinkToFit();
 	commandBuffer->EndEncoder(this, encoder);
 	encoder = NULL; // release data
+}
+
+void RenderCommandEncoder::WaitEvent(DKGpuEvent* event, DKRenderStages stage)
+{
+    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
+    Fence* fence = static_cast<Fence*>(event);
+    MTLRenderStages renderStage = MTLRenderStageVertex;
+    switch (stage)
+    {
+        case DKRenderStageVertrex:  renderStage = MTLRenderStageVertex;   break;
+        case DKRenderStageFragment: renderStage = MTLRenderStageFragment; break;
+        default:
+            DKASSERT_DEBUG(0);
+            break;
+    }
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, EncodingState& state)
+    {
+        [encoder waitForFence:fence->fence beforeStages:renderStage];
+    });
+    encoder->commands.Add(command);
+}
+
+void RenderCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
+    Fence* fence = static_cast<Fence*>(event);
+
+    DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, EncodingState& state)
+    {
+        [encoder updateFence:fence->fence afterStages:MTLRenderStageFragment];
+    });
+    encoder->commands.Add(command);
 }
 
 void RenderCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)

@@ -28,6 +28,9 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKComputeCommandEncoder
+        void WaitEvent(DKGpuEvent*) override;
+        void SignalEvent(DKGpuEvent*) override;
+
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
         void SetComputePipelineState(DKComputePipelineState*) override;
         void Dispatch(uint32_t, uint32_t, uint32_t) override;

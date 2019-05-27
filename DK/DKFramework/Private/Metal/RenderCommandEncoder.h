@@ -29,6 +29,9 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKRenderCommandEncoder overrides
+        void WaitEvent(DKGpuEvent*, DKRenderStages) override;
+        void SignalEvent(DKGpuEvent*) override;
+
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
 		void SetViewport(const DKViewport&) override;
 		void SetRenderPipelineState(DKRenderPipelineState*) override;

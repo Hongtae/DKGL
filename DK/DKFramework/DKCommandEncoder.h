@@ -10,6 +10,7 @@
 
 namespace DKFramework
 {
+    class DKGpuEvent;
 	class DKCommandBuffer;
 	/// @brief Command encoder for GPU compute operation
 	class DKCommandEncoder
