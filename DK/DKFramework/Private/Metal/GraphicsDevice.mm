@@ -20,7 +20,7 @@
 #include "Buffer.h"
 #include "Texture.h"
 #include "SamplerState.h"
-#include "Fence.h"
+#include "Event.h"
 #include "Types.h"
 #include "../../DKPropertySet.h"
 
@@ -1137,10 +1137,10 @@ DKObject<DKSamplerState> GraphicsDevice::CreateSamplerState(DKGraphicsDevice* de
 DKObject<DKGpuEvent> GraphicsDevice::CreateEvent(DKGraphicsDevice* dev)
 {
     @autoreleasepool {
-        id<MTLFence> fence = [device newFence];
-        if (fence)
+        id<MTLEvent> event = [device newEvent];
+        if (event)
         {
-            return DKOBJECT_NEW Fence(dev, [fence autorelease]);
+            return DKOBJECT_NEW Event(dev, [event autorelease]);
         }
         else
         {

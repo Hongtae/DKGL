@@ -17,7 +17,7 @@
 
 #include "SwapChain.h"
 #include "Texture.h"
-#include "Fence.h"
+#include "Event.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -154,15 +154,15 @@ bool SwapChain::Present(DKGpuEvent** waitEvents, size_t numEvents)
         @autoreleasepool
         {
             id<MTLCommandBuffer> buffer = [queue->queue commandBuffer];
-            id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
 
             for (size_t i = 0; i < numEvents; ++i)
             {
-                DKASSERT_DEBUG(dynamic_cast<Fence*>(waitEvents[i]));
-                Fence* fence = static_cast<Fence*>(waitEvents[i]);
-                [encoder waitForFence:fence->fence];
+                DKASSERT_DEBUG(dynamic_cast<Event*>(waitEvents[i]));
+                Event* event = static_cast<Event*>(waitEvents[i]);
+
+                [buffer encodeWaitForEvent:event->event
+                                     value:event->NextWaitValue()];
             }
-            [encoder endEncoding];
 
             if (currentDrawable)
                 [buffer presentDrawable:currentDrawable];

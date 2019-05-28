@@ -1,5 +1,5 @@
 //
-//  File: Fence.mm
+//  File: Event.mm
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -8,23 +8,37 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
-#include "Fence.h"
+#include "Event.h"
 #include "GraphicsDevice.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-Fence::Fence(DKGraphicsDevice* d, id<MTLFence> f)
+Event::Event(DKGraphicsDevice* d, id<MTLEvent> e)
 : device(d)
-, fence([f retain])
+, event([e retain])
+, waitValue(0)
+, signalValue(0)
 {
-    DKASSERT_DEBUG(fence);
+    DKASSERT_DEBUG(event);
 }
 
-Fence::~Fence()
+Event::~Event()
 {
     //GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-    [fence release];
+    [event release];
+}
+
+uint64_t Event::NextWaitValue()
+{
+    auto n = waitValue.Increment();
+    return n+1;
+}
+
+uint64_t Event::NextSignalValue()
+{
+    auto n = signalValue.Increment();
+    return n+1;
 }
 
 #endif //#if DKGL_ENABLE_METAL

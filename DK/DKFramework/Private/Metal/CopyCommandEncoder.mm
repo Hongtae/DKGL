@@ -11,7 +11,7 @@
 #include "CopyCommandEncoder.h"
 #include "Buffer.h"
 #include "Texture.h"
-#include "Fence.h"
+#include "Event.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -19,6 +19,15 @@ using namespace DKFramework::Private::Metal;
 #pragma mark - CopyCommandEncoder::Encoder
 bool CopyCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
 {
+    for (DKGpuEvent* e : waitEvents)
+    {
+        DKASSERT_DEBUG(dynamic_cast<Event*>(e));
+        Event* event = static_cast<Event*>(e);
+
+        [buffer encodeWaitForEvent:event->event
+                             value:event->NextWaitValue()];
+    }
+
     id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
     EncodingState state = {};
     for (EncoderCommand* command : commands )
@@ -26,6 +35,16 @@ bool CopyCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
         command->Invoke(encoder, state);
     }
     [encoder endEncoding];
+
+    for (DKGpuEvent* e : signalEvents)
+    {
+        DKASSERT_DEBUG(dynamic_cast<Event*>(e));
+        Event* event = static_cast<Event*>(e);
+
+        [buffer encodeSignalEvent:event->event
+                            value:event->NextSignalValue()];
+    }
+
     return true;
 }
 
@@ -51,26 +70,14 @@ void CopyCommandEncoder::EndEncoding()
 
 void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
-    Fence* fence = static_cast<Fence*>(event);
-
-    DKObject<EncoderCommand> command = DKFunction([=](id<MTLBlitCommandEncoder> encoder, EncodingState& state)
-    {
-        [encoder waitForFence:fence->fence];
-    });
-    encoder->commands.Add(command);
+    DKASSERT_DEBUG(dynamic_cast<Event*>(event));
+    encoder->waitEvents.Add(event);
 }
 
 void CopyCommandEncoder::SignalEvent(DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Fence*>(event));
-    Fence* fence = static_cast<Fence*>(event);
-
-    DKObject<EncoderCommand> command = DKFunction([=](id<MTLBlitCommandEncoder> encoder, EncodingState& state)
-    {
-        [encoder updateFence:fence->fence];
-    });
-    encoder->commands.Add(command);
+    DKASSERT_DEBUG(dynamic_cast<Event*>(event));
+    encoder->signalEvents.Add(event);
 }
 
 void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,

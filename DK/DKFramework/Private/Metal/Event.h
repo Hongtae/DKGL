@@ -1,5 +1,5 @@
 //
-//  File: Fence.h
+//  File: Event.h
 //  Platform: macOS, iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
@@ -15,14 +15,21 @@
 
 namespace DKFramework::Private::Metal
 {
-    class Fence : public DKGpuEvent
+    class Event : public DKGpuEvent
     {
     public:
-        Fence(DKGraphicsDevice*, id<MTLFence>);
-        ~Fence();
+        Event(DKGraphicsDevice*, id<MTLEvent>);
+        ~Event();
 
-        id<MTLFence> fence;
+        id<MTLEvent> event;
         DKObject<DKGraphicsDevice> device;
+
+        uint64_t NextWaitValue();
+        uint64_t NextSignalValue();
+
+    private:
+        DKAtomicNumber64 waitValue;
+        DKAtomicNumber64 signalValue;
     };
 }
 #endif //#if DKGL_ENABLE_METAL

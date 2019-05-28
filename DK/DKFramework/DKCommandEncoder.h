@@ -21,5 +21,8 @@ namespace DKFramework
 		virtual void EndEncoding() = 0;
 		virtual bool IsCompleted() const = 0;
 		virtual DKCommandBuffer* CommandBuffer() = 0;
+
+        virtual void WaitEvent(DKGpuEvent*) = 0;
+        virtual void SignalEvent(DKGpuEvent*) = 0;
 	};
 }

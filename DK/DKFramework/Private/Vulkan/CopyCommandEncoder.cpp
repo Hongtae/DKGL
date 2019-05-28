@@ -66,7 +66,7 @@ void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
     DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
     Semaphore* semaphore = static_cast<Semaphore*>(event);
 
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TRANSFER_BIT;
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages);
     encoder->events.Add(event);

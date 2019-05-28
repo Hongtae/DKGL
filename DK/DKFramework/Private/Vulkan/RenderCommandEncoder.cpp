@@ -323,21 +323,12 @@ void RenderCommandEncoder::EndEncoding()
     encoder = nullptr;
 }
 
-void RenderCommandEncoder::WaitEvent(DKGpuEvent* event, DKRenderStages stage)
+void RenderCommandEncoder::WaitEvent(DKGpuEvent* event)
 {
     DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
     Semaphore* semaphore = static_cast<Semaphore*>(event);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    switch (stage)
-    {
-    case DKRenderStageVertrex:
-        pipelineStages = VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
-        break;
-    case DKRenderStageFragment:
-        pipelineStages = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-        break;
-    }
 
     encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages);
     encoder->events.Add(event);

@@ -29,7 +29,7 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKRenderCommandEncoder overrides
-        void WaitEvent(DKGpuEvent*, DKRenderStages) override;
+        void WaitEvent(DKGpuEvent*) override;
         void SignalEvent(DKGpuEvent*) override;
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
@@ -60,6 +60,9 @@ namespace DKFramework::Private::Metal
 
             DKArray<DKObject<EncoderCommand>> commands;
 			MTLRenderPassDescriptor* renderPassDescriptor;
+
+            DKArray<DKObject<DKGpuEvent>> waitEvents;
+            DKArray<DKObject<DKGpuEvent>> signalEvents;
 		};
 
 		DKObject<Encoder> encoder;

@@ -64,7 +64,7 @@ namespace DKFramework::Private::Vulkan
 		bool IsCompleted() const override { return encoder == nullptr; }
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
-        void WaitEvent(DKGpuEvent*, DKRenderStages) override;
+        void WaitEvent(DKGpuEvent*) override;
         void SignalEvent(DKGpuEvent*) override;
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;

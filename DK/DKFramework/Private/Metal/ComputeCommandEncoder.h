@@ -46,6 +46,9 @@ namespace DKFramework::Private::Metal
         public:
             bool Encode(id<MTLCommandBuffer> buffer) override;
 			DKArray<DKObject<EncoderCommand>> commands;
+            
+            DKArray<DKObject<DKGpuEvent>> waitEvents;
+            DKArray<DKObject<DKGpuEvent>> signalEvents;
 		};
 		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;
