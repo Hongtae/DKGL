@@ -28,67 +28,58 @@ namespace DKFramework::Private::Vulkan
 		return new GraphicsDevice();
 	}
 
-	VkBool32 DebugMessageCallback(
-								  VkDebugReportFlagsEXT flags,
-								  VkDebugReportObjectTypeEXT objType,
-								  uint64_t srcObject,
-								  size_t location,
-								  int32_t msgCode,
-								  const char* pLayerPrefix,
-								  const char* pMsg,
-								  void* pUserData)
-	{
-		DKStringU8 prefix = "";
-		DKLogCategory cat = DKLogCategory::Info;
+    VkBool32 VKAPI_PTR DebugUtilsMessengerCallback(
+        VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
+        VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
+        const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
+        void*                                            pUserData)
+    {
+        DKStringU8 prefix = "";
+        DKLogCategory cat = DKLogCategory::Info;
 
-		// Error that may result in undefined behaviour
-		if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-		{
-			prefix += "ERROR:";
-			cat = DKLogCategory::Error;
-		};
-		// Warnings may hint at unexpected / non-spec API usage
-		if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-		{
-			prefix += "WARNING:";
-			cat = DKLogCategory::Warning;
-		};
-		// May indicate sub-optimal usage of the API
-		if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-		{
-			prefix += "PERFORMANCE:";
-		};
-		// Informal messages that may become handy during debugging
-		if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-		{
-			prefix += "INFO:";
-		}
-		// Diagnostic info from the Vulkan loader and layers
-		// Usually not helpful in terms of API usage, but may help to debug layer and loader problems
-		if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-		{
-			prefix += "DEBUG:";
-		}
-
-		// Display message to default output (console if activated)
-		DKLog(cat, "[Vulkan-Debug] %s [%s] Message: %s (0x%x)", (const char*)prefix, pLayerPrefix, pMsg, msgCode);
-
-		// The return value of this callback controls wether the Vulkan call that caused
-		// the validation message will be aborted or not
-		// We return VK_FALSE as we DON'T want Vulkan calls that cause a validation message
-		// (and return a VkResult) to abort
-		// If you instead want to have calls abort, pass in VK_TRUE and the function will
-		// return VK_ERROR_VALIDATION_FAILED_EXT
-
-#ifdef DKGL_DEBUG_ENABLED
-        if (cat == DKLogCategory::Error)
+        if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
         {
-            if (!DKIsDebuggerPresent())
-                return VK_TRUE;
+            prefix += "";
+            cat = DKLogCategory::Verbose;                
         }
-#endif
-		return VK_FALSE;
-	}
+        if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+        {
+            prefix += "INFO:";
+            cat = DKLogCategory::Info;
+        }
+        if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+        {
+            prefix += "WARNING:";
+            cat = DKLogCategory::Warning;
+        }
+        if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+        {
+            prefix += "ERROR:";
+            cat = DKLogCategory::Error;
+        }
+
+        DKStringU8 type = "";
+        if (messageTypes & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)
+        {
+            type += "";
+        }
+        if (messageTypes & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
+        {
+            type += "VALIDATION-";
+        }
+        if (messageTypes & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
+        {
+            type += "PERFORMANCE-";
+        }
+
+        DKLog(cat, "[Vulkan %s%s] [%s](0x%x) %s",
+              (const char*)type,
+              (const char*)prefix,
+              pCallbackData->pMessageIdName,
+              pCallbackData->messageIdNumber,
+              pCallbackData->pMessage);
+        return VK_FALSE;
+    }
 
     struct Cleanup
     {
@@ -111,13 +102,37 @@ GraphicsDevice::GraphicsDevice()
 	: instance(NULL)
 	, device(NULL)
 	, physicalDevice(NULL)
-	, msgCallback(NULL)
 	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
 	, pipelineCache(VK_NULL_HANDLE)
     , allocationCallbacks(nullptr)
+    , debugMessenger(VK_NULL_HANDLE)
 {
+    VkApplicationInfo appInfo = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
+    appInfo.pApplicationName = "DKGL";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "DKGL";
+    appInfo.engineVersion = VK_MAKE_VERSION(2, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_1; // Vulkan-1.1
+
     VkResult err = VK_SUCCESS;
+
+    // checking version.
+    uint32_t instanceVersion = 0;
+    err = vkEnumerateInstanceVersion(&instanceVersion);
+    if (err != VK_SUCCESS)
+    {
+        throw std::runtime_error((const char*)DKStringU8::Format("vkEnumerateInstanceVersion failed: %s", VkResultCStr(err)));
+    }
+    DKLogI("Vulkan Instance Version: %d.%d.%d",
+        (uint32_t)VK_VERSION_MAJOR(instanceVersion),
+        (uint32_t)VK_VERSION_MINOR(instanceVersion),
+        (uint32_t)VK_VERSION_PATCH(instanceVersion));
+
+    if (instanceVersion < appInfo.apiVersion)
+    {
+        throw std::runtime_error("Invalid version.");
+    }
 
     auto getBoolValueFromSystemConfig = [](const char* key, bool defaultValue)->bool
     {
@@ -140,12 +155,12 @@ GraphicsDevice::GraphicsDevice()
 
     bool enableValidation = getBoolValueFromSystemConfig(vulkanEnableValidation, false);
     bool enableValidationEXT = getBoolValueFromSystemConfig(vulkanEnableValidationEXT, false);
-    bool enableDebugMarker = getBoolValueFromSystemConfig(vulkanEnableDebugMarker, false);
+    bool enableDebugUtils = getBoolValueFromSystemConfig(vulkanEnableDebugUtils, false);
 
 #ifdef DKGL_DEBUG_ENABLED
     enableValidation = true;
     enableValidationEXT = true;
-    enableDebugMarker = true;
+    enableDebugUtils = true;
 #endif
 
     auto getStringSetValueFromSystemConfig = [](const char* key, const DKSet<DKStringU8>& defaultValue = {})
@@ -178,9 +193,14 @@ GraphicsDevice::GraphicsDevice()
 
     if (enableValidation)
     {
-        configRequiredLayers.Insert("VK_LAYER_LUNARG_standard_validation");
-        configRequiredInstanceExtensions.Insert(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        configRequiredLayers.Insert("VK_LAYER_KHRONOS_validation");
+        enableDebugUtils = true;
     }
+    if (enableDebugUtils)
+    {
+        configRequiredInstanceExtensions.Insert(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
+
     if (1)
     {
         configRequiredInstanceExtensions.Insert(VK_KHR_SURFACE_EXTENSION_NAME);
@@ -210,9 +230,6 @@ GraphicsDevice::GraphicsDevice()
 
     configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
     configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE3_EXTENSION_NAME);
-    if (enableDebugMarker)
-        configOptionalDeviceExtensions.Insert(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
-
 
 	DKMap<DKStringU8, VkLayerProperties> supportingLayers;
     DKMap<DKStringU8, DKArray<VkExtensionProperties>> layerExtensions;
@@ -298,13 +315,6 @@ GraphicsDevice::GraphicsDevice()
             instanceExtensions = std::move(extensions);
         }
 	}
-
-	VkApplicationInfo appInfo = {VK_STRUCTURE_TYPE_APPLICATION_INFO};
-	appInfo.pApplicationName = "DKGL";
-	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = "DKGL";
-	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_1; // Vulkan-1.1
 
     // add layers for required extensions
     configRequiredInstanceExtensions.EnumerateForward([&](const DKStringU8& ext)
@@ -401,20 +411,23 @@ GraphicsDevice::GraphicsDevice()
         });
     }
 
+
     VkInstanceCreateInfo instanceCreateInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
+    instanceCreateInfo.pApplicationInfo = &appInfo;
+
+    VkValidationFeatureEnableEXT enables[] = {
+        VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT ,
+        VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT
+    };
+    VkValidationFeaturesEXT validationFeatures = { VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT };
+
     if (enableValidationEXT)
     {
-        VkValidationFeatureEnableEXT enables[] = {
-            VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT ,
-            VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT
-        };
-        VkValidationFeaturesEXT validationFeatures = { VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT };
         validationFeatures.enabledValidationFeatureCount = std::size(enables);
         validationFeatures.pEnabledValidationFeatures = enables;
         instanceCreateInfo.pNext = &validationFeatures;
     }
 
-	instanceCreateInfo.pApplicationInfo = &appInfo;
     if (enabledLayers.Count() > 0)
     {
         instanceCreateInfo.enabledLayerCount = (uint32_t)enabledLayers.Count();
@@ -445,22 +458,36 @@ GraphicsDevice::GraphicsDevice()
         for (int i = 0; i < enabledInstanceExtensions.Count(); ++i)
             DKLogI("VkInstance enabled extensions[%d]: %s\n", i, enabledInstanceExtensions.Value(i));
     }
+    auto isInstanceExtensionEnabled = [&enabledInstanceExtensions](const char* ext)->bool
+    {
+        for (const char* e : enabledInstanceExtensions)
+            if (stricmp(e, ext) == 0)
+                return true;
+        return false;
+    };
 
 	// load instance extensions
 	iproc.Load(instance);
 
-    if (iproc.vkCreateDebugReportCallbackEXT)
-	{
-        VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = { VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT };
-		dbgCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
-		dbgCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
-		
-		err = iproc.vkCreateDebugReportCallbackEXT(instance, &dbgCreateInfo, allocationCallbacks, &msgCallback);
-		if (err != VK_SUCCESS)
-		{
-			throw std::runtime_error((const char*)DKStringU8::Format("CreateDebugReportCallback failed: %s", VkResultCStr(err)));
-		}
-	}
+    if (isInstanceExtensionEnabled(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+    {
+        VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfo = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
+        debugUtilsMessengerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+        debugUtilsMessengerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+        debugUtilsMessengerCreateInfo.pfnUserCallback = DebugUtilsMessengerCallback;
+        debugUtilsMessengerCreateInfo.pUserData = nullptr;
+
+        err = iproc.vkCreateDebugUtilsMessengerEXT(instance, &debugUtilsMessengerCreateInfo, allocationCallbacks, &debugMessenger);
+        if (err != VK_SUCCESS)
+        {
+            throw std::runtime_error((const char*)DKStringU8::Format("vkCreateDebugUtilsMessengerEXT failed: %s", VkResultCStr(err)));
+        }
+    }
 
 	struct PhysicalDeviceDesc
 	{
@@ -839,8 +866,16 @@ GraphicsDevice::~GraphicsDevice()
 	}
 
 	vkDestroyDevice(device, allocationCallbacks);
-	if (msgCallback)
-		iproc.vkDestroyDebugReportCallbackEXT(instance, msgCallback, allocationCallbacks);
+    device = VK_NULL_HANDLE;
+
+    if (debugMessenger)
+    {
+        iproc.vkDestroyDebugUtilsMessengerEXT(instance, debugMessenger, allocationCallbacks);
+        debugMessenger = VK_NULL_HANDLE;
+    }
+
+    vkDestroyInstance(instance, allocationCallbacks);
+    instance = VK_NULL_HANDLE;
 
     if (allocationCallbacks)
         delete allocationCallbacks;

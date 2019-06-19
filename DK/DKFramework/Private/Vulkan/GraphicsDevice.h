@@ -60,8 +60,6 @@ namespace DKFramework::Private::Vulkan
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
 
-		VkDebugReportCallbackEXT msgCallback;
-
 		struct FenceCallback
 		{
 			VkFence fence;
@@ -105,6 +103,9 @@ namespace DKFramework::Private::Vulkan
             DKASSERT_DEBUG(0);
             return uint32_t(-1);
         };
+
+        // VK_EXT_debug_utils
+        VkDebugUtilsMessengerEXT debugMessenger;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN
