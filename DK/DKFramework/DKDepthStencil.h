@@ -40,8 +40,8 @@ namespace DKFramework
         DKStencilOperation stencilFailureOperation = DKStencilOperationKeep;
         DKStencilOperation depthFailOperation = DKStencilOperationKeep;
         DKStencilOperation depthStencilPassOperation = DKStencilOperationKeep;
-        uint32_t readMask;
-        uint32_t writeMask;
+        uint32_t readMask = 0xffffffff;
+        uint32_t writeMask = 0xffffffff;
 	};
 
     struct DKDepthStencilDescriptor

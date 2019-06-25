@@ -14,8 +14,8 @@ namespace DKFramework
 	struct DKComputePipelineDescriptor
 	{
         DKObject<DKShaderFunction> computeFunction;
-        bool deferCompile;
-        bool disableOptimization;
+        bool deferCompile = false;
+        bool disableOptimization = false;
 	};
 
     class DKGraphicsDevice;
