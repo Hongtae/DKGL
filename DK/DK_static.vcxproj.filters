@@ -577,6 +577,9 @@
     <ClCompile Include="DKFramework\Private\Vulkan\Semaphore.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\DKMaterial.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1310,6 +1313,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Fence.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMaterial.h">
+      <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

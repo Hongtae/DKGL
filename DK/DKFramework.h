@@ -55,6 +55,7 @@ namespace DKFramework {}
 #include "DKFramework/DKLine.h"
 #include "DKFramework/DKLinearTransform2.h"
 #include "DKFramework/DKLinearTransform3.h"
+#include "DKFramework/DKMaterial.h"
 #include "DKFramework/DKMath.h"
 #include "DKFramework/DKMatrix2.h"
 #include "DKFramework/DKMatrix3.h"

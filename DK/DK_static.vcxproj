@@ -287,6 +287,7 @@
     <ClCompile Include="DKFramework\DKLine.cpp" />
     <ClCompile Include="DKFramework\DKLinearTransform2.cpp" />
     <ClCompile Include="DKFramework\DKLinearTransform3.cpp" />
+    <ClCompile Include="DKFramework\DKMaterial.cpp" />
     <ClCompile Include="DKFramework\DKMatrix2.cpp" />
     <ClCompile Include="DKFramework\DKMatrix3.cpp" />
     <ClCompile Include="DKFramework\DKMatrix4.cpp" />
@@ -480,6 +481,7 @@
     <ClInclude Include="DKFramework\DKLine.h" />
     <ClInclude Include="DKFramework\DKLinearTransform2.h" />
     <ClInclude Include="DKFramework\DKLinearTransform3.h" />
+    <ClInclude Include="DKFramework\DKMaterial.h" />
     <ClInclude Include="DKFramework\DKMath.h" />
     <ClInclude Include="DKFramework\DKMatrix2.h" />
     <ClInclude Include="DKFramework\DKMatrix3.h" />
