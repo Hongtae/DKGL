@@ -282,6 +282,7 @@
     <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="DKFramework\DKGpuBuffer.cpp" />
     <ClCompile Include="DKFramework\DKGraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\DKGraphicsDeviceContext.cpp" />
     <ClCompile Include="DKFramework\DKHingeConstraint.cpp" />
     <ClCompile Include="DKFramework\DKImage.cpp" />
     <ClCompile Include="DKFramework\DKLine.cpp" />
@@ -476,6 +477,7 @@
     <ClInclude Include="DKFramework\DKGpuBuffer.h" />
     <ClInclude Include="DKFramework\DKGpuResource.h" />
     <ClInclude Include="DKFramework\DKGraphicsDevice.h" />
+    <ClInclude Include="DKFramework\DKGraphicsDeviceContext.h" />
     <ClInclude Include="DKFramework\DKHingeConstraint.h" />
     <ClInclude Include="DKFramework\DKImage.h" />
     <ClInclude Include="DKFramework\DKLine.h" />

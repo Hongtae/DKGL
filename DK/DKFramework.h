@@ -50,6 +50,7 @@ namespace DKFramework {}
 #include "DKFramework/DKComputeCommandEncoder.h"
 #include "DKFramework/DKRenderCommandEncoder.h"
 #include "DKFramework/DKGraphicsDevice.h"
+#include "DKFramework/DKGraphicsDeviceContext.h"
 #include "DKFramework/DKHingeConstraint.h"
 #include "DKFramework/DKImage.h"
 #include "DKFramework/DKLine.h"

@@ -580,6 +580,9 @@
     <ClCompile Include="DKFramework\DKMaterial.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\DKGraphicsDeviceContext.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1315,6 +1318,9 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKMaterial.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGraphicsDeviceContext.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
