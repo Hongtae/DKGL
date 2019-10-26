@@ -1,5 +1,5 @@
 //
-//  File: DKWorld.cpp
+//  File: DKScene.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
@@ -7,7 +7,7 @@
 
 #include "Private/BulletPhysics.h"
 #include "DKMath.h"
-#include "DKWorld.h"
+#include "DKScene.h"
 #include "DKModel.h"
 
 #if 0
@@ -788,7 +788,7 @@ namespace DKFramework
 				size_t num = this->expiredShapes.Count();
 				this->expiredShapes.Clear();
 				if (num > 0)
-					DKLog("[DKWorld] %u cached convex shape removed.\n", num);
+					DKLog("[DKScene] %u cached convex shape removed.\n", num);
 			}
 
 			void setDebugMode(int mode)		{ debugMode = mode; }
@@ -845,7 +845,7 @@ using namespace DKFramework;
 using namespace DKFramework::Private;
 
 
-DKWorld::DKWorld()
+DKScene::DKScene()
 : context(NULL)
 , ambientColor(0, 0, 0)
 {
@@ -868,7 +868,7 @@ DKWorld::DKWorld()
 	context->world->setForceUpdateAllAabbs(false);
 }
 
-DKWorld::DKWorld(CollisionWorldContext* ctxt)
+DKScene::DKScene(CollisionWorldContext* ctxt)
 : context(ctxt)
 , ambientColor(0, 0, 0)
 {
@@ -882,7 +882,7 @@ DKWorld::DKWorld(CollisionWorldContext* ctxt)
 //	context->world->setDebugDrawer(new ShapeDrawer());
 }
 
-DKWorld::~DKWorld()
+DKScene::~DKScene()
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -902,7 +902,7 @@ DKWorld::~DKWorld()
 	delete drawer;
 }
 
-void DKWorld::Update(double tickDelta, DKTimeTick tick)
+void DKScene::Update(double tickDelta, DKTimeTick tick)
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -953,7 +953,7 @@ void DKWorld::Update(double tickDelta, DKTimeTick tick)
 	CleanupUpdateNode();
 }
 
-void DKWorld::PrepareUpdateNode()
+void DKScene::PrepareUpdateNode()
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -971,12 +971,12 @@ void DKWorld::PrepareUpdateNode()
 	});
 }
 
-void DKWorld::CleanupUpdateNode()
+void DKScene::CleanupUpdateNode()
 {
 	updatePendingObjects.Clear();
 }
 
-void DKWorld::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
+void DKScene::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
 {
 	for (DKModel* m : updatePendingObjects)
 	{
@@ -984,7 +984,7 @@ void DKWorld::UpdateObjectKinematics(double tickDelta, DKTimeTick tick)
 	}
 }
 
-void DKWorld::UpdateObjectSceneStates()
+void DKScene::UpdateObjectSceneStates()
 {
 	for (DKModel* m : updatePendingObjects)
 	{
@@ -993,7 +993,7 @@ void DKWorld::UpdateObjectSceneStates()
 }
 
 #if 0
-void DKWorld::Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const
+void DKScene::Render(const DKCamera& camera, int sceneIndex, unsigned int modes, unsigned int groupFilter, bool enableCulling, DrawCallback& dc) const
 {
 	DKASSERT_DEBUG(context);
 	DKASSERT_DEBUG(context->world);
@@ -1190,12 +1190,12 @@ void DKWorld::Render(const DKCamera& camera, int sceneIndex, unsigned int modes,
 }
 #endif
 
-size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb)
+size_t DKScene::RayTest(const DKVector3& begin, const DKVector3& end, RayResultCallback* cb)
 {
 	struct Callback : public btCollisionWorld::RayResultCallback
 	{
-		Callback(DKWorld::RayResultCallback* cb) : callback(cb), numCollisions(0) {}
-		DKWorld::RayResultCallback* callback;
+		Callback(DKScene::RayResultCallback* cb) : callback(cb), numCollisions(0) {}
+		DKScene::RayResultCallback* callback;
 		size_t numCollisions;
 
 		btScalar addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace) override
@@ -1232,12 +1232,12 @@ size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, RayResultC
 	return rayResult.numCollisions;
 }
 
-size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, ConstRayResultCallback* cb) const
+size_t DKScene::RayTest(const DKVector3& begin, const DKVector3& end, ConstRayResultCallback* cb) const
 {
 	struct Callback : public btCollisionWorld::RayResultCallback
 	{
-		Callback(DKWorld::ConstRayResultCallback* cb) : callback(cb), numCollisions(0) {}
-		DKWorld::ConstRayResultCallback* callback;
+		Callback(DKScene::ConstRayResultCallback* cb) : callback(cb), numCollisions(0) {}
+		DKScene::ConstRayResultCallback* callback;
 		size_t numCollisions;
 
 		btScalar addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace) override
@@ -1274,12 +1274,12 @@ size_t DKWorld::RayTest(const DKVector3& begin, const DKVector3& end, ConstRayRe
 	return rayResult.numCollisions;
 }
 
-DKCollisionObject* DKWorld::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal)
+DKCollisionObject* DKScene::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal)
 {
-	return const_cast<DKCollisionObject*>( static_cast<const DKWorld*>(this)->RayTestClosest(begin, end, hitPoint, hitNormal));
+	return const_cast<DKCollisionObject*>( static_cast<const DKScene*>(this)->RayTestClosest(begin, end, hitPoint, hitNormal));
 }
 
-const DKCollisionObject* DKWorld::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal) const
+const DKCollisionObject* DKScene::RayTestClosest(const DKVector3& begin, const DKVector3& end, DKVector3* hitPoint, DKVector3* hitNormal) const
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1307,7 +1307,7 @@ const DKCollisionObject* DKWorld::RayTestClosest(const DKVector3& begin, const D
 }
 
 #if 0
-void DKWorld::SetSceneState(const DKCamera& cam, DKSceneState& state) const
+void DKScene::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 {
 	state.Clear();
 
@@ -1325,7 +1325,7 @@ void DKWorld::SetSceneState(const DKCamera& cam, DKSceneState& state) const
 }
 #endif
 
-bool DKWorld::AddObject(DKModel* obj)
+bool DKScene::AddObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1342,8 +1342,8 @@ bool DKWorld::AddObject(DKModel* obj)
 
 	struct InsertObject
 	{
-		InsertObject(DKWorld* s) : target(s) {}
-		DKWorld* target;
+		InsertObject(DKScene* s) : target(s) {}
+		DKScene* target;
 		void operator () (DKModel* model)
 		{
 			DKASSERT_DEBUG(target->sceneObjects.Contains(model) == false);
@@ -1365,7 +1365,7 @@ bool DKWorld::AddObject(DKModel* obj)
 	return true;
 }
 
-void DKWorld::RemoveObject(DKModel* obj)
+void DKScene::RemoveObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1382,8 +1382,8 @@ void DKWorld::RemoveObject(DKModel* obj)
 
 	struct RemoveObject
 	{
-		RemoveObject(DKWorld* s) : target(s) {}
-		DKWorld* target;
+		RemoveObject(DKScene* s) : target(s) {}
+		DKScene* target;
 		void operator () (DKModel* model)
 		{
 			size_t num = model->NumberOfChildren();
@@ -1403,7 +1403,7 @@ void DKWorld::RemoveObject(DKModel* obj)
 	RemoveObject(this)(obj);
 }
 
-bool DKWorld::AddSingleObject(DKModel* obj)
+bool DKScene::AddSingleObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(obj->Scene() == this);
@@ -1429,7 +1429,7 @@ bool DKWorld::AddSingleObject(DKModel* obj)
 	return false;
 }
 
-void DKWorld::RemoveSingleObject(DKModel* obj)
+void DKScene::RemoveSingleObject(DKModel* obj)
 {
 	DKASSERT_DEBUG(context && context->world);
 	DKASSERT_DEBUG(obj->Scene() == this);
@@ -1452,7 +1452,7 @@ void DKWorld::RemoveSingleObject(DKModel* obj)
 	}
 }
 
-void DKWorld::RemoveAllObjects()
+void DKScene::RemoveAllObjects()
 {
 	DKASSERT_DEBUG(context && context->world);
 
@@ -1474,12 +1474,12 @@ void DKWorld::RemoveAllObjects()
 //	this->meshes.Clear();
 }
 
-size_t DKWorld::NumberOfSceneObjects() const
+size_t DKScene::NumberOfSceneObjects() const
 {
 	return this->sceneObjects.Count();
 }
 
-void DKWorld::Enumerate(BEnumerator* e) const
+void DKScene::Enumerate(BEnumerator* e) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	this->sceneObjects.EnumerateForward([e](const DKModel* m)
@@ -1488,7 +1488,7 @@ void DKWorld::Enumerate(BEnumerator* e) const
 	});
 }
 
-void DKWorld::Enumerate(VEnumerator* e) const
+void DKScene::Enumerate(VEnumerator* e) const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
 	this->sceneObjects.EnumerateForward([e](const DKModel* m)

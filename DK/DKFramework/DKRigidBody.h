@@ -13,7 +13,7 @@
 namespace DKFramework
 {
 	/// @brief
-	/// a rigid body. a node object which can be used by DKWorld.
+	/// a rigid body. a node object which can be used by DKScene.
 	/// @details
 	/// object should have CollisionShape to interact.
 	/// @note

@@ -1,5 +1,5 @@
 //
-//  File: DKDynamicsWorld.h
+//  File: DKDynamicsScene.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
@@ -7,7 +7,7 @@
 
 #pragma once
 #include "../DKFoundation.h"
-#include "DKWorld.h"
+#include "DKScene.h"
 #include "DKRigidBody.h"
 #include "DKSoftBody.h"
 #include "DKConstraint.h"
@@ -20,11 +20,11 @@ namespace DKFramework
 	/// You can extend physical behavior with DKActionController.
 	/// @note
 	/// dynamics simulation is performed in Bullet-Physics.
-	class DKGL_API DKDynamicsWorld : public DKWorld
+	class DKGL_API DKDynamicsScene : public DKScene
 	{
 	public:
-		DKDynamicsWorld();
-		virtual ~DKDynamicsWorld();
+		DKDynamicsScene();
+		virtual ~DKDynamicsScene();
 
 		void SetGravity(const DKVector3& g);
 		DKVector3 Gravity() const;

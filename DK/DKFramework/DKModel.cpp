@@ -6,7 +6,7 @@
 //
 
 #include "DKModel.h"
-#include "DKWorld.h"
+#include "DKScene.h"
 
 using namespace DKFramework;
 

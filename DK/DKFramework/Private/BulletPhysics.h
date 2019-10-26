@@ -31,7 +31,7 @@
 #include "../DKCollisionObject.h"
 #include "../DKCollisionShape.h"
 #include "../DKConstraint.h"
-#include "../DKWorld.h"
+#include "../DKScene.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // BulletPhysics.h
@@ -42,7 +42,7 @@ using namespace DKFramework;
 
 namespace DKFramework
 {
-	class DKWorld::CollisionWorldContext
+	class DKScene::CollisionWorldContext
 	{
 	public:
 		btCollisionConfiguration*	configuration;
@@ -59,7 +59,7 @@ namespace DKFramework
 
 	namespace Private
 	{
-		using CollisionWorldContext = DKWorld::CollisionWorldContext;
+		using CollisionWorldContext = DKScene::CollisionWorldContext;
 
 		template <typename BT> struct BulletObject : public BT
 		{
@@ -72,11 +72,11 @@ namespace DKFramework
 
 		////////////////////////////////////////////////////////////////////////////////
 		// CollisionWorldContext
-		FORCEINLINE CollisionWorldContext* BulletCollisionWorldContext(const DKWorld* obj)
+		FORCEINLINE CollisionWorldContext* BulletCollisionWorldContext(const DKScene* obj)
 		{
-			struct SceneExt : public DKWorld
+			struct SceneExt : public DKScene
 			{
-				using DKWorld::context;
+				using DKScene::context;
 			};
 			return static_cast<const SceneExt*>(obj)->context;
 		}

@@ -273,7 +273,7 @@
     <ClCompile Include="DKFramework\DKConvexHullShape.cpp" />
     <ClCompile Include="DKFramework\DKConvexShape.cpp" />
     <ClCompile Include="DKFramework\DKCylinderShape.cpp" />
-    <ClCompile Include="DKFramework\DKDynamicsWorld.cpp" />
+    <ClCompile Include="DKFramework\DKDynamicsScene.cpp" />
     <ClCompile Include="DKFramework\DKFixedConstraint.cpp" />
     <ClCompile Include="DKFramework\DKFont.cpp" />
     <ClCompile Include="DKFramework\DKFrame.cpp" />
@@ -324,7 +324,7 @@
     <ClCompile Include="DKFramework\DKVector3.cpp" />
     <ClCompile Include="DKFramework\DKVector4.cpp" />
     <ClCompile Include="DKFramework\DKWindow.cpp" />
-    <ClCompile Include="DKFramework\DKWorld.cpp" />
+    <ClCompile Include="DKFramework\DKScene.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
@@ -467,7 +467,7 @@
     <ClInclude Include="DKFramework\DKConvexShape.h" />
     <ClInclude Include="DKFramework\DKCylinderShape.h" />
     <ClInclude Include="DKFramework\DKDepthStencil.h" />
-    <ClInclude Include="DKFramework\DKDynamicsWorld.h" />
+    <ClInclude Include="DKFramework\DKDynamicsScene.h" />
     <ClInclude Include="DKFramework\DKFixedConstraint.h" />
     <ClInclude Include="DKFramework\DKFont.h" />
     <ClInclude Include="DKFramework\DKFrame.h" />
@@ -538,7 +538,7 @@
     <ClInclude Include="DKFramework\DKVertexDescriptor.h" />
     <ClInclude Include="DKFramework\DKVKey.h" />
     <ClInclude Include="DKFramework\DKWindow.h" />
-    <ClInclude Include="DKFramework\DKWorld.h" />
+    <ClInclude Include="DKFramework\DKScene.h" />
     <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h" />
