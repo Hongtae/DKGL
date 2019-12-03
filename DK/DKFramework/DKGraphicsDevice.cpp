@@ -70,3 +70,8 @@ DKObject<DKGpuEvent> DKGraphicsDevice::CreateEvent()
 {
     return impl->CreateEvent(this);
 }
+
+DKObject<DKGpuSemaphore> DKGraphicsDevice::CreateSemaphore()
+{
+    return impl->CreateSemaphore(this);
+}

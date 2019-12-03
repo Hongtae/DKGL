@@ -12,16 +12,30 @@
 #include "../../DKGraphicsDevice.h"
 #include "../../DKGpuResource.h"
 
+#define DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE  0
+
 namespace DKFramework::Private::Vulkan
 {
     class Semaphore : public DKGpuEvent
     {
+#if DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE
+        DKAtomicNumber64 waitValue;
+        DKAtomicNumber64 signalValue;
+#endif
     public:
         Semaphore(DKGraphicsDevice*, VkSemaphore);
         ~Semaphore();
 
         DKObject<DKGraphicsDevice> device;
         VkSemaphore semaphore;
+
+#if DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE
+        uint64_t NextWaitValue();
+        uint64_t NextSignalValue();
+#else
+        uint64_t NextWaitValue() { return 0; }
+        uint64_t NextSignalValue() { return 0; }
+#endif
     };
 }
 

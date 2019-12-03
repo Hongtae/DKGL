@@ -36,6 +36,7 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) override;
         DKObject<DKSamplerState> CreateSamplerState(DKGraphicsDevice*, const DKSamplerDescriptor&) override;
         DKObject<DKGpuEvent> CreateEvent(DKGraphicsDevice*) override;
+        DKObject<DKGpuSemaphore> CreateSemaphore(DKGraphicsDevice*) override;
 
         DKString DeviceName() const override;
 

@@ -21,4 +21,10 @@ namespace DKFramework
     public:
         virtual ~DKGpuEvent() {}
     };
+
+    class DKGpuSemaphore
+    {
+    public:
+        virtual ~DKGpuSemaphore() {}
+    };
 }

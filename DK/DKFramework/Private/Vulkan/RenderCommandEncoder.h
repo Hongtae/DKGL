@@ -44,6 +44,7 @@ namespace DKFramework::Private::Vulkan
             DKArray<DKObject<DescriptorSet>> descriptorSets;
             DKArray<DKObject<DKGpuBuffer>> buffers;
             DKArray<DKObject<DKGpuEvent>> events;
+            DKArray<DKObject<DKGpuSemaphore>> semaphores;
 
             DKRenderPassDescriptor renderPassDescriptor;
 
@@ -66,6 +67,8 @@ namespace DKFramework::Private::Vulkan
 
         void WaitEvent(DKGpuEvent*) override;
         void SignalEvent(DKGpuEvent*) override;
+        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
 

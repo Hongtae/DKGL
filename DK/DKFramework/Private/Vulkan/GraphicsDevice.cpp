@@ -18,6 +18,7 @@
 #include "BufferView.h"
 #include "ImageView.h"
 #include "Semaphore.h"
+#include "TimelineSemaphore.h"
 #include "Types.h"
 #include "../../DKPropertySet.h"
 
@@ -227,6 +228,7 @@ GraphicsDevice::GraphicsDevice()
 
     configRequiredDeviceExtensions.Insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     configRequiredDeviceExtensions.Insert(VK_KHR_MAINTENANCE1_EXTENSION_NAME);
+    configRequiredDeviceExtensions.Insert(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
 
     configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
     configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE3_EXTENSION_NAME);
@@ -1489,6 +1491,16 @@ DKObject<DKGpuEvent> GraphicsDevice::CreateEvent(DKGraphicsDevice* dev)
 {
     VkSemaphoreCreateInfo createInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
     VkSemaphore semaphore = VK_NULL_HANDLE;
+
+    VkSemaphoreTypeCreateInfoKHR typeCreateInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR };
+#if DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE
+    typeCreateInfo.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR;
+#else
+    typeCreateInfo.semaphoreType = VK_SEMAPHORE_TYPE_BINARY_KHR;
+#endif
+    typeCreateInfo.initialValue = 0;
+    createInfo.pNext = &typeCreateInfo;
+
     VkResult result = vkCreateSemaphore(device, &createInfo, allocationCallbacks, &semaphore);
 
     if (result != VK_SUCCESS)
@@ -1499,6 +1511,28 @@ DKObject<DKGpuEvent> GraphicsDevice::CreateEvent(DKGraphicsDevice* dev)
 
     DKObject<Semaphore> s = DKOBJECT_NEW Semaphore(dev, semaphore);
     return s.SafeCast<DKGpuEvent>();
+}
+
+DKObject<DKGpuSemaphore> GraphicsDevice::CreateSemaphore(DKGraphicsDevice* dev)
+{
+    VkSemaphoreCreateInfo createInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+    VkSemaphore semaphore = VK_NULL_HANDLE;
+
+    VkSemaphoreTypeCreateInfoKHR typeCreateInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR };
+    typeCreateInfo.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR;
+    typeCreateInfo.initialValue = 0;
+    createInfo.pNext = &typeCreateInfo;
+
+    VkResult result = vkCreateSemaphore(device, &createInfo, allocationCallbacks, &semaphore);
+
+    if (result != VK_SUCCESS)
+    {
+        DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(result));
+        return nullptr;
+    }
+
+    DKObject<TimelineSemaphore> s = DKOBJECT_NEW TimelineSemaphore(dev, semaphore);
+    return s.SafeCast<DKGpuSemaphore>();
 }
 
 DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsDevice* dev, const DKRenderPipelineDescriptor& desc, DKPipelineReflection* reflection)

@@ -22,25 +22,44 @@ namespace DKFramework::Private::Vulkan
     public:
         enum { InitialNumberOfCommands = 128 };
 
-        DKMap<VkSemaphore, VkPipelineStageFlags> waitStageSemaphores;
-        DKSet<VkSemaphore> signalSemaphores;
+        struct WaitTimelineSemaphoreStageValue
+        {
+            VkPipelineStageFlags stages;
+            uint64_t value; // 0 for non-timeline semaphore (binary semaphore)
+        };
+        DKMap<VkSemaphore, WaitTimelineSemaphoreStageValue> waitSemaphores;
+        DKMap<VkSemaphore, uint64_t> signalSemaphores;
 
         virtual ~CommandEncoder() {}
         virtual bool Encode(VkCommandBuffer) = 0;
 
-        void AddWaitSemaphore(VkSemaphore semaphore, VkPipelineStageFlags flags)
+        void AddWaitSemaphore(VkSemaphore semaphore, uint64_t value, VkPipelineStageFlags flags)
         {
             if (semaphore != VK_NULL_HANDLE)
             {
-                if (!waitStageSemaphores.Insert(semaphore, flags))
-                    waitStageSemaphores.Value(semaphore) |= flags;
+                if (!waitSemaphores.Insert(semaphore, { flags, value }))
+                {
+                    auto p = waitSemaphores.Find(semaphore);
+                    {
+                        if (value > p->value.value)
+                            p->value.value = value;
+                        p->value.stages |= flags;
+                    }
+                }
             }
         }
-
-        void AddSignalSemaphore(VkSemaphore semaphore)
+        void AddSignalSemaphore(VkSemaphore semaphore, uint64_t value)
         {
             if (semaphore != VK_NULL_HANDLE)
-                signalSemaphores.Insert(semaphore);
+            {
+                if (!signalSemaphores.Insert(semaphore, value))
+                {
+                    auto p = signalSemaphores.Find(semaphore);
+                    DKASSERT_DEBUG(p);
+                    if (value > p->value)
+                        p->value = value;
+                }
+            }
         }
     };
 
@@ -72,6 +91,11 @@ namespace DKFramework::Private::Vulkan
         DKArray<VkSemaphore>			submitWaitSemaphores;
         DKArray<VkPipelineStageFlags>	submitWaitStageMasks;
         DKArray<VkSemaphore>			submitSignalSemaphores;
+
+        DKArray<uint64_t>               submitWaitTimelineSemaphoreValues;
+        DKArray<uint64_t>               submitSignalTimelineSemaphoreValues;
+        DKArray<VkTimelineSemaphoreSubmitInfoKHR> submitTimelineSemaphoreInfos;
+
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN
