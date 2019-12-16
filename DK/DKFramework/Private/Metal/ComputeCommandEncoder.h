@@ -13,6 +13,8 @@
 #include "../../DKComputeCommandEncoder.h"
 #include "CommandBuffer.h"
 #include "ComputePipelineState.h"
+#include "Event.h"
+#include "Semaphore.h"
 
 namespace DKFramework::Private::Metal
 {
@@ -30,6 +32,8 @@ namespace DKFramework::Private::Metal
 		// DKComputeCommandEncoder
         void WaitEvent(DKGpuEvent*) override;
         void SignalEvent(DKGpuEvent*) override;
+        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
         void SetComputePipelineState(DKComputePipelineState*) override;
@@ -47,8 +51,13 @@ namespace DKFramework::Private::Metal
             bool Encode(id<MTLCommandBuffer> buffer) override;
 			DKArray<DKObject<EncoderCommand>> commands;
             
-            DKArray<DKObject<DKGpuEvent>> waitEvents;
-            DKArray<DKObject<DKGpuEvent>> signalEvents;
+            DKArray<DKObject<DKGpuEvent>> events;
+            DKArray<DKObject<DKGpuSemaphore>> semaphores;
+
+            DKSet<Event*> waitEvents;
+            DKSet<Event*> signalEvents;
+            DKMap<Semaphore*, uint64_t> waitSemaphores;
+            DKMap<Semaphore*, uint64_t> signalSemaphores;
 		};
 		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;

@@ -14,6 +14,8 @@
 #include "CommandBuffer.h"
 #include "RenderPipelineState.h"
 #include "Buffer.h"
+#include "Event.h"
+#include "Semaphore.h"
 
 namespace DKFramework::Private::Metal
 {
@@ -31,6 +33,8 @@ namespace DKFramework::Private::Metal
 		// DKRenderCommandEncoder overrides
         void WaitEvent(DKGpuEvent*) override;
         void SignalEvent(DKGpuEvent*) override;
+        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
 
         void SetResources(uint32_t set, DKShaderBindingSet*) override;
 		void SetViewport(const DKViewport&) override;
@@ -61,8 +65,13 @@ namespace DKFramework::Private::Metal
             DKArray<DKObject<EncoderCommand>> commands;
 			MTLRenderPassDescriptor* renderPassDescriptor;
 
-            DKArray<DKObject<DKGpuEvent>> waitEvents;
-            DKArray<DKObject<DKGpuEvent>> signalEvents;
+            DKArray<DKObject<DKGpuEvent>> events;
+            DKArray<DKObject<DKGpuSemaphore>> semaphores;
+
+            DKSet<Event*> waitEvents;
+            DKSet<Event*> signalEvents;
+            DKMap<Semaphore*, uint64_t> waitSemaphores;
+            DKMap<Semaphore*, uint64_t> signalSemaphores;
 		};
 
 		DKObject<Encoder> encoder;

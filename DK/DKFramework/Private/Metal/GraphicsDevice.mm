@@ -21,6 +21,7 @@
 #include "Texture.h"
 #include "SamplerState.h"
 #include "Event.h"
+#include "Semaphore.h"
 #include "Types.h"
 #include "../../DKPropertySet.h"
 
@@ -1141,6 +1142,22 @@ DKObject<DKGpuEvent> GraphicsDevice::CreateEvent(DKGraphicsDevice* dev)
         if (event)
         {
             return DKOBJECT_NEW Event(dev, [event autorelease]);
+        }
+        else
+        {
+            DKLogE("GraphicsDevice::CreateEvent Error!");
+        }
+    }
+    return NULL;
+}
+
+DKObject<DKGpuSemaphore> GraphicsDevice::CreateSemaphore(DKGraphicsDevice* dev)
+{
+    @autoreleasepool {
+        id<MTLEvent> event = [device newEvent];
+        if (event)
+        {
+            return DKOBJECT_NEW Semaphore(dev, [event autorelease]);
         }
         else
         {

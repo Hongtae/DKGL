@@ -13,6 +13,7 @@
 #include "ShaderBindingSet.h"
 #include "GraphicsDevice.h"
 #include "Event.h"
+#include "Semaphore.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
@@ -31,14 +32,14 @@ RenderCommandEncoder::Encoder::~Encoder()
 
 bool RenderCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
 {
-    for (DKGpuEvent* e : waitEvents)
-    {
-        DKASSERT_DEBUG(dynamic_cast<Event*>(e));
-        Event* event = static_cast<Event*>(e);
-
+    waitEvents.EnumerateForward([&](Event* event) {
         [buffer encodeWaitForEvent:event->event
                              value:event->NextWaitValue()];
-    }
+    });
+    waitSemaphores.EnumerateForward([&](DKMap<Semaphore*, uint64_t>::Pair& pair) {
+        [buffer encodeWaitForEvent:pair.key->event
+                             value:pair.value];
+    });
 
     bool result = false;
     DKASSERT_DEBUG(renderPassDescriptor);
@@ -55,14 +56,14 @@ bool RenderCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
         result = true;
     }
 
-    for (DKGpuEvent* e : signalEvents)
-    {
-        DKASSERT_DEBUG(dynamic_cast<Event*>(e));
-        Event* event = static_cast<Event*>(e);
-
+    signalEvents.EnumerateForward([&](Event* event) {
         [buffer encodeSignalEvent:event->event
                             value:event->NextSignalValue()];
-    }
+    });
+    signalSemaphores.EnumerateForward([&](DKMap<Semaphore*, uint64_t>::Pair& pair) {
+        [buffer encodeSignalEvent:pair.key->event
+                            value:pair.value];
+    });
 
     return result;
 }
@@ -89,13 +90,47 @@ void RenderCommandEncoder::EndEncoding()
 void RenderCommandEncoder::WaitEvent(DKGpuEvent* event)
 {
     DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->waitEvents.Add(event);
+    encoder->events.Add(event);
+    encoder->waitEvents.Insert(static_cast<Event*>(event));
 }
 
 void RenderCommandEncoder::SignalEvent(DKGpuEvent* event)
 {
     DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->signalEvents.Add(event);
+    encoder->events.Add(event);
+    encoder->signalEvents.Insert(static_cast<Event*>(event));
+}
+
+void RenderCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
+    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    if (auto p = encoder->waitSemaphores.Find(s); p)
+    {
+        if (value > p->value)
+            p->value = value;
+    }
+    else
+    {
+        encoder->waitSemaphores.Insert(s, value);
+        encoder->semaphores.Add(semaphore);
+    }
+}
+
+void RenderCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
+    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    if (auto p = encoder->signalSemaphores.Find(s); p)
+    {
+        if (value > p->value)
+            p->value = value;
+    }
+    else
+    {
+        encoder->signalSemaphores.Insert(s, value);
+        encoder->semaphores.Add(semaphore);
+    }
 }
 
 void RenderCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)

@@ -19,14 +19,14 @@ using namespace DKFramework::Private::Metal;
 #pragma mark - CopyCommandEncoder::Encoder
 bool CopyCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
 {
-    for (DKGpuEvent* e : waitEvents)
-    {
-        DKASSERT_DEBUG(dynamic_cast<Event*>(e));
-        Event* event = static_cast<Event*>(e);
-
+    waitEvents.EnumerateForward([&](Event* event) {
         [buffer encodeWaitForEvent:event->event
                              value:event->NextWaitValue()];
-    }
+    });
+    waitSemaphores.EnumerateForward([&](DKMap<Semaphore*, uint64_t>::Pair& pair) {
+        [buffer encodeWaitForEvent:pair.key->event
+                             value:pair.value];
+    });
 
     id<MTLBlitCommandEncoder> encoder = [buffer blitCommandEncoder];
     EncodingState state = {};
@@ -36,14 +36,14 @@ bool CopyCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
     }
     [encoder endEncoding];
 
-    for (DKGpuEvent* e : signalEvents)
-    {
-        DKASSERT_DEBUG(dynamic_cast<Event*>(e));
-        Event* event = static_cast<Event*>(e);
-
+    signalEvents.EnumerateForward([&](Event* event) {
         [buffer encodeSignalEvent:event->event
                             value:event->NextSignalValue()];
-    }
+    });
+    signalSemaphores.EnumerateForward([&](DKMap<Semaphore*, uint64_t>::Pair& pair) {
+        [buffer encodeSignalEvent:pair.key->event
+                            value:pair.value];
+    });
 
     return true;
 }
@@ -71,13 +71,47 @@ void CopyCommandEncoder::EndEncoding()
 void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
 {
     DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->waitEvents.Add(event);
+    encoder->events.Add(event);
+    encoder->waitEvents.Insert(static_cast<Event*>(event));
 }
 
 void CopyCommandEncoder::SignalEvent(DKGpuEvent* event)
 {
     DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->signalEvents.Add(event);
+    encoder->events.Add(event);
+    encoder->signalEvents.Insert(static_cast<Event*>(event));
+}
+
+void CopyCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
+    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    if (auto p = encoder->waitSemaphores.Find(s); p)
+    {
+        if (value > p->value)
+            p->value = value;
+    }
+    else
+    {
+        encoder->waitSemaphores.Insert(s, value);
+        encoder->semaphores.Add(semaphore);
+    }
+}
+
+void CopyCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
+    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    if (auto p = encoder->signalSemaphores.Find(s); p)
+    {
+        if (value > p->value)
+            p->value = value;
+    }
+    else
+    {
+        encoder->signalSemaphores.Insert(s, value);
+        encoder->semaphores.Add(semaphore);
+    }
 }
 
 void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
