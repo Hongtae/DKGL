@@ -78,7 +78,10 @@
     <None Include="DKFramework\Private\Metal\CopyCommandEncoder.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
-    <None Include="DKFramework\Private\Metal\Fence.mm">
+    <None Include="DKFramework\Private\Metal\Event.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\Semaphore.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
   </ItemGroup>
@@ -577,14 +580,14 @@
     <ClCompile Include="DKFramework\DKGraphicsDeviceContext.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKDynamicsScene.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKScene.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\TimelineSemaphore.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKDynamicsScene.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKScene.cpp">
+      <Filter>DKFramework_WIP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1311,23 +1314,26 @@
     <ClInclude Include="DKFramework\Private\Vulkan\Semaphore.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\Private\Metal\Fence.h">
-      <Filter>DKFramework_WIP\Private\Metal</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKMaterial.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKGraphicsDeviceContext.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKDynamicsScene.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKScene.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\TimelineSemaphore.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKDynamicsScene.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKScene.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Event.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Semaphore.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

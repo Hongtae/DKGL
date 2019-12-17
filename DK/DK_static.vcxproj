@@ -189,11 +189,12 @@
     <None Include="DKFramework\Private\Metal\CommandQueue.mm" />
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\ComputePipelineState.mm" />
-    <None Include="DKFramework\Private\Metal\Fence.mm" />
+    <None Include="DKFramework\Private\Metal\Event.mm" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
     <None Include="DKFramework\Private\Metal\SamplerState.mm" />
+    <None Include="DKFramework\Private\Metal\Semaphore.mm" />
     <None Include="DKFramework\Private\Metal\ShaderBindingSet.mm" />
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
     <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
@@ -563,11 +564,12 @@
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputePipelineState.h" />
-    <ClInclude Include="DKFramework\Private\Metal\Fence.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Event.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Metal\SamplerState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Semaphore.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderBindingSet.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
