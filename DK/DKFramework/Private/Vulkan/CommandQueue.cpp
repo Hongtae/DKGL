@@ -81,8 +81,6 @@ bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKO
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 
 	VkFence fence = VK_NULL_HANDLE;
-	if (callback)
-		fence = dev->GetFence();
 
 	VkResult err = vkQueueSubmit(queue, submitCount, submits, fence);
 	if (err != VK_SUCCESS)
@@ -90,8 +88,6 @@ bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKO
 		DKLogE("ERROR: vkQueueSubmit failed: %s", VkResultCStr(err));
 		DKASSERT(err == VK_SUCCESS);
 	}
-	if (fence)
-		dev->AddFenceCompletionHandler(fence, callback);
 
 	return err == VK_SUCCESS;
 }

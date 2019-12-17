@@ -43,8 +43,7 @@ namespace DKFramework::Private::Vulkan
         DKObject<DescriptorSet> CreateDescriptorSet(DKGraphicsDevice*, VkDescriptorSetLayout, const DescriptorPoolId&);
         void DestroyDescriptorSets(DescriptorPool*, VkDescriptorSet*, size_t);
 
-		VkFence GetFence();
-		void AddFenceCompletionHandler(VkFence, DKOperation*, bool useEventLoop = false);
+        void SetQueueCompletionHandler(VkSemaphore, uint64_t, DKOperation*);
 
 		VkInstance instance;
 		VkDevice device;
@@ -61,20 +60,6 @@ namespace DKFramework::Private::Vulkan
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
 
-		struct FenceCallback
-		{
-			VkFence fence;
-			DKObject<DKOperation> operation;
-			DKThread::ThreadId threadId;
-		};
-		DKArray<FenceCallback> pendingFenceCallbacks;
-		DKArray<VkFence> reusableFences;
-		DKCondition fenceCompletionCond;
-		bool fenceCompletionThreadRunning;
-		DKObject<DKThread> fenceCompletionThread;
-		void FenceCompletionCallbackThreadProc();
-
-		VkPipelineCache pipelineCache;
 		void LoadPipelineCache();
 		void SavePipelineCache();
 
@@ -104,6 +89,12 @@ namespace DKFramework::Private::Vulkan
             DKASSERT_DEBUG(0);
             return uint32_t(-1);
         };
+
+        VkPipelineCache pipelineCache;
+
+        DKObject<DKThread> queueCompletionThread;
+        VkSemaphore queueCompletionSemaphore;
+        void QueueCompletionThreadProc();
 
         // VK_EXT_debug_utils
         VkDebugUtilsMessengerEXT debugMessenger;

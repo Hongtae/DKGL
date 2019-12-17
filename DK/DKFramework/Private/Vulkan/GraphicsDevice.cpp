@@ -103,11 +103,13 @@ GraphicsDevice::GraphicsDevice()
 	: instance(NULL)
 	, device(NULL)
 	, physicalDevice(NULL)
-	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
 	, pipelineCache(VK_NULL_HANDLE)
     , allocationCallbacks(nullptr)
     , debugMessenger(VK_NULL_HANDLE)
+#if DKGL_VULKAN_COMMAND_QUEUE_COMPLETION_BUSY_WAIT
+	, fenceCompletionThreadRunning(true)
+#endif
 {
     VkApplicationInfo appInfo = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
     appInfo.pApplicationName = "DKGL";
@@ -824,9 +826,6 @@ GraphicsDevice::GraphicsDevice()
 	queueFamilies.ShrinkToFit();
 
 	LoadPipelineCache();
-
-	fenceCompletionThread = DKThread::Create(
-		DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
 }
 
 GraphicsDevice::~GraphicsDevice()
@@ -837,20 +836,6 @@ GraphicsDevice::~GraphicsDevice()
     }
 
 	vkDeviceWaitIdle(device);
-	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
-	{
-		fenceCompletionCond.Lock();
-		fenceCompletionThreadRunning = false;
-		fenceCompletionCond.Broadcast();
-		fenceCompletionCond.Unlock();
-
-		fenceCompletionThread->WaitTerminate();
-	}
-
-	DKASSERT_DEBUG(pendingFenceCallbacks.IsEmpty());
-	for (VkFence fence : reusableFences)
-		vkDestroyFence(device, fence, allocationCallbacks);
-	reusableFences.Clear();
 
 	for (QueueFamily* family : queueFamilies)
 	{
@@ -2124,165 +2109,6 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 	return pipelineState.SafeCast<DKComputePipelineState>();
 }
 
-VkFence GraphicsDevice::GetFence()
-{
-	VkFence fence = VK_NULL_HANDLE;
-
-	if (fence == VK_NULL_HANDLE)
-	{
-		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
-		if (reusableFences.Count() > 0)
-		{
-			fence = reusableFences.Value(0);
-			reusableFences.Remove(0);
-		}
-	}
-	if (fence == VK_NULL_HANDLE)
-	{
-		VkFenceCreateInfo fenceCreateInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-		VkResult err = vkCreateFence(device, &fenceCreateInfo, allocationCallbacks, &fence);
-		if (err != VK_SUCCESS)
-		{
-			DKLogE("ERROR: vkCreateFence failed: %s", VkResultCStr(err));
-			DKASSERT(err == VK_SUCCESS);
-		}
-		numberOfFences.Increment();
-		DKLogD("Queue Completion Helper: Num-Fences: %llu", (uint64_t)numberOfFences);
-	}
-	return fence;
-}
-
-void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op, bool useEventLoop)
-{
-	DKASSERT_DEBUG(fence != VK_NULL_HANDLE);
-
-	if (op)
-	{
-		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
-		FenceCallback cb = { fence, op, 0 };
-		if (useEventLoop)
-			cb.threadId = DKThread::CurrentThreadId();
-		pendingFenceCallbacks.Add(cb);
-		fenceCompletionCond.Broadcast();
-	}
-}
-
-void GraphicsDevice::FenceCompletionCallbackThreadProc()
-{
-	const double fenceWaitInterval = 0.002;
-
-	VkResult err = VK_SUCCESS;
-
-	DKArray<VkFence> fences;
-	DKArray<FenceCallback> waitingFences;
-	struct ThreadCallback
-	{
-		DKObject<DKOperation> operation;
-		DKThread::ThreadId threadId;
-	};
-	DKArray<ThreadCallback> availableCallbacks;
-
-	DKLogI("Vulkan Queue Completion Helper thread is started.");
-
-	DKCriticalSection<DKCondition> guard(fenceCompletionCond);
-	while (fenceCompletionThreadRunning)
-	{
-		waitingFences.Add(pendingFenceCallbacks);
-		pendingFenceCallbacks.Clear();
-
-		if (waitingFences.Count() > 0)
-		{
-			// condition is unlocked from here.
-			fenceCompletionCond.Unlock();
-
-			fences.Clear();
-			fences.Reserve(waitingFences.Count());
-			for (FenceCallback& cb : waitingFences)
-				fences.Add(cb.fence);
-
-			DKASSERT_DEBUG(fences.Count() > 0);
-			err = vkWaitForFences(device,
-								  static_cast<uint32_t>(fences.Count()),
-								  fences,
-								  VK_FALSE,
-								  0);
-			fences.Clear();
-			if (err == VK_SUCCESS)
-			{
-				DKArray<FenceCallback> waitingFencesCopy;
-				waitingFencesCopy.Reserve(waitingFences.Count());
-
-				// check state for each fences
-				for (FenceCallback& cb : waitingFences)
-				{
-					if (vkGetFenceStatus(device, cb.fence) == VK_SUCCESS)
-					{
-						fences.Add(cb.fence);
-						availableCallbacks.Add({ cb.operation, cb.threadId });
-					}
-					else
-						waitingFencesCopy.Add(cb); // fence is not ready (unsignaled)
-				}
-				// save unsignaled fences
-				waitingFences.Clear();
-				waitingFences = std::move(waitingFencesCopy);
-
-				// reset signaled fences
-				if (fences.Count() > 0)
-				{
-					err = vkResetFences(device, static_cast<uint32_t>(fences.Count()), fences);
-					if (err != VK_SUCCESS)
-					{
-						DKLogE("ERROR: vkResetFences failed: %s", VkResultCStr(err));
-						DKASSERT(err == VK_SUCCESS);
-					}
-				}
-			}
-			else if (err != VK_TIMEOUT)
-			{
-				DKLogE("ERROR: vkWaitForFences failed: %s", VkResultCStr(err));
-				DKASSERT(0);
-			}			
-
-			if (availableCallbacks.Count() > 0)
-			{
-				for (ThreadCallback& tc : availableCallbacks)
-				{
-					DKObject<DKEventLoop> eventLoop = NULL;
-					if (tc.threadId != 0)
-						eventLoop = DKEventLoop::EventLoopForThreadId(tc.threadId);
-					if (eventLoop)
-						eventLoop->Post(tc.operation);
-					else
-						tc.operation->Perform();
-				}
-				availableCallbacks.Clear();
-			}
-
-			// lock condition (requires to reset fences mutually exclusive)
-			fenceCompletionCond.Lock();
-			if (fences.Count() > 0)
-			{
-				reusableFences.Add(fences);
-				fences.Clear();
-			}
-			if (err == VK_TIMEOUT)
-			{
-				if (fenceWaitInterval > 0.0)
-					fenceCompletionCond.WaitTimeout(fenceWaitInterval);
-				else
-					DKThread::Yield();
-			}
-		}
-		else
-		{
-			fenceCompletionCond.Wait();
-		}
-	}
-
-	DKLogI("Vulkan Queue Completion Helper thread is finished.");
-}
-
 void GraphicsDevice::LoadPipelineCache()
 {
 	if (this->pipelineCache != VK_NULL_HANDLE)
@@ -2529,6 +2355,16 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
         return VK_NULL_HANDLE;
     }
     return pipelineLayout;
+}
+
+void GraphicsDevice::QueueCompletionThreadProc()
+{
+    struct QueueCompletionSemaphoreInfo
+    {
+        VkSemaphore semaphore;
+        uint64_t waitValue;
+        DKArray<DKObject<DKOperation>> callbacks;
+    };
 }
 
 #endif //#if DKGL_ENABLE_VULKAN
