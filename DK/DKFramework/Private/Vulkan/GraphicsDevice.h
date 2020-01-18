@@ -43,8 +43,6 @@ namespace DKFramework::Private::Vulkan
         DKObject<DescriptorSet> CreateDescriptorSet(DKGraphicsDevice*, VkDescriptorSetLayout, const DescriptorPoolId&);
         void DestroyDescriptorSets(DescriptorPool*, VkDescriptorSet*, size_t);
 
-        void SetQueueCompletionHandler(VkSemaphore, uint64_t, DKOperation*);
-
 		VkInstance instance;
 		VkDevice device;
 		VkPhysicalDevice physicalDevice;
@@ -92,8 +90,29 @@ namespace DKFramework::Private::Vulkan
 
         VkPipelineCache pipelineCache;
 
+        // timeline semaphore completion handlers
+        struct TimelineSemaphoreCounter
+        {
+            VkSemaphore semaphore;
+            uint64_t value;
+        };
+        struct TimelineSemaphoreCompletionHandler
+        {
+            uint64_t value;
+            DKObject<DKOperation> operation;
+        };
+        struct QueueSubmissionSemaphore
+        {
+            VkQueue queue;
+            TimelineSemaphoreCounter semaphore;
+            DKArray<TimelineSemaphoreCompletionHandler> handlers;
+        };
+        bool queueCompletionThreadRunning;
+        TimelineSemaphoreCounter deviceEventSemaphore;
+        DKArray<QueueSubmissionSemaphore> queueCompletionSemaphoreHandlers;
+
         DKObject<DKThread> queueCompletionThread;
-        VkSemaphore queueCompletionSemaphore;
+        DKSpinLock queueCompletionHandlerLock;
         void QueueCompletionThreadProc();
 
         // VK_EXT_debug_utils

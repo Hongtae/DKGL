@@ -107,9 +107,8 @@ GraphicsDevice::GraphicsDevice()
 	, pipelineCache(VK_NULL_HANDLE)
     , allocationCallbacks(nullptr)
     , debugMessenger(VK_NULL_HANDLE)
-#if DKGL_VULKAN_COMMAND_QUEUE_COMPLETION_BUSY_WAIT
-	, fenceCompletionThreadRunning(true)
-#endif
+	, queueCompletionThreadRunning(true)
+    , deviceEventSemaphore{ 0 }
 {
     VkApplicationInfo appInfo = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
     appInfo.pApplicationName = "DKGL";
@@ -826,6 +825,52 @@ GraphicsDevice::GraphicsDevice()
 	queueFamilies.ShrinkToFit();
 
 	LoadPipelineCache();
+
+    // Initialize timeline semaphore for queue submission.
+    auto createTimelineSemaphore = [this](uint64_t initialValue) -> VkSemaphore {
+        VkSemaphoreCreateInfo createInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+        VkSemaphore semaphore = VK_NULL_HANDLE;
+
+        VkSemaphoreTypeCreateInfoKHR typeCreateInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR };
+        typeCreateInfo.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR;
+        typeCreateInfo.initialValue = initialValue;
+        createInfo.pNext = &typeCreateInfo;
+
+        VkResult result = vkCreateSemaphore(device, &createInfo, allocationCallbacks, &semaphore);
+
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(result));
+            return nullptr;
+        }
+        return semaphore;
+    };
+    this->deviceEventSemaphore = { createTimelineSemaphore(0), 0 };
+    size_t numQueues = 0;
+    for (QueueFamily* family : queueFamilies)
+        numQueues += family->freeQueues.Count();
+    DKASSERT_DEBUG(numQueues > 0);
+    queueCompletionSemaphoreHandlers.Reserve(numQueues);
+    for (QueueFamily* family : queueFamilies)
+    {
+        for (VkQueue queue: family->freeQueues)
+        {
+            QueueSubmissionSemaphore s = { queue };
+            s.semaphore = { createTimelineSemaphore(0), 0 };
+            queueCompletionSemaphoreHandlers.Add(s);
+        }
+    }
+    // sort handlers order by queue address
+    queueCompletionSemaphoreHandlers.Sort([](const QueueSubmissionSemaphore& lhs, const QueueSubmissionSemaphore& rhs)->bool
+    {
+        return reinterpret_cast<const uintptr_t&>(lhs.queue) < reinterpret_cast<const uintptr_t&>(rhs.queue);
+    });
+    queueCompletionSemaphoreHandlers.ShrinkToFit();
+    DKASSERT_DEBUG(queueCompletionSemaphoreHandlers.Count() > 0);
+
+    // create semaphore completion thread
+    this->queueCompletionThread = DKThread::Create(
+        DKFunction(this, &GraphicsDevice::QueueCompletionThreadProc)->Invocation());
 }
 
 GraphicsDevice::~GraphicsDevice()
@@ -835,7 +880,21 @@ GraphicsDevice::~GraphicsDevice()
         DKASSERT_DEBUG(descriptorPoolChainMaps[i].poolChainMap.IsEmpty());
     }
 
-	vkDeviceWaitIdle(device);
+    vkDeviceWaitIdle(device);
+    if (queueCompletionThread && queueCompletionThread->IsAlive())
+    {
+        queueCompletionHandlerLock.Lock();
+        queueCompletionThreadRunning = false;
+
+        VkSemaphoreSignalInfoKHR signalInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO_KHR };
+        signalInfo.semaphore = deviceEventSemaphore.semaphore;
+        signalInfo.value = deviceEventSemaphore.value + 1;
+        vkSignalSemaphoreKHR(device, &signalInfo);
+
+        queueCompletionHandlerLock.Unlock();
+
+        queueCompletionThread->WaitTerminate();
+    }
 
 	for (QueueFamily* family : queueFamilies)
 	{
@@ -2359,12 +2418,116 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
 
 void GraphicsDevice::QueueCompletionThreadProc()
 {
-    struct QueueCompletionSemaphoreInfo
+    bool running = this->queueCompletionThreadRunning;
+
+    DKArray<VkSemaphore> timelineSemaphores;
+    DKArray<uint64_t> timelineValues;
+
+    DKArray<DKObject<DKOperation>> completionHandlers;
+
+    timelineSemaphores.Reserve(queueCompletionSemaphoreHandlers.Count() + 1);
+    timelineValues.Reserve(queueCompletionSemaphoreHandlers.Count() + 1);
+
+    for (QueueSubmissionSemaphore& s : queueCompletionSemaphoreHandlers)
     {
-        VkSemaphore semaphore;
-        uint64_t waitValue;
-        DKArray<DKObject<DKOperation>> callbacks;
-    };
+        timelineSemaphores.Add(s.semaphore.semaphore);
+        timelineValues.Add(s.semaphore.value);
+    }
+    timelineSemaphores.Add(deviceEventSemaphore.semaphore);
+    timelineValues.Add(deviceEventSemaphore.value);
+
+    size_t numSemaphores = timelineSemaphores.Count();
+    DKASSERT_DEBUG(timelineValues.Count() == numSemaphores);
+
+    timelineSemaphores.ShrinkToFit();
+    timelineValues.ShrinkToFit();
+
+    DKLogI("Vulkan Queue Completion Helper thread is started.");
+
+    while (running)
+    {
+        VkSemaphoreWaitInfoKHR waitInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR };
+        waitInfo.flags = VK_SEMAPHORE_WAIT_ANY_BIT_KHR;
+        waitInfo.semaphoreCount = numSemaphores;
+        waitInfo.pSemaphores = timelineSemaphores;
+        waitInfo.pValues = timelineValues;
+
+        auto sec2ns = [](double s) constexpr ->uint64_t
+        {
+            uint64_t us = static_cast<uint64_t>(s * 1000000.0);
+            return us * 1000ULL;
+        };
+
+        VkResult result = vkWaitSemaphoresKHR(this->device, &waitInfo, sec2ns(0.1));
+
+        if (result == VK_SUCCESS)
+        {
+            // update semaphore values.
+            for (size_t i = 0; i < numSemaphores; ++i)
+            {
+                VkResult r = vkGetSemaphoreCounterValueKHR(this->device,
+                                                           timelineSemaphores[i],
+                                                           &timelineValues[i]);
+                if (r != VK_SUCCESS)
+                {
+                    DKLogE("ERROR: vkGetSemaphoreCounterValue failed: %s", VkResultCStr(r));
+                }
+            }
+
+            // update queues and handlers.
+            DKCriticalSection guard(queueCompletionHandlerLock);
+
+            // queueCompletionSemaphoreHandlers must be immutable!
+            DKASSERT_DEBUG(numSemaphores == queueCompletionSemaphoreHandlers.Count() + 1);
+
+            uint64_t index = 0;
+            for (index = 0; index < queueCompletionSemaphoreHandlers.Count(); ++index)
+            {
+                QueueSubmissionSemaphore& s = queueCompletionSemaphoreHandlers.Value(index);
+                DKASSERT_DEBUG(s.semaphore.semaphore == timelineSemaphores[index])
+                    s.semaphore.value = timelineValues[index];
+                uint64_t handlerIndex = 0;
+                for (handlerIndex = 0; handlerIndex < s.handlers.Count(); ++handlerIndex)
+                {
+                    TimelineSemaphoreCompletionHandler& handler = s.handlers.Value(handlerIndex);
+                    if (handler.value > s.semaphore.value)
+                        break;
+                    completionHandlers.Add(handler.operation);
+                }
+                s.handlers.Remove(0, handlerIndex);
+            }
+
+            DKASSERT_DEBUG(deviceEventSemaphore.semaphore == timelineSemaphores[index]);
+            deviceEventSemaphore.value = timelineValues[index];
+
+            running = this->queueCompletionThreadRunning;
+        }
+        else if (result == VK_TIMEOUT)
+        {
+            DKCriticalSection guard(queueCompletionHandlerLock);
+            running = this->queueCompletionThreadRunning;
+        }
+        else
+        {
+            DKLogE("ERROR: vkWaitSemaphores failed: %s", VkResultCStr(result));
+        }
+
+        // execute handlers.
+        if (completionHandlers.Count() > 0)
+        {
+            for (DKObject<DKOperation>& handler : completionHandlers)
+            {
+                handler->Perform();
+            }
+            completionHandlers.Clear();
+
+            // update thread state again.
+            DKCriticalSection guard(queueCompletionHandlerLock);
+            running = this->queueCompletionThreadRunning;
+        }
+    }
+
+    DKLogI("Vulkan Queue Completion Helper thread is finished.");
 }
 
 #endif //#if DKGL_ENABLE_VULKAN
