@@ -43,6 +43,8 @@ namespace DKFramework::Private::Vulkan
         DKObject<DescriptorSet> CreateDescriptorSet(DKGraphicsDevice*, VkDescriptorSetLayout, const DescriptorPoolId&);
         void DestroyDescriptorSets(DescriptorPool*, VkDescriptorSet*, size_t);
 
+        void SetQueueCompletionHandler(VkQueue, DKOperation*, VkSemaphore&, uint64_t&);
+
 		VkInstance instance;
 		VkDevice device;
 		VkPhysicalDevice physicalDevice;
@@ -105,6 +107,7 @@ namespace DKFramework::Private::Vulkan
         {
             VkQueue queue;
             TimelineSemaphoreCounter semaphore;
+            uint64_t waitValue;
             DKArray<TimelineSemaphoreCompletionHandler> handlers;
         };
         bool queueCompletionThreadRunning;

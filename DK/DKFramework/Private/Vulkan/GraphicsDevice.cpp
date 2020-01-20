@@ -500,7 +500,8 @@ GraphicsDevice::GraphicsDevice()
 		size_t numQueues;	// graphics | compute queue count.
 
 		VkPhysicalDeviceProperties properties;
-		VkPhysicalDeviceFeatures features;
+        VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreSupported = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR };
+        VkPhysicalDeviceFeatures2 features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, &timelineSemaphoreSupported };
 		VkPhysicalDeviceMemoryProperties memoryProperties;
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
@@ -572,7 +573,7 @@ GraphicsDevice::GraphicsDevice()
 
 				vkGetPhysicalDeviceProperties(desc.physicalDevice, &desc.properties);
 				vkGetPhysicalDeviceMemoryProperties(desc.physicalDevice, &desc.memoryProperties);
-				vkGetPhysicalDeviceFeatures(desc.physicalDevice, &desc.features);
+				vkGetPhysicalDeviceFeatures2(desc.physicalDevice, &desc.features);
 
 				switch (desc.properties.deviceType)
 				{
@@ -754,7 +755,7 @@ GraphicsDevice::GraphicsDevice()
             });
         }
 
-		VkPhysicalDeviceFeatures enabledFeatures = desc.features; //enable all features supported by a device
+		VkPhysicalDeviceFeatures enabledFeatures = desc.features.features; //enable all features supported by a device
 		VkDeviceCreateInfo deviceCreateInfo = {VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.Count());;
 		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos;
@@ -776,7 +777,7 @@ GraphicsDevice::GraphicsDevice()
 			this->device = logicalDevice;
 			this->physicalDevice = desc.physicalDevice;
 			this->properties = desc.properties;
-			this->features = desc.features;
+			this->features = desc.features.features;
 			this->deviceMemoryTypes = DKArray<VkMemoryType>(desc.memoryProperties.memoryTypes, desc.memoryProperties.memoryTypeCount);
 			this->deviceMemoryHeaps = DKArray<VkMemoryHeap>(desc.memoryProperties.memoryHeaps, desc.memoryProperties.memoryHeapCount);
 			this->queueFamilyProperties = desc.queueFamilyProperties;
@@ -895,14 +896,18 @@ GraphicsDevice::~GraphicsDevice()
 
         queueCompletionThread->WaitTerminate();
     }
+    vkDestroySemaphore(device, deviceEventSemaphore.semaphore, allocationCallbacks);
+    for (QueueSubmissionSemaphore& s : queueCompletionSemaphoreHandlers)
+    {
+        vkDestroySemaphore(device, s.semaphore.semaphore, allocationCallbacks);
+        DKASSERT_DEBUG(s.handlers.IsEmpty());
+    }
 
 	for (QueueFamily* family : queueFamilies)
 	{
 		delete family;
 	}
 	queueFamilies.Clear();
-
-	vkDeviceWaitIdle(device);
 
 	// destroy pipeline cache
 	if (pipelineCache != VK_NULL_HANDLE)
@@ -2528,6 +2533,26 @@ void GraphicsDevice::QueueCompletionThreadProc()
     }
 
     DKLogI("Vulkan Queue Completion Helper thread is finished.");
+}
+
+void GraphicsDevice::SetQueueCompletionHandler(VkQueue queue, DKOperation* op, VkSemaphore& semaphore, uint64_t& timeline)
+{
+    auto index = queueCompletionSemaphoreHandlers.LowerBound(queue, [](VkQueue a, const QueueSubmissionSemaphore& b)
+    {
+        return reinterpret_cast<uintptr_t>(a) < reinterpret_cast<const uintptr_t>(b.queue);
+    });
+    QueueSubmissionSemaphore& s = queueCompletionSemaphoreHandlers.Value(index);
+    DKASSERT_DEBUG(reinterpret_cast<uintptr_t>(s.queue) == reinterpret_cast<uintptr_t>(queue));
+
+    DKCriticalSection guard(queueCompletionHandlerLock);
+    DKASSERT_DEBUG(queueCompletionThreadRunning);
+    DKASSERT_DEBUG(queueCompletionThread && queueCompletionThread->IsAlive());
+    DKASSERT_DEBUG(s.semaphore.semaphore);
+    
+    semaphore = s.semaphore.semaphore;
+    timeline = ++(s.waitValue);
+
+    s.handlers.Add({ timeline, op });
 }
 
 #endif //#if DKGL_ENABLE_VULKAN

@@ -80,9 +80,26 @@ bool CommandQueue::Submit(const VkSubmitInfo* submits, uint32_t submitCount, DKO
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
 
-	VkFence fence = VK_NULL_HANDLE;
+    VkSemaphore semaphore = VK_NULL_HANDLE;
+    uint64_t timeline = 0;
 
-	VkResult err = vkQueueSubmit(queue, submitCount, submits, fence);
+    dev->SetQueueCompletionHandler(queue, callback, semaphore, timeline);
+
+    VkTimelineSemaphoreSubmitInfoKHR semaphoreSubmitInfo = { VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR }; // for completion handler.
+    VkSubmitInfo submitInfo = { VK_STRUCTURE_TYPE_SUBMIT_INFO, &semaphoreSubmitInfo };
+
+    semaphoreSubmitInfo.signalSemaphoreValueCount = 1;
+    semaphoreSubmitInfo.pSignalSemaphoreValues = &timeline;
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = &semaphore;
+
+    DKArray<VkSubmitInfo> submitInfos;
+    submitInfos.Reserve(submitCount + 1);
+    submitInfos.Add(submits, submitCount);
+    submitInfos.Add(submitInfo);
+
+	VkFence fence = VK_NULL_HANDLE;
+	VkResult err = vkQueueSubmit(queue, submitInfos.Count(), submitInfos, fence);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkQueueSubmit failed: %s", VkResultCStr(err));
