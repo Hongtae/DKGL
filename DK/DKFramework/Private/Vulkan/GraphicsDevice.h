@@ -35,6 +35,8 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKGpuBuffer> CreateBuffer(DKGraphicsDevice*, size_t, DKGpuBuffer::StorageMode, DKCpuCacheMode) override;
 		DKObject<DKTexture> CreateTexture(DKGraphicsDevice*, const DKTextureDescriptor&) override;
         DKObject<DKSamplerState> CreateSamplerState(DKGraphicsDevice*, const DKSamplerDescriptor&) override;
+        DKObject<DKGpuEvent> CreateEvent(DKGraphicsDevice*) override;
+        DKObject<DKGpuSemaphore> CreateSemaphore(DKGraphicsDevice*) override;
 
         DKString DeviceName() const override;
 
@@ -58,8 +60,6 @@ namespace DKFramework::Private::Vulkan
 		DKArray<VkMemoryHeap> deviceMemoryHeaps;
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
-
-		VkDebugReportCallbackEXT msgCallback;
 
 		struct FenceCallback
 		{
@@ -104,6 +104,9 @@ namespace DKFramework::Private::Vulkan
             DKASSERT_DEBUG(0);
             return uint32_t(-1);
         };
+
+        // VK_EXT_debug_utils
+        VkDebugUtilsMessengerEXT debugMessenger;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

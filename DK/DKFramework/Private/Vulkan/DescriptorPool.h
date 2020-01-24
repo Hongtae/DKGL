@@ -46,7 +46,7 @@ namespace DKFramework::Private::Vulkan
             {
                 VkDescriptorType type = DescriptorType(binding.type);
                 uint32_t typeIndex = type - VK_DESCRIPTOR_TYPE_BEGIN_RANGE;
-                typeSize[typeIndex] += binding.length;
+                typeSize[typeIndex] += binding.arrayLength;
             }
             uint32_t dpTypeKey = 0;
             for (uint32_t i = 0; i < VK_DESCRIPTOR_TYPE_RANGE_SIZE; ++i)

@@ -18,10 +18,24 @@ namespace DKFramework::Private::Vulkan
 {
 	struct InstanceProc
 	{
-		// VK_EXT_debug_report
-		DEF_VK_PFN(vkCreateDebugReportCallbackEXT) = nullptr;
-		DEF_VK_PFN(vkDestroyDebugReportCallbackEXT) = nullptr;
-		DEF_VK_PFN(vkDebugReportMessageEXT) = nullptr;
+#if 0
+        // VK_EXT_debug_report
+        DEF_VK_PFN(vkCreateDebugReportCallbackEXT) = nullptr;
+        DEF_VK_PFN(vkDestroyDebugReportCallbackEXT) = nullptr;
+        DEF_VK_PFN(vkDebugReportMessageEXT) = nullptr;
+#endif
+        // VK_EXT_debug_utils
+        DEF_VK_PFN(vkSetDebugUtilsObjectNameEXT) = nullptr;
+        DEF_VK_PFN(vkSetDebugUtilsObjectTagEXT) = nullptr;
+        DEF_VK_PFN(vkQueueBeginDebugUtilsLabelEXT) = nullptr;
+        DEF_VK_PFN(vkQueueEndDebugUtilsLabelEXT) = nullptr;
+        DEF_VK_PFN(vkQueueInsertDebugUtilsLabelEXT) = nullptr;
+        DEF_VK_PFN(vkCmdBeginDebugUtilsLabelEXT) = nullptr;
+        DEF_VK_PFN(vkCmdEndDebugUtilsLabelEXT) = nullptr;
+        DEF_VK_PFN(vkCmdInsertDebugUtilsLabelEXT) = nullptr;
+        DEF_VK_PFN(vkCreateDebugUtilsMessengerEXT) = nullptr;
+        DEF_VK_PFN(vkDestroyDebugUtilsMessengerEXT) = nullptr;
+        DEF_VK_PFN(vkSubmitDebugUtilsMessageEXT) = nullptr;
 
 		// VK_KHR_surface
 		DEF_VK_PFN(vkGetPhysicalDeviceSurfaceSupportKHR) = nullptr;
@@ -61,10 +75,26 @@ namespace DKFramework::Private::Vulkan
 
 		void Load(VkInstance instance)
 		{
-			GET_INSTANCE_PROC(instance, vkCreateDebugReportCallbackEXT);
-			GET_INSTANCE_PROC(instance, vkDestroyDebugReportCallbackEXT);
-			GET_INSTANCE_PROC(instance, vkDebugReportMessageEXT);
+#if 0
+            // VK_EXT_debug_report
+            GET_INSTANCE_PROC(instance, vkCreateDebugReportCallbackEXT);
+            GET_INSTANCE_PROC(instance, vkDestroyDebugReportCallbackEXT);
+            GET_INSTANCE_PROC(instance, vkDebugReportMessageEXT);
+#endif
+            // VK_EXT_debug_utils
+            GET_INSTANCE_PROC(instance, vkSetDebugUtilsObjectNameEXT);
+            GET_INSTANCE_PROC(instance, vkSetDebugUtilsObjectTagEXT);
+            GET_INSTANCE_PROC(instance, vkQueueBeginDebugUtilsLabelEXT);
+            GET_INSTANCE_PROC(instance, vkQueueEndDebugUtilsLabelEXT);
+            GET_INSTANCE_PROC(instance, vkQueueInsertDebugUtilsLabelEXT);
+            GET_INSTANCE_PROC(instance, vkCmdBeginDebugUtilsLabelEXT);
+            GET_INSTANCE_PROC(instance, vkCmdEndDebugUtilsLabelEXT);
+            GET_INSTANCE_PROC(instance, vkCmdInsertDebugUtilsLabelEXT);
+            GET_INSTANCE_PROC(instance, vkCreateDebugUtilsMessengerEXT);
+            GET_INSTANCE_PROC(instance, vkDestroyDebugUtilsMessengerEXT);
+            GET_INSTANCE_PROC(instance, vkSubmitDebugUtilsMessageEXT);
 
+            // VK_KHR_surface
 			GET_INSTANCE_PROC(instance, vkGetPhysicalDeviceSurfaceSupportKHR);
 			GET_INSTANCE_PROC(instance, vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
 			GET_INSTANCE_PROC(instance, vkGetPhysicalDeviceSurfaceFormatsKHR);
@@ -98,13 +128,14 @@ namespace DKFramework::Private::Vulkan
 
 	struct DeviceProc
 	{
+#if 0
 		// VK_EXT_debug_marker
 		DEF_VK_PFN(vkDebugMarkerSetObjectTagEXT) = nullptr;
 		DEF_VK_PFN(vkDebugMarkerSetObjectNameEXT) = nullptr;
 		DEF_VK_PFN(vkCmdDebugMarkerBeginEXT) = nullptr;
 		DEF_VK_PFN(vkCmdDebugMarkerEndEXT) = nullptr;
 		DEF_VK_PFN(vkCmdDebugMarkerInsertEXT) = nullptr;
-
+#endif
 		// VK_KHR_swapchain
 		DEF_VK_PFN(vkCreateSwapchainKHR) = nullptr;
 		DEF_VK_PFN(vkDestroySwapchainKHR) = nullptr;
@@ -114,12 +145,15 @@ namespace DKFramework::Private::Vulkan
 
 		void Load(VkDevice device)
 		{
+#if 0
+            // VK_EXT_debug_marker
 			GET_DEVICE_PROC(device, vkDebugMarkerSetObjectTagEXT);
 			GET_DEVICE_PROC(device, vkDebugMarkerSetObjectNameEXT);
 			GET_DEVICE_PROC(device, vkCmdDebugMarkerBeginEXT);
 			GET_DEVICE_PROC(device, vkCmdDebugMarkerEndEXT);
 			GET_DEVICE_PROC(device, vkCmdDebugMarkerInsertEXT);
-
+#endif
+            // VK_KHR_swapchain
 			GET_DEVICE_PROC(device, vkCreateSwapchainKHR);
 			GET_DEVICE_PROC(device, vkDestroySwapchainKHR);
 			GET_DEVICE_PROC(device, vkGetSwapchainImagesKHR);

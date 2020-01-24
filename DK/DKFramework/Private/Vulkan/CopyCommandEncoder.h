@@ -34,6 +34,8 @@ namespace DKFramework::Private::Vulkan
             // Retain ownership of all encoded objects
             DKArray<DKObject<DKGpuBuffer>> buffers;
             DKArray<DKObject<DKTexture>> textures;
+            DKArray<DKObject<DKGpuEvent>> events;
+            DKArray<DKObject<DKGpuSemaphore>> semaphores;
 
             class CommandBuffer* commandBuffer;
             DKArray<DKObject<EncoderCommand>> commands;
@@ -48,6 +50,12 @@ namespace DKFramework::Private::Vulkan
         void EndEncoding() override;
         bool IsCompleted() const override { return encoder == nullptr; }
         DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
+
+        void WaitEvent(DKGpuEvent*) override;
+        void SignalEvent(DKGpuEvent*) override;
+        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+
 
         void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
                                     DKGpuBuffer* dst, size_t dstOffset,

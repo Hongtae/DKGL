@@ -10,7 +10,7 @@
 #include "DKRect.h"
 #include "DKPropertySet.h"
 
-#ifdef GetUserName
+#ifdef _WIN32
 #undef GetUserName
 #endif
 

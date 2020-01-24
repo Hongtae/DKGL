@@ -49,7 +49,7 @@ void ShaderBindingSet::SetBufferArray(uint32_t binding, uint32_t numBuffers, Buf
     if (FindDescriptorBinding(binding, &descriptor))
     {
         uint32_t startingIndex = 0;
-        uint32_t availableItems = Min(numBuffers, descriptor.length - startingIndex);
+        uint32_t availableItems = Min(numBuffers, descriptor.arrayLength - startingIndex);
         DKASSERT_DEBUG(availableItems <= numBuffers);
 
         DKArray<BufferObject>& bufferObjectArray = buffers.Value(binding);
@@ -79,7 +79,7 @@ void ShaderBindingSet::SetTextureArray(uint32_t binding, uint32_t numTextures, D
     if (FindDescriptorBinding(binding, &descriptor))
     {
         uint32_t startingIndex = 0;
-        uint32_t availableItems = Min(numTextures, descriptor.length - startingIndex);
+        uint32_t availableItems = Min(numTextures, descriptor.arrayLength - startingIndex);
         DKASSERT_DEBUG(availableItems <= numTextures);
 
         DKArray<TextureObject>& textureObjectArray = textures.Value(binding);
@@ -107,7 +107,7 @@ void ShaderBindingSet::SetSamplerStateArray(uint32_t binding, uint32_t numSample
     if (FindDescriptorBinding(binding, &descriptor))
     {
         uint32_t startingIndex = 0;
-        uint32_t availableItems = Min(numSamplers, descriptor.length - startingIndex);
+        uint32_t availableItems = Min(numSamplers, descriptor.arrayLength - startingIndex);
         DKASSERT_DEBUG(availableItems <= numSamplers);
 
         DKArray<SamplerObject>& samplerObjectArray = samplers.Value(binding);

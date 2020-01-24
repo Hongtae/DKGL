@@ -13,7 +13,7 @@ namespace DKFramework
 {
 	/// @brief Action control node class inherited from DKModel.
 	/// @details 
-	/// Useful for dynamics control of DKDynamicsWorld. (called by DKDynamicsWorld)
+	/// Useful for dynamics control of DKDynamicsScene. (called by DKDynamicsScene)
 	/// @note
 	///    Use DKAnimationController for individual node animation.
 	class DKActionController : public DKModel

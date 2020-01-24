@@ -10,6 +10,8 @@
 
 namespace DKFramework
 {
+    class DKGpuEvent;
+    class DKGpuSemaphore;
 	class DKCommandBuffer;
 	/// @brief Command encoder for GPU compute operation
 	class DKCommandEncoder
@@ -20,5 +22,11 @@ namespace DKFramework
 		virtual void EndEncoding() = 0;
 		virtual bool IsCompleted() const = 0;
 		virtual DKCommandBuffer* CommandBuffer() = 0;
-	};
+
+        virtual void WaitEvent(DKGpuEvent*) = 0;
+        virtual void SignalEvent(DKGpuEvent*) = 0;
+
+        virtual void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) = 0;
+        virtual void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) = 0;
+    };
 }

@@ -9,6 +9,7 @@
 #include "../DKFoundation.h"
 #include "DKRenderPass.h"
 #include "DKPixelFormat.h"
+#include "DKGpuResource.h"
 
 namespace DKFramework
 {
@@ -23,6 +24,8 @@ namespace DKFramework
 		virtual void SetDepthStencilPixelFormat(DKPixelFormat) = 0;
 		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor() = 0;
 
-		virtual bool Present() = 0;
+		virtual bool Present(DKGpuEvent** waitEvents, size_t numEvents) = 0;
+
+        bool Present() { return Present(nullptr, 0); }
 	};
 }

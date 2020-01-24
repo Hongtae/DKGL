@@ -8,7 +8,7 @@
 #include "Private/BulletPhysics.h"
 #include "DKConstraint.h"
 #include "DKRigidBody.h"
-#include "DKWorld.h"
+#include "DKScene.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private;

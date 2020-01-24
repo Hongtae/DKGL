@@ -15,4 +15,16 @@ namespace DKFramework
 		DKCpuCacheModeReadWrite = 0,
 		DKCpuCacheModeWriteOnly,
 	};
+
+    class DKGpuEvent
+    {
+    public:
+        virtual ~DKGpuEvent() {}
+    };
+
+    class DKGpuSemaphore
+    {
+    public:
+        virtual ~DKGpuSemaphore() {}
+    };
 }

@@ -78,6 +78,12 @@
     <None Include="DKFramework\Private\Metal\CopyCommandEncoder.mm">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </None>
+    <None Include="DKFramework\Private\Metal\Event.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
+    <None Include="DKFramework\Private\Metal\Semaphore.mm">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="DKFoundation">
@@ -319,9 +325,6 @@
     <ClCompile Include="DKFramework\DKCylinderShape.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKDynamicsWorld.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKFixedConstraint.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
@@ -440,9 +443,6 @@
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKWindow.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFramework\DKWorld.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Win32\Application.cpp">
@@ -570,6 +570,24 @@
     </ClCompile>
     <ClCompile Include="DKFramework\Private\Vulkan\DescriptorSet.cpp">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\Semaphore.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKMaterial.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKGraphicsDeviceContext.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\Private\Vulkan\TimelineSemaphore.cpp">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKDynamicsScene.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKScene.cpp">
+      <Filter>DKFramework_WIP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -867,9 +885,6 @@
     <ClInclude Include="DKFramework\DKCylinderShape.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKDynamicsWorld.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKFixedConstraint.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -1003,9 +1018,6 @@
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKWindow.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKWorld.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Win32\Application.h">
@@ -1298,6 +1310,30 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Vulkan\DescriptorSet.h">
       <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\Semaphore.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMaterial.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKGraphicsDeviceContext.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Vulkan\TimelineSemaphore.h">
+      <Filter>DKFramework_WIP\Private\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKDynamicsScene.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKScene.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Event.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\Private\Metal\Semaphore.h">
+      <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

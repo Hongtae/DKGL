@@ -12,6 +12,8 @@
 #import <Metal/Metal.h>
 #include "../../DKCopyCommandEncoder.h"
 #include "CommandBuffer.h"
+#include "Event.h"
+#include "Semaphore.h"
 
 namespace DKFramework::Private::Metal
 {
@@ -27,6 +29,11 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         // DKCopyCommandEncoder
+        void WaitEvent(DKGpuEvent*) override;
+        void SignalEvent(DKGpuEvent*) override;
+        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+
         void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
                                     DKGpuBuffer* dst, size_t dstOffset,
                                     size_t size) override;
@@ -51,7 +58,15 @@ namespace DKFramework::Private::Metal
         public:
             bool Encode(id<MTLCommandBuffer> buffer) override;
 			DKArray<DKObject<EncoderCommand>> commands;
-		};
+            
+            DKArray<DKObject<DKGpuEvent>> events;
+            DKArray<DKObject<DKGpuSemaphore>> semaphores;
+
+            DKSet<Event*> waitEvents;
+            DKSet<Event*> signalEvents;
+            DKMap<Semaphore*, uint64_t> waitSemaphores;
+            DKMap<Semaphore*, uint64_t> signalSemaphores;
+        };
 		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;
 	};

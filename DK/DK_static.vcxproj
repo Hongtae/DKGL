@@ -189,10 +189,12 @@
     <None Include="DKFramework\Private\Metal\CommandQueue.mm" />
     <None Include="DKFramework\Private\Metal\ComputeCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\ComputePipelineState.mm" />
+    <None Include="DKFramework\Private\Metal\Event.mm" />
     <None Include="DKFramework\Private\Metal\GraphicsDevice.mm" />
     <None Include="DKFramework\Private\Metal\RenderCommandEncoder.mm" />
     <None Include="DKFramework\Private\Metal\RenderPipelineState.mm" />
     <None Include="DKFramework\Private\Metal\SamplerState.mm" />
+    <None Include="DKFramework\Private\Metal\Semaphore.mm" />
     <None Include="DKFramework\Private\Metal\ShaderBindingSet.mm" />
     <None Include="DKFramework\Private\Metal\ShaderFunction.mm" />
     <None Include="DKFramework\Private\Metal\ShaderModule.mm" />
@@ -272,7 +274,7 @@
     <ClCompile Include="DKFramework\DKConvexHullShape.cpp" />
     <ClCompile Include="DKFramework\DKConvexShape.cpp" />
     <ClCompile Include="DKFramework\DKCylinderShape.cpp" />
-    <ClCompile Include="DKFramework\DKDynamicsWorld.cpp" />
+    <ClCompile Include="DKFramework\DKDynamicsScene.cpp" />
     <ClCompile Include="DKFramework\DKFixedConstraint.cpp" />
     <ClCompile Include="DKFramework\DKFont.cpp" />
     <ClCompile Include="DKFramework\DKFrame.cpp" />
@@ -281,11 +283,13 @@
     <ClCompile Include="DKFramework\DKGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="DKFramework\DKGpuBuffer.cpp" />
     <ClCompile Include="DKFramework\DKGraphicsDevice.cpp" />
+    <ClCompile Include="DKFramework\DKGraphicsDeviceContext.cpp" />
     <ClCompile Include="DKFramework\DKHingeConstraint.cpp" />
     <ClCompile Include="DKFramework\DKImage.cpp" />
     <ClCompile Include="DKFramework\DKLine.cpp" />
     <ClCompile Include="DKFramework\DKLinearTransform2.cpp" />
     <ClCompile Include="DKFramework\DKLinearTransform3.cpp" />
+    <ClCompile Include="DKFramework\DKMaterial.cpp" />
     <ClCompile Include="DKFramework\DKMatrix2.cpp" />
     <ClCompile Include="DKFramework\DKMatrix3.cpp" />
     <ClCompile Include="DKFramework\DKMatrix4.cpp" />
@@ -321,7 +325,7 @@
     <ClCompile Include="DKFramework\DKVector3.cpp" />
     <ClCompile Include="DKFramework\DKVector4.cpp" />
     <ClCompile Include="DKFramework\DKWindow.cpp" />
-    <ClCompile Include="DKFramework\DKWorld.cpp" />
+    <ClCompile Include="DKFramework\DKScene.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamFLAC.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamVorbis.cpp" />
     <ClCompile Include="DKFramework\Private\AudioStream\AudioStreamWave.cpp" />
@@ -342,6 +346,8 @@
     <ClCompile Include="DKFramework\Private\Vulkan\ComputePipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\RenderPipelineState.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\Sampler.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\TimelineSemaphore.cpp" />
+    <ClCompile Include="DKFramework\Private\Vulkan\Semaphore.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderBindingSet.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderFunction.cpp" />
     <ClCompile Include="DKFramework\Private\Vulkan\ShaderModule.cpp" />
@@ -463,7 +469,7 @@
     <ClInclude Include="DKFramework\DKConvexShape.h" />
     <ClInclude Include="DKFramework\DKCylinderShape.h" />
     <ClInclude Include="DKFramework\DKDepthStencil.h" />
-    <ClInclude Include="DKFramework\DKDynamicsWorld.h" />
+    <ClInclude Include="DKFramework\DKDynamicsScene.h" />
     <ClInclude Include="DKFramework\DKFixedConstraint.h" />
     <ClInclude Include="DKFramework\DKFont.h" />
     <ClInclude Include="DKFramework\DKFrame.h" />
@@ -473,11 +479,13 @@
     <ClInclude Include="DKFramework\DKGpuBuffer.h" />
     <ClInclude Include="DKFramework\DKGpuResource.h" />
     <ClInclude Include="DKFramework\DKGraphicsDevice.h" />
+    <ClInclude Include="DKFramework\DKGraphicsDeviceContext.h" />
     <ClInclude Include="DKFramework\DKHingeConstraint.h" />
     <ClInclude Include="DKFramework\DKImage.h" />
     <ClInclude Include="DKFramework\DKLine.h" />
     <ClInclude Include="DKFramework\DKLinearTransform2.h" />
     <ClInclude Include="DKFramework\DKLinearTransform3.h" />
+    <ClInclude Include="DKFramework\DKMaterial.h" />
     <ClInclude Include="DKFramework\DKMath.h" />
     <ClInclude Include="DKFramework\DKMatrix2.h" />
     <ClInclude Include="DKFramework\DKMatrix3.h" />
@@ -532,7 +540,7 @@
     <ClInclude Include="DKFramework\DKVertexDescriptor.h" />
     <ClInclude Include="DKFramework\DKVKey.h" />
     <ClInclude Include="DKFramework\DKWindow.h" />
-    <ClInclude Include="DKFramework\DKWorld.h" />
+    <ClInclude Include="DKFramework\DKScene.h" />
     <ClInclude Include="DKFramework\Interface\DKApplicationInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKGraphicsDeviceInterface.h" />
     <ClInclude Include="DKFramework\Interface\DKWindowInterface.h" />
@@ -556,10 +564,12 @@
     <ClInclude Include="DKFramework\Private\Metal\CommandQueue.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputeCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\ComputePipelineState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Event.h" />
     <ClInclude Include="DKFramework\Private\Metal\GraphicsDevice.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderCommandEncoder.h" />
     <ClInclude Include="DKFramework\Private\Metal\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Metal\SamplerState.h" />
+    <ClInclude Include="DKFramework\Private\Metal\Semaphore.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderBindingSet.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Metal\ShaderModule.h" />
@@ -583,6 +593,8 @@
     <ClInclude Include="DKFramework\Private\Vulkan\ComputePipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\RenderPipelineState.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\Sampler.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\TimelineSemaphore.h" />
+    <ClInclude Include="DKFramework\Private\Vulkan\Semaphore.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderBindingSet.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderFunction.h" />
     <ClInclude Include="DKFramework\Private\Vulkan\ShaderModule.h" />

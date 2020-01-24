@@ -65,3 +65,13 @@ DKObject<DKSamplerState> DKGraphicsDevice::CreateSamplerState(const DKSamplerDes
 {
     return impl->CreateSamplerState(this, d);
 }
+
+DKObject<DKGpuEvent> DKGraphicsDevice::CreateEvent()
+{
+    return impl->CreateEvent(this);
+}
+
+DKObject<DKGpuSemaphore> DKGraphicsDevice::CreateSemaphore()
+{
+    return impl->CreateSemaphore(this);
+}

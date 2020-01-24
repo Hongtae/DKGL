@@ -13,7 +13,7 @@
 namespace DKFramework
 {
 	/// @brief
-	/// collision object for scene (DKWorld, DKDynamicsWorld)
+	/// collision object for scene (DKScene, DKDynamicsScene)
 	/// @details
 	/// this is basic collision object not for dynamics.
 	/// for dynamics use DKRigidBody instead.

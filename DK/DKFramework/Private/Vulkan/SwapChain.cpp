@@ -12,6 +12,7 @@
 #include "GraphicsDevice.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "Semaphore.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -23,8 +24,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	, swapchain(NULL)
 	, enableVSync(false)
 	, deviceReset(false)
-	, presentCompleteSemaphore(VK_NULL_HANDLE)
-	, renderCompleteSemaphore(VK_NULL_HANDLE)
+	, frameReadySemaphore(VK_NULL_HANDLE)
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
 	VkDevice device = dev->device;
@@ -34,13 +34,7 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 	VkResult err;
 	// create semaphore
 	VkSemaphoreCreateInfo semaphoreCreateInfo = {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
-	err = vkCreateSemaphore(device, &semaphoreCreateInfo, dev->allocationCallbacks, &presentCompleteSemaphore);
-	if (err != VK_SUCCESS)
-	{
-		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
-		DKASSERT_DEBUG(0);
-	}
-	err = vkCreateSemaphore(device, &semaphoreCreateInfo, dev->allocationCallbacks, &renderCompleteSemaphore);
+	err = vkCreateSemaphore(device, &semaphoreCreateInfo, dev->allocationCallbacks, &frameReadySemaphore);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(err));
@@ -74,8 +68,7 @@ SwapChain::~SwapChain()
 	if (surface)
 		vkDestroySurfaceKHR(instance, surface, dev->allocationCallbacks);
 
-	vkDestroySemaphore(device, presentCompleteSemaphore, dev->allocationCallbacks);
-	vkDestroySemaphore(device, renderCompleteSemaphore, dev->allocationCallbacks);
+	vkDestroySemaphore(device, frameReadySemaphore, dev->allocationCallbacks);
 }
 
 bool SwapChain::Setup()
@@ -401,8 +394,8 @@ bool SwapChain::Update()
 
         DKObject<ImageView> swapChainImageView = DKOBJECT_NEW ImageView(queue->Device(), imageView);
         swapChainImageView->image = swapChainImage;
-        swapChainImageView->waitSemaphore = presentCompleteSemaphore;
-        swapChainImageView->signalSemaphore = renderCompleteSemaphore;
+        swapChainImageView->waitSemaphore = frameReadySemaphore;
+        swapChainImageView->signalSemaphore = frameReadySemaphore;
 
 		this->imageViews.Add(swapChainImageView);
 	}
@@ -502,7 +495,7 @@ void SwapChain::SetupFrame()
 		}
 	}
 
-	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, presentCompleteSemaphore, VK_NULL_HANDLE, &this->frameIndex);
+	vkAcquireNextImageKHR(device, this->swapchain, UINT64_MAX, frameReadySemaphore, VK_NULL_HANDLE, &this->frameIndex);
 
 	DKRenderPassColorAttachmentDescriptor colorAttachment = {};
 	colorAttachment.renderTarget = imageViews.Value(frameIndex);
@@ -514,9 +507,19 @@ void SwapChain::SetupFrame()
 	this->renderPassDescriptor.colorAttachments.Add(colorAttachment);
 }
 
-bool SwapChain::Present()
+bool SwapChain::Present(DKGpuEvent** waitEvents, size_t numEvents)
 {
-	VkSemaphore waitSemaphore = renderCompleteSemaphore;
+    DKArray<VkSemaphore> waitSemaphores;
+    waitSemaphores.Reserve(numEvents + 1);
+
+    for (size_t i = 0; i < numEvents; ++i)
+    {
+        DKGpuEvent* event = waitEvents[i];
+        DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event) != nullptr);
+        Semaphore* s = static_cast<Semaphore*>(event);
+        waitSemaphores.Add(s->semaphore);
+    }
+    waitSemaphores.Add(frameReadySemaphore);
 
 	VkPresentInfoKHR presentInfo = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};
 	presentInfo.swapchainCount = 1;
@@ -524,12 +527,10 @@ bool SwapChain::Present()
 	presentInfo.pImageIndices = &this->frameIndex;
 
 	// Check if a wait semaphore has been specified to wait for before presenting the image
-	if (waitSemaphore != VK_NULL_HANDLE)
-	{
-		presentInfo.pWaitSemaphores = &waitSemaphore;
-		presentInfo.waitSemaphoreCount = 1;
-	}
-	VkResult err = vkQueuePresentKHR(queue->queue, &presentInfo);
+    presentInfo.pWaitSemaphores = waitSemaphores;
+    presentInfo.waitSemaphoreCount = waitSemaphores.Count();
+
+    VkResult err = vkQueuePresentKHR(queue->queue, &presentInfo);
 	if (err != VK_SUCCESS)
 	{
 		DKLogE("vkQueuePresentKHR ERROR: %s", VkResultCStr(err));

@@ -13,9 +13,9 @@
 
 namespace DKFramework
 {
-	class DKWorld;
+	class DKScene;
 	/// @brief
-	/// a skeletal node object for scene (DKWorld).
+	/// a skeletal node object for scene (DKScene).
 	/// @details
 	/// this object can be structured hierarchical. (parent-children relationship)
 	/// this is basic entry for scene.
@@ -52,8 +52,8 @@ namespace DKFramework
 		DKModel();
 		virtual ~DKModel();
 
-		DKWorld* Scene()					{ return scene; }
-		const DKWorld* Scene() const		{ return scene; }
+		DKScene* Scene()					{ return scene; }
+		const DKScene* Scene() const		{ return scene; }
 		virtual void RemoveFromScene();
 
 		bool AddChild(DKModel*);
@@ -159,7 +159,7 @@ namespace DKFramework
 
 	private:
 		DKModel* parent;
-		DKWorld* scene;
+		DKScene* scene;
 		DKArray<DKObject<DKModel>> children;
 		DKObject<DKAnimatedTransform> animation;
 
@@ -175,6 +175,6 @@ namespace DKFramework
 
 		DKModel& operator = (const DKModel&);
 
-		friend class DKWorld;
+		friend class DKScene;
 	};
 }

@@ -30,7 +30,6 @@ namespace DKFramework
 		float nearZ;
 		float farZ;
 	};
-
 	/// @brief Command encoder for GPU render operation.
 	class DKRenderCommandEncoder : public DKCommandEncoder
 	{

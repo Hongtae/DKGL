@@ -1,5 +1,5 @@
 //
-//  File: DKWorld.h
+//  File: DKScene.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
 //  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
@@ -19,11 +19,11 @@ namespace DKFramework
 	/// you can detect collision with DKModel nodes.
 	/// @note
 	/// collision detection is performed in Bullet-Physics.
-	class DKGL_API DKWorld
+	class DKGL_API DKScene
 	{
 	public:
-		DKWorld();
-		virtual ~DKWorld();
+		DKScene();
+		virtual ~DKScene();
 
 #if 0
 		struct DrawCallback
@@ -84,7 +84,7 @@ namespace DKFramework
 
 	protected:
 		CollisionWorldContext* context;
-		DKWorld(CollisionWorldContext* ctxt);
+		DKScene(CollisionWorldContext* ctxt);
 
 		DKSet<DKObject<DKModel>> sceneObjects;
 //		DKSet<DKMesh*> meshes;
@@ -104,8 +104,8 @@ namespace DKFramework
 
 		DKArray<DKObject<DKModel>> updatePendingObjects;
 
-		DKWorld(const DKWorld&);
-		DKWorld& operator = (const DKWorld&);
+		DKScene(const DKScene&);
+		DKScene& operator = (const DKScene&);
 
 		friend class DKModel;
 	};

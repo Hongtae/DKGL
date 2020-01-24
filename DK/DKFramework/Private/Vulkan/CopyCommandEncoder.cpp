@@ -11,6 +11,8 @@
 #include "BufferView.h"
 #include "ImageView.h"
 #include "GraphicsDevice.h"
+#include "Semaphore.h"
+#include "TimelineSemaphore.h"
 
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
@@ -58,6 +60,46 @@ void CopyCommandEncoder::EndEncoding()
 {
     commandBuffer->EndEncoder(this, encoder);
     encoder = nullptr;
+}
+
+void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+
+    encoder->AddWaitSemaphore(semaphore->semaphore, semaphore->NextWaitValue(), pipelineStages);
+    encoder->events.Add(event);
+}
+
+void CopyCommandEncoder::SignalEvent(DKGpuEvent* event)
+{
+    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
+    Semaphore* semaphore = static_cast<Semaphore*>(event);
+
+    encoder->AddSignalSemaphore(semaphore->semaphore, semaphore->NextSignalValue());
+    encoder->events.Add(event);
+}
+
+void CopyCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+{
+    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
+    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+
+    encoder->AddWaitSemaphore(semaphore->semaphore, value, pipelineStages);
+    encoder->semaphores.Add(semaphore);
+}
+
+void CopyCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+{
+    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
+    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+
+    encoder->AddSignalSemaphore(semaphore->semaphore, value);
+    encoder->semaphores.Add(semaphore);
 }
 
 void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
