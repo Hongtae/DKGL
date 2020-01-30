@@ -115,7 +115,7 @@ GraphicsDevice::GraphicsDevice()
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "DKGL";
     appInfo.engineVersion = VK_MAKE_VERSION(2, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_1; // Vulkan-1.1
+    appInfo.apiVersion = VK_API_VERSION_1_2; // Vulkan-1.2
 
     VkResult err = VK_SUCCESS;
 
@@ -887,10 +887,10 @@ GraphicsDevice::~GraphicsDevice()
         queueCompletionHandlerLock.Lock();
         queueCompletionThreadRunning = false;
 
-        VkSemaphoreSignalInfoKHR signalInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO_KHR };
+        VkSemaphoreSignalInfoKHR signalInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO };
         signalInfo.semaphore = deviceEventSemaphore.semaphore;
         signalInfo.value = deviceEventSemaphore.value + 1;
-        vkSignalSemaphoreKHR(device, &signalInfo);
+        vkSignalSemaphore(device, &signalInfo);
 
         queueCompletionHandlerLock.Unlock();
 
@@ -2451,8 +2451,8 @@ void GraphicsDevice::QueueCompletionThreadProc()
 
     while (running)
     {
-        VkSemaphoreWaitInfoKHR waitInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO_KHR };
-        waitInfo.flags = VK_SEMAPHORE_WAIT_ANY_BIT_KHR;
+        VkSemaphoreWaitInfoKHR waitInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO };
+        waitInfo.flags = VK_SEMAPHORE_WAIT_ANY_BIT;
         waitInfo.semaphoreCount = numSemaphores;
         waitInfo.pSemaphores = timelineSemaphores;
         waitInfo.pValues = timelineValues;
@@ -2463,16 +2463,16 @@ void GraphicsDevice::QueueCompletionThreadProc()
             return us * 1000ULL;
         };
 
-        VkResult result = vkWaitSemaphoresKHR(this->device, &waitInfo, sec2ns(0.1));
+        VkResult result = vkWaitSemaphores(this->device, &waitInfo, sec2ns(0.1));
 
         if (result == VK_SUCCESS)
         {
             // update semaphore values.
             for (size_t i = 0; i < numSemaphores; ++i)
             {
-                VkResult r = vkGetSemaphoreCounterValueKHR(this->device,
-                                                           timelineSemaphores[i],
-                                                           &timelineValues[i]);
+                VkResult r = vkGetSemaphoreCounterValue(this->device,
+                                                        timelineSemaphores[i],
+                                                        &timelineValues[i]);
                 if (r != VK_SUCCESS)
                 {
                     DKLogE("ERROR: vkGetSemaphoreCounterValue failed: %s", VkResultCStr(r));
