@@ -570,10 +570,13 @@ GraphicsDevice::GraphicsDevice()
 			{
 				desc.numQueues = numGCQueues;
 				desc.deviceMemory = 0;
+                desc.timelineSemaphoreSupported.timelineSemaphore = 0;
 
 				vkGetPhysicalDeviceProperties(desc.physicalDevice, &desc.properties);
 				vkGetPhysicalDeviceMemoryProperties(desc.physicalDevice, &desc.memoryProperties);
 				vkGetPhysicalDeviceFeatures2(desc.physicalDevice, &desc.features);
+
+                DKASSERT_DEBUG(desc.timelineSemaphoreSupported.timelineSemaphore);
 
 				switch (desc.properties.deviceType)
 				{
@@ -2537,9 +2540,9 @@ void GraphicsDevice::QueueCompletionThreadProc()
 
 void GraphicsDevice::SetQueueCompletionHandler(VkQueue queue, DKOperation* op, VkSemaphore& semaphore, uint64_t& timeline)
 {
-    auto index = queueCompletionSemaphoreHandlers.LowerBound(queue, [](VkQueue a, const QueueSubmissionSemaphore& b)
+    auto index = queueCompletionSemaphoreHandlers.LowerBound(queue, [](const QueueSubmissionSemaphore& a, VkQueue b)
     {
-        return reinterpret_cast<uintptr_t>(a) < reinterpret_cast<const uintptr_t>(b.queue);
+        return reinterpret_cast<uintptr_t>(a.queue) < reinterpret_cast<const uintptr_t>(b);
     });
     QueueSubmissionSemaphore& s = queueCompletionSemaphoreHandlers.Value(index);
     DKASSERT_DEBUG(reinterpret_cast<uintptr_t>(s.queue) == reinterpret_cast<uintptr_t>(queue));
