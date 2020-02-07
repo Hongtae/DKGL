@@ -2,7 +2,7 @@
 //  File: GraphicsDevice.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2020 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -103,18 +103,23 @@ GraphicsDevice::GraphicsDevice()
 	: instance(NULL)
 	, device(NULL)
 	, physicalDevice(NULL)
-	, fenceCompletionThreadRunning(true)
 	, numberOfFences(0)
 	, pipelineCache(VK_NULL_HANDLE)
     , allocationCallbacks(nullptr)
     , debugMessenger(VK_NULL_HANDLE)
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
+	, queueCompletionThreadRunning(true)
+    , deviceEventSemaphore{ 0 }
+#else
+    , fenceCompletionThreadRunning(true)
+#endif
 {
     VkApplicationInfo appInfo = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
     appInfo.pApplicationName = "DKGL";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "DKGL";
     appInfo.engineVersion = VK_MAKE_VERSION(2, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_1; // Vulkan-1.1
+    appInfo.apiVersion = VK_API_VERSION_1_2; // Vulkan-1.2
 
     VkResult err = VK_SUCCESS;
 
@@ -499,7 +504,8 @@ GraphicsDevice::GraphicsDevice()
 		size_t numQueues;	// graphics | compute queue count.
 
 		VkPhysicalDeviceProperties properties;
-		VkPhysicalDeviceFeatures features;
+        VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timelineSemaphoreSupported = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR };
+        VkPhysicalDeviceFeatures2 features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, &timelineSemaphoreSupported };
 		VkPhysicalDeviceMemoryProperties memoryProperties;
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
@@ -568,10 +574,13 @@ GraphicsDevice::GraphicsDevice()
 			{
 				desc.numQueues = numGCQueues;
 				desc.deviceMemory = 0;
+                desc.timelineSemaphoreSupported.timelineSemaphore = 0;
 
 				vkGetPhysicalDeviceProperties(desc.physicalDevice, &desc.properties);
 				vkGetPhysicalDeviceMemoryProperties(desc.physicalDevice, &desc.memoryProperties);
-				vkGetPhysicalDeviceFeatures(desc.physicalDevice, &desc.features);
+				vkGetPhysicalDeviceFeatures2(desc.physicalDevice, &desc.features);
+
+                DKASSERT_DEBUG(desc.timelineSemaphoreSupported.timelineSemaphore);
 
 				switch (desc.properties.deviceType)
 				{
@@ -753,7 +762,7 @@ GraphicsDevice::GraphicsDevice()
             });
         }
 
-		VkPhysicalDeviceFeatures enabledFeatures = desc.features; //enable all features supported by a device
+		VkPhysicalDeviceFeatures enabledFeatures = desc.features.features; //enable all features supported by a device
 		VkDeviceCreateInfo deviceCreateInfo = {VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 		deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.Count());;
 		deviceCreateInfo.pQueueCreateInfos = queueCreateInfos;
@@ -775,7 +784,7 @@ GraphicsDevice::GraphicsDevice()
 			this->device = logicalDevice;
 			this->physicalDevice = desc.physicalDevice;
 			this->properties = desc.properties;
-			this->features = desc.features;
+			this->features = desc.features.features;
 			this->deviceMemoryTypes = DKArray<VkMemoryType>(desc.memoryProperties.memoryTypes, desc.memoryProperties.memoryTypeCount);
 			this->deviceMemoryHeaps = DKArray<VkMemoryHeap>(desc.memoryProperties.memoryHeaps, desc.memoryProperties.memoryHeapCount);
 			this->queueFamilyProperties = desc.queueFamilyProperties;
@@ -825,8 +834,55 @@ GraphicsDevice::GraphicsDevice()
 
 	LoadPipelineCache();
 
-	fenceCompletionThread = DKThread::Create(
-		DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
+    // Initialize timeline semaphore for queue submission.
+    auto createTimelineSemaphore = [this](uint64_t initialValue) -> VkSemaphore {
+        VkSemaphoreCreateInfo createInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+        VkSemaphore semaphore = VK_NULL_HANDLE;
+
+        VkSemaphoreTypeCreateInfoKHR typeCreateInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO_KHR };
+        typeCreateInfo.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE_KHR;
+        typeCreateInfo.initialValue = initialValue;
+        createInfo.pNext = &typeCreateInfo;
+
+        VkResult result = vkCreateSemaphore(device, &createInfo, allocationCallbacks, &semaphore);
+
+        if (result != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkCreateSemaphore failed: %s", VkResultCStr(result));
+            return nullptr;
+        }
+        return semaphore;
+    };
+    this->deviceEventSemaphore = { createTimelineSemaphore(0), 0 };
+    size_t numQueues = 0;
+    for (QueueFamily* family : queueFamilies)
+        numQueues += family->freeQueues.Count();
+    DKASSERT_DEBUG(numQueues > 0);
+    queueCompletionSemaphoreHandlers.Reserve(numQueues);
+    for (QueueFamily* family : queueFamilies)
+    {
+        for (VkQueue queue: family->freeQueues)
+        {
+            QueueSubmissionSemaphore s = { queue };
+            s.semaphore = { createTimelineSemaphore(0), 0 };
+            queueCompletionSemaphoreHandlers.Add(s);
+        }
+    }
+    // sort handlers order by queue address
+    queueCompletionSemaphoreHandlers.Sort([](const QueueSubmissionSemaphore& lhs, const QueueSubmissionSemaphore& rhs)->bool
+    {
+        return reinterpret_cast<const uintptr_t&>(lhs.queue) < reinterpret_cast<const uintptr_t&>(rhs.queue);
+    });
+    queueCompletionSemaphoreHandlers.ShrinkToFit();
+    DKASSERT_DEBUG(queueCompletionSemaphoreHandlers.Count() > 0);
+    // create semaphore completion thread
+    this->queueCompletionThread = DKThread::Create(
+        DKFunction(this, &GraphicsDevice::QueueCompletionThreadProc)->Invocation());
+#else
+    fenceCompletionThread = DKThread::Create(
+        DKFunction(this, &GraphicsDevice::FenceCompletionCallbackThreadProc)->Invocation());
+#endif
 }
 
 GraphicsDevice::~GraphicsDevice()
@@ -836,29 +892,48 @@ GraphicsDevice::~GraphicsDevice()
         DKASSERT_DEBUG(descriptorPoolChainMaps[i].poolChainMap.IsEmpty());
     }
 
-	vkDeviceWaitIdle(device);
-	if (fenceCompletionThread && fenceCompletionThread->IsAlive())
-	{
-		fenceCompletionCond.Lock();
-		fenceCompletionThreadRunning = false;
-		fenceCompletionCond.Broadcast();
-		fenceCompletionCond.Unlock();
+    vkDeviceWaitIdle(device);
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
+    if (queueCompletionThread && queueCompletionThread->IsAlive())
+    {
+        queueCompletionHandlerLock.Lock();
+        queueCompletionThreadRunning = false;
 
-		fenceCompletionThread->WaitTerminate();
-	}
+        VkSemaphoreSignalInfoKHR signalInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO };
+        signalInfo.semaphore = deviceEventSemaphore.semaphore;
+        signalInfo.value = deviceEventSemaphore.value + 1;
+        vkSignalSemaphore(device, &signalInfo);
 
-	DKASSERT_DEBUG(pendingFenceCallbacks.IsEmpty());
-	for (VkFence fence : reusableFences)
-		vkDestroyFence(device, fence, allocationCallbacks);
-	reusableFences.Clear();
+        queueCompletionHandlerLock.Unlock();
+        queueCompletionThread->WaitTerminate();
+    }
+    vkDestroySemaphore(device, deviceEventSemaphore.semaphore, allocationCallbacks);
+    for (QueueSubmissionSemaphore& s : queueCompletionSemaphoreHandlers)
+    {
+        vkDestroySemaphore(device, s.semaphore.semaphore, allocationCallbacks);
+        DKASSERT_DEBUG(s.handlers.IsEmpty());
+    }
+#else
+    if (fenceCompletionThread && fenceCompletionThread->IsAlive())
+    {
+        fenceCompletionCond.Lock();
+        fenceCompletionThreadRunning = false;
+        fenceCompletionCond.Broadcast();
+        fenceCompletionCond.Unlock();
+
+        fenceCompletionThread->WaitTerminate();
+    }
+    DKASSERT_DEBUG(pendingFenceCallbacks.IsEmpty());
+    for (VkFence fence : reusableFences)
+        vkDestroyFence(device, fence, allocationCallbacks);
+    reusableFences.Clear();
+#endif
 
 	for (QueueFamily* family : queueFamilies)
 	{
 		delete family;
 	}
 	queueFamilies.Clear();
-
-	vkDeviceWaitIdle(device);
 
 	// destroy pipeline cache
 	if (pipelineCache != VK_NULL_HANDLE)
@@ -2124,165 +2199,6 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
 	return pipelineState.SafeCast<DKComputePipelineState>();
 }
 
-VkFence GraphicsDevice::GetFence()
-{
-	VkFence fence = VK_NULL_HANDLE;
-
-	if (fence == VK_NULL_HANDLE)
-	{
-		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
-		if (reusableFences.Count() > 0)
-		{
-			fence = reusableFences.Value(0);
-			reusableFences.Remove(0);
-		}
-	}
-	if (fence == VK_NULL_HANDLE)
-	{
-		VkFenceCreateInfo fenceCreateInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
-		VkResult err = vkCreateFence(device, &fenceCreateInfo, allocationCallbacks, &fence);
-		if (err != VK_SUCCESS)
-		{
-			DKLogE("ERROR: vkCreateFence failed: %s", VkResultCStr(err));
-			DKASSERT(err == VK_SUCCESS);
-		}
-		numberOfFences.Increment();
-		DKLogD("Queue Completion Helper: Num-Fences: %llu", (uint64_t)numberOfFences);
-	}
-	return fence;
-}
-
-void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op, bool useEventLoop)
-{
-	DKASSERT_DEBUG(fence != VK_NULL_HANDLE);
-
-	if (op)
-	{
-		DKCriticalSection<DKCondition> guard(fenceCompletionCond);
-		FenceCallback cb = { fence, op, 0 };
-		if (useEventLoop)
-			cb.threadId = DKThread::CurrentThreadId();
-		pendingFenceCallbacks.Add(cb);
-		fenceCompletionCond.Broadcast();
-	}
-}
-
-void GraphicsDevice::FenceCompletionCallbackThreadProc()
-{
-	const double fenceWaitInterval = 0.002;
-
-	VkResult err = VK_SUCCESS;
-
-	DKArray<VkFence> fences;
-	DKArray<FenceCallback> waitingFences;
-	struct ThreadCallback
-	{
-		DKObject<DKOperation> operation;
-		DKThread::ThreadId threadId;
-	};
-	DKArray<ThreadCallback> availableCallbacks;
-
-	DKLogI("Vulkan Queue Completion Helper thread is started.");
-
-	DKCriticalSection<DKCondition> guard(fenceCompletionCond);
-	while (fenceCompletionThreadRunning)
-	{
-		waitingFences.Add(pendingFenceCallbacks);
-		pendingFenceCallbacks.Clear();
-
-		if (waitingFences.Count() > 0)
-		{
-			// condition is unlocked from here.
-			fenceCompletionCond.Unlock();
-
-			fences.Clear();
-			fences.Reserve(waitingFences.Count());
-			for (FenceCallback& cb : waitingFences)
-				fences.Add(cb.fence);
-
-			DKASSERT_DEBUG(fences.Count() > 0);
-			err = vkWaitForFences(device,
-								  static_cast<uint32_t>(fences.Count()),
-								  fences,
-								  VK_FALSE,
-								  0);
-			fences.Clear();
-			if (err == VK_SUCCESS)
-			{
-				DKArray<FenceCallback> waitingFencesCopy;
-				waitingFencesCopy.Reserve(waitingFences.Count());
-
-				// check state for each fences
-				for (FenceCallback& cb : waitingFences)
-				{
-					if (vkGetFenceStatus(device, cb.fence) == VK_SUCCESS)
-					{
-						fences.Add(cb.fence);
-						availableCallbacks.Add({ cb.operation, cb.threadId });
-					}
-					else
-						waitingFencesCopy.Add(cb); // fence is not ready (unsignaled)
-				}
-				// save unsignaled fences
-				waitingFences.Clear();
-				waitingFences = std::move(waitingFencesCopy);
-
-				// reset signaled fences
-				if (fences.Count() > 0)
-				{
-					err = vkResetFences(device, static_cast<uint32_t>(fences.Count()), fences);
-					if (err != VK_SUCCESS)
-					{
-						DKLogE("ERROR: vkResetFences failed: %s", VkResultCStr(err));
-						DKASSERT(err == VK_SUCCESS);
-					}
-				}
-			}
-			else if (err != VK_TIMEOUT)
-			{
-				DKLogE("ERROR: vkWaitForFences failed: %s", VkResultCStr(err));
-				DKASSERT(0);
-			}			
-
-			if (availableCallbacks.Count() > 0)
-			{
-				for (ThreadCallback& tc : availableCallbacks)
-				{
-					DKObject<DKEventLoop> eventLoop = NULL;
-					if (tc.threadId != 0)
-						eventLoop = DKEventLoop::EventLoopForThreadId(tc.threadId);
-					if (eventLoop)
-						eventLoop->Post(tc.operation);
-					else
-						tc.operation->Perform();
-				}
-				availableCallbacks.Clear();
-			}
-
-			// lock condition (requires to reset fences mutually exclusive)
-			fenceCompletionCond.Lock();
-			if (fences.Count() > 0)
-			{
-				reusableFences.Add(fences);
-				fences.Clear();
-			}
-			if (err == VK_TIMEOUT)
-			{
-				if (fenceWaitInterval > 0.0)
-					fenceCompletionCond.WaitTimeout(fenceWaitInterval);
-				else
-					DKThread::Yield();
-			}
-		}
-		else
-		{
-			fenceCompletionCond.Wait();
-		}
-	}
-
-	DKLogI("Vulkan Queue Completion Helper thread is finished.");
-}
-
 void GraphicsDevice::LoadPipelineCache()
 {
 	if (this->pipelineCache != VK_NULL_HANDLE)
@@ -2530,5 +2446,300 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
     }
     return pipelineLayout;
 }
+
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
+void GraphicsDevice::QueueCompletionThreadProc()
+{
+    bool running = this->queueCompletionThreadRunning;
+
+    DKArray<VkSemaphore> timelineSemaphores;
+    DKArray<uint64_t> timelineValues;
+
+    DKArray<DKObject<DKOperation>> completionHandlers;
+
+    timelineSemaphores.Reserve(queueCompletionSemaphoreHandlers.Count() + 1);
+    timelineValues.Reserve(queueCompletionSemaphoreHandlers.Count() + 1);
+
+    for (QueueSubmissionSemaphore& s : queueCompletionSemaphoreHandlers)
+    {
+        timelineSemaphores.Add(s.semaphore.semaphore);
+        timelineValues.Add(s.semaphore.value);
+    }
+    timelineSemaphores.Add(deviceEventSemaphore.semaphore);
+    timelineValues.Add(deviceEventSemaphore.value);
+
+    size_t numSemaphores = timelineSemaphores.Count();
+    DKASSERT_DEBUG(timelineValues.Count() == numSemaphores);
+
+    timelineSemaphores.ShrinkToFit();
+    timelineValues.ShrinkToFit();
+
+    DKLogI("Vulkan Queue Completion Helper thread is started.");
+
+    VkResult result = VK_SUCCESS;
+
+    while (running)
+    {
+        if (result == VK_SUCCESS)
+        {
+            for (size_t i = 0; i < numSemaphores; ++i)
+            {
+                ++(timelineValues[i]);
+            }
+        }
+
+        VkSemaphoreWaitInfoKHR waitInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO };
+        waitInfo.flags = VK_SEMAPHORE_WAIT_ANY_BIT;
+        waitInfo.semaphoreCount = numSemaphores;
+        waitInfo.pSemaphores = timelineSemaphores;
+        waitInfo.pValues = timelineValues;
+
+        auto sec2ns = [](double s) constexpr ->uint64_t
+        {
+            uint64_t us = static_cast<uint64_t>(s * 1000000.0);
+            return us * 1000ULL;
+        };
+
+        result = vkWaitSemaphores(this->device, &waitInfo, sec2ns(0.1));
+        if (result == VK_SUCCESS)
+        {
+            // update semaphore values.
+            for (size_t i = 0; i < numSemaphores; ++i)
+            {
+                VkResult r = vkGetSemaphoreCounterValue(this->device,
+                                                        timelineSemaphores[i],
+                                                        &timelineValues[i]);
+                if (r != VK_SUCCESS)
+                {
+                    DKLogE("ERROR: vkGetSemaphoreCounterValue failed: %s", VkResultCStr(r));
+                }
+            }
+
+            // update queues and handlers.
+            DKCriticalSection guard(queueCompletionHandlerLock);
+
+            // queueCompletionSemaphoreHandlers must be immutable!
+            DKASSERT_DEBUG(numSemaphores == queueCompletionSemaphoreHandlers.Count() + 1);
+
+            uint64_t index = 0;
+            for (index = 0; index < queueCompletionSemaphoreHandlers.Count(); ++index)
+            {
+                QueueSubmissionSemaphore& s = queueCompletionSemaphoreHandlers.Value(index);
+                DKASSERT_DEBUG(s.semaphore.semaphore == timelineSemaphores[index]);
+                s.semaphore.value = timelineValues[index];
+                uint64_t handlerIndex = 0;
+                for (handlerIndex = 0; handlerIndex < s.handlers.Count(); ++handlerIndex)
+                {
+                    TimelineSemaphoreCompletionHandler& handler = s.handlers.Value(handlerIndex);
+                    if (handler.value > s.semaphore.value)
+                        break;
+                    completionHandlers.Add(handler.operation);
+                }
+                s.handlers.Remove(0, handlerIndex);
+            }
+
+            DKASSERT_DEBUG(deviceEventSemaphore.semaphore == timelineSemaphores[index]);
+            deviceEventSemaphore.value = timelineValues[index];
+
+            running = this->queueCompletionThreadRunning;
+        }
+        else if (result == VK_TIMEOUT)
+        {
+            DKCriticalSection guard(queueCompletionHandlerLock);
+            running = this->queueCompletionThreadRunning;
+        }
+        else
+        {
+            DKLogE("ERROR: vkWaitSemaphores failed: %s", VkResultCStr(result));
+        }
+
+        // execute handlers.
+        if (completionHandlers.Count() > 0)
+        {
+            for (DKObject<DKOperation>& handler : completionHandlers)
+            {
+                if (handler)
+                    handler->Perform();
+            }
+            completionHandlers.Clear();
+
+            // update thread state again.
+            DKCriticalSection guard(queueCompletionHandlerLock);
+            running = this->queueCompletionThreadRunning;
+        }
+    }
+
+    DKASSERT_DEBUG(completionHandlers.IsEmpty());
+
+    DKLogI("Vulkan Queue Completion Helper thread is finished.");
+}
+
+void GraphicsDevice::SetQueueCompletionHandler(VkQueue queue, DKOperation* op, VkSemaphore& semaphore, uint64_t& timeline)
+{
+    auto index = queueCompletionSemaphoreHandlers.LowerBound(queue, [](const QueueSubmissionSemaphore& a, VkQueue b)
+    {
+        return reinterpret_cast<uintptr_t>(a.queue) < reinterpret_cast<const uintptr_t>(b);
+    });
+    QueueSubmissionSemaphore& s = queueCompletionSemaphoreHandlers.Value(index);
+    DKASSERT_DEBUG(reinterpret_cast<uintptr_t>(s.queue) == reinterpret_cast<uintptr_t>(queue));
+
+    DKCriticalSection guard(queueCompletionHandlerLock);
+    DKASSERT_DEBUG(queueCompletionThreadRunning);
+    DKASSERT_DEBUG(queueCompletionThread && queueCompletionThread->IsAlive());
+    DKASSERT_DEBUG(s.semaphore.semaphore);
+    
+    semaphore = s.semaphore.semaphore;
+    timeline = ++(s.waitValue);
+
+    s.handlers.Add({ timeline, op });
+}
+#else
+void GraphicsDevice::FenceCompletionCallbackThreadProc()
+{
+    const double fenceWaitInterval = 0.002;
+
+    VkResult err = VK_SUCCESS;
+
+    DKArray<VkFence> fences;
+    DKArray<FenceCallback> waitingFences;
+    DKArray<DKObject<DKOperation>> completionHandlers;
+
+    DKLogI("Vulkan Queue Completion Helper thread is started.");
+
+    DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+    while (fenceCompletionThreadRunning)
+    {
+        waitingFences.Add(pendingFenceCallbacks);
+        pendingFenceCallbacks.Clear();
+
+        if (waitingFences.Count() > 0)
+        {
+            // condition is unlocked from here.
+            fenceCompletionCond.Unlock();
+
+            fences.Clear();
+            fences.Reserve(waitingFences.Count());
+            for (FenceCallback& cb : waitingFences)
+                fences.Add(cb.fence);
+
+            DKASSERT_DEBUG(fences.Count() > 0);
+            err = vkWaitForFences(device,
+                                  static_cast<uint32_t>(fences.Count()),
+                                  fences,
+                                  VK_FALSE,
+                                  0);
+            fences.Clear();
+            if (err == VK_SUCCESS)
+            {
+                DKArray<FenceCallback> waitingFencesCopy;
+                waitingFencesCopy.Reserve(waitingFences.Count());
+
+                // check state for each fences
+                for (FenceCallback& cb : waitingFences)
+                {
+                    if (vkGetFenceStatus(device, cb.fence) == VK_SUCCESS)
+                    {
+                        fences.Add(cb.fence);
+                        completionHandlers.Add(cb.operation);
+                    }
+                    else
+                        waitingFencesCopy.Add(cb); // fence is not ready (unsignaled)
+                }
+                // save unsignaled fences
+                waitingFences.Clear();
+                waitingFences = std::move(waitingFencesCopy);
+
+                // reset signaled fences
+                if (fences.Count() > 0)
+                {
+                    err = vkResetFences(device, static_cast<uint32_t>(fences.Count()), fences);
+                    if (err != VK_SUCCESS)
+                    {
+                        DKLogE("ERROR: vkResetFences failed: %s", VkResultCStr(err));
+                        DKASSERT(err == VK_SUCCESS);
+                    }
+                }
+            }
+            else if (err != VK_TIMEOUT)
+            {
+                DKLogE("ERROR: vkWaitForFences failed: %s", VkResultCStr(err));
+                DKASSERT(0);
+            }
+
+            if (completionHandlers.Count() > 0)
+            {
+                for (DKObject<DKOperation>& handler : completionHandlers)
+                {
+                    if (handler)
+                        handler->Perform();
+                }
+                completionHandlers.Clear();
+            }
+
+            // lock condition (requires to reset fences mutually exclusive)
+            fenceCompletionCond.Lock();
+            if (fences.Count() > 0)
+            {
+                reusableFences.Add(fences);
+                fences.Clear();
+            }
+            if (err == VK_TIMEOUT)
+            {
+                if (fenceWaitInterval > 0.0)
+                    fenceCompletionCond.WaitTimeout(fenceWaitInterval);
+                else
+                    DKThread::Yield();
+            }
+        }
+        else
+        {
+            fenceCompletionCond.Wait();
+        }
+    }
+
+    DKLogI("Vulkan Queue Completion Helper thread is finished.");
+}
+
+void GraphicsDevice::AddFenceCompletionHandler(VkFence fence, DKOperation* op)
+{
+    DKASSERT_DEBUG(fence != VK_NULL_HANDLE);
+
+    if (op)
+    {
+        DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+        FenceCallback cb = { fence, op };
+        pendingFenceCallbacks.Add(cb);
+        fenceCompletionCond.Broadcast();
+    }
+}
+
+VkFence GraphicsDevice::GetFence()
+{
+    VkFence fence = VK_NULL_HANDLE;
+
+    if (fence == VK_NULL_HANDLE)
+    {
+        DKCriticalSection<DKCondition> guard(fenceCompletionCond);
+        if (reusableFences.Count() > 0)
+        {
+            fence = reusableFences.Value(0);
+            reusableFences.Remove(0);
+        }
+    }
+    if (fence == VK_NULL_HANDLE)
+    {
+        VkFenceCreateInfo fenceCreateInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+        VkResult err = vkCreateFence(device, &fenceCreateInfo, allocationCallbacks, &fence);
+        if (err != VK_SUCCESS)
+        {
+            DKLogE("ERROR: vkCreateFence failed: %s", VkResultCStr(err));
+            DKASSERT(err == VK_SUCCESS);
+        }
+        numberOfFences.Increment();
+        DKLogD("Queue Completion Helper: Num-Fences: %llu", (uint64_t)numberOfFences);
+    }
+    return fence;
+}
+#endif
 
 #endif //#if DKGL_ENABLE_VULKAN

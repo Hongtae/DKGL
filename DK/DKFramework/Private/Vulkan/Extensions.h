@@ -136,13 +136,14 @@ namespace DKFramework::Private::Vulkan
 		DEF_VK_PFN(vkCmdDebugMarkerEndEXT) = nullptr;
 		DEF_VK_PFN(vkCmdDebugMarkerInsertEXT) = nullptr;
 #endif
+#if 0
 		// VK_KHR_swapchain
 		DEF_VK_PFN(vkCreateSwapchainKHR) = nullptr;
 		DEF_VK_PFN(vkDestroySwapchainKHR) = nullptr;
 		DEF_VK_PFN(vkGetSwapchainImagesKHR) = nullptr;
 		DEF_VK_PFN(vkAcquireNextImageKHR) = nullptr;
 		DEF_VK_PFN(vkQueuePresentKHR) = nullptr;
-
+#endif
 		void Load(VkDevice device)
 		{
 #if 0
@@ -153,12 +154,14 @@ namespace DKFramework::Private::Vulkan
 			GET_DEVICE_PROC(device, vkCmdDebugMarkerEndEXT);
 			GET_DEVICE_PROC(device, vkCmdDebugMarkerInsertEXT);
 #endif
+#if 0
             // VK_KHR_swapchain
 			GET_DEVICE_PROC(device, vkCreateSwapchainKHR);
 			GET_DEVICE_PROC(device, vkDestroySwapchainKHR);
 			GET_DEVICE_PROC(device, vkGetSwapchainImagesKHR);
 			GET_DEVICE_PROC(device, vkAcquireNextImageKHR);
 			GET_DEVICE_PROC(device, vkQueuePresentKHR);
+#endif
 		}
 	};
 

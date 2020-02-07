@@ -175,7 +175,7 @@ namespace DKFoundation
 			while (count > 0)
 			{
 				mid = count / 2;
-				if (!cmp(value, data[begin + mid]))
+				if (cmp(data[begin + mid], value))
 				{
 					begin += mid + 1;
 					count -= mid + 1;
@@ -194,7 +194,7 @@ namespace DKFoundation
 			while (count > 0)
 			{
 				mid = count / 2;
-				if (cmp(data[begin + mid], value))
+				if (!cmp(value, data[begin + mid]))
 				{
 					begin += mid + 1;
 					count -= mid + 1;
