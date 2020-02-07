@@ -16,6 +16,8 @@
 #include "DescriptorPool.h"
 #include "DescriptorSet.h"
 
+#define DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE    0
+
 namespace DKFramework::Private::Vulkan
 {
 	class GraphicsDevice : public DKGraphicsDeviceInterface
@@ -43,7 +45,12 @@ namespace DKFramework::Private::Vulkan
         DKObject<DescriptorSet> CreateDescriptorSet(DKGraphicsDevice*, VkDescriptorSetLayout, const DescriptorPoolId&);
         void DestroyDescriptorSets(DescriptorPool*, VkDescriptorSet*, size_t);
 
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
         void SetQueueCompletionHandler(VkQueue, DKOperation*, VkSemaphore&, uint64_t&);
+#else
+        void AddFenceCompletionHandler(VkFence, DKOperation*);
+        VkFence GetFence();
+#endif
 
 		VkInstance instance;
 		VkDevice device;
@@ -92,6 +99,7 @@ namespace DKFramework::Private::Vulkan
 
         VkPipelineCache pipelineCache;
 
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
         // timeline semaphore completion handlers
         struct TimelineSemaphoreCounter
         {
@@ -110,13 +118,27 @@ namespace DKFramework::Private::Vulkan
             uint64_t waitValue;
             DKArray<TimelineSemaphoreCompletionHandler> handlers;
         };
-        bool queueCompletionThreadRunning;
+       
         TimelineSemaphoreCounter deviceEventSemaphore;
         DKArray<QueueSubmissionSemaphore> queueCompletionSemaphoreHandlers;
 
-        DKObject<DKThread> queueCompletionThread;
         DKSpinLock queueCompletionHandlerLock;
+        bool queueCompletionThreadRunning;
+        DKObject<DKThread> queueCompletionThread;
         void QueueCompletionThreadProc();
+#else
+        struct FenceCallback
+        {
+            VkFence fence;
+            DKObject<DKOperation> operation;
+        };
+        DKArray<FenceCallback> pendingFenceCallbacks;
+        DKArray<VkFence> reusableFences;
+        DKCondition fenceCompletionCond;
+        bool fenceCompletionThreadRunning;
+        DKObject<DKThread> fenceCompletionThread;
+        void FenceCompletionCallbackThreadProc();
+#endif
 
         // VK_EXT_debug_utils
         VkDebugUtilsMessengerEXT debugMessenger;
