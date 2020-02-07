@@ -2,7 +2,7 @@
 //  File: GraphicsDevice.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2020 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -15,6 +15,8 @@
 #include "DescriptorPoolChain.h"
 #include "DescriptorPool.h"
 #include "DescriptorSet.h"
+
+#define DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE    0
 
 namespace DKFramework::Private::Vulkan
 {
@@ -43,8 +45,12 @@ namespace DKFramework::Private::Vulkan
         DKObject<DescriptorSet> CreateDescriptorSet(DKGraphicsDevice*, VkDescriptorSetLayout, const DescriptorPoolId&);
         void DestroyDescriptorSets(DescriptorPool*, VkDescriptorSet*, size_t);
 
-		VkFence GetFence();
-		void AddFenceCompletionHandler(VkFence, DKOperation*, bool useEventLoop = false);
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
+        void SetQueueCompletionHandler(VkQueue, DKOperation*, VkSemaphore&, uint64_t&);
+#else
+        void AddFenceCompletionHandler(VkFence, DKOperation*);
+        VkFence GetFence();
+#endif
 
 		VkInstance instance;
 		VkDevice device;
@@ -61,20 +67,6 @@ namespace DKFramework::Private::Vulkan
 		DKArray<VkQueueFamilyProperties> queueFamilyProperties;
 		DKArray<VkExtensionProperties> extensionProperties;
 
-		struct FenceCallback
-		{
-			VkFence fence;
-			DKObject<DKOperation> operation;
-			DKThread::ThreadId threadId;
-		};
-		DKArray<FenceCallback> pendingFenceCallbacks;
-		DKArray<VkFence> reusableFences;
-		DKCondition fenceCompletionCond;
-		bool fenceCompletionThreadRunning;
-		DKObject<DKThread> fenceCompletionThread;
-		void FenceCompletionCallbackThreadProc();
-
-		VkPipelineCache pipelineCache;
 		void LoadPipelineCache();
 		void SavePipelineCache();
 
@@ -104,6 +96,49 @@ namespace DKFramework::Private::Vulkan
             DKASSERT_DEBUG(0);
             return uint32_t(-1);
         };
+
+        VkPipelineCache pipelineCache;
+
+#if DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE
+        // timeline semaphore completion handlers
+        struct TimelineSemaphoreCounter
+        {
+            VkSemaphore semaphore;
+            uint64_t value; // signal value (from GPU)
+        };
+        struct TimelineSemaphoreCompletionHandler
+        {
+            uint64_t value;
+            DKObject<DKOperation> operation;
+        };
+        struct QueueSubmissionSemaphore
+        {
+            VkQueue queue;
+            TimelineSemaphoreCounter semaphore;
+            uint64_t waitValue;
+            DKArray<TimelineSemaphoreCompletionHandler> handlers;
+        };
+       
+        TimelineSemaphoreCounter deviceEventSemaphore;
+        DKArray<QueueSubmissionSemaphore> queueCompletionSemaphoreHandlers;
+
+        DKSpinLock queueCompletionHandlerLock;
+        bool queueCompletionThreadRunning;
+        DKObject<DKThread> queueCompletionThread;
+        void QueueCompletionThreadProc();
+#else
+        struct FenceCallback
+        {
+            VkFence fence;
+            DKObject<DKOperation> operation;
+        };
+        DKArray<FenceCallback> pendingFenceCallbacks;
+        DKArray<VkFence> reusableFences;
+        DKCondition fenceCompletionCond;
+        bool fenceCompletionThreadRunning;
+        DKObject<DKThread> fenceCompletionThread;
+        void FenceCompletionCallbackThreadProc();
+#endif
 
         // VK_EXT_debug_utils
         VkDebugUtilsMessengerEXT debugMessenger;
