@@ -221,24 +221,25 @@ namespace DKFramework
 #		define DKGL_FUNCTION_NAME		__func__
 #	endif
 
+#   define DKGL_NOOP							(void)0 // Forces the macro to end the statement with a semicolon.
 #	define DKERROR_THROW(desc)				DKFoundation::DKErrorRaiseException(DKGL_FUNCTION_NAME, __FILE__, __LINE__, desc)
-#	define DKASSERT_DESC(expr, desc)		{if (!(expr)) DKERROR_THROW(desc);}
-#	define DKASSERT(expr)					{if (!(expr)) DKERROR_THROW("");}
-#	define DKASSERT_STD_DESC(expr, desc)	{if (!(expr)) throw std::runtime_error(desc);}
-#	define DKASSERT_STD(expr)				{if (!(expr)) throw std::runtime_error("");}
+#	define DKASSERT_DESC(expr, desc)			{if (!(expr)) DKERROR_THROW(desc);}				DKGL_NOOP
+#	define DKASSERT(expr)					{if (!(expr)) DKERROR_THROW("");}				DKGL_NOOP
+#	define DKASSERT_STD_DESC(expr, desc)	    {if (!(expr)) throw std::runtime_error(desc);}	DKGL_NOOP
+#	define DKASSERT_STD(expr)				{if (!(expr)) throw std::runtime_error("");}		DKGL_NOOP
 
 #	ifdef DKGL_DEBUG_ENABLED
-#		define DKERROR_THROW_DEBUG(desc)			DKERROR_THROW(desc)
+#		define DKERROR_THROW_DEBUG(desc)				DKERROR_THROW(desc)
 #		define DKASSERT_DESC_DEBUG(expr, desc)		DKASSERT_DESC(expr, desc)
 #		define DKASSERT_DEBUG(expr)					DKASSERT(expr)
 #		define DKASSERT_STD_DESC_DEBUG(expr, desc)	DKASSERT_STD_DESC(expr, desc)
 #		define DKASSERT_STD_DEBUG(expr)				DKASSERT_STD(expr)
 #	else
-#		define DKERROR_THROW_DEBUG(desc)			(void)0
-#		define DKASSERT_DESC_DEBUG(expr, desc)		(void)0
-#		define DKASSERT_DEBUG(expr)					(void)0
-#		define DKASSERT_STD_DESC_DEBUG(expr, desc)	(void)0
-#		define DKASSERT_STD_DEBUG(expr)				(void)0
+#		define DKERROR_THROW_DEBUG(desc)				DKGL_NOOP
+#		define DKASSERT_DESC_DEBUG(expr, desc)		DKGL_NOOP
+#		define DKASSERT_DEBUG(expr)					DKGL_NOOP
+#		define DKASSERT_STD_DESC_DEBUG(expr, desc)	DKGL_NOOP
+#		define DKASSERT_STD_DEBUG(expr)				DKGL_NOOP
 #	endif
 
 #	ifndef DKGL_MEMORY_DEBUG
@@ -249,15 +250,15 @@ namespace DKFramework
 #		endif
 #	endif /* DKGL_MEMORY_DEBUG */
 #	if DKGL_MEMORY_DEBUG
-#		define DKASSERT_MEM_DESC(expr, desc)		{if (!(expr)) throw std::runtime_error(desc);}
-#		define DKASSERT_MEM(expr)					{if (!(expr)) throw std::runtime_error("");}
+#		define DKASSERT_MEM_DESC(expr, desc)			{if (!(expr)) throw std::runtime_error(desc);}	DKGL_NOOP
+#		define DKASSERT_MEM(expr)					{if (!(expr)) throw std::runtime_error("");}		DKGL_NOOP
 #		define DKASSERT_MEM_DESC_DEBUG(expr, desc)	DKASSERT_STD_DESC(expr, desc)
 #		define DKASSERT_MEM_DEBUG(expr)				DKASSERT_STD(expr)
 #	else
-#		define DKASSERT_MEM_DESC(expr, desc)		(void)0
-#		define DKASSERT_MEM(expr)					(void)0
-#		define DKASSERT_MEM_DESC_DEBUG(expr, desc)	(void)0
-#		define DKASSERT_MEM_DEBUG(expr)				(void)0
+#		define DKASSERT_MEM_DESC(expr, desc)			DKGL_NOOP
+#		define DKASSERT_MEM(expr)					DKGL_NOOP
+#		define DKASSERT_MEM_DESC_DEBUG(expr, desc)	DKGL_NOOP
+#		define DKASSERT_MEM_DEBUG(expr)				DKGL_NOOP
 #	endif
 #endif	// #ifdef __cplusplus
 
