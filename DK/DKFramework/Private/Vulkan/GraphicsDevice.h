@@ -96,7 +96,7 @@ namespace DKFramework::Private::Vulkan
         struct TimelineSemaphoreCounter
         {
             VkSemaphore semaphore;
-            uint64_t value;
+            uint64_t value; // signal value (from GPU)
         };
         struct TimelineSemaphoreCompletionHandler
         {

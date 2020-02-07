@@ -2452,8 +2452,18 @@ void GraphicsDevice::QueueCompletionThreadProc()
 
     DKLogI("Vulkan Queue Completion Helper thread is started.");
 
+    VkResult result = VK_SUCCESS;
+
     while (running)
     {
+        if (result == VK_SUCCESS)
+        {
+            for (size_t i = 0; i < numSemaphores; ++i)
+            {
+                ++(timelineValues[i]);
+            }
+        }
+
         VkSemaphoreWaitInfoKHR waitInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO };
         waitInfo.flags = VK_SEMAPHORE_WAIT_ANY_BIT;
         waitInfo.semaphoreCount = numSemaphores;
@@ -2466,8 +2476,7 @@ void GraphicsDevice::QueueCompletionThreadProc()
             return us * 1000ULL;
         };
 
-        VkResult result = vkWaitSemaphores(this->device, &waitInfo, sec2ns(0.1));
-
+        result = vkWaitSemaphores(this->device, &waitInfo, sec2ns(0.1));
         if (result == VK_SUCCESS)
         {
             // update semaphore values.
@@ -2492,8 +2501,8 @@ void GraphicsDevice::QueueCompletionThreadProc()
             for (index = 0; index < queueCompletionSemaphoreHandlers.Count(); ++index)
             {
                 QueueSubmissionSemaphore& s = queueCompletionSemaphoreHandlers.Value(index);
-                DKASSERT_DEBUG(s.semaphore.semaphore == timelineSemaphores[index])
-                    s.semaphore.value = timelineValues[index];
+                DKASSERT_DEBUG(s.semaphore.semaphore == timelineSemaphores[index]);
+                s.semaphore.value = timelineValues[index];
                 uint64_t handlerIndex = 0;
                 for (handlerIndex = 0; handlerIndex < s.handlers.Count(); ++handlerIndex)
                 {
@@ -2525,7 +2534,8 @@ void GraphicsDevice::QueueCompletionThreadProc()
         {
             for (DKObject<DKOperation>& handler : completionHandlers)
             {
-                handler->Perform();
+                if (handler)
+                    handler->Perform();
             }
             completionHandlers.Clear();
 
@@ -2534,6 +2544,8 @@ void GraphicsDevice::QueueCompletionThreadProc()
             running = this->queueCompletionThreadRunning;
         }
     }
+
+    DKASSERT_DEBUG(completionHandlers.IsEmpty());
 
     DKLogI("Vulkan Queue Completion Helper thread is finished.");
 }
