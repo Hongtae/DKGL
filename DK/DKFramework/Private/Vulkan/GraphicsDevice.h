@@ -16,6 +16,12 @@
 #include "DescriptorPool.h"
 #include "DescriptorSet.h"
 
+// Note: (2020-02-08)
+// Using timeline semaphores to signal on completion causes an error in the validation layer.
+// The Validation layer uses fences instead of semaphores, and fences are later than semaphores in synchronization order.
+// see https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/chap6.html#synchronization-signal-operation-order
+//
+// Set DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE = 1 to use timeline semaphore on queue submission.
 #define DKGL_QUEUE_COMPLETION_SYNC_TIMELINE_SEMAPHORE    0
 
 namespace DKFramework::Private::Vulkan
