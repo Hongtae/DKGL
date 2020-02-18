@@ -293,6 +293,7 @@
     <ClCompile Include="DKFramework\DKMatrix2.cpp" />
     <ClCompile Include="DKFramework\DKMatrix3.cpp" />
     <ClCompile Include="DKFramework\DKMatrix4.cpp" />
+    <ClCompile Include="DKFramework\DKMesh.cpp" />
     <ClCompile Include="DKFramework\DKModel.cpp" />
     <ClCompile Include="DKFramework\DKMultiSphereShape.cpp" />
     <ClCompile Include="DKFramework\DKPlane.cpp" />
@@ -490,6 +491,7 @@
     <ClInclude Include="DKFramework\DKMatrix2.h" />
     <ClInclude Include="DKFramework\DKMatrix3.h" />
     <ClInclude Include="DKFramework\DKMatrix4.h" />
+    <ClInclude Include="DKFramework\DKMesh.h" />
     <ClInclude Include="DKFramework\DKModel.h" />
     <ClInclude Include="DKFramework\DKMultiSphereShape.h" />
     <ClInclude Include="DKFramework\DKPipelineReflection.h" />
@@ -513,7 +515,6 @@
     <ClInclude Include="DKFramework\DKSerializer.h" />
     <ClInclude Include="DKFramework\DKShader.h" />
     <ClInclude Include="DKFramework\DKShaderBindingSet.h" />
-    <ClInclude Include="DKFramework\DKShaderConstant.h" />
     <ClInclude Include="DKFramework\DKShaderFunction.h" />
     <ClInclude Include="DKFramework\DKShaderModule.h" />
     <ClInclude Include="DKFramework\DKShaderResource.h" />

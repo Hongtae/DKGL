@@ -589,6 +589,9 @@
     <ClCompile Include="DKFramework\DKScene.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\DKMesh.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1146,9 +1149,6 @@
     <ClInclude Include="DKFramework\DKShaderModule.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKShaderConstant.h">
-      <Filter>DKFramework_WIP</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKSoftBody.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
@@ -1334,6 +1334,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Semaphore.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMesh.h">
+      <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
