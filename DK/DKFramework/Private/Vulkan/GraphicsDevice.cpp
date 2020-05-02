@@ -1900,42 +1900,42 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 	colorBlendAttachmentStates.Reserve(desc.colorAttachments.Count());
 
 
-	auto blendOperation = [](DKBlendOperation o)->VkBlendOp
-	{
-		switch (o)
-		{
-		case DKBlendOperation::Add:					return VK_BLEND_OP_ADD;
-		case DKBlendOperation::Subtract:			return VK_BLEND_OP_SUBTRACT;
-		case DKBlendOperation::ReverseSubtract:		return VK_BLEND_OP_REVERSE_SUBTRACT;
-		case DKBlendOperation::Min:					return VK_BLEND_OP_MIN;
-		case DKBlendOperation::Max:					return VK_BLEND_OP_MAX;
-		}
-		DKASSERT_DEBUG(0);
-		return VK_BLEND_OP_ADD;
-	};
-	auto blendFactor = [](DKBlendFactor f)->VkBlendFactor
-	{
-		switch (f)
-		{
-		case DKBlendFactor::Zero:						return VK_BLEND_FACTOR_ZERO;
-		case DKBlendFactor::One:						return VK_BLEND_FACTOR_ONE;
-		case DKBlendFactor::SourceColor:				return VK_BLEND_FACTOR_SRC_COLOR;
-		case DKBlendFactor::OneMinusSourceColor:		return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
-		case DKBlendFactor::SourceAlpha:				return VK_BLEND_FACTOR_SRC_ALPHA;
-		case DKBlendFactor::OneMinusSourceAlpha:		return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-		case DKBlendFactor::DestinationColor:			return VK_BLEND_FACTOR_DST_COLOR;
-		case DKBlendFactor::OneMinusDestinationColor:	return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
-		case DKBlendFactor::DestinationAlpha:			return VK_BLEND_FACTOR_DST_ALPHA;
-		case DKBlendFactor::OneMinusDestinationAlpha:	return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
-		case DKBlendFactor::SourceAlphaSaturated:		return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
-		case DKBlendFactor::BlendColor:					return VK_BLEND_FACTOR_CONSTANT_COLOR;
-		case DKBlendFactor::OneMinusBlendColor:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
-		case DKBlendFactor::BlendAlpha:					return VK_BLEND_FACTOR_CONSTANT_ALPHA;
-		case DKBlendFactor::OneMinusBlendAlpha:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
-		}
-		DKASSERT_DEBUG(0);
-		return VK_BLEND_FACTOR_ZERO;
-	};
+    auto blendOperation = [](DKBlendOperation o)->VkBlendOp
+    {
+        switch (o)
+        {
+        case DKBlendOperation::Add:					return VK_BLEND_OP_ADD;
+        case DKBlendOperation::Subtract:			    return VK_BLEND_OP_SUBTRACT;
+        case DKBlendOperation::ReverseSubtract:		return VK_BLEND_OP_REVERSE_SUBTRACT;
+        case DKBlendOperation::Min:					return VK_BLEND_OP_MIN;
+        case DKBlendOperation::Max:					return VK_BLEND_OP_MAX;
+        }
+        DKASSERT_DEBUG(0);
+        return VK_BLEND_OP_ADD;
+    };
+    auto blendFactor = [](DKBlendFactor f)->VkBlendFactor
+    {
+        switch (f)
+        {
+        case DKBlendFactor::Zero:						return VK_BLEND_FACTOR_ZERO;
+        case DKBlendFactor::One:						    return VK_BLEND_FACTOR_ONE;
+        case DKBlendFactor::SourceColor:				    return VK_BLEND_FACTOR_SRC_COLOR;
+        case DKBlendFactor::OneMinusSourceColor:		    return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+        case DKBlendFactor::SourceAlpha:				    return VK_BLEND_FACTOR_SRC_ALPHA;
+        case DKBlendFactor::OneMinusSourceAlpha:		    return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        case DKBlendFactor::DestinationColor:			return VK_BLEND_FACTOR_DST_COLOR;
+        case DKBlendFactor::OneMinusDestinationColor:	return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+        case DKBlendFactor::DestinationAlpha:			return VK_BLEND_FACTOR_DST_ALPHA;
+        case DKBlendFactor::OneMinusDestinationAlpha:	return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+        case DKBlendFactor::SourceAlphaSaturated:		return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
+        case DKBlendFactor::BlendColor:					return VK_BLEND_FACTOR_CONSTANT_COLOR;
+        case DKBlendFactor::OneMinusBlendColor:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
+        case DKBlendFactor::BlendAlpha:					return VK_BLEND_FACTOR_CONSTANT_ALPHA;
+        case DKBlendFactor::OneMinusBlendAlpha:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
+        }
+        DKASSERT_DEBUG(0);
+        return VK_BLEND_FACTOR_ZERO;
+    };
 
 	uint32_t colorAttachmentRefCount = 0;
 	for (const DKRenderPipelineColorAttachmentDescriptor& attachment : desc.colorAttachments)
@@ -1964,19 +1964,19 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		attachmentDescriptions.Add(attachmentDesc);
 
 		VkPipelineColorBlendAttachmentState blendState;
-		blendState.blendEnable = attachment.blendingEnabled;
-		blendState.srcColorBlendFactor = blendFactor(attachment.sourceRGBBlendFactor);
-		blendState.dstColorBlendFactor = blendFactor(attachment.destinationRGBBlendFactor);
-		blendState.colorBlendOp = blendOperation(attachment.rgbBlendOperation);
-		blendState.srcAlphaBlendFactor = blendFactor(attachment.sourceAlphaBlendFactor);
-		blendState.dstAlphaBlendFactor = blendFactor(attachment.destinationAlphaBlendFactor);
-		blendState.alphaBlendOp = blendOperation(attachment.alphaBlendOperation);
+		blendState.blendEnable = attachment.blendState.enabled;
+		blendState.srcColorBlendFactor = blendFactor(attachment.blendState.sourceRGBBlendFactor);
+		blendState.dstColorBlendFactor = blendFactor(attachment.blendState.destinationRGBBlendFactor);
+		blendState.colorBlendOp = blendOperation(attachment.blendState.rgbBlendOperation);
+		blendState.srcAlphaBlendFactor = blendFactor(attachment.blendState.sourceAlphaBlendFactor);
+		blendState.dstAlphaBlendFactor = blendFactor(attachment.blendState.destinationAlphaBlendFactor);
+		blendState.alphaBlendOp = blendOperation(attachment.blendState.alphaBlendOperation);
 
 		blendState.colorWriteMask = 0;
-		if (attachment.writeMask & DKColorWriteMaskRed)		blendState.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
-		if (attachment.writeMask & DKColorWriteMaskGreen)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
-		if (attachment.writeMask & DKColorWriteMaskBlue)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
-		if (attachment.writeMask & DKColorWriteMaskAlpha)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskRed)  blendState.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskGreen)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskBlue)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskAlpha)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
 		colorBlendAttachmentStates.Add(blendState);
 
 		DKASSERT_DEBUG(subpassColorAttachmentRefs.Count() > attachment.index);

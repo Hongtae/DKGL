@@ -8,9 +8,11 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKResource.h"
+#include "DKRenderPipeline.h"
 #include "DKShader.h"
 #include "DKShaderModule.h"
 #include "DKShaderBindingSet.h"
+#include "DKRenderCommandEncoder.h"
 
 namespace DKFramework
 {
@@ -55,7 +57,7 @@ namespace DKFramework
         UserDefine,		// user-define (you can access by name, at shader)
     };
 
-    class DKMaterial : public DKResource
+    class DKGL_API DKMaterial : public DKResource
     {
     public:
         DKMaterial();
@@ -88,7 +90,18 @@ namespace DKFramework
         DKMap<uint32_t, SamplerArray> samplerParameter;
         DKMap<DKString, uint32_t> parameterNameIndex;
 
-    private:
+        DKRenderPipelineDescriptor pipelineDescriptor;
 
+
+        class ShaderPropertyCallback
+        {
+        public:
+            virtual ~ShaderPropertyCallback() {}
+        };
+
+        bool Build();
+        bool UpdateDescriptorSets(const ShaderPropertyCallback*);
+        bool Bind(DKRenderCommandEncoder*) const;
+    private:
     };
 }

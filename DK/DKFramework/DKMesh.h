@@ -11,6 +11,7 @@
 #include "DKMaterial.h"
 #include "DKGpuBuffer.h"
 #include "DKVertexDescriptor.h"
+#include "DKRenderCommandEncoder.h"
 
 namespace DKFramework
 {
@@ -38,7 +39,7 @@ namespace DKFramework
         bool visible;
     };
     /// graphical polygon mesh
-    class DKMesh : public DKResource
+    class DKGL_API DKMesh : public DKResource
     {
     public:
         DKMesh();
@@ -47,5 +48,9 @@ namespace DKFramework
         DKArray<DKVertexBuffer> vertexBuffers;
         DKArray<DKSubMesh> subMeshes;
         DKObject<DKMaterial> material;
+
+        void UpdateMaterialProperties();
+
+        bool EncodeRenderCommand(DKRenderCommandEncoder*) const;
     };
 }

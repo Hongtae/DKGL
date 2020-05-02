@@ -259,6 +259,7 @@
     <ClCompile Include="DKFramework\DKAudioPlayer.cpp" />
     <ClCompile Include="DKFramework\DKAudioSource.cpp" />
     <ClCompile Include="DKFramework\DKAudioStream.cpp" />
+    <ClCompile Include="DKFramework\DKBlendState.cpp" />
     <ClCompile Include="DKFramework\DKBox.cpp" />
     <ClCompile Include="DKFramework\DKBoxShape.cpp" />
     <ClCompile Include="DKFramework\DKBvh.cpp" />
@@ -302,6 +303,7 @@
     <ClCompile Include="DKFramework\DKPropertySet.cpp" />
     <ClCompile Include="DKFramework\DKQuaternion.cpp" />
     <ClCompile Include="DKFramework\DKRect.cpp" />
+    <ClCompile Include="DKFramework\DKCommonShapeDrawer.cpp" />
     <ClCompile Include="DKFramework\DKResource.cpp" />
     <ClCompile Include="DKFramework\DKResourceLoader.cpp" />
     <ClCompile Include="DKFramework\DKResourcePool.cpp" />
@@ -447,6 +449,7 @@
     <ClInclude Include="DKFramework\DKAudioPlayer.h" />
     <ClInclude Include="DKFramework\DKAudioSource.h" />
     <ClInclude Include="DKFramework\DKAudioStream.h" />
+    <ClInclude Include="DKFramework\DKBlendState.h" />
     <ClInclude Include="DKFramework\DKCopyCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKBox.h" />
     <ClInclude Include="DKFramework\DKBoxShape.h" />
@@ -504,6 +507,7 @@
     <ClInclude Include="DKFramework\DKQuaternion.h" />
     <ClInclude Include="DKFramework\DKRect.h" />
     <ClInclude Include="DKFramework\DKRenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKCommonShapeDrawer.h" />
     <ClInclude Include="DKFramework\DKRenderPass.h" />
     <ClInclude Include="DKFramework\DKRenderPipeline.h" />
     <ClInclude Include="DKFramework\DKResource.h" />

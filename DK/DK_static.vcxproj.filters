@@ -592,6 +592,12 @@
     <ClCompile Include="DKFramework\DKMesh.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
+    <ClCompile Include="DKFramework\DKCommonShapeDrawer.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBlendState.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1336,6 +1342,12 @@
       <Filter>DKFramework_WIP\Private\Metal</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKMesh.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCommonShapeDrawer.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBlendState.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,61 +11,16 @@
 #include "DKShaderFunction.h"
 #include "DKVertexDescriptor.h"
 #include "DKDepthStencil.h"
+#include "DKBlendState.h"
 
 namespace DKFramework
 {
-	enum class DKBlendFactor
-	{
-		Zero,
-		One,
-		SourceColor,
-		OneMinusSourceColor,
-		SourceAlpha,
-		OneMinusSourceAlpha,
-		DestinationColor,
-		OneMinusDestinationColor,
-		DestinationAlpha,
-		OneMinusDestinationAlpha,
-		SourceAlphaSaturated,
-		BlendColor,
-		OneMinusBlendColor,
-		BlendAlpha,
-		OneMinusBlendAlpha,
-	};
-
-	enum class DKBlendOperation
-	{
-		Add,
-		Subtract,
-		ReverseSubtract,
-		Min,
-		Max,
-	};
-
-	enum DKColorWriteMask : uint8_t
-	{
-		DKColorWriteMaskNone	= 0,
-		DKColorWriteMaskRed		= 0x1 << 3,
-		DKColorWriteMaskGreen	= 0x1 << 2,
-		DKColorWriteMaskBlue	= 0x1 << 1,
-		DKColorWriteMaskAlpha	= 0x1 << 0,
-		DKColorWriteMaskAll		= 0xf
-	};
-
 	struct DKRenderPipelineColorAttachmentDescriptor
 	{
 		uint32_t index;
 		DKPixelFormat pixelFormat;
-		DKColorWriteMask writeMask = DKColorWriteMaskAll;
 
-		bool blendingEnabled = false;
-		DKBlendOperation alphaBlendOperation = DKBlendOperation::Add;
-		DKBlendOperation rgbBlendOperation = DKBlendOperation::Add;
-
-		DKBlendFactor sourceRGBBlendFactor = DKBlendFactor::One;
-		DKBlendFactor sourceAlphaBlendFactor = DKBlendFactor::One;
-		DKBlendFactor destinationRGBBlendFactor = DKBlendFactor::Zero;
-		DKBlendFactor destinationAlphaBlendFactor = DKBlendFactor::Zero;
+		DKBlendState blendState;
 	};
 
 	enum class DKPrimitiveType
@@ -95,7 +50,7 @@ namespace DKFramework
 	enum class DKFrontFace
 	{
 		CW,		///< Clockwise
-		CCW,	///< Counter Clockwise
+		CCW,		///< Counter Clockwise
 	};
 	enum class DKDepthClipMode
 	{

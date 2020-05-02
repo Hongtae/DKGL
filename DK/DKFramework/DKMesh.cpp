@@ -16,3 +16,20 @@ DKMesh::DKMesh()
 DKMesh::~DKMesh()
 {
 }
+
+void DKMesh::UpdateMaterialProperties()
+{
+    if (material)
+    {
+        material->UpdateDescriptorSets(nullptr);
+    }
+}
+
+bool DKMesh::EncodeRenderCommand(DKRenderCommandEncoder* encoder) const
+{
+    if (material && material->Bind(encoder))
+    {
+
+    }
+    return false;
+}
