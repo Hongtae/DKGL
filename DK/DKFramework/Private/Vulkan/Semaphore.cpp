@@ -27,12 +27,13 @@ Semaphore::~Semaphore()
 }
 
 #if DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE
-uint64_t Semaphore::NextWaitValue()
+uint64_t Semaphore::NextWaitValue() const
 {
     auto n = waitValue.Increment();
     return n + 1;
 }
-uint64_t Semaphore::NextSignalValue()
+
+uint64_t Semaphore::NextSignalValue() const
 {
     auto n = signalValue.Increment();
     return n + 1;

@@ -53,19 +53,19 @@ namespace DKFramework
 
 
         // drawing text with font.
-        void RenderText(const DKRect& bounds,
-                        const DKMatrix3& transform,
-                        const DKFoundation::DKString& text,
-                        const DKFont* font,
-                        const DKColor& color,
-                        const DKBlendState& blend = DKBlendState::defaultAlpha) const;
+        void DrawText(const DKRect& bounds,
+                      const DKMatrix3& transform,
+                      const DKString& text,
+                      const DKFont* font,
+                      const DKColor& color,
+                      const DKBlendState& blend = DKBlendState::defaultAlpha) const;
 
-        void RenderText(const DKPoint& baselineBegin,
-                        const DKPoint& baselineEnd,
-                        const DKFoundation::DKString& text,
-                        const DKFont* font,
-                        const DKColor& color,
-                        const DKBlendState& blend = DKBlendState::defaultAlpha) const;
+        void DrawText(const DKPoint& baselineBegin,
+                      const DKPoint& baselineEnd,
+                      const DKString& text,
+                      const DKFont* font,
+                      const DKColor& color,
+                      const DKBlendState& blend = DKBlendState::defaultAlpha) const;
 
         // draw primitive (2D)
         void DrawPrimitive(DKPrimitiveType p,

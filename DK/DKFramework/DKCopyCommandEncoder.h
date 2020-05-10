@@ -44,24 +44,36 @@ namespace DKFramework
         virtual ~DKCopyCommandEncoder() {}
 
         /// Copying Data Between Buffers
-        virtual void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
-                                            DKGpuBuffer* dst, size_t dstOffset,
+        virtual void CopyFromBufferToBuffer(const DKGpuBuffer* src,
+                                            size_t srcOffset,
+                                            const DKGpuBuffer* dst,
+                                            size_t dstOffset,
                                             size_t size) = 0;
 
         /// Copying Between Textures and Buffers
-        virtual void CopyFromBufferToTexture(DKGpuBuffer* src, const BufferImageOrigin& srcOffset,
-                                             DKTexture* dst, const TextureOrigin& dstOffset,
+        virtual void CopyFromBufferToTexture(const DKGpuBuffer* src,
+                                             const BufferImageOrigin& srcOffset,
+                                             const DKTexture* dst,
+                                             const TextureOrigin& dstOffset,
                                              const Size& size) = 0;
-        virtual void CopyFromTextureToBuffer(DKTexture* src, const TextureOrigin& srcOffset,
-                                             DKGpuBuffer* dst, const BufferImageOrigin& dstOffset,
+
+        virtual void CopyFromTextureToBuffer(const DKTexture* src,
+                                             const TextureOrigin& srcOffset,
+                                             const DKGpuBuffer* dst,
+                                             const BufferImageOrigin& dstOffset,
                                              const Size& size) = 0;
 
         /// Copying Data Between Textures
-        virtual void CopyFromTextureToTexture(DKTexture* src, const TextureOrigin& srcOffset,
-                                              DKTexture* dst, const TextureOrigin& dstOffset,
+        virtual void CopyFromTextureToTexture(const DKTexture* src,
+                                              const TextureOrigin& srcOffset,
+                                              const DKTexture* dst,
+                                              const TextureOrigin& dstOffset,
                                               const Size& size) = 0;
 
         /// Filling Buffers
-        virtual void FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value) = 0;
+        virtual void FillBuffer(const DKGpuBuffer* buffer,
+                                size_t offset,
+                                size_t length,
+                                uint8_t value) = 0;
     };
 }

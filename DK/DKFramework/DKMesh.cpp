@@ -25,11 +25,27 @@ void DKMesh::UpdateMaterialProperties()
     }
 }
 
-bool DKMesh::EncodeRenderCommand(DKRenderCommandEncoder* encoder) const
+bool DKMesh::EncodeRenderCommand(DKRenderCommandEncoder* encoder,
+                                 uint32_t numInstances,
+                                 uint32_t baseInstance) const
 {
-    if (material && material->Bind(encoder))
+    if (material && material->EncodeRenderCommand(encoder))
     {
+        for (uint32_t index = 0; index < vertexBuffers.Count(); index++)
+        {
+            const DKVertexBuffer& buffer = vertexBuffers.Value(index);
+            encoder->SetVertexBuffer(buffer.buffer, buffer.offset, index);
+        }
 
+        for (const DKSubMesh& subMesh : subMeshes)
+        {
+            if (subMesh.visible && subMesh.indexCount > 0)
+            {
+                const DKGpuBuffer* indexBuffer = subMesh.indexBuffer;
+                encoder->SetIndexBuffer(indexBuffer, 0, subMesh.indexType);
+                encoder->DrawIndexed(subMesh.indexCount, numInstances, subMesh.indexOffset, subMesh.vertexOffset, baseInstance);
+            }
+        }
     }
     return false;
 }

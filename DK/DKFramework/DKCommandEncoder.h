@@ -23,10 +23,10 @@ namespace DKFramework
 		virtual bool IsCompleted() const = 0;
 		virtual DKCommandBuffer* CommandBuffer() = 0;
 
-        virtual void WaitEvent(DKGpuEvent*) = 0;
-        virtual void SignalEvent(DKGpuEvent*) = 0;
+        virtual void WaitEvent(const DKGpuEvent*) = 0;
+        virtual void SignalEvent(const DKGpuEvent*) = 0;
 
-        virtual void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) = 0;
-        virtual void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) = 0;
+        virtual void WaitSemaphoreValue(const DKGpuSemaphore*, uint64_t) = 0;
+        virtual void SignalSemaphoreValue(const DKGpuSemaphore*, uint64_t) = 0;
     };
 }

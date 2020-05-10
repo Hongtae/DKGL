@@ -81,53 +81,54 @@ void ComputeCommandEncoder::EndEncoding()
     encoder = nullptr;
 }
 
-void ComputeCommandEncoder::WaitEvent(DKGpuEvent* event)
+void ComputeCommandEncoder::WaitEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
-    Semaphore* semaphore = static_cast<Semaphore*>(event);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(event));
+    const Semaphore* semaphore = static_cast<const Semaphore*>(event);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages, semaphore->NextWaitValue());
-    encoder->events.Add(event);
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
-void ComputeCommandEncoder::SignalEvent(DKGpuEvent* event)
+void ComputeCommandEncoder::SignalEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
-    Semaphore* semaphore = static_cast<Semaphore*>(event);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(event));
+    const Semaphore* semaphore = static_cast<const Semaphore*>(event);
 
     encoder->AddSignalSemaphore(semaphore->semaphore, semaphore->NextSignalValue());
-    encoder->events.Add(event);
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
-void ComputeCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+void ComputeCommandEncoder::WaitSemaphoreValue(const DKGpuSemaphore* sema, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
-    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+    DKASSERT_DEBUG(dynamic_cast<const TimelineSemaphore*>(sema));
+    const TimelineSemaphore* semaphore = static_cast<const TimelineSemaphore*>(sema);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, value, pipelineStages);
-    encoder->semaphores.Add(semaphore);
+    encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(sema));
 }
 
-void ComputeCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+void ComputeCommandEncoder::SignalSemaphoreValue(const DKGpuSemaphore* sema, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
-    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+    DKASSERT_DEBUG(dynamic_cast<const TimelineSemaphore*>(sema));
+    const TimelineSemaphore* semaphore = static_cast<const TimelineSemaphore*>(sema);
 
     encoder->AddSignalSemaphore(semaphore->semaphore, value);
-    encoder->semaphores.Add(semaphore);
+    encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(sema));
 }
 
-void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
+void ComputeCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSet* set)
 {
     DKObject<ShaderBindingSet> bindingSet = nullptr;
     if (set)
     {
-        DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
-        bindingSet = static_cast<ShaderBindingSet*>(set);
+        DKASSERT_DEBUG(dynamic_cast<const ShaderBindingSet*>(set) != nullptr);
+        auto p = static_cast<const ShaderBindingSet*>(set);
+        bindingSet = const_cast<ShaderBindingSet*>(p);
         encoder->shaderBindingSets.Add(bindingSet);
     }
 
@@ -177,18 +178,18 @@ void ComputeCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set
     encoder->commands.Add(command);
 }
 
-void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
+void ComputeCommandEncoder::SetComputePipelineState(const DKComputePipelineState* ps)
 {
-    DKASSERT_DEBUG(dynamic_cast<ComputePipelineState*>(ps));
-    ComputePipelineState* pipeline = static_cast<ComputePipelineState*>(ps);
+    DKASSERT_DEBUG(dynamic_cast<const ComputePipelineState*>(ps));
+    const ComputePipelineState* pipeline = static_cast<const ComputePipelineState*>(ps);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline->pipeline);
-        state.pipelineState = pipeline;
+        state.pipelineState = const_cast<ComputePipelineState*>(pipeline);
     });
     encoder->commands.Add(command);
-    encoder->pipelineStateObjects.Add(pipeline);
+    encoder->pipelineStateObjects.Add(const_cast<ComputePipelineState*>(pipeline));
 }
 
 void ComputeCommandEncoder::Dispatch(uint32_t numGroupsX, uint32_t numGroupsY, uint32_t numGroupsZ)

@@ -19,8 +19,8 @@ namespace DKFramework::Private::Vulkan
     class Semaphore : public DKGpuEvent
     {
 #if DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE
-        DKAtomicNumber64 waitValue;
-        DKAtomicNumber64 signalValue;
+        mutable DKAtomicNumber64 waitValue;
+        mutable DKAtomicNumber64 signalValue;
 #endif
     public:
         Semaphore(DKGraphicsDevice*, VkSemaphore);
@@ -30,11 +30,11 @@ namespace DKFramework::Private::Vulkan
         VkSemaphore semaphore;
 
 #if DKGL_VULKAN_SEMAPHORE_AUTO_INCREMENTAL_TIMELINE
-        uint64_t NextWaitValue();
-        uint64_t NextSignalValue();
+        uint64_t NextWaitValue() const;
+        uint64_t NextSignalValue() const;
 #else
-        uint64_t NextWaitValue() { return 0; }
-        uint64_t NextSignalValue() { return 0; }
+        uint64_t NextWaitValue() const { return 0; }
+        uint64_t NextSignalValue() const { return 0; }
 #endif
     };
 }

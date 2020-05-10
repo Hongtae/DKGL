@@ -80,6 +80,15 @@ namespace DKFramework
 
         DKObject<ShaderTemplate> shaderTemplate;
         DKObject<DKShaderFunction> shaderFunction;
+        DKObject<DKRenderPipelineState> renderPipelineState;
+
+        struct ResourceBindingSet
+        {
+            uint32_t resourceIndex;
+            DKObject<DKShaderBindingSet> bindings;
+        };
+        DKArray<ResourceBindingSet> resourceBindings;
+
 
         using TextureArray = DKArray<DKObject<DKTexture>>;
         using BufferArray = DKArray<DKObject<DKGpuBuffer>>;
@@ -90,8 +99,7 @@ namespace DKFramework
         DKMap<uint32_t, SamplerArray> samplerParameter;
         DKMap<DKString, uint32_t> parameterNameIndex;
 
-        DKRenderPipelineDescriptor pipelineDescriptor;
-
+        DKRenderPipelineDescriptor renderPipelineDescriptor;
 
         class ShaderPropertyCallback
         {
@@ -101,7 +109,7 @@ namespace DKFramework
 
         bool Build();
         bool UpdateDescriptorSets(const ShaderPropertyCallback*);
-        bool Bind(DKRenderCommandEncoder*) const;
+        bool EncodeRenderCommand(DKRenderCommandEncoder*) const;
     private:
     };
 }

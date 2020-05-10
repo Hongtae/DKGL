@@ -71,22 +71,22 @@ void DKCommonShapeDrawer::Clear(const DKColor& color) const
 
 }
 
-void DKCommonShapeDrawer::RenderText(const DKRect& bounds,
-                                     const DKMatrix3& transform,
-                                     const DKFoundation::DKString& text,
-                                     const DKFont* font,
-                                     const DKColor& color,
-                                     const DKBlendState& blend) const
+void DKCommonShapeDrawer::DrawText(const DKRect& bounds,
+                                   const DKMatrix3& transform,
+                                   const DKString& text,
+                                   const DKFont* font,
+                                   const DKColor& color,
+                                   const DKBlendState& blend) const
 {
 
 }
 
-void DKCommonShapeDrawer::RenderText(const DKPoint& baselineBegin,
-                                     const DKPoint& baselineEnd,
-                                     const DKFoundation::DKString& text,
-                                     const DKFont* font,
-                                     const DKColor& color,
-                                     const DKBlendState& blend) const
+void DKCommonShapeDrawer::DrawText(const DKPoint& baselineBegin,
+                                   const DKPoint& baselineEnd,
+                                   const DKString& text,
+                                   const DKFont* font,
+                                   const DKColor& color,
+                                   const DKBlendState& blend) const
 {
 
 }

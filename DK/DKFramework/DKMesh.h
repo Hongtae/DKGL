@@ -29,13 +29,18 @@ namespace DKFramework
     {
         DKArray<DKVertexStreamDeclaration> declarations;
         DKObject<DKGpuBuffer> buffer;
-        size_t count;
-        size_t size;
+        size_t offset; // first vertex index
+        size_t count; // num vertices
+        size_t size; // vertex size
     };
 
     struct DKSubMesh
     {
         DKObject<DKGpuBuffer> indexBuffer;
+        uint32_t indexCount;
+        uint32_t indexOffset;
+        uint32_t vertexOffset;
+        DKIndexType indexType;
         bool visible;
     };
     /// graphical polygon mesh
@@ -51,6 +56,8 @@ namespace DKFramework
 
         void UpdateMaterialProperties();
 
-        bool EncodeRenderCommand(DKRenderCommandEncoder*) const;
+        bool EncodeRenderCommand(DKRenderCommandEncoder*,
+                                 uint32_t numInstances,
+                                 uint32_t baseInstance) const;
     };
 }

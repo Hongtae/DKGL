@@ -62,55 +62,57 @@ void CopyCommandEncoder::EndEncoding()
     encoder = nullptr;
 }
 
-void CopyCommandEncoder::WaitEvent(DKGpuEvent* event)
+void CopyCommandEncoder::WaitEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
-    Semaphore* semaphore = static_cast<Semaphore*>(event);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(event));
+    const Semaphore* semaphore = static_cast<const Semaphore*>(event);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, semaphore->NextWaitValue(), pipelineStages);
-    encoder->events.Add(event);
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
-void CopyCommandEncoder::SignalEvent(DKGpuEvent* event)
+void CopyCommandEncoder::SignalEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
-    Semaphore* semaphore = static_cast<Semaphore*>(event);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(event));
+    const Semaphore* semaphore = static_cast<const Semaphore*>(event);
 
     encoder->AddSignalSemaphore(semaphore->semaphore, semaphore->NextSignalValue());
-    encoder->events.Add(event);
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
-void CopyCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+void CopyCommandEncoder::WaitSemaphoreValue(const DKGpuSemaphore* sema, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
-    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+    DKASSERT_DEBUG(dynamic_cast<const TimelineSemaphore*>(sema));
+    const TimelineSemaphore* semaphore = static_cast<const TimelineSemaphore*>(sema);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, value, pipelineStages);
-    encoder->semaphores.Add(semaphore);
+    encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(sema));
 }
 
-void CopyCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+void CopyCommandEncoder::SignalSemaphoreValue(const DKGpuSemaphore* sema, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
-    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+    DKASSERT_DEBUG(dynamic_cast<const TimelineSemaphore*>(sema));
+    const TimelineSemaphore* semaphore = static_cast<const TimelineSemaphore*>(sema);
 
     encoder->AddSignalSemaphore(semaphore->semaphore, value);
-    encoder->semaphores.Add(semaphore);
+    encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(sema));
 }
 
-void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
-                                                DKGpuBuffer* dst, size_t dstOffset,
+void CopyCommandEncoder::CopyFromBufferToBuffer(const DKGpuBuffer* src,
+                                                size_t srcOffset,
+                                                const DKGpuBuffer* dst,
+                                                size_t dstOffset,
                                                 size_t size)
 {
-    DKASSERT_DEBUG(dynamic_cast<BufferView*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<BufferView*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const BufferView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const BufferView*>(dst) != nullptr);
 
-    Buffer* srcBuffer = static_cast<BufferView*>(src)->buffer;
-    Buffer* dstBuffer = static_cast<BufferView*>(dst)->buffer;
+    const Buffer* srcBuffer = static_cast<const BufferView*>(src)->buffer;
+    const Buffer* dstBuffer = static_cast<const BufferView*>(dst)->buffer;
 
     DKASSERT_DEBUG(srcBuffer &&srcBuffer->buffer);
     DKASSERT_DEBUG(dstBuffer && dstBuffer->buffer);
@@ -134,21 +136,23 @@ void CopyCommandEncoder::CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffs
                         1, &region);
     });
     encoder->commands.Add(command);
-    encoder->buffers.Add(src);
-    encoder->buffers.Add(dst);
+    encoder->buffers.Add(const_cast<DKGpuBuffer*>(src));
+    encoder->buffers.Add(const_cast<DKGpuBuffer*>(dst));
 }
 
-void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferImageOrigin& srcOffset,
-                                                 DKTexture* dst, const TextureOrigin& dstOffset,
+void CopyCommandEncoder::CopyFromBufferToTexture(const DKGpuBuffer* src,
+                                                 const BufferImageOrigin& srcOffset,
+                                                 const DKTexture* dst,
+                                                 const TextureOrigin& dstOffset,
                                                  const Size& size)
 {
-    DKASSERT_DEBUG(dynamic_cast<BufferView*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<ImageView*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const BufferView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const ImageView*>(dst) != nullptr);
 
     DKASSERT_DEBUG((srcOffset.bufferOffset % 4) == 0);
 
-    Buffer* buffer = static_cast<BufferView*>(src)->buffer;
-    Image* image = static_cast<ImageView*>(dst)->image;
+    const Buffer* buffer = static_cast<const BufferView*>(src)->buffer;
+    const Image* image = static_cast<const ImageView*>(dst)->image;
 
     DKASSERT_DEBUG(buffer && buffer->buffer);
     DKASSERT_DEBUG(image && image->image);
@@ -208,21 +212,23 @@ void CopyCommandEncoder::CopyFromBufferToTexture(DKGpuBuffer* src, const BufferI
                                1, &region);
     });
     encoder->commands.Add(command);
-    encoder->buffers.Add(src);
-    encoder->textures.Add(dst);
+    encoder->buffers.Add(const_cast<DKGpuBuffer*>(src));
+    encoder->textures.Add(const_cast<DKTexture*>(dst));
 }
 
-void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOrigin& srcOffset,
-                                                 DKGpuBuffer* dst, const BufferImageOrigin& dstOffset,
+void CopyCommandEncoder::CopyFromTextureToBuffer(const DKTexture* src,
+                                                 const TextureOrigin& srcOffset,
+                                                 const DKGpuBuffer* dst, 
+                                                 const BufferImageOrigin& dstOffset,
                                                  const Size& size)
 {
-    DKASSERT_DEBUG(dynamic_cast<ImageView*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<BufferView*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const ImageView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const BufferView*>(dst) != nullptr);
 
     DKASSERT_DEBUG((dstOffset.bufferOffset % 4) == 0);
 
-    Image* image = static_cast<ImageView*>(src)->image;
-    Buffer* buffer = static_cast<BufferView*>(dst)->buffer;
+    const Image* image = static_cast<const ImageView*>(src)->image;
+    const Buffer* buffer = static_cast<const BufferView*>(dst)->buffer;
 
     DKASSERT_DEBUG(buffer && buffer->buffer);
     DKASSERT_DEBUG(image && image->image);
@@ -282,19 +288,21 @@ void CopyCommandEncoder::CopyFromTextureToBuffer(DKTexture* src, const TextureOr
                                1, &region);
     });
     encoder->commands.Add(command);
-    encoder->textures.Add(src);
-    encoder->buffers.Add(dst);
+    encoder->textures.Add(const_cast<DKTexture*>(src));
+    encoder->buffers.Add(const_cast<DKGpuBuffer*>(dst));
 }
 
-void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureOrigin& srcOffset,
-                                                  DKTexture* dst, const TextureOrigin& dstOffset,
+void CopyCommandEncoder::CopyFromTextureToTexture(const DKTexture* src,
+                                                  const TextureOrigin& srcOffset,
+                                                  const DKTexture* dst,
+                                                  const TextureOrigin& dstOffset,
                                                   const Size& size)
 {
-    DKASSERT_DEBUG(dynamic_cast<ImageView*>(src) != nullptr);
-    DKASSERT_DEBUG(dynamic_cast<ImageView*>(dst) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const ImageView*>(src) != nullptr);
+    DKASSERT_DEBUG(dynamic_cast<const ImageView*>(dst) != nullptr);
 
-    Image* srcImage = static_cast<ImageView*>(src)->image;
-    Image* dstImage = static_cast<ImageView*>(dst)->image;
+    const Image* srcImage = static_cast<const ImageView*>(src)->image;
+    const Image* dstImage = static_cast<const ImageView*>(dst)->image;
 
     DKASSERT_DEBUG(srcImage && srcImage->image);
     DKASSERT_DEBUG(dstImage && dstImage->image);
@@ -385,14 +393,14 @@ void CopyCommandEncoder::CopyFromTextureToTexture(DKTexture* src, const TextureO
                        1, &region);
     });
     encoder->commands.Add(command);
-    encoder->textures.Add(src);
-    encoder->textures.Add(dst);
+    encoder->textures.Add(const_cast<DKTexture*>(src));
+    encoder->textures.Add(const_cast<DKTexture*>(dst));
 }
 
-void CopyCommandEncoder::FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value)
+void CopyCommandEncoder::FillBuffer(const DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<BufferView*>(buffer) != nullptr);
-    Buffer* buf = static_cast<BufferView*>(buffer)->buffer;
+    DKASSERT_DEBUG(dynamic_cast<const BufferView*>(buffer) != nullptr);
+    const Buffer* buf = static_cast<const BufferView*>(buffer)->buffer;
     DKASSERT_DEBUG(buf && buf->buffer);
 
     size_t bufferLength = buf->Length();
@@ -410,13 +418,13 @@ void CopyCommandEncoder::FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t l
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
         vkCmdFillBuffer(commandBuffer,
-                        static_cast<Buffer*>(buf)->buffer,
+                        buf->buffer,
                         static_cast<VkDeviceSize>(offset),
                         static_cast<VkDeviceSize>(length),
                         data);
     });
     encoder->commands.Add(command);
-    encoder->buffers.Add(buffer);
+    encoder->buffers.Add(const_cast<DKGpuBuffer*>(buffer));
 }
 
 void CopyCommandEncoder::SetupSubresource(const TextureOrigin& origin,
