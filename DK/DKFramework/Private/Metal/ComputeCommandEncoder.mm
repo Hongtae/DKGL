@@ -68,24 +68,24 @@ void ComputeCommandEncoder::EndEncoding()
 	encoder = NULL;
 }
 
-void ComputeCommandEncoder::WaitEvent(DKGpuEvent* event)
+void ComputeCommandEncoder::WaitEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->events.Add(event);
-    encoder->waitEvents.Insert(static_cast<Event*>(event));
+    DKASSERT_DEBUG(dynamic_cast<const Event*>(event));
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
+    encoder->waitEvents.Insert(const_cast<Event*>(static_cast<const Event*>(event)));
 }
 
-void ComputeCommandEncoder::SignalEvent(DKGpuEvent* event)
+void ComputeCommandEncoder::SignalEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->events.Add(event);
-    encoder->signalEvents.Insert(static_cast<Event*>(event));
+    DKASSERT_DEBUG(dynamic_cast<const Event*>(event));
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
+    encoder->signalEvents.Insert(const_cast<Event*>(static_cast<const Event*>(event)));
 }
 
-void ComputeCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+void ComputeCommandEncoder::WaitSemaphoreValue(const DKGpuSemaphore* semaphore, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
-    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(semaphore));
+    Semaphore* s = const_cast<Semaphore*>(static_cast<const Semaphore*>(semaphore));
     if (auto p = encoder->waitSemaphores.Find(s); p)
     {
         if (value > p->value)
@@ -94,14 +94,14 @@ void ComputeCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* semaphore, uint64
     else
     {
         encoder->waitSemaphores.Insert(s, value);
-        encoder->semaphores.Add(semaphore);
+        encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(semaphore));
     }
 }
 
-void ComputeCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+void ComputeCommandEncoder::SignalSemaphoreValue(const DKGpuSemaphore* semaphore, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
-    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(semaphore));
+    Semaphore* s = const_cast<Semaphore*>(static_cast<const Semaphore*>(semaphore));
     if (auto p = encoder->signalSemaphores.Find(s); p)
     {
         if (value > p->value)
@@ -110,15 +110,15 @@ void ComputeCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* semaphore, uint
     else
     {
         encoder->signalSemaphores.Insert(s, value);
-        encoder->semaphores.Add(semaphore);
+        encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(semaphore));
     }
 }
 
-void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)
+void ComputeCommandEncoder::SetResources(uint32_t set, const DKShaderBindingSet* binds)
 {
     DKASSERT_DEBUG(!IsCompleted());
-    DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(binds));
-    DKObject<ShaderBindingSet> bs = static_cast<ShaderBindingSet*>(binds);
+    DKASSERT_DEBUG(dynamic_cast<const ShaderBindingSet*>(binds));
+    DKObject<ShaderBindingSet> bs = const_cast<ShaderBindingSet*>(static_cast<const ShaderBindingSet*>(binds));
 
     DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
     {
@@ -164,11 +164,11 @@ void ComputeCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds
     encoder->commands.Add(command);
 }
 
-void ComputeCommandEncoder::SetComputePipelineState(DKComputePipelineState* ps)
+void ComputeCommandEncoder::SetComputePipelineState(const DKComputePipelineState* ps)
 {
     DKASSERT_DEBUG(!IsCompleted());
-    DKASSERT_DEBUG(dynamic_cast<ComputePipelineState*>(ps));
-    DKObject<ComputePipelineState> pipeline = static_cast<ComputePipelineState*>(ps);
+    DKASSERT_DEBUG(dynamic_cast<const ComputePipelineState*>(ps));
+    DKObject<ComputePipelineState> pipeline = const_cast<ComputePipelineState*>(static_cast<const ComputePipelineState*>(ps));
 
     DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
     {

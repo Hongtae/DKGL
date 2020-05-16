@@ -31,17 +31,17 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
 		// DKRenderCommandEncoder overrides
-        void WaitEvent(DKGpuEvent*) override;
-        void SignalEvent(DKGpuEvent*) override;
-        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
-        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void WaitEvent(const DKGpuEvent*) override;
+        void SignalEvent(const DKGpuEvent*) override;
+        void WaitSemaphoreValue(const DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(const DKGpuSemaphore*, uint64_t) override;
 
-        void SetResources(uint32_t set, DKShaderBindingSet*) override;
+        void SetResources(uint32_t set, const DKShaderBindingSet*) override;
 		void SetViewport(const DKViewport&) override;
-		void SetRenderPipelineState(DKRenderPipelineState*) override;
-		void SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index) override;
-		void SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count) override;
-		void SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type) override;
+		void SetRenderPipelineState(const DKRenderPipelineState*) override;
+		void SetVertexBuffer(const DKGpuBuffer* buffer, size_t offset, uint32_t index) override;
+		void SetVertexBuffers(const DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count) override;
+		void SetIndexBuffer(const DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type) override;
 
 		void Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance) override;
 		void DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance) override;

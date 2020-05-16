@@ -29,13 +29,13 @@ Event::~Event()
     [event release];
 }
 
-uint64_t Event::NextWaitValue()
+uint64_t Event::NextWaitValue() const
 {
     auto n = waitValue.Increment();
     return n+1;
 }
 
-uint64_t Event::NextSignalValue()
+uint64_t Event::NextSignalValue() const
 {
     auto n = signalValue.Increment();
     return n+1;

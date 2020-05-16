@@ -1518,6 +1518,14 @@
 		84B10B69218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
 		84B10B6A218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
 		84B10B6B218359020073EF38 /* ComputePipelineState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B10B63218359010073EF38 /* ComputePipelineState.h */; };
+		84B4943824701476008B0AC6 /* DKMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B4943624701476008B0AC6 /* DKMaterial.cpp */; };
+		84B4943924701476008B0AC6 /* DKMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B4943624701476008B0AC6 /* DKMaterial.cpp */; };
+		84B4943A24701476008B0AC6 /* DKMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B4943624701476008B0AC6 /* DKMaterial.cpp */; };
+		84B4943B24701476008B0AC6 /* DKMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B4943624701476008B0AC6 /* DKMaterial.cpp */; };
+		84B4943C24701476008B0AC6 /* DKBlendState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B4943724701476008B0AC6 /* DKBlendState.h */; };
+		84B4943D24701476008B0AC6 /* DKBlendState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B4943724701476008B0AC6 /* DKBlendState.h */; };
+		84B4943E24701476008B0AC6 /* DKBlendState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B4943724701476008B0AC6 /* DKBlendState.h */; };
+		84B4943F24701476008B0AC6 /* DKBlendState.h in Headers */ = {isa = PBXBuildFile; fileRef = 84B4943724701476008B0AC6 /* DKBlendState.h */; };
 		84B673E51EF7C3210058F553 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E41EF7C3210058F553 /* OpenAL.framework */; };
 		84B673E71EF7C33F0058F553 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E61EF7C33F0058F553 /* AppKit.framework */; };
 		84B673E91EF7C3570058F553 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B673E81EF7C3570058F553 /* Metal.framework */; };
@@ -2579,6 +2587,8 @@
 		84B43D4F15D0F9A700C7A681 /* DKRationalNumber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = DKRationalNumber.cpp; sourceTree = "<group>"; };
 		84B43D5015D0F9A700C7A681 /* DKRationalNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKRationalNumber.h; sourceTree = "<group>"; };
 		84B43E0015D1001600C7A681 /* DKMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKMath.h; sourceTree = "<group>"; };
+		84B4943624701476008B0AC6 /* DKMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DKMaterial.cpp; sourceTree = "<group>"; };
+		84B4943724701476008B0AC6 /* DKBlendState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKBlendState.h; sourceTree = "<group>"; };
 		84B673E41EF7C3210058F553 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		84B673E61EF7C33F0058F553 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		84B673E81EF7C3570058F553 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -2628,6 +2638,14 @@
 		84D3E6871637071F00337848 /* DKSoftBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DKSoftBody.h; sourceTree = "<group>"; };
 		84D59424221131FD003C01EE /* DeviceMemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DeviceMemory.cpp; sourceTree = "<group>"; };
 		84D59425221131FE003C01EE /* DeviceMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceMemory.h; sourceTree = "<group>"; };
+		84D5A2692470144600F35D18 /* DKBlendState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DKBlendState.cpp; sourceTree = "<group>"; };
+		84D5A26A2470144600F35D18 /* DKGraphicsDeviceContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKGraphicsDeviceContext.h; sourceTree = "<group>"; };
+		84D5A26B2470144600F35D18 /* DKMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKMesh.h; sourceTree = "<group>"; };
+		84D5A26C2470144600F35D18 /* DKMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DKMesh.cpp; sourceTree = "<group>"; };
+		84D5A26D2470144700F35D18 /* DKCommonShapeDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKCommonShapeDrawer.h; sourceTree = "<group>"; };
+		84D5A26E2470144700F35D18 /* DKCommonShapeDrawer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DKCommonShapeDrawer.cpp; sourceTree = "<group>"; };
+		84D5A26F2470144700F35D18 /* DKGraphicsDeviceContext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DKGraphicsDeviceContext.cpp; sourceTree = "<group>"; };
+		84D5A2702470144700F35D18 /* DKMaterial.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKMaterial.h; sourceTree = "<group>"; };
 		84D762901EC3497D00158097 /* OpenAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenAL.h; sourceTree = "<group>"; };
 		84D7C5A51EF820D000CF2D51 /* RenderPipelineState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderPipelineState.h; sourceTree = "<group>"; };
 		84D7C5A61EF820D000CF2D51 /* RenderPipelineState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RenderPipelineState.mm; sourceTree = "<group>"; };
@@ -3440,30 +3458,40 @@
 		84F16DBD1E1581E60013DD29 /* DKFramework_WIP */ = {
 			isa = PBXGroup;
 			children = (
-				84A1E528141DD4B70091D2C0 /* DKDynamicsScene.cpp */,
-				84A1E529141DD4B70091D2C0 /* DKDynamicsScene.h */,
-				84A1E560141DD4B70091D2C0 /* DKScene.cpp */,
-				84A1E561141DD4B70091D2C0 /* DKScene.h */,
+				84D5A2692470144600F35D18 /* DKBlendState.cpp */,
+				84B4943724701476008B0AC6 /* DKBlendState.h */,
 				666ECA5F1DB1703600354463 /* DKCommandBuffer.h */,
 				8497052E1E28CDEB00E34F5C /* DKCommandEncoder.h */,
 				84F16DBE1E1584740013DD29 /* DKCommandQueue.h */,
+				84D5A26E2470144700F35D18 /* DKCommonShapeDrawer.cpp */,
+				84D5A26D2470144700F35D18 /* DKCommonShapeDrawer.h */,
 				666ECA601DB1703600354463 /* DKComputeCommandEncoder.h */,
 				848566D01E214DCB0011B53B /* DKComputePipeline.h */,
 				666ECA5E1DB1703600354463 /* DKCopyCommandEncoder.h */,
 				848566AC1E2004580011B53B /* DKDepthStencil.h */,
+				84A1E528141DD4B70091D2C0 /* DKDynamicsScene.cpp */,
+				84A1E529141DD4B70091D2C0 /* DKDynamicsScene.h */,
 				849EF8942033453800160DD3 /* DKGpuBuffer.cpp */,
 				849EF8932033453700160DD3 /* DKGpuBuffer.h */,
 				849EF897203346AC00160DD3 /* DKGpuResource.h */,
 				666ECA631DB1703600354463 /* DKGraphicsDevice.cpp */,
 				666ECA641DB1703600354463 /* DKGraphicsDevice.h */,
+				84D5A26F2470144700F35D18 /* DKGraphicsDeviceContext.cpp */,
+				84D5A26A2470144600F35D18 /* DKGraphicsDeviceContext.h */,
 				84D883511E3A653B00478725 /* DKImage.cpp */,
 				84D883521E3A653B00478725 /* DKImage.h */,
+				84B4943624701476008B0AC6 /* DKMaterial.cpp */,
+				84D5A2702470144700F35D18 /* DKMaterial.h */,
+				84D5A26C2470144600F35D18 /* DKMesh.cpp */,
+				84D5A26B2470144600F35D18 /* DKMesh.h */,
 				84F224C01EE503960053F08B /* DKPipelineReflection.h */,
 				846C53A61E40802100B2FA6F /* DKPixelFormat.h */,
 				666ECA611DB1703600354463 /* DKRenderCommandEncoder.h */,
 				848566A51E1FFC020011B53B /* DKRenderPass.h */,
 				848566A71E1FFE390011B53B /* DKRenderPipeline.h */,
 				848566CE1E214B330011B53B /* DKSampler.h */,
+				84A1E560141DD4B70091D2C0 /* DKScene.cpp */,
+				84A1E561141DD4B70091D2C0 /* DKScene.h */,
 				84F224C21EE503960053F08B /* DKShader.cpp */,
 				84F224C31EE503960053F08B /* DKShader.h */,
 				84128E3C21B516C40029C463 /* DKShaderBindingSet.h */,
@@ -3527,6 +3555,7 @@
 				846A2D6A1E40F29F009F117C /* GraphicsDevice.h in Headers */,
 				84A81DFF224B59C40060BCBB /* ImageView.h in Headers */,
 				840CA5E51928952800689BB6 /* DKPoint.h in Headers */,
+				84B4943F24701476008B0AC6 /* DKBlendState.h in Headers */,
 				84768FD81B1D981D0006DD7C /* DKBitArray.h in Headers */,
 				8436CDCC1928A78900F18892 /* DKData.h in Headers */,
 				8447CB621E37A6DE00E02637 /* DKComputePipeline.h in Headers */,
@@ -3867,6 +3896,7 @@
 				84798C2D19E51E7F009378A6 /* DKAudioPlayer.h in Headers */,
 				84798C8219E51E80009378A6 /* DKVector4.h in Headers */,
 				840A33DC1EEECE61002F57C5 /* ShaderFunction.h in Headers */,
+				84B4943E24701476008B0AC6 /* DKBlendState.h in Headers */,
 				84798C8D19E51E96009378A6 /* DKAllocator.h in Headers */,
 				84798C4D19E51E7F009378A6 /* DKLinearTransform3.h in Headers */,
 				84798C7F19E51E80009378A6 /* DKVariant.h in Headers */,
@@ -4108,6 +4138,7 @@
 				84211D131665E89700B9B9A2 /* DKBoxShape.h in Headers */,
 				84211D141665E89700B9B9A2 /* DKCamera.h in Headers */,
 				84211D151665E89700B9B9A2 /* DKCapsuleShape.h in Headers */,
+				84B4943C24701476008B0AC6 /* DKBlendState.h in Headers */,
 				84211D171665E89700B9B9A2 /* DKCollisionShape.h in Headers */,
 				840A33D81EEECE5E002F57C5 /* ShaderFunction.h in Headers */,
 				84211D181665E89700B9B9A2 /* DKColor.h in Headers */,
@@ -4264,6 +4295,7 @@
 				84211C2C1665E86300B9B9A2 /* DKFence.h in Headers */,
 				84211C2D1665E86300B9B9A2 /* DKFile.h in Headers */,
 				84211C2E1665E86300B9B9A2 /* DKFileMap.h in Headers */,
+				84B4943D24701476008B0AC6 /* DKBlendState.h in Headers */,
 				84211C2F1665E86300B9B9A2 /* DKFunction.h in Headers */,
 				84211C311665E86300B9B9A2 /* DKHash.h in Headers */,
 				84211C321665E86300B9B9A2 /* DKInvocation.h in Headers */,
@@ -4924,6 +4956,7 @@
 				8436CE071928A78900F18892 /* DKStringUE.cpp in Sources */,
 				840CA5841928952800689BB6 /* DKAffineTransform2.cpp in Sources */,
 				840CA5C11928952800689BB6 /* DKGeneric6DofSpringConstraint.cpp in Sources */,
+				84B4943B24701476008B0AC6 /* DKMaterial.cpp in Sources */,
 				8436CDE71928A78900F18892 /* DKMemory.cpp in Sources */,
 				840CA6001928952800689BB6 /* DKScene.cpp in Sources */,
 				840CA5A01928952800689BB6 /* DKCollisionObject.cpp in Sources */,
@@ -5140,6 +5173,7 @@
 				84D59428221131FE003C01EE /* DeviceMemory.cpp in Sources */,
 				84798BD519E51E48009378A6 /* DKGeneric6DofSpringConstraint.cpp in Sources */,
 				84A81E0E224B59C40060BCBB /* BufferView.cpp in Sources */,
+				84B4943A24701476008B0AC6 /* DKMaterial.cpp in Sources */,
 				847A4FC92052D86E001225B0 /* RenderPipelineState.mm in Sources */,
 				84798BFE19E51E48009378A6 /* DKSpline.cpp in Sources */,
 				84A81DFA224B59C40060BCBB /* ImageView.cpp in Sources */,
@@ -5316,6 +5350,7 @@
 				84D59426221131FE003C01EE /* DeviceMemory.cpp in Sources */,
 				84211B861665E7FD00B9B9A2 /* DKConeShape.cpp in Sources */,
 				84A81E0C224B59C40060BCBB /* BufferView.cpp in Sources */,
+				84B4943824701476008B0AC6 /* DKMaterial.cpp in Sources */,
 				84211B881665E7FD00B9B9A2 /* DKConeTwistConstraint.cpp in Sources */,
 				84211B8A1665E7FD00B9B9A2 /* DKConstraint.cpp in Sources */,
 				84A81DF8224B59C40060BCBB /* ImageView.cpp in Sources */,
@@ -5451,6 +5486,7 @@
 				840C3E17178D396D00F57A8D /* DKTimer.cpp in Sources */,
 				840C3E18178D396D00F57A8D /* DKTypeInfo.cpp in Sources */,
 				84D7C5A81EF820D000CF2D51 /* RenderPipelineState.mm in Sources */,
+				84B4943924701476008B0AC6 /* DKMaterial.cpp in Sources */,
 				84D8AF6D1E0027B9005059F7 /* View.mm in Sources */,
 				84211AA81665E7FC00B9B9A2 /* DKAabb.cpp in Sources */,
 				840C3E04178D396D00F57A8D /* DKFence.cpp in Sources */,

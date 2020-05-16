@@ -87,24 +87,24 @@ void RenderCommandEncoder::EndEncoding()
 	encoder = NULL; // release data
 }
 
-void RenderCommandEncoder::WaitEvent(DKGpuEvent* event)
+void RenderCommandEncoder::WaitEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->events.Add(event);
-    encoder->waitEvents.Insert(static_cast<Event*>(event));
+    DKASSERT_DEBUG(dynamic_cast<const Event*>(event));
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
+    encoder->waitEvents.Insert(const_cast<Event*>(static_cast<const Event*>(event)));
 }
 
-void RenderCommandEncoder::SignalEvent(DKGpuEvent* event)
+void RenderCommandEncoder::SignalEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Event*>(event));
-    encoder->events.Add(event);
-    encoder->signalEvents.Insert(static_cast<Event*>(event));
+    DKASSERT_DEBUG(dynamic_cast<const Event*>(event));
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
+    encoder->signalEvents.Insert(const_cast<Event*>(static_cast<const Event*>(event)));
 }
 
-void RenderCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+void RenderCommandEncoder::WaitSemaphoreValue(const DKGpuSemaphore* semaphore, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
-    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(semaphore));
+    Semaphore* s = const_cast<Semaphore*>(static_cast<const Semaphore*>(semaphore));
     if (auto p = encoder->waitSemaphores.Find(s); p)
     {
         if (value > p->value)
@@ -113,14 +113,14 @@ void RenderCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* semaphore, uint64_
     else
     {
         encoder->waitSemaphores.Insert(s, value);
-        encoder->semaphores.Add(semaphore);
+        encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(semaphore));
     }
 }
 
-void RenderCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* semaphore, uint64_t value)
+void RenderCommandEncoder::SignalSemaphoreValue(const DKGpuSemaphore* semaphore, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(semaphore));
-    Semaphore* s = static_cast<Semaphore*>(semaphore);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(semaphore));
+    Semaphore* s = const_cast<Semaphore*>(static_cast<const Semaphore*>(semaphore));
     if (auto p = encoder->signalSemaphores.Find(s); p)
     {
         if (value > p->value)
@@ -129,15 +129,15 @@ void RenderCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* semaphore, uint6
     else
     {
         encoder->signalSemaphores.Insert(s, value);
-        encoder->semaphores.Add(semaphore);
+        encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(semaphore));
     }
 }
 
-void RenderCommandEncoder::SetResources(uint32_t set, DKShaderBindingSet* binds)
+void RenderCommandEncoder::SetResources(uint32_t set, const DKShaderBindingSet* binds)
 {
     DKASSERT_DEBUG(!IsCompleted());
-    DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(binds));
-    DKObject<ShaderBindingSet> bs = static_cast<ShaderBindingSet*>(binds);
+    DKASSERT_DEBUG(dynamic_cast<const ShaderBindingSet*>(binds));
+    DKObject<ShaderBindingSet> bs = const_cast<ShaderBindingSet*>(static_cast<const ShaderBindingSet*>(binds));
 
     DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, EncodingState& state)
     {
@@ -229,11 +229,11 @@ void RenderCommandEncoder::SetViewport(const DKViewport& v)
 	encoder->commands.Add(command);
 }
 
-void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
+void RenderCommandEncoder::SetRenderPipelineState(const DKRenderPipelineState* ps)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	DKASSERT_DEBUG(dynamic_cast<RenderPipelineState*>(ps));
-	DKObject<RenderPipelineState> pipeline = static_cast<RenderPipelineState*>(ps);
+	DKASSERT_DEBUG(dynamic_cast<const RenderPipelineState*>(ps));
+	DKObject<RenderPipelineState> pipeline = const_cast<RenderPipelineState*>(static_cast<const RenderPipelineState*>(ps));
 
 	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, EncodingState& state)
 	{
@@ -245,11 +245,11 @@ void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
 	encoder->commands.Add(command);
 }
 
-void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
+void RenderCommandEncoder::SetVertexBuffer(const DKGpuBuffer* buffer, size_t offset, uint32_t index)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer));
-	DKObject<Buffer> vertexBuffer = static_cast<Buffer*>(buffer);
+	DKASSERT_DEBUG(dynamic_cast<const Buffer*>(buffer));
+	DKObject<Buffer> vertexBuffer = const_cast<Buffer*>(static_cast<const Buffer*>(buffer));
 
 	//GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(this->buffer->Queue()->Device());
 
@@ -263,7 +263,7 @@ void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, u
 	encoder->commands.Add(command);
 }
 
-void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
+void RenderCommandEncoder::SetVertexBuffers(const DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
 {
 	DKASSERT_DEBUG(!IsCompleted());
 	if (count > 0)
@@ -276,9 +276,9 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 		bufferOffsets.Reserve(count);
 		for (size_t i = 0; i < count; ++i)
 		{
-			DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffers[i]));
-			DKObject<Buffer> vb = static_cast<Buffer*>(buffers[i]);
-			objects.Add(vb);
+			DKASSERT_DEBUG(dynamic_cast<const Buffer*>(buffers[i]));
+			const Buffer* vb = static_cast<const Buffer*>(buffers[i]);
+			objects.Add(const_cast<Buffer*>(vb));
 			vertexBuffers.Add(vb->buffer);
 			bufferOffsets.Add(offsets[i]);
 		}
@@ -290,11 +290,11 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 	}
 }
 
-void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* buffer, size_t offset, DKIndexType type)
+void RenderCommandEncoder::SetIndexBuffer(const DKGpuBuffer* buffer, size_t offset, DKIndexType type)
 {
 	DKASSERT_DEBUG(!IsCompleted());
-	DKASSERT_DEBUG(dynamic_cast<Buffer*>(buffer));
-	DKObject<Buffer> indexBuffer = static_cast<Buffer*>(buffer);
+	DKASSERT_DEBUG(dynamic_cast<const Buffer*>(buffer));
+	DKObject<Buffer> indexBuffer = const_cast<Buffer*>(static_cast<const Buffer*>(buffer));
 	MTLIndexType indexType;
 	switch (type)
 	{

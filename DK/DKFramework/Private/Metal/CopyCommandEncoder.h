@@ -29,24 +29,32 @@ namespace DKFramework::Private::Metal
 		DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
         // DKCopyCommandEncoder
-        void WaitEvent(DKGpuEvent*) override;
-        void SignalEvent(DKGpuEvent*) override;
-        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
-        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void WaitEvent(const DKGpuEvent*) override;
+        void SignalEvent(const DKGpuEvent*) override;
+        void WaitSemaphoreValue(const DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(const DKGpuSemaphore*, uint64_t) override;
 
-        void CopyFromBufferToBuffer(DKGpuBuffer* src, size_t srcOffset,
-                                    DKGpuBuffer* dst, size_t dstOffset,
+        void CopyFromBufferToBuffer(const DKGpuBuffer* src,
+                                    size_t srcOffset,
+                                    const DKGpuBuffer* dst,
+                                    size_t dstOffset,
                                     size_t size) override;
-        void CopyFromBufferToTexture(DKGpuBuffer* src, const BufferImageOrigin& srcOffset,
-                                     DKTexture* dst, const TextureOrigin& dstOffset,
+        void CopyFromBufferToTexture(const DKGpuBuffer* src,
+                                     const BufferImageOrigin& srcOffset,
+                                     const DKTexture* dst,
+                                     const TextureOrigin& dstOffset,
                                      const Size& size) override;
-        void CopyFromTextureToBuffer(DKTexture* src, const TextureOrigin& srcOffset,
-                                     DKGpuBuffer* dst, const BufferImageOrigin& dstOffset,
+        void CopyFromTextureToBuffer(const DKTexture* src,
+                                     const TextureOrigin& srcOffset,
+                                     const DKGpuBuffer* dst,
+                                     const BufferImageOrigin& dstOffset,
                                      const Size& size) override;
-        void CopyFromTextureToTexture(DKTexture* src, const TextureOrigin& srcOffset,
-                                      DKTexture* dst, const TextureOrigin& dstOffset,
+        void CopyFromTextureToTexture(const DKTexture* src,
+                                      const TextureOrigin& srcOffset,
+                                      const DKTexture* dst,
+                                      const TextureOrigin& dstOffset,
                                       const Size& size) override;
-        void FillBuffer(DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value) override;
+        void FillBuffer(const DKGpuBuffer* buffer, size_t offset, size_t length, uint8_t value) override;
 
 	private:
         struct EncodingState
