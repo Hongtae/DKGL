@@ -73,6 +73,7 @@ namespace DKFramework::Private::Vulkan
 		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() override;
 		DKObject<DKCopyCommandEncoder> CreateCopyCommandEncoder() override;
 
+        void AddCompletedHandler(DKOperation*) override;
 		bool Commit() override;
 
 		DKCommandQueue* Queue() override { return queue; };
@@ -88,14 +89,15 @@ namespace DKFramework::Private::Vulkan
 
         DKArray<VkSubmitInfo>           submitInfos;
         DKArray<VkCommandBuffer>        submitCommandBuffers;
-        DKArray<VkSemaphore>			submitWaitSemaphores;
+        DKArray<VkSemaphore>	            submitWaitSemaphores;
         DKArray<VkPipelineStageFlags>	submitWaitStageMasks;
-        DKArray<VkSemaphore>			submitSignalSemaphores;
+        DKArray<VkSemaphore>            submitSignalSemaphores;
 
         DKArray<uint64_t>               submitWaitTimelineSemaphoreValues;
         DKArray<uint64_t>               submitSignalTimelineSemaphoreValues;
         DKArray<VkTimelineSemaphoreSubmitInfoKHR> submitTimelineSemaphoreInfos;
 
+        DKArray<DKObject<DKOperation>> completedHandlers;
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

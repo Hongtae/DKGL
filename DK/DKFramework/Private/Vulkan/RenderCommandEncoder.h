@@ -48,8 +48,8 @@ namespace DKFramework::Private::Vulkan
 
             DKRenderPassDescriptor renderPassDescriptor;
 
-            VkFramebuffer		framebuffer;
-            VkRenderPass		renderPass;
+            VkFramebuffer framebuffer;
+            VkRenderPass	 renderPass;
 
             class CommandBuffer* commandBuffer;
             DKArray<DKObject<EncoderCommand>> commands;

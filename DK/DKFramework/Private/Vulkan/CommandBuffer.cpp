@@ -66,6 +66,14 @@ DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
     return encoder.SafeCast<DKCopyCommandEncoder>();
 }
 
+void CommandBuffer::AddCompletedHandler(DKOperation* op)
+{
+    if (op)
+    {
+        completedHandlers.Add(op);
+    }
+}
+
 bool CommandBuffer::Commit()
 {
     GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(queue->Device());
@@ -229,6 +237,8 @@ bool CommandBuffer::Commit()
                                            DKFunction([](DKObject<CommandBuffer> cb) mutable
         {
             DKASSERT_DEBUG(cb);
+            for (const DKOperation* op : cb->completedHandlers)
+                op->Perform();
             cb = nullptr;
         })->Invocation(this));
         return result;

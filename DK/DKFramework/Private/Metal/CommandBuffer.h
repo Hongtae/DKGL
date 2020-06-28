@@ -33,6 +33,7 @@ namespace DKFramework::Private::Metal
 		DKObject<DKComputeCommandEncoder> CreateComputeCommandEncoder() override;
 		DKObject<DKCopyCommandEncoder> CreateCopyCommandEncoder() override;
 
+        void AddCompletedHandler(DKOperation*) override;
 		bool Commit() override;
 		DKCommandQueue* Queue() override { return queue; };
 
@@ -41,6 +42,7 @@ namespace DKFramework::Private::Metal
 	private:
 		DKObject<DKCommandQueue> queue;
 		DKArray<DKObject<CommandEncoder>> encoders;
+        DKArray<DKObject<DKOperation>> completedHandlers;
 	};
 }
 #endif //#if DKGL_ENABLE_METAL
