@@ -34,6 +34,37 @@ namespace DKFramework::Private::Win32
 {
     // declared in AppEventLoop.cpp
     extern DKAtomicNumber32 numActiveWindows;
+
+	float DPIScaleForWindow(HWND hwnd)
+	{
+		static UINT (*getDpiForWindow)(HWND) = []
+		{
+			HMODULE module = ::LoadLibraryW(L"User32.dll");
+			if (module)
+				return reinterpret_cast<UINT(*)(HWND)>(::GetProcAddress(module, "GetDpiForWindow"));
+			return (UINT(*)(HWND))nullptr;
+		}();
+
+        float scale = 1.0f;
+		if (getDpiForWindow)
+		{
+			UINT dpi = getDpiForWindow(hwnd);
+			if (dpi)
+				scale = float(dpi) / 96.0f;
+		}
+        else
+        {
+            HMONITOR monitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            if (monitor)
+            {
+                UINT xDPI = 96;
+                UINT yDPI = 96;
+                if (::GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &xDPI, &yDPI) == S_OK)
+                    scale = float(xDPI) / 96.0f;
+            }
+        }
+        return scale;
+	}
 }
 using namespace DKFramework;
 using namespace DKFramework::Private::Win32;
@@ -156,17 +187,8 @@ bool Window::Create(const DKString& title, uint32_t style)
 	this->contentRect = DKRect(rc1.left, rc1.top, rc1.right - rc1.left, rc1.bottom - rc1.top);
 	this->windowRect = DKRect(rc2.left, rc2.top, rc2.right - rc2.left, rc2.bottom - rc2.top);
 
-	double scaleFactor = 1.0;
-	HMONITOR monitor = ::MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
-	if (monitor)
-	{
-		UINT xDPI = 96;
-		UINT yDPI = 96;
-		if (::GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &xDPI, &yDPI) == S_OK)
-			scaleFactor = double(xDPI) / 96.0;
-	}
-	this->contentScaleFactor = scaleFactor;
-	
+	this->contentScaleFactor = DPIScaleForWindow(hWnd);
+
 	instance->PostWindowEvent(
 	{
 		WindowEvent::WindowCreated,
@@ -193,16 +215,7 @@ bool Window::CreateProxy(void* systemHandle)
 		this->contentRect = DKRect(rc1.left, rc1.top, rc1.right - rc1.left, rc1.bottom - rc1.top);
 		this->windowRect = DKRect(rc2.left, rc2.top, rc2.right - rc2.left, rc2.bottom - rc2.top);
 
-		double scaleFactor = 1.0;
-		HMONITOR monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
-		if (monitor)
-		{
-			UINT xDPI = 96;
-			UINT yDPI = 96;
-			if (GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &xDPI, &yDPI) == S_OK)
-				scaleFactor = double(xDPI) / 96.0;
-		}
-		this->contentScaleFactor = scaleFactor;
+		this->contentScaleFactor = DPIScaleForWindow(hWnd);
 		
 		instance->PostWindowEvent(
 		{
@@ -229,15 +242,7 @@ void Window::UpdateProxy()
 		RECT client, window;
 		::GetClientRect(hWnd, &client);
 
-		double scaleFactor = this->contentScaleFactor;
-		HMONITOR monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
-		if (monitor)
-		{
-			UINT xDPI = 96;
-			UINT yDPI = 96;
-			if (GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &xDPI, &yDPI) == S_OK)
-				scaleFactor = double(xDPI) / 96.0;
-		}
+		float scaleFactor = DPIScaleForWindow(hWnd);
 
 		LONG width = client.right - client.left;
 		LONG height = client.bottom - client.top;
