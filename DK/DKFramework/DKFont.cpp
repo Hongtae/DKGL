@@ -2,7 +2,7 @@
 //  File: DKFont.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2020 Hongtae Kim. All rights reserved.
 //
 
 #include <ft2build.h>
@@ -174,7 +174,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	data.advance = DKSize(0,0);
 	data.position = DKPoint(0,0);
 	data.texture = NULL;
-	data.rect = DKRect(0,0,0,0);
+	data.frame = DKRect(0,0,0,0);
 
 	unsigned int index = FT_Get_Char_Index(face, c);
 	// Loading font.
@@ -245,8 +245,8 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			{
 				// x_left: bitmap starting point from origin
 				// y_top: height from origin
-				data.position = DKPoint(x_left, y_top - ftBitmap.rows); 
-				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.rect);
+				data.position = DKPoint(x_left, y_top); 
+				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.frame);
 			}
 
 			DKFree(ftBitmap.buffer);
@@ -265,8 +265,8 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				FT_BitmapGlyph  glyph_bitmap = (FT_BitmapGlyph)glyph;
 				// bitmap_left: bitmap offset from origin
 				// bitmap_top: height from origin
-				data.position = DKPoint(glyph_bitmap->left, glyph_bitmap->top - glyph_bitmap->bitmap.rows);
-				data.texture = CacheGlyphTexture(glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows, glyph_bitmap->bitmap.buffer, data.rect);
+				data.position = DKPoint(glyph_bitmap->left, glyph_bitmap->top);
+				data.texture = CacheGlyphTexture(glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows, glyph_bitmap->bitmap.buffer, data.frame);
 			}
 			FT_Done_Glyph(glyph);
 		}
@@ -303,8 +303,8 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 						outer.buffer[ (y + offsetY) * outer.width + x + offsetX] = Max<int>(value1 - value2, 0);
 					}
 				}
-				data.position = DKPoint(face->glyph->bitmap_left - outline, face->glyph->bitmap_top - face->glyph->bitmap.rows - outline);
-				data.texture = CacheGlyphTexture(outer.width, outer.rows, outer.buffer, data.rect);
+				data.position = DKPoint(face->glyph->bitmap_left - outline, face->glyph->bitmap_top - outline);
+				data.texture = CacheGlyphTexture(outer.width, outer.rows, outer.buffer, data.frame);
 
 				FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &inner);
 				FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &outer);
@@ -312,8 +312,8 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			else
 			{
 				FT_Bitmap_Embolden(Private::FTLibrary::GetLibrary(), &face->glyph->bitmap, boldStrength, boldStrength);
-				data.position = DKPoint(face->glyph->bitmap_left, face->glyph->bitmap_top - face->glyph->bitmap.rows + embolden); 
-				data.texture = CacheGlyphTexture(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, data.rect);
+				data.position = DKPoint(face->glyph->bitmap_left, face->glyph->bitmap_top + embolden); 
+				data.texture = CacheGlyphTexture(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, data.frame);
 			}
 		}
 	}
@@ -322,77 +322,159 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	return &glyphMap.Value(c);
 }
 
-#if 0
-DKTexture2D* DKFont::CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const
+DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DKRect& rect) const
 {
-	// keep padding between each glyphs.
-	if (width <= 0 || height <= 0)
-	{
-		rect = DKRect(0,0,0,0);
-		return NULL;
-	}
+    // keep padding between each glyphs.
+    if (width <= 0 || height <= 0)
+    {
+        rect = DKRect(0, 0, 0, 0);
+        return nullptr;
+    }
 
-	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
+    FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 
-	DKObject<DKTexture2D> tex = NULL;
+    DKObject<DKTexture> tex = nullptr;
 
-	char* buff = (char*)DKMalloc(width * height);
-	for (int i = 0; i < height; i++)
-	{
-		memcpy(&buff[i * width] , &((char*)data)[(height - i -1) * width], width);
-	}
+    auto updateTexture = [](DKTexture* texture, const DKRect& rect, const void* data)
+    {
+        uint32_t width = floorf(rect.size.width + 0.5f);
+        uint32_t height = floorf(rect.size.height + 0.5f);
 
-	const int padding = 1;		// padding for right, bottom of glyph
+        char* buff = (char*)DKMalloc(width * height);
+        for (int i = 0; i < height; i++)
+        {
+            memcpy(&buff[i * width], &((char*)data)[(height - i - 1) * width], width);
+        }
+		// upload to texture! (rect)
 
-	bool createNewTexture = true;
-	for (int i = 0; i < textures.Count(); i++)
-	{
-		GlyphTextureAtlas& gta = textures.Value(i);
-		if (gta.freeSpaceWidth >= (width + padding))
-		{
-			rect = DKRect(gta.texture->Width() - gta.freeSpaceWidth, 0, width, height);
-			gta.texture->SetPixelData(rect, buff);
-			DKASSERT_DEBUG((width + padding) <= gta.freeSpaceWidth);
-			gta.freeSpaceWidth -= width + padding; // add padding next to glyph
-			tex = gta.texture;
-			createNewTexture = false;
-			break;
-		}
-	}
-	if (createNewTexture)
-	{
-		// create new texture.
-		int reqWidth = (Width() + padding) * (face->num_glyphs - numGlyphsLoaded); // padding for each glyphs.
+		DKFree(buff);
+    };
 
-		static int maxTextureSize = 0;
-		if (maxTextureSize == 0)
-			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    auto haveEnoughSpace = [](const GlyphTextureAtlas& atlas, int width, int height)
+    {
+        int32_t texWidth = atlas.texture->Width();
+        int32_t texHeight = atlas.texture->Height();
 
-		int newTexWidth = Min(reqWidth, maxTextureSize);
+        if (texWidth < width || texHeight < (atlas.filledVertical + height))
+            return false;
 
-		DKASSERT_DEBUG(newTexWidth >= width);
+        if (texWidth < (atlas.currentLineWidth + width))
+        {
+            if (texHeight < (atlas.filledVertical + atlas.currentLineMaxHeight + height))
+                return false; // not enough space.
+        }
+        return true;
+    };
 
-		int newTexHeight = Height() + padding;
+    constexpr int leftMargin = 1;
+    constexpr int rightMargin = 1;
+    constexpr int topMargin = 1;
+    constexpr int bottomMargin = 1;
+    constexpr int hPadding = leftMargin + rightMargin;
+    constexpr int vPadding = topMargin + bottomMargin;
 
-		void* initialData = DKMalloc(newTexWidth * newTexHeight);
-		memset(initialData, 0, newTexWidth * newTexHeight);
-		tex = DKTexture2D::Create(newTexWidth, newTexHeight, DKTexture::FormatR8, DKTexture::TypeUnsignedByte, initialData);
-		DKFree(initialData);
+    bool createNewTexture = true;
+    for (int i = 0; i < textures.Count(); i++)
+    {
+        GlyphTextureAtlas& gta = textures.Value(i);
+        if (haveEnoughSpace(gta, width + hPadding, height + vPadding))
+        {
+            if ((gta.currentLineWidth + width + leftMargin + rightMargin) > gta.texture->Width())
+            {
+                // move to next line!
+                DKASSERT_DEBUG(gta.currentLineMaxHeight > 0);
+                gta.filledVertical += gta.currentLineMaxHeight;
+                gta.currentLineWidth = 0;
+                gta.currentLineMaxHeight = 0;
+            }
+            rect = DKRect(gta.currentLineWidth + leftMargin, gta.filledVertical + topMargin, width, height);
+            updateTexture(gta.texture, rect, data);
 
-		rect = DKRect(0,0,width,height);
-		tex->SetPixelData(rect, buff);
-		DKASSERT_DEBUG((newTexWidth - width - padding) > 0);
-		GlyphTextureAtlas gta = {tex, static_cast<unsigned int>(newTexWidth - width - padding)};
-		textures.Add(gta);
-	}
-	DKFree(buff);
-	numGlyphsLoaded++;
+            gta.currentLineWidth += width + hPadding;
+            if (height + vPadding > gta.currentLineMaxHeight)
+                gta.currentLineMaxHeight = height + vPadding;
 
-	return tex;
+            tex = gta.texture;
+            createNewTexture = false;
+            break;
+        }
+    }
+    if (createNewTexture)
+    {
+        // create new texture.
+        uint32_t desiredArea = (Width() + hPadding) * (Height() + vPadding) * (face->num_glyphs - numGlyphsLoaded);
+        const uint32_t maxTextureSize = 2048;// 8192;
+        const uint32_t minTextureSize = [maxTextureSize](uint32_t minReq) ->uint32_t
+        {
+			DKASSERT_DEBUG(maxTextureSize > minReq);
+            uint32_t size = 32;
+            while (size < maxTextureSize && size < minReq) { size = size * 2; }
+            return size;
+        } (Max(Width() + hPadding, Height() + vPadding));
+
+        uint32_t desiredWidth = minTextureSize;
+        uint32_t desiredHeight = minTextureSize;
+        while ((desiredWidth * desiredHeight) < desiredArea)
+        {
+            if (desiredWidth > desiredHeight)
+                desiredHeight <<= 1;
+            else if (desiredHeight > desiredWidth)
+                desiredWidth <<= 1;
+            else if (desiredWidth < maxTextureSize)
+                desiredWidth <<= 1;
+            else if (desiredHeight < maxTextureSize)
+                desiredHeight <<= 1;
+            else
+                break;
+        }
+        DKLog("Create new texture atlas with resolution: %d x %d", desiredWidth, desiredHeight);
+
+        tex = [](int width, int height)->DKObject<DKTexture>
+        {
+			DKObject<DKTexture> tex = nullptr;
+			// create texture object..
+
+			return tex;
+        }(desiredWidth, desiredHeight);
+
+        rect = DKRect(leftMargin, topMargin, width, height);
+        updateTexture(tex, rect, data);
+
+        GlyphTextureAtlas gta = {
+            tex,
+            0,
+            width + hPadding,
+            height + vPadding
+        };
+        textures.Add(gta);
+    }
+    numGlyphsLoaded++;
+
+    return tex;
 }
-#endif
 
-float DKFont::Baseline() const
+float DKFont::Ascender() const
+{
+    FT_Face face = reinterpret_cast<FT_Face>(ftFace);
+    if (face->size == 0)
+        return 0;
+
+    constexpr bool topOrigin = true;
+    float baseline = 0;
+    if (FT_IS_SCALABLE(face))
+    {
+        baseline = (face->bbox.yMax) * (float)face->size->metrics.y_ppem / (float)face->units_per_EM;
+    }
+    else
+    {
+        baseline = static_cast<float>(face->size->metrics.height) / 64.0f;
+    }
+    //return baseline + embolden + (outline > 0.0f ? (outline+1.0f) : 0.0f);
+    //return ceilf(baseline + embolden + (outline > 0.0f ? (outline+1.0f) : 0.0f));
+    return floorf(baseline + embolden);
+}
+
+float DKFont::Descender() const
 {
 	FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 	if (face->size == 0)
@@ -503,7 +585,7 @@ DKRect DKFont::Bounds(const DKString& str) const
 			continue;
 
 		DKPoint posMin(offset + glyph->position.x, glyph->position.y);
-		DKPoint posMax(offset + glyph->position.x + glyph->rect.size.width, glyph->position.y + glyph->rect.size.height);
+		DKPoint posMax(offset + glyph->position.x + glyph->frame.size.width, glyph->position.y + glyph->frame.size.height);
 
 		if (bboxMin.x > posMin.x)	bboxMin.x = posMin.x;
 		if (bboxMin.y > posMin.y)	bboxMin.y = posMin.y;
