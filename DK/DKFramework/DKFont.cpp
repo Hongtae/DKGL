@@ -584,8 +584,8 @@ DKRect DKFont::Bounds(const DKString& str) const
 		if (glyph == NULL)
 			continue;
 
-		DKPoint posMin(offset + glyph->position.x, glyph->position.y);
-		DKPoint posMax(offset + glyph->position.x + glyph->frame.size.width, glyph->position.y + glyph->frame.size.height);
+		DKPoint posMin(offset + glyph->position.x, -glyph->position.y);
+		DKPoint posMax(offset + glyph->position.x + glyph->frame.size.width, glyph->frame.size.height - glyph->position.y);
 
 		if (bboxMin.x > posMin.x)	bboxMin.x = posMin.x;
 		if (bboxMin.y > posMin.y)	bboxMin.y = posMin.y;

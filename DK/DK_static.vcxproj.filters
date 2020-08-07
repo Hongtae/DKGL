@@ -328,9 +328,6 @@
     <ClCompile Include="DKFramework\DKFixedConstraint.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKFont.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKGearConstraint.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
@@ -592,10 +589,13 @@
     <ClCompile Include="DKFramework\DKMesh.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKCommonShapeDrawer.cpp">
+    <ClCompile Include="DKFramework\DKBlendState.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKBlendState.cpp">
+    <ClCompile Include="DKFramework\DKCanvas.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKFont.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
   </ItemGroup>
@@ -895,9 +895,6 @@
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKFixedConstraint.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFramework\DKFont.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
     <ClInclude Include="DKFramework\DKGearConstraint.h">
@@ -1344,10 +1341,13 @@
     <ClInclude Include="DKFramework\DKMesh.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKCommonShapeDrawer.h">
+    <ClInclude Include="DKFramework\DKBlendState.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKBlendState.h">
+    <ClInclude Include="DKFramework\DKCanvas.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKFont.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
