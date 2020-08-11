@@ -10,7 +10,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private;
 
-DKScreen::DKScreen(DKWindow*, DKFrame*)
+DKScreen::DKScreen(DKCommandQueue* cq, DKOperationQueue* oq)
     : window(nullptr)
     , rootFrame(nullptr)
     , screenResolution({0, 0})
@@ -23,17 +23,26 @@ DKScreen::DKScreen(DKWindow*, DKFrame*)
 	localEventLoop->screen = this;
 
 	eventLoop = localEventLoop.SafeCast<DKEventLoop>();
-	graphicsDevice = DKGraphicsDevice::SharedInstance();
 	audioDevice = DKAudioDevice::SharedInstance();
+
+    commandQueue = cq;
+    if (commandQueue == nullptr)
+    {
+        DKObject<DKGraphicsDevice> graphicsDevice = DKGraphicsDevice::SharedInstance();
+        commandQueue = graphicsDevice->CreateCommandQueue(0);
+    }
+    operationQueue = oq;
+    if (operationQueue == nullptr)
+    {
+        operationQueue = DKOBJECT_NEW DKOperationQueue();
+        operationQueue->SetMaxConcurrentOperations(1);
+    }
 }
 
 DKScreen::~DKScreen()
 {
-	if (thread && thread->IsAlive())
-	{
-		eventLoop->Stop();
-		thread->WaitTerminate();
-	}
+    operationQueue->WaitForCompletion();
+    eventLoop->Stop();
 }
 
 void DKScreen::Start()
@@ -51,6 +60,33 @@ void DKScreen::Resume()
 
 void DKScreen::Stop()
 {
+}
+
+void DKScreen::SetWindow(DKWindow* window)
+{
+    if (this->window != window)
+    {
+        this->window = window;
+    }
+}
+
+void DKScreen::SetRootFrame(DKFrame* frame)
+{
+    if (rootFrame != frame)
+    {
+        bool loaded = false;
+        if (rootFrame)
+            loaded = rootFrame->IsLoaded();
+
+        DKObject<DKFrame> oldFrame = rootFrame;
+        rootFrame = frame;
+
+        if (loaded)
+        {
+            frame->Load(this, this->Resolution());
+            oldFrame->Unload();
+        }
+    }
 }
 
 DKObject<DKCanvas> DKScreen::CreateCanvas() const

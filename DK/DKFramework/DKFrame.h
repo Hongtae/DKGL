@@ -236,7 +236,7 @@ namespace DKFramework
         virtual void OnDrawOverlay(DKCanvas&) const {}
 
         /// called every frames.
-        virtual void OnUpdate(double, DKFoundation::DKTimeTick, const DKFoundation::DKDateTime&) {} 
+        virtual void OnUpdate(double, DKTimeTick, DKDateTime) {} 
         /// initialize frame, you can add child frame at here.
         virtual void OnLoaded(void) {}
         /// do something clean-up actions
@@ -256,8 +256,8 @@ namespace DKFramework
         // keyboard, text events
         virtual void OnKeyDown(int deviceId, DKVirtualKey key) {}
         virtual void OnKeyUp(int deviceId, DKVirtualKey key) {}
-        virtual void OnTextInput(int deviceId, const DKFoundation::DKString& str) {}
-        virtual void OnTextInputCandidate(int deviceId, const DKFoundation::DKString& str) {}
+        virtual void OnTextInput(int deviceId, const DKString& str) {}
+        virtual void OnTextInputCandidate(int deviceId, const DKString& str) {}
         virtual void OnKeyboardLost(int deviceId) {}
 
         /// Pre-process event.
