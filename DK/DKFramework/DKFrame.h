@@ -215,6 +215,13 @@ namespace DKFramework
         bool CanHandleMouse(void) const;
         bool IsVisibleOnScreen(void) const;
 
+        /// allow mouse event for local frame (does not affect hierarchical propagation)
+        void AllowMouseEvent(bool b);
+        bool IsMouseEventAllowed() const { return allowMouseEvent; }
+        /// allow keyboard event for local frame (does not affect hierarchical propagation)
+        void AllowKeyboardEvent(bool b);
+        bool IsKeyboardEventAllowed() const { return allowKeyboardEvent; }
+
         /// depth-buffer format. (see DKRenderTarget.h)
         /// If frame don't need to render 3D objects,
         /// depth-format can be 'DKRenderTarget::DepthFormatNone'.
@@ -282,6 +289,10 @@ namespace DKFramework
         bool loaded : 1;
         bool hidden : 1;
         bool enabled : 1;
+
+        bool allowMouseEvent : 1;       // affects local frame only.
+        bool allowKeyboardEvent : 1;    // affects local frame only.
+
         mutable bool drawSurface : 1;
 
         bool DrawInternal(void); // return true, if drawn actually happen.
