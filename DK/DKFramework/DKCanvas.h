@@ -27,20 +27,17 @@ namespace DKFramework
     public:
         static const float minimumScaleFactor;
 
-        struct Vertex
+        struct ColoredVertex
+        {
+            DKPoint position;
+            DKColor color;
+        };
+        struct TexturedVertex
         {
             DKPoint position;
             DKPoint texcoord;
+            DKColor color;
         };
-        struct SolidQuad
-        {
-            DKPoint lt, rt, lb, rb;
-        };
-        struct TexturedQuad
-        {
-            Vertex lt, rt, lb, rb;
-        };
-
 
         DKCanvas(DKCommandBuffer*, DKTexture*, DKTexture*);
         virtual ~DKCanvas();
@@ -57,58 +54,63 @@ namespace DKFramework
         virtual void Clear(const DKColor& color) = 0;
         
         // drawing basic primitives
-        virtual void DrawSolidLines(const DKPoint* points,
-                                    size_t numPoints,
-                                    const DKColor& color) = 0;
-        virtual void DrawSolidTriangles(const DKPoint* verts,
-                                        size_t numVerts,
-                                        const DKColor& color) = 0;
-        virtual void DrawTexturedTriangles(const Vertex* vertices,
-                                           size_t numVerts,
-                                           const DKTexture* texture,
-                                           const DKColor& color) = 0;
-
+        virtual void DrawLines(const DKPoint* points,
+                               size_t numPoints,
+                               const DKColor& color) = 0;
+        virtual void DrawTriangles(const ColoredVertex* verts,
+                                   size_t numVerts) = 0;
+        virtual void DrawTriangles(const TexturedVertex* vertices,
+                                   size_t numVerts,
+                                   const DKTexture* texture) = 0;
         // triangle, line strip
-        virtual void DrawSolidLineStrip(const DKPoint* points,
-                                        size_t numPoints,
-                                        const DKColor& color);
-        virtual void DrawSolidTriangleStrip(const DKPoint* verts,
-                                            size_t numVerts,
-                                            const DKColor& color);
-        virtual void DrawTexturedTriangleStrip(const Vertex* vertices,
-                                               size_t numVerts,
-                                               const DKTexture* texture,
-                                               const DKColor& color);
-
-        virtual void DrawSolidQuad(const SolidQuad& quad,
+        virtual void DrawTriangles(const DKPoint* verts,
+                                   size_t numVerts,
                                    const DKColor& color);
-        virtual void DrawTexturedQuad(const TexturedQuad& quad,
-                                      const DKTexture* texture,
-                                      const DKColor& color);
-
-        virtual void DrawSolidRect(const DKRect& rect,
-                                   const DKMatrix3& transform,
+        virtual void DrawLineStrip(const DKPoint* points,
+                                   size_t numPoints,
                                    const DKColor& color);
-        virtual void DrawTexturedRect(const DKRect& rect,
-                                      const DKMatrix3& transform,
-                                      const DKRect& textureRect,
-                                      const DKMatrix3& textureTransform,
-                                      const DKTexture* texture,
-                                      const DKColor& color);
-
-        virtual void DrawLineEllipse(const DKRect& bounds,
+        virtual void DrawTriangleStrip(const DKPoint* verts,
+                                       size_t numVerts,
+                                       const DKColor& color);
+        virtual void DrawTriangleStrip(const ColoredVertex* verts,
+                                       size_t numVerts);
+        virtual void DrawTriangleStrip(const TexturedVertex* vertices,
+                                       size_t numVerts,
+                                       const DKTexture* texture);
+        // Quad
+        virtual void DrawQuad(const DKPoint& lt,
+                              const DKPoint& rt,
+                              const DKPoint& lb,
+                              const DKPoint& rb,
+                              const DKColor& color);
+        virtual void DrawQuad(const TexturedVertex& lt,
+                              const TexturedVertex& rt,
+                              const TexturedVertex& lb,
+                              const TexturedVertex& rb,
+                              const DKTexture* texture);
+        // Rect
+        virtual void DrawRect(const DKRect& rect,
+                              const DKMatrix3& transform,
+                              const DKColor& color);
+        virtual void DrawRect(const DKRect& rect,
+                              const DKMatrix3& transform,
+                              const DKRect& textureRect,
+                              const DKMatrix3& textureTransform,
+                              const DKTexture* texture,
+                              const DKColor& color);
+        // Ellipse
+        virtual void DrawEllipseLine(const DKRect& bounds,
                                      const DKMatrix3& transform,
                                      const DKColor& color);
-        virtual void DrawSolidEllipse(const DKRect& bounds,
-                                      const DKMatrix3& transform,
-                                      const DKColor& color);
-        virtual void DrawTexturedEllipse(const DKRect& bounds,
-                                         const DKMatrix3& transform,
-                                         const DKRect& textureBounds,
-                                         const DKMatrix3& textureTransform,
-                                         const DKTexture* texture,
-                                         const DKColor& color);
-
+        virtual void DrawEllipse(const DKRect& bounds,
+                                 const DKMatrix3& transform,
+                                 const DKColor& color);
+        virtual void DrawEllipse(const DKRect& bounds,
+                                 const DKMatrix3& transform,
+                                 const DKRect& textureBounds,
+                                 const DKMatrix3& textureTransform,
+                                 const DKTexture* texture,
+                                 const DKColor& color);
         // drawing text with font.
         void DrawText(const DKRect& bounds,
                       const DKMatrix3& transform,
@@ -123,7 +125,7 @@ namespace DKFramework
                       const DKColor& color);
 
 
-        virtual void Commit() {}
+        virtual void Commit() = 0;
         virtual bool IsDrawable(void) const { return true; }
 
     protected:

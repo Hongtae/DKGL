@@ -772,10 +772,10 @@ bool DKFrame::DrawInternal(void)
                 DKASSERT_DEBUG(texture);
                 if (texture)
                 {
-                    canvas->DrawTexturedRect(DKRect(0, 0, 1, 1), frame->Transform(),
-                                             DKRect(0, 0, 1, 1), DKMatrix3::identity,
-                                             texture,
-                                             frame->color);
+                    canvas->DrawRect(DKRect(0, 0, 1, 1), frame->Transform(),
+                                     DKRect(0, 0, 1, 1), DKMatrix3::identity,
+                                     texture,
+                                     frame->color);
                 }
             }
             // draw overlay

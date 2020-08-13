@@ -81,9 +81,25 @@ void DKCanvas::UpdateTransform()
     this->screenTransform = this->contentTransform * offset * DKAffineTransform2(s).Multiply(targetOrient).Matrix3();
 }
 
-void DKCanvas::DrawSolidLineStrip(const DKPoint* points,
-                                  size_t numPoints,
-                                  const DKColor& color)
+void DKCanvas::DrawTriangles(const DKPoint* verts,
+                             size_t numVerts,
+                             const DKColor& color)
+{
+    if (numVerts > 2)
+    {
+        DKArray<ColoredVertex> vertices;
+        vertices.Reserve(numVerts);
+        for (size_t i = 0; i < numVerts; ++i)
+        {
+            vertices.Add(ColoredVertex{ verts[i], color });
+        }
+        DrawTriangles(vertices, vertices.Count());
+    }
+}
+
+void DKCanvas::DrawLineStrip(const DKPoint* points,
+                             size_t numPoints,
+                             const DKColor& color)
 {
     if (numPoints > 1)
     {
@@ -98,17 +114,43 @@ void DKCanvas::DrawSolidLineStrip(const DKPoint* points,
             lines.Add(v1);
         }
 
-        this->DrawSolidLines(lines, lines.Count(), color);
+        this->DrawLines(lines, lines.Count(), color);
     }
 }
 
-void DKCanvas::DrawSolidTriangleStrip(const DKPoint* verts,
-                                      size_t numVerts,
-                                      const DKColor& color)
+void DKCanvas::DrawTriangleStrip(const DKPoint* verts,
+                                 size_t numVerts,
+                                 const DKColor& color)
 {
     if (numVerts > 2)
     {
-        DKArray<DKPoint> pts;
+        DKArray<ColoredVertex> pts;
+        pts.Reserve(numVerts * 3);
+
+        for (size_t i = 0; (i + 2) < numVerts; ++i)
+        {
+            if (i & 1)
+            {
+                pts.Add({ verts[i + 1], color });
+                pts.Add({ verts[i], color });
+            }
+            else
+            {
+                pts.Add({ verts[i], color });
+                pts.Add({ verts[i + 1], color });
+            }
+            pts.Add({ verts[i + 2], color });
+        }
+        this->DrawTriangles(pts, pts.Count());
+    }
+}
+
+void DKCanvas::DrawTriangleStrip(const ColoredVertex* verts,
+                                 size_t numVerts)
+{
+    if (numVerts > 2)
+    {
+        DKArray<ColoredVertex> pts;
         pts.Reserve(numVerts * 3);
 
         for (size_t i = 0; (i + 2) < numVerts; ++i)
@@ -125,18 +167,17 @@ void DKCanvas::DrawSolidTriangleStrip(const DKPoint* verts,
             }
             pts.Add(verts[i + 2]);
         }
-        this->DrawSolidTriangles(pts, pts.Count(), color);
+        this->DrawTriangles(pts, pts.Count());
     }
 }
 
-void DKCanvas::DrawTexturedTriangleStrip(const Vertex* verts,
-                                         size_t numVerts,
-                                         const DKTexture* texture,
-                                         const DKColor& color)
+void DKCanvas::DrawTriangleStrip(const TexturedVertex* verts,
+                                 size_t numVerts,
+                                 const DKTexture* texture)
 {
     if (numVerts > 2 && texture)
     {
-        DKArray<Vertex> pts;
+        DKArray<TexturedVertex> pts;
         pts.Reserve(numVerts * 3);
 
         for (size_t i = 0; (i + 2) < numVerts; ++i)
@@ -153,77 +194,79 @@ void DKCanvas::DrawTexturedTriangleStrip(const Vertex* verts,
             }
             pts.Add(verts[i + 2]);
         }
-        this->DrawTexturedTriangles(pts, pts.Count(), texture, color);
+        this->DrawTriangles(pts, pts.Count(), texture);
     }
 }
 
-void DKCanvas::DrawSolidQuad(const SolidQuad& quad, const DKColor& color)
+void DKCanvas::DrawQuad(const DKPoint& lt,
+                        const DKPoint& rt,
+                        const DKPoint& lb,
+                        const DKPoint& rb,
+                        const DKColor& color)
 {
     if (IsDrawable())
     {
         const DKVector2 tpos[4] = {
-            quad.lt.Vector().Transform(this->contentTransform),			// left-top
-            quad.rt.Vector().Transform(this->contentTransform),			// right-top
-            quad.lb.Vector().Transform(this->contentTransform),			// left-bottom
-            quad.rb.Vector().Transform(this->contentTransform),			// right-bottom
+            lt.Vector().Transform(this->contentTransform), // left-top
+            rt.Vector().Transform(this->contentTransform), // right-top
+            lb.Vector().Transform(this->contentTransform), // left-bottom
+            rb.Vector().Transform(this->contentTransform), // right-bottom
         };
         bool t1 = this->contentBounds.IntersectTriangle(tpos[0], tpos[2], tpos[1]);
         bool t2 = this->contentBounds.IntersectTriangle(tpos[1], tpos[2], tpos[3]);
         if (t1 && t2)
         {
-            const DKPoint vf[6] = {
-                quad.lt, quad.lb, quad.rt,
-                quad.rt, quad.lb, quad.rb
-            };
-            DrawSolidTriangles(vf, 6, color);
+            const DKPoint vf[6] = { lt, lb, rt, rt, lb, rb };
+            DrawTriangles(vf, 6, color);
         }
         else if (t1)
         {
-            const DKPoint vf[3] = { quad.lt, quad.lb, quad.rt };
-            DrawSolidTriangles(vf, 3, color);
+            const DKPoint vf[3] = { lt, lb, rt };
+            DrawTriangles(vf, 3, color);
         }
         else if (t2)
         {
-            const DKPoint vf[3] = { quad.rt, quad.lb, quad.rb };
-            DrawSolidTriangles(vf, 3, color);
+            const DKPoint vf[3] = { rt, lb, rb };
+            DrawTriangles(vf, 3, color);
         }
     }
 }
 
-void DKCanvas::DrawTexturedQuad(const TexturedQuad& quad, const DKTexture* texture, const DKColor& color)
+void DKCanvas::DrawQuad(const TexturedVertex& lt,
+                        const TexturedVertex& rt,
+                        const TexturedVertex& lb,
+                        const TexturedVertex& rb,
+                        const DKTexture* texture) 
 {
     if (IsDrawable() && texture)
     {
         const DKVector2 tpos[4] = {
-            quad.lt.position.Vector().Transform(this->contentTransform),			// left-top
-            quad.rt.position.Vector().Transform(this->contentTransform),			// right-top
-            quad.lb.position.Vector().Transform(this->contentTransform),			// left-bottom
-            quad.rb.position.Vector().Transform(this->contentTransform),			// right-bottom
+            lt.position.Vector().Transform(this->contentTransform), // left-top
+            rt.position.Vector().Transform(this->contentTransform), // right-top
+            lb.position.Vector().Transform(this->contentTransform), // left-bottom
+            rb.position.Vector().Transform(this->contentTransform), // right-bottom
         };
         bool t1 = this->contentBounds.IntersectTriangle(tpos[0], tpos[2], tpos[1]);
         bool t2 = this->contentBounds.IntersectTriangle(tpos[1], tpos[2], tpos[3]);
         if (t1 && t2)
         {
-            const Vertex vf[6] = {
-                quad.lt, quad.lb, quad.rt,
-                quad.rt, quad.lb, quad.rb
-            };
-            DrawTexturedTriangles(vf, 6, texture, color);
+            const TexturedVertex vf[6] = { lt, lb, rt, rt, lb, rb };
+            DrawTriangles(vf, 6, texture);
         }
         else if (t1)
         {
-            const Vertex vf[3] = { quad.lt, quad.lb, quad.rt };
-            DrawTexturedTriangles(vf, 3, texture, color);
+            const TexturedVertex vf[3] = { lt, lb, rt };
+            DrawTriangles(vf, 3, texture);
         }
         else if (t2)
         {
-            const Vertex vf[3] = { quad.rt, quad.lb, quad.rb };
-            DrawTexturedTriangles(vf, 3, texture, color);
+            const TexturedVertex vf[3] = { rt, lb, rb };
+            DrawTriangles(vf, 3, texture);
         }
     }
 }
 
-void DKCanvas::DrawSolidRect(const DKRect& posRect, const DKMatrix3& posTM, const DKColor& color)
+void DKCanvas::DrawRect(const DKRect& posRect, const DKMatrix3& posTM, const DKColor& color)
 {
     if (IsDrawable() && posRect.IsValid())
     {
@@ -245,33 +288,26 @@ void DKCanvas::DrawSolidRect(const DKRect& posRect, const DKMatrix3& posTM, cons
         bool t2 = this->contentBounds.IntersectTriangle(tpos[1], tpos[2], tpos[3]);
         if (t1 && t2)
         {
-            const DKPoint vf[6] = {
-                pos[0],
-                pos[2],
-                pos[1],
-                pos[1],
-                pos[2],
-                pos[3],
-            };
-            DrawSolidTriangles(vf, 6, color);
+            const DKPoint vf[6] = { pos[0], pos[2], pos[1], pos[1], pos[2], pos[3] };
+            DrawTriangles(vf, 6, color);
         }
         else if (t1)
         {
             const DKPoint vf[3] = { pos[0], pos[2],pos[1] };
-            DrawSolidTriangles(vf, 3, color);
+            DrawTriangles(vf, 3, color);
         }
         else if (t2)
         {
             const DKPoint vf[3] = { pos[1], pos[2], pos[3] };
-            DrawSolidTriangles(vf, 3, color);
+            DrawTriangles(vf, 3, color);
         }
     }
 }
 
-void DKCanvas::DrawTexturedRect(const DKRect& posRect, const DKMatrix3& posTM,
-                                const DKRect& texRect, const DKMatrix3& texTM,
-                                const DKTexture* texture,
-                                const DKColor& color)
+void DKCanvas::DrawRect(const DKRect& posRect, const DKMatrix3& posTM,
+                        const DKRect& texRect, const DKMatrix3& texTM,
+                        const DKTexture* texture,
+                        const DKColor& color)
 {
     if (IsDrawable() && texture && posRect.IsValid())
     {
@@ -299,30 +335,38 @@ void DKCanvas::DrawTexturedRect(const DKRect& posRect, const DKMatrix3& posTM,
         bool t2 = this->contentBounds.IntersectTriangle(tpos[1], tpos[2], tpos[3]);
         if (t1 && t2)
         {
-            const Vertex vf[6] = {
-                {pos[0], tex[0]},
-                {pos[2], tex[2]},
-                {pos[1], tex[1]},
-                {pos[1], tex[1]},
-                {pos[2], tex[2]},
-                {pos[3], tex[3]}
+            const TexturedVertex vf[6] = {
+                { pos[0], tex[0], color },
+                { pos[2], tex[2], color },
+                { pos[1], tex[1], color },
+                { pos[1], tex[1], color },
+                { pos[2], tex[2], color },
+                { pos[3], tex[3], color }
             };
-            DrawTexturedTriangles(vf, 6, texture, color);
+            DrawTriangles(vf, 6, texture);
         }
         else if (t1)
         {
-            const Vertex vf[3] = { {pos[0], tex[0]}, {pos[2], tex[2]}, {pos[1], tex[1]} };
-            DrawTexturedTriangles(vf, 3, texture, color);
+            const TexturedVertex vf[3] = {
+                { pos[0], tex[0], color },
+                { pos[2], tex[2], color },
+                { pos[1], tex[1], color }
+            };
+            DrawTriangles(vf, 3, texture);
         }
         else if (t2)
         {
-            const Vertex vf[3] = { {pos[1], tex[1]}, {pos[2], tex[2]}, {pos[3], tex[3]} };
-            DrawTexturedTriangles(vf, 3, texture, color);
+            const TexturedVertex vf[3] = {
+                { pos[1], tex[1], color },
+                { pos[2], tex[2], color },
+                { pos[3], tex[3], color }
+            };
+            DrawTriangles(vf, 3, texture);
         }
     }
 }
 
-void DKCanvas::DrawLineEllipse(const DKRect& bounds,
+void DKCanvas::DrawEllipseLine(const DKRect& bounds,
                                const DKMatrix3& tm,
                                const DKColor& color)
 {
@@ -365,18 +409,18 @@ void DKCanvas::DrawLineEllipse(const DKRect& bounds,
                 // x = a*sin(t)
                 // y = b*cos(t)
                 // where 0 <= t < 2*PI
-                double t = (DKGL_PI * 2.0) * (float(i) / float(numSegments));
+                float t = (DKGL_PI * 2.0f) * (float(i) / float(numSegments));
                 DKVector2 p = { radius.x * sinf(t), radius.y * cosf(t) };
 
                 lines[i] = DKVector2(p + center).Transform(tm);
             }
             lines[numSegments] = lines.Value(0);
-            DrawSolidLines(lines, lines.Count(), color);
+            DrawLines(lines, lines.Count(), color);
         }
     }
 }
 
-void DKCanvas::DrawSolidEllipse(const DKRect& bounds, const DKMatrix3& tm, const DKColor& color)
+void DKCanvas::DrawEllipse(const DKRect& bounds, const DKMatrix3& tm, const DKColor& color)
 {
     if (IsDrawable() && bounds.IsValid())
     {
@@ -419,7 +463,7 @@ void DKCanvas::DrawSolidEllipse(const DKRect& bounds, const DKMatrix3& tm, const
                 // x = a*sin(t)
                 // y = b*cos(t)
                 // where 0 <= t < 2*PI
-                double t = (DKGL_PI * 2.0) * (float(i) / float(numSegments));
+                float t = (DKGL_PI * 2.0f) * (float(i) / float(numSegments));
                 DKVector2 p = { radius.x * sinf(t), radius.y * cosf(t) };
                 DKVector2 vertex = DKVector2(p + center).Transform(tm);
 
@@ -432,14 +476,17 @@ void DKCanvas::DrawSolidEllipse(const DKRect& bounds, const DKMatrix3& tm, const
             triangleVertices[numSegments * 3 - 2] = lastVertex;
             triangleVertices[numSegments * 3 - 1] = transCenter;
 
-            DrawSolidTriangles(triangleVertices, triangleVertices.Count(), color);
+            DrawTriangles(triangleVertices, triangleVertices.Count(), color);
         }
     }
 }
 
-void DKCanvas::DrawTexturedEllipse(const DKRect& bounds, const DKMatrix3& tm,
-                                   const DKRect& texBounds, const DKMatrix3& texTm,
-                                   const DKTexture* texture, const DKColor& color)
+void DKCanvas::DrawEllipse(const DKRect& bounds,
+                           const DKMatrix3& tm,
+                           const DKRect& texBounds,
+                           const DKMatrix3& texTm,
+                           const DKTexture* texture,
+                           const DKColor& color)
 {
     if (IsDrawable() && texture && bounds.IsValid())
     {
@@ -465,7 +512,7 @@ void DKCanvas::DrawTexturedEllipse(const DKRect& bounds, const DKMatrix3& tm,
             float circleH = Max((tpos[0] - tpos[2]).Length(), (tpos[1] - tpos[3]).Length());
             const int numSegments = LineSegmentsCircumference(Min(circleW, circleH) * 0.5f);
 
-            DKArray<Vertex> triangleVertices;
+            DKArray<TexturedVertex> triangleVertices;
             triangleVertices.Resize(numSegments * 3);
 
             const DKVector2 center = bounds.Center().Vector();
@@ -473,13 +520,15 @@ void DKCanvas::DrawTexturedEllipse(const DKRect& bounds, const DKMatrix3& tm,
             const DKVector2 radius = bounds.size.Vector() * 0.5f;
             const DKVector2 radiusSq = { radius.x * radius.x, radius.y * radius.y };
 
-            Vertex lastVertex = {
+            TexturedVertex lastVertex = {
                 DKVector2(center.x, center.y + radius.y).Transform(tm),
-                DKVector2(texCenter.x, texCenter.y + texBounds.size.height * (radius.y / bounds.size.height)).Transform(texTm)
+                DKVector2(texCenter.x, texCenter.y + texBounds.size.height * (radius.y / bounds.size.height)).Transform(texTm),
+                color
             };
-            Vertex transCenter = {
+            TexturedVertex transCenter = {
                 DKVector2(center).Transform(tm),
-                DKVector2(texCenter).Transform(texTm)
+                DKVector2(texCenter).Transform(texTm),
+                color
             };
 
             // formula: X^2 / A^2 + Y^2 / B^2 = 1
@@ -490,12 +539,13 @@ void DKCanvas::DrawTexturedEllipse(const DKRect& bounds, const DKMatrix3& tm,
                 // x = a*sin(t)
                 // y = b*cos(t)
                 // where 0 <= t < 2*PI
-                double t = (DKGL_PI * 2.0) * (float(i) / float(numSegments));
-                DKVector2 p = DKVector2(radius.x * sin(t), radius.y * cos(t)) + center;
+                float t = (DKGL_PI * 2.0f) * (float(i) / float(numSegments));
+                DKVector2 p = DKVector2(radius.x * sinf(t), radius.y * cosf(t)) + center;
                 DKVector2 uv = texBounds.origin.Vector() + texBounds.size.Vector() * ((p - bounds.origin.Vector()) / bounds.size.Vector());
-                Vertex vertex = {
+                TexturedVertex vertex = {
                     DKVector2(p).Transform(tm),
-                    DKVector2(uv).Transform(texTm)
+                    DKVector2(uv).Transform(texTm),
+                    color
                 };
 
                 triangleVertices[i * 3] = vertex;
@@ -507,7 +557,7 @@ void DKCanvas::DrawTexturedEllipse(const DKRect& bounds, const DKMatrix3& tm,
             triangleVertices[numSegments * 3 - 2] = lastVertex;
             triangleVertices[numSegments * 3 - 1] = transCenter;
 
-            DrawTexturedTriangles(triangleVertices, triangleVertices.Count(), texture, color);
+            DrawTriangles(triangleVertices, triangleVertices.Count(), texture);
         }
     }
 }
@@ -526,13 +576,10 @@ void DKCanvas::DrawText(const DKRect& bounds,
 
     struct Quad
     {
-        TexturedQuad quad;
+        TexturedVertex lt, rt, lb, rb;
         const DKTexture* texture;
     };
-    auto orderByTextureAsc = [](const Quad& lhs, const Quad& rhs)
-    {
-        return reinterpret_cast<uintptr_t>(lhs.texture) > reinterpret_cast<uintptr_t>(rhs.texture);
-    };
+
     DKArray<Quad> quads;
     quads.Reserve(textLen);
 
@@ -570,10 +617,10 @@ void DKCanvas::DrawText(const DKRect& bounds,
 
                 const Quad q =
                 {
-                    Vertex { DKVector2(posMin.x, posMin.y), DKVector2(uvMin.x, uvMin.y)}, // lt
-                    Vertex { DKVector2(posMax.x, posMin.y), DKVector2(uvMax.x, uvMin.y)}, // rt
-                    Vertex { DKVector2(posMin.x, posMax.y), DKVector2(uvMin.x, uvMax.y)}, // lb
-                    Vertex { DKVector2(posMax.x, posMax.y), DKVector2(uvMax.x, uvMax.y)}, // rb
+                    TexturedVertex { DKVector2(posMin.x, posMin.y), DKVector2(uvMin.x, uvMin.y), color }, // lt
+                    TexturedVertex { DKVector2(posMax.x, posMin.y), DKVector2(uvMax.x, uvMin.y), color }, // rt
+                    TexturedVertex { DKVector2(posMin.x, posMax.y), DKVector2(uvMin.x, uvMax.y), color }, // lb
+                    TexturedVertex { DKVector2(posMax.x, posMax.y), DKVector2(uvMax.x, uvMax.y), color }, // rb
                     glyph->texture,
                 };
                 quads.Add(q);
@@ -607,29 +654,29 @@ void DKCanvas::DrawText(const DKRect& bounds,
     matrix *= transform; // user transform
 
     const DKTexture* lastTexture = nullptr;
-    DKArray<Vertex> triangles;
+    DKArray<TexturedVertex> triangles;
     triangles.Reserve(quads.Count() * 6);
     for (Quad& q : quads)
     {
         if (q.texture != lastTexture)
         {
             if (triangles.Count() > 0)
-                DrawTexturedTriangles(triangles, triangles.Count(), lastTexture, color);
+                DrawTriangles(triangles, triangles.Count(), lastTexture);
             triangles.Clear();
             lastTexture = q.texture;
         }
-        Vertex vf[6] = {
-            Vertex { q.quad.lt.position.Vector().Transform(matrix), q.quad.lt.texcoord },
-            Vertex { q.quad.lb.position.Vector().Transform(matrix), q.quad.lb.texcoord },
-            Vertex { q.quad.rt.position.Vector().Transform(matrix), q.quad.rt.texcoord },
-            Vertex { q.quad.rt.position.Vector().Transform(matrix), q.quad.rt.texcoord },
-            Vertex { q.quad.lb.position.Vector().Transform(matrix), q.quad.lb.texcoord },
-            Vertex { q.quad.rb.position.Vector().Transform(matrix), q.quad.rb.texcoord },
+        TexturedVertex vf[6] = {
+            TexturedVertex { q.lt.position.Vector().Transform(matrix), q.lt.texcoord, color },
+            TexturedVertex { q.lb.position.Vector().Transform(matrix), q.lb.texcoord, color },
+            TexturedVertex { q.rt.position.Vector().Transform(matrix), q.rt.texcoord, color },
+            TexturedVertex { q.rt.position.Vector().Transform(matrix), q.rt.texcoord, color },
+            TexturedVertex { q.lb.position.Vector().Transform(matrix), q.lb.texcoord, color },
+            TexturedVertex { q.rb.position.Vector().Transform(matrix), q.rb.texcoord, color },
         };
         triangles.Add(vf, 6);
     }
     if (triangles.Count() > 0)
-        DrawTexturedTriangles(triangles, triangles.Count(), lastTexture, color);
+        DrawTriangles(triangles, triangles.Count(), lastTexture);
 }
 
 void DKCanvas::DrawText(const DKPoint& baselineBegin,
