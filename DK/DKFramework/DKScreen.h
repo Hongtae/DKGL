@@ -79,6 +79,10 @@ namespace DKFramework
         /// command queue for parallelized (unordered) tasks
         DKOperationQueue* OperationQueue() { return operationQueue; }
 
+        bool ProcessKeyboardEvent(const DKWindow::KeyboardEvent&);
+        bool ProcessMouseEvent(const DKWindow::MouseEvent&);
+        bool ProcessWindowEvent(const DKWindow::WindowEvent&);
+
 	private:
         void Draw() const;
         static void EventLoopIdle(DKScreen*, DKEventLoop*);
@@ -88,8 +92,8 @@ namespace DKFramework
         DKObject<DKWindow> window;
         DKObject<DKFrame> rootFrame;
 
-        DKMap<int, DKFrame*> keyboardHolders;
-        DKMap<int, DKFrame*> mouseHolders;
+        DKMap<int, DKFrame*> keyFrames; // keyboard captors;
+        DKMap<int, DKFrame*> focusFrames; // mouse captors;
 
         DKObject<DKCommandQueue> commandQueue;
         DKObject<DKGraphicsDevice> graphicsDevice;

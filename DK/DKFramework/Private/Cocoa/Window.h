@@ -27,36 +27,36 @@ namespace DKFramework::Private::macOS
         DKRect WindowRect();
 
         // DKWindowInterface override
-        bool Create(const DKString& title, uint32_t style);
-        bool CreateProxy(void* systemHandle);
-        bool IsProxy() const;
-        void UpdateProxy();
-        void Destroy();
-        void* PlatformHandle() const;
-        bool IsValid() const;
+        bool Create(const DKString& title, uint32_t style) override;
+        bool CreateProxy(void* systemHandle) override;
+        bool IsProxy() const override;
+        void UpdateProxy() override;
+        void Destroy() override;
+        void* PlatformHandle() const override;
+        bool IsValid() const override;
 
-        void ShowMouse(int deviceId, bool show);
-        bool IsMouseVisible(int deviceId) const;
-        void HoldMouse(int deviceId, bool hold);
-        bool IsMouseHeld(int deviceId) const;
+        void ShowMouse(int deviceId, bool show) override;
+        bool IsMouseVisible(int deviceId) const override;
+        void HoldMouse(int deviceId, bool hold) override;
+        bool IsMouseHeld(int deviceId) const override;
         
-        void Show();
-        void Hide();
-        void Activate();
-        void Minimize();
+        void Show() override;
+        void Hide() override;
+        void Activate() override;
+        void Minimize() override;
 
-        void SetOrigin(DKPoint);
-        void Resize(DKSize, const DKPoint* optionalOrigin);
-        double ContentScaleFactor() const;  // logical coords by pixel ratio.
+        void SetOrigin(DKPoint) override;
+        void Resize(DKSize, const DKPoint* optionalOrigin) override;
+        double ContentScaleFactor() const override;  // logical coords by pixel ratio.
 
-        void SetTitle(const DKString& title);
-        DKString Title() const;
+        void SetTitle(const DKString& title) override;
+        DKString Title() const override;
 
-        void SetMousePosition(int deviceId, DKPoint pt);
-        DKPoint MousePosition(int deviceId) const;
+        void SetMousePosition(int deviceId, DKPoint pt) override;
+        DKPoint MousePosition(int deviceId) const override;
 
-        void EnableTextInput(int deviceId, bool enable);
-        bool IsTextInputEnabled(int deviceId);
+        void EnableTextInput(int deviceId, bool enable) override;
+        bool IsTextInputEnabled(int deviceId) const override;
 
     private:
         DKWindow* instance;

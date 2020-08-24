@@ -391,22 +391,16 @@ DKSize DKFrame::ContentResolution(void) const
 
 bool DKFrame::CaptureKeyboard(int deviceId)
 {
-    if (screen == NULL)
-        return false;
-    if (this->CanHandleKeyboard() == false)
-        return false;
-
-    return screen->SetKeyFrame(deviceId, this);
+    if (screen && this->CanHandleKeyboard())
+        return screen->SetKeyFrame(deviceId, this);
+    return false;
 }
 
 bool DKFrame::CaptureMouse(int deviceId)
 {
-    if (screen == NULL)
-        return false;
-    if (this->CanHandleMouse() == false)
-        return false;
-
-    return screen->SetFocusFrame(deviceId, this);
+    if (screen && this->CanHandleMouse())
+        return screen->SetFocusFrame(deviceId, this);
+    return false;
 }
 
 void DKFrame::ReleaseKeyboard(int deviceId)
@@ -435,21 +429,15 @@ void DKFrame::ReleaseAllMiceCapturedBySelf(void)
 
 bool DKFrame::IsKeybaordCapturedBySelf(int deviceId) const
 {
-    if (screen)
-    {
-        if (this->IsDescendantOf(screen->RootFrame()))
-            return screen->KeyFrame(deviceId) == this;
-    }
+    if (screen && this->IsDescendantOf(screen->RootFrame()))
+        return screen->KeyFrame(deviceId) == this;
     return false;
 }
 
 bool DKFrame::IsMouseCapturedBySelf(int deviceId) const
 {
-    if (screen)
-    {
-        if (this->IsDescendantOf(screen->RootFrame()))
+    if (screen && this->IsDescendantOf(screen->RootFrame()))
             return screen->FocusFrame(deviceId) == this;
-    }
     return false;
 }
 
@@ -486,19 +474,18 @@ bool DKFrame::IsMouseHover(int deviceId) const
     return hover;
 }
 
-const DKSize& DKFrame::ContentScale(void) const
+DKSize DKFrame::ContentScale(void) const
 {
     return contentScale;
 }
 
-void DKFrame::SetContentScale(float w, float h)
+void DKFrame::SetContentScale(const DKSize& s)
 {
-    DKASSERT_DEBUG(w > 0.0f && h > 0.0f);
+    float w = Max(s.width, DKCanvas::minimumScaleFactor);
+    float h = Max(s.height, DKCanvas::minimumScaleFactor);
 
-    w = Max(w, DKCanvas::minimumScaleFactor);
-    h = Max(h, DKCanvas::minimumScaleFactor);
-
-    if (w == contentScale.width && h == contentScale.height)
+    if (fabsf(w - contentScale.width) < FLT_EPSILON &&
+        fabsf(h - contentScale.height) < FLT_EPSILON)
     {
     }
     else
@@ -506,11 +493,6 @@ void DKFrame::SetContentScale(float w, float h)
         contentScale = DKSize(w, h);
         SetRedraw();
     }
-}
-
-void DKFrame::SetContentScale(const DKSize& s)
-{
-    SetContentScale(s.width, s.height);
 }
 
 DKRect DKFrame::Bounds(void) const

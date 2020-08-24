@@ -128,9 +128,8 @@ namespace DKFramework
         virtual bool ContentHitTest(const DKPoint& pos) const { return true; }
 
         /// content scale.
-        const DKSize& ContentScale(void) const;
+        DKSize ContentScale(void) const;
         void SetContentScale(const DKSize& s);
-        void SetContentScale(float w, float h);
 
         /// Bounds returns content bounds (0, 0, width, height)
         DKRect Bounds(void) const;

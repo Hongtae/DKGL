@@ -56,7 +56,7 @@ namespace DKFramework
 		virtual DKPoint MousePosition(int deviceId) const = 0;
 
 		virtual void EnableTextInput(int deviceId, bool enable) = 0;
-		virtual bool IsTextInputEnabled(int deviceId) = 0;
+		virtual bool IsTextInputEnabled(int deviceId) const = 0;
 
 		static DKWindowInterface* CreateInterface(DKWindow*);
 		static DKWindowInterface* Instance(DKWindow* p) { return p->impl; }
