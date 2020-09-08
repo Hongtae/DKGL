@@ -38,8 +38,10 @@ DKFrame::DKFrame(void)
 
 DKFrame::~DKFrame(void)
 {
-    // a frame must be unloaded before beging destroyed.
-    DKASSERT_DESC_DEBUG(IsLoaded() == false, "Frame must unload before beging destroyed!");
+    if (IsLoaded()) //frame was not unloaded.
+    {
+        DKLogW("The frame is being destroyed, but it is loaded and Unload() will not be called.");
+    }
 
     RemoveFromSuperframe();
 

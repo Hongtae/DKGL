@@ -66,6 +66,10 @@ namespace DKFramework
         /// If frame is off-screen, this function should be called before being
         /// destroyed. (on-screen frame unloads automatically, but you can
         /// unload manually.) Unload frame does not affect hierarchy.
+        /// @note
+        ///  In certain circumstances, a frame can be destroyed in a loaded state,
+        ///  in which case the loaded resource must be freed in the frame's destructor,
+        ///  or Unload() must be called manually before it is destroyed.
         void Unload(void);
         bool IsLoaded(void) const { return loaded; }
 
