@@ -22,7 +22,7 @@ namespace DKFoundation
 	///
 	/// @note
 	///  some bits could be lost while compute a real-number (double-precision) process,
-	///  becouse of tick64 is 64 bits integer, but double has 52 bits fraction.
+	///  because of tick64 is 64 bits integer, but double has 52 bits fraction.
 	///  (based on IEEE754)
 	///
 	///  DKTimer::Reset, DKTimer::Elapsed can produces good quality of result,

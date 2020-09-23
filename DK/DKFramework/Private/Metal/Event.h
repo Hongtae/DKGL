@@ -24,12 +24,12 @@ namespace DKFramework::Private::Metal
         id<MTLEvent> event;
         DKObject<DKGraphicsDevice> device;
 
-        uint64_t NextWaitValue();
-        uint64_t NextSignalValue();
+        uint64_t NextWaitValue() const;
+        uint64_t NextSignalValue() const;
 
     private:
-        DKAtomicNumber64 waitValue;
-        DKAtomicNumber64 signalValue;
+        mutable DKAtomicNumber64 waitValue;
+        mutable DKAtomicNumber64 signalValue;
     };
 }
 #endif //#if DKGL_ENABLE_METAL

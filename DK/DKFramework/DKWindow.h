@@ -72,12 +72,12 @@ namespace DKFramework
 			};
 			Type type;
 			Device device;
-			int deviceId;
-			int buttonId;
+            int deviceId;
+            int buttonId;
 			DKPoint location;	///< location in window
 			DKVector2 delta;
 			float pressure;		///< for stylus-pen
-			float tilt;///< radian value of stylus-pen and screen angle. 0 is parallel, PI/2 is perpendicular to the surface.
+			float tilt;			///< radian value of stylus-pen and screen angle. 0 is parallel, PI/2 is perpendicular to the surface.
 		};
 
 		/// Keyboard and text event.
@@ -119,7 +119,7 @@ namespace DKFramework
 		};
 
 		// function or function object type for event handlers.
-		typedef void WindowProc(const WindowEvent&); ///< Windoe event handler function type
+		typedef void WindowProc(const WindowEvent&); ///< Window event handler function type
 		typedef void KeyboardProc(const KeyboardEvent&); ///< Keyboard event handler function type
 		typedef void MouseProc(const MouseEvent&); ///< Mouse event handler function type
 

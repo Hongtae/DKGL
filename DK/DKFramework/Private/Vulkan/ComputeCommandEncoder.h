@@ -57,13 +57,13 @@ namespace DKFramework::Private::Vulkan
         bool IsCompleted() const override { return encoder == nullptr; }
         DKCommandBuffer* CommandBuffer() override { return commandBuffer; }
 
-        void WaitEvent(DKGpuEvent*) override;
-        void SignalEvent(DKGpuEvent*) override;
-        void WaitSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
-        void SignalSemaphoreValue(DKGpuSemaphore*, uint64_t) override;
+        void WaitEvent(const DKGpuEvent*) override;
+        void SignalEvent(const DKGpuEvent*) override;
+        void WaitSemaphoreValue(const DKGpuSemaphore*, uint64_t) override;
+        void SignalSemaphoreValue(const DKGpuSemaphore*, uint64_t) override;
 
-        void SetResources(uint32_t set, DKShaderBindingSet*) override;
-        void SetComputePipelineState(DKComputePipelineState*) override;
+        void SetResources(uint32_t set, const DKShaderBindingSet*) override;
+        void SetComputePipelineState(const DKComputePipelineState*) override;
         void Dispatch(uint32_t, uint32_t, uint32_t) override;
 
 		DKObject<class CommandBuffer> commandBuffer;

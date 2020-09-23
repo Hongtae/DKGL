@@ -691,14 +691,14 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		{
 			MTLRenderPipelineColorAttachmentDescriptor* colorAttachmentDesc = [descriptor.colorAttachments objectAtIndexedSubscript:attachment.index];
 			colorAttachmentDesc.pixelFormat = PixelFormat(attachment.pixelFormat);
-			colorAttachmentDesc.writeMask = colorWriteMask(attachment.writeMask);
-			colorAttachmentDesc.blendingEnabled = attachment.blendingEnabled;
-			colorAttachmentDesc.alphaBlendOperation = blendOperation(attachment.alphaBlendOperation);
-			colorAttachmentDesc.rgbBlendOperation = blendOperation(attachment.rgbBlendOperation);
-			colorAttachmentDesc.sourceRGBBlendFactor = blendFactor(attachment.sourceRGBBlendFactor);
-			colorAttachmentDesc.sourceAlphaBlendFactor = blendFactor(attachment.sourceAlphaBlendFactor);
-			colorAttachmentDesc.destinationRGBBlendFactor = blendFactor(attachment.destinationRGBBlendFactor);
-			colorAttachmentDesc.destinationAlphaBlendFactor = blendFactor(attachment.destinationAlphaBlendFactor);
+            colorAttachmentDesc.writeMask = colorWriteMask(attachment.blendState.writeMask);
+			colorAttachmentDesc.blendingEnabled = attachment.blendState.enabled;
+			colorAttachmentDesc.alphaBlendOperation = blendOperation(attachment.blendState.alphaBlendOperation);
+			colorAttachmentDesc.rgbBlendOperation = blendOperation(attachment.blendState.rgbBlendOperation);
+			colorAttachmentDesc.sourceRGBBlendFactor = blendFactor(attachment.blendState.sourceRGBBlendFactor);
+			colorAttachmentDesc.sourceAlphaBlendFactor = blendFactor(attachment.blendState.sourceAlphaBlendFactor);
+			colorAttachmentDesc.destinationRGBBlendFactor = blendFactor(attachment.blendState.destinationRGBBlendFactor);
+			colorAttachmentDesc.destinationAlphaBlendFactor = blendFactor(attachment.blendState.destinationAlphaBlendFactor);
 		}
 
         // setup depth attachment.

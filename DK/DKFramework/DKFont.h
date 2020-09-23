@@ -2,7 +2,7 @@
 //  File: DKFont.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2020 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -10,6 +10,7 @@
 #include "DKPoint.h"
 #include "DKSize.h"
 #include "DKRect.h"
+#include "DKTexture.h"
 
 namespace DKFramework
 {
@@ -21,17 +22,16 @@ namespace DKFramework
 	/// @note
 	///   If object created with font data as DKData object,
 	///   the data object must not be modified after object created.
-	class DKGL_API DKFont
-	{
-	public:
-		struct GlyphData
-		{
-			//DKObject<DKTexture2D>		texture;
-			void* texture;
-			DKPoint									position;
-			DKSize									advance;
-			DKRect									rect;
-		};
+    class DKGL_API DKFont
+    {
+    public:
+        struct GlyphData
+        {
+            DKObject<DKTexture> texture;
+            DKPoint	position;
+            DKSize	advance;
+            DKRect	frame;
+        };
 
 		DKFont();
 		~DKFont();
@@ -52,16 +52,21 @@ namespace DKFramework
 		/// pixel-height from baseline. not includes outline.
 		float LineHeight() const;
 
-		float Baseline() const;	///< baseline offset (in pixel unit)
-		DKRect Bounds(const DKString& str) const; ///< text bounding box.
-		DKPoint	KernAdvance(wchar_t left, wchar_t right) const; ///< calculate kern advance between characters.
+        /// The distance from the baseline to the highest or upper grid coordinate used to place an outline point.
+        float Ascender() const;
+        /// The distance from the baseline to the lowest grid coordinate used to place an outline point.
+        float Descender() const;
+		/// text bounding box.
+		DKRect Bounds(const DKString& str) const; 
+		/// calculate kern advance between characters.
+		DKPoint	KernAdvance(wchar_t left, wchar_t right) const;
 
-		int				PointSize() const							{ return pointSize; }
-		const DKPoint&	Resolution() const							{ return resolution; }
-		float			Outline() const								{ return outline; }
-		float			Embolden() const							{ return embolden; }
-		bool			KerningEnabled() const						{ return kerningEnabled; }
-		bool			ForceBitmap() const							{ return forceBitmap; }
+		int PointSize() const				{ return pointSize; }
+		const DKPoint& Resolution() const	{ return resolution; }
+		float Outline() const				{ return outline; }
+		float Embolden() const				{ return embolden; }
+		bool KerningEnabled() const			{ return kerningEnabled; }
+		bool ForceBitmap() const			{ return forceBitmap; }
 
 		DKString FamilyName() const;
 		DKString StyleName() const;
@@ -85,9 +90,11 @@ namespace DKFramework
 
 		struct GlyphTextureAtlas
 		{
-			//DKObject<DKTexture2D>	texture;
-			void* texture;
-			unsigned int freeSpaceWidth;
+			DKObject<DKTexture>	texture;
+
+            uint32_t filledVertical;
+            uint32_t currentLineWidth;
+            uint32_t currentLineMaxHeight;
 		};
 
 		typedef DKMap<wchar_t, GlyphData>		GlyphDataMap;
@@ -102,7 +109,6 @@ namespace DKFramework
 		DKSpinLock lock;
 		DKObject<DKData> fontData;
 
-		//DKTexture2D* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const;
-		void* CacheGlyphTexture(int width, int height, void* data, DKRect& rect) const { return NULL; }
+		DKTexture* CacheGlyphTexture(int width, int height, const void* data, DKRect& rect) const;
 	};
 }

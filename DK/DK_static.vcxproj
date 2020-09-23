@@ -259,6 +259,7 @@
     <ClCompile Include="DKFramework\DKAudioPlayer.cpp" />
     <ClCompile Include="DKFramework\DKAudioSource.cpp" />
     <ClCompile Include="DKFramework\DKAudioStream.cpp" />
+    <ClCompile Include="DKFramework\DKBlendState.cpp" />
     <ClCompile Include="DKFramework\DKBox.cpp" />
     <ClCompile Include="DKFramework\DKBoxShape.cpp" />
     <ClCompile Include="DKFramework\DKBvh.cpp" />
@@ -293,6 +294,7 @@
     <ClCompile Include="DKFramework\DKMatrix2.cpp" />
     <ClCompile Include="DKFramework\DKMatrix3.cpp" />
     <ClCompile Include="DKFramework\DKMatrix4.cpp" />
+    <ClCompile Include="DKFramework\DKMesh.cpp" />
     <ClCompile Include="DKFramework\DKModel.cpp" />
     <ClCompile Include="DKFramework\DKMultiSphereShape.cpp" />
     <ClCompile Include="DKFramework\DKPlane.cpp" />
@@ -301,6 +303,7 @@
     <ClCompile Include="DKFramework\DKPropertySet.cpp" />
     <ClCompile Include="DKFramework\DKQuaternion.cpp" />
     <ClCompile Include="DKFramework\DKRect.cpp" />
+    <ClCompile Include="DKFramework\DKCanvas.cpp" />
     <ClCompile Include="DKFramework\DKResource.cpp" />
     <ClCompile Include="DKFramework\DKResourceLoader.cpp" />
     <ClCompile Include="DKFramework\DKResourcePool.cpp" />
@@ -446,6 +449,7 @@
     <ClInclude Include="DKFramework\DKAudioPlayer.h" />
     <ClInclude Include="DKFramework\DKAudioSource.h" />
     <ClInclude Include="DKFramework\DKAudioStream.h" />
+    <ClInclude Include="DKFramework\DKBlendState.h" />
     <ClInclude Include="DKFramework\DKCopyCommandEncoder.h" />
     <ClInclude Include="DKFramework\DKBox.h" />
     <ClInclude Include="DKFramework\DKBoxShape.h" />
@@ -490,6 +494,7 @@
     <ClInclude Include="DKFramework\DKMatrix2.h" />
     <ClInclude Include="DKFramework\DKMatrix3.h" />
     <ClInclude Include="DKFramework\DKMatrix4.h" />
+    <ClInclude Include="DKFramework\DKMesh.h" />
     <ClInclude Include="DKFramework\DKModel.h" />
     <ClInclude Include="DKFramework\DKMultiSphereShape.h" />
     <ClInclude Include="DKFramework\DKPipelineReflection.h" />
@@ -502,6 +507,7 @@
     <ClInclude Include="DKFramework\DKQuaternion.h" />
     <ClInclude Include="DKFramework\DKRect.h" />
     <ClInclude Include="DKFramework\DKRenderCommandEncoder.h" />
+    <ClInclude Include="DKFramework\DKCanvas.h" />
     <ClInclude Include="DKFramework\DKRenderPass.h" />
     <ClInclude Include="DKFramework\DKRenderPipeline.h" />
     <ClInclude Include="DKFramework\DKResource.h" />
@@ -513,7 +519,6 @@
     <ClInclude Include="DKFramework\DKSerializer.h" />
     <ClInclude Include="DKFramework\DKShader.h" />
     <ClInclude Include="DKFramework\DKShaderBindingSet.h" />
-    <ClInclude Include="DKFramework\DKShaderConstant.h" />
     <ClInclude Include="DKFramework\DKShaderFunction.h" />
     <ClInclude Include="DKFramework\DKShaderModule.h" />
     <ClInclude Include="DKFramework\DKShaderResource.h" />

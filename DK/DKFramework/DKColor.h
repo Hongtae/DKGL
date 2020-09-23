@@ -94,11 +94,11 @@ namespace DKFramework
 			return val;
 		}
 
-		bool operator == (const DKColor& c)
+		bool operator == (const DKColor& c) const
 		{
 			return r == c.r && g == c.g && b == c.b && a == c.a;
 		}
-		bool operator != (const DKColor& c)
+		bool operator != (const DKColor& c) const
 		{
 			return r != c.r || g != c.g || b != c.b || a != c.a;
 		}

@@ -324,44 +324,44 @@ void RenderCommandEncoder::EndEncoding()
     encoder = nullptr;
 }
 
-void RenderCommandEncoder::WaitEvent(DKGpuEvent* event)
+void RenderCommandEncoder::WaitEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
-    Semaphore* semaphore = static_cast<Semaphore*>(event);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(event));
+    const Semaphore* semaphore = static_cast<const Semaphore*>(event);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, semaphore->NextWaitValue(), pipelineStages);
-    encoder->events.Add(event);
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
-void RenderCommandEncoder::SignalEvent(DKGpuEvent* event)
+void RenderCommandEncoder::SignalEvent(const DKGpuEvent* event)
 {
-    DKASSERT_DEBUG(dynamic_cast<Semaphore*>(event));
-    Semaphore* semaphore = static_cast<Semaphore*>(event);
+    DKASSERT_DEBUG(dynamic_cast<const Semaphore*>(event));
+    const Semaphore* semaphore = static_cast<const Semaphore*>(event);
 
     encoder->AddSignalSemaphore(semaphore->semaphore, semaphore->NextSignalValue());
-    encoder->events.Add(event);
+    encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
-void RenderCommandEncoder::WaitSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+void RenderCommandEncoder::WaitSemaphoreValue(const DKGpuSemaphore* sema, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
-    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+    DKASSERT_DEBUG(dynamic_cast<const TimelineSemaphore*>(sema));
+    const TimelineSemaphore* semaphore = static_cast<const TimelineSemaphore*>(sema);
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     encoder->AddWaitSemaphore(semaphore->semaphore, value, pipelineStages);
-    encoder->semaphores.Add(semaphore);
+    encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(sema));
 }
 
-void RenderCommandEncoder::SignalSemaphoreValue(DKGpuSemaphore* sema, uint64_t value)
+void RenderCommandEncoder::SignalSemaphoreValue(const DKGpuSemaphore* sema, uint64_t value)
 {
-    DKASSERT_DEBUG(dynamic_cast<TimelineSemaphore*>(sema));
-    TimelineSemaphore* semaphore = static_cast<TimelineSemaphore*>(sema);
+    DKASSERT_DEBUG(dynamic_cast<const TimelineSemaphore*>(sema));
+    const TimelineSemaphore* semaphore = static_cast<const TimelineSemaphore*>(sema);
 
     encoder->AddSignalSemaphore(semaphore->semaphore, value);
-    encoder->semaphores.Add(semaphore);
+    encoder->semaphores.Add(const_cast<DKGpuSemaphore*>(sema));
 }
 
 void RenderCommandEncoder::SetViewport(const DKViewport& v)
@@ -380,27 +380,27 @@ void RenderCommandEncoder::SetViewport(const DKViewport& v)
     encoder->commands.Add(command);
 }
 
-void RenderCommandEncoder::SetRenderPipelineState(DKRenderPipelineState* ps)
+void RenderCommandEncoder::SetRenderPipelineState(const DKRenderPipelineState* ps)
 {
-	DKASSERT_DEBUG(dynamic_cast<RenderPipelineState*>(ps));
-	RenderPipelineState* pipeline = static_cast<RenderPipelineState*>(ps);
+	DKASSERT_DEBUG(dynamic_cast<const RenderPipelineState*>(ps));
+	const RenderPipelineState* pipeline = static_cast<const RenderPipelineState*>(ps);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer buffer, EncodingState& state) mutable
     {
         vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
-        state.pipelineState = pipeline;
+        state.pipelineState = const_cast<RenderPipelineState*>(pipeline);
     });
     encoder->commands.Add(command);
-    encoder->pipelineStateObjects.Add(pipeline);
+    encoder->pipelineStateObjects.Add(const_cast<RenderPipelineState*>(pipeline));
 }
 
-void RenderCommandEncoder::SetVertexBuffer(DKGpuBuffer* buffer, size_t offset, uint32_t index)
+void RenderCommandEncoder::SetVertexBuffer(const DKGpuBuffer* buffer, size_t offset, uint32_t index)
 {
 	DKASSERT_DEBUG(buffer);
 	SetVertexBuffers(&buffer, &offset, index, 1);
 }
 
-void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
+void RenderCommandEncoder::SetVertexBuffers(const DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count)
 {
 	if (count > 1)
 	{
@@ -412,14 +412,14 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
 
         for (size_t i = 0; i < count; ++i)
         {
-            DKGpuBuffer* bufferObject = buffers[i];
-            DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferObject) != nullptr);
-            Buffer* buffer = static_cast<BufferView*>(bufferObject)->buffer;
+            const DKGpuBuffer* bufferObject = buffers[i];
+            DKASSERT_DEBUG(dynamic_cast<const BufferView*>(bufferObject) != nullptr);
+            const Buffer* buffer = static_cast<const BufferView*>(bufferObject)->buffer;
             DKASSERT_DEBUG(buffer && buffer->buffer);
             bufferObjects.Add(buffer->buffer);
             bufferOffsets.Add(offsets[i]);
 
-            encoder->buffers.Add(bufferObject);
+            encoder->buffers.Add(const_cast<DKGpuBuffer*>(bufferObject));
         }
         DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
         {
@@ -434,24 +434,24 @@ void RenderCommandEncoder::SetVertexBuffers(DKGpuBuffer** buffers, const size_t*
     }
 	else if (count > 0)
 	{
-        DKGpuBuffer* bufferObject = buffers[0];
-        DKASSERT_DEBUG(dynamic_cast<BufferView*>(bufferObject) != nullptr);
-        Buffer* buf = static_cast<BufferView*>(bufferObject)->buffer;
+        const DKGpuBuffer* bufferObject = buffers[0];
+        DKASSERT_DEBUG(dynamic_cast<const BufferView*>(bufferObject) != nullptr);
+        const Buffer* buf = static_cast<const BufferView*>(bufferObject)->buffer;
         VkDeviceSize of = offsets[0];
         DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
         {
             vkCmdBindVertexBuffers(commandBuffer, index, count, &buf->buffer, &of);
         });
         encoder->commands.Add(command);
-        encoder->buffers.Add(bufferObject);
+        encoder->buffers.Add(const_cast<DKGpuBuffer*>(bufferObject));
     }
 }
 
-void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type)
+void RenderCommandEncoder::SetIndexBuffer(const DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type)
 {
 	DKASSERT_DEBUG(indexBuffer);
-	DKASSERT_DEBUG(dynamic_cast<BufferView*>(indexBuffer) != nullptr);
-    Buffer* buffer = static_cast<BufferView*>(indexBuffer)->buffer;
+	DKASSERT_DEBUG(dynamic_cast<const BufferView*>(indexBuffer) != nullptr);
+    const Buffer* buffer = static_cast<const BufferView*>(indexBuffer)->buffer;
     DKASSERT_DEBUG(buffer && buffer->buffer);
 
 	VkIndexType indexType;
@@ -469,7 +469,7 @@ void RenderCommandEncoder::SetIndexBuffer(DKGpuBuffer* indexBuffer, size_t offse
         vkCmdBindIndexBuffer(commandBuffer, buffer->buffer, offset, indexType);
     });
     encoder->commands.Add(command);
-    encoder->buffers.Add(indexBuffer);
+    encoder->buffers.Add(const_cast<DKGpuBuffer*>(indexBuffer));
 }
 
 void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)
@@ -496,13 +496,14 @@ void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstance
 	}
 }
 
-void RenderCommandEncoder::SetResources(uint32_t index, DKShaderBindingSet* set)
+void RenderCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSet* set)
 {
     DKObject<ShaderBindingSet> bindingSet = nullptr;
     if (set)
     {
-        DKASSERT_DEBUG(dynamic_cast<ShaderBindingSet*>(set) != nullptr);
-        bindingSet = static_cast<ShaderBindingSet*>(set);
+        DKASSERT_DEBUG(dynamic_cast<const ShaderBindingSet*>(set) != nullptr);
+        auto p = static_cast<const ShaderBindingSet*>(set);
+        bindingSet = const_cast<ShaderBindingSet*>(p);
         encoder->shaderBindingSets.Add(bindingSet);
     }
 

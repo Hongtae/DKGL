@@ -310,7 +310,7 @@ void Window::EnableTextInput(int deviceId, bool enable)
 	}
 }
 
-bool Window::IsTextInputEnabled(int deviceId)
+bool Window::IsTextInputEnabled(int deviceId) const
 {
 	if (deviceId == 0)
 	{

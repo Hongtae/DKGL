@@ -513,7 +513,7 @@ void Window::EnableTextInput(int deviceId, bool enable)
 	textCompositionMode = enable;
 }
 
-bool Window::IsTextInputEnabled(int deviceId)
+bool Window::IsTextInputEnabled(int deviceId) const
 {
 	if (deviceId == 0)
 		return textCompositionMode;

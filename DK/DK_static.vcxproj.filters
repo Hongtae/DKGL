@@ -328,9 +328,6 @@
     <ClCompile Include="DKFramework\DKFixedConstraint.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
-    <ClCompile Include="DKFramework\DKFont.cpp">
-      <Filter>DKFramework</Filter>
-    </ClCompile>
     <ClCompile Include="DKFramework\DKGearConstraint.cpp">
       <Filter>DKFramework</Filter>
     </ClCompile>
@@ -587,6 +584,18 @@
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
     <ClCompile Include="DKFramework\DKScene.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKMesh.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKBlendState.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKCanvas.cpp">
+      <Filter>DKFramework_WIP</Filter>
+    </ClCompile>
+    <ClCompile Include="DKFramework\DKFont.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
   </ItemGroup>
@@ -888,9 +897,6 @@
     <ClInclude Include="DKFramework\DKFixedConstraint.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKFont.h">
-      <Filter>DKFramework</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKGearConstraint.h">
       <Filter>DKFramework</Filter>
     </ClInclude>
@@ -1146,9 +1152,6 @@
     <ClInclude Include="DKFramework\DKShaderModule.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
-    <ClInclude Include="DKFramework\DKShaderConstant.h">
-      <Filter>DKFramework_WIP</Filter>
-    </ClInclude>
     <ClInclude Include="DKFramework\DKSoftBody.h">
       <Filter>DKFramework_WIP</Filter>
     </ClInclude>
@@ -1334,6 +1337,18 @@
     </ClInclude>
     <ClInclude Include="DKFramework\Private\Metal\Semaphore.h">
       <Filter>DKFramework_WIP\Private\Metal</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKMesh.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKBlendState.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKCanvas.h">
+      <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFramework\DKFont.h">
+      <Filter>DKFramework_WIP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

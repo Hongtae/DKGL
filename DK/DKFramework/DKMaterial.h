@@ -8,27 +8,108 @@
 #pragma once
 #include "../DKFoundation.h"
 #include "DKResource.h"
+#include "DKRenderPipeline.h"
 #include "DKShader.h"
 #include "DKShaderModule.h"
 #include "DKShaderBindingSet.h"
+#include "DKRenderCommandEncoder.h"
 
 namespace DKFramework
 {
-    class DKMaterial : public DKResource
+    /// predefined shader uniform constant identifiers
+    enum class DKShaderUniform : uint32_t
+    {
+        Unknown = 0,                        ///< error
+        ModelMatrix,                        ///< float4x4
+        ModelMatrixInverse,                 ///< float4x4
+        ViewMatrix,                         ///< float4x4
+        ViewMatrixInverse,                  ///< float4x4
+        ProjectionMatrix,                   ///< float4x4
+        ProjectionMatrixInverse,            ///< float4x4
+        ViewProjectionMatrix,               ///< float4x4
+        ViewProjectionMatrixInverse,        ///< float4x4
+        ModelViewMatrix,                    ///< float4x4
+        ModelViewMatrixInverse,             ///< float4x4
+        ModelViewProjectionMatrix,          ///< float4x4
+        ModelViewProjectionMatrixInverse,   ///< float4x4
+        LinearTransformArray,               ///< float3x3
+        AffineTransformArray,               ///< float4x4
+        PositionArray,                      ///< float3
+        Texture2D,                          ///< uint1
+        Texture3D,                          ///< uint1
+        TextureCube,                        ///< uint1
+        AmbientColor,                       ///< float3
+        CameraPosition,                     ///< float3
+        UserDefine,                         ///< user define
+    };
+    /// predefined vertex stream identifiers
+    enum class DKVertexStream : uint32_t
+    {
+        Unknown = 0,		// regard to error
+        Position,
+        Normal,
+        Color,
+        TexCoord,
+        Tangent,
+        Bitangent,
+        BlendIndices,
+        BlendWeights,
+        UserDefine,		// user-define (you can access by name, at shader)
+    };
+
+    class DKGL_API DKMaterial : public DKResource
     {
     public:
         DKMaterial();
         ~DKMaterial();
 
-        DKObject<DKShader> shader;
-        DKObject<DKShaderModule> shaderModule;
-
-        struct FunctionProperty
+        struct ShaderTemplate
         {
-            DKArray<DKShaderBindingSetLayout> bindingSetLayouts;
-            DKArray<DKShaderAttribute> inputAttributes;
+            DKObject<DKShader> shader;
+            DKObject<DKShaderModule> shaderModule;
+
+            struct FunctionProperty
+            {
+                DKArray<DKShaderBindingSetLayout> bindingSetLayouts;
+                DKArray<DKShaderAttribute> inputAttributes;
+            };
+
+            DKMap<DKString, FunctionProperty> functionProperties;
+            DKMap<DKString, DKShaderUniform> predefinedUniformValues;
         };
 
-        DKMap<DKString, FunctionProperty> functionProperties;
+        DKObject<ShaderTemplate> shaderTemplate;
+        DKObject<DKShaderFunction> shaderFunction;
+        DKObject<DKRenderPipelineState> renderPipelineState;
+
+        struct ResourceBindingSet
+        {
+            uint32_t resourceIndex;
+            DKObject<DKShaderBindingSet> bindings;
+        };
+        DKArray<ResourceBindingSet> resourceBindings;
+
+
+        using TextureArray = DKArray<DKObject<DKTexture>>;
+        using BufferArray = DKArray<DKObject<DKGpuBuffer>>;
+        using SamplerArray = DKArray<DKObject<DKSamplerState>>;
+
+        DKMap<uint32_t, TextureArray> textureParameter;
+        DKMap<uint32_t, BufferArray> bufferParameter;
+        DKMap<uint32_t, SamplerArray> samplerParameter;
+        DKMap<DKString, uint32_t> parameterNameIndex;
+
+        DKRenderPipelineDescriptor renderPipelineDescriptor;
+
+        class ShaderPropertyCallback
+        {
+        public:
+            virtual ~ShaderPropertyCallback() {}
+        };
+
+        bool Build();
+        bool UpdateDescriptorSets(const ShaderPropertyCallback*);
+        bool EncodeRenderCommand(DKRenderCommandEncoder*) const;
+    private:
     };
 }

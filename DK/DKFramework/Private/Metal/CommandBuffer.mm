@@ -151,6 +151,14 @@ DKObject<DKCopyCommandEncoder> CommandBuffer::CreateCopyCommandEncoder()
 	return r;
 }
 
+void CommandBuffer::AddCompletedHandler(DKOperation* op)
+{
+    if (op)
+    {
+        completedHandlers.Add(op);
+    }
+}
+
 bool CommandBuffer::Commit()
 {
 	@autoreleasepool
@@ -163,6 +171,14 @@ bool CommandBuffer::Commit()
 			if (!enc->Encode(buffer))
 				return false;
 		}
+        if (completedHandlers.Count() > 0)
+        {
+            DKObject<CommandBuffer> ref = this;
+            [buffer addCompletedHandler:^(id<MTLCommandBuffer> _Nonnull) {
+                for (const DKOperation* op : ref->completedHandlers)
+                    op->Perform();
+            }];
+        }
 		[buffer commit];
 	}
 	return true;

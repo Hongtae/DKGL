@@ -19,7 +19,6 @@ namespace DKFramework
         virtual ~DKGraphicsDeviceContext();
 
         DKObject<DKGraphicsDevice> device;
-        using CommandQueueRef = DKObject<DKCommandQueue>;
-        DKArray<CommandQueueRef> queues;
+        DKObject<DKCommandQueue> transferQueue;
     };
 }
