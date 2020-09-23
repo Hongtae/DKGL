@@ -78,8 +78,8 @@ namespace DKFramework
         const DKScreen* Screen(void) const { return screen; }
 
         /// Managing the frame hierarchy
-        bool AddSubframe(DKFrame* frame);    ///< add child frame
-        void RemoveSubframe(DKFrame* frame); ///< remove child frame
+        virtual bool AddSubframe(DKFrame* frame);    ///< add child frame
+        virtual void RemoveSubframe(DKFrame* frame); ///< remove child frame
         void RemoveFromSuperframe(void);     ///< remove self from parent
 
         bool BringSubframeToFront(DKFrame*); ///< bring child to front.

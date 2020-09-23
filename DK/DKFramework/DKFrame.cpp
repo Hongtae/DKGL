@@ -104,10 +104,7 @@ void DKFrame::Unload(void)
 
 bool DKFrame::AddSubframe(DKFrame* frame)
 {
-    if (frame == NULL)
-        return false;
-
-    if (frame->superframe == NULL)
+    if (frame && frame->superframe == nullptr)
     {
         //this->subframes.Add(frame);
         this->subframes.Insert(frame, 0);	// bring to front
@@ -125,9 +122,6 @@ bool DKFrame::AddSubframe(DKFrame* frame)
 
 void DKFrame::RemoveSubframe(DKFrame* frame)
 {
-    if (frame == NULL)
-        return;
-
     if (frame && frame->superframe == this)
     {
         frame->ReleaseMouseData();
