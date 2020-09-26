@@ -185,6 +185,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 		return NULL;
 	}
 
+	float ascender = this->Ascender();
 	FT_Pos boldStrength = embolden * 64.0;
 	FT_Pos outlineSize = outline * 64.0;
 	data.advance = DKSize(face->glyph->advance.x + boldStrength, face->glyph->advance.y + boldStrength) / 64.0f;
@@ -245,7 +246,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			{
 				// x_left: bitmap starting point from origin
 				// y_top: height from origin
-				data.position = DKPoint(x_left, y_top); 
+				data.position = DKPoint(x_left, ascender - y_top); 
 				data.texture = CacheGlyphTexture(ftBitmap.width, ftBitmap.rows, ftBitmap.buffer, data.frame);
 			}
 
@@ -265,7 +266,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 				FT_BitmapGlyph  glyph_bitmap = (FT_BitmapGlyph)glyph;
 				// bitmap_left: bitmap offset from origin
 				// bitmap_top: height from origin
-				data.position = DKPoint(glyph_bitmap->left, glyph_bitmap->top);
+				data.position = DKPoint(glyph_bitmap->left, ascender - glyph_bitmap->top);
 				data.texture = CacheGlyphTexture(glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows, glyph_bitmap->bitmap.buffer, data.frame);
 			}
 			FT_Done_Glyph(glyph);
@@ -303,7 +304,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 						outer.buffer[ (y + offsetY) * outer.width + x + offsetX] = Max<int>(value1 - value2, 0);
 					}
 				}
-				data.position = DKPoint(face->glyph->bitmap_left - outline, face->glyph->bitmap_top + outline);
+				data.position = DKPoint(face->glyph->bitmap_left - outline, ascender - (face->glyph->bitmap_top + outline));
 				data.texture = CacheGlyphTexture(outer.width, outer.rows, outer.buffer, data.frame);
 
 				FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &inner);
@@ -312,7 +313,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 			else
 			{
 				FT_Bitmap_Embolden(Private::FTLibrary::GetLibrary(), &face->glyph->bitmap, boldStrength, boldStrength);
-				data.position = DKPoint(face->glyph->bitmap_left, face->glyph->bitmap_top + embolden); 
+				data.position = DKPoint(face->glyph->bitmap_left, ascender - (face->glyph->bitmap_top + embolden));
 				data.texture = CacheGlyphTexture(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, data.frame);
 			}
 		}
@@ -459,7 +460,6 @@ float DKFont::Ascender() const
     if (face->size == 0)
         return 0;
 
-    constexpr bool topOrigin = true;
     float baseline = 0;
     if (FT_IS_SCALABLE(face))
     {
@@ -564,7 +564,7 @@ float DKFont::LineWidth(const DKString& str) const
 		const GlyphData* glyph = GlyphDataForChar(str[i]);
 		if (glyph)
 		{
-			lineLength += KernAdvance(str[i], str[i+1]).x + glyph->advance.width;
+			lineLength += glyph->advance.width + KernAdvance(str[i], str[i + 1]).x;
 		}
 	}
 	//return lineLength;
@@ -576,7 +576,7 @@ DKRect DKFont::Bounds(const DKString& str) const
 	DKPoint bboxMin(0, 0);
 	DKPoint bboxMax(0, 0);
 	float offset = 0;
-	size_t len = str.Length();
+	const size_t len = str.Length();
 
 	for (size_t i = 0; i < len; ++i)
 	{
@@ -584,20 +584,28 @@ DKRect DKFont::Bounds(const DKString& str) const
 		if (glyph == NULL)
 			continue;
 
-		DKPoint posMin(offset + glyph->position.x, -glyph->position.y);
-		DKPoint posMax(offset + glyph->position.x + glyph->frame.size.width, glyph->frame.size.height - glyph->position.y);
+        if (offset > 0)
+        {
+            const DKPoint posMin(offset + glyph->position.x, glyph->position.y);
+            const DKPoint posMax(posMin + glyph->frame.size.Vector());
 
-		if (bboxMin.x > posMin.x)	bboxMin.x = posMin.x;
-		if (bboxMin.y > posMin.y)	bboxMin.y = posMin.y;
-		if (bboxMax.x < posMax.x)	bboxMax.x = posMax.x;
-		if (bboxMax.y < posMax.y)	bboxMax.y = posMax.y;
+            if (bboxMin.x > posMin.x)	bboxMin.x = posMin.x;
+            if (bboxMin.y > posMin.y)	bboxMin.y = posMin.y;
+            if (bboxMax.x < posMax.x)	bboxMax.x = posMax.x;
+            if (bboxMax.y < posMax.y)	bboxMax.y = posMax.y;
+        }
+		else
+		{
+            bboxMin = glyph->position;
+            bboxMax = glyph->position + glyph->frame.size.Vector();
+		}
 
 		offset += glyph->advance.width + KernAdvance(str[i], str[i+1]).x;
 	}
 
 	//return DKRect(bboxMin, DKSize(bboxMax.x - bboxMin.x, bboxMax.y - bboxMin.y));
-	DKSize size = DKSize(ceilf(bboxMax.x - bboxMin.x), ceilf(bboxMax.y - bboxMin.y));
-	DKPoint origin = DKPoint(floor(bboxMin.x), floor(bboxMin.y));
+	const DKSize size = DKSize(ceilf(bboxMax.x - bboxMin.x), ceilf(bboxMax.y - bboxMin.y));
+	const DKPoint origin = DKPoint(bboxMin.x, bboxMin.y);
 	return DKRect(origin, size);
 }
 

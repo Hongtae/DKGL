@@ -594,13 +594,21 @@ void DKCanvas::DrawText(const DKRect& bounds,
         if (glyph == nullptr)
             continue;
 
-        DKPoint posMin(offset + glyph->position.x, -glyph->position.y);
-        DKPoint posMax(offset + glyph->position.x + glyph->frame.size.width, glyph->frame.size.height - glyph->position.y);
+        DKPoint posMin(offset + glyph->position.x, glyph->position.y);
+        DKPoint posMax(posMin + glyph->frame.size.Vector());
 
-        if (bboxMin.x > posMin.x) bboxMin.x = posMin.x;
-        if (bboxMin.y > posMin.y) bboxMin.y = posMin.y;
-        if (bboxMax.x < posMax.x) bboxMax.x = posMax.x;
-        if (bboxMax.y < posMax.y) bboxMax.y = posMax.y;
+        if (offset > 0)
+        {
+            if (bboxMin.x > posMin.x) bboxMin.x = posMin.x;
+            if (bboxMin.y > posMin.y) bboxMin.y = posMin.y;
+            if (bboxMax.x < posMax.x) bboxMax.x = posMax.x;
+            if (bboxMax.y < posMax.y) bboxMax.y = posMax.y;
+        }
+        else
+        {
+            bboxMin = posMin;
+            bboxMax = posMax;
+        }
 
         if (glyph->texture)
         {
@@ -656,7 +664,7 @@ void DKCanvas::DrawText(const DKRect& bounds,
     const DKTexture* lastTexture = nullptr;
     DKArray<TexturedVertex> triangles;
     triangles.Reserve(quads.Count() * 6);
-    for (Quad& q : quads)
+    for (const Quad& q : quads)
     {
         if (q.texture != lastTexture)
         {
@@ -694,6 +702,7 @@ void DKCanvas::DrawText(const DKPoint& baselineBegin,
         return;
 
     // font size, screen size in pixel units
+    const float ascender = font->Ascender();
     const float lineHeight = font->LineHeight();
     const float lineWidth = font->LineWidth(text);
     const DKRect textBounds = font->Bounds(text);
@@ -710,13 +719,13 @@ void DKCanvas::DrawText(const DKPoint& baselineBegin,
     const float angle = acosf(baselinePixelDir.x) * ((baselinePixelDir.y < 0) ? -1.0f : 1.0f);
 
     // calculate transform (matrix)
-    DKAffineTransform2 transform(
-        DKLinearTransform2()
+    DKAffineTransform2 transform(0, -ascender);                 // move pivot to baseline
+    transform *= DKLinearTransform2()
         .Scale(scale / lineWidth)										// scale
         .Rotate(angle)													// rotate
-        .Scale(1.0f / viewportSize.width, 1.0f / viewportSize.height)		// normalize (0~1)
-        .Scale(contentScale.width, contentScale.height)					// apply contentScale
-        , baselineBegin.Vector());
+        .Scale(1.0f / viewportSize.width, 1.0f / viewportSize.height)	// normalize (0~1)
+        .Scale(contentScale.width, contentScale.height);				// apply contentScale
+    transform.Translate(baselineBegin.Vector());
 
     DrawText(textBounds, transform.Matrix3(), text, font, color);
 }
