@@ -415,7 +415,7 @@ void DKCanvas::DrawEllipseLine(const DKRect& bounds,
                 lines[i] = DKVector2(p + center).Transform(tm);
             }
             lines[numSegments] = lines.Value(0);
-            DrawLines(lines, lines.Count(), color);
+            DrawLineStrip(lines, lines.Count(), color);
         }
     }
 }
@@ -463,7 +463,7 @@ void DKCanvas::DrawEllipse(const DKRect& bounds, const DKMatrix3& tm, const DKCo
                 // x = a*sin(t)
                 // y = b*cos(t)
                 // where 0 <= t < 2*PI
-                float t = (DKGL_PI * 2.0f) * (float(i) / float(numSegments));
+                float t = (DKGL_PI * 2.0f) * (float(i+1) / float(numSegments));
                 DKVector2 p = { radius.x * sinf(t), radius.y * cosf(t) };
                 DKVector2 vertex = DKVector2(p + center).Transform(tm);
 
@@ -539,7 +539,7 @@ void DKCanvas::DrawEllipse(const DKRect& bounds,
                 // x = a*sin(t)
                 // y = b*cos(t)
                 // where 0 <= t < 2*PI
-                float t = (DKGL_PI * 2.0f) * (float(i) / float(numSegments));
+                float t = (DKGL_PI * 2.0f) * (float(i+1) / float(numSegments));
                 DKVector2 p = DKVector2(radius.x * sinf(t), radius.y * cosf(t)) + center;
                 DKVector2 uv = texBounds.origin.Vector() + texBounds.size.Vector() * ((p - bounds.origin.Vector()) / bounds.size.Vector());
                 TexturedVertex vertex = {
@@ -746,6 +746,5 @@ uint32_t DKCanvas::LineSegmentsCircumference(float radius) const
                                      minSegments,
                                      maxSegments);
 
-    return numSegments;
+    return (numSegments >> 2) << 2;
 }
-
