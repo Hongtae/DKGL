@@ -443,8 +443,8 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
         GlyphTextureAtlas gta = {
             tex,
             0,
-            width + hPadding,
-            height + vPadding
+            static_cast<uint32_t>(width + hPadding),
+            static_cast<uint32_t>(height + vPadding)
         };
         textures.Add(gta);
     }

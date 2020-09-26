@@ -34,11 +34,13 @@ void* Buffer::Contents()
 
 void Buffer::Flush()
 {
+#if TARGET_OS_OSX || TARGET_OS_MACCATALYST
     if (buffer.storageMode == MTLStorageModeManaged)
     {
         NSRange range = NSMakeRange(0, buffer.length);
         [buffer didModifyRange:range];
     }
+#endif
 }
 
 size_t Buffer::Length() const

@@ -13,7 +13,7 @@ using namespace DKFramework;
 DKScreen::DKScreen(DKCommandQueue* cq, DKOperationQueue* oq)
     : window(nullptr)
     , rootFrame(nullptr)
-    , screenResolution({0, 0})
+    , screenResolution(DKSize(0, 0))
 {
 	struct LocalEventLoop : public DKEventLoop
 	{

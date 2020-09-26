@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -549,8 +549,8 @@
 		66DA0C8C1DA3502600B3056E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1000;
-				ORGANIZATIONNAME = PALCUBE.COM;
+				LastUpgradeCheck = 1170;
+				ORGANIZATIONNAME = DKGL.IO;
 				TargetAttributes = {
 					84A408411DA3F1C900E5A725 = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -561,11 +561,12 @@
 				};
 			};
 			buildConfigurationList = 66DA0C8F1DA3502600B3056E /* Build configuration list for PBXProject "libxml2" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			compatibilityVersion = "Xcode 11.0";
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 66DA0C8B1DA3502600B3056E;
 			productRefGroup = 84A408431DA3F1C900E5A725 /* Products */;
@@ -689,6 +690,7 @@
 		66DA0C901DA3502600B3056E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -726,6 +728,7 @@
 		66DA0C911DA3502600B3056E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;

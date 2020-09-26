@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -366,7 +366,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
-				ORGANIZATIONNAME = PALCUBE.COM;
+				ORGANIZATIONNAME = DKGL.IO;
 				TargetAttributes = {
 					84A4098E1DA3F24700E5A725 = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -377,7 +377,7 @@
 				};
 			};
 			buildConfigurationList = 66DA0C8F1DA3502600B3056E /* Build configuration list for PBXProject "zstd" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 11.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (

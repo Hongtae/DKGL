@@ -205,7 +205,7 @@ GraphicsDevice::GraphicsDevice()
 : device(nil)
 {
 	@autoreleasepool {
-#if !TARGET_OS_IPHONE
+#if TARGET_OS_OSX || TARGET_OS_MACCATALYST
 		NSArray<id<MTLDevice>>* devices = MTLCopyAllDevices();
 
 		NSString* preferredDeviceName = @"";

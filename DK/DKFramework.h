@@ -98,7 +98,6 @@ namespace DKFramework {}
 #include "DKFramework/DKTriangleMesh.h"
 #include "DKFramework/DKTriangleMeshBvh.h"
 #include "DKFramework/DKTriangleMeshProxyShape.h"
-#include "DKFramework/DKUpdateQueue.h"
 #include "DKFramework/DKVariant.h"
 #include "DKFramework/DKVector2.h"
 #include "DKFramework/DKVector3.h"
