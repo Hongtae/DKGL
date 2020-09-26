@@ -218,6 +218,7 @@
     <ClCompile Include="DKFoundation\DKDataStream.cpp" />
     <ClCompile Include="DKFoundation\DKDateTime.cpp" />
     <ClCompile Include="DKFoundation\DKDirectory.cpp" />
+    <ClCompile Include="DKFoundation\DKDispatchQueue.cpp" />
     <ClCompile Include="DKFoundation\DKError.cpp" />
     <ClCompile Include="DKFoundation\DKEventLoop.cpp" />
     <ClCompile Include="DKFoundation\DKEventLoopTimer.cpp" />
@@ -383,6 +384,7 @@
     <ClInclude Include="DKFoundation\DKDataStream.h" />
     <ClInclude Include="DKFoundation\DKDateTime.h" />
     <ClInclude Include="DKFoundation\DKDirectory.h" />
+    <ClInclude Include="DKFoundation\DKDispatchQueue.h" />
     <ClInclude Include="DKFoundation\DKDummyLock.h" />
     <ClInclude Include="DKFoundation\DKEndianness.h" />
     <ClInclude Include="DKFoundation\DKError.h" />

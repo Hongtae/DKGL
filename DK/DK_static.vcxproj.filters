@@ -598,6 +598,9 @@
     <ClCompile Include="DKFramework\DKFont.cpp">
       <Filter>DKFramework_WIP</Filter>
     </ClCompile>
+    <ClCompile Include="DKFoundation\DKDispatchQueue.cpp">
+      <Filter>DKFoundation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DKFoundation\DKAllocator.h">
@@ -1349,6 +1352,9 @@
     </ClInclude>
     <ClInclude Include="DKFramework\DKFont.h">
       <Filter>DKFramework_WIP</Filter>
+    </ClInclude>
+    <ClInclude Include="DKFoundation\DKDispatchQueue.h">
+      <Filter>DKFoundation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -106,6 +106,7 @@ namespace DKFoundation {}
 #include "DKFoundation/DKValue.h"
 
 // event-loop, event-loop timer, operation queue
+#include "DKFoundation/DKDispatchQueue.h"
 #include "DKFoundation/DKEventLoop.h"
 #include "DKFoundation/DKEventLoopTimer.h"
 #include "DKFoundation/DKOperationQueue.h"
