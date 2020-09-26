@@ -742,7 +742,7 @@ uint32_t DKCanvas::LineSegmentsCircumference(float radius) const
 
     constexpr uint32_t minSegments = 4;
     constexpr uint32_t maxSegments = 90;
-    uint32_t numSegments = Clamp(static_cast<uint32_t>(circumference * 0.25f),
+    uint32_t numSegments = Clamp(static_cast<uint32_t>(circumference * 0.5f),
                                      minSegments,
                                      maxSegments);
 
