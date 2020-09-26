@@ -881,6 +881,7 @@ bool DKFrame::ProcessKeyboardEvent(const DKWindow::KeyboardEvent& event)
 
     if (this->CanHandleKeyboard())
     {
+        OnKeyboardEvent(event);
         switch (event.type)
         {
         case DKWindow::KeyboardEvent::KeyDown:
@@ -982,6 +983,7 @@ bool DKFrame::ProcessMouseEvent(const DKWindow::MouseEvent& event, const DKPoint
                 return true;
         }
 
+        OnMouseEvent(event, localPos, localDelta);
         switch (event.type)
         {
         case DKWindow::MouseEvent::ButtonDown:

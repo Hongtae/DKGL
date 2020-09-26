@@ -251,6 +251,7 @@ namespace DKFramework
         virtual void OnContentResized() {} 
 
         // mouse events
+        virtual void OnMouseEvent(const DKWindow::MouseEvent&, const DKPoint& pos, const DKVector2& delta) {}
         virtual void OnMouseDown(int deviceId, int buttonId, const DKPoint& pos) {}
         virtual void OnMouseUp(int deviceId, int buttonId, const DKPoint& pos) {}
         virtual void OnMouseMove(int deviceId, const DKPoint& pos, const DKVector2& delta) {}
@@ -260,6 +261,7 @@ namespace DKFramework
         virtual void OnMouseLost(int deviceId) {}  ///< mouse lost which captured by self.
 
         // keyboard, text events
+        virtual void OnKeyboardEvent(const DKWindow::KeyboardEvent&) {}
         virtual void OnKeyDown(int deviceId, DKVirtualKey key) {}
         virtual void OnKeyUp(int deviceId, DKVirtualKey key) {}
         virtual void OnTextInput(int deviceId, const DKString& str) {}
