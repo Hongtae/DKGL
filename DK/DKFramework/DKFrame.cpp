@@ -1014,44 +1014,45 @@ bool DKFrame::ProcessMouseInOut(int deviceId, const DKPoint& pos, bool insidePar
     DKVector2 localPos = DKVector2(pos.x * this->contentScale.width, pos.y * this->contentScale.height);
     localPos.Transform(this->contentTransformInverse);
 
-    bool hover = false;
-    if (auto p = mouseHover.Find(deviceId); p)
-        hover = p->value;
+    if (insideSelf)
+        insideSelf = HitTest(localPos);
 
-    if (insideSelf && HitTest(localPos))
-    {
-        if (!hover)
-        {
-            hover = true;
-            if (this->CanHandleMouse())
-            {
-                mouseHover.Update(deviceId, hover);
-                OnMouseHover(deviceId);
-            }
-        }
-    }
-    else
-    {
-        if (hover)
-        {
-            hover = false;
-            if (this->CanHandleMouse())
-            {
-                mouseHover.Update(deviceId, hover);
-                OnMouseLeave(deviceId);
-            }
-        }
-    }
+    bool hover = insideSelf;
+    if (hover)
+        hover = this->ContentHitTest(localPos);
 
-    bool subframeHover = hover && this->ContentHitTest(localPos);
+    bool subframeHover = false;
     decltype(subframes) frames = subframes;
     for (DKFrame* frame : frames)
     {
         DKMatrix3 tm = frame->TransformInverse();
-        if (frame->ProcessMouseInOut(deviceId, DKVector2(localPos).Transform(tm), subframeHover))
-            subframeHover = false;
+        if (frame->ProcessMouseInOut(deviceId, DKVector2(localPos).Transform(tm), hover))
+        {
+            hover = false;
+            subframeHover = true;
+        }
     }
-    return hover;
+    hover = insideSelf && (!subframeHover);
+
+    if (this->CanHandleMouse())
+    {
+        bool prevHover = false;
+        if (auto p = mouseHover.Find(deviceId); p)
+            prevHover = p->value;
+
+        mouseHover.Update(deviceId, hover);
+        if (hover)
+        {
+            if (!prevHover)
+                OnMouseHover(deviceId);
+        }
+        else
+        {
+            if (prevHover)
+                OnMouseLeave(deviceId);
+        }
+    }
+    return hover || subframeHover;
 }
 
 void DKFrame::ReleaseMouseData()
