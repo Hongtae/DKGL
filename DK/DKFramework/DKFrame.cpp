@@ -423,7 +423,7 @@ void DKFrame::ReleaseAllMiceCapturedBySelf(void)
         screen->RemoveFocusFrameForAnyDevices(this, false);
 }
 
-bool DKFrame::IsKeybaordCapturedBySelf(int deviceId) const
+bool DKFrame::IsKeyboardCapturedBySelf(int deviceId) const
 {
     if (screen && this->IsDescendantOf(screen->RootFrame()))
         return screen->KeyFrame(deviceId) == this;

@@ -177,7 +177,7 @@ namespace DKFramework
         void ReleaseAllMiceCapturedBySelf(void);
 
         // determine whether frame captured specified device or not
-        bool IsKeybaordCapturedBySelf(int deviceId) const;
+        bool IsKeyboardCapturedBySelf(int deviceId) const;
         bool IsMouseCapturedBySelf(int deviceId) const;
 
         // get mouse position
