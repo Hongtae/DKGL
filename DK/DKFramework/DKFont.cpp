@@ -303,7 +303,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 						outer.buffer[ (y + offsetY) * outer.width + x + offsetX] = Max<int>(value1 - value2, 0);
 					}
 				}
-				data.position = DKPoint(face->glyph->bitmap_left - outline, face->glyph->bitmap_top - outline);
+				data.position = DKPoint(face->glyph->bitmap_left - outline, face->glyph->bitmap_top + outline);
 				data.texture = CacheGlyphTexture(outer.width, outer.rows, outer.buffer, data.frame);
 
 				FT_Bitmap_Done(Private::FTLibrary::GetLibrary(), &inner);
