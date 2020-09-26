@@ -55,8 +55,8 @@ namespace DKFramework
     class DKGL_API DKFrame
     {
     public:
-        DKFrame(void);
-        virtual ~DKFrame(void);
+        DKFrame();
+        virtual ~DKFrame();
 
         /// Load frame and it's children with specified screen object and
         /// desired resolution. Load frame does not affect hierarchy.
@@ -70,52 +70,53 @@ namespace DKFramework
         ///  In certain circumstances, a frame can be destroyed in a loaded state,
         ///  in which case the loaded resource must be freed in the frame's destructor,
         ///  or Unload() must be called manually before it is destroyed.
-        void Unload(void);
-        bool IsLoaded(void) const { return loaded; }
+        void Unload();
+        bool IsLoaded() const { return loaded; }
 
         /// get screen object.
-        DKScreen* Screen(void) { return screen; }
-        const DKScreen* Screen(void) const { return screen; }
+        DKScreen* Screen() { return screen; }
+        const DKScreen* Screen() const { return screen; }
 
         /// Managing the frame hierarchy
         virtual bool AddSubframe(DKFrame* frame);    ///< add child frame
         virtual void RemoveSubframe(DKFrame* frame); ///< remove child frame
-        void RemoveFromSuperframe(void);     ///< remove self from parent
+        void RemoveFromSuperframe();     ///< remove self from parent
 
         bool BringSubframeToFront(DKFrame*); ///< bring child to front.
         bool SendSubframeToBack(DKFrame*);   ///< send child to back.
 
         /// get parent
-        DKFrame* Superframe(void) { return superframe; }
-        const DKFrame* Superframe(void) const { return superframe; }
+        DKFrame* Superframe() { return superframe; }
+        const DKFrame* Superframe() const { return superframe; }
         DKFrame* SubframeAtIndex(uint32_t index);
         const DKFrame* SubframeAtIndex(uint32_t index) const;
         bool IsDescendantOf(const DKFrame* frame) const;
-        size_t NumberOfSubframes(void) const;
-        size_t NumberOfDescendants(void) const;
+        size_t NumberOfSubframes() const;
+        size_t NumberOfDescendants() const;
 
         /// Frame normalized transform (on parent space, not for content)
         /// set frame's transform (on parent space)
         void SetTransform(const DKMatrix3& transform); 
-        const DKMatrix3& Transform(void) const { return transform; }
-        const DKMatrix3& TransformInverse(void) const { return transformInverse; }
+        const DKMatrix3& Transform() const { return transform; }
+        const DKMatrix3& TransformInverse() const { return transformInverse; }
 
         /// conversion with local-transform, a local transform have scale, content offset.
         /// transform for local to root coords
-        DKMatrix3 LocalFromRootTransform(void) const;  
+        DKMatrix3 LocalFromRootTransform() const;  
         /// transform for root to local coords
-        DKMatrix3 LocalToRootTransform(void) const;    
+        DKMatrix3 LocalToRootTransform() const;    
         /// transform for local to parent coords
-        DKMatrix3 LocalFromSuperTransform(void) const; 
+        DKMatrix3 LocalFromSuperTransform() const; 
         /// transform for parent to local coords
-        DKMatrix3 LocalToSuperTransform(void) const;   
+        DKMatrix3 LocalToSuperTransform() const;   
 
         /// Frame content resize. (in pixel unit)
-        /// ContentResolution: returns desired resolution, you can override this.
+        /// CalculateContentResolution:
+        ///  returns desired resolution, you can override this.
         ///  default behavior is calculate pixel resolution base on visible region.
         ///  Note: This function will no be called if target frame is root-frame.
         ///        Root frame's resolution will be decided by screen.
-        virtual DKSize ContentResolution(void) const;
+        virtual DKSize CalculateContentResolution() const;
         /// Set frame to update resolution manually.
         void UpdateContentResolution();
 
@@ -131,24 +132,26 @@ namespace DKFramework
         /// propagates events to it's children. (default is true)
         virtual bool ContentHitTest(const DKPoint& pos) const { return true; }
 
+        /// content resolution in pixel space
+        DKSize ContentResolution() const;
         /// content scale.
-        DKSize ContentScale(void) const;
+        DKSize ContentScale() const;
         void SetContentScale(const DKSize& s);
 
         /// Bounds returns content bounds (0, 0, width, height)
-        DKRect Bounds(void) const;
+        DKRect Bounds() const;
         /// DisplayBounds returns displaying content bounds.
         /// displaying content bounds can be different from Bounds.
         /// (depends on content-transform)
         /// if frame rotated not to be aligned to axis, display-bounds
         /// could be large enough to contains all edges.
-        DKRect DisplayBounds(void) const;
+        DKRect DisplayBounds() const;
 
         /// content transform. (not for frame itself)
         /// mouse-event will be applied this transform. (position)
         void SetContentTransform(const DKMatrix3& m);
-        const DKMatrix3& ContentTransform(void) const;
-        const DKMatrix3& ContentTransformInverse(void) const;
+        const DKMatrix3& ContentTransform() const;
+        const DKMatrix3& ContentTransformInverse() const;
 
         /// convert coordinates to/from parent.
         DKPoint LocalToSuper(const DKPoint& pt) const;
@@ -173,8 +176,8 @@ namespace DKFramework
         bool CaptureMouse(int deviceId);
         void ReleaseKeyboard(int deviceId);
         void ReleaseMouse(int deviceId);
-        void ReleaseAllKeyboardsCapturedBySelf(void);
-        void ReleaseAllMiceCapturedBySelf(void);
+        void ReleaseAllKeyboardsCapturedBySelf();
+        void ReleaseAllMiceCapturedBySelf();
 
         // determine whether frame captured specified device or not
         bool IsKeyboardCapturedBySelf(int deviceId) const;
@@ -191,32 +194,32 @@ namespace DKFramework
         /// draw frame. It is called by system automatically,
         /// Don't call directly unless frame is off-screen and not in hierarchy.
         /// this function invokes OnRender() which can be overridden.
-        void Draw(void) const;
+        void Draw() const;
         /// set frame to be drawn.
         /// You need to call this function if you need to draw something.
-        void SetRedraw(void) const;
+        void SetRedraw() const;
         /// discard surface.
         /// a surface will be re-created if necessary.
-        void DiscardSurface(void);
+        void DiscardSurface();
         /// get frame surface texture.
-        const DKTexture* Texture(void) const;
+        const DKTexture* Texture() const;
 
 
         /// frame base color for blending.
         void SetColor(const DKColor& color);
-        DKColor Color(void) const { return color; }
+        DKColor Color() const { return color; }
         void SetBlendState(const DKBlendState& blend);
-        const DKBlendState& BlendState(void) const;
+        const DKBlendState& BlendState() const;
 
         /// frame visibility.
-        bool IsHidden(void) const { return hidden; }
-        bool IsEnabled(void) const { return enabled; }
+        bool IsHidden() const { return hidden; }
+        bool IsEnabled() const { return enabled; }
         void SetHidden(bool hidden);
         void SetEnabled(bool enabled);
 
-        bool CanHandleKeyboard(void) const;
-        bool CanHandleMouse(void) const;
-        bool IsVisibleOnScreen(void) const;
+        bool CanHandleKeyboard() const;
+        bool CanHandleMouse() const;
+        bool IsVisibleOnScreen() const;
 
         /// allow mouse event for local frame (does not affect hierarchical propagation)
         void AllowMouseEvent(bool b);
@@ -229,7 +232,7 @@ namespace DKFramework
         /// If frame don't need to render 3D objects,
         /// depth-format can be 'DKRenderTarget::DepthFormatNone'.
         void SetDepthFormat(DKPixelFormat fmt);
-        DKPixelFormat DepthFormat(void) const;
+        DKPixelFormat DepthFormat() const;
 
     protected:
         // frame events
@@ -241,11 +244,11 @@ namespace DKFramework
         /// called every frames.
         virtual void OnUpdate(double, DKTimeTick, DKDateTime) {} 
         /// initialize frame, you can add child frame at here.
-        virtual void OnLoaded(void) {}
+        virtual void OnLoaded() {}
         /// do something clean-up actions
-        virtual void OnUnload(void) {} 
+        virtual void OnUnload() {} 
         /// resolution has changed.
-        virtual void OnContentResized(void) {} 
+        virtual void OnContentResized() {} 
 
         // mouse events
         virtual void OnMouseDown(int deviceId, int buttonId, const DKPoint& pos) {}
@@ -298,12 +301,12 @@ namespace DKFramework
 
         mutable bool drawSurface : 1;
 
-        bool DrawInternal(void); // return true, if drawn actually happen.
+        bool DrawInternal(); // return true, if drawn actually happen.
         bool InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm) const; // checking frame covers parent region entirely.
         bool ProcessKeyboardEvent(const DKWindow::KeyboardEvent&);
         bool ProcessMouseEvent(const DKWindow::MouseEvent&, const DKPoint&, const DKVector2&, bool propagate);
         bool ProcessMouseInOut(int deviceId, const DKPoint& pos, bool insideParent);
-        void ReleaseMouseData(void);
+        void ReleaseMouseData();
 
         friend class DKScreen;
     };

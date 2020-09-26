@@ -15,7 +15,7 @@
 
 using namespace DKFramework;
 
-DKFrame::DKFrame(void)
+DKFrame::DKFrame()
     : transform(DKMatrix3::identity)
     , transformInverse(DKMatrix3::identity)
     , superframe(NULL)
@@ -36,7 +36,7 @@ DKFrame::DKFrame(void)
 {
 }
 
-DKFrame::~DKFrame(void)
+DKFrame::~DKFrame()
 {
     if (IsLoaded()) //frame was not unloaded.
     {
@@ -67,7 +67,7 @@ void DKFrame::Load(DKScreen* screen, const DKSize& resolution)
                 res.height = 1.0f;
 
             this->contentResolution = res;
-            this->contentResolution = this->DKFrame::ContentResolution();
+            this->contentResolution = this->DKFrame::CalculateContentResolution();
             this->OnLoaded();
             this->loaded = true;
             this->OnContentResized();
@@ -83,7 +83,7 @@ void DKFrame::Load(DKScreen* screen, const DKSize& resolution)
     }
 }
 
-void DKFrame::Unload(void)
+void DKFrame::Unload()
 {
     decltype(subframes) frames = subframes;
     for (DKFrame* frame : frames)
@@ -104,7 +104,7 @@ void DKFrame::Unload(void)
 
 bool DKFrame::AddSubframe(DKFrame* frame)
 {
-    if (frame && frame->superframe == nullptr)
+    if (frame && frame->superframe == nullptr && !this->IsDescendantOf(frame))
     {
         //this->subframes.Add(frame);
         this->subframes.Insert(frame, 0);	// bring to front
@@ -140,7 +140,7 @@ void DKFrame::RemoveSubframe(DKFrame* frame)
     }
 }
 
-void DKFrame::RemoveFromSuperframe(void)
+void DKFrame::RemoveFromSuperframe()
 {
     if (superframe)
         superframe->RemoveSubframe(this);
@@ -219,12 +219,12 @@ bool DKFrame::IsDescendantOf(const DKFrame* frame) const
     return superframe->IsDescendantOf(frame);
 }
 
-size_t DKFrame::NumberOfSubframes(void) const
+size_t DKFrame::NumberOfSubframes() const
 {
     return subframes.Count();
 }
 
-size_t DKFrame::NumberOfDescendants(void) const
+size_t DKFrame::NumberOfDescendants() const
 {
     size_t num = 1;
     for (size_t i = 0; i < subframes.Count(); ++i)
@@ -253,19 +253,19 @@ void DKFrame::SetTransform(const DKMatrix3& transform)
     }
 }
 
-DKMatrix3 DKFrame::LocalFromRootTransform(void) const
+DKMatrix3 DKFrame::LocalFromRootTransform() const
 {
     DKMatrix3 tm = superframe ? superframe->LocalFromRootTransform() : DKMatrix3::identity;
     return tm * this->LocalFromSuperTransform();
 }
 
-DKMatrix3 DKFrame::LocalToRootTransform(void) const
+DKMatrix3 DKFrame::LocalToRootTransform() const
 {
     DKMatrix3 tm = superframe ? superframe->LocalToRootTransform() : DKMatrix3::identity;
     return this->LocalToSuperTransform() * tm;
 }
 
-DKMatrix3 DKFrame::LocalFromSuperTransform(void) const
+DKMatrix3 DKFrame::LocalFromSuperTransform() const
 {
     DKMatrix3 tm = DKMatrix3::identity;
     if (superframe)
@@ -282,7 +282,7 @@ DKMatrix3 DKFrame::LocalFromSuperTransform(void) const
     return tm;
 }
 
-DKMatrix3 DKFrame::LocalToSuperTransform(void) const
+DKMatrix3 DKFrame::LocalToSuperTransform() const
 {
     DKMatrix3 tm = DKMatrix3::identity;
     if (superframe)
@@ -322,7 +322,7 @@ void DKFrame::UpdateContentResolution()
     }
     else
     {
-        DKSize size = ContentResolution();
+        DKSize size = CalculateContentResolution();
 
         uint32_t maxTexSize = 1 << 14; //DKTexture::MaxTextureSize();
         uint32_t width = Clamp<uint32_t>(floor(size.width + 0.5f), 1U, maxTexSize);
@@ -354,7 +354,7 @@ void DKFrame::UpdateContentResolution()
     }
 }
 
-DKSize DKFrame::ContentResolution(void) const
+DKSize DKFrame::CalculateContentResolution() const
 {
     if (superframe)
     {
@@ -365,10 +365,10 @@ DKSize DKFrame::ContentResolution(void) const
             float w = contentScale.width;
             float h = contentScale.height;
 
-            DKPoint lb = superframe->LocalToPixel(this->LocalToSuper(DKPoint(0, 0)));		// left-bottom
-            DKPoint lt = superframe->LocalToPixel(this->LocalToSuper(DKPoint(0, h)));		// left-top
-            DKPoint rt = superframe->LocalToPixel(this->LocalToSuper(DKPoint(w, h)));		// right-top
-            DKPoint rb = superframe->LocalToPixel(this->LocalToSuper(DKPoint(w, 0)));		// right-bottom
+            DKPoint lt = superframe->LocalToPixel(this->LocalToSuper(DKPoint(0, 0)));   // left-top
+            DKPoint rt = superframe->LocalToPixel(this->LocalToSuper(DKPoint(w, 0)));   // right-top
+            DKPoint lb = superframe->LocalToPixel(this->LocalToSuper(DKPoint(0, h)));   // left-bottom
+            DKPoint rb = superframe->LocalToPixel(this->LocalToSuper(DKPoint(w, h)));   // right-bottom
 
             DKVector2 horizontal1 = rb.Vector() - lb.Vector();		// vertical length 1
             DKVector2 horizontal2 = rt.Vector() - lt.Vector();		// vertical length 2
@@ -411,13 +411,13 @@ void DKFrame::ReleaseMouse(int deviceId)
         screen->RemoveFocusFrame(deviceId, this);
 }
 
-void DKFrame::ReleaseAllKeyboardsCapturedBySelf(void)
+void DKFrame::ReleaseAllKeyboardsCapturedBySelf()
 {
     if (screen)
         screen->RemoveKeyFrameForAnyDevices(this, false);
 }
 
-void DKFrame::ReleaseAllMiceCapturedBySelf(void)
+void DKFrame::ReleaseAllMiceCapturedBySelf()
 {
     if (screen)
         screen->RemoveFocusFrameForAnyDevices(this, false);
@@ -470,7 +470,12 @@ bool DKFrame::IsMouseHover(int deviceId) const
     return hover;
 }
 
-DKSize DKFrame::ContentScale(void) const
+DKSize DKFrame::ContentResolution() const
+{
+    return contentResolution;
+}
+
+DKSize DKFrame::ContentScale() const
 {
     return contentScale;
 }
@@ -491,12 +496,12 @@ void DKFrame::SetContentScale(const DKSize& s)
     }
 }
 
-DKRect DKFrame::Bounds(void) const
+DKRect DKFrame::Bounds() const
 {
     return DKRect(0, 0, contentScale.width, contentScale.height);
 }
 
-DKRect DKFrame::DisplayBounds(void) const
+DKRect DKFrame::DisplayBounds() const
 {
     DKRect rc = this->Bounds();
     DKVector2 v0(rc.origin.x, rc.origin.y);
@@ -542,12 +547,12 @@ void DKFrame::SetContentTransform(const DKMatrix3& m)
     }
 }
 
-const DKMatrix3& DKFrame::ContentTransform(void) const
+const DKMatrix3& DKFrame::ContentTransform() const
 {
     return this->contentTransform;
 }
 
-const DKMatrix3& DKFrame::ContentTransformInverse(void) const
+const DKMatrix3& DKFrame::ContentTransformInverse() const
 {
     return this->contentTransformInverse;
 }
@@ -675,12 +680,12 @@ void DKFrame::Update(double tickDelta, DKTimeTick tick, const DKDateTime& tickDa
     }
 }
 
-void DKFrame::Draw(void) const
+void DKFrame::Draw() const
 {
     const_cast<DKFrame*>(this)->DrawInternal();
 }
 
-bool DKFrame::DrawInternal(void)
+bool DKFrame::DrawInternal()
 {
     DKASSERT_DESC_DEBUG(IsLoaded(), "Frame must be initialized with screen!");
     DKASSERT_DEBUG(this->contentResolution.width > 0.0f && this->contentResolution.height > 0.0f);
@@ -695,6 +700,9 @@ bool DKFrame::DrawInternal(void)
         bool covered = false;
         if (frame->InsideFrameRect(&covered, bounds, this->contentTransformInverse) == false)	// frame is not visible.
             continue;
+
+        if (this->drawSurface && frame->renderTarget == nullptr)
+            frame->SetRedraw();
 
         if (frame->DrawInternal())
             drawSelf = true;  // redraw self if child has been drawn
@@ -747,7 +755,6 @@ bool DKFrame::DrawInternal(void)
 
                 // draw texture
                 const DKTexture* texture = frame->renderTarget;
-                DKASSERT_DEBUG(texture);
                 if (texture)
                 {
                     canvas->DrawRect(DKRect(0, 0, 1, 1), frame->Transform(),
@@ -800,17 +807,17 @@ bool DKFrame::InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3
     return rect.IntersectRect(DKRect(0, 0, 1, 1), this->transform);
 }
 
-const DKTexture* DKFrame::Texture(void) const
+const DKTexture* DKFrame::Texture() const
 {
     return renderTarget;
 }
 
-void DKFrame::SetRedraw(void) const
+void DKFrame::SetRedraw() const
 {
     drawSurface = true;
 }
 
-void DKFrame::DiscardSurface(void)
+void DKFrame::DiscardSurface()
 {
     renderTarget = nullptr;		// create on render
     SetRedraw();
@@ -844,7 +851,7 @@ void DKFrame::SetBlendState(const DKBlendState& blend)
     }
 }
 
-const DKBlendState& DKFrame::BlendState(void) const
+const DKBlendState& DKFrame::BlendState() const
 {
     return blendState;
 }
@@ -1045,7 +1052,7 @@ bool DKFrame::ProcessMouseInOut(int deviceId, const DKPoint& pos, bool insidePar
     return hover;
 }
 
-void DKFrame::ReleaseMouseData(void)
+void DKFrame::ReleaseMouseData()
 {
     decltype(subframes) frames = subframes;
     for (DKFrame* frame : frames)
@@ -1094,17 +1101,17 @@ void DKFrame::SetEnabled(bool enabled)
     }
 }
 
-bool DKFrame::CanHandleKeyboard(void) const
+bool DKFrame::CanHandleKeyboard() const
 {
     return this->allowKeyboardEvent && this->IsEnabled();
 }
 
-bool DKFrame::CanHandleMouse(void) const
+bool DKFrame::CanHandleMouse() const
 {
     return this->allowMouseEvent && this->IsEnabled() && this->IsVisibleOnScreen();
 }
 
-bool DKFrame::IsVisibleOnScreen(void) const
+bool DKFrame::IsVisibleOnScreen() const
 {
     if (screen == NULL)
         return false;
@@ -1148,7 +1155,7 @@ void DKFrame::SetDepthFormat(DKPixelFormat fmt)
     }
 }
 
-DKPixelFormat DKFrame::DepthFormat(void) const
+DKPixelFormat DKFrame::DepthFormat() const
 {
     return depthFormat;
 }
