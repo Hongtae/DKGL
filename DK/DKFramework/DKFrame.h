@@ -234,9 +234,9 @@ namespace DKFramework
     protected:
         // frame events
         /// override to draw custom background.
-        virtual void OnDraw(DKCanvas&) const;
+        virtual void OnDraw(DKCanvas*) const;
         /// called after frame layer drawing is completed.
-        virtual void OnDrawOverlay(DKCanvas&) const {}
+        virtual void OnDrawOverlay(DKCanvas*) const {}
 
         /// called every frames.
         virtual void OnUpdate(double, DKTimeTick, DKDateTime) {} 

@@ -736,7 +736,7 @@ bool DKFrame::DrawInternal(void)
             canvas->SetContentTransform(this->contentTransform);
 
             // draw background
-            this->OnDraw(*canvas);
+            this->OnDraw(canvas);
 
             // draw frame reverse order
             for (long i = (long)subframes.Count() - 1; i >= 0; --i)
@@ -757,7 +757,7 @@ bool DKFrame::DrawInternal(void)
                 }
             }
             // draw overlay
-            this->OnDrawOverlay(*canvas);
+            this->OnDrawOverlay(canvas);
             canvas->Commit();
 
             this->drawSurface = false;
@@ -1153,7 +1153,7 @@ DKPixelFormat DKFrame::DepthFormat(void) const
     return depthFormat;
 }
 
-void DKFrame::OnDraw(DKCanvas& canvas) const
+void DKFrame::OnDraw(DKCanvas* canvas) const
 {
-    canvas.Clear(DKColor(1, 1, 1, 1));
+    canvas->Clear(DKColor(1, 1, 1, 1));
 }
