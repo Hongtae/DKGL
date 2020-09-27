@@ -160,4 +160,24 @@ namespace DKFoundation
 	{
 		return Private::BaseAddress<T>::Cast(p);
 	}
+
+	template <typename Functor> struct DKCallOnScopeExit
+	{
+		Functor fn;
+		DKCallOnScopeExit(Functor&& f) : fn(f) {}
+		~DKCallOnScopeExit() { fn(); }
+	};
 }
+
+// helper macros for generate name.
+#define _DK_VAR_CAT(a,b)			a##b
+#define _DK_VAR_NAME_C2(a,b)		_DK_VAR_CAT(a,b)
+#define _DK_VAR_NAME_C3(a,b,c)		_DK_VAR_NAME_C2(_DK_VAR_CAT(a,b),c)
+#define _DK_VAR_NAME_C4(a,b,c,d)	_DK_VAR_NAME_C2(_DK_VAR_NAME_C3(a,b,c),d)
+
+// Generate temporary unique name (ex: _tmp123_4567)
+#define DKGL_TMP_VAR_NAME(n)		_DK_VAR_NAME_C4(n, __COUNTER__, _, __LINE__)
+
+// Helper macro for RAII d'tor call on exit.
+#define DKGL_CALL_ON_SCOPE_EXIT(fn)	\
+	::DKFoundation::DKCallOnScopeExit DKGL_TMP_VAR_NAME(_callOnScopeExit)(fn)

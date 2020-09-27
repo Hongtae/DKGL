@@ -81,16 +81,8 @@ namespace DKFramework::Private::Vulkan
               pCallbackData->pMessage);
         return VK_FALSE;
     }
-
-    struct Cleanup
-    {
-        DKObject<DKOperation> op;
-        ~Cleanup()
-        {
-            op->Perform();
-        }
-    };
 }
+
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
@@ -1205,7 +1197,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
     {
         auto createBuffer = [this, dev](const VkBufferCreateInfo& bufferCreateInfo, DKGpuBuffer::StorageMode storage)->DKObject<Buffer>
         {
-            VkBuffer buffer = nullptr;
+            VkBuffer buffer = VK_NULL_HANDLE;
             VkResult result = vkCreateBuffer(device, &bufferCreateInfo, allocationCallbacks, &buffer);
             if (result == VK_SUCCESS)
             {
@@ -1271,7 +1263,7 @@ DKObject<DKGpuBuffer> GraphicsDevice::CreateBuffer(DKGraphicsDevice* dev, size_t
         DKObject<Buffer> buffer = createBuffer(bufferCreateInfo, storage);
         if (buffer)
         {
-            VkBufferView view = nullptr;
+            VkBufferView view = VK_NULL_HANDLE;
             VkBufferViewCreateInfo bufferViewCreateInfo = { VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO };
 
             if (bufferCreateInfo.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT ||
@@ -1620,10 +1612,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
     DKObject<RenderPipelineState> pipelineState = nullptr;
 
-    Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
+    DKGL_CALL_ON_SCOPE_EXIT([&] // cleanup resources if function failure.
     {
         if (!pipelineState)
-        { 
+        {
             if (pipelineLayout != VK_NULL_HANDLE)
                 vkDestroyPipelineLayout(device, pipelineLayout, allocationCallbacks);
             if (renderPass != VK_NULL_HANDLE)
@@ -1631,7 +1623,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
             if (pipeline != VK_NULL_HANDLE)
                 vkDestroyPipeline(device, pipeline, allocationCallbacks);
         }
-    })->Invocation() };
+    });
 
 	auto verifyShaderStage = [](const DKShaderFunction* fn, VkShaderStageFlagBits stage)->bool
 	{
@@ -2136,7 +2128,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
     VkPipeline pipeline = VK_NULL_HANDLE;
     DKObject<ComputePipelineState> pipelineState = nullptr;
 
-    Cleanup _cleanup = { DKFunction([&]() // cleanup operation, invoked if function failure.
+    DKGL_CALL_ON_SCOPE_EXIT([&] // cleanup resources if function failure.
     {
         if (!pipelineState)
         {
@@ -2145,7 +2137,7 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
             if (pipeline != VK_NULL_HANDLE)
                 vkDestroyPipeline(device, pipeline, allocationCallbacks);
         }
-    })->Invocation() };
+    });
 
     VkComputePipelineCreateInfo pipelineCreateInfo = { VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO };
 
@@ -2392,7 +2384,7 @@ VkPipelineLayout GraphicsDevice::CreatePipelineLayout(std::initializer_list<cons
                                 {
                                     DKLogE("ERROR: descriptor binding conflict! (set=%d, binding=%u)",
                                            setIndex, desc.binding);
-                                    return nullptr;
+                                    return VK_NULL_HANDLE;
                                 }
                             }
                         }
