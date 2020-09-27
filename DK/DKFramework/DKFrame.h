@@ -291,7 +291,6 @@ namespace DKFramework
         DKBlendState blendState;
 
         DKObject<DKTexture> renderTarget;
-        DKMap<int, bool> mouseHover;  // store mouse hover states.
         DKPixelFormat depthFormat;
 
         bool loaded : 1;
@@ -307,8 +306,7 @@ namespace DKFramework
         bool InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm) const; // checking frame covers parent region entirely.
         bool ProcessKeyboardEvent(const DKWindow::KeyboardEvent&);
         bool ProcessMouseEvent(const DKWindow::MouseEvent&, const DKPoint&, const DKVector2&, bool propagate);
-        bool ProcessMouseInOut(int deviceId, const DKPoint& pos, bool insideParent);
-        void ReleaseMouseData();
+        DKFrame* FindHoverFrame(const DKPoint& pos);
 
         friend class DKScreen;
     };

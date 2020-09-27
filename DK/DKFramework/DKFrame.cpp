@@ -93,7 +93,7 @@ void DKFrame::Unload()
 
     if (this->loaded)
     {
-        this->ReleaseMouseData();
+        this->screen->LeaveHoverFrame(this);
         this->OnUnload();
         this->renderTarget = nullptr;
     }
@@ -124,7 +124,9 @@ void DKFrame::RemoveSubframe(DKFrame* frame)
 {
     if (frame && frame->superframe == this)
     {
-        frame->ReleaseMouseData();
+        if (screen)
+            screen->LeaveHoverFrame(this);
+
         for (uint32_t index = 0; index < subframes.Count(); ++index)
         {
             if (subframes.Value(index) == frame)
@@ -173,7 +175,9 @@ bool DKFrame::SendSubframeToBack(DKFrame* frame)
 {
     if (frame && frame->superframe == this)
     {
-        frame->ReleaseMouseData();
+        if (screen)
+            screen->LeaveHoverFrame(this);
+
         for (uint32_t index = 0; index < this->subframes.Count(); ++index)
         {
             if (this->subframes.Value(index) == frame)
@@ -244,7 +248,7 @@ void DKFrame::SetTransform(const DKMatrix3& transform)
         {
             this->transform = transform;
             this->transformInverse = DKMatrix3(transform).Inverse();
-            //this->ReleaseMouseData();
+
             this->UpdateContentResolution();
 
             if (this->superframe)
@@ -464,10 +468,9 @@ DKPoint DKFrame::MousePosition(int deviceId) const
 
 bool DKFrame::IsMouseHover(int deviceId) const
 {
-    bool hover = false;
-    if (auto p = mouseHover.Find(deviceId); p)
-        hover = p->value;
-    return hover;
+    if (screen)
+        return screen->HoverFrame(deviceId) == this;
+    return false;
 }
 
 DKSize DKFrame::ContentResolution() const
@@ -1004,71 +1007,34 @@ bool DKFrame::ProcessMouseEvent(const DKWindow::MouseEvent& event, const DKPoint
     return false;
 }
 
-bool DKFrame::ProcessMouseInOut(int deviceId, const DKPoint& pos, bool insideParent)
+DKFrame* DKFrame::FindHoverFrame(const DKPoint& pos)
 {
-    if (this->hidden)
-        return false;
-
-    bool insideSelf = insideParent ? DKRect(0, 0, 1, 1).IsPointInside(pos) : false;
-
-    DKVector2 localPos = DKVector2(pos.x * this->contentScale.width, pos.y * this->contentScale.height);
-    localPos.Transform(this->contentTransformInverse);
-
-    if (insideSelf)
-        insideSelf = HitTest(localPos);
-
-    bool hover = insideSelf;
-    if (hover)
-        hover = this->ContentHitTest(localPos);
-
-    bool subframeHover = false;
-    decltype(subframes) frames = subframes;
-    for (DKFrame* frame : frames)
+    if (!this->hidden)
     {
-        DKMatrix3 tm = frame->TransformInverse();
-        if (frame->ProcessMouseInOut(deviceId, DKVector2(localPos).Transform(tm), hover))
+        if (DKRect(0, 0, 1, 1).IsPointInside(pos))
         {
-            hover = false;
-            subframeHover = true;
+            DKVector2 localPos = DKVector2(pos.x * this->contentScale.width, pos.y * this->contentScale.height);
+            localPos.Transform(this->contentTransformInverse);
+
+            if (this->HitTest(localPos))
+            {
+                if (this->ContentHitTest(localPos))
+                {
+                    for (DKFrame* frame : subframes)
+                    {
+                        DKMatrix3 tm = frame->TransformInverse();
+                            DKFrame* hover = frame->FindHoverFrame(DKVector2(localPos).Transform(tm));
+                            if (hover)
+                                return hover;
+                    }
+                }
+
+                if (this->CanHandleMouse())
+                    return this;
+            }
         }
     }
-    hover = insideSelf && (!subframeHover);
-
-    if (this->CanHandleMouse())
-    {
-        bool prevHover = false;
-        if (auto p = mouseHover.Find(deviceId); p)
-            prevHover = p->value;
-
-        mouseHover.Update(deviceId, hover);
-        if (hover)
-        {
-            if (!prevHover)
-                OnMouseHover(deviceId);
-        }
-        else
-        {
-            if (prevHover)
-                OnMouseLeave(deviceId);
-        }
-    }
-    return hover || subframeHover;
-}
-
-void DKFrame::ReleaseMouseData()
-{
-    decltype(subframes) frames = subframes;
-    for (DKFrame* frame : frames)
-    {
-        frame->ReleaseMouseData();
-    }
-
-    mouseHover.EnumerateForward([this](DKMap<int, bool>::Pair& pair)
-    {
-        if (pair.value)
-            OnMouseLeave(pair.key);		// mouse leaved
-    });
-    mouseHover.Clear();
+    return nullptr;
 }
 
 void DKFrame::SetHidden(bool hidden)
@@ -1084,7 +1050,8 @@ void DKFrame::SetHidden(bool hidden)
         this->hidden = hidden;
         if (this->hidden)
         {
-            ReleaseMouseData();
+            if (screen)
+                screen->LeaveHoverFrame(this);
         }
         if (this->superframe)
             superframe->SetRedraw();
@@ -1098,7 +1065,8 @@ void DKFrame::SetEnabled(bool enabled)
         this->enabled = enabled;
         if (!this->enabled)
         {
-            ReleaseMouseData();
+            if (screen)
+                screen->LeaveHoverFrame(this);
         }
         SetRedraw();
     }

@@ -172,8 +172,7 @@ bool DKScreen::RemoveKeyFrame(int deviceId, DKFrame* frame)
 
 bool DKScreen::RemoveFocusFrame(int deviceId, DKFrame* frame)
 {
-    auto p = this->focusFrames.Find(deviceId);
-    if (p && p->value == frame)
+    if (auto p = this->focusFrames.Find(deviceId); p && p->value == frame)
     {
         this->focusFrames.Remove(deviceId);
         return true;
@@ -183,32 +182,28 @@ bool DKScreen::RemoveFocusFrame(int deviceId, DKFrame* frame)
 
 DKFrame* DKScreen::KeyFrame(int deviceId)
 {
-    auto p = keyFrames.Find(deviceId);
-    if (p)
+    if (auto p = keyFrames.Find(deviceId); p)
         return p->value;
     return nullptr;
 }
 
 const DKFrame* DKScreen::KeyFrame(int deviceId) const
 {
-    auto p = keyFrames.Find(deviceId);
-    if (p)
+    if (auto p = keyFrames.Find(deviceId); p)
         return p->value;
     return nullptr;
 }
 
 DKFrame* DKScreen::FocusFrame(int deviceId)
 {
-    auto p = focusFrames.Find(deviceId);
-    if (p)
+    if (auto p = focusFrames.Find(deviceId); p)
         return p->value;
     return nullptr;
 }
 
 const DKFrame* DKScreen::FocusFrame(int deviceId) const
 {
-    auto p = focusFrames.Find(deviceId);
-    if (p)
+    if (auto p = focusFrames.Find(deviceId); p)
         return p->value;
     return nullptr;
 }
@@ -295,6 +290,30 @@ void DKScreen::RemoveAllFocusFramesForAnyDevices(bool notify)
     }
 }
 
+const DKFrame* DKScreen::HoverFrame(int deviceId) const
+{
+    if (auto p = hoverFrames.Find(deviceId); p)
+        return p->value;
+    return nullptr;
+}
+
+void DKScreen::LeaveHoverFrame(DKFrame* frame)
+{
+    DKArray<int> devIds;
+    devIds.Reserve(this->hoverFrames.Count());
+    this->hoverFrames.EnumerateForward([&](DKMap<int, DKFrame*>::Pair& pair)
+    {
+        if (pair.value == frame)
+            devIds.Add(pair.key);
+    });
+    for (int devId : devIds)
+    {
+        this->hoverFrames.Remove(devId);
+        DKASSERT_DEBUG(frame->Screen() == this);
+        frame->OnMouseLeave(devId);
+    }
+}
+
 DKPoint DKScreen::WindowToScreen(const DKPoint& pt)  const
 {
     DKASSERT_DEBUG(screenResolution.width > 0.0f && screenResolution.height > 0.0f);
@@ -371,7 +390,30 @@ bool DKScreen::ProcessMouseEvent(const DKWindow::MouseEvent& event)
 
         if (event.type == DKWindow::MouseEvent::Move)
         {
-            rootFrame->ProcessMouseInOut(event.deviceId, pos, true);
+            DKFrame* hover = rootFrame->FindHoverFrame(pos);
+            DKFrame* leave = nullptr;
+
+            if (auto p = this->hoverFrames.Find(event.deviceId); p)
+                leave = p->value;
+
+            if (hover != leave)
+            {
+                if (hover)
+                    this->hoverFrames.Update(event.deviceId, hover);
+                else
+                    this->hoverFrames.Remove(event.deviceId);
+
+                if (leave)
+                {
+                    DKASSERT_DEBUG(leave->Screen() == this);
+                    leave->OnMouseLeave(event.deviceId);
+                }
+                if (hover)
+                {
+                    DKASSERT_DEBUG(hover->Screen() == this);
+                    hover->OnMouseHover(event.deviceId);
+                }
+            }
         }
 
         DKFrame* focus = FocusFrame(event.deviceId);

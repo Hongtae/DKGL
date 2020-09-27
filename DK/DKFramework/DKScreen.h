@@ -64,6 +64,11 @@ namespace DKFramework
         /// revoke exclusive access to mouse from all frames.
         void RemoveAllFocusFramesForAnyDevices(bool notify);
 
+        /// query mouse hover frame for mouse-deviceId
+        const DKFrame* HoverFrame(int deviceId) const;
+        /// release hover frame for all devices.
+        void LeaveHoverFrame(DKFrame* frame);
+
         /// convert coordinates
         DKPoint WindowToScreen(const DKPoint& pt) const;
         DKPoint ScreenToWindow(const DKPoint& pt) const;
@@ -92,8 +97,9 @@ namespace DKFramework
         DKObject<DKWindow> window;
         DKObject<DKFrame> rootFrame;
 
-        DKMap<int, DKFrame*> keyFrames; // keyboard captors;
-        DKMap<int, DKFrame*> focusFrames; // mouse captors;
+        DKMap<int, DKFrame*> keyFrames; // keyboard captors
+        DKMap<int, DKFrame*> focusFrames; // mouse captors
+        DKMap<int, DKFrame*> hoverFrames; // mouse hover frames
 
         DKObject<DKCommandQueue> commandQueue;
         DKObject<DKGraphicsDevice> graphicsDevice;
