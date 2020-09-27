@@ -30,8 +30,6 @@ DKFrame::DKFrame()
     , blendState(DKBlendState::defaultOpaque)
     , hidden(false)
     , enabled(true)
-    , allowMouseEvent(true)
-    , allowKeyboardEvent(true)
     , depthFormat(DKPixelFormat::D32Float)
 {
 }
@@ -1074,12 +1072,12 @@ void DKFrame::SetEnabled(bool enabled)
 
 bool DKFrame::CanHandleKeyboard() const
 {
-    return this->allowKeyboardEvent && this->IsEnabled();
+    return this->IsEnabled() && this->UserInputEventEnabled();
 }
 
 bool DKFrame::CanHandleMouse() const
 {
-    return this->allowMouseEvent && this->IsEnabled() && this->IsVisibleOnScreen();
+    return this->IsEnabled() && this->IsVisibleOnScreen() && this->UserInputEventEnabled();
 }
 
 bool DKFrame::IsVisibleOnScreen() const
@@ -1097,16 +1095,6 @@ bool DKFrame::IsVisibleOnScreen() const
         return superframe->IsVisibleOnScreen();
 
     return false;
-}
-
-void DKFrame::AllowMouseEvent(bool b)
-{
-    this->allowMouseEvent = b;
-}
-
-void DKFrame::AllowKeyboardEvent(bool b)
-{
-    this->allowKeyboardEvent = b;
 }
 
 void DKFrame::SetDepthFormat(DKPixelFormat fmt)
