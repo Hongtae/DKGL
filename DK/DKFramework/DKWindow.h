@@ -253,7 +253,7 @@ namespace DKFramework
 			unsigned char keyStateBits[DKVK_MAXVALUE / 8 + 1]; // save raw-key state (1:down, 0:up)
 		};
 		mutable DKMap<int, KeyboardState>		keyboardStateMap;
-		KeyboardState& GetKeyboardState(int deviceId) const;	// Get key states without lock
+		KeyboardState& KeyboardStateForDevice(int deviceId) const;	// Get key states without lock
 		DKSpinLock stateLock;
 
 		DKRect windowRect;		// window's origin, size (including border, system coordinates)

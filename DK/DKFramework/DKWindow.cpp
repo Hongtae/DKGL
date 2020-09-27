@@ -137,7 +137,7 @@ void DKWindow::SetKeyState(int deviceId, const DKVirtualKey& k, bool down)
 {
 	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
-	KeyboardState& state = GetKeyboardState(deviceId);
+	KeyboardState& state = KeyboardStateForDevice(deviceId);
 
 	_SetUCArrayBit(state.keyStateBits, k, down);
 }
@@ -158,7 +158,7 @@ void DKWindow::ResetKeyStateForAllDevices()
 	this->keyboardStateMap.Clear();
 }
 
-DKWindow::KeyboardState& DKWindow::GetKeyboardState(int deviceId) const
+DKWindow::KeyboardState& DKWindow::KeyboardStateForDevice(int deviceId) const
 {
 	if (auto p = keyboardStateMap.Find(deviceId); p)
 		return p->value;
@@ -197,8 +197,8 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 	}
 	else
 	{
-		DKArray<DKObject<MouseEventHandler>> callbacks;
 		handlerLock.Lock();
+		DKArray<DKObject<MouseEventHandler>> callbacks;
 		callbacks.Reserve(mouseEventHandlers.Count());
 		mouseEventHandlers.EnumerateForward([&callbacks](decltype(mouseEventHandlers)::Pair& pair) {
 			if (pair.value)
@@ -216,7 +216,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 	if (true)
 	{
 		DKCriticalSection<DKSpinLock> guard(this->stateLock);
-		KeyboardState& keyboard = GetKeyboardState(event.deviceId);
+		KeyboardState& keyboard = KeyboardStateForDevice(event.deviceId);
 
 		if (event.type == KeyboardEvent::KeyDown)
 		{
@@ -239,7 +239,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		KeyboardEvent* eventCopy = new KeyboardEvent(event);
 
 		DKCriticalSection<DKSpinLock> guard(handlerLock);
-		pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
+		pendingEvents.Reserve(pendingEvents.Count() + keyboardEventHandlers.Count());
 		keyboardEventHandlers.EnumerateForward([&](decltype(keyboardEventHandlers)::Pair& pair) {
 			if (pair.value)
 			{
@@ -339,7 +339,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
         WindowEvent* eventCopy = new WindowEvent(event);
 
         DKCriticalSection<DKSpinLock> guard(handlerLock);
-        pendingEvents.Reserve(pendingEvents.Count() + mouseEventHandlers.Count());
+        pendingEvents.Reserve(pendingEvents.Count() + windowEventHandlers.Count());
         windowEventHandlers.EnumerateForward([&](decltype(windowEventHandlers)::Pair& pair)
         {
             if (pair.value)
