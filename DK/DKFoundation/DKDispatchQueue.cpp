@@ -117,6 +117,113 @@ DKObject<DKDispatchQueue::ExecutionState> DKDispatchQueue::Submit(DKOperation* o
     return item.state.SafeCast<ExecutionState>();
 }
 
+DKObject<DKDispatchQueue::ScheduledTask> DKDispatchQueue::SubmitScheduled(DKOperation* op, double interval)
+{
+    struct Invoker : public DKOperation
+    {
+        DKObject<ExecutionState> state;
+        DKObject<DKOperation> operation;
+        volatile bool invalidated;
+        volatile size_t count;
+        DKTimer::Tick interval;
+        DKTimer::Tick start;
+        DKObject<DKDispatchQueue> queue;
+
+        size_t Count() const 
+        {
+            return count;
+        }
+        double Interval() const 
+        {
+            return static_cast<double>(interval) / static_cast<double>(DKTimer::SystemTickFrequency());
+        }
+        bool IsRunning() const 
+        {
+            return !invalidated && queue != nullptr;
+        }
+        void Invalidate() 
+        {
+            invalidated = true;
+            if (state)
+                state->Revoke();
+            state = nullptr;
+            queue = nullptr;
+        }
+        void Perform() const override
+        {
+            Invoker& invoker = const_cast<Invoker&>(*this);
+            if (!invoker.invalidated)
+            {
+                invoker.operation->Perform();
+                invoker.count++;
+                // this->queue must be valid.
+                // this function should be called from this->queue.
+                if (!invoker.Install())
+                {
+                    invoker.Invalidate();
+                }
+            }
+        }
+        bool Install()
+        {
+            // Install next operation into EventLoop.
+            if (queue->IsRunning() && this->invalidated == false)
+            {
+                // calculate multiple of interval with invoker->next.
+                // cannot depend on calling time accuracy.
+                const DKTimer::Tick currentTick = DKTimer::SystemTick(); // current time.
+                const DKTimer::Tick startTick = this->start;
+                const DKTimer::Tick interval = this->interval;
+                const DKTimer::Tick elapsed = currentTick - startTick; // time elapsed since last call.
+
+                // set next calling time to multiple of interval.
+                DKTimer::Tick nextTick = currentTick + interval - (elapsed % interval);
+
+                if (elapsed < interval) // called earlier then expected. skip next one.
+                    nextTick += interval;
+
+                this->start = nextTick - interval; // save result. minus interval to make high accuracy.
+
+                double d = static_cast<double>(nextTick - currentTick) / static_cast<double>(DKTimer::SystemTickFrequency());
+                this->state = queue->Submit(this, d);
+                return this->state != nullptr;
+            }
+            return false;
+        }
+    };
+
+    struct Task : public ScheduledTask
+    {
+        DKObject<Invoker> invoker;
+
+        ~Task() { invoker->Invalidate(); }
+        size_t Count() const override { return invoker->Count(); }
+        double Interval() const override { return invoker->Interval(); }
+        bool IsRunning() const override { return invoker->IsRunning(); }
+        void Invalidate() override { return invoker->Invalidate(); }
+    };
+
+    interval = Max(interval, minimumScheduledInterval);
+
+    DKObject<Invoker> invoker = DKObject<Invoker>::New();
+    invoker->operation = const_cast<DKOperation*>(op);
+    invoker->invalidated = false;
+    invoker->count = 0;
+    invoker->interval = static_cast<DKTimer::Tick>(DKTimer::SystemTickFrequency() * interval);
+    invoker->start = DKTimer::SystemTick();
+    invoker->queue = this;
+
+    // Use invoker(EventLoopInvoker) to install operation into DKEventLoop.
+    // once operation has called, it installs next operation repeatedly.
+    if (invoker->Install())
+    {
+        DKObject<Task> task = DKObject<Task>::New();
+        task->invoker = invoker;
+        return task.SafeCast<ScheduledTask>();
+    }
+    return nullptr;
+}
+
 bool DKDispatchQueue::Execute()
 {
     DispatchQueueItem item = {};

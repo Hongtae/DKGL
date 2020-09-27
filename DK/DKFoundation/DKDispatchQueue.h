@@ -35,6 +35,18 @@ namespace DKFoundation
             virtual bool IsCompleted() const = 0;
         };
 
+        struct ScheduledTask
+        {
+            virtual ~ScheduledTask() {}
+            virtual size_t Count() const = 0;
+            virtual double Interval() const = 0;
+            virtual bool IsRunning() const = 0;
+            virtual void Invalidate() = 0;
+        };
+
+        constexpr static double minimumScheduledInterval = 0.001;
+
+
         DKDispatchQueue();
         virtual ~DKDispatchQueue();
 
@@ -50,7 +62,10 @@ namespace DKFoundation
                 InvokeOperation(op);
             Submit(op);
         }
+        /// Submits a single job to the dispatch queue with a specific delay time.
         virtual DKObject<ExecutionState> Submit(DKOperation*, double delay = 0.0);
+        /// Submit repetitive task at specific time intervals
+        DKObject<ScheduledTask> SubmitScheduled(DKOperation*, double interval);
 
         /// execute single operation, should be executed in the dispatch thread.
         virtual bool Execute();
