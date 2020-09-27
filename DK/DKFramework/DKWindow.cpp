@@ -34,8 +34,8 @@ using namespace DKFramework::Private;
 DKWindow::DKWindow()
 	: activated(false)
 	, visible(false)
-	, eventLoop(NULL)
-	, impl(NULL)
+	, dispatchQueue(nullptr)
+	, impl(nullptr)
 {
 }
 
@@ -50,12 +50,12 @@ DKWindow::~DKWindow()
 
 DKObject<DKWindow> DKWindow::Create(const DKString& name,
 									uint32_t style,
-									DKEventLoop* eventLoop,
+									DKDispatchQueue* dispatchQueue,
 									const WindowCallback& cb)
 {
 	DKObject<DKWindow> window = DKObject<DKWindow>::New();
 	window->impl = DKWindowInterface::CreateInterface(window);
-	window->eventLoop = eventLoop;
+	window->dispatchQueue = dispatchQueue;
 	window->callback = cb;
 	if (window->impl->Create(name, style))
 	{
@@ -122,7 +122,7 @@ void DKWindow::SetTextInputEnabled(int deviceId, bool enabled)
 		impl->EnableTextInput(deviceId, enabled);
 }
 
-bool DKWindow::KeyState(int deviceId, const DKVirtualKey& k) const
+bool DKWindow::KeyState(int deviceId, DKVirtualKey k) const
 {
 	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
@@ -133,7 +133,7 @@ bool DKWindow::KeyState(int deviceId, const DKVirtualKey& k) const
 	return false;
 }
 
-void DKWindow::SetKeyState(int deviceId, const DKVirtualKey& k, bool down)
+void DKWindow::SetKeyState(int deviceId, DKVirtualKey k, bool down)
 {
 	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
@@ -170,7 +170,7 @@ DKWindow::KeyboardState& DKWindow::KeyboardStateForDevice(int deviceId) const
 
 void DKWindow::PostMouseEvent(const MouseEvent& event)
 {
-	if (this->eventLoop)
+	if (this->dispatchQueue)
 	{
 		MouseEvent* eventCopy = new MouseEvent(event);	
 
@@ -181,7 +181,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 			{
 				DKObject<DKOperation> op = pair.value->Invocation(*eventCopy).SafeCast<DKOperation>();
 				PendingEvent pe = { pair.key, nullptr };
-				pe.state = this->eventLoop->Post(op);	// enqueue the event.
+				pe.state = this->dispatchQueue->Submit(op);	// enqueue the event.
 				if (pe.state)
 					pendingEvents.Add(pe);
 			}
@@ -189,7 +189,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 
 		// delete eventCopy async.
 		DKObject<DKWindow> self = this;
-		this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
+		this->dispatchQueue->Submit(DKFunction([eventCopy, self]() mutable
 		{
 			delete eventCopy;
 			self->ClearCompletedEvents();
@@ -234,7 +234,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		}
 	}
 
-	if (this->eventLoop)
+	if (this->dispatchQueue)
 	{
 		KeyboardEvent* eventCopy = new KeyboardEvent(event);
 
@@ -245,7 +245,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 			{
 				DKObject<DKOperation> op = pair.value->Invocation(*eventCopy).SafeCast<DKOperation>();
 				PendingEvent pe = { pair.key, nullptr };
-				pe.state = this->eventLoop->Post(op);	// enqueue the event.
+				pe.state = this->dispatchQueue->Submit(op);	// enqueue the event.
 				if (pe.state)
 					pendingEvents.Add(pe);
 			}
@@ -253,7 +253,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 
 		// delete eventCopy async.
 		DKObject<DKWindow> self = this;
-		this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
+		this->dispatchQueue->Submit(DKFunction([eventCopy, self]() mutable
 		{
 			delete eventCopy;
 			self->ClearCompletedEvents();
@@ -334,7 +334,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 		}
 	}
 
-	if (this->eventLoop)
+	if (this->dispatchQueue)
 	{
         WindowEvent* eventCopy = new WindowEvent(event);
 
@@ -346,7 +346,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
             {
                 DKObject<DKOperation> op = pair.value->Invocation(*eventCopy).SafeCast<DKOperation>();
                 PendingEvent pe = { pair.key, nullptr };
-                pe.state = this->eventLoop->Post(op);	// enqueue the event.
+                pe.state = this->dispatchQueue->Submit(op);	// enqueue the event.
                 if (pe.state)
                     pendingEvents.Add(pe);
             }
@@ -354,7 +354,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 
         // delete eventCopy async
         DKObject<DKWindow> self = this;
-        this->eventLoop->Post(DKFunction([eventCopy, self]() mutable
+        this->dispatchQueue->Submit(DKFunction([eventCopy, self]() mutable
         {
             delete eventCopy;
             self->ClearCompletedEvents();
@@ -527,24 +527,13 @@ void DKWindow::RemoveEventHandler(EventHandlerContext context)
 		keyboardEventHandlers.Remove(context);
 		mouseEventHandlers.Remove(context);
 
-		if (this->eventLoop)
+		if (this->dispatchQueue)
 		{
-			if (this->eventLoop->IsWrokingThread())
-			{
-				// The event loop running on current thread.
-				// Revoke every pending event for given context.
-				for (PendingEvent& pe : pendingEvents)
-				{
-					if (pe.context == context)
-						pe.state->Revoke();
-				}
-			}
-			else
-			{
-				// The event loop running on other thread.
-				// Wait until all events have been processed.
-				this->eventLoop->Process(DKFunction([](){})->Invocation());
-			}
+            for (PendingEvent& pe : pendingEvents)
+            {
+                if (pe.context == context)
+                    pe.state->Revoke();
+            }
 		}
 	}
 }

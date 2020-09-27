@@ -165,7 +165,7 @@ namespace DKFramework
 		/// @param cb Window callback
 		static DKObject<DKWindow> Create(const DKString& name,
 										 uint32_t style = StyleGenericWindow,
-										 DKEventLoop* eventLoop = NULL,
+										 DKDispatchQueue* dispatchQueue = nullptr,
 										 const WindowCallback& cb = WindowCallback());
 		/// Create proxy window. (can be used to interface of existing window)
 		/// You have to post all events manually.
@@ -202,8 +202,8 @@ namespace DKFramework
 		// Keyboard has two states: raw-key input mode, text composition mode.
 		bool IsTextInputEnabled(int deviceId) const;
 		void SetTextInputEnabled(int deviceId, bool enabled); ///< change keyboard for text input mode
-		bool KeyState(int deviceId, const DKVirtualKey& k) const;
-		void SetKeyState(int deviceId, const DKVirtualKey& k, bool down);
+		bool KeyState(int deviceId, DKVirtualKey k) const;
+		void SetKeyState(int deviceId, DKVirtualKey k, bool down);
 		void ResetKeyState(int deviceId);
 		void ResetKeyStateForAllDevices();
 		static DKString GetVKName(DKVirtualKey lKey); ///< get key name for debugging
@@ -243,7 +243,7 @@ namespace DKFramework
 		struct PendingEvent
 		{
 			EventHandlerContext context;
-			DKObject<DKEventLoop::PendingState> state;
+			DKObject<DKDispatchQueue::ExecutionState> state;
 		};
 		DKArray<PendingEvent> pendingEvents; // valid only if user's EventLoop have been provided.
 		void ClearCompletedEvents(); // cleanup completed events
@@ -261,7 +261,7 @@ namespace DKFramework
 		bool activated;			// true if window is activated
 		bool visible;
 
-		DKObject<DKEventLoop> eventLoop;
+		DKObject<DKDispatchQueue> dispatchQueue;
 		WindowCallback callback;
 		DKWindowInterface*	impl;
 		friend class DKWindowInterface;
