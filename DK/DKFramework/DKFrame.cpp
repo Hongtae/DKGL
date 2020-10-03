@@ -707,7 +707,9 @@ bool DKFrame::DrawInternal()
             continue;
         // check frame inside. (visibility)
         bool covered = false;
-        if (frame->InsideFrameRect(&covered, bounds, this->contentTransformInverse) == false)	// frame is not visible.
+        if (frame->InsideFrameRect(&covered, bounds,
+                                   this->contentTransform,
+                                   this->contentTransformInverse) == false)	// frame is not visible.
             continue;
 
         if (this->drawSurface && frame->renderTarget == nullptr)
@@ -783,17 +785,17 @@ bool DKFrame::DrawInternal()
     return false;
 }
 
-bool DKFrame::InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm) const
+bool DKFrame::InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm, const DKMatrix3& invTm) const
 {
     DKVector2 outerPos[4] = {
-        DKVector2(rect.origin.x, rect.origin.y),										// left-bottom
-        DKVector2(rect.origin.x, rect.origin.y + rect.size.height),						// left-top
-        DKVector2(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height),	// right-top
-        DKVector2(rect.origin.x + rect.size.width, rect.origin.y)						// right-bottom
+        DKVector2(rect.origin.x, rect.origin.y),										// left-top
+        DKVector2(rect.origin.x, rect.origin.y + rect.size.height),						// left-bottom
+        DKVector2(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height),	// right-bottom
+        DKVector2(rect.origin.x + rect.size.width, rect.origin.y)						// right-top
     };
 
     // apply parent space transform.
-    DKMatrix3 m = tm * this->transformInverse;
+    DKMatrix3 m = invTm * this->transformInverse;
     for (DKVector2& v : outerPos)
         v.Transform(m);
 
@@ -813,7 +815,7 @@ bool DKFrame::InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3
         *covered = false;
 
     // check normalized local rect(0,0,1,1) is inside parent rect.
-    return rect.IntersectRect(DKRect(0, 0, 1, 1), this->transform);
+    return rect.IntersectRect(DKRect(0, 0, 1, 1), this->transform * tm);
 }
 
 const DKTexture* DKFrame::Texture() const

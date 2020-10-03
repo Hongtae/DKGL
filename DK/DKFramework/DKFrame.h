@@ -296,7 +296,7 @@ namespace DKFramework
         mutable bool drawSurface : 1;
 
         bool DrawInternal(); // return true, if drawn actually happen.
-        bool InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm) const; // checking frame covers parent region entirely.
+        bool InsideFrameRect(bool* covered, const DKRect& rect, const DKMatrix3& tm, const DKMatrix3& inv) const; // checking frame covers parent region entirely.
         bool ProcessKeyboardEvent(const DKWindow::KeyboardEvent&);
         bool ProcessMouseEvent(const DKWindow::MouseEvent&, const DKPoint&, const DKVector2&, bool propagate);
         DKFrame* FindHoverFrame(const DKPoint& pos);
