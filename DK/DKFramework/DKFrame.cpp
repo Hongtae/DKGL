@@ -38,7 +38,8 @@ DKFrame::~DKFrame()
 {
     if (IsLoaded()) //frame was not unloaded.
     {
-        DKLogW("The frame is being destroyed, but it is loaded and Unload() will not be called.");
+        DKLogW("The frame is being destroyed, but it is loaded and OnUnload() will not be called.");
+        this->Unload();
     }
 
     RemoveFromSuperframe();
@@ -92,6 +93,9 @@ void DKFrame::Unload()
     if (this->loaded)
     {
         this->screen->LeaveHoverFrame(this);
+        this->screen->RemoveFocusFrameForAnyDevices(this, false);
+        this->screen->RemoveKeyFrameForAnyDevices(this, false);
+
         this->OnUnload();
         this->renderTarget = nullptr;
     }
@@ -122,14 +126,18 @@ void DKFrame::RemoveSubframe(DKFrame* frame)
 {
     if (frame && frame->superframe == this)
     {
-        if (screen)
-            screen->LeaveHoverFrame(this);
+        if (frame->screen)
+        {
+            frame->screen->LeaveHoverFrame(frame);
+            frame->screen->RemoveFocusFrameForAnyDevices(frame, true);
+            frame->screen->RemoveKeyFrameForAnyDevices(frame, true);
+        }
 
         for (uint32_t index = 0; index < subframes.Count(); ++index)
         {
             if (subframes.Value(index) == frame)
             {
-                DKObject<DKFrame> temp = frame;
+                DKObject<DKFrame> temp = frame; // take ownership (temporary)
 
                 frame->superframe = nullptr;
                 subframes.Remove(index); // object can be destroyed now
@@ -156,7 +164,7 @@ bool DKFrame::BringSubframeToFront(DKFrame* frame)
             {
                 if (index > 0)
                 {
-                    DKObject<DKFrame> temp = frame;
+                    DKObject<DKFrame> temp = frame; // take ownership (temporary)
 
                     this->subframes.Remove(index);
                     this->subframes.Insert(frame, 0);
@@ -182,7 +190,7 @@ bool DKFrame::SendSubframeToBack(DKFrame* frame)
             {
                 if (index + 1 < this->subframes.Count())
                 {
-                    DKObject<DKFrame> temp = frame;
+                    DKObject<DKFrame> temp = frame; // take ownership (temporary)
 
                     this->subframes.Remove(index);
                     this->subframes.Add(frame);

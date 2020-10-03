@@ -217,12 +217,12 @@ void DKScreen::RemoveKeyFrameForAnyDevices(DKFrame* frame, bool notify)
         if (pair.value == frame)
             devIds.Add(pair.key);
     });
-    for (int devId : devIds)
-        this->keyFrames.Remove(devId);
+    for (int deviceId : devIds)
+        this->keyFrames.Remove(deviceId);
     if (frame && notify)
     {
-        for (int devId : devIds)
-            frame->OnKeyboardLost(devId);
+        for (int deviceId : devIds)
+            frame->OnKeyboardLost(deviceId);
     }
 }
 
@@ -235,12 +235,12 @@ void DKScreen::RemoveFocusFrameForAnyDevices(DKFrame* frame, bool notify)
         if (pair.value == frame)
             devIds.Add(pair.key);
     });
-    for (int devId : devIds)
-        this->focusFrames.Remove(devId);
+    for (int deviceId : devIds)
+        this->focusFrames.Remove(deviceId);
     if (frame && notify)
     {
-        for (int devId : devIds)
-            frame->OnMouseLost(devId);
+        for (int deviceId : devIds)
+            frame->OnMouseLost(deviceId);
     }
 }
 
@@ -306,11 +306,11 @@ void DKScreen::LeaveHoverFrame(DKFrame* frame)
         if (pair.value == frame)
             devIds.Add(pair.key);
     });
-    for (int devId : devIds)
+    for (int deviceId : devIds)
     {
-        this->hoverFrames.Remove(devId);
+        this->hoverFrames.Remove(deviceId);
         DKASSERT_DEBUG(frame->Screen() == this);
-        frame->OnMouseLeave(devId);
+        frame->OnMouseLeave(deviceId);
     }
 }
 
