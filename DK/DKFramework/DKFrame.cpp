@@ -893,21 +893,6 @@ bool DKFrame::ProcessKeyboardEvent(const DKWindow::KeyboardEvent& event)
     if (this->CanHandleKeyboard())
     {
         OnKeyboardEvent(event);
-        switch (event.type)
-        {
-        case DKWindow::KeyboardEvent::KeyDown:
-            OnKeyDown(event.deviceId, event.key);
-            break;
-        case DKWindow::KeyboardEvent::KeyUp:
-            OnKeyUp(event.deviceId, event.key);
-            break;
-        case DKWindow::KeyboardEvent::TextInput:
-            OnTextInput(event.deviceId, event.text);
-            break;
-        case DKWindow::KeyboardEvent::TextComposition:
-            OnTextInputCandidate(event.deviceId, event.text);
-            break;
-        }
         return true;
     }
     return false;
@@ -995,21 +980,6 @@ bool DKFrame::ProcessMouseEvent(const DKWindow::MouseEvent& event, const DKPoint
         }
 
         OnMouseEvent(event, localPos, localDelta);
-        switch (event.type)
-        {
-        case DKWindow::MouseEvent::ButtonDown:
-            OnMouseDown(event.deviceId, event.buttonId, localPos);
-            break;
-        case DKWindow::MouseEvent::ButtonUp:
-            OnMouseUp(event.deviceId, event.buttonId, localPos);
-            break;
-        case DKWindow::MouseEvent::Move:
-            OnMouseMove(event.deviceId, localPos, localDelta);
-            break;
-        case DKWindow::MouseEvent::Wheel:
-            OnMouseWheel(event.deviceId, localPos, localDelta);
-            break;
-        }
         return true;
     }
     return false;

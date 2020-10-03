@@ -293,24 +293,25 @@ void DKScreen::RemoveAllFocusFramesForAnyDevices(bool notify)
 const DKFrame* DKScreen::HoverFrame(int deviceId) const
 {
     if (auto p = hoverFrames.Find(deviceId); p)
-        return p->value;
+        return p->value.frame;
     return nullptr;
 }
 
 void DKScreen::LeaveHoverFrame(DKFrame* frame)
 {
-    DKArray<int> devIds;
-    devIds.Reserve(this->hoverFrames.Count());
-    this->hoverFrames.EnumerateForward([&](DKMap<int, DKFrame*>::Pair& pair)
+    struct MouseDevice { DKWindow::MouseEvent::Device device; int deviceId; };
+    DKArray<MouseDevice> devices;
+    devices.Reserve(this->hoverFrames.Count());
+    this->hoverFrames.EnumerateForward([&](decltype(hoverFrames)::Pair& pair)
     {
-        if (pair.value == frame)
-            devIds.Add(pair.key);
+        if (pair.value.frame == frame)
+            devices.Add({ pair.value.device, pair.key });
     });
-    for (int deviceId : devIds)
+    for (auto& device : devices)
     {
-        this->hoverFrames.Remove(deviceId);
+        this->hoverFrames.Remove(device.deviceId);
         DKASSERT_DEBUG(frame->Screen() == this);
-        frame->OnMouseLeave(deviceId);
+        frame->OnMouseLeave(device.deviceId, device.device);        
     }
 }
 
@@ -394,24 +395,27 @@ bool DKScreen::ProcessMouseEvent(const DKWindow::MouseEvent& event)
             DKFrame* leave = nullptr;
 
             if (auto p = this->hoverFrames.Find(event.deviceId); p)
-                leave = p->value;
+            {
+                DKASSERT_DEBUG(p->value.device == event.device);
+                leave = p->value.frame;
+            }
 
             if (hover != leave)
             {
                 if (hover)
-                    this->hoverFrames.Update(event.deviceId, hover);
+                    this->hoverFrames.Update(event.deviceId, {hover, event.device});
                 else
                     this->hoverFrames.Remove(event.deviceId);
 
                 if (leave)
                 {
                     DKASSERT_DEBUG(leave->Screen() == this);
-                    leave->OnMouseLeave(event.deviceId);
+                    leave->OnMouseLeave(event.deviceId, event.device);
                 }
                 if (hover)
                 {
                     DKASSERT_DEBUG(hover->Screen() == this);
-                    hover->OnMouseHover(event.deviceId);
+                    hover->OnMouseHover(event.deviceId, event.device);
                 }
             }
         }

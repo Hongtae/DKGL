@@ -248,20 +248,12 @@ namespace DKFramework
 
         // mouse events
         virtual void OnMouseEvent(const DKWindow::MouseEvent&, const DKPoint& pos, const DKVector2& delta) {}
-        virtual void OnMouseDown(int deviceId, int buttonId, const DKPoint& pos) {}
-        virtual void OnMouseUp(int deviceId, int buttonId, const DKPoint& pos) {}
-        virtual void OnMouseMove(int deviceId, const DKPoint& pos, const DKVector2& delta) {}
-        virtual void OnMouseWheel(int deviceId, const DKPoint& pos, const DKVector2& delta) {}
-        virtual void OnMouseHover(int deviceId) {}
-        virtual void OnMouseLeave(int deviceId) {}
+        virtual void OnMouseHover(int deviceId, DKWindow::MouseEvent::Device) {}
+        virtual void OnMouseLeave(int deviceId, DKWindow::MouseEvent::Device) {}
         virtual void OnMouseLost(int deviceId) {}  ///< mouse lost which captured by self.
 
         // keyboard, text events
         virtual void OnKeyboardEvent(const DKWindow::KeyboardEvent&) {}
-        virtual void OnKeyDown(int deviceId, DKVirtualKey key) {}
-        virtual void OnKeyUp(int deviceId, DKVirtualKey key) {}
-        virtual void OnTextInput(int deviceId, const DKString& str) {}
-        virtual void OnTextInputCandidate(int deviceId, const DKString& str) {}
         virtual void OnKeyboardLost(int deviceId) {}
 
         /// Pre-process event.

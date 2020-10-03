@@ -98,8 +98,9 @@ namespace DKFramework
         DKObject<DKFrame> rootFrame;
 
         DKMap<int, DKFrame*> keyFrames; // keyboard captors
-        DKMap<int, DKFrame*> focusFrames; // mouse captors
-        DKMap<int, DKFrame*> hoverFrames; // mouse hover frames
+        DKMap<int, DKFrame*> focusFrames; // mouse 
+        struct FrameMouseDevice { DKFrame* frame; DKWindow::MouseEvent::Device device; };
+        DKMap<int, FrameMouseDevice> hoverFrames; // mouse hover frames
 
         DKObject<DKCommandQueue> commandQueue;
         DKObject<DKGraphicsDevice> graphicsDevice;
