@@ -68,13 +68,13 @@ namespace DKFramework
 			{
 				return p->value;
 			}
-			return NULL;
+			return nullptr;
 		}
 		DKObject<DKResourceLoader::ResourceLoader> FindExtLoader(const DKString& name)
 		{
 			DKCriticalSection<DKSpinLock> guard(GetLoaderMapLock());
 			LoaderMap& map = GetLoaderMap();
-			DKObject<DKResourceLoader::ResourceLoader> loader = NULL;
+			DKObject<DKResourceLoader::ResourceLoader> loader = nullptr;
 			map.EnumerateForward([&](LoaderMap::Pair& pair, bool* stop)
 			{
 				if (name.HasSuffix(pair.key))
@@ -87,7 +87,7 @@ namespace DKFramework
 		}
 		DKObject<DKResourceLoader::ResourceAllocator> GetAllocator(const DKString& URI, const DKString& key)
 		{
-			DKObject<DKResourceLoader::ResourceAllocator> allocator = NULL;
+			DKObject<DKResourceLoader::ResourceAllocator> allocator = nullptr;
 			{
 				DKCriticalSection<DKSpinLock> guard(GetAllocatorURIMapLock());
 				AllocatorURIMap::Pair* pURI = GetAllocatorURIMap().Find(URI);
@@ -98,7 +98,7 @@ namespace DKFramework
 						return pAlloc->value;
 				}
 			}
-			return NULL;
+			return nullptr;
 		}
 
 		bool InitBuiltinResourceTypes()
@@ -171,10 +171,10 @@ void DKResourceLoader::SetResourceFileExtension(const DKString& ext, ResourceLoa
 
 DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 {
-	DKObject<DKResource> res = NULL;
+	DKObject<DKResource> res = nullptr;
 	if (e)
 	{
-		DKString URI = e->ns != NULL ? e->ns->URI : L"";
+		DKString URI = e->ns != nullptr ? e->ns->URI : DKString("");
 		DKString name = e->name;
 
 		ResourceAllocator* allocator = GetAllocator(URI, name);
@@ -184,7 +184,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 			DKObject<DKResource> obj = allocator->Invoke(alloc);
 			if (obj)
 			{
-				if (obj->allocator == NULL)
+				if (obj->allocator == nullptr)
 					obj->allocator = &alloc;
 				if (obj->Deserialize(e, this))
 					res = obj;
@@ -194,7 +194,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 		{
 			// Open with DKSerializer.
 			DKAllocator& alloc = this->Allocator();
-			DKObject<DKResource> obj = NULL;
+			DKObject<DKResource> obj = nullptr;
 
 			auto selector = [&alloc, &obj](const DKString& name) -> DKObject<DKSerializer>
 			{
@@ -204,13 +204,13 @@ DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 					obj = allocator->Invoke(alloc);
 					if (obj)
 					{
-						if (obj->allocator == NULL)
+						if (obj->allocator == nullptr)
 							obj->allocator = &alloc;
 						return obj->Serializer();
 					}
 				}
 				DKLog("DKResourceLoader Warning: DKSerializer Class(%ls) not found!\n", (const wchar_t*)name);
-				return NULL;
+				return nullptr;
 			};
 
 			if (DKSerializer::RestoreObject(e, this, DKFunction(selector)))
@@ -222,7 +222,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromXML(const DKXmlElement* e)
 
 DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, const DKString& name)
 {
-	DKObject<DKResource> res = NULL;
+	DKObject<DKResource> res = nullptr;
 	if (data)
 	{
 		DKObject<ResourceLoader> loader = FindExtLoader(name.LowercaseString());
@@ -240,7 +240,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 					DKObject<DKResource> obj = loader->Invoke(&stream, alloc);
 					if (obj)
 					{
-						if (obj->allocator == NULL)
+						if (obj->allocator == nullptr)
 							obj->allocator = &alloc;
 						res = obj;
 					}
@@ -248,7 +248,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 			}
 			data->UnlockShared();
 		}
-		if (res == NULL)
+		if (res == nullptr)
 		{
 			// try to open with XML (DKXmlDocument)
 			DKObject<DKXmlDocument> xmlDoc = DKXmlDocument::Open(DKXmlDocument::TypeXML, data);
@@ -260,7 +260,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 			{
 				// Open with DKSerializer.
 				DKAllocator& alloc = this->Allocator();
-				DKObject<DKResource> obj = NULL;
+				DKObject<DKResource> obj = nullptr;
 
 				auto selector = [&alloc, &obj](const DKString& name) -> DKObject<DKSerializer>
 				{
@@ -270,13 +270,13 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 						obj = allocator->Invoke(alloc);
 						if (obj)
 						{
-							if (obj->allocator == NULL)
+							if (obj->allocator == nullptr)
 								obj->allocator = &alloc;
 							return obj->Serializer();
 						}
 					}
 					DKLog("DKResourceLoader Warning: DKSerializer Class(%ls) not found!\n", (const wchar_t*)name);
-					return NULL;
+					return nullptr;
 				};
 
 				if (DKSerializer::RestoreObject(data, this, DKFunction(selector)))
@@ -298,7 +298,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 			DKObject<DKResource> obj = loader->Invoke(stream, alloc);
 			if (obj)
 			{
-				if (obj->allocator == NULL)
+				if (obj->allocator == nullptr)
 					obj->allocator = &alloc;
 				return obj;
 			}
@@ -315,7 +315,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 			stream->SetCurrentPosition(pos);
 			// Open with DKSerializer.
 			DKAllocator& alloc = this->Allocator();
-			DKObject<DKResource> obj = NULL;
+			DKObject<DKResource> obj = nullptr;
 
 			auto selector = [&alloc, &obj](const DKString& name) -> DKObject<DKSerializer>
 			{
@@ -325,20 +325,20 @@ DKObject<DKResource> DKResourceLoader::ResourceFromStream(DKStream* stream, cons
 					obj = allocator->Invoke(alloc);
 					if (obj)
 					{
-						if (obj->allocator == NULL)
+						if (obj->allocator == nullptr)
 							obj->allocator = &alloc;
 						return obj->Serializer();
 					}
 				}
 				DKLog("DKResourceLoader Warning: DKSerializer Class(%ls) not found!\n", (const wchar_t*)name);
-				return NULL;
+				return nullptr;
 			};
 
 			if (DKSerializer::RestoreObject(stream, this, DKFunction(selector)))
 				return obj;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 DKObject<DKResource> DKResourceLoader::ResourceFromFile(const DKString& path, const DKString& name)
@@ -355,7 +355,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromFile(const DKString& path, co
 		if (file)
 			return this->ResourceFromStream(file.SafeCast<DKStream>(), name);
 	}
-	return NULL;
+	return nullptr;
 }
 
 DKAllocator& DKResourceLoader::Allocator() const
