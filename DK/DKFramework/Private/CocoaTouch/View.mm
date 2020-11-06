@@ -392,9 +392,9 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.userInstance)
 		{
 			if ([textField.text length] > 0)
-				self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVK_NONE, textField.text.UTF8String });
-			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVK_NONE, "\e" });
-			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, "" });
+				self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, textField.text.UTF8String });
+			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, "\e" });
+			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
 		}
 		self.textInput = NO;
 	}
@@ -408,13 +408,13 @@ using MouseEvent = DKWindow::MouseEvent;
 - (void)updateTextField:(UITextField *)textField
 {
 	if (self.userInstance)
-		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, textField.text.UTF8String });
+		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, textField.text.UTF8String });
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
 	if (self.userInstance)
-		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, "" });
+		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
 	return YES;
 }
 
@@ -423,8 +423,8 @@ using MouseEvent = DKWindow::MouseEvent;
 	if (self.userInstance)
 	{
 		if ([textField.text length] > 0)
-			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVK_NONE, textField.text.UTF8String });
-		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVK_NONE, "\n" });
+			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, textField.text.UTF8String });
+		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, "\n" });
 	}
 	textField.text = @"";
 	return YES;

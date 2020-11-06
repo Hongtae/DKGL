@@ -124,22 +124,22 @@ void DKWindow::SetTextInputEnabled(int deviceId, bool enabled)
 
 bool DKWindow::KeyState(int deviceId, DKVirtualKey k) const
 {
-	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
+	DKASSERT_DEBUG(static_cast<int>(k) >= 0 && static_cast<int>(k) <= static_cast<int>(DKVirtualKey::MaxValue));
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	if (auto p = keyboardStateMap.Find(deviceId); p)
 	{
-		return _GetUCArrayBit(p->value.keyStateBits, k);
+		return _GetUCArrayBit(p->value.keyStateBits, static_cast<int>(k));
 	}
 	return false;
 }
 
 void DKWindow::SetKeyState(int deviceId, DKVirtualKey k, bool down)
 {
-	DKASSERT_DEBUG(k >= 0 && k <= DKVK_MAXVALUE);
+	DKASSERT_DEBUG(static_cast<int>(k) >= 0 && static_cast<int>(k) <= static_cast<int>(DKVirtualKey::MaxValue));
 	DKCriticalSection<DKSpinLock> guard(this->stateLock);
 	KeyboardState& state = KeyboardStateForDevice(deviceId);
 
-	_SetUCArrayBit(state.keyStateBits, k, down);
+	_SetUCArrayBit(state.keyStateBits, static_cast<int>(k), down);
 }
 
 void DKWindow::ResetKeyState(int deviceId)
@@ -220,15 +220,15 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 
 		if (event.type == KeyboardEvent::KeyDown)
 		{
-			if (_GetUCArrayBit(keyboard.keyStateBits, event.key))
+			if (_GetUCArrayBit(keyboard.keyStateBits, static_cast<int>(event.key)))
 				return;
 			else
-				_SetUCArrayBit(keyboard.keyStateBits, event.key, true);
+				_SetUCArrayBit(keyboard.keyStateBits, static_cast<int>(event.key), true);
 		}
 		if (event.type == KeyboardEvent::KeyUp)
 		{
-			if (_GetUCArrayBit(keyboard.keyStateBits, event.key))
-				_SetUCArrayBit(keyboard.keyStateBits, event.key, false);
+			if (_GetUCArrayBit(keyboard.keyStateBits, static_cast<int>(event.key)))
+				_SetUCArrayBit(keyboard.keyStateBits, static_cast<int>(event.key), false);
 			else
 				return;
 		}
@@ -554,133 +554,133 @@ void* DKWindow::PlatformHandle() const
 
 DKString DKWindow::GetVKName(DKVirtualKey lKey)
 {
-	switch (lKey)
-	{
-	case DKVK_NONE:					return L"DKVK_NONE";
+    switch (lKey)
+    {
+    case DKVirtualKey::None:				return L"None";
 
-	case DKVK_ESCAPE:				return L"DKVK_ESCAPE";
+    case DKVirtualKey::Escape:				return L"Escape";
 
-	case DKVK_F1:					return L"DKVK_F1"; 
-	case DKVK_F2:					return L"DKVK_F2"; 
-	case DKVK_F3:					return L"DKVK_F3"; 
-	case DKVK_F4:					return L"DKVK_F4"; 
-	case DKVK_F5:					return L"DKVK_F5"; 
-	case DKVK_F6:					return L"DKVK_F6"; 
-	case DKVK_F7:					return L"DKVK_F7"; 
-	case DKVK_F8:					return L"DKVK_F8"; 
-	case DKVK_F9:					return L"DKVK_F9"; 
-	case DKVK_F10:					return L"DKVK_F10"; 
-	case DKVK_F11:					return L"DKVK_F11"; 
-	case DKVK_F12:					return L"DKVK_F12"; 
-	case DKVK_F13:					return L"DKVK_F13"; 
-	case DKVK_F14:					return L"DKVK_F14"; 
-	case DKVK_F15:					return L"DKVK_F15"; 
-	case DKVK_F16:					return L"DKVK_F16"; 
-	case DKVK_F17:					return L"DKVK_F17"; 
-	case DKVK_F18:					return L"DKVK_F18"; 
-	case DKVK_F19:					return L"DKVK_F19"; 
-	case DKVK_F20:					return L"DKVK_F20"; 
+    case DKVirtualKey::F1:					return L"F1";
+    case DKVirtualKey::F2:					return L"F2";
+    case DKVirtualKey::F3:					return L"F3";
+    case DKVirtualKey::F4:					return L"F4";
+    case DKVirtualKey::F5:					return L"F5";
+    case DKVirtualKey::F6:					return L"F6";
+    case DKVirtualKey::F7:					return L"F7";
+    case DKVirtualKey::F8:					return L"F8";
+    case DKVirtualKey::F9:					return L"F9";
+    case DKVirtualKey::F10:					return L"F10";
+    case DKVirtualKey::F11:					return L"F11";
+    case DKVirtualKey::F12:					return L"F12";
+    case DKVirtualKey::F13:					return L"F13";
+    case DKVirtualKey::F14:					return L"F14";
+    case DKVirtualKey::F15:					return L"F15";
+    case DKVirtualKey::F16:					return L"F16";
+    case DKVirtualKey::F17:					return L"F17";
+    case DKVirtualKey::F18:					return L"F18";
+    case DKVirtualKey::F19:					return L"F19";
+    case DKVirtualKey::F20:					return L"F20";
 
-	case DKVK_0:					return L"DKVK_0"; 
-	case DKVK_1:					return L"DKVK_1"; 
-	case DKVK_2:					return L"DKVK_2"; 
-	case DKVK_3:					return L"DKVK_3"; 
-	case DKVK_4:					return L"DKVK_4"; 
-	case DKVK_5:					return L"DKVK_5"; 
-	case DKVK_6:					return L"DKVK_6"; 
-	case DKVK_7:					return L"DKVK_7"; 
-	case DKVK_8:					return L"DKVK_8"; 
-	case DKVK_9:					return L"DKVK_9"; 
+    case DKVirtualKey::Num0:				return L"Num0";
+    case DKVirtualKey::Num1:				return L"Num1";
+    case DKVirtualKey::Num2:				return L"Num2";
+    case DKVirtualKey::Num3:				return L"Num3";
+    case DKVirtualKey::Num4:				return L"Num4";
+    case DKVirtualKey::Num5:				return L"Num5";
+    case DKVirtualKey::Num6:				return L"Num6";
+    case DKVirtualKey::Num7:				return L"Num7";
+    case DKVirtualKey::Num8:				return L"Num8";
+    case DKVirtualKey::Num9:				return L"Num9";
 
-	case DKVK_A:					return L"DKVK_A"; 
-	case DKVK_B:					return L"DKVK_B"; 
-	case DKVK_C:					return L"DKVK_C"; 
-	case DKVK_D:					return L"DKVK_D"; 
-	case DKVK_E:					return L"DKVK_E"; 
-	case DKVK_F:					return L"DKVK_F"; 
-	case DKVK_G:					return L"DKVK_G"; 
-	case DKVK_H:					return L"DKVK_H"; 
-	case DKVK_I:					return L"DKVK_I"; 
-	case DKVK_J:					return L"DKVK_J"; 
-	case DKVK_K:					return L"DKVK_K"; 
-	case DKVK_L:					return L"DKVK_L"; 
-	case DKVK_M:					return L"DKVK_M"; 
-	case DKVK_N:					return L"DKVK_N"; 
-	case DKVK_O:					return L"DKVK_O"; 
-	case DKVK_P:					return L"DKVK_P"; 
-	case DKVK_Q:					return L"DKVK_Q"; 
-	case DKVK_R:					return L"DKVK_R"; 
-	case DKVK_S:					return L"DKVK_S"; 
-	case DKVK_T:					return L"DKVK_T"; 
-	case DKVK_U:					return L"DKVK_U"; 
-	case DKVK_V:					return L"DKVK_V"; 
-	case DKVK_W:					return L"DKVK_W"; 
-	case DKVK_X:					return L"DKVK_X"; 
-	case DKVK_Y:					return L"DKVK_Y"; 
-	case DKVK_Z:					return L"DKVK_Z"; 
+    case DKVirtualKey::A:					return L"A";
+    case DKVirtualKey::B:					return L"B";
+    case DKVirtualKey::C:					return L"C";
+    case DKVirtualKey::D:					return L"D";
+    case DKVirtualKey::E:					return L"E";
+    case DKVirtualKey::F:					return L"F";
+    case DKVirtualKey::G:					return L"G";
+    case DKVirtualKey::H:					return L"H";
+    case DKVirtualKey::I:					return L"I";
+    case DKVirtualKey::J:					return L"J";
+    case DKVirtualKey::K:					return L"K";
+    case DKVirtualKey::L:					return L"L";
+    case DKVirtualKey::M:					return L"M";
+    case DKVirtualKey::N:					return L"N";
+    case DKVirtualKey::O:					return L"O";
+    case DKVirtualKey::P:					return L"P";
+    case DKVirtualKey::Q:					return L"Q";
+    case DKVirtualKey::R:					return L"R";
+    case DKVirtualKey::S:					return L"S";
+    case DKVirtualKey::T:					return L"T";
+    case DKVirtualKey::U:					return L"U";
+    case DKVirtualKey::V:					return L"V";
+    case DKVirtualKey::W:					return L"W";
+    case DKVirtualKey::X:					return L"X";
+    case DKVirtualKey::Y:					return L"Y";
+    case DKVirtualKey::Z:					return L"Z";
 
-	case DKVK_PERIOD:				return L"DKVK_PERIOD"; 
-	case DKVK_COMMA:				return L"DKVK_COMMA"; 
-	case DKVK_SLASH:				return L"DKVK_SLASH"; 
-	case DKVK_TAB:					return L"DKVK_TAB"; 
-	case DKVK_ACCENT_TILDE:			return L"DKVK_ACCENT_TILDE"; 
-	case DKVK_BACKSPACE:			return L"DKVK_BACKSPACE"; 
-	case DKVK_SEMICOLON:			return L"DKVK_SEMICOLON"; 
-	case DKVK_QUOTE:				return L"DKVK_QUOTE"; 
-	case DKVK_BACKSLASH:			return L"DKVK_BACKSLASH"; 
-	case DKVK_EQUAL:				return L"DKVK_EQUAL"; 
-	case DKVK_HYPHEN:				return L"DKVK_HYPHEN"; 
-	case DKVK_SPACE:				return L"DKVK_SPACE"; 
-	case DKVK_OPEN_BRACKET:			return L"DKVK_OPEN_BRACKET"; 
-	case DKVK_CLOSE_BRACKET:		return L"DKVK_CLOSE_BRACKET"; 
-	case DKVK_CAPSLOCK:				return L"DKVK_CAPSLOCK"; 
+    case DKVirtualKey::Period:				return L"Period";
+    case DKVirtualKey::Comma:				return L"Comma";
+    case DKVirtualKey::Slash:				return L"Slash";
+    case DKVirtualKey::Tab:					return L"Tab";
+    case DKVirtualKey::AccentTilde:			return L"AccentTilde";
+    case DKVirtualKey::Backspace:			return L"Backspace";
+    case DKVirtualKey::Semicolon:			return L"Semicolon";
+    case DKVirtualKey::Quote:				return L"Quote";
+    case DKVirtualKey::Backslash:			return L"Backslash";
+    case DKVirtualKey::Equal:				return L"Equal";
+    case DKVirtualKey::Hyphen:				return L"Hyphen";
+    case DKVirtualKey::Space:				return L"Space";
+    case DKVirtualKey::OpenBracket:			return L"OpenBracket";
+    case DKVirtualKey::CloseBracket:		return L"CloseBracket";
+    case DKVirtualKey::Capslock:			return L"Capslock";
 
-	case DKVK_RETURN:				return L"DKVK_RETURN"; 
+    case DKVirtualKey::Return:				return L"Return";
 
-	case DKVK_FN:					return L"DKVK_FN";
-	case DKVK_INSERT:				return L"DKVK_INSERT"; 
-	case DKVK_HOME:					return L"DKVK_HOME"; 
-	case DKVK_PAGE_UP:				return L"DKVK_PAGE_UP"; 
-	case DKVK_PAGE_DOWN:			return L"DKVK_PAGE_DOWN"; 
-	case DKVK_END:					return L"DKVK_END"; 
-	case DKVK_DELETE:				return L"DKVK_DELETE"; 
+    case DKVirtualKey::Fn:					return L"Fn";
+    case DKVirtualKey::Insert:				return L"Insert";
+    case DKVirtualKey::Home:				return L"Home";
+    case DKVirtualKey::PageUp:				return L"PageUp";
+    case DKVirtualKey::PageDown:			return L"PageDown";
+    case DKVirtualKey::End:					return L"End";
+    case DKVirtualKey::Delete:				return L"Delete";
 
-	case DKVK_LEFT:					return L"DKVK_LEFT"; 
-	case DKVK_RIGHT:				return L"DKVK_RIGHT"; 
-	case DKVK_UP:					return L"DKVK_UP"; 
-	case DKVK_DOWN:					return L"DKVK_DOWN"; 
+    case DKVirtualKey::Left:				return L"Left";
+    case DKVirtualKey::Right:				return L"Right";
+    case DKVirtualKey::Up:					return L"Up";
+    case DKVirtualKey::Down:				return L"Down";
 
-	case DKVK_LEFT_SHIFT:			return L"DKVK_LSHIFT"; 
-	case DKVK_RIGHT_SHIFT:			return L"DKVK_RSHIFT"; 
-	case DKVK_LEFT_OPTION:			return L"DKVK_LOPTION"; 
-	case DKVK_RIGHT_OPTION:			return L"DKVK_ROPTION"; 
-	case DKVK_LEFT_CONTROL:			return L"DKVK_LCONTROL"; 
-	case DKVK_RIGHT_CONTROL:		return L"DKVK_RCONTROL"; 
-	case DKVK_LEFT_COMMAND:			return L"DKVK_LCOMMAND"; 
-	case DKVK_RIGHT_COMMAND:		return L"DKVK_RCOMMAND"; 
+    case DKVirtualKey::LeftShift:			return L"LeftShift";
+    case DKVirtualKey::RightShift:			return L"RightShift";
+    case DKVirtualKey::LeftOption:			return L"LeftOption";
+    case DKVirtualKey::RightOption:			return L"RightOption";
+    case DKVirtualKey::LeftControl:			return L"LeftControl";
+    case DKVirtualKey::RightControl:		return L"RightControl";
+    case DKVirtualKey::LeftCommand:			return L"LeftCommand";
+    case DKVirtualKey::RightCommand:		return L"RightCommand";
 
-	case DKVK_PAD_0:				return L"DKVK_PAD_0"; 
-	case DKVK_PAD_1:				return L"DKVK_PAD_1"; 
-	case DKVK_PAD_2:				return L"DKVK_PAD_2"; 
-	case DKVK_PAD_3:				return L"DKVK_PAD_3"; 
-	case DKVK_PAD_4:				return L"DKVK_PAD_4"; 
-	case DKVK_PAD_5:				return L"DKVK_PAD_5"; 
-	case DKVK_PAD_6:				return L"DKVK_PAD_6"; 
-	case DKVK_PAD_7:				return L"DKVK_PAD_7"; 
-	case DKVK_PAD_8:				return L"DKVK_PAD_8"; 
-	case DKVK_PAD_9:				return L"DKVK_PAD_9"; 
-	case DKVK_ENTER:				return L"DKVK_ENTER"; 
-	case DKVK_NUMLOCK:				return L"DKVK_NUMLOCK"; 
-	case DKVK_PAD_SLASH:			return L"DKVK_PAD_SLASH"; 
-	case DKVK_PAD_ASTERISK:			return L"DKVK_PAD_ASTERISK"; 
-	case DKVK_PAD_PLUS:				return L"DKVK_PAD_PLUS"; 
-	case DKVK_PAD_MINUS:			return L"DKVK_PAD_MINUS"; 
-	case DKVK_PAD_EQUAL:			return L"DKVK_PAD_EQUL"; 
-	case DKVK_PAD_PERIOD:			return L"DKVK_PAD_PERIOD"; 
+    case DKVirtualKey::Pad0:				return L"Pad0";
+    case DKVirtualKey::Pad1:				return L"Pad1";
+    case DKVirtualKey::Pad2:				return L"Pad2";
+    case DKVirtualKey::Pad3:				return L"Pad3";
+    case DKVirtualKey::Pad4:				return L"Pad4";
+    case DKVirtualKey::Pad5:				return L"Pad5";
+    case DKVirtualKey::Pad6:				return L"Pad6";
+    case DKVirtualKey::Pad7:				return L"Pad7";
+    case DKVirtualKey::Pad8:				return L"Pad8";
+    case DKVirtualKey::Pad9:				return L"Pad9";
+    case DKVirtualKey::Enter:				return L"Enter";
+    case DKVirtualKey::Numlock:				return L"Numlock";
+    case DKVirtualKey::PadSlash:			return L"PadSlash";
+    case DKVirtualKey::PadAsterisk:			return L"PadAsterisk";
+    case DKVirtualKey::PadPlus:				return L"PadPlus";
+    case DKVirtualKey::PadMinus:			return L"PadMinus";
+    case DKVirtualKey::PadEqual:			return L"PadEqual";
+    case DKVirtualKey::PadPeriod:			return L"PadPeriod";
 
-	case DKVK_MAXVALUE:				return L"DKVK_MAXVALUE";
-	default:						return L"DKVK_NONE";
-	}
+    case DKVirtualKey::MaxValue:			return L"MaxValue";
+    default:								return L"None";
+    }
 
-	return L"Error";
+    return L"Error";
 }

@@ -250,7 +250,7 @@ namespace DKFramework
 
 		struct KeyboardState
 		{
-			unsigned char keyStateBits[DKVK_MAXVALUE / 8 + 1]; // save raw-key state (1:down, 0:up)
+			unsigned char keyStateBits[static_cast<int>(DKVirtualKey::MaxValue) / 8 + 1]; // save raw-key state (1:down, 0:up)
 		};
 		mutable DKMap<int, KeyboardState>		keyboardStateMap;
 		KeyboardState& KeyboardStateForDevice(int deviceId) const;	// Get key states without lock

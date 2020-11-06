@@ -540,7 +540,7 @@ void Window::UpdateKeyboard()
 			continue;
 
 		DKVirtualKey lKey = ConvertVKey(i);
-		if (lKey == DKVK_NONE)
+		if (lKey == DKVirtualKey::None)
 			continue;
 
 		if ((keyStateCurrent[i] & 0x80) != (keyboardStates[i] & 0x80))
@@ -559,11 +559,11 @@ void Window::UpdateKeyboard()
 	{
 		if (keyStateCurrent[VK_CAPITAL] & 0x01)
 		{
-			instance->PostKeyboardEvent({ KeyboardEvent::KeyDown, 0, DKVK_CAPSLOCK, "" });
+			instance->PostKeyboardEvent({ KeyboardEvent::KeyDown, 0, DKVirtualKey::Capslock, "" });
 		}
 		else
 		{
-			instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, DKVK_CAPSLOCK, "" });
+			instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, DKVirtualKey::Capslock, "" });
 		}
 	}
 	memcpy(keyboardStates, keyStateCurrent, 256);
@@ -596,7 +596,7 @@ void Window::ResetKeyboard()
 			continue;
 
 		DKVirtualKey lKey = ConvertVKey(i);
-		if (lKey == DKVK_NONE)
+		if (lKey == DKVirtualKey::None)
 			continue;
 
 		if (keyboardStates[i] & 0x80)
@@ -607,7 +607,7 @@ void Window::ResetKeyboard()
 
 	if (keyboardStates[VK_CAPITAL] & 0x01)
 	{
-		instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, DKVK_CAPSLOCK, "" });
+		instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, DKVirtualKey::Capslock, "" });
 	}
 
 	::GetKeyboardState(keyboardStates);	// to empty keyboard queue
@@ -984,7 +984,7 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					wchar_t c = (wchar_t)wParam;
 					DKString text(c);
-					window->instance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVK_NONE, text });
+					window->instance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, text });
 				}
 				return 0;
 			case WM_IME_STARTCOMPOSITION:
@@ -998,7 +998,7 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					// Result characters will be received via WM_CHAR,
 					// reset input-candidate characters here.
-					window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, "" });
+					window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
 				}
 				if (lParam & GCS_COMPSTR)		// composition in progress.
 				{
@@ -1017,12 +1017,12 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								DKString compositionText((const wchar_t*)tmp);
 								DKFree(tmp);
 
-								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, compositionText });
+								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, compositionText });
 								//	DKLog("WM_IME_COMPOSITION: '%ls'\n", strInputCandidate));
 							}
 							else	// composition character's length become 0. (erased)
 							{
-								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVK_NONE, "" });
+								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
 							}
 						}
 						else	// not text-input mode.
@@ -1104,150 +1104,150 @@ DKVirtualKey Window::ConvertVKey(int key)
 {
 	switch (key)
 	{
-	case 0x03:	return DKVK_F15;			// VK_F15 (ctrl+break)
-	case 0x08:	return DKVK_BACKSPACE;		// VK_BACK
-	case 0x09:	return DKVK_TAB;			// VK_TAB
-	case 0x0D:	return DKVK_RETURN;			// VK_RETURN
-//case 0x10:	return DKVK_SHIFT;			// VK_SHIFT
-//case 0x11:	return DKVK_CONTROL;		// VK_CONTROL
-//case 0x12:	return DKVK_OPTION;			// VK_MENU
-	case 0x13:	return DKVK_F15;			// VK_PAUSE
-	case 0x14:	return DKVK_CAPSLOCK;		// VK_CAPITAL, CAPSLOCK
-	case 0x1B:	return DKVK_ESCAPE;			// VK_ESCAPE
-	case 0x1C:	return DKVK_NONE;			// VK_CONVERT
-	case 0x1D:	return DKVK_NONE;			// VK_NONCONVERT
-	case 0x1E:	return DKVK_NONE;			// VK_ACCEPT
-	case 0x1F:	return DKVK_NONE;			// VK_MODECHANGE
-	case 0x20:	return DKVK_SPACE;			// VK_SPACE
-	case 0x21:	return DKVK_PAGE_UP;		// VK_PRIOR
-	case 0x22:	return DKVK_PAGE_DOWN;		// VK_NEXT
-	case 0x23:	return DKVK_END;			// VK_END
-	case 0x24:	return DKVK_HOME;			// VK_HOME
-	case 0x25:	return DKVK_LEFT;			// VK_LEFT
-	case 0x26:	return DKVK_UP;				// VK_UP
-	case 0x27:	return DKVK_RIGHT;			// VK_RIGHT
-	case 0x28:	return DKVK_DOWN;			// VK_DOWN
-	case 0x29:	return DKVK_NONE;			// VK_SELECT
-	case 0x2A:	return DKVK_NONE;			// VK_PRINT
-	case 0x2B:	return DKVK_NONE;			// VK_EXECUTE
-	case 0x2C:	return DKVK_F13;			// VK_SNAPSHOT, PRINT SCREEN KEY
-	case 0x2D:	return DKVK_INSERT;			// VK_INSERT
-	case 0x2E:	return DKVK_DELETE;			// VK_DELETE
-	case 0x2F:	return DKVK_NONE;			// VK_HELP
-	case 0x30:	return DKVK_0;				// 0
-	case 0x31:	return DKVK_1;				// 1
-	case 0x32:	return DKVK_2;				// 2
-	case 0x33:	return DKVK_3;				// 3
-	case 0x34:	return DKVK_4;				// 4
-	case 0x35:	return DKVK_5;				// 5
-	case 0x36:	return DKVK_6;				// 6
-	case 0x37:	return DKVK_7;				// 7
-	case 0x38:	return DKVK_8;				// 8
-	case 0x39:	return DKVK_9;				// 9
+	case 0x03:	return DKVirtualKey::F15;			// VK_F15 (ctrl+break)
+	case 0x08:	return DKVirtualKey::Backspace;		// VK_BACK
+	case 0x09:	return DKVirtualKey::Tab;			// VK_TAB
+	case 0x0D:	return DKVirtualKey::Return;		// VK_RETURN
+//case 0x10:	return DKVirtualKey::SHIFT;			// VK_SHIFT
+//case 0x11:	return DKVirtualKey::CONTROL;		// VK_CONTROL
+//case 0x12:	return DKVirtualKey::OPTION;		// VK_MENU
+	case 0x13:	return DKVirtualKey::F15;			// VK_PAUSE
+	case 0x14:	return DKVirtualKey::Capslock;		// VK_CAPITAL, CAPSLOCK
+	case 0x1B:	return DKVirtualKey::Escape;		// VK_ESCAPE
+	case 0x1C:	return DKVirtualKey::None;			// VK_CONVERT
+	case 0x1D:	return DKVirtualKey::None;			// VK_NONCONVERT
+	case 0x1E:	return DKVirtualKey::None;			// VK_ACCEPT
+	case 0x1F:	return DKVirtualKey::None;			// VK_MODECHANGE
+	case 0x20:	return DKVirtualKey::Space;			// VK_SPACE
+	case 0x21:	return DKVirtualKey::PageUp;		// VK_PRIOR
+	case 0x22:	return DKVirtualKey::PageDown;		// VK_NEXT
+	case 0x23:	return DKVirtualKey::End;			// VK_END
+	case 0x24:	return DKVirtualKey::Home;			// VK_HOME
+	case 0x25:	return DKVirtualKey::Left;			// VK_LEFT
+	case 0x26:	return DKVirtualKey::Up;			// VK_UP
+	case 0x27:	return DKVirtualKey::Right;			// VK_RIGHT
+	case 0x28:	return DKVirtualKey::Down;			// VK_DOWN
+	case 0x29:	return DKVirtualKey::None;			// VK_SELECT
+	case 0x2A:	return DKVirtualKey::None;			// VK_PRINT
+	case 0x2B:	return DKVirtualKey::None;			// VK_EXECUTE
+	case 0x2C:	return DKVirtualKey::F13;			// VK_SNAPSHOT, PRINT SCREEN KEY
+	case 0x2D:	return DKVirtualKey::Insert;		// VK_INSERT
+	case 0x2E:	return DKVirtualKey::Delete;		// VK_DELETE
+	case 0x2F:	return DKVirtualKey::None;			// VK_HELP
+	case 0x30:	return DKVirtualKey::Num0;			// 0
+	case 0x31:	return DKVirtualKey::Num1;			// 1
+	case 0x32:	return DKVirtualKey::Num2;			// 2
+	case 0x33:	return DKVirtualKey::Num3;			// 3
+	case 0x34:	return DKVirtualKey::Num4;			// 4
+	case 0x35:	return DKVirtualKey::Num5;			// 5
+	case 0x36:	return DKVirtualKey::Num6;			// 6
+	case 0x37:	return DKVirtualKey::Num7;			// 7
+	case 0x38:	return DKVirtualKey::Num8;			// 8
+	case 0x39:	return DKVirtualKey::Num9;			// 9
 
-	case 0x41:	return DKVK_A;				// A
-	case 0x42:	return DKVK_B;				// B
-	case 0x43:	return DKVK_C;				// C
-	case 0x44:	return DKVK_D;				// D
-	case 0x45:	return DKVK_E;				// E
-	case 0x46:	return DKVK_F;				// F
-	case 0x47:	return DKVK_G;				// G
-	case 0x48:	return DKVK_H;				// H
-	case 0x49:	return DKVK_I;				// I
-	case 0x4A:	return DKVK_J;				// J
-	case 0x4B:	return DKVK_K;				// K
-	case 0x4C:	return DKVK_L;				// L
-	case 0x4D:	return DKVK_M;				// M
-	case 0x4E:	return DKVK_N;				// N
-	case 0x4F:	return DKVK_O;				// O
-	case 0x50:	return DKVK_P;				// P
-	case 0x51:	return DKVK_Q;				// Q
-	case 0x52:	return DKVK_R;				// R
-	case 0x53:	return DKVK_S;				// S
-	case 0x54:	return DKVK_T;				// T
-	case 0x55:	return DKVK_U;				// U
-	case 0x56:	return DKVK_V;				// V
-	case 0x57:	return DKVK_W;				// W
-	case 0x58:	return DKVK_X;				// X
-	case 0x59:	return DKVK_Y;				// Y
-	case 0x5A:	return DKVK_Z;				// Z
-	case 0x5B:	return DKVK_LEFT_COMMAND;		// VK_LWIN
-	case 0x5C:	return DKVK_RIGHT_COMMAND;		// VK_RWIN
-	case 0x5D:	return DKVK_NONE;			// VK_APPS
-	case 0x5F:	return DKVK_NONE;			// VK_SLEEP
-	case 0x60:	return DKVK_PAD_0;			// VK_NUMPAD0
-	case 0x61:	return DKVK_PAD_1;			// VK_NUMPAD1
-	case 0x62:	return DKVK_PAD_2;			// VK_NUMPAD2
-	case 0x63:	return DKVK_PAD_3;			// VK_NUMPAD3
-	case 0x64:	return DKVK_PAD_4;			// VK_NUMPAD4
-	case 0x65:	return DKVK_PAD_5;			// VK_NUMPAD5
-	case 0x66:	return DKVK_PAD_6;			// VK_NUMPAD6
-	case 0x67:	return DKVK_PAD_7;			// VK_NUMPAD7
-	case 0x68:	return DKVK_PAD_8;			// VK_NUMPAD8
-	case 0x69:	return DKVK_PAD_9;			// VK_NUMPAD9
-	case 0x6A:	return DKVK_PAD_ASTERISK;	// VK_MULTIPLY
-	case 0x6B:	return DKVK_PAD_PLUS;		// VK_ADD
-	case 0x6C:	return DKVK_NONE;			// VK_SEPARATOR
-	case 0x6D:	return DKVK_PAD_MINUS;		// VK_SUBTRACT
-	case 0x6E:	return DKVK_PAD_PERIOD;		// VK_DECIMAL
-	case 0x6F:	return DKVK_PAD_SLASH;		// VK_DIVIDE
-	case 0x70:	return DKVK_F1;				// VK_F1
-	case 0x71:	return DKVK_F2;				// VK_F2
-	case 0x72:	return DKVK_F3;				// VK_F3
-	case 0x73:	return DKVK_F4;				// VK_F4
-	case 0x74:	return DKVK_F5;				// VK_F5
-	case 0x75:	return DKVK_F6;				// VK_F6
-	case 0x76:	return DKVK_F7;				// VK_F7
-	case 0x77:	return DKVK_F8;				// VK_F8
-	case 0x78:	return DKVK_F9;				// VK_F9
-	case 0x79:	return DKVK_F10;			// VK_F10
-	case 0x7A:	return DKVK_F11;			// VK_F11
-	case 0x7B:	return DKVK_F12;			// VK_F12
-	case 0x7C:	return DKVK_F13;			// VK_F13
-	case 0x7D:	return DKVK_F14;			// VK_F14
-	case 0x7E:	return DKVK_F15;			// VK_F15
-	case 0x7F:	return DKVK_F16;			// VK_F16
-	case 0x80:	return DKVK_F17;			// VK_F17
-	case 0x81:	return DKVK_F18;			// VK_F18
-	case 0x82:	return DKVK_F19;			// VK_F19
-	case 0x83:	return DKVK_F20;			// VK_F20
-	case 0x84:	return DKVK_NONE;			// VK_F21
-	case 0x85:	return DKVK_NONE;			// VK_F22
-	case 0x86:	return DKVK_NONE;			// VK_F23
-	case 0x87:	return DKVK_NONE;			// VK_F24
+	case 0x41:	return DKVirtualKey::A;				// A
+	case 0x42:	return DKVirtualKey::B;				// B
+	case 0x43:	return DKVirtualKey::C;				// C
+	case 0x44:	return DKVirtualKey::D;				// D
+	case 0x45:	return DKVirtualKey::E;				// E
+	case 0x46:	return DKVirtualKey::F;				// F
+	case 0x47:	return DKVirtualKey::G;				// G
+	case 0x48:	return DKVirtualKey::H;				// H
+	case 0x49:	return DKVirtualKey::I;				// I
+	case 0x4A:	return DKVirtualKey::J;				// J
+	case 0x4B:	return DKVirtualKey::K;				// K
+	case 0x4C:	return DKVirtualKey::L;				// L
+	case 0x4D:	return DKVirtualKey::M;				// M
+	case 0x4E:	return DKVirtualKey::N;				// N
+	case 0x4F:	return DKVirtualKey::O;				// O
+	case 0x50:	return DKVirtualKey::P;				// P
+	case 0x51:	return DKVirtualKey::Q;				// Q
+	case 0x52:	return DKVirtualKey::R;				// R
+	case 0x53:	return DKVirtualKey::S;				// S
+	case 0x54:	return DKVirtualKey::T;				// T
+	case 0x55:	return DKVirtualKey::U;				// U
+	case 0x56:	return DKVirtualKey::V;				// V
+	case 0x57:	return DKVirtualKey::W;				// W
+	case 0x58:	return DKVirtualKey::X;				// X
+	case 0x59:	return DKVirtualKey::Y;				// Y
+	case 0x5A:	return DKVirtualKey::Z;				// Z
+	case 0x5B:	return DKVirtualKey::LeftCommand;	// VK_LWIN
+	case 0x5C:	return DKVirtualKey::RightCommand;	// VK_RWIN
+	case 0x5D:	return DKVirtualKey::None;			// VK_APPS
+	case 0x5F:	return DKVirtualKey::None;			// VK_SLEEP
+	case 0x60:	return DKVirtualKey::Pad0;			// VK_NUMPAD0
+	case 0x61:	return DKVirtualKey::Pad1;			// VK_NUMPAD1
+	case 0x62:	return DKVirtualKey::Pad2;			// VK_NUMPAD2
+	case 0x63:	return DKVirtualKey::Pad3;			// VK_NUMPAD3
+	case 0x64:	return DKVirtualKey::Pad4;			// VK_NUMPAD4
+	case 0x65:	return DKVirtualKey::Pad5;			// VK_NUMPAD5
+	case 0x66:	return DKVirtualKey::Pad6;			// VK_NUMPAD6
+	case 0x67:	return DKVirtualKey::Pad7;			// VK_NUMPAD7
+	case 0x68:	return DKVirtualKey::Pad8;			// VK_NUMPAD8
+	case 0x69:	return DKVirtualKey::Pad9;			// VK_NUMPAD9
+	case 0x6A:	return DKVirtualKey::PadAsterisk;	// VK_MULTIPLY
+	case 0x6B:	return DKVirtualKey::PadPlus;		// VK_ADD
+	case 0x6C:	return DKVirtualKey::None;			// VK_SEPARATOR
+	case 0x6D:	return DKVirtualKey::PadMinus;		// VK_SUBTRACT
+	case 0x6E:	return DKVirtualKey::PadPeriod;		// VK_DECIMAL
+	case 0x6F:	return DKVirtualKey::PadSlash;		// VK_DIVIDE
+	case 0x70:	return DKVirtualKey::F1;			// VK_F1
+	case 0x71:	return DKVirtualKey::F2;			// VK_F2
+	case 0x72:	return DKVirtualKey::F3;			// VK_F3
+	case 0x73:	return DKVirtualKey::F4;			// VK_F4
+	case 0x74:	return DKVirtualKey::F5;			// VK_F5
+	case 0x75:	return DKVirtualKey::F6;			// VK_F6
+	case 0x76:	return DKVirtualKey::F7;			// VK_F7
+	case 0x77:	return DKVirtualKey::F8;			// VK_F8
+	case 0x78:	return DKVirtualKey::F9;			// VK_F9
+	case 0x79:	return DKVirtualKey::F10;			// VK_F10
+	case 0x7A:	return DKVirtualKey::F11;			// VK_F11
+	case 0x7B:	return DKVirtualKey::F12;			// VK_F12
+	case 0x7C:	return DKVirtualKey::F13;			// VK_F13
+	case 0x7D:	return DKVirtualKey::F14;			// VK_F14
+	case 0x7E:	return DKVirtualKey::F15;			// VK_F15
+	case 0x7F:	return DKVirtualKey::F16;			// VK_F16
+	case 0x80:	return DKVirtualKey::F17;			// VK_F17
+	case 0x81:	return DKVirtualKey::F18;			// VK_F18
+	case 0x82:	return DKVirtualKey::F19;			// VK_F19
+	case 0x83:	return DKVirtualKey::F20;			// VK_F20
+	case 0x84:	return DKVirtualKey::None;			// VK_F21
+	case 0x85:	return DKVirtualKey::None;			// VK_F22
+	case 0x86:	return DKVirtualKey::None;			// VK_F23
+	case 0x87:	return DKVirtualKey::None;			// VK_F24
 
-	case 0x90:	return DKVK_NUMLOCK;		// VK_NUMLOCK
-	case 0x91:	return DKVK_F14;			// VK_SCROLL, SCROLL LOCK
+	case 0x90:	return DKVirtualKey::Numlock;		// VK_NUMLOCK
+	case 0x91:	return DKVirtualKey::F14;			// VK_SCROLL, SCROLL LOCK
 
-	case 0xA0:	return DKVK_LEFT_SHIFT;		// VK_LSHIFT
-	case 0xA1:	return DKVK_RIGHT_SHIFT;	// VK_RSHIFT
-	case 0xA2:	return DKVK_LEFT_CONTROL;	// VK_LCONTROL
-	case 0xA3:	return DKVK_RIGHT_CONTROL;	// VK_RCONTROL
-	case 0xA4:	return DKVK_LEFT_OPTION;	// VK_LMENU
-	case 0xA5:	return DKVK_RIGHT_OPTION;	// VK_RMENU
+	case 0xA0:	return DKVirtualKey::LeftShift;		// VK_LSHIFT
+	case 0xA1:	return DKVirtualKey::RightShift;	// VK_RSHIFT
+	case 0xA2:	return DKVirtualKey::LeftControl;	// VK_LCONTROL
+	case 0xA3:	return DKVirtualKey::RightControl;	// VK_RCONTROL
+	case 0xA4:	return DKVirtualKey::LeftOption;	// VK_LMENU
+	case 0xA5:	return DKVirtualKey::RightOption;	// VK_RMENU
 
-	case 0xBA:	return DKVK_SEMICOLON;		// VK_OEM_1, ;
-	case 0xBB:	return DKVK_EQUAL;			// VK_OEM_PLUS, =
-	case 0xBC:	return DKVK_COMMA;			// VK_OEM_COMMA, .
-	case 0xBD:	return DKVK_HYPHEN;			// VK_OEM_MINUS, -
-	case 0xBE:	return DKVK_PERIOD;			// VK_OEM_PERIOD
-	case 0xBF:	return DKVK_SLASH;			// VK_OEM_2, /?
-	case 0xC0:	return DKVK_ACCENT_TILDE;	// VK_OEM_3, `~
+	case 0xBA:	return DKVirtualKey::Semicolon;		// VK_OEM_1, ;
+	case 0xBB:	return DKVirtualKey::Equal;			// VK_OEM_PLUS, =
+	case 0xBC:	return DKVirtualKey::Comma;			// VK_OEM_COMMA, .
+	case 0xBD:	return DKVirtualKey::Hyphen;		// VK_OEM_MINUS, -
+	case 0xBE:	return DKVirtualKey::Period;		// VK_OEM_PERIOD
+	case 0xBF:	return DKVirtualKey::Slash;			// VK_OEM_2, /?
+	case 0xC0:	return DKVirtualKey::AccentTilde;	// VK_OEM_3, `~
 
-	case 0xDB:	return DKVK_OPEN_BRACKET;	// VK_OEM_4, [
-	case 0xDC:	return DKVK_BACKSLASH;		// VK_OEM_5, backslash
-	case 0xDD:	return DKVK_CLOSE_BRACKET;	// VK_OEM_6, ]
-	case 0xDE:	return DKVK_QUOTE;			// VK_OEM_7, '
-	case 0xDF:	return DKVK_NONE;			// VK_OEM_8
+	case 0xDB:	return DKVirtualKey::OpenBracket;	// VK_OEM_4, [
+	case 0xDC:	return DKVirtualKey::Backslash;		// VK_OEM_5, backslash
+	case 0xDD:	return DKVirtualKey::CloseBracket;	// VK_OEM_6, ]
+	case 0xDE:	return DKVirtualKey::Quote;			// VK_OEM_7, '
+	case 0xDF:	return DKVirtualKey::None;			// VK_OEM_8
 
-	case 0xE2:	return DKVK_BACKSLASH;		// VK_OEM_102, backslash for 102-keyboard
+	case 0xE2:	return DKVirtualKey::Backslash;		// VK_OEM_102, backslash for 102-keyboard
 
-	case 0xE5:	return DKVK_NONE;			// VK_PROCESSKEY, IME-key
+	case 0xE5:	return DKVirtualKey::None;			// VK_PROCESSKEY, IME-key
 
-	default:	return DKVK_NONE;
+	default:	return DKVirtualKey::None;
 
 	}
-	return DKVK_NONE;
+	return DKVirtualKey::None;
 }
 
 #endif // _WIN32

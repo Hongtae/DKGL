@@ -180,137 +180,137 @@ using MouseEvent = DKWindow::MouseEvent;
 {
 	switch (key)
 	{
-		case 0x00:	return DKVK_A;				// a
-		case 0x01:	return DKVK_S;				// s
-		case 0x02:	return DKVK_D;				// d
-		case 0x03:	return DKVK_F;				// f
-		case 0x04:	return DKVK_H;				// h
-		case 0x05:	return DKVK_G;				// g
-		case 0x06:	return DKVK_Z;				// z
-		case 0x07:	return DKVK_X;				// x
-		case 0x08:	return DKVK_C;				// c
-		case 0x09:	return DKVK_V;				// v
-		case 0x0A:	return DKVK_NONE;
-		case 0x0B:	return DKVK_B;				// b
-		case 0x0C:	return DKVK_Q;				// q
-		case 0x0D:	return DKVK_W;				// w
-		case 0x0E:	return DKVK_E;				// e
-		case 0x0F:	return DKVK_R;				// r
-		case 0x10:	return DKVK_Y;				// y
-		case 0x11:	return DKVK_T;				// t
-		case 0x12:	return DKVK_1;				// 1
-		case 0x13:	return DKVK_2;				// 2
-		case 0x14:	return DKVK_3;				// 3
-		case 0x15:	return DKVK_4;				// 4
-		case 0x16:	return DKVK_6;				// 6
-		case 0x17:	return DKVK_5;				// 5
-		case 0x18:	return DKVK_EQUAL;			// =
-		case 0x19:	return DKVK_9;				// 9
-		case 0x1A:	return DKVK_7;				// 7
-		case 0x1B:	return DKVK_HYPHEN;			// -
-		case 0x1C:	return DKVK_8;				// 8
-		case 0x1D:	return DKVK_0;				// 0
-		case 0x1E:	return DKVK_CLOSE_BRACKET;	// ]
-		case 0x1F:	return DKVK_O;				// o
-		case 0x20:	return DKVK_U;				// u
-		case 0x21:	return DKVK_OPEN_BRACKET;	// [
-		case 0x22:	return DKVK_I;				// i
-		case 0x23:	return DKVK_P;				// p
-		case 0x24:	return DKVK_RETURN;			// return
-		case 0x25:	return DKVK_L;				// l
-		case 0x26:	return DKVK_J;				// j
-		case 0x27:	return DKVK_QUOTE;			// '
-		case 0x28:	return DKVK_K;				// k
-		case 0x29:	return DKVK_SEMICOLON;		// ;
-		case 0x2A:	return DKVK_BACKSLASH;		// backslash
-		case 0x2B:	return DKVK_COMMA;			// ,
-		case 0x2C:	return DKVK_SLASH;			// /
-		case 0x2D:	return DKVK_N;				// n
-		case 0x2E:	return DKVK_M;				// m
-		case 0x2F:	return DKVK_PERIOD;			// .
-		case 0x30:	return DKVK_TAB;			// tab
-		case 0x31:	return DKVK_SPACE;			// space
-		case 0x32:	return DKVK_ACCENT_TILDE;	// ` (~)
-		case 0x33:	return DKVK_BACKSPACE;		// delete (backspace)
-		case 0x34:	return DKVK_NONE;			//
-		case 0x35:	return DKVK_ESCAPE;			// esc
-		case 0x36:	return DKVK_NONE;
-		case 0x37:	return DKVK_NONE;
-		//case 0x38:	return DKVK_SHIFT;			// l-shift
-		//case 0x39:	return DKVK_NONE;
-		//case 0x3A:	return DKVK_OPTION;			// l-alt
-		//case 0x3B:	return DKVK_CONTROL;		// l_ctrl
-		//case 0x3C:	return DKVK_R_SHIFT;		// r-shift
-		//case 0x3D:	return DKVK_R_ALT;			// r-alt
-		//case 0x3E:	return DKVK_R_CTRL;			// r-ctrl
-		case 0x3F:	return DKVK_NONE;
-		case 0x40:	return DKVK_F17;			// f17
-		case 0x41:	return DKVK_PAD_PERIOD;		// . (keypad)
-		case 0x42:	return DKVK_NONE;
-		case 0x43:	return DKVK_PAD_ASTERISK;	// * (keypad)
-		case 0x44:	return DKVK_NONE;
-		case 0x45:	return DKVK_PAD_PLUS;		// + (keypad)
-		case 0x46:	return DKVK_NONE;
-		case 0x47:	return DKVK_NUMLOCK;		// clear (keypad)
-		case 0x48:	return DKVK_NONE;
-		case 0x49:	return DKVK_NONE;
-		case 0x4A:	return DKVK_NONE;
-		case 0x4B:	return DKVK_PAD_SLASH;		// / (keypad)
-		case 0x4C:	return DKVK_ENTER;			// enter (keypad)
-		case 0x4D:	return DKVK_NONE;
-		case 0x4E:	return DKVK_PAD_MINUS;		// - (keypad)
-		case 0x4F:	return DKVK_F18;			// f18
-		case 0x50:	return DKVK_F19;			// f19
-		case 0x51:	return DKVK_PAD_EQUAL;		// = (keypad)
-		case 0x52:	return DKVK_PAD_0;			// 0 (keypad)
-		case 0x53:	return DKVK_PAD_1;			// 1 (keypad)
-		case 0x54:	return DKVK_PAD_2;			// 2 (keypad)
-		case 0x55:	return DKVK_PAD_3;			// 3 (keypad)
-		case 0x56:	return DKVK_PAD_4;			// 4 (keypad)
-		case 0x57:	return DKVK_PAD_5;			// 5 (keypad)
-		case 0x58:	return DKVK_PAD_6;			// 6 (keypad)
-		case 0x59:	return DKVK_PAD_7;			// 7 (keypad)
-		case 0x5A:	return DKVK_NONE;
-		case 0x5B:	return DKVK_PAD_8;			// 8 (keypad)
-		case 0x5C:	return DKVK_PAD_9;			// 9 (keypad)
-		case 0x5D:	return DKVK_NONE;
-		case 0x5E:	return DKVK_NONE;
-		case 0x5F:	return DKVK_NONE;
-		case 0x60:	return DKVK_F5;				// f5
-		case 0x61:	return DKVK_F6;				// f6
-		case 0x62:	return DKVK_F7;				// f7
-		case 0x63:	return DKVK_F3;				// f3
-		case 0x64:	return DKVK_F8;				// f8
-		case 0x65:	return DKVK_NONE;
-		case 0x66:	return DKVK_NONE;
-		case 0x67:	return DKVK_NONE;
-		case 0x68:	return DKVK_NONE;
-		case 0x69:	return DKVK_F13;			// f13
-		case 0x6A:	return DKVK_F16;			// f16
-		case 0x6B:	return DKVK_F14;			// f14
-		case 0x6C:	return DKVK_NONE;
-		case 0x6D:	return DKVK_NONE;
-		case 0x6E:	return DKVK_NONE;
-		case 0x6F:	return DKVK_NONE;
-		case 0x70:	return DKVK_NONE;
-		case 0x71:	return DKVK_F15;			// f15
-		case 0x72:	return DKVK_NONE;
-		case 0x73:	return DKVK_HOME;			// home
-		case 0x74:	return DKVK_PAGE_UP;		// page up
-		case 0x75:	return DKVK_DELETE;			// delete (below insert key)
-		case 0x76:	return DKVK_F4;				// f4
-		case 0x77:	return DKVK_END;			// end
-		case 0x78:	return DKVK_F2;				// f2
-		case 0x79:	return DKVK_PAGE_DOWN;		// page down
-		case 0x7A:	return DKVK_F1;				// f1
-		case 0x7B:	return DKVK_LEFT;			// left
-		case 0x7C:	return DKVK_RIGHT;			// right
-		case 0x7D:	return DKVK_DOWN;			// down
-		case 0x7E:	return DKVK_UP;				// up
-		case 0x7F:	return DKVK_NONE;
-		default:	return DKVK_NONE;
+		case 0x00:	return DKVirtualKey::A;				// a
+		case 0x01:	return DKVirtualKey::S;				// s
+		case 0x02:	return DKVirtualKey::D;				// d
+		case 0x03:	return DKVirtualKey::F;				// f
+		case 0x04:	return DKVirtualKey::H;				// h
+		case 0x05:	return DKVirtualKey::G;				// g
+		case 0x06:	return DKVirtualKey::Z;				// z
+		case 0x07:	return DKVirtualKey::X;				// x
+		case 0x08:	return DKVirtualKey::C;				// c
+		case 0x09:	return DKVirtualKey::V;				// v
+		case 0x0A:	return DKVirtualKey::None;
+		case 0x0B:	return DKVirtualKey::B;				// b
+		case 0x0C:	return DKVirtualKey::Q;				// q
+		case 0x0D:	return DKVirtualKey::W;				// w
+		case 0x0E:	return DKVirtualKey::E;				// e
+		case 0x0F:	return DKVirtualKey::R;				// r
+		case 0x10:	return DKVirtualKey::Y;				// y
+		case 0x11:	return DKVirtualKey::T;				// t
+		case 0x12:	return DKVirtualKey::Num1;				// 1
+		case 0x13:	return DKVirtualKey::Num2;				// 2
+		case 0x14:	return DKVirtualKey::Num3;				// 3
+		case 0x15:	return DKVirtualKey::Num4;				// 4
+		case 0x16:	return DKVirtualKey::Num6;				// 6
+		case 0x17:	return DKVirtualKey::Num5;				// 5
+		case 0x18:	return DKVirtualKey::Equal;			// =
+		case 0x19:	return DKVirtualKey::Num9;				// 9
+		case 0x1A:	return DKVirtualKey::Num7;				// 7
+		case 0x1B:	return DKVirtualKey::Hyphen;			// -
+		case 0x1C:	return DKVirtualKey::Num8;				// 8
+		case 0x1D:	return DKVirtualKey::Num0;				// 0
+		case 0x1E:	return DKVirtualKey::CloseBracket;	// ]
+		case 0x1F:	return DKVirtualKey::O;				// o
+		case 0x20:	return DKVirtualKey::U;				// u
+		case 0x21:	return DKVirtualKey::OpenBracket;	// [
+		case 0x22:	return DKVirtualKey::I;				// i
+		case 0x23:	return DKVirtualKey::P;				// p
+		case 0x24:	return DKVirtualKey::Return;			// return
+		case 0x25:	return DKVirtualKey::L;				// l
+		case 0x26:	return DKVirtualKey::J;				// j
+		case 0x27:	return DKVirtualKey::Quote;			// '
+		case 0x28:	return DKVirtualKey::K;				// k
+		case 0x29:	return DKVirtualKey::Semicolon;		// ;
+		case 0x2A:	return DKVirtualKey::Backslash;		// backslash
+		case 0x2B:	return DKVirtualKey::Comma;			// ,
+		case 0x2C:	return DKVirtualKey::Slash;			// /
+		case 0x2D:	return DKVirtualKey::N;				// n
+		case 0x2E:	return DKVirtualKey::M;				// m
+		case 0x2F:	return DKVirtualKey::Period;			// .
+		case 0x30:	return DKVirtualKey::Tab;			// tab
+		case 0x31:	return DKVirtualKey::Space;			// space
+		case 0x32:	return DKVirtualKey::AccentTilde;	// ` (~)
+		case 0x33:	return DKVirtualKey::Backspace;		// delete (backspace)
+		case 0x34:	return DKVirtualKey::None;			//
+		case 0x35:	return DKVirtualKey::Escape;			// esc
+		case 0x36:	return DKVirtualKey::None;
+		case 0x37:	return DKVirtualKey::None;
+		//case 0x38:	return DKVirtualKey::LeftShift;		// l-shift
+		//case 0x39:	return DKVirtualKey::None;
+		//case 0x3A:	return DKVirtualKey::LeftOption;		// l-alt
+		//case 0x3B:	return DKVirtualKey::LeftControl;	// l_ctrl
+		//case 0x3C:	return DKVirtualKey::RightShift;		// r-shift
+		//case 0x3D:	return DKVirtualKey::RightOption;	// r-alt
+		//case 0x3E:	return DKVirtualKey::RightControl;	// r-ctrl
+		case 0x3F:	return DKVirtualKey::None;
+		case 0x40:	return DKVirtualKey::F17;			// f17
+		case 0x41:	return DKVirtualKey::PadPeriod;		// . (keypad)
+		case 0x42:	return DKVirtualKey::None;
+		case 0x43:	return DKVirtualKey::PadAsterisk;	// * (keypad)
+		case 0x44:	return DKVirtualKey::None;
+		case 0x45:	return DKVirtualKey::PadPlus;		// + (keypad)
+		case 0x46:	return DKVirtualKey::None;
+		case 0x47:	return DKVirtualKey::Numlock;		// clear (keypad)
+		case 0x48:	return DKVirtualKey::None;
+		case 0x49:	return DKVirtualKey::None;
+		case 0x4A:	return DKVirtualKey::None;
+		case 0x4B:	return DKVirtualKey::PadSlash;		// / (keypad)
+		case 0x4C:	return DKVirtualKey::Enter;			// enter (keypad)
+		case 0x4D:	return DKVirtualKey::None;
+		case 0x4E:	return DKVirtualKey::PadMinus;		// - (keypad)
+		case 0x4F:	return DKVirtualKey::F18;			// f18
+		case 0x50:	return DKVirtualKey::F19;			// f19
+		case 0x51:	return DKVirtualKey::PadEqual;		// = (keypad)
+		case 0x52:	return DKVirtualKey::Pad0;			// 0 (keypad)
+		case 0x53:	return DKVirtualKey::Pad1;			// 1 (keypad)
+		case 0x54:	return DKVirtualKey::Pad2;			// 2 (keypad)
+		case 0x55:	return DKVirtualKey::Pad3;			// 3 (keypad)
+		case 0x56:	return DKVirtualKey::Pad4;			// 4 (keypad)
+		case 0x57:	return DKVirtualKey::Pad5;			// 5 (keypad)
+		case 0x58:	return DKVirtualKey::Pad6;			// 6 (keypad)
+		case 0x59:	return DKVirtualKey::Pad7;			// 7 (keypad)
+		case 0x5A:	return DKVirtualKey::None;
+		case 0x5B:	return DKVirtualKey::Pad8;			// 8 (keypad)
+		case 0x5C:	return DKVirtualKey::Pad9;			// 9 (keypad)
+		case 0x5D:	return DKVirtualKey::None;
+		case 0x5E:	return DKVirtualKey::None;
+		case 0x5F:	return DKVirtualKey::None;
+		case 0x60:	return DKVirtualKey::F5;				// f5
+		case 0x61:	return DKVirtualKey::F6;				// f6
+		case 0x62:	return DKVirtualKey::F7;				// f7
+		case 0x63:	return DKVirtualKey::F3;				// f3
+		case 0x64:	return DKVirtualKey::F8;				// f8
+		case 0x65:	return DKVirtualKey::None;
+		case 0x66:	return DKVirtualKey::None;
+		case 0x67:	return DKVirtualKey::None;
+		case 0x68:	return DKVirtualKey::None;
+		case 0x69:	return DKVirtualKey::F13;			// f13
+		case 0x6A:	return DKVirtualKey::F16;			// f16
+		case 0x6B:	return DKVirtualKey::F14;			// f14
+		case 0x6C:	return DKVirtualKey::None;
+		case 0x6D:	return DKVirtualKey::None;
+		case 0x6E:	return DKVirtualKey::None;
+		case 0x6F:	return DKVirtualKey::None;
+		case 0x70:	return DKVirtualKey::None;
+		case 0x71:	return DKVirtualKey::F15;			// f15
+		case 0x72:	return DKVirtualKey::None;
+		case 0x73:	return DKVirtualKey::Home;			// home
+		case 0x74:	return DKVirtualKey::PageUp;			// page up
+		case 0x75:	return DKVirtualKey::Delete;			// delete (below insert key)
+		case 0x76:	return DKVirtualKey::F4;				// f4
+		case 0x77:	return DKVirtualKey::End;			// end
+		case 0x78:	return DKVirtualKey::F2;				// f2
+		case 0x79:	return DKVirtualKey::PageDown;		// page down
+		case 0x7A:	return DKVirtualKey::F1;				// f1
+		case 0x7B:	return DKVirtualKey::Left;			// left
+		case 0x7C:	return DKVirtualKey::Right;			// right
+		case 0x7D:	return DKVirtualKey::Down;			// down
+		case 0x7E:	return DKVirtualKey::Up;				// up
+		case 0x7F:	return DKVirtualKey::None;
+		default:	return DKVirtualKey::None;
 	}
-	return DKVK_NONE;
+	return DKVirtualKey::None;
 }
 
 #pragma mark - Post Event To DKWindow instance
@@ -335,13 +335,13 @@ using MouseEvent = DKWindow::MouseEvent;
 - (void)postTextInputEvent:(NSString*)text
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({KeyboardEvent::TextInput, 0, DKVK_NONE, text.UTF8String});
+		userInstance->PostKeyboardEvent({KeyboardEvent::TextInput, 0, DKVirtualKey::None, text.UTF8String});
 }
 
 - (void)postTextCompositingEvent:(NSString*)text
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({KeyboardEvent::TextComposition, 0, DKVK_NONE, text.UTF8String});
+		userInstance->PostKeyboardEvent({KeyboardEvent::TextComposition, 0, DKVirtualKey::None, text.UTF8String});
 }
 
 - (void)postMouseEvent:(NSEvent*)event
@@ -545,11 +545,11 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if (modifier & NSEventModifierFlagCapsLock)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_CAPSLOCK];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::Capslock];
 		}
 		else
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_CAPSLOCK];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::Capslock];
 		}
 	}
 	// Shift Key
@@ -557,19 +557,19 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if ((modifier & LEFT_SHIFT_BIT) == LEFT_SHIFT_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_LEFT_SHIFT];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::LeftShift];
 		}
 		else if ((modifierKeyFlags & LEFT_SHIFT_BIT) == LEFT_SHIFT_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_LEFT_SHIFT];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::LeftShift];
 		}
 		if ((modifier & RIGHT_SHIFT_BIT) == RIGHT_SHIFT_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_RIGHT_SHIFT];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::RightShift];
 		}
 		else if ((modifierKeyFlags & RIGHT_SHIFT_BIT) == RIGHT_SHIFT_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_RIGHT_SHIFT];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::RightShift];
 		}
 	}
 	// Control Key
@@ -577,19 +577,19 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if ((modifier & LEFT_CONTROL_BIT) == LEFT_CONTROL_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_LEFT_CONTROL];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::LeftControl];
 		}
 		else if ((modifierKeyFlags & LEFT_CONTROL_BIT) == LEFT_CONTROL_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_LEFT_CONTROL];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::LeftControl];
 		}
 		if ((modifier & RIGHT_CONTROL_BIT) == RIGHT_CONTROL_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_RIGHT_CONTROL];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::RightControl];
 		}
 		else if ((modifierKeyFlags & RIGHT_CONTROL_BIT) == RIGHT_CONTROL_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_RIGHT_CONTROL];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::RightControl];
 		}
 	}
 	// Option (Alt) Key
@@ -597,19 +597,19 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if ((modifier & LEFT_ALTERNATE_BIT) == LEFT_ALTERNATE_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_LEFT_OPTION];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::LeftOption];
 		}
 		else if ((modifierKeyFlags & LEFT_ALTERNATE_BIT) == LEFT_ALTERNATE_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_LEFT_OPTION];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::LeftOption];
 		}
 		if ((modifier & RIGHT_ALTERNATE_BIT) == RIGHT_ALTERNATE_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_RIGHT_OPTION];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::RightOption];
 		}
 		else if ((modifierKeyFlags & RIGHT_ALTERNATE_BIT) == RIGHT_ALTERNATE_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_RIGHT_OPTION];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::RightOption];
 		}
 	}
 	// Command Key
@@ -617,19 +617,19 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if ((modifier & LEFT_COMMAND_BIT) == LEFT_COMMAND_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_LEFT_COMMAND];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::LeftCommand];
 		}
 		else if ((modifierKeyFlags & LEFT_COMMAND_BIT) == LEFT_COMMAND_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_LEFT_COMMAND];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::LeftCommand];
 		}
 		if ((modifier & RIGHT_COMMAND_BIT) == RIGHT_COMMAND_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_RIGHT_COMMAND];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::RightCommand];
 		}
 		else if ((modifierKeyFlags & RIGHT_COMMAND_BIT) == RIGHT_COMMAND_BIT)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_RIGHT_COMMAND];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::RightCommand];
 		}
 	}
 	// Numeric Pad (any key in the numeric keypad)
@@ -645,11 +645,11 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if (modifier & NSEventModifierFlagFunction)
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVK_FN];
+			[self postKeyboardEventType:KeyboardEvent::KeyDown mappedVKey:DKVirtualKey::Fn];
 		}
 		else
 		{
-			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVK_FN];
+			[self postKeyboardEventType:KeyboardEvent::KeyUp mappedVKey:DKVirtualKey::Fn];
 
 		}
 	}
