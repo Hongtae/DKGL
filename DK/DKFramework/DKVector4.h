@@ -48,9 +48,6 @@ namespace DKFramework
 		DKVector4& Transform(const DKMatrix4& m);
 		DKVector4& Normalize();
 
-		operator float* ()				{return val;}
-		operator const float* () const	{return val;}
-
 		union
 		{
 			struct

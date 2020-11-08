@@ -60,9 +60,6 @@ namespace DKFramework
 		DKVector3& Transform(const DKMatrix4& m);	///< Homogeneous Transform
 		DKVector3& Normalize();
 
-		operator float* ()				{return val;}
-		operator const float* () const	{return val;}
-
 		union
 		{
 			struct

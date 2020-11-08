@@ -51,9 +51,6 @@ namespace DKFramework
 		DKVector2& Transform(const DKMatrix3& m);	///< Homogeneous Transform
 		DKVector2& Normalize();
 
-		operator float* ()				{return val;}
-		operator const float* () const	{return val;}
-
 		union
 		{
 			struct
