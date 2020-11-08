@@ -469,8 +469,6 @@ float DKFont::Ascender() const
     {
         baseline = static_cast<float>(face->size->metrics.height) / 64.0f;
     }
-    //return baseline + embolden + (outline > 0.0f ? (outline+1.0f) : 0.0f);
-    //return ceilf(baseline + embolden + (outline > 0.0f ? (outline+1.0f) : 0.0f));
     return floorf(baseline + embolden);
 }
 
@@ -480,18 +478,16 @@ float DKFont::Descender() const
 	if (face->size == 0)
 		return 0;
 
-	float baseline = 0;
+	float descender = 0;
 	if (FT_IS_SCALABLE(face))
 	{
-		baseline = ( 0 - face->bbox.yMin ) * (float)face->size->metrics.y_ppem / (float)face->units_per_EM;
+		descender = ( 0 - face->bbox.yMin ) * (float)face->size->metrics.y_ppem / (float)face->units_per_EM;
 	}
 	else
 	{
-		baseline = 0;
+		descender = 0;
 	}
-	//return baseline + embolden + (outline > 0.0f ? (outline+1.0f) : 0.0f);
-	//return ceilf(baseline + embolden + (outline > 0.0f ? (outline+1.0f) : 0.0f));
-	return ceilf(baseline + embolden);
+	return floorf(descender + embolden);
 }
 
 float DKFont::Height() const
@@ -511,7 +507,7 @@ float DKFont::Height() const
 		height = static_cast<float>(face->size->metrics.height) / 64.0f;
 	}
 	//return height + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f);
-	return ceilf(height + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f));
+	return ceilf(height + (embolden + outline) * 2.0f);
 }
 
 float DKFont::Width() const
@@ -531,7 +527,7 @@ float DKFont::Width() const
 	}
 
 	//return width + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f);
-	return ceilf(width + embolden * 2.0f + (outline > 0.0f ? (outline+1.0f) * 2.0f : 0.0f));
+	return ceilf(width + (embolden + outline) * 2.0f);
 }
 
 float DKFont::LineHeight() const
