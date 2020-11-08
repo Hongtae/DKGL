@@ -47,7 +47,7 @@ namespace DKFramework
 		virtual void SetOrigin(DKPoint) = 0;
 		virtual void Resize(DKSize, const DKPoint* optionalOrigin) = 0;
 
-		virtual double ContentScaleFactor() const = 0;  ///< logical coords by pixel ratio.
+		virtual float ContentScaleFactor() const = 0;  ///< logical coords by pixel ratio.
 
 		virtual void SetTitle(const DKString& title) = 0;
 		virtual DKString Title() const = 0;

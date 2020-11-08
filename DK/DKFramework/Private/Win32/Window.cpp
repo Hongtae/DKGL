@@ -453,7 +453,7 @@ void Window::Resize(DKSize s, const DKPoint* pt)
 	}
 }
 
-double Window::ContentScaleFactor() const
+float Window::ContentScaleFactor() const
 {
 	return contentScaleFactor;
 }

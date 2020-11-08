@@ -39,7 +39,7 @@ namespace DKFramework::Private::Win32
 
         void SetOrigin(DKPoint) override;
         void Resize(DKSize, const DKPoint* optionalOrigin) override;
-        double ContentScaleFactor() const override;  // logical coords by pixel ratio.
+        float ContentScaleFactor() const override;  // logical coords by pixel ratio.
 
         void SetTitle(const DKString& title) override;
         DKString Title() const override;
@@ -65,7 +65,7 @@ namespace DKFramework::Private::Win32
         BYTE keyboardStates[256];
         DKRect windowRect;
         DKRect contentRect;
-        double contentScaleFactor;
+        float contentScaleFactor;
         
         DKPoint mousePosition;
         DKPoint holdingMousePosition;

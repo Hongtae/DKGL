@@ -484,7 +484,7 @@ DKRect DKWindow::ContentRect() const
 	return contentRect;
 }
 
-double DKWindow::ContentScaleFactor() const
+float DKWindow::ContentScaleFactor() const
 {
 	if (impl)
 		return impl->ContentScaleFactor();

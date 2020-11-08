@@ -115,7 +115,7 @@ namespace DKFramework
 			Type type;
 			DKRect windowRect;	///< on parent space coords (can be screen space)
 			DKRect contentRect;	///< on parent space coords (can be screen space)
-			double contentScaleFactor;
+			float contentScaleFactor;
 		};
 
 		// function or function object type for event handlers.
@@ -219,7 +219,7 @@ namespace DKFramework
 		// window state
 		DKRect WindowRect() const;			///< window's rect (OS coords unit)
 		DKRect ContentRect() const;			///< content rect on window (OS coords unit)
-		double ContentScaleFactor() const;	///< content unit scale, pixel ratio
+		float ContentScaleFactor() const;	///< content unit scale, pixel ratio
 
 		bool IsVisible() const	{ return visible; }
 		bool IsActive() const	{ return activated; }
