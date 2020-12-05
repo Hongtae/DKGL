@@ -693,9 +693,6 @@
     <ClInclude Include="DKFoundation\DKOperationQueue.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
-    <ClInclude Include="DKFoundation\DKOrderedArray.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
     <ClInclude Include="DKFoundation\DKQueue.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>

@@ -404,7 +404,6 @@
     <ClInclude Include="DKFoundation\DKObjectRefCounter.h" />
     <ClInclude Include="DKFoundation\DKOperation.h" />
     <ClInclude Include="DKFoundation\DKOperationQueue.h" />
-    <ClInclude Include="DKFoundation\DKOrderedArray.h" />
     <ClInclude Include="DKFoundation\DKQueue.h" />
     <ClInclude Include="DKFoundation\DKRationalNumber.h" />
     <ClInclude Include="DKFoundation\DKSet.h" />
