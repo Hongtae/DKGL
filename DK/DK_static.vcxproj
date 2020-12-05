@@ -220,8 +220,6 @@
     <ClCompile Include="DKFoundation\DKDirectory.cpp" />
     <ClCompile Include="DKFoundation\DKDispatchQueue.cpp" />
     <ClCompile Include="DKFoundation\DKError.cpp" />
-    <ClCompile Include="DKFoundation\DKEventLoop.cpp" />
-    <ClCompile Include="DKFoundation\DKEventLoopTimer.cpp" />
     <ClCompile Include="DKFoundation\DKFence.cpp" />
     <ClCompile Include="DKFoundation\DKFile.cpp" />
     <ClCompile Include="DKFoundation\DKFileMap.cpp" />
@@ -387,8 +385,6 @@
     <ClInclude Include="DKFoundation\DKDummyLock.h" />
     <ClInclude Include="DKFoundation\DKEndianness.h" />
     <ClInclude Include="DKFoundation\DKError.h" />
-    <ClInclude Include="DKFoundation\DKEventLoop.h" />
-    <ClInclude Include="DKFoundation\DKEventLoopTimer.h" />
     <ClInclude Include="DKFoundation\DKFence.h" />
     <ClInclude Include="DKFoundation\DKFile.h" />
     <ClInclude Include="DKFoundation\DKFileMap.h" />

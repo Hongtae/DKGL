@@ -317,7 +317,7 @@ using MouseEvent = DKWindow::MouseEvent;
 - (void)postWindowEventType:(WindowEvent::Type)type
 {
 	if (userInstance)
-		userInstance->PostWindowEvent({type, self.windowRect, self.contentRect, self.contentScaleFactor});
+		userInstance->PostWindowEvent({type, self.windowRect, self.contentRect, (float)self.contentScaleFactor});
 }
 
 - (void)postKeyboardEventType:(KeyboardEvent::Type)type keyCode:(unsigned short)keyCode

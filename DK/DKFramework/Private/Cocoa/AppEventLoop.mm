@@ -20,6 +20,7 @@ using namespace DKFramework::Private::macOS;
 
 AppEventLoop::AppEventLoop(DKApplication* app)
 : appInstance(app)
+, threadId(DKThread::invalidId)
 , running(false)
 , runLoop(nil)
 , timer(nil)
@@ -32,9 +33,10 @@ AppEventLoop::~AppEventLoop()
 
 bool AppEventLoop::Run()
 {
-	if (BindThread())
+	if (!running && threadId == DKThread::invalidId)
 	{
 		running = true;
+        threadId = DKThread::CurrentThreadId();
 
 		@autoreleasepool {
 			// initialize multi-threading mode
@@ -125,8 +127,8 @@ bool AppEventLoop::Run()
 			[appDelegate release];
 		}
 
+        threadId = DKThread::invalidId;
 		running = false;
-		UnbindThread();
 		return true;
 	}
 	return false;
@@ -178,11 +180,11 @@ void AppEventLoop::DispatchAndInstallTimer()
 		timer = nil;
 	}
 	int count = 0;
-	while (this->running && Dispatch()) { count++; }
+	while (this->running && Execute()) { count++; }
 	//NSLog(@" < Dispatched: %d / Running: %d >", count, this->running);
 	if (this->running)
 	{
-		double intv = PendingEventInterval();
+		double intv = NextDispatchInterval();
 		if (intv >= 0.0)
 		{
 			//NSLog(@"Install timer with interval: %f", intv);
@@ -197,9 +199,9 @@ void AppEventLoop::DispatchAndInstallTimer()
 	}
 }
 
-DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operation, double delay)
+DKObject<DKDispatchQueue::ExecutionState> AppEventLoop::Submit(DKOperation* operation, double delay)
 {
-	DKObject<PendingState> ps = DKEventLoop::Post(operation, delay);
+	DKObject<DKDispatchQueue::ExecutionState> es = DKDispatchQueue::Submit(operation, delay);
 
 	lock.Lock();
 	if (runLoop)
@@ -210,24 +212,17 @@ DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operat
 		CFRunLoopWakeUp(runLoop);
 	}
 	lock.Unlock();
-	return ps;
+	return es;
 }
 
-DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operation, const DKDateTime& runAfter)
+bool AppEventLoop::IsRunning() const
 {
-	DKObject<PendingState> ps = DKEventLoop::Post(operation, runAfter);
-
-	lock.Lock();
-	if (runLoop)
-	{
-		CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^() {
-			this->DispatchAndInstallTimer();
-		});
-		CFRunLoopWakeUp(runLoop);
-	}
-	lock.Unlock();
-	return ps;
+    return this->running;
 }
 
+bool AppEventLoop::IsDispatchThread() const
+{
+    return DKThread::CurrentThreadId() == threadId;
+}
 #endif	//if !TARGET_OS_IPHONE
 #endif	//if defined(__APPLE__) && defined(__MACH__)

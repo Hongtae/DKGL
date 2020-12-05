@@ -17,7 +17,7 @@
 
 namespace DKFramework::Private::macOS
 {
-    class AppEventLoop : public DKEventLoop
+    class AppEventLoop : public DKApplication::EventLoop
     {
     public:
         AppEventLoop(DKApplication* app);
@@ -26,13 +26,16 @@ namespace DKFramework::Private::macOS
         bool Run() override;
         void Stop() override;
 
-        DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
-        DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
-        
+        DKObject<DKDispatchQueue::ExecutionState> Submit(DKOperation* operation, double delay) override;
+
+        bool IsRunning() const override;
+        bool IsDispatchThread() const override;
+
     private:
         void DispatchAndInstallTimer();
 
         DKApplication* appInstance;
+        DKThread::ThreadId threadId;
         bool running;
         NSTimer* timer;
 

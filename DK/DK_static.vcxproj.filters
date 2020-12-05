@@ -157,12 +157,6 @@
     <ClCompile Include="DKFoundation\DKError.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
-    <ClCompile Include="DKFoundation\DKEventLoop.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
-    <ClCompile Include="DKFoundation\DKEventLoopTimer.cpp">
-      <Filter>DKFoundation</Filter>
-    </ClCompile>
     <ClCompile Include="DKFoundation\DKFence.cpp">
       <Filter>DKFoundation</Filter>
     </ClCompile>
@@ -646,12 +640,6 @@
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKError.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKEventLoop.h">
-      <Filter>DKFoundation</Filter>
-    </ClInclude>
-    <ClInclude Include="DKFoundation\DKEventLoopTimer.h">
       <Filter>DKFoundation</Filter>
     </ClInclude>
     <ClInclude Include="DKFoundation\DKFence.h">

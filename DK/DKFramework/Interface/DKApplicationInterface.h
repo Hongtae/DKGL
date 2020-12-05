@@ -23,7 +23,7 @@ namespace DKFramework
 		using SystemPath = DKApplication::SystemPath;
 		using ProcessInfo = DKApplication::ProcessInfo;
 
-		virtual DKEventLoop* EventLoop() = 0;
+		virtual DKApplication::EventLoop* MainLoop() = 0;
 		virtual DKLogger* DefaultLogger() = 0;
 
 		virtual DKString DefaultPath(SystemPath) = 0;

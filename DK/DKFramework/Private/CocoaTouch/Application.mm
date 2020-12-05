@@ -30,7 +30,7 @@ Application::~Application()
 {
 }
 
-DKEventLoop* Application::EventLoop()
+DKApplication::EventLoop* Application::MainLoop()
 {
 	return &mainLoop;
 }

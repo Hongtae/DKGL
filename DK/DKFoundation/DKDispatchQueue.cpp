@@ -70,7 +70,7 @@ namespace DKFoundation::Private
         DKTimer::Tick tick;
         DKObject<DKOperation> op;
         DKObject<DispatchQueueItemState> state;
-        bool IsReady() const { return DKTimer::Tick() >= tick; }
+        bool IsReady() const { return DKTimer::SystemTick() >= tick; }
     };
     DKCondition& DispatchQueueCondition()
     {
@@ -344,6 +344,25 @@ void DKDispatchQueue::WaitQueue() const
 void DKDispatchQueue::NotyfyThreads()
 {
     DispatchQueueCondition().Broadcast();
+}
+
+double DKDispatchQueue::NextDispatchInterval() const
+{
+    const double tickToTime = 1.0 / DKTimer::SystemTickFrequency();
+
+    DKCriticalSection guard(context->cond);
+    if (context->queue.Count() > 0)
+    {
+        const DKTimer::Tick tick = DKTimer::SystemTick();
+        const DispatchQueueItem& item = context->queue.Value(0);
+        if (item.tick > tick)
+        {
+            const double t = static_cast<double>(item.tick - tick) * tickToTime;
+            return Max(t, 0.0);
+        }
+        return 0.0;
+    }
+    return -1.0;
 }
 
 bool DKDispatchQueue::InvokeOperation(DKOperation* op) const

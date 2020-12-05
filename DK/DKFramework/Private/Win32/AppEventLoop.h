@@ -13,7 +13,7 @@
 
 namespace DKFramework::Private::Win32
 {
-    class AppEventLoop : public DKEventLoop
+    class AppEventLoop : public DKApplication::EventLoop
     {
     public:
         AppEventLoop(DKApplication* app);
@@ -22,8 +22,10 @@ namespace DKFramework::Private::Win32
         bool Run() override;
         void Stop() override;
 
-        DKObject<PendingState> Post(const DKOperation* operation, double delay) override;
-        DKObject<PendingState> Post(const DKOperation* operation, const DKDateTime& runAfter) override;
+        DKObject<DKDispatchQueue::ExecutionState> Submit(DKOperation*, double delay) override;
+
+        bool IsRunning() const override;
+        bool IsDispatchThread() const override;
 
     private:
         DKApplication* appInstance;

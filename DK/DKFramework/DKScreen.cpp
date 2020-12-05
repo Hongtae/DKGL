@@ -15,16 +15,7 @@ DKScreen::DKScreen(DKCommandQueue* cq, DKOperationQueue* oq)
     , rootFrame(nullptr)
     , screenResolution(DKSize(0, 0))
 {
-	struct LocalEventLoop : public DKEventLoop
-	{
-		DKScreen* screen;
-	};
-	DKObject<LocalEventLoop> localEventLoop = DKOBJECT_NEW LocalEventLoop();
-	localEventLoop->screen = this;
-
-	eventLoop = localEventLoop.SafeCast<DKEventLoop>();
 	audioDevice = DKAudioDevice::SharedInstance();
-
     commandQueue = cq;
     if (commandQueue == nullptr)
     {
@@ -42,7 +33,6 @@ DKScreen::DKScreen(DKCommandQueue* cq, DKOperationQueue* oq)
 DKScreen::~DKScreen()
 {
     operationQueue->WaitForCompletion();
-    eventLoop->Stop();
 }
 
 void DKScreen::Start()
@@ -350,10 +340,6 @@ DKRect DKScreen::ScreenToWindow(const DKRect& rect) const
 }
 
 void DKScreen::Draw() const
-{
-}
-
-void DKScreen::EventLoopIdle(DKScreen*, DKEventLoop*)
 {
 }
 

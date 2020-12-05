@@ -75,14 +75,14 @@ int DKApplication::Run()
 
 	struct MainLoopRunner : public DKOperation
 	{
-		DKEventLoop* eventLoop;
+		DKApplication::EventLoop* mainLoop;
 		void Perform() const override
 		{
-			eventLoop->Run();
+			mainLoop->Run();
 		}
 	};
 	MainLoopRunner runner;
-	runner.eventLoop = impl->EventLoop();
+	runner.mainLoop = impl->MainLoop();
 	Private::PerformOperationWithErrorHandler(&runner, DKERROR_DEFAULT_CALLSTACK_TRACE_DEPTH);
 
 	return exitCode;
@@ -94,9 +94,9 @@ DKApplication* DKApplication::Instance()
 	return Private::application;
 }
 
-DKEventLoop* DKApplication::EventLoop()
+DKApplication::EventLoop* DKApplication::MainLoop()
 {
-	return impl->EventLoop();
+	return impl->MainLoop();
 }
 
 void DKApplication::Initialize()
@@ -130,11 +130,11 @@ void DKApplication::Finalize()
 
 void DKApplication::Terminate(int exitCode)
 {
-	impl->EventLoop()->Post(DKFunction([=]()
+	impl->MainLoop()->Submit(DKFunction([=]()
 	{
 		this->exitCode = exitCode;
 	})->Invocation());
-	impl->EventLoop()->Stop();
+	impl->MainLoop()->Stop();
 }
 
 DKString DKApplication::DefaultPath(SystemPath sp)

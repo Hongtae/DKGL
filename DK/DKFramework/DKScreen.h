@@ -79,8 +79,6 @@ namespace DKFramework
 
         /// main command queue (load gpu-resources, not for rendering)
         DKCommandQueue* CommandQueue() { return commandQueue; }
-        /// event loop for serialized (ordered) tasks
-        DKEventLoop* EventLoop() { return eventLoop; }
         /// command queue for parallelized (unordered) tasks
         DKOperationQueue* OperationQueue() { return operationQueue; }
 
@@ -90,9 +88,7 @@ namespace DKFramework
 
 	private:
         void Draw() const;
-        static void EventLoopIdle(DKScreen*, DKEventLoop*);
 
-        DKObject<DKEventLoop> eventLoop;
         DKObject<DKOperationQueue> operationQueue;
         DKObject<DKWindow> window;
         DKObject<DKFrame> rootFrame;

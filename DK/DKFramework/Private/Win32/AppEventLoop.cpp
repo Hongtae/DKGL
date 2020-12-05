@@ -62,17 +62,16 @@ AppEventLoop::AppEventLoop(DKApplication* app)
 	, threadId(0)
 	, running(false)
 {
-
 }
 
 AppEventLoop::~AppEventLoop()
 {
-
 }
+
 
 bool AppEventLoop::Run()
 {
-	if (BindThread())
+	if (threadId == 0 && running == false)
 	{
 		running = true;
 		threadId = GetCurrentThreadId();
@@ -137,10 +136,10 @@ bool AppEventLoop::Run()
 			}
 			if (this->running)
 			{
-				while (this->running && Dispatch()) {}
+				while (this->running && Execute()) {}
 				if (this->running)
 				{
-					double intv = PendingEventInterval();
+					double intv = NextDispatchInterval();
 					if (intv >= 0.0)
 					{
 						// install timer for next pending event.
@@ -169,7 +168,6 @@ bool AppEventLoop::Run()
 
 		threadId = 0;
 		running = false;
-		UnbindThread();
 		return true;
 	}
 	return false;
@@ -177,30 +175,32 @@ bool AppEventLoop::Run()
 
 void AppEventLoop::Stop()
 {
-	// Don't use PostQuitMessage here
+		// Don't use PostQuitMessage here
 	if (threadId)
 	{
-		this->Post(DKFunction([this]() {
+		this->Submit(DKFunction([this]() {
 			this->running = false;
 		})->Invocation(), 0);
 		PostThreadMessageW(threadId, WM_NULL, 0, 0);
 	}
 }
 
-DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operation, double delay)
+DKObject<DKDispatchQueue::ExecutionState> AppEventLoop::Submit(DKOperation* op, double delay) 
 {
-	DKObject<PendingState> ps = DKEventLoop::Post(operation, delay);
+	DKObject<DKDispatchQueue::ExecutionState> es = DKDispatchQueue::Submit(op, delay);
 	if (this->threadId)
 		PostThreadMessageW(this->threadId, WM_NULL, 0, 0);
-	return ps;
+	return es;
 }
 
-DKObject<DKEventLoop::PendingState> AppEventLoop::Post(const DKOperation* operation, const DKDateTime& runAfter)
+bool AppEventLoop::IsRunning() const
 {
-	DKObject<PendingState> ps = DKEventLoop::Post(operation, runAfter);
-	if (this->threadId)
-		PostThreadMessageW(this->threadId, WM_NULL, 0, 0);
-	return ps;
+	return this->running;
+}
+
+bool AppEventLoop::IsDispatchThread() const
+{
+	return GetCurrentThreadId() == threadId;
 }
 
 #endif // _WIN32

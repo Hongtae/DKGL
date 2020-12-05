@@ -114,7 +114,7 @@ bool Window::Create(const DKString& title, uint32_t style)
 			WindowEvent::WindowCreated,
 			WindowRect(),
 			ContentRect(),
-			view.contentScaleFactor
+			(float)view.contentScaleFactor
 		});
 		return true;
 	});
@@ -155,7 +155,7 @@ void Window::UpdateProxy()
 				WindowEvent::WindowResized,
 				WindowRect(),
 				ContentRect(),
-				contentScaleFactor
+				(float)contentScaleFactor
 			});
 		});
 	}

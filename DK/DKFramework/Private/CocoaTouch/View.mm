@@ -123,7 +123,7 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.appActivated)
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowActivated, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowActivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 		return YES;
 	}
@@ -137,7 +137,7 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.appActivated)
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowInactivated, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowInactivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 		return YES;
 	}
@@ -164,9 +164,9 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (!CGPointEqualToPoint(frame.origin, old.origin) || !CGSizeEqualToSize(frame.size, old.size))
 		{
 			if (CGSizeEqualToSize(frame.size, old.size))
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowMoved, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowMoved, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 			else
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowResized, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowResized, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 	}
 	else
@@ -180,12 +180,12 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (flag)
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowHidden, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowHidden, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 		else
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowShown, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowShown, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 	}
 	[super setHidden:flag];
@@ -464,9 +464,9 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.userInstance)
 		{
 			if ([self isFirstResponder])
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowInactivated, self.windowRect, self.contentRect, self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({ WindowEvent::WindowInactivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 
-			self.userInstance->PostWindowEvent({ WindowEvent::WindowHidden, self.windowRect, self.contentRect, self.contentScaleFactor });
+			self.userInstance->PostWindowEvent({ WindowEvent::WindowHidden, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 	}
 	self.appActivated = NO;
@@ -478,10 +478,10 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if (self.userInstance)
 		{
-			self.userInstance->PostWindowEvent({ WindowEvent::WindowShown, self.windowRect, self.contentRect, self.contentScaleFactor });
+			self.userInstance->PostWindowEvent({ WindowEvent::WindowShown, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 
 		if ([self isFirstResponder])
-			self.userInstance->PostWindowEvent({ WindowEvent::WindowActivated, self.windowRect, self.contentRect, self.contentScaleFactor });
+			self.userInstance->PostWindowEvent({ WindowEvent::WindowActivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
 		}
 	}
 	self.appActivated = YES;

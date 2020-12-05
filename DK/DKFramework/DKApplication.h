@@ -62,6 +62,15 @@ namespace DKFramework
 	class DKGL_API DKApplication
 	{
 	public:
+		class EventLoop : public DKDispatchQueue
+		{
+		public:
+			virtual ~EventLoop() {}
+
+			virtual bool Run() = 0;
+			virtual void Stop() = 0;
+		};
+
 		/// environment variable path
 		enum class SystemPath 
 		{
@@ -99,7 +108,7 @@ namespace DKFramework
 		static DKApplication* Instance();
 
 		/// get application main event loop.
-		DKEventLoop* EventLoop();
+		EventLoop* MainLoop();
 
 		/// retrieve pre-defined paths
 		DKString DefaultPath(SystemPath);

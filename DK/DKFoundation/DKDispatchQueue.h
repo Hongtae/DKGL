@@ -76,6 +76,8 @@ namespace DKFoundation
         void WaitQueue() const;
         static void NotyfyThreads();
 
+        double NextDispatchInterval() const;
+
         /// If this function returns false, 
         /// the WaitQueue() function will eventually stop and return.
         virtual bool IsRunning() const { return true; }

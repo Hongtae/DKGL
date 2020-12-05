@@ -21,7 +21,7 @@ namespace DKFramework::Private::Win32
         Application(DKApplication* app);
         ~Application();
 
-        DKEventLoop* EventLoop() override;
+        DKApplication::EventLoop* MainLoop() override;
         DKLogger* DefaultLogger() override;
 
         DKString DefaultPath(SystemPath) override;

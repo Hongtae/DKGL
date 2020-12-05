@@ -138,7 +138,7 @@ bool Window::Create(const DKString& title, uint32_t style)
 			WindowEvent::WindowCreated,
 			WindowRect(),
 			ContentRect(),
-			window.backingScaleFactor
+			(float)window.backingScaleFactor
 		});
 		return true;
 	});
@@ -177,7 +177,7 @@ void Window::UpdateProxy()
 				WindowEvent::WindowResized,
 				WindowRect(),
 				ContentRect(),
-				backingScaleFactor
+				(float)backingScaleFactor
 			});
 		});
 	}
@@ -268,7 +268,7 @@ void Window::Show()
 				WindowEvent::WindowShown,
 				WindowRect(),
 				ContentRect(),
-				view.window.backingScaleFactor
+				(float)view.window.backingScaleFactor
 			});
 		}
 	});
@@ -286,7 +286,7 @@ void Window::Hide()
 				WindowEvent::WindowHidden,
 				WindowRect(),
 				ContentRect(),
-				view.window.backingScaleFactor
+				(float)view.window.backingScaleFactor
 			});
 		}
 	});
@@ -303,13 +303,13 @@ void Window::Activate()
 				WindowEvent::WindowShown,
 				WindowRect(),
 				ContentRect(),
-				view.window.backingScaleFactor
+				(float)view.window.backingScaleFactor
 			});
 			instance->PostWindowEvent({
 				WindowEvent::WindowActivated,
 				WindowRect(),
 				ContentRect(),
-				view.window.backingScaleFactor
+				(float)view.window.backingScaleFactor
 			});
 		}
 	});
