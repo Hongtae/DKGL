@@ -300,7 +300,7 @@ DKRect DKRect::Union(const DKRect& rc1, const DKRect& rc2)
 	if (rc1.IsValid() && rc2.IsValid())
 	{
 		float maxWidth = Max(rc1.origin.x + rc1.size.width, rc2.origin.x + rc2.size.width);
-		float maxHeight = Max(rc1.origin.y + rc1.size.height, rc2.origin.x + rc2.size.height);
+		float maxHeight = Max(rc1.origin.y + rc1.size.height, rc2.origin.y + rc2.size.height);
 
 		DKPoint newOrigin = DKPoint(Min(rc1.origin.x, rc2.origin.x), Min(rc1.origin.y, rc2.origin.y));
 		DKSize newSize = DKSize(maxWidth - newOrigin.x, maxHeight - newOrigin.y);
