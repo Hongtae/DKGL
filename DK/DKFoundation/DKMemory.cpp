@@ -29,6 +29,7 @@
 #include "DKMap.h"
 #include "DKMemory.h"
 #include "DKSpinLock.h"
+#include "DKDummyLock.h"
 #include "DKCriticalSection.h"
 #include "DKLog.h"
 #include "DKString.h"

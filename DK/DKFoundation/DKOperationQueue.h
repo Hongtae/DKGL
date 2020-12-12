@@ -77,7 +77,7 @@ namespace DKFoundation
 			DKObject<DKOperation> operation;
 			DKObject<OperationSync> sync;
 		};
-		typedef DKQueue<Operation, DKDummyLock> OperationQueue;
+		typedef DKQueue<Operation> OperationQueue;
 		OperationQueue operationQueue;
 		size_t maxConcurrentOperations;
 		size_t threadCount;			// available threads count

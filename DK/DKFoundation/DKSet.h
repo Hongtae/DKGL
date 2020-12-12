@@ -9,8 +9,6 @@
 #include <initializer_list>
 #include "../DKInclude.h"
 #include "DKAVLTree.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKTypeTraits.h"
 
 namespace DKFoundation
@@ -31,29 +29,22 @@ namespace DKFoundation
 	/// @brief A set container class. using AVLTree (see DKAVLTree.h) internally.
 	///
 	/// @tparam Value		value type
-	/// @tparam Lock		thread-lock type
 	/// @tparam Comparator	element comparison function
 	/// @tparam Allocator	element allocator
 	template <
 		typename Value,
-		typename Lock = DKDummyLock,
 		typename Comparator = DKSetComparator<Value>,
 		typename Allocator = DKMemoryDefaultAllocator
 	>
 	class DKSet
 	{
 	public:
-		typedef DKCriticalSection<Lock>		CriticalSection;
 		typedef DKTypeTraits<Value>			ValueTraits;
 		typedef DKAVLTree<Value, Comparator, DKTreeItemReplacer<Value>, Allocator>	Container;
 
 		constexpr static size_t NodeSize() { return Container::NodeSize(); }
 
 		Comparator& comparator;
-
-		/// lock is public. allow object being locked manually.
-		/// ContainsNoLock(), CountNoLock() is available when object has been locked.
-		Lock	lock;
 
 		DKSet()
 			: comparator(container.comparator)
@@ -68,7 +59,6 @@ namespace DKFoundation
 		DKSet(const DKSet& s)
 			: comparator(container.comparator)
 		{
-			CriticalSection guard(s.lock);
 			container = s.container;
 		}
 		DKSet(const Value* v, size_t n)
@@ -88,23 +78,19 @@ namespace DKFoundation
 		}
 		void Insert(const Value& v)
 		{
-			CriticalSection guard(lock);
 			container.Insert(v);
 		}
 		void Insert(Value&& v)
 		{
-			CriticalSection guard(lock);
 			container.Insert(static_cast<Value&&>(v));
 		}
 		void Insert(const Value* v, size_t n)
 		{
-			CriticalSection guard(lock);
 			for (size_t i = 0; i < n; ++i)
 				container.Insert(v[i]);
 		}
 		void Insert(std::initializer_list<Value> il)
 		{
-			CriticalSection guard(lock);
 			for (const Value& v : il)
 				container.Insert(v);
 		}
@@ -112,7 +98,6 @@ namespace DKFoundation
 		/// The other set can have different template parameters except Value.
 		template <typename ...Args> DKSet& Union(const DKSet<Value, Args...>& s)
 		{
-			CriticalSection guard(lock);
 			s.EnumerateForward([this](const Value& val) { container.Insert(val); });
 			return *this;
 		}
@@ -120,45 +105,30 @@ namespace DKFoundation
 		/// The other set can have different template parameters except Value
 		template <typename ...Args> DKSet& Intersect(const DKSet<Value, Args...>& s)
 		{
-			CriticalSection guard(lock);
 			s.EnumerateForward([this](const Value& val) {this->container.Remove(val);});
 			return *this;
 		}
 		void Remove(const Value& v)
 		{
-			CriticalSection guard(lock);
 			container.Remove(v, container.comparator);
 		}
 		void Remove(std::initializer_list<Value> il)
 		{
-			CriticalSection guard(lock);
 			container.Remove(il);
 		}
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			container.Clear();
 		}
 		bool Contains(const Value& v) const
 		{
-			CriticalSection guard(lock);
 			return container.Find(v, container.comparator) != NULL;
-		}
-		bool ContainsNoLock(const Value& v) const
-		{
-			return container.Find(v) != NULL;
 		}
 		bool IsEmpty() const
 		{
-			CriticalSection guard(lock);
 			return container.Count() == 0;
 		}
 		size_t Count() const
-		{
-			CriticalSection guard(lock);
-			return container.Count();
-		}
-		size_t CountNoLock() const
 		{
 			return container.Count();
 		}
@@ -166,7 +136,6 @@ namespace DKFoundation
 		{
 			if (this != &s)
 			{
-				CriticalSection guard(lock);
 				container = static_cast<Container&&>(s.container);
 			}
 			return *this;
@@ -175,16 +144,12 @@ namespace DKFoundation
 		{
 			if (this != &s)
 			{
-				CriticalSection guardOther(s.lock);
-				CriticalSection guardSelf(lock);
-
 				container = s.container;
 			}
 			return *this;
 		}
 		DKSet& operator = (std::initializer_list<Value> il)
 		{
-			CriticalSection guard(lock);
 			container.Clear();
 			for (const Value& v : il)
 				container.Insert(v);
@@ -214,23 +179,19 @@ namespace DKFoundation
 		// lambda enumerator (const VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateForward([&enumerator](const Value& val, bool*) {enumerator(val);});
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateBackward([&enumerator](const Value& val, bool*) {enumerator(val);});
 		}
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateForward(enumerator);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateBackward(enumerator);
 		}
 

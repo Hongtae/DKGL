@@ -8,29 +8,27 @@
 #pragma once
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKQueue.h"
 #include "DKMemory.h"
 
 namespace DKFoundation
 {
 	/// a stack implemented template class.
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
+	template <typename VALUE, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKStack
 	{
 	public:
 		typedef ALLOC					Allocator;
-		typedef DKQueue<VALUE, LOCK, ALLOC>	Container;
+		typedef DKQueue<VALUE, ALLOC>	Container;
 
 		constexpr static size_t NodeSize()	{ return Container::NodeSize(); }
 
 		DKStack() {}
 		~DKStack() {}
 		
-		void Push(const VALUE& v)		{container.PushFront(v);}
-		void Push(VALUE&& v)			{container.PushFront(static_cast<VALUE&&>(v)); }
-		void Pop(VALUE& v)				{container.PopFront(v);}
+		void Push(const VALUE& v)	{container.PushFront(v);}
+		void Push(VALUE&& v)		{container.PushFront(static_cast<VALUE&&>(v)); }
+		void Pop(VALUE& v)			{container.PopFront(v);}
 		void Pop()					{container.PopFront();}
 
 		VALUE& Top()				{return container.Front();}

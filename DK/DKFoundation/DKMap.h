@@ -9,8 +9,6 @@
 #include <initializer_list>
 #include "../DKInclude.h"
 #include "DKAVLTree.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKTypeTraits.h"
 
 namespace DKFoundation
@@ -57,18 +55,6 @@ namespace DKFoundation
 	 Insert: insert value if key is not exists.
 	 Update: set value for key whether key is exists or not.
 
-	 insertion, deletion, lookup is thread-safe.
-	 If you need to modify value directly, you should have lock object.
-
-	 Example:
-	 @code
-		{
-			typename MyMapType::CriticalSection section(map.lock);	// lock with critical-section
-			MyMapType::Pair* p = map.Find(something);
-			.... // do something with p
-		}	// auto-unlock by critical-section end
-	 @endcode
-
 	 To enumerate items:
 	 @code
 	  typedef DKMap<Key,Value> MyMap;
@@ -90,7 +76,6 @@ namespace DKFoundation
 	template <
 		typename Key,											// key type
 		typename ValueT,										// value type
-		typename Lock = DKDummyLock,							// lock
 		typename KeyComparator = DKMapKeyComparator<Key>,		// key comparison
 		typename ValueReplacer = DKMapValueReplacer<ValueT>,	// copy value
 		typename Allocator = DKMemoryDefaultAllocator			// memory allocator
@@ -99,7 +84,6 @@ namespace DKFoundation
 	{
 	public:
 		typedef DKMapPair<const Key, ValueT>	Pair;
-		typedef DKCriticalSection<Lock>			CriticalSection;
 		typedef DKTypeTraits<Key>				KeyTraits;
 		typedef DKTypeTraits<ValueT>			ValueTraits;
 
@@ -124,10 +108,6 @@ namespace DKFoundation
 
 		KeyComparator comparator;
 
-		/// lock is public. to provde lock object from outside!
-		/// FindNoLock, CountNoLock is usable regardless of locking.
-		Lock	lock;
-
 		DKMap()
 		{
 		}
@@ -138,7 +118,6 @@ namespace DKFoundation
 		}
 		DKMap(const DKMap& m)
 		{
-			CriticalSection guard(m.lock);
 			container = m.container;
 			comparator = m.comparator;
 		}
@@ -168,12 +147,10 @@ namespace DKFoundation
 		/// overwrite value if key is exists, or insert item.
 		void Update(const Pair& p)
 		{
-			CriticalSection guard(lock);
 			container.Update(p);			
 		}
 		void Update(Pair&& p)
 		{
-			CriticalSection guard(lock);
 			container.Update(static_cast<Pair&&>(p));			
 		}
 		void Update(const Key& k, const ValueT& v)
@@ -192,7 +169,6 @@ namespace DKFoundation
 		template <typename ...Args>
 		void Update(const DKMap<Key, ValueT, Args...>& m)
 		{
-			CriticalSection guard(lock);
 			m.EnumerateForward([this](const typename DKMap<Key, ValueT, Args...>::Pair& pair)
 			{
 				container.Update(pair);
@@ -200,7 +176,6 @@ namespace DKFoundation
 		}
 		void Update(std::initializer_list<Pair> il)
 		{
-			CriticalSection guard(lock);
 			for (const Pair& p : il)
 				container.Update(p);
 		}
@@ -214,7 +189,6 @@ namespace DKFoundation
 			auto v = values.begin();
 			auto v_end = values.end();
 
-			CriticalSection guard(lock);
 			while (k != k_end && v != v_end)
 			{
 				Update(*k, *v);
@@ -224,12 +198,10 @@ namespace DKFoundation
 		/// insert item if key is not exist, fails otherwise.
 		bool Insert(const Pair& p)
 		{
-			CriticalSection guard(lock);
 			return container.Insert(p) != NULL;
 		}
 		bool Insert(Pair&& p)
 		{
-			CriticalSection guard(lock);
 			return container.Insert(static_cast<Pair&&>(p)) != NULL;
 		}
 		bool Insert(const Key& k, const ValueT& v)
@@ -243,7 +215,6 @@ namespace DKFoundation
 		template <typename ...Args> size_t Insert(const DKMap<Key, ValueT, Args...>& m)
 		{
 			size_t n = 0;
-			CriticalSection guard(lock);
 			m.EnumerateForward([this, &n](const typename DKMap<Key, ValueT, Args...>::Pair& pair)
 			{
 				if (container.Insert(pair) != NULL)
@@ -254,7 +225,6 @@ namespace DKFoundation
 		size_t Insert(std::initializer_list<Pair> il)
 		{
 			size_t n = 0;
-			CriticalSection guard(lock);
 			for (const Pair& p : il)
 			{
 				if (container.Insert(p) != NULL)
@@ -272,7 +242,6 @@ namespace DKFoundation
 			auto v = values.begin();
 			auto v_end = values.end();
 
-			CriticalSection guard(lock);
 			while (k != k_end && v != v_end)
 			{
 				if (container.Insert(Pair(*k, *v)))
@@ -283,7 +252,6 @@ namespace DKFoundation
 		}
 		void Remove(const Key& k)
 		{
-			CriticalSection guard(lock);
 			container.Remove(k, [this](const Pair& lhs, const Key& key)
 			{
 				return comparator(lhs.key, key);
@@ -291,13 +259,11 @@ namespace DKFoundation
 		}
 		void Remove(std::initializer_list<Key> il)
 		{
-			CriticalSection guard(lock);
 			for (const Key& k : il)
 				container.Remove(k);
 		}
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			container.Clear();
 		}
 		Pair* Find(const Key& k)
@@ -305,17 +271,6 @@ namespace DKFoundation
 			return const_cast<Pair*>(static_cast<const DKMap&>(*this).Find(k));
 		}
 		const Pair* Find(const Key& k) const
-		{
-			CriticalSection guard(lock);
-			return FindNoLock(k);
-		}
-		/// Perform search operation without locking.
-		/// useful if you have locked already in your context.
-		Pair* FindNoLock(const Key& k)
-		{
-			return const_cast<Pair*>(static_cast<const DKMap&>(*this).FindNoLock(k));
-		}
-		const Pair* FindNoLock(const Key& k) const
 		{
 			return container.Find(k, [this](const Pair& lhs, const Key& key)
 			{
@@ -325,43 +280,32 @@ namespace DKFoundation
 		/// if key 'k' is not exist, an new value inserted and returns.
 		ValueT& Value(const Key& k)
 		{
-			CriticalSection guard(lock);
-			Pair* p = FindNoLock(k);
+			Pair* p = Find(k);
 			if (p == NULL)
 				p = const_cast<Pair*>(container.Insert(Pair(k, ValueT())));
 			return p->value;
 		}
 		bool IsEmpty() const
 		{
-			CriticalSection guard(lock);
 			return container.Count() == 0;
 		}
 		size_t Count() const
 		{
-			CriticalSection guard(lock);
 			return container.Count();
 		}
-		size_t CountNoLock() const
-		{
-			return container.Count();
-		}
-		DKMap& operator = (DKMap&& m)
+		DKMap& operator = (DKMap&& m) noexcept
 		{
 			if (this != &m)
 			{
-				CriticalSection guard(lock);
 				container = static_cast<Container&&>(m.container);
 				comparator = static_cast<KeyComparator&&>(m.comparator);
 			}
 			return *this;
 		}
-		DKMap& operator = (const DKMap& m)
+		DKMap& operator = (const DKMap& m) noexcept
 		{
 			if (this != &m)
 			{
-				CriticalSection guardOther(m.lock);
-				CriticalSection guardSelf(lock);
-
 				container = m.container;
 				comparator = m.comparator;
 			}
@@ -369,7 +313,6 @@ namespace DKFoundation
 		}
 		DKMap& operator = (std::initializer_list<Pair> il)
 		{
-			CriticalSection guard(lock);
 			container.Clear();
 			for (const Pair& p : il)
 				container.Insert(p);
@@ -421,45 +364,37 @@ namespace DKFoundation
 		// lambda enumerator (VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			container.EnumerateForward([&enumerator](Pair& val, bool*) {enumerator(val);});
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			container.EnumerateBackward([&enumerator](Pair& val, bool*) {enumerator(val);});
 		}
 		// lambda enumerator (const VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateForward([&enumerator](const Pair& val, bool*) {enumerator(val);});
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateBackward([&enumerator](const Pair& val, bool*) {enumerator(val);});
 		}
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			container.EnumerateForward(enumerator);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			container.EnumerateBackward(enumerator);
 		}
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateForward(enumerator);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			container.EnumerateBackward(enumerator);
 		}
 		

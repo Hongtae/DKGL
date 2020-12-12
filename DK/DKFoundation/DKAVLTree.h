@@ -257,7 +257,7 @@ namespace DKFoundation
 		{
 			return count;
 		}
-		DKAVLTree& operator = (DKAVLTree&& tree)
+		DKAVLTree& operator = (DKAVLTree&& tree) noexcept
 		{
 			if (this != &tree)
 			{
@@ -273,7 +273,7 @@ namespace DKFoundation
 			}
 			return *this;
 		}
-		DKAVLTree& operator = (const DKAVLTree& tree)
+		DKAVLTree& operator = (const DKAVLTree& tree) noexcept
 		{
 			if (this == &tree)	return *this;
 

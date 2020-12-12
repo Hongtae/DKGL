@@ -9,8 +9,6 @@
 #include <initializer_list>
 #include "../DKInclude.h"
 #include "DKObject.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKMemory.h"
 #include "DKFunction.h"
 
@@ -22,20 +20,14 @@ namespace DKFoundation
 	///   PushFront() with multiple items: returns first item's pointer. (temporal)
 	///   PushBack() with multiple items: returns last item's pointer. (temporal)
 	///   Do not store pointer address returned by above functions!
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
+	template <typename VALUE, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKQueue
 	{
 		enum {InitialSize = 32,};
 	public:
-		typedef LOCK						Lock;
-		typedef DKCriticalSection<Lock>		CriticalSection;
 		typedef ALLOC						Allocator;
 
 		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
-
-		/// lock is public. enables object could be locked from outside.
-		/// casting to const VALUE*, CountNoLock(), are allowed when object has been locked.
-		Lock	lock;
 
 		DKQueue()
 			: begin(0)
@@ -92,7 +84,6 @@ namespace DKFoundation
 		}
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			if (data && count)
 			{
 				for (size_t i = begin; i < begin+count; i++)
@@ -105,12 +96,10 @@ namespace DKFoundation
 		}
 		VALUE* PushFront(const DKQueue& queue)
 		{
-			CriticalSection guard(queue.lock);
 			return PushFront((const VALUE*)queue, queue.count);
 		}
 		VALUE* PushFront(const VALUE* values, size_t n)
 		{
-			CriticalSection guard(lock);
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
@@ -124,7 +113,6 @@ namespace DKFoundation
 		}
 		VALUE* PushFront(const VALUE& value, size_t n)
 		{
-			CriticalSection guard(lock);
 			ReserveFront(n);
 			for (size_t i = 0; i < n; i++)
 			{
@@ -142,7 +130,6 @@ namespace DKFoundation
 		}
 		VALUE* PushFront(VALUE&& value)
 		{
-			CriticalSection guard(lock);
 			ReserveFront(1);
 			new(std::addressof(data[--begin])) VALUE(static_cast<VALUE&&>(value));
 			count++;
@@ -151,7 +138,6 @@ namespace DKFoundation
 		}
 		VALUE* PushFront(std::initializer_list<VALUE> il)
 		{
-			CriticalSection guard(lock);
 			ReserveFront(il.size());
 
 			for (const VALUE& v : il)
@@ -166,12 +152,10 @@ namespace DKFoundation
 		}
 		VALUE* PushBack(const DKQueue& queue)
 		{
-			CriticalSection	guard(queue.lock);
 			return PushBack((const VALUE*)queue, queue.count);
 		}
 		VALUE* PushBack(const VALUE* values, size_t n)
 		{
-			CriticalSection guard(lock);
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
@@ -185,7 +169,6 @@ namespace DKFoundation
 		}
 		VALUE* PushBack(const VALUE& value, size_t n)
 		{
-			CriticalSection guard(lock);
 			ReserveBack(n);
 			for (size_t i = 0; i < n; i++)
 			{
@@ -203,7 +186,6 @@ namespace DKFoundation
 		}
 		VALUE* PushBack(VALUE&& value)
 		{
-			CriticalSection guard(lock);
 			ReserveBack(1);
 			new(std::addressof(data[begin + count])) VALUE(static_cast<VALUE&&>(value));
 			count++;
@@ -212,7 +194,6 @@ namespace DKFoundation
 		}
 		VALUE* PushBack(std::initializer_list<VALUE> il)
 		{
-			CriticalSection guard(lock);
 			ReserveBack(il.size());
 			for (const VALUE& v : il)
 			{
@@ -226,13 +207,10 @@ namespace DKFoundation
 		}
 		bool IsEmpty() const
 		{
-			CriticalSection guard(lock);
 			return count == 0;
 		}
 		bool PopFront(VALUE& ret)
 		{
-			CriticalSection guard(lock);
-
 			if (count > 0)
 			{
 				ret = data[begin];
@@ -246,7 +224,6 @@ namespace DKFoundation
 		}
 		VALUE PopFront()
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 
 			VALUE ret = data[begin];
@@ -258,8 +235,6 @@ namespace DKFoundation
 		}
 		bool PopBack(VALUE& ret)
 		{
-			CriticalSection guard(lock);
-
 			if (count > 0)
 			{
 				ret = data[begin+count-1];
@@ -272,7 +247,6 @@ namespace DKFoundation
 		}
 		VALUE PopBack()
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 
 			VALUE ret = data[begin+count-1];
@@ -283,19 +257,16 @@ namespace DKFoundation
 		}
 		VALUE& Front()
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin];
 		}
 		const VALUE& Front() const
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin];
 		}
 		bool Front(VALUE& ret) const
 		{
-			CriticalSection guard(lock);			
 			if (count > 0)
 			{
 				ret = data[begin];
@@ -305,19 +276,16 @@ namespace DKFoundation
 		}
 		VALUE& Back()
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin+count-1];
 		}
 		const VALUE& Back() const
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > 0);	// Error! queue is empty!
 			return data[begin+count-1];
 		}
 		bool Back(VALUE& ret) const
 		{
-			CriticalSection guard(lock);			
 			if (count > 0)
 			{
 				ret = data[begin+count-1];
@@ -325,29 +293,13 @@ namespace DKFoundation
 			}
 			return false;
 		}
-		/// copy value. thread-safe.
-		bool CopyValue(VALUE& value, unsigned long index) const
-		{
-			CriticalSection guard(lock);
-			if (count > index)
-			{
-				value = data[begin+index];
-				return true;
-			}
-			return false;
-		}
-		/// since Value() returns reference,
-		/// be aware of items modifications by other threads.
-		/// Use CopyValue() for multi-threaded.
 		VALUE& Value(unsigned long index)
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > index);
 			return data[begin+index];
 		}
 		const VALUE& Value(unsigned long index) const
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > index);
 			return data[begin+index];
 		}
@@ -367,18 +319,10 @@ namespace DKFoundation
 		}
 		size_t Count() const
 		{
-			CriticalSection guard(lock);
-			return count;
-		}
-		/// counting objects without locking.
-		/// Usable when objects has been locked.
-		size_t CountNoLock() const
-		{
 			return count;
 		}
 		void ShrinkToFit()
 		{
-			CriticalSection guard(lock);
 			if (begin > 0 || (begin + count) < maxSize)
 			{
 				VALUE* tmp = NULL;
@@ -414,9 +358,6 @@ namespace DKFoundation
 		{
 			if (this != &queue)
 			{
-				CriticalSection guard1(queue.lock);
-				CriticalSection guard2(lock);
-
 				if (data && count)
 				{
 					for (size_t i = begin; i < begin+count; i++)
@@ -443,9 +384,6 @@ namespace DKFoundation
 		{
 			if (this != &queue)
 			{
-				CriticalSection guard1(queue.lock);
-				CriticalSection guard2(lock);
-
 				if (data && count)
 				{
 					for (size_t i = begin; i < begin+count; i++)
@@ -517,40 +455,34 @@ namespace DKFoundation
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			for (size_t i = 0; i < count; ++i)
 				enumerator(data[begin+i]);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			for (size_t i = 1; i <= count; ++i)
 				enumerator(data[begin+count-i]);
 		}
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			for (size_t i = 0; i < count; ++i)
 				enumerator(data[begin+i]);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			for (size_t i = 1; i <= count; ++i)
 				enumerator(data[begin+count-i]);
 		}
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (size_t i = 0; i < count && !stop; ++i)
 				enumerator(data[begin+i], &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (size_t i = 1; i <= count && !stop; ++i)
 				enumerator(data[begin+count-i], &stop);
@@ -558,14 +490,12 @@ namespace DKFoundation
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (size_t i = 0; i < count && !stop; ++i)
 				enumerator(data[begin+i], &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (size_t i = 1; i <= count && !stop; ++i)
 				enumerator(data[begin+count-i], &stop);

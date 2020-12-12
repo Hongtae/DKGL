@@ -8,8 +8,6 @@
 #pragma once
 #include "../DKInclude.h"
 #include "DKObject.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKMemory.h"
 #include "DKFunction.h"
 #include "DKArray.h"
@@ -35,17 +33,13 @@ namespace DKFoundation
 	   queue.Prepend(6);  // [6, 5, 2] item(3) has been truncated. (prepend)
 	 @endcode
 
-	 @note
-	  using CopyValue() to retrieve item for thread-safe.
 	 */
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
+	template <typename VALUE, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKCircularQueue
 	{
 	public:
 		enum {MinimumCapacity = 2,};
-		typedef DKArray<VALUE, DKDummyLock, ALLOC> Container;
-		typedef LOCK Lock;
-		typedef DKCriticalSection<LOCK>	CriticalSection;
+		typedef DKArray<VALUE, ALLOC> Container;
 		typedef typename Container::Index Index;
 		typedef typename Container::Allocator Allocator;
 
@@ -66,17 +60,16 @@ namespace DKFoundation
 			container = static_cast<Container&&>(q.container);
 		}
 
-		template <typename L, typename A>
-		DKCircularQueue(const DKCircularQueue<VALUE, L, A>& q)
+		template <typename T>
+		DKCircularQueue(const DKCircularQueue<VALUE, T>& q)
 			: position(0)
 			, capacity(MinimumCapacity)
 		{
-			DKCriticalSection<L> guard(q.lock);
 			capacity = q.capacity;
 			container.Reserve(capacity);
 			for (size_t i = 0; i < q.container.Count(); ++i)
 			{
-				container.Add(q.ValueNL(i));
+				container.Add(q.Value(i));
 			}
 			position = container.Count() % capacity;
 		}
@@ -88,7 +81,7 @@ namespace DKFoundation
 			DKASSERT_DEBUG(capacity_ >= MinimumCapacity);
 			container.Reserve(capacity);
 			for (const VALUE& v : il)
-				AppendNL(v);
+				AppendT(v);
 		}
 
 		~DKCircularQueue()
@@ -99,7 +92,6 @@ namespace DKFoundation
 		{
 			if (this != &q)
 			{
-				CriticalSection guard(lock);
 				position = q.position;
 				capacity = q.capacity;
 				container = static_cast<Container&&>(q.container);
@@ -107,14 +99,11 @@ namespace DKFoundation
 			return *this;
 		}
 
-		template <typename L, typename A>
-		DKCircularQueue& operator = (const DKCircularQueue<VALUE, L, A>& q)
+		template <typename T>
+		DKCircularQueue& operator = (const DKCircularQueue<VALUE, T>& q)
 		{
 			if (this != &q)
 			{
-				DKCriticalSection<L> guard1(q.lock);
-				CriticalSection guard2(lock);
-
 				container.~Container();
 				new(&container) Container();
 
@@ -122,7 +111,7 @@ namespace DKFoundation
 				container.Reserve(capacity);
 				for (size_t i = 0; i < q.container.Count(); ++i)
 				{
-					container.Add(q.ValueNL(i));
+					container.Add(q.Value(i));
 				}
 				position = container.Count() % capacity;
 			}
@@ -131,46 +120,40 @@ namespace DKFoundation
 
 		DKCircularQueue& operator = (std::initializer_list<VALUE> il)
 		{
-			CriticalSection guard(lock);
 			container.Clear();
 			position = 0;
 
 			for (const VALUE& v : il)
-				AppendNL(v);
+				AppendT(v);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 			return *this;
 		}
 
 		DKCircularQueue& operator += (std::initializer_list<VALUE> il)
 		{
-			CriticalSection guard(lock);
 			for (const VALUE& v : il)
-				AppendNL(v);
+				AppendT(v);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 			return *this;
 		}
 
 		bool IsEmpty() const
 		{
-			CriticalSection guard(lock);
 			return container.IsEmpty();
 		}
 
 		size_t Capacity() const
 		{
-			CriticalSection guard(lock);
 			return capacity;
 		}
 
 		size_t Count() const
 		{
-			CriticalSection guard(lock);
 			return container.Count();
 		}
 
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			container.Clear();
 			position = 0;
 		}
@@ -178,42 +161,38 @@ namespace DKFoundation
 		void Reset(size_t cap)
 		{
 			DKASSERT_DEBUG(cap >= MinimumCapacity);
-			CriticalSection guard(lock);
 			container.~Container();
 			new(&container) Container();
 			position = 0;
 			capacity = Max<size_t>(cap, MinimumCapacity);
 			container.Reserve(capacity);			
 		}
+
 		/// append item. if length exceed to limit, front item will be truncated.
 		void Append(const VALUE& value)
 		{
-			CriticalSection guard(lock);
-			AppendNL(value);
+			AppendT(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
 		void Append(VALUE&& value)
 		{
-			CriticalSection guard(lock);
-			AppendNL(static_cast<VALUE&&>(value));
+			AppendT(static_cast<VALUE&&>(value));
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
+
 		/// prepend item, if length exceed to limit, last item will be truncated.
 		void Prepend(const VALUE& value)
 		{
-			CriticalSection guard(lock);
-			PrependNL(value);
+			PrependT(value);
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
 		void Prepend(VALUE&& value)
 		{
-			CriticalSection guard(lock);
-			PrependNL(static_cast<VALUE&&>(value));
+			PrependT(static_cast<VALUE&&>(value));
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
 		void RemoveFront()
 		{
-			CriticalSection guard(lock);
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
 			if (count == capacity)
@@ -232,7 +211,6 @@ namespace DKFoundation
 
 		void RemoveBack()
 		{
-			CriticalSection guard(lock);
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
 			if (count == capacity)
@@ -249,30 +227,32 @@ namespace DKFoundation
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
 
-		bool CopyValue(VALUE& value, Index index) const
-		{
-			CriticalSection guard(lock);
-			size_t count = container.Count();
-			if (count > index)
-			{
-				value = ValueNL(index);
-				return true;
-			}
-			return false;
-		}
-
 		VALUE& Value(Index index)
 		{
-			CriticalSection guard(lock);
-			return ValueNL(index);
-		}
+			size_t count = container.Count();
+			DKASSERT_DEBUG(index >= 0);
+			DKASSERT_DEBUG(count > 0 && count <= capacity);
 
+			if (count == capacity)
+			{
+				Index pos = (index + position) % capacity;
+				return container.Value(pos);
+			}
+			return container.Value(index);
+		}
 		const VALUE& Value(Index index) const
 		{
-			CriticalSection guard(lock);
-			return ValueNL(index);
-		}
+			size_t count = container.Count();
+			DKASSERT_DEBUG(index >= 0);
+			DKASSERT_DEBUG(count > 0 && count <= capacity);
 
+			if (count == capacity)
+			{
+				Index pos = (index + position) % capacity;
+				return container.Value(pos);
+			}
+			return container.Value(index);
+		}
 		VALUE& Front()
 		{
 			return Value(0);
@@ -285,14 +265,12 @@ namespace DKFoundation
 
 		VALUE& Back()
 		{
-			CriticalSection guard(lock);
-			return ValueNL(container.Count() - 1);
+			return Value(container.Count() - 1);
 		}
 
 		const VALUE& Back() const
 		{
-			CriticalSection guard(lock);
-			return ValueNL(container.Count() - 1);
+			return Value(container.Count() - 1);
 		}
 
 		/// EnumerateForward / EnumerateBackward: enumerate all items.
@@ -340,95 +318,61 @@ namespace DKFoundation
 		// lambda enumerator (VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			size_t count = container.Count();
 			for (Index i = 0; i < count; ++i)
-				enumerator(ValueNL(i));
+				enumerator(Value(i));
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			size_t count = container.Count();
 			for (Index i = 1; i <= count; ++i)
-				enumerator(ValueNL(count - i));
+				enumerator(Value(count - i));
 		}
 		// lambda enumerator (const VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			size_t count = container.Count();
 			for (Index i = 0; i < count; ++i)
-				enumerator(ValueNL(i));
+				enumerator(Value(i));
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			size_t count = container.Count();
 			for (Index i = 1; i <= count; ++i)
-				enumerator(ValueNL(count - i));
+				enumerator(Value(count - i));
 		}
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			size_t count = container.Count();
 			for (Index i = 0; i < count && !stop; ++i)
-				enumerator(ValueNL(i), &stop);
+				enumerator(Value(i), &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			size_t count = container.Count();
 			for (Index i = 1; i <= count && !stop; ++i)
-				enumerator(ValueNL(count - i), &stop);
+				enumerator(Value(count - i), &stop);
 		}
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			size_t count = container.Count();
 			for (Index i = 0; i < count && !stop; ++i)
-				enumerator(ValueNL(i), &stop);
+				enumerator(Value(i), &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			size_t count = container.Count();
 			for (Index i = 1; i <= count && !stop; ++i)
-				enumerator(ValueNL(count - i), &stop);
+				enumerator(Value(count - i), &stop);
 		}
-		VALUE& ValueNL(Index index)
-		{
-			size_t count = container.Count();
-			DKASSERT_DEBUG(index >= 0);
-			DKASSERT_DEBUG(count > 0 && count <= capacity);
 
-			if (count == capacity)
-			{
-				Index pos = (index + position) % capacity;
-				return container.Value(pos);
-			}
-			return container.Value(index);
-		}
-		const VALUE& ValueNL(Index index) const
-		{
-			size_t count = container.Count();
-			DKASSERT_DEBUG(index >= 0);
-			DKASSERT_DEBUG(count > 0 && count <= capacity);
-
-			if (count == capacity)
-			{
-				Index pos = (index + position) % capacity;
-				return container.Value(pos);
-			}
-			return container.Value(index);
-		}
-		template <typename T>
-		void AppendNL(T&& value)
+		template <typename T> void AppendT(T&& value)
 		{
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
@@ -445,8 +389,7 @@ namespace DKFoundation
 			}
 			DKASSERT_DEBUG(container.Count() <= capacity);
 		}
-		template <typename T>
-		void PrependNL(T&& value)
+		template <typename T> void PrependT(T&& value)
 		{
 			size_t count = container.Count();
 			DKASSERT_DEBUG(count <= capacity);
@@ -468,7 +411,6 @@ namespace DKFoundation
 		}
 
 		Container container;
-		Lock lock;
 		size_t capacity;
 		size_t position;
 	};

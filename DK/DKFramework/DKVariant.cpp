@@ -1341,7 +1341,6 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 		else if (valueType == TypeArray)
 		{
 			const VArray& a = this->Array();
-			VArray::CriticalSection gaurd(a.lock);
 
 			uint64_t len = a.Count();
 			if (!output.Write(len))
@@ -1361,7 +1360,6 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 		else if (valueType == TypePairs)
 		{
 			const VPairs& pairs = this->Pairs();
-			VPairs::CriticalSection guard(pairs.lock);
 
 			DKArray<const VPairs::Pair*> a;
 			a.Reserve(pairs.Count());

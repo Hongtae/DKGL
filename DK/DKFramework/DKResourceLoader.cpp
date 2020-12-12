@@ -33,7 +33,7 @@ namespace DKFramework
 	namespace Private
 	{
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceAllocator>>	AllocatorMap;
-		typedef DKMap<DKString, AllocatorMap, DKDummyLock>		AllocatorURIMap;
+		typedef DKMap<DKString, AllocatorMap>		AllocatorURIMap;
 		typedef DKMap<DKString, DKObject<DKResourceLoader::ResourceLoader>>		LoaderMap;
 
 		DKSpinLock& GetAllocatorURIMapLock()

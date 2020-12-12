@@ -51,7 +51,7 @@ namespace DKFoundation
 				}
 			};
 
-			using Container = DKMap<Key, NodeInfo, DKDummyLock, DKMapKeyComparator<Key>, DKMapValueReplacer<NodeInfo>, Allocator>;
+			using Container = DKMap<Key, NodeInfo, DKMapKeyComparator<Key>, DKMapValueReplacer<NodeInfo>, Allocator>;
 
 			Lock		lock;
 			Container	container;

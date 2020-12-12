@@ -9,8 +9,6 @@
 #include <initializer_list>
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKMemory.h"
 #include "DKFunction.h"
 #include "DKStaticArray.h"
@@ -38,38 +36,15 @@ namespace DKFoundation
 
 	/**
 	 @brief basic array class.
-	 If you put a lock into template parameter LOCK, It provides thread-safe
-	 insertion, deletion.
-	 @note
-	  following types are locking class:
-	  DKSpinLock, DKLock, DKMutex, DKCondition, DKSharedLock \n
-	  You can implement your own locking class, see DKDummyLock.
-	
-	 You can also lock array object from outside to modify element directly.
-	
-	 @code
-		{
-			typename MyArrayType::CriticalSection section(array.lock);	// lock with critical-section
-			array[x] = .... // do something with array[]
-		}	// auto-unlock by critical-section end
-	 @endcode
-	
-	 @note
-	  When two objects has same VALUE type and different LOCK type,
-	  ONLY Add(), Insert() can be used.
-	
-	 @note
-	  If you have to obtain element's pointer or reference, beware of thread-safety.
-	  CopyValue() function is always thread-safe. 
-	  (assume that template parameter LOCK is not DKDummyLock)
+	 Simple array(vector) class. This class does not support thread-safety.
+	 Accessing array items from multiple threads may require external synchronization.
+
 	 */
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
+	template <typename VALUE, typename ALLOC = DKMemoryDefaultAllocator>
 	class DKArray
 	{
 		enum {InitialSize = 4,};
 	public:
-		typedef LOCK					Lock;
-		typedef DKCriticalSection<Lock>	CriticalSection;
 		typedef size_t					Index;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 		typedef ALLOC					Allocator;
@@ -77,10 +52,6 @@ namespace DKFoundation
 		constexpr static size_t NodeSize()	{ return sizeof(VALUE); }
 
 		enum : Index { IndexNotFound = ~Index(0) };
-
-		/// lock is public. (object can be locked from outside, to use modify element directly.)
-		/// in this case, You can use VALUE* casting-operator and CountNoLock() only.
-		Lock	lock;
 
 		typedef DKArrayRBIterator<DKArray, VALUE&>				RBIterator;					///< implemented for range-based loop
 		typedef DKArrayRBIterator<const DKArray, const VALUE&>	ConstRBIterator;			///< implemented for range-based loop
@@ -96,13 +67,13 @@ namespace DKFoundation
 		DKArray(const VALUE* v, size_t c)
 			: data(NULL), count(0), capacity(0)
 		{
-			ReserveNL(c);
+			Reserve(c);
 			Add(v, c);
 		}
 		DKArray(const VALUE& v, size_t c)
 			: data(NULL), count(0), capacity(0)
 		{
-			ReserveNL(c);
+			Reserve(c);
 			Add(v, c);
 		}
 		DKArray(DKArray&& v)
@@ -118,8 +89,7 @@ namespace DKFoundation
 		DKArray(const DKArray& v)
 			: data(NULL), count(0), capacity(0)
 		{
-			CriticalSection guard(v.lock);
-			ReserveNL(v.count);
+			Reserve(v.count);
 			Add((const VALUE*)v, v.count);
 		}
 		template <typename ...Args>
@@ -127,7 +97,7 @@ namespace DKFoundation
 			: data(NULL), count(0), capacity(0)
 		{
 			typename DKArray<VALUE, Args...>::CriticalSection guard(v.lock);
-			ReserveNL(v.count);
+			Reserve(v.count);
 			Add((const VALUE*)v, v.count);
 		}
 		DKArray(std::initializer_list<VALUE> il)
@@ -135,7 +105,7 @@ namespace DKFoundation
 		{
 			if (il.size() > 0)
 			{
-				ReserveNL(il.size());
+				Reserve(il.size());
 				for (const VALUE& v : il)
 				{
 					new(std::addressof(data[count])) VALUE(v);
@@ -152,37 +122,32 @@ namespace DKFoundation
 		}
 		bool IsEmpty() const
 		{
-			CriticalSection guard(lock);
 			return count == 0;
 		}
 		/// append other array's elements to tail.
 		template <typename ...Args>
 		Index Add(const DKArray<VALUE, Args...>& value)
 		{
-			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
 			return Add((const VALUE*)value, value.count);
 		}
 		/// append one item to tail.
 		Index Add(const VALUE& value)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(1);
+			ReserveItemCaps(1);
 			new(std::addressof(data[count])) VALUE(value);
 			return count++;
 		}
 		/// move one item into array's tail
 		Index Add(VALUE&& value)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(1);
+			ReserveItemCaps(1);
 			new(std::addressof(data[count])) VALUE(static_cast<VALUE&&>(value));
 			return count++;
 		}
 		/// append 's' length of value to tail.
 		Index Add(const VALUE* value, size_t s)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			for (Index i = 0; i < s; i++)
 				new(std::addressof(data[count+i])) VALUE(value[i]);
 			count += s;
@@ -191,8 +156,7 @@ namespace DKFoundation
 		/// append value to tail 's' times. (value x s)
 		Index Add(const VALUE& value, size_t s)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			for (Index i = 0; i < s; i++)
 				new(std::addressof(data[count+i])) VALUE(value);
 			count += s;
@@ -202,8 +166,7 @@ namespace DKFoundation
 		Index Add(std::initializer_list<VALUE> il)
 		{
 			size_t s = il.size();
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			for (const VALUE& v : il)
 			{
 				new(std::addressof(data[count])) VALUE(v);
@@ -215,14 +178,12 @@ namespace DKFoundation
 		template <typename ...Args>
 		Index Insert(const DKArray<VALUE, Args...>& value, Index pos)
 		{
-			typename DKArray<VALUE, Args...>::CriticalSection guard(value.lock);
 			return Insert((const VALUE*)value, value.count, pos);
 		}
 		/// insert one value into position 'pos'.
 		Index Insert(const VALUE& value, Index pos)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(1);
+			ReserveItemCaps(1);
 			if (pos > count)
 				pos = count;
 			if (pos < count)
@@ -234,8 +195,7 @@ namespace DKFoundation
 		/// move one value into position 'pos'.
 		Index Insert(VALUE&& value, Index pos)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(1);
+			ReserveItemCaps(1);
 			if (pos > count)
 				pos = count;
 			if (pos < count)
@@ -247,8 +207,7 @@ namespace DKFoundation
 		/// insert 's' length of value into position 'pos'.
 		Index Insert(const VALUE* value, size_t s, Index pos)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			if (pos > count)
 				pos = count;
 			if (pos < count)
@@ -261,8 +220,7 @@ namespace DKFoundation
 		/// insert value 's' times into position 'pos'.
 		Index Insert(const VALUE& value, size_t s, Index pos)
 		{
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			if (pos > count)
 				pos = count;
 			if (pos < count)
@@ -276,8 +234,7 @@ namespace DKFoundation
 		Index Insert(std::initializer_list<VALUE> il, Index pos)
 		{
 			size_t s = il.size();
-			CriticalSection guard(lock);
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			if (pos > count)
 				pos = count;
 			if (pos < count)
@@ -293,7 +250,6 @@ namespace DKFoundation
 		/// remove one element at pos.
 		size_t Remove(Index pos)
 		{
-			CriticalSection guard(lock);
 			if (pos < count)
 			{
 				data[pos].~VALUE();
@@ -306,7 +262,6 @@ namespace DKFoundation
 		/// remove 'c' items at pos. (c = count)
 		size_t Remove(Index pos, size_t c)
 		{
-			CriticalSection guard(lock);
 			if (pos < count)
 			{
 				Index i = 0;
@@ -320,7 +275,6 @@ namespace DKFoundation
 		}
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			for (Index i = 0; i < count; i++)
 				data[i].~VALUE();
 
@@ -328,17 +282,14 @@ namespace DKFoundation
 		}
 		size_t Count() const
 		{
-			CriticalSection guard(lock);
 			return count;
 		}
 		size_t Capacity() const
 		{
-			CriticalSection guard(lock);
 			return capacity;
 		}
 		void ShrinkToFit()
 		{
-			CriticalSection guard(lock);
 			if (count < capacity)
 			{
 				DKASSERT_DEBUG(data);
@@ -362,7 +313,6 @@ namespace DKFoundation
 		}
 		void Resize(size_t s)
 		{
-			CriticalSection guard(lock);
 			if (count > s)			// shrink
 			{
 				for (Index i = s; i < count; i++)
@@ -370,7 +320,7 @@ namespace DKFoundation
 			}
 			else if (count < s)		// extend
 			{
-				ReserveNL(s);
+				Reserve(s);
 				for (Index i = count; i < s; i++)
 					new(std::addressof(data[i])) VALUE();
 			}
@@ -378,7 +328,6 @@ namespace DKFoundation
 		}
 		void Resize(size_t s, const VALUE& val)
 		{
-			CriticalSection guard(lock);
 			if (count > s)			// shrink
 			{
 				for (Index i = s; i < count; i++)
@@ -386,7 +335,7 @@ namespace DKFoundation
 			}
 			else if (count < s)		// extend
 			{
-				ReserveNL(s);
+				Reserve(s);
 				for (Index i = count; i < s; i++)
 					new(std::addressof(data[i])) VALUE(val);
 			}
@@ -394,29 +343,30 @@ namespace DKFoundation
 		}
 		void Reserve(size_t c)
 		{
-			CriticalSection guard(lock);
-			ReserveNL(c);
-		}
-		bool CopyValue(VALUE& value, Index index) const
-		{
-			CriticalSection guard(lock);
-			if (count > index)
-			{
-				value = data[index];
-				return true;
-			}
-			return false;
+			if (c <= capacity)
+				return;
+
+			VALUE* old = data;
+			if (data)
+				data = (VALUE*)Allocator::Realloc(data, sizeof(VALUE) * c);
+			else
+				data = (VALUE*)Allocator::Alloc(sizeof(VALUE) * c);
+
+			DKASSERT_DESC_DEBUG(data, "Out of memory!");
+
+			if (data)
+				capacity = c;
+			else	// out of memory!
+				data = old;
 		}
 		VALUE& Value(Index index)
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(index >= 0);
 			DKASSERT_DEBUG(count > index);
 			return data[index];
 		}
 		const VALUE& Value(Index index) const
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(index >= 0);
 			DKASSERT_DEBUG(count > index);
 			return data[index];
@@ -438,7 +388,6 @@ namespace DKFoundation
 		{
 			if (this != &other)
 			{
-				CriticalSection guard(lock);
 				for (Index i = 0; i < count; i++)
 					data[i].~VALUE();
 				if (data)
@@ -457,13 +406,11 @@ namespace DKFoundation
 		{
 			if (this != &value)
 			{
-				CriticalSection guard1(value.lock);
-				CriticalSection guard2(lock);
 				for (Index i = 0; i < count; i++)
 					data[i].~VALUE();
 
 				count = 0;
-				ReserveNL(value.count);
+				Reserve(value.count);
 				for (Index i = 0; i < value.count; i++)
 					new(std::addressof(data[i])) VALUE(value.data[i]);
 				count = value.count;
@@ -472,12 +419,11 @@ namespace DKFoundation
 		}
 		DKArray& operator = (std::initializer_list<VALUE> il)
 		{
-			CriticalSection guard(lock);
 			for (Index i = 0; i < count; i++)
 				data[i].~VALUE();
 
 			count = 0;
-			ReserveNL(il.size());
+			Reserve(il.size());
 			for (const VALUE& v : il)
 			{
 				new(std::addressof(data[count])) VALUE(v);
@@ -520,7 +466,6 @@ namespace DKFoundation
 		}
 		void LeftRotate(size_t n)
 		{
-			CriticalSection guard(lock);
 			if (count > 1)
 			{
 				n = n % count;
@@ -532,7 +477,6 @@ namespace DKFoundation
 		}
 		void RightRotate(size_t n)
 		{
-			CriticalSection guard(lock);
 			if (count > 1)
 			{
 				n = n % count;
@@ -545,18 +489,15 @@ namespace DKFoundation
 		template <typename T, typename Comparator>
 		Index LowerBound(T&& value, Comparator&& cmp) const
 		{
-			CriticalSection guard(lock);
 			return DKStaticArray<VALUE>(data, count).LowerBound(std::forward<T>(value), std::forward<Comparator>(cmp));
 		}
 		template <typename T, typename Comparator>
 		Index UpperBound(T&& value, Comparator&& cmp) const
 		{
-			CriticalSection guard(lock);
 			return DKStaticArray<VALUE>(data, count).UpperBound(std::forward<T>(value), std::forward<Comparator>(cmp));
 		}
 		bool Swap(Index v1, Index v2)
 		{
-			CriticalSection guard(lock);
 			if (v1 != v2 && v1 < count && v2 < count)
 			{
 				DKStaticArray<VALUE>(data, count).Swap(v1, v2);
@@ -570,7 +511,6 @@ namespace DKFoundation
 		}
 		void Sort(Index start, size_t count, const DKFunctionSignature<bool (const VALUE&, const VALUE&)>* cmp)
 		{
-			CriticalSection guard(lock);
 			if (count > 1 && (start + count) <= this->count)
 			{
 				DKStaticArray<VALUE>(std::addressof(data[start]), count).Sort(cmp);
@@ -582,7 +522,6 @@ namespace DKFoundation
 		}
 		template <typename CompareFunc> void Sort(Index start, size_t count, CompareFunc cmp)
 		{
-			CriticalSection guard(lock);
 			if (count > 1 && (start + count) <= this->count)
 			{
 				DKStaticArray<VALUE>(std::addressof(data[start]), count).template Sort<CompareFunc>(cmp);
@@ -633,40 +572,34 @@ namespace DKFoundation
 		// lambda enumerator (VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			for (Index i = 0; i < count; ++i)
 				enumerator(data[i]);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			for (Index i = 1; i <= count; ++i)
 				enumerator(data[count - i]);
 		}
 		// lambda enumerator (const VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			for (Index i = 0; i < count; ++i)
 				enumerator(data[i]);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			for (Index i = 1; i <= count; ++i)
 				enumerator(data[count - i]);
 		}
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Index i = 0; i < count && !stop; ++i)
 				enumerator(data[i], &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Index i = 1; i <= count && !stop; ++i)
 				enumerator(data[count - i], &stop);
@@ -674,37 +607,17 @@ namespace DKFoundation
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Index i = 0; i < count && !stop; ++i)
 				enumerator(data[i], &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Index i = 1; i <= count && !stop; ++i)
 				enumerator(data[count - i], &stop);
 		}
-		void ReserveNL(size_t c)
-		{
-			if (c <= capacity)
-				return;
-
-			VALUE* old = data;
-			if (data)
-				data = (VALUE*)Allocator::Realloc(data, sizeof(VALUE) * c);
-			else
-				data = (VALUE*)Allocator::Alloc(sizeof(VALUE) * c);
-
-			DKASSERT_DESC_DEBUG(data, "Out of memory!");
-
-			if (data)
-				capacity = c;
-			else	// out of memory!
-				data = old;
-		}
-		void ReserveItemCapsNL(size_t c)
+		void ReserveItemCaps(size_t c)
 		{
 			if (c > 0)
 			{
@@ -712,7 +625,7 @@ namespace DKFoundation
 
 				if (capacity < c + count || count == capacity)
 				{
-					ReserveNL(count + ((count/2) > minimum ? (count/2):minimum));
+					Reserve(count + ((count/2) > minimum ? (count/2):minimum));
 				}
 			}
 		}

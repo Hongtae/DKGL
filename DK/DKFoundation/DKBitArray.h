@@ -9,8 +9,6 @@
 #include <initializer_list>
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKMemory.h"
 #include "DKFunction.h"
 
@@ -19,21 +17,17 @@ namespace DKFoundation
 	/// @brief A special array that contains bit data.
 	/// This class does not support enumeration or pointer-casting operator,
 	/// because of only two values (true, false) are acceptable.
-	template <typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator>
+	template <typename ALLOC = DKMemoryDefaultAllocator>
 	class DKBitArray
 	{
 	public:
-		using Lock = LOCK;
 		using Allocator = ALLOC;
 		using Index = size_t;
-		using CriticalSection = DKCriticalSection < Lock > ;
 
 		using Unit = size_t;
 		enum { BitsPerUnit = sizeof(Unit) * 8 };
 
 		enum : Index { IndexNotFound = ~Index(0) };
-
-		Lock lock;
 
 		typedef DKArrayRBIterator<DKBitArray, bool>				RBIterator;						///<  implementation for range-based-for-loop.
 		typedef DKArrayRBIterator<const DKBitArray, bool>		ConstRBIterator;				///<  implementation for range-based-for-loop.
@@ -67,11 +61,11 @@ namespace DKFoundation
 		{
 			if (il.size() > 0)
 			{
-				ReserveNL(il.size());
+				Reserve(il.size());
 				for (bool b : il)
 				{
 					count++;
-					SetValueAtIndexNL(count-1, b);
+					SetValue(count-1, b);
 				}
 			}
 		}
@@ -82,7 +76,6 @@ namespace DKFoundation
 		}
 		bool IsEmpty() const
 		{
-			CriticalSection guard(lock);
 			return count == 0;
 		}
 		/// append one item to tail.
@@ -93,72 +86,65 @@ namespace DKFoundation
 		/// append 's' length of values to tail.
 		Index Add(const bool* values, size_t s)
 		{
-			CriticalSection guard(lock);
 			Index offset = count;
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			count += s;
 			for (Index i = 0; i < s; ++i)
-				SetValueAtIndexNL(offset + i, values[i]);
+				SetValue(offset + i, values[i]);
 			return offset;
 		}
 		/// append value to tail 's' times. (value x s)
 		Index Add(bool value, size_t s)
 		{
-			CriticalSection guard(lock);
 			Index offset = count;
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			count += s;
 			for (Index i = 0; i < s; ++i)
-				SetValueAtIndexNL(offset + i, value);
+				SetValue(offset + i, value);
 			return offset;
 		}
 		/// append other array's elements to tail.
-		template <typename T, typename U>
-		Index Add(const DKBitArray<T, U>& value)
+		template <typename T>
+		Index Add(const DKBitArray<T>& value)
 		{
-			typename DKBitArray<T, U>::CriticalSection guard(value.lock);
-			CriticalSection guard2(lock);
 			Index offset = count;
-			ReserveItemCapsNL(value.count);
+			ReserveItemCaps(value.count);
 			count += value.count;
 			for (Index i = 0; i < value.count; ++i)
-				SetValueAtIndexNL(offset + i, value.Value(i));
+				SetValue(offset + i, value.Value(i));
 			return offset;
 		}
 		/// append initializer-list items to tail.
 		Index Add(std::initializer_list<bool> il)
 		{
-			CriticalSection guard(lock);
 			Index offset = count;
 			size_t s = il.size();
-			ReserveItemCapsNL(s);
+			ReserveItemCaps(s);
 			for (bool b : il)
 			{
 				size_t i = count++;
-				SetValueAtIndexNL(offset + i, b);
+				SetValue(offset + i, b);
 			}
 			return offset;
 		}
 		/// insert array's elements into position 'pos'.
-		template <typename ...Args>
-		Index Insert(const DKBitArray<Args...>& value, Index pos)
+		template <typename T>
+		Index Insert(const DKBitArray<T>& value, Index pos)
 		{
-			typename DKBitArray<Args...>::CriticalSection guard(value.lock);
-			CriticalSection guard2(lock);
 			size_t s = value.count;
 			if (s > 0)
 			{
 				if (pos >= count)
 				{
 					pos = count;
-					ReserveItemCapsNL(s);
+					ReserveItemCaps(s);
 					count += s;
 				}
 				else
-					RightShiftFromIndexNL(pos, s);
+					RightShiftFromIndex(pos, s);
 				for (size_t i = 0; i < s ; ++i)
 				{
-					SetValueAtIndexNL(pos+i, value.ValueAtIndexNL(i));
+					SetValue(pos+i, value.Value(i));
 				}
 			}
 			return pos;
@@ -166,96 +152,87 @@ namespace DKFoundation
 		/// insert one value into position 'pos'.
 		Index Insert(bool value, Index pos)
 		{
-			CriticalSection guard(lock);
 			if (pos >= count)
 			{
 				pos = count;
-				ReserveItemCapsNL(1);
+				ReserveItemCaps(1);
 				count += 1;
 			}
 			else
-				RightShiftFromIndexNL(pos, 1);
-			SetValueAtIndexNL(pos, value);
+				RightShiftFromIndex(pos, 1);
+			SetValue(pos, value);
 			return pos;
 		}
 		/// insert 's' length of values into position 'pos'.
 		Index Insert(const bool* values, size_t s, Index pos)
 		{
-			CriticalSection guard(lock);
 			if (pos >= count)
 			{
 				pos = count;
-				ReserveItemCapsNL(s);
+				ReserveItemCaps(s);
 				count += s;
 			}
 			else
-				RightShiftFromIndexNL(pos, s);
+				RightShiftFromIndex(pos, s);
 			for (size_t i = 0; i < s; ++i)
-				SetValueAtIndexNL(pos + i, values[i]);
+				SetValue(pos + i, values[i]);
 			return pos;
 		}
 		/// insert value 's' times into position 'pos'.
 		Index Insert(bool value, size_t s, Index pos)
 		{
-			CriticalSection guard(lock);
 			if (pos >= count)
 			{
 				pos = count;
-				ReserveItemCapsNL(s);
+				ReserveItemCaps(s);
 				count += s;
 			}
 			else
-				RightShiftFromIndexNL(pos, s);
+				RightShiftFromIndex(pos, s);
 			for (size_t i = 0; i < s; ++i)
-				SetValueAtIndexNL(pos + i, value);
+				SetValue(pos + i, value);
 			return pos;
 		}
 		/// insert initializer-list into position 'pos'.
 		Index Insert(std::initializer_list<bool> il, Index pos)
 		{
-			CriticalSection guard(lock);
 			size_t s = il.size();
 			if (pos >= count)
 			{
 				pos = count;
-				ReserveItemCapsNL(s);
+				ReserveItemCaps(s);
 				count += s;
 			}
 			else
-				RightShiftFromIndexNL(pos, s);
+				RightShiftFromIndex(pos, s);
 			for (bool value : il)
 			{
-				SetValueAtIndexNL(pos++, value);
+				SetValue(pos++, value);
 			}
 			return pos - s;
 		}
 		/// remove 'c' items at pos. (c = count)
 		size_t Remove(Index pos, size_t c = 1)
 		{
-			CriticalSection guard(lock);
 			if (pos < count && c > 0)
-				LeftShiftFromIndexNL(pos, c);
+				LeftShiftFromIndex(pos, c);
 			return count;
 		}
 
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			count = 0;
 		}
 		size_t Count() const
 		{
-			CriticalSection guard(lock);
 			return count;
 		}
 		size_t Capacity() const
 		{
-			CriticalSection guard(lock);
 			return capacity;
 		}
 		void ShrinkToFit()
 		{
-			CriticalSection guard(lock);
 			size_t countBytes = UnitLengthForBits(count);
 			size_t capacityBytes = UnitLengthForBits(capacity);
 			if (countBytes != capacityBytes)
@@ -283,41 +260,63 @@ namespace DKFoundation
 		}
 		void Resize(size_t s)
 		{
-			CriticalSection guard(lock);
 			if (count < s)	// extend
-				ReserveNL(s);
+				Reserve(s);
 			count = s;
 		}
 		void Resize(size_t s, bool val)
 		{
-			CriticalSection guard(lock);
 			if (count < s)	// extend
 			{
-				ReserveNL(s);
+				Reserve(s);
 				Index offset = count;
 				count = s;
 				for (Index i = offset; i < s; ++i)
-					SetValueAtIndexNL(i, val);
+					SetValue(i, val);
 			}
 			else
 				count = s;
 		}
 		void Reserve(size_t c)
 		{
-			CriticalSection guard(lock);
-			ReserveNL(c);
+			if (c <= capacity)
+				return;
+
+			size_t reqBytes = sizeof(Unit) * UnitLengthForBits(c);
+			DKASSERT_DEBUG(reqBytes);
+
+			Unit* old = data;
+			if (data)
+				data = (Unit*)Allocator::Realloc(data, reqBytes);
+			else
+				data = (Unit*)Allocator::Alloc(reqBytes);
+
+			DKASSERT_DESC_DEBUG(data, "Out of memory!");
+
+			if (data)
+				capacity = reqBytes * 8;
+			else	// out of memory!
+				data = old;
 		}
 		void SetValue(Index i, bool b)
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > i);
-			SetValueAtIndexNL(i, b);
+			size_t unitIdx = i / BitsPerUnit;
+			size_t bitsIdx = i % BitsPerUnit;
+
+			Unit bmask = ((Unit)1 << bitsIdx);
+			if (b)
+				data[unitIdx] |= bmask;
+			else
+				data[unitIdx] &= ~bmask;
 		}
 		bool Value(Index i) const
 		{
-			CriticalSection guard(lock);
 			DKASSERT_DEBUG(count > i);
-			return ValueAtIndexNL(i);
+			size_t unitIdx = i / BitsPerUnit;
+			size_t bitsIdx = i % BitsPerUnit;
+
+			return (data[unitIdx] >> bitsIdx) & 1;
 		}
 
 		DKBitArray& operator = (DKBitArray&& other)
@@ -386,7 +385,7 @@ namespace DKFoundation
 		}
 
 	private:
-		void LeftShiftFromIndexNL(Index i, size_t c)
+		void LeftShiftFromIndex(Index i, size_t c)
 		{
 			DKASSERT_DEBUG(i < count);
 			if (c > 0)
@@ -441,12 +440,12 @@ namespace DKFoundation
 				count -= c;
 			}
 		}
-		void RightShiftFromIndexNL(Index i, size_t c)
+		void RightShiftFromIndex(Index i, size_t c)
 		{
 			DKASSERT_DEBUG(i < count);
 			if (c > 0)
 			{
-				ReserveItemCapsNL(c);
+				ReserveItemCaps(c);
 
 				size_t numUnits = c / BitsPerUnit;	// num units to shift
 				size_t numBits = c % BitsPerUnit;	// num bits to shift
@@ -490,54 +489,13 @@ namespace DKFoundation
 			}
 		}
 
-		void SetValueAtIndexNL(Index i, bool b)
-		{
-			DKASSERT_DEBUG(count > i);
-			size_t unitIdx = i / BitsPerUnit;
-			size_t bitsIdx = i % BitsPerUnit;
-
-			Unit bmask = ((Unit)1 << bitsIdx);
-			if (b)
-				data[unitIdx] |= bmask;
-			else
-				data[unitIdx] &= ~bmask;
-		}
-		bool ValueAtIndexNL(Index i) const
-		{
-			DKASSERT_DEBUG(count > i);
-			size_t unitIdx = i / BitsPerUnit;
-			size_t bitsIdx = i % BitsPerUnit;
-
-			return (data[unitIdx] >> bitsIdx) & 1;
-		}
-		void ReserveNL(size_t c)
-		{
-			if (c <= capacity)
-				return;
-
-			size_t reqBytes = sizeof(Unit) * UnitLengthForBits(c);
-			DKASSERT_DEBUG(reqBytes);
-
-			Unit* old = data;
-			if (data)
-				data = (Unit*)Allocator::Realloc(data, reqBytes);
-			else
-				data = (Unit*)Allocator::Alloc(reqBytes);
-
-			DKASSERT_DESC_DEBUG(data, "Out of memory!");
-
-			if (data)
-				capacity = reqBytes * 8;
-			else	// out of memory!
-				data = old;
-		}
-		void ReserveItemCapsNL(size_t c)
+		void ReserveItemCaps(size_t c)
 		{
 			if (c > 0)
 			{
 				if (capacity < c + count || count == capacity)
 				{
-					ReserveNL(count + ((count/2) > c ? (count/2): c ));
+					Reserve(count + ((count/2) > c ? (count/2): c ));
 				}
 			}
 		}

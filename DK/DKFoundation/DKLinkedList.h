@@ -9,8 +9,6 @@
 #include <initializer_list>
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
-#include "DKDummyLock.h"
-#include "DKCriticalSection.h"
 #include "DKMemory.h"
 
 namespace DKFoundation
@@ -22,27 +20,10 @@ namespace DKFoundation
 	  When using range-based-for-loop, object does not locked by default.
 	  You should lock list from outside of loop.
 
-	 @code
-	 Range based for loop example:
-	  DKLinkedList<MyObject> myList;
-	  // lock within current scope for range-based-for-loop
-	  DKLinkedList<MyObject>::CriticalSection(myList.lock);
-	  for (MyObject& obj : myList)
-		 // do something with obj..
-
-	 Iterator iteration example:
-	  DKLinkedList<MyObject> myList;
-	  for (auto it = myList.LockHead(); it.IsValid(); ++it)
-	  {
-		   MyObject& obj = it.Value();
-		   // do something with obj..
-	  }
-	  myList.Unlock();
-	 @encode
 	 @note
 	  This class does not tested fully. (may have bugs?)
 	 */
-	template <typename VALUE, typename LOCK = DKDummyLock, typename ALLOC = DKMemoryDefaultAllocator> class DKLinkedList
+	template <typename VALUE, typename ALLOC = DKMemoryDefaultAllocator> class DKLinkedList
 	{
 	private:
 		struct Node
@@ -55,8 +36,6 @@ namespace DKFoundation
 		};
 
 	public:
-		typedef LOCK					Lock;
-		typedef DKCriticalSection<LOCK>	CriticalSection;
 		typedef DKTypeTraits<VALUE>		ValueTraits;
 		typedef ALLOC					Allocator;
 
@@ -84,9 +63,6 @@ namespace DKFoundation
 
 		constexpr static size_t NodeSize()	{ return sizeof(Node); }
 
-		/// lock is public. to provde lock object from outside!
-		Lock lock;
-
 		DKLinkedList() : firstNode(NULL), lastNode(NULL), count(0)
 		{
 		}
@@ -101,20 +77,18 @@ namespace DKFoundation
 		}
 		DKLinkedList(const DKLinkedList& list) : firstNode(NULL), lastNode(NULL), count(0)
 		{
-			CriticalSection guard(list.lock);
-
 			for (const Node* n = list.firstNode; n != NULL; n = n->next)
-				AddTailNL(n->value);
+				AppendT(n->value);
 		}
 		DKLinkedList(const VALUE* values, size_t num) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 			for (size_t i = 0; i < num; ++i)
-				AddTailNL(values[i]);
+				AppendT(values[i]);
 		}
 		DKLinkedList(std::initializer_list<VALUE> il) : firstNode(NULL), lastNode(NULL), count(0)
 		{
 			for (const VALUE& v : il)
-				AddTailNL(il);
+				AppendT(il);
 		}
 		~DKLinkedList()
 		{
@@ -122,16 +96,10 @@ namespace DKFoundation
 		}
 		size_t Count() const
 		{
-			CriticalSection guard(lock);
-			return count;
-		}
-		size_t CountNoLock() const
-		{
 			return count;
 		}
 		void Clear()
 		{
-			CriticalSection guard(lock);
 			Node* n = firstNode;
 			while (n)
 			{
@@ -143,24 +111,20 @@ namespace DKFoundation
 			lastNode = NULL;
 			count = 0;
 		}
-		Iterator LockHead()
+		Iterator Head()
 		{
-			lock.Lock();
 			return firstNode;
 		}
-		ConstIterator LockHead() const
+		ConstIterator Head() const
 		{
-			lock.Lock();
 			return firstNode;
 		}
-		Iterator LockTail()
+		Iterator Tail()
 		{
-			lock.Lock();
 			return lastNode;
 		}
-		ConstIterator LockTail() const
+		ConstIterator Tail() const
 		{
-			lock.Lock();
 			return lastNode;
 		}
 		void Remove(Iterator& it)
@@ -196,30 +160,21 @@ namespace DKFoundation
 				count--;
 			}
 		}
-		void Unlock()
+		Iterator Prepend(const VALUE& v)
 		{
-			DKASSERT_DESC_DEBUG(lock.TryLock() == false, "List does not locked");
-			lock.Unlock();
+			return PrependT(v);
 		}
-		Iterator AddHead(const VALUE& v)
+		Iterator Prepend(VALUE&& v)
 		{
-			CriticalSection guard(lock);
-			return AddHeadNL(v);
+			return PrependT(static_cast<VALUE&&>(v));
 		}
-		Iterator AddHead(VALUE&& v)
+		Iterator Append(const VALUE& v)
 		{
-			CriticalSection guard(lock);
-			return AddHeadNL(static_cast<VALUE&&>(v));
+			return AppendT(v);
 		}
-		Iterator AddTail(const VALUE& v)
+		Iterator Append(VALUE&& v)
 		{
-			CriticalSection guard(lock);
-			return AddTailNL(v);
-		}
-		Iterator AddTail(VALUE&& v)
-		{
-			CriticalSection guard(lock);
-			return AddTailNL(static_cast<VALUE&&>(v));
+			return AppendT(static_cast<VALUE&&>(v));
 		}
 
 		Iterator begin()				{return firstNode;}	///< implemented for range-based for loop
@@ -257,7 +212,6 @@ namespace DKFoundation
 		{
 			if (this != &list)
 			{
-				CriticalSection guard(lock);
 				Node* n = firstNode;
 				while (n)
 				{
@@ -280,7 +234,7 @@ namespace DKFoundation
 			if (this != &list)
 			{
 				Clear();
-				AddTail(list);
+				Append(list);
 			}
 			return *this;
 		}
@@ -288,13 +242,13 @@ namespace DKFoundation
 		{
 			Clear();
 			for (const VALUE& v : il)
-				AddTail(v);
+				Append(v);
 			return *this;
 		}
 		DKLinkedList operator + (const VALUE& v) const
 		{
 			DKLinkedList	ret(*this);
-			ret.AddTail(v);
+			ret.Append(v);
 			return ret;
 		}
 		DKLinkedList operator + (const DKLinkedList& v) const
@@ -306,27 +260,24 @@ namespace DKFoundation
 		{
 			DKLinkedList ret(*this);
 			for (const VALUE& v : il)
-				ret.AddTailNL(v);
+				ret.AppendT(v);
 			return ret;
 		}
 		DKLinkedList& operator += (const VALUE& v) const
 		{
-			AddTail(v);
+			Append(v);
 			return *this;
 		}
 		DKLinkedList& operator += (const DKLinkedList& v)
 		{
-			CriticalSection guard1(lock);
-			CriticalSection guard2(v.lock);
 			for (const Node* n = v.firstNode; n != NULL; n = n->next)
-				AddTailNL(n->value);
+				AppendT(n->value);
 			return *this;
 		}
 		DKLinkedList& operator += (std::initializer_list<VALUE> il)
 		{
-			CriticalSection guard(lock);
 			for (const VALUE& v : il)
-				AddTailNL(v);
+				AppendT(v);
 			return *this;
 		}
 		/// EnumerateForward / EnumerateBackward: enumerate all items.
@@ -375,40 +326,34 @@ namespace DKFoundation
 		// lambda enumerator (VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			for (Node* n = firstNode; n != NULL; n = n->next)
 				enumerator(n->value);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>)
 		{
-			CriticalSection guard(lock);
 			for (Node* n = lastNode; n != NULL; n = n->prev)
 				enumerator(n->value);
 		}
 		// lambda enumerator (const VALUE&)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			for (Node* n = firstNode; n != NULL; n = n->next)
 				enumerator(n->value);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<1>) const
 		{
-			CriticalSection guard(lock);
 			for (Node* n = lastNode; n != NULL; n = n->prev)
 				enumerator(n->value);
 		}
 		// lambda enumerator (VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Node* n = firstNode; n != NULL && !stop; n = n->next)
 				enumerator(n->value, &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>)
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Node* n = lastNode; n != NULL && !stop; n = n->prev)
 				enumerator(n->value, &stop);
@@ -416,19 +361,17 @@ namespace DKFoundation
 		// lambda enumerator (const VALUE&, bool*)
 		template <typename T> void EnumerateForward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Node* n = firstNode; n != NULL && !stop; n = n->next)
 				enumerator(n->value, &stop);
 		}
 		template <typename T> void EnumerateBackward(T&& enumerator, DKNumber<2>) const
 		{
-			CriticalSection guard(lock);
 			bool stop = false;
 			for (Node* n = lastNode; n != NULL && !stop; n = n->prev)
 				enumerator(n->value, &stop);
 		}
-		template <typename T> Iterator AddHeadNL(T&& v)
+		template <typename T> Iterator PrependT(T&& v)
 		{
 			Node* n = new( Allocator::Alloc(sizeof(Node)) ) Node(std::forward<T>(v), NULL, firstNode);
 			if (firstNode)
@@ -440,7 +383,7 @@ namespace DKFoundation
 			count++;
 			return n;
 		}
-		template <typename T> Iterator AddTailNL(T&& v)
+		template <typename T> Iterator AppendT(T&& v)
 		{
 			Node* n = new( Allocator::Alloc(sizeof(Node)) ) Node(std::forward<T>(v), lastNode, NULL);
 			if (lastNode)
@@ -452,7 +395,6 @@ namespace DKFoundation
 			count++;
 			return n;
 		}
-
 		
 		Node* firstNode;
 		Node* lastNode;
