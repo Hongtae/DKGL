@@ -49,4 +49,27 @@ namespace DKFoundation
 		DKCriticalSection& operator = (const DKCriticalSection&) = delete;
 		const T& lock;
 	};
+
+	template <typename T> class DKScopedLock
+	{
+	public:
+		DKScopedLock(const T& lockObject)
+			: lock(&lockObject)
+		{
+			lock->Lock();
+		}
+		~DKScopedLock()
+		{
+			if (lock)
+				lock->Unlock();
+		}
+		void Unlock()
+		{
+			if (lock)
+				lock->Unlock();
+			lock = nullptr;
+		}
+	private:
+		const T* lock;
+	};
 }
