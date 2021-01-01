@@ -71,12 +71,12 @@ DescriptorPool* DescriptorPoolChain::AddNewPool(VkDescriptorPoolCreateFlags flag
     maxSets = maxSets * 2 + 1;
 
     DKArray<VkDescriptorPoolSize> poolSizes;
-    poolSizes.Reserve(VK_DESCRIPTOR_TYPE_RANGE_SIZE);
-    for (uint32_t i = 0; i < VK_DESCRIPTOR_TYPE_RANGE_SIZE; ++i)
+    poolSizes.Reserve(numDescriptorTypes);
+    for (uint32_t i = 0; i < numDescriptorTypes; ++i)
     {
         if (poolId.typeSize[i] > 0)
         {
-            VkDescriptorType type = VkDescriptorType(i + VK_DESCRIPTOR_TYPE_BEGIN_RANGE);
+            VkDescriptorType type = DescriptorTypeAtIndex(i);
             VkDescriptorPoolSize poolSize = {
                 type,
                 poolId.typeSize[i] * maxSets 

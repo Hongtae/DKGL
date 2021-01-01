@@ -57,59 +57,112 @@ namespace DKFramework
         UserDefine,		// user-define (you can access by name, at shader)
     };
 
+    class DKSceneState;
+
     class DKGL_API DKMaterial : public DKResource
     {
     public:
         DKMaterial();
         ~DKMaterial();
 
+        // shader parameter info, with pre-defined constants
         struct ShaderTemplate
         {
             DKObject<DKShader> shader;
-            DKObject<DKShaderModule> shaderModule;
+            DKObject<DKShaderFunction> shaderFunction;
 
-            struct FunctionProperty
-            {
-                DKArray<DKShaderBindingSetLayout> bindingSetLayouts;
-                DKArray<DKShaderAttribute> inputAttributes;
-            };
-
-            DKMap<DKString, FunctionProperty> functionProperties;
-            DKMap<DKString, DKShaderUniform> predefinedUniformValues;
+            // predefined resources, attributes.
+            DKMap<DKString, DKShaderUniform> resourceTypes;
+            DKMap<DKString, DKVertexStream> inputAttributeTypes;
         };
+        DKMap<DKShaderStage, ShaderTemplate> shaderTemplates;
 
-        DKObject<ShaderTemplate> shaderTemplate;
-        DKObject<DKShaderFunction> shaderFunction;
-        DKObject<DKRenderPipelineState> renderPipelineState;
-
-        struct ResourceBindingSet
+        union ResourceIndex
         {
-            uint32_t resourceIndex;
-            DKObject<DKShaderBindingSet> bindings;
+            struct
+            {
+                uint32_t set;
+                uint32_t binding;
+            };
+            uint64_t value;
+            operator uint64_t () const noexcept {return value;} 
         };
-        DKArray<ResourceBindingSet> resourceBindings;
+        DKMap<ResourceIndex, DKString> resourceIndexNameMap;
 
-
+        struct BufferInfo
+        {
+            DKObject<DKGpuBuffer> buffer;
+            uint64_t offset;
+            uint64_t length;
+        };
+        // default shader binding objects (parameters)
         using TextureArray = DKArray<DKObject<DKTexture>>;
-        using BufferArray = DKArray<DKObject<DKGpuBuffer>>;
+        using BufferArray = DKArray<BufferInfo>;
         using SamplerArray = DKArray<DKObject<DKSamplerState>>;
 
-        DKMap<uint32_t, TextureArray> textureParameter;
-        DKMap<uint32_t, BufferArray> bufferParameter;
-        DKMap<uint32_t, SamplerArray> samplerParameter;
-        DKMap<DKString, uint32_t> parameterNameIndex;
+        // material resource properties
+        DKMap<ResourceIndex, BufferArray> bufferResourceProperties;
+        DKMap<ResourceIndex, TextureArray> textureResourceProperties;
+        DKMap<ResourceIndex, SamplerArray> samplerResourceProperties;
 
-        DKRenderPipelineDescriptor renderPipelineDescriptor;
+        // named material properties
+        DKMap<DKString, BufferArray> bufferProperties;
+        DKMap<DKString, TextureArray> textureProperties;
+        DKMap<DKString, SamplerArray> samplerProperties;
 
-        class ShaderPropertyCallback
+        struct StructElementProperty
         {
-        public:
-            virtual ~ShaderPropertyCallback() {}
+            DKShaderDataTypeSize typeSize;
+            DKArray<uint8_t> data; // typeSize.Bytes() * arrayLength
+        };
+        DKMap<DKString, StructElementProperty> structElementProperties;
+
+        DKRenderPipelineDescriptor RenderPipelineDescriptor() const;
+        DKShaderUniform ShaderUniformForResource(ResourceIndex, uint32_t) const;
+        DKShaderUniform ShaderUniformForResource(const DKString&, uint32_t) const;
+
+        bool FindShaderDescriptorForResource(ResourceIndex, uint32_t, DKShader::Descriptor&) const;
+
+        bool FindStageInputAttribute(DKShaderStage, DKVertexStream, const DKString&, DKShaderAttribute&) const;
+        bool FindStageInputAttribute(DKShaderStage, DKVertexStream, DKShaderAttribute&) const;
+        bool FindStageInputAttribute(DKShaderStage, const DKString&, DKShaderAttribute&) const;
+
+
+        struct ResourceBinder
+        {
+            using BufferWriter = DKFunctionSignature<bool(const void* data, size_t length)>;
+
+            virtual ~ResourceBinder() {}
+
+            // bind resource directly.
+            virtual BufferArray BufferResource(const DKShaderResource&) = 0;
+            virtual TextureArray TextureResource(const DKShaderResource&) = 0;
+            virtual SamplerArray SamplerResource(const DKShaderResource&) = 0;
+
+            // bind struct element separately.
+            virtual bool WriteStructElement(const DKString& keyPath,
+                                            const DKShaderResourceStructMember& element,
+                                            const DKShaderResource& resource,
+                                            uint32_t resourceArrayIndex,
+                                            BufferWriter*) = 0;
         };
 
-        bool Build();
-        bool UpdateDescriptorSets(const ShaderPropertyCallback*);
-        bool EncodeRenderCommand(DKRenderCommandEncoder*) const;
+        struct ResourceBinding
+        {
+            DKShaderResource resource;  // from spirv-data
+            DKShaderBinding binding;    // from descriptor-set layout
+        };
+        struct ResourceBindingSet
+        {
+            uint32_t resourceIndex; // BindingSet(descriptorSet) index
+            DKObject<DKShaderBindingSet> bindings;
+            DKArray<ResourceBinding> resources;
+        };
+
+        bool BindResource(ResourceBindingSet&, DKSceneState*, ResourceBinder*);
+
     private:
+        DKObject<ResourceBinder> SceneResourceBinder(DKSceneState*, ResourceBinder*);
+
     };
 }

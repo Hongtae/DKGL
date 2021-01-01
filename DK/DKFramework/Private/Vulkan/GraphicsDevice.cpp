@@ -226,6 +226,7 @@ GraphicsDevice::GraphicsDevice()
     configRequiredDeviceExtensions.Insert(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     configRequiredDeviceExtensions.Insert(VK_KHR_MAINTENANCE1_EXTENSION_NAME);
     configRequiredDeviceExtensions.Insert(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
+    //configRequiredDeviceExtensions.Insert(VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME);
 
     configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE2_EXTENSION_NAME);
     configOptionalDeviceExtensions.Insert(VK_KHR_MAINTENANCE3_EXTENSION_NAME);
@@ -765,7 +766,23 @@ GraphicsDevice::GraphicsDevice()
 			deviceCreateInfo.enabledExtensionCount = (uint32_t)deviceExtensions.Count();
 			deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions;
 		}
+#ifdef VK_EXT_extended_dynamic_state
+        DKArray<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT> extendedDynamicStateFeatures;
+        //extendedDynamicStateFeatures.Add({ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT, nullptr, VK_DYNAMIC_STATE_CULL_MODE_EXT });
+        //extendedDynamicStateFeatures.Add({ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT, nullptr, VK_DYNAMIC_STATE_FRONT_FACE_EXT });
+        //extendedDynamicStateFeatures.Add({ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT, nullptr, VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY_EXT });
 
+        if (extendedDynamicStateFeatures.Count() > 0)
+        {
+            for (size_t i = 0; (i + 1) < extendedDynamicStateFeatures.Count(); ++i)
+            {
+                VkPhysicalDeviceExtendedDynamicStateFeaturesEXT& a = extendedDynamicStateFeatures.Value(i);
+                VkPhysicalDeviceExtendedDynamicStateFeaturesEXT& b = extendedDynamicStateFeatures.Value(i+1);
+                a.pNext = &b;
+            }
+            deviceCreateInfo.pNext = (VkPhysicalDeviceExtendedDynamicStateFeaturesEXT*)extendedDynamicStateFeatures;
+        }
+#endif
 		VkDevice logicalDevice = nullptr;
 		err = vkCreateDevice(desc.physicalDevice, &deviceCreateInfo, allocationCallbacks, &logicalDevice);
 		if (err == VK_SUCCESS)
@@ -1719,21 +1736,21 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// input assembly
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyState = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO };
-	switch (desc.primitiveTopology)
-	{
-	case DKPrimitiveType::Point:
-		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;	break;
-	case DKPrimitiveType::Line:
-		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;	break;
-	case DKPrimitiveType::LineStrip:
-		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;	break;
-	case DKPrimitiveType::Triangle:
-		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;	break;
-	case DKPrimitiveType::TriangleStrip:
-		inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;	break;
-	default:
-		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown PrimitiveTopology"); break;
-	}
+    switch (desc.primitiveTopology)
+    {
+    case DKPrimitiveType::Point:
+        inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;	break;
+    case DKPrimitiveType::Line:
+        inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;	break;
+    case DKPrimitiveType::LineStrip:
+        inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;	break;
+    case DKPrimitiveType::Triangle:
+        inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;	break;
+    case DKPrimitiveType::TriangleStrip:
+        inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;	break;
+    default:
+        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown PrimitiveTopology"); break;
+    }
 	pipelineCreateInfo.pInputAssemblyState = &inputAssemblyState;
 
 	// setup viewport
@@ -1753,24 +1770,24 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			DKLogW("Warning: DKGraphicsDevice::CreateRenderPipiline: PolygonFillMode not supported for this hardware.");
 	}
 
-	switch (desc.cullMode)
-	{
-	case DKCullMode::None:	rasterizationState.cullMode = VK_CULL_MODE_NONE; break;
-	case DKCullMode::Front:	rasterizationState.cullMode = VK_CULL_MODE_FRONT_BIT; break;
-	case DKCullMode::Back:	rasterizationState.cullMode = VK_CULL_MODE_BACK_BIT; break;
-	default:
-		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown Cull-Mode"); break;
-		rasterizationState.cullMode = VK_CULL_MODE_FRONT_AND_BACK; break;
-	}
+    switch (desc.cullMode)
+    {
+    case DKCullMode::None:  rasterizationState.cullMode = VK_CULL_MODE_NONE; break;
+    case DKCullMode::Front: rasterizationState.cullMode = VK_CULL_MODE_FRONT_BIT; break;
+    case DKCullMode::Back:  rasterizationState.cullMode = VK_CULL_MODE_BACK_BIT; break;
+    default:
+        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown Cull-Mode"); break;
+        rasterizationState.cullMode = VK_CULL_MODE_FRONT_AND_BACK; break;
+    }
 
-	switch (desc.frontFace)
-	{
-	case DKFrontFace::CW:		rasterizationState.frontFace = VK_FRONT_FACE_CLOCKWISE; break;
-	case DKFrontFace::CCW:		rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE; break;
-	default:
-		DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown FrontFace-Mode"); break;
-		rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-	}
+    switch (desc.frontFace)
+    {
+    case DKFrontFace::CW:   rasterizationState.frontFace = VK_FRONT_FACE_CLOCKWISE; break;
+    case DKFrontFace::CCW:  rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE; break;
+    default:
+        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown FrontFace-Mode"); break;
+        rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    }
 
 	rasterizationState.depthClampEnable = VK_FALSE;
 	if (desc.depthClipMode == DKDepthClipMode::Clamp)
@@ -1871,6 +1888,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
 		VK_DYNAMIC_STATE_STENCIL_WRITE_MASK,
 		VK_DYNAMIC_STATE_STENCIL_REFERENCE,
+        //VK_DYNAMIC_STATE_CULL_MODE_EXT,
+        //VK_DYNAMIC_STATE_FRONT_FACE_EXT,
+        //VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY_EXT,
 	};
 	VkPipelineDynamicStateCreateInfo dynamicState = { VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
 	dynamicState.pDynamicStates = dynamicStateEnables;
@@ -1896,11 +1916,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     {
         switch (o)
         {
-        case DKBlendOperation::Add:					return VK_BLEND_OP_ADD;
-        case DKBlendOperation::Subtract:			    return VK_BLEND_OP_SUBTRACT;
-        case DKBlendOperation::ReverseSubtract:		return VK_BLEND_OP_REVERSE_SUBTRACT;
-        case DKBlendOperation::Min:					return VK_BLEND_OP_MIN;
-        case DKBlendOperation::Max:					return VK_BLEND_OP_MAX;
+        case DKBlendOperation::Add:             return VK_BLEND_OP_ADD;
+        case DKBlendOperation::Subtract:        return VK_BLEND_OP_SUBTRACT;
+        case DKBlendOperation::ReverseSubtract: return VK_BLEND_OP_REVERSE_SUBTRACT;
+        case DKBlendOperation::Min:             return VK_BLEND_OP_MIN;
+        case DKBlendOperation::Max:             return VK_BLEND_OP_MAX;
         }
         DKASSERT_DEBUG(0);
         return VK_BLEND_OP_ADD;
@@ -1909,12 +1929,12 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     {
         switch (f)
         {
-        case DKBlendFactor::Zero:						return VK_BLEND_FACTOR_ZERO;
-        case DKBlendFactor::One:						    return VK_BLEND_FACTOR_ONE;
-        case DKBlendFactor::SourceColor:				    return VK_BLEND_FACTOR_SRC_COLOR;
-        case DKBlendFactor::OneMinusSourceColor:		    return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
-        case DKBlendFactor::SourceAlpha:				    return VK_BLEND_FACTOR_SRC_ALPHA;
-        case DKBlendFactor::OneMinusSourceAlpha:		    return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        case DKBlendFactor::Zero:                       return VK_BLEND_FACTOR_ZERO;
+        case DKBlendFactor::One:						return VK_BLEND_FACTOR_ONE;
+        case DKBlendFactor::SourceColor:                return VK_BLEND_FACTOR_SRC_COLOR;
+        case DKBlendFactor::OneMinusSourceColor:        return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+        case DKBlendFactor::SourceAlpha:                return VK_BLEND_FACTOR_SRC_ALPHA;
+        case DKBlendFactor::OneMinusSourceAlpha:		return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         case DKBlendFactor::DestinationColor:			return VK_BLEND_FACTOR_DST_COLOR;
         case DKBlendFactor::OneMinusDestinationColor:	return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
         case DKBlendFactor::DestinationAlpha:			return VK_BLEND_FACTOR_DST_ALPHA;
@@ -1922,8 +1942,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
         case DKBlendFactor::SourceAlphaSaturated:		return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
         case DKBlendFactor::BlendColor:					return VK_BLEND_FACTOR_CONSTANT_COLOR;
         case DKBlendFactor::OneMinusBlendColor:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
-        case DKBlendFactor::BlendAlpha:					return VK_BLEND_FACTOR_CONSTANT_ALPHA;
-        case DKBlendFactor::OneMinusBlendAlpha:			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
+        case DKBlendFactor::BlendAlpha:                 return VK_BLEND_FACTOR_CONSTANT_ALPHA;
+        case DKBlendFactor::OneMinusBlendAlpha:         return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA;
         }
         DKASSERT_DEBUG(0);
         return VK_BLEND_FACTOR_ZERO;

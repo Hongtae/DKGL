@@ -50,7 +50,7 @@ namespace DKFramework
 	enum class DKFrontFace
 	{
 		CW,		///< Clockwise
-		CCW,		///< Counter Clockwise
+		CCW,    ///< Counter Clockwise
 	};
 	enum class DKDepthClipMode
 	{
@@ -58,24 +58,24 @@ namespace DKFramework
 		Clamp,
 	};
 
-	struct DKRenderPipelineDescriptor
-	{
-		DKObject<DKShaderFunction> vertexFunction;
-		DKObject<DKShaderFunction> fragmentFunction;
-		DKVertexDescriptor vertexDescriptor;
-		DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
-		DKPixelFormat depthStencilAttachmentPixelFormat;
+    struct DKRenderPipelineDescriptor
+    {
+        DKObject<DKShaderFunction> vertexFunction;
+        DKObject<DKShaderFunction> fragmentFunction;
+        DKVertexDescriptor vertexDescriptor;
+        DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
+        DKPixelFormat depthStencilAttachmentPixelFormat;
 
         DKDepthStencilDescriptor depthStencilDescriptor;
 
-		DKPrimitiveType primitiveTopology;
-		DKTriangleFillMode triangleFillMode = DKTriangleFillMode::Fill;
-		DKDepthClipMode depthClipMode = DKDepthClipMode::Clip;
-		DKCullMode cullMode = DKCullMode::Back;
-		DKFrontFace frontFace = DKFrontFace::CCW;
+        DKPrimitiveType primitiveTopology;
 
-		bool rasterizationEnabled; // Do we need this flag? What about use null-frag shader instead?
-	};
+        DKTriangleFillMode triangleFillMode = DKTriangleFillMode::Fill;
+        DKDepthClipMode depthClipMode = DKDepthClipMode::Clip;
+        DKCullMode cullMode = DKCullMode::Back;
+        DKFrontFace frontFace = DKFrontFace::CCW;
+        bool rasterizationEnabled = true;
+    };
 
 	class DKGraphicsDevice;
 	class DKRenderPipelineState

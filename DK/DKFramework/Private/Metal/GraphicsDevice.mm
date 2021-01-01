@@ -74,6 +74,16 @@ namespace DKFramework::Private::Metal
                         DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
                         mb.typeInfoKey = StructTypeData{ typeKey, base }.operator() (memberStruct);
                     }
+                    if (type == MTLDataTypePointer)
+                    {
+                        NSLog(@"ERROR: Pointer in struct!");
+                        DKASSERT_DESC_DEBUG(0, "Not Implemented!");
+                    }
+                    if (type == MTLDataTypeTexture)
+                    {
+                        NSLog(@"ERROR: TextureReference in struct!");
+                        DKASSERT_DESC_DEBUG(0, "Not Implemented!");
+                    }
                     output.members.Add(mb);
                 }
                 base.structTypeMemberMap.Update(name, output);
@@ -491,6 +501,43 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 			DKLogE("Unsupported primitive topology: %d(0x%x)", (int)desc.primitiveTopology, (int)desc.primitiveTopology);
 			return NULL;
 	}
+    MTLDepthClipMode depthClipMode;
+    switch (desc.depthClipMode)
+    {
+        case DKDepthClipMode::Clip:     depthClipMode = MTLDepthClipModeClip;   break;
+        case DKDepthClipMode::Clamp:    depthClipMode = MTLDepthClipModeClamp;  break;
+        default:
+			DKLogE("Unsupported depthClipMode: %d(0x%x)", (int)desc.depthClipMode, (int)desc.depthClipMode);
+			return NULL;
+    }
+    MTLTriangleFillMode triangleFillMode;
+    switch (desc.triangleFillMode)
+    {
+        case DKTriangleFillMode::Fill:  triangleFillMode = MTLTriangleFillModeFill;  break;
+        case DKTriangleFillMode::Lines: triangleFillMode = MTLTriangleFillModeLines; break;
+        default:
+			DKLogE("Unsupported triangleFillMode: %d(0x%x)", (int)desc.triangleFillMode, (int)desc.triangleFillMode);
+			return NULL;
+    }
+    MTLWinding frontFacingWinding;
+    switch (desc.frontFace)
+    {
+    case DKFrontFace::CW:   frontFacingWinding = MTLWindingClockwise; break;
+    case DKFrontFace::CCW:  frontFacingWinding = MTLWindingCounterClockwise; break;
+    default:
+        DKLogE("ERROR: Unknown FrontFace-Mode"); break;
+        frontFacingWinding = MTLWindingCounterClockwise;
+    }
+    MTLCullMode cullMode;
+    switch (desc.cullMode)
+    {
+    case DKCullMode::None:	cullMode = MTLCullModeNone; break;
+    case DKCullMode::Front:	cullMode = MTLCullModeFront; break;
+    case DKCullMode::Back:	cullMode = MTLCullModeBack; break;
+    default:
+        DKLogE("ERROR: Unknown Cull-Mode"); break;
+        cullMode = MTLCullModeNone; break;
+    }
 
     if (desc.vertexFunction)
     {
@@ -845,7 +892,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		if (pipelineState)
 		{
 			state = DKOBJECT_NEW RenderPipelineState(dev, pipelineState, depthStencilState);
-			state->primitiveType = primitiveType;
+            state->primitiveType = primitiveType;
+            state->depthClipMode = depthClipMode;
+            state->triangleFillMode = triangleFillMode;
+            state->frontFacingWinding = frontFacingWinding;
+            state->cullMode = cullMode;
             if (vertexFunction)
                 state->vertexBindings = vertexFunction->module.StaticCast<ShaderModule>()->bindings;
             if (fragmentFunction)

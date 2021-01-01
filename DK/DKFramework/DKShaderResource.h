@@ -89,7 +89,98 @@ namespace DKFramework
 		Bool3,
 		Bool4,
 	};
+    struct DKShaderDataTypeSize
+    {
+        uint32_t width;
+        uint32_t rows;
+        uint32_t columns;
 
+        size_t Bytes() const noexcept { return width * rows * columns; }
+
+        constexpr DKShaderDataTypeSize(uint32_t w, uint32_t r, uint32_t c)
+            : width(w), rows(r), columns(c) {}
+
+        constexpr DKShaderDataTypeSize(DKShaderDataType type)
+            : DKShaderDataTypeSize([type]() constexpr -> DKShaderDataTypeSize
+        {
+            switch (type)
+            {
+            case DKShaderDataType::Float:       return { 4, 1, 1 };
+            case DKShaderDataType::Float2:      return { 4, 2, 1 };
+            case DKShaderDataType::Float3:      return { 4, 3, 1 };
+            case DKShaderDataType::Float4:      return { 4, 4, 1 };
+
+            case DKShaderDataType::Float2x2:    return { 4, 2, 2 };
+            case DKShaderDataType::Float2x3:    return { 4, 2, 3 };
+            case DKShaderDataType::Float2x4:    return { 4, 2, 4 };
+
+            case DKShaderDataType::Float3x2:    return { 4, 3, 2 };
+            case DKShaderDataType::Float3x3:    return { 4, 3, 3 };
+            case DKShaderDataType::Float3x4:    return { 4, 3, 4 };
+
+            case DKShaderDataType::Float4x2:    return { 4, 4, 2 };
+            case DKShaderDataType::Float4x3:    return { 4, 4, 3 };
+            case DKShaderDataType::Float4x4:    return { 4, 4, 4 };
+
+            case DKShaderDataType::Half:        return { 2, 1, 1 };
+            case DKShaderDataType::Half2:       return { 2, 2, 1 };
+            case DKShaderDataType::Half3:       return { 2, 3, 1 };
+            case DKShaderDataType::Half4:       return { 2, 4, 1 };
+
+            case DKShaderDataType::Half2x2:     return { 2, 2, 2 };
+            case DKShaderDataType::Half2x3:     return { 2, 2, 3 };
+            case DKShaderDataType::Half2x4:     return { 2, 2, 4 };
+
+            case DKShaderDataType::Half3x2:     return { 2, 3, 2 };
+            case DKShaderDataType::Half3x3:     return { 2, 3, 3 };
+            case DKShaderDataType::Half3x4:     return { 2, 3, 4 };
+
+            case DKShaderDataType::Half4x2:     return { 2, 4, 2 };
+            case DKShaderDataType::Half4x3:     return { 2, 4, 3 };
+            case DKShaderDataType::Half4x4:     return { 2, 4, 4 };
+
+            case DKShaderDataType::Int:         return { 4, 1, 1 };
+            case DKShaderDataType::Int2:        return { 4, 2, 1 };
+            case DKShaderDataType::Int3:        return { 4, 3, 1 };
+            case DKShaderDataType::Int4:        return { 4, 4, 1 };
+
+            case DKShaderDataType::UInt:        return { 4, 1, 1 };
+            case DKShaderDataType::UInt2:       return { 4, 2, 1 };
+            case DKShaderDataType::UInt3:       return { 4, 3, 1 };
+            case DKShaderDataType::UInt4:       return { 4, 4, 1 };
+
+            case DKShaderDataType::Short:       return { 2, 1, 1 };
+            case DKShaderDataType::Short2:      return { 2, 2, 1 };
+            case DKShaderDataType::Short3:      return { 2, 3, 1 };
+            case DKShaderDataType::Short4:      return { 2, 4, 1 };
+
+            case DKShaderDataType::UShort:      return { 2, 1, 1 };
+            case DKShaderDataType::UShort2:     return { 2, 2, 1 };
+            case DKShaderDataType::UShort3:     return { 2, 3, 1 };
+            case DKShaderDataType::UShort4:     return { 2, 4, 1 };
+
+            case DKShaderDataType::Char:        return { 1, 1, 1 };
+            case DKShaderDataType::Char2:       return { 1, 2, 1 };
+            case DKShaderDataType::Char3:       return { 1, 3, 1 };
+            case DKShaderDataType::Char4:       return { 1, 4, 1 };
+
+            case DKShaderDataType::UChar:       return { 1, 1, 1 };
+            case DKShaderDataType::UChar2:      return { 1, 2, 1 };
+            case DKShaderDataType::UChar3:      return { 1, 3, 1 };
+            case DKShaderDataType::UChar4:      return { 1, 4, 1 };
+
+            case DKShaderDataType::Bool:        return { 1, 1, 1 };
+            case DKShaderDataType::Bool2:       return { 1, 2, 1 };
+            case DKShaderDataType::Bool3:       return { 1, 3, 1 };
+            case DKShaderDataType::Bool4:       return { 1, 4, 1 };
+
+            default:
+                DKASSERT_DESC_DEBUG(0, "Unknown data type");
+                break;
+            }
+            return { 0, 0, 0 };
+        }()) {}
+    };
 	enum class DKShaderStage
 	{
 		Unknown = 0,

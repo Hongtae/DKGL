@@ -28,6 +28,11 @@ namespace DKFramework::Private::Metal
         id<MTLDepthStencilState> depthStencilState;
 
 		MTLPrimitiveType primitiveType;
+		MTLDepthClipMode depthClipMode;
+		MTLTriangleFillMode triangleFillMode;
+		MTLWinding frontFacingWinding;
+		MTLCullMode cullMode;
+
 		DKObject<DKGraphicsDevice> device;
 
         StageResourceBindingMap vertexBindings;

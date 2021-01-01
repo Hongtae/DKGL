@@ -240,6 +240,10 @@ void RenderCommandEncoder::SetRenderPipelineState(const DKRenderPipelineState* p
 		id<MTLRenderPipelineState> pipelineState = pipeline->pipelineState;
 		[encoder setRenderPipelineState:pipelineState];
         [encoder setDepthStencilState:pipeline->depthStencilState];
+        [encoder setDepthClipMode:pipeline->depthClipMode];
+        [encoder setTriangleFillMode:pipeline->triangleFillMode];
+        [encoder setFrontFacingWinding:pipeline->frontFacingWinding];
+        [encoder setCullMode:pipeline->cullMode];
 		state.pipelineState = pipeline;
 	});
 	encoder->commands.Add(command);

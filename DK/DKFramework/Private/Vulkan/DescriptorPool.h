@@ -13,12 +13,44 @@
 
 namespace DKFramework::Private::Vulkan
 {
-    class GraphicsDevice;
+    constexpr auto descriptorTypes = {
+        VK_DESCRIPTOR_TYPE_SAMPLER,
+        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+        VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,
+        VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+        VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,
+        VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,
+        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,
+        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
+        VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT,
+        VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT
+    };
+    static_assert(std::is_sorted(std::cbegin(descriptorTypes), std::cend(descriptorTypes)));
+    constexpr size_t numDescriptorTypes = std::size(descriptorTypes);
+
+    inline auto IndexOfDescriptorType(VkDescriptorType t)
+    {
+        auto it = std::lower_bound(std::begin(descriptorTypes),
+                                   std::end(descriptorTypes),
+                                   t);
+        DKASSERT_DEBUG(it != std::end(descriptorTypes));
+        return std::distance(std::begin(descriptorTypes), it);
+    };
+    template <typename Index> inline
+    VkDescriptorType DescriptorTypeAtIndex(Index index)
+    {
+        DKASSERT_DEBUG(index >= 0 && index < numDescriptorTypes);
+        auto it = std::begin(descriptorTypes);
+        std::advance(it, index);
+        return *it;
+    }
 
     struct DescriptorPoolId
     {
         uint32_t mask = 0;
-        uint32_t typeSize[VK_DESCRIPTOR_TYPE_RANGE_SIZE] = { 0 };
+        uint32_t typeSize[numDescriptorTypes] = { 0 };
 
         DescriptorPoolId() = default;
         DescriptorPoolId(uint32_t poolSizeCount, const VkDescriptorPoolSize* poolSizes)
@@ -28,11 +60,11 @@ namespace DKFramework::Private::Vulkan
             for (uint32_t i = 0; i < poolSizeCount; ++i)
             {
                 const VkDescriptorPoolSize& poolSize = poolSizes[i];
-                uint32_t typeIndex = poolSize.type - VK_DESCRIPTOR_TYPE_BEGIN_RANGE;
+                uint32_t typeIndex = IndexOfDescriptorType(poolSize.type);
                 typeSize[typeIndex] += poolSize.descriptorCount;
             }
             uint32_t dpTypeKey = 0;
-            for (uint32_t i = 0; i < VK_DESCRIPTOR_TYPE_RANGE_SIZE; ++i)
+            for (uint32_t i = 0; i < numDescriptorTypes; ++i)
             {
                 if (typeSize[i])
                     mask = mask | (1 << i);
@@ -45,11 +77,11 @@ namespace DKFramework::Private::Vulkan
             for (const DKShaderBinding& binding : layout.bindings)
             {
                 VkDescriptorType type = DescriptorType(binding.type);
-                uint32_t typeIndex = type - VK_DESCRIPTOR_TYPE_BEGIN_RANGE;
+                uint32_t typeIndex = IndexOfDescriptorType(type);
                 typeSize[typeIndex] += binding.arrayLength;
             }
             uint32_t dpTypeKey = 0;
-            for (uint32_t i = 0; i < VK_DESCRIPTOR_TYPE_RANGE_SIZE; ++i)
+            for (uint32_t i = 0; i < numDescriptorTypes; ++i)
             {
                 if (typeSize[i])
                     mask = mask | (1 << i);
@@ -59,7 +91,7 @@ namespace DKFramework::Private::Vulkan
         {
             if (this->mask == rhs.mask)
             {
-                for (uint32_t i = 0; i < std::size(typeSize); ++i)
+                for (uint32_t i = 0; i < numDescriptorTypes; ++i)
                 {
                     if (this->typeSize[i] != rhs.typeSize[i])
                         return this->typeSize[i] < rhs.typeSize[i];
@@ -71,7 +103,7 @@ namespace DKFramework::Private::Vulkan
         {
             if (this->mask == rhs.mask)
             {
-                for (uint32_t i = 0; i < std::size(typeSize); ++i)
+                for (uint32_t i = 0; i < numDescriptorTypes; ++i)
                 {
                     if (this->typeSize[i] != rhs.typeSize[i])
                         return this->typeSize[i] > rhs.typeSize[i];
@@ -83,7 +115,7 @@ namespace DKFramework::Private::Vulkan
         {
             if (this->mask == rhs.mask)
             {
-                for (uint32_t i = 0; i < std::size(typeSize); ++i)
+                for (uint32_t i = 0; i < numDescriptorTypes; ++i)
                 {
                     if (this->typeSize[i] != rhs.typeSize[i])
                         return false;
@@ -94,6 +126,7 @@ namespace DKFramework::Private::Vulkan
         }
     };
 
+    class GraphicsDevice;
     class DescriptorPool final
     {
     public:
