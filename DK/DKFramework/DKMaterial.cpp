@@ -11,6 +11,7 @@
 using namespace DKFramework;
 
 DKMaterial::DKMaterial()
+    : depthStencilAttachmentPixelFormat(DKPixelFormat::Invalid)
 {
 }
 
@@ -52,8 +53,7 @@ bool DKMaterial::FindStageInputAttribute(DKShaderStage stage, DKVertexStream str
             if (attr.name == name)
             {
                 DKVertexStream st = DKVertexStream::UserDefine;
-                auto p2 = p->value.inputAttributeTypes.Find(attr.name);
-                if (p2)
+                if (auto p2 = p->value.inputAttributeTypes.Find(attr.name); p2)
                     st = p2->value;
 
                 if (st == stream)
@@ -75,8 +75,7 @@ bool DKMaterial::FindStageInputAttribute(DKShaderStage stage, DKVertexStream str
         for (const DKShaderAttribute& attr : p->value.shader->InputAttributes())
         {
             DKVertexStream st = DKVertexStream::UserDefine;
-            auto p2 = p->value.inputAttributeTypes.Find(attr.name);
-            if (p2)
+            if (auto p2 = p->value.inputAttributeTypes.Find(attr.name); p2)
                 st = p2->value;
 
             if (st == stream)
@@ -195,17 +194,15 @@ DKRenderPipelineDescriptor DKMaterial::RenderPipelineDescriptor() const
     renderPipelineDescriptor.vertexFunction = findShader(DKShaderStage::Vertex);
     renderPipelineDescriptor.fragmentFunction = findShader(DKShaderStage::Fragment);
 
-    renderPipelineDescriptor.colorAttachments.Resize(1);
-    renderPipelineDescriptor.colorAttachments.Value(0).pixelFormat = DKPixelFormat::BGRA8Unorm;
-    renderPipelineDescriptor.colorAttachments.Value(0).blendState.enabled = true;
-    renderPipelineDescriptor.colorAttachments.Value(0).blendState.sourceRGBBlendFactor = DKBlendFactor::SourceAlpha;
-    renderPipelineDescriptor.colorAttachments.Value(0).blendState.destinationRGBBlendFactor = DKBlendFactor::OneMinusSourceAlpha;
-    renderPipelineDescriptor.depthStencilAttachmentPixelFormat = DKPixelFormat::Invalid; // no depth buffer
+    renderPipelineDescriptor.colorAttachments = this->colorAttachments;
+    renderPipelineDescriptor.depthStencilAttachmentPixelFormat = this->depthStencilAttachmentPixelFormat;
+    renderPipelineDescriptor.depthStencilDescriptor = this->depthStencilDescriptor;
+
     renderPipelineDescriptor.primitiveTopology = DKPrimitiveType::Triangle;
     renderPipelineDescriptor.frontFace = DKFrontFace::CCW;
-    renderPipelineDescriptor.triangleFillMode = DKTriangleFillMode::Fill;
-    renderPipelineDescriptor.depthClipMode = DKDepthClipMode::Clip;
-    renderPipelineDescriptor.cullMode = DKCullMode::None;
+    renderPipelineDescriptor.triangleFillMode = this->triangleFillMode;
+    renderPipelineDescriptor.depthClipMode = this->depthClipMode;
+    renderPipelineDescriptor.cullMode = DKCullMode::Back;
     renderPipelineDescriptor.rasterizationEnabled = true;
 
     return renderPipelineDescriptor;
@@ -356,7 +353,7 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
         if (res.type == DKShaderResource::TypeBuffer)
         {
             // bind buffer.
-            if (BufferArray buffers = resourceBinder->BufferResource(res); buffers.Count() > 0)
+            if (BufferArray buffers = binder->BufferResource(res); buffers.Count() > 0)
             {
                 DKASSERT_DEBUG(res.set == rbset.resourceIndex);
 
@@ -378,7 +375,7 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
                                 ptr)
                             {
                                 if (StructElementEnumerator{
-                                    resourceBinder,
+                                    binder,
                                     res,
                                     res.name,
                                     index,  // buffer array index
@@ -421,7 +418,7 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
         }
         else if (rb.resource.type == DKShaderResource::TypeTexture)
         {
-            if (size_t numBound = bindTextureArray(res, resourceBinder, rbset.bindings); numBound > 0)
+            if (size_t numBound = bindTextureArray(res, binder, rbset.bindings); numBound > 0)
                 bound = true;
             else
             {
@@ -431,7 +428,7 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
         }
         else if (rb.resource.type == DKShaderResource::TypeSampler)
         {
-            if (size_t numBound = bindSamplerArray(res, resourceBinder, rbset.bindings); numBound > 0)
+            if (size_t numBound = bindSamplerArray(res, binder, rbset.bindings); numBound > 0)
                 bound = true;
             else
             {
@@ -441,8 +438,8 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
         }
         else if (rb.resource.type == DKShaderResource::TypeTextureSampler)
         {
-            size_t numTextureBound = bindTextureArray(res, resourceBinder, rbset.bindings);
-            size_t numSamplerBound = bindSamplerArray(res, resourceBinder, rbset.bindings);
+            size_t numTextureBound = bindTextureArray(res, binder, rbset.bindings);
+            size_t numSamplerBound = bindSamplerArray(res, binder, rbset.bindings);
 
             if (numTextureBound > 0 && numSamplerBound > 0)
                 bound = true;

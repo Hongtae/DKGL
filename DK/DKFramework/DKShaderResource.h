@@ -100,11 +100,17 @@ namespace DKFramework
         constexpr DKShaderDataTypeSize(uint32_t w, uint32_t r, uint32_t c)
             : width(w), rows(r), columns(c) {}
 
-        constexpr DKShaderDataTypeSize(DKShaderDataType type)
+        constexpr DKShaderDataTypeSize(DKShaderDataType type = DKShaderDataType::None)
             : DKShaderDataTypeSize([type]() constexpr -> DKShaderDataTypeSize
         {
             switch (type)
             {
+            case DKShaderDataType::None:
+            case DKShaderDataType::Struct:
+            case DKShaderDataType::Texture:
+            case DKShaderDataType::Sampler:
+                return { 0, 0, 0 };
+
             case DKShaderDataType::Float:       return { 4, 1, 1 };
             case DKShaderDataType::Float2:      return { 4, 2, 1 };
             case DKShaderDataType::Float3:      return { 4, 3, 1 };

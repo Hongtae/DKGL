@@ -12,6 +12,7 @@
 #include "DKGpuBuffer.h"
 #include "DKVertexDescriptor.h"
 #include "DKRenderCommandEncoder.h"
+#include "DKPipelineReflection.h"
 
 namespace DKFramework
 {
@@ -47,6 +48,8 @@ namespace DKFramework
         DKObject<DKMaterial> material;
 
         DKPrimitiveType primitiveType;
+        DKCullMode cullMode = DKCullMode::Back;
+        DKFrontFace frontFace = DKFrontFace::CCW;
 
         uint32_t vertexStart;
         uint32_t vertexCount;
@@ -87,8 +90,10 @@ namespace DKFramework
         DKMap<DKString, SamplerArray> samplerProperties;
         DKMap<DKString, StructElementProperty> structElementProperties;
 
+        const DKPipelineReflection* PipelineReflection() const;
     private:
         DKObject<DKRenderPipelineState> renderPipelineState;
+        DKPipelineReflection pipelineReflection;
 
         using ResourceBinding = DKMaterial::ResourceBinding;
         using ResourceBindingSet = DKMaterial::ResourceBindingSet;

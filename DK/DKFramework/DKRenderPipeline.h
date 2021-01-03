@@ -65,7 +65,6 @@ namespace DKFramework
         DKVertexDescriptor vertexDescriptor;
         DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
         DKPixelFormat depthStencilAttachmentPixelFormat;
-
         DKDepthStencilDescriptor depthStencilDescriptor;
 
         DKPrimitiveType primitiveTopology;

@@ -7,7 +7,6 @@
 
 #include "DKMesh.h"
 #include "DKGraphicsDevice.h"
-#include "DKPipelineReflection.h"
 
 using namespace DKFramework;
 
@@ -38,7 +37,7 @@ DKVertexDescriptor DKMesh::VertexDescriptor() const
         numVertexStreams += vb.declarations.Count();
     }
     descriptor.attributes.Reserve(numVertexStreams);
-    for (uint32_t index = 0; index < numVertexStreams; index++)
+    for (uint32_t index = 0; index < vertexBuffers.Count(); index++)
     {
         const DKVertexBuffer& buffer = vertexBuffers.Value(index);
 
@@ -80,8 +79,8 @@ DKVertexDescriptor DKMesh::VertexDescriptor() const
             }
             else
             {
-                DKLogE("Error: Cannot find shader input attributes: %ls (UserDefined)",
-                       (const wchar_t*)decl.name);
+                DKLogE("Error: Cannot find shader input attributes: %ls (type:%d)",
+                       (const wchar_t*)decl.name, decl.streamId);
             }
         }
         if (numEnabledAttributes > 0)
@@ -100,10 +99,13 @@ bool DKMesh::BuildPipelineStateObject(DKGraphicsDevice* device)
 {
     DKRenderPipelineDescriptor renderPipelineDescriptor = this->material->RenderPipelineDescriptor();
     // setup vertex descriptor..
-    renderPipelineDescriptor.primitiveTopology = this->primitiveType;
     renderPipelineDescriptor.vertexDescriptor = this->VertexDescriptor();
 
     // setup rest of pso descriptor.
+    renderPipelineDescriptor.primitiveTopology = this->primitiveType;
+    renderPipelineDescriptor.frontFace = this->frontFace;
+    renderPipelineDescriptor.cullMode = this->cullMode;
+
     DKPipelineReflection reflection = {};
     DKObject<DKRenderPipelineState> pso = device->CreateRenderPipeline(renderPipelineDescriptor, &reflection);
     if (!pso)
@@ -205,8 +207,16 @@ bool DKMesh::BuildPipelineStateObject(DKGraphicsDevice* device)
     }
 
     this->renderPipelineState = pso;
+    this->pipelineReflection = reflection;
     this->resourceBindings = std::move(resourceBindings);
     return true;
+}
+
+const DKPipelineReflection* DKMesh::PipelineReflection() const
+{
+    if (renderPipelineState)
+        return &this->pipelineReflection;
+    return nullptr;
 }
 
 bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy bufferUsagePolicy)
@@ -285,7 +295,7 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
                 this->bufferProperties.Update(pair);
             });
         }
-        return true;
+        //return true;
     }
     else if (bufferUsagePolicy == ResourceBufferUsagePolicy::SingleBufferPerSet)
     {
@@ -346,7 +356,7 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
         {
             this->bufferProperties.Update(pair);
         });
-        return true;
+        //return true;
     }
     else if (bufferUsagePolicy == ResourceBufferUsagePolicy::SingleBufferPerResource)
     {
@@ -402,12 +412,12 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
         {
             this->bufferProperties.Update(pair);
         });
-        return true;
+        //return true;
     }
     else
     {
     }
-    DKLog("DKMesh::InitResources() generated %llu buffers, %%u bytes",
+    DKLog("DKMesh::InitResources() generated %llu buffers, %llu bytes",
           numBuffersGenerated, totalBytesAllocated);
     return true;
 }
@@ -495,6 +505,10 @@ bool DKMesh::EncodeRenderCommand(DKRenderCommandEncoder* encoder,
     if (renderPipelineState && material)
     {
         encoder->SetRenderPipelineState(renderPipelineState);
+        for (const ResourceBindingSet& rset : resourceBindings)
+        {
+            encoder->SetResources(rset.resourceIndex, rset.bindings);
+        }
 
         for (uint32_t index = 0; index < vertexBuffers.Count(); index++)
         {

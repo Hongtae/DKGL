@@ -23,7 +23,7 @@ const DKBlendState	DKBlendState::defaultAlpha
 {
     true,
     DKBlendFactor::SourceAlpha,
-    DKBlendFactor::One,
+    DKBlendFactor::OneMinusDestinationAlpha,
     DKBlendFactor::OneMinusSourceAlpha,
     DKBlendFactor::One,
     DKBlendOperation::Add,

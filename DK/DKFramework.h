@@ -63,6 +63,7 @@ namespace DKFramework {}
 #include "DKFramework/DKMatrix2.h"
 #include "DKFramework/DKMatrix3.h"
 #include "DKFramework/DKMatrix4.h"
+#include "DKFramework/DKMesh.h"
 #include "DKFramework/DKModel.h"
 #include "DKFramework/DKMultiSphereShape.h"
 #include "DKFramework/DKPlane.h"

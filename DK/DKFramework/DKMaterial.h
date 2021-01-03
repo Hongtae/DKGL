@@ -161,6 +161,14 @@ namespace DKFramework
 
         bool BindResource(ResourceBindingSet&, DKSceneState*, ResourceBinder*);
 
+        // rasterazation properties...
+        DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;
+        DKPixelFormat depthStencilAttachmentPixelFormat;
+        DKDepthStencilDescriptor depthStencilDescriptor;
+
+        DKTriangleFillMode triangleFillMode = DKTriangleFillMode::Fill;
+        DKDepthClipMode depthClipMode = DKDepthClipMode::Clip;
+
     private:
         DKObject<ResourceBinder> SceneResourceBinder(DKSceneState*, ResourceBinder*);
 

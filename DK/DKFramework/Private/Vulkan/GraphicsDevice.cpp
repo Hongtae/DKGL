@@ -1092,6 +1092,13 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
         DKCriticalSection<DKSpinLock> guard(dpChainMap.lock);
 
         // find matching pool.
+        if (auto p = dpChainMap.poolChainMap.Find(poolId); p)
+        {
+            DescriptorPoolChain* chain = p->value;
+            DKASSERT_DEBUG(chain->device == this);
+            DKASSERT_DEBUG(chain->poolId == poolId);
+        }
+#if 0
         if (auto p = dpChainMap.poolChainMap.Find(poolId); p == nullptr)
         {
             // create new pool-chain.
@@ -1101,6 +1108,7 @@ DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDe
         DescriptorPoolChain* chain = dpChainMap.poolChainMap.Value(poolId);
         DKASSERT_DEBUG(chain->device == this);
         DKASSERT_DEBUG(chain->poolId == poolId);
+#endif
 
         // create layout!
         VkDescriptorSetLayoutCreateInfo layoutCreateInfo = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
