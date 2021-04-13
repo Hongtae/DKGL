@@ -21,7 +21,7 @@ namespace DKFramework
         DKVertexStream streamId;
         DKVertexFormat format;
         bool normalize;    ///< normalize integer to float. (0.0~1.0 for unsigned, -1.0~1.0 for signed)
-        size_t offset;
+        uint32_t offset;
         DKString name;
     };
     /// vertex buffer, a buffer can have multiple declarations (multiple stream data)
@@ -31,7 +31,7 @@ namespace DKFramework
         DKObject<DKGpuBuffer> buffer;
         size_t offset; // first vertex index
         size_t count; // num vertices
-        size_t size; // vertex size
+        uint32_t size; // vertex size
     };
 
     struct DKSubMesh
