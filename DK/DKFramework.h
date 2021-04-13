@@ -1,7 +1,7 @@
 #pragma once
 #include "DKInclude.h"
 
-/// @brief 
+/// @brief
 ///  Classes for linear math, 3D graphics, animation, physics and collision
 ///  detection, 3D audio, font and glyphs and application utilities.
 ///
@@ -63,6 +63,7 @@ namespace DKFramework {}
 #include "DKFramework/DKMatrix2.h"
 #include "DKFramework/DKMatrix3.h"
 #include "DKFramework/DKMatrix4.h"
+#include "DKFramework/DKMesh.h"
 #include "DKFramework/DKModel.h"
 #include "DKFramework/DKMultiSphereShape.h"
 #include "DKFramework/DKPlane.h"
