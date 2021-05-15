@@ -430,7 +430,7 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
         {
             DKMesh* mesh;
             Binder(DKMesh* m) : mesh(m) {}
-            BufferArray BufferResource(const DKShaderResource& res)
+            BufferArray BufferResource(const DKShaderResource& res) override
             {
                 if (auto p = mesh->bufferProperties.Find(res.name);
                     p && p->value.Count() > 0)
@@ -439,7 +439,7 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
                 }
                 return {};
             }
-            TextureArray TextureResource(const DKShaderResource& res)
+            TextureArray TextureResource(const DKShaderResource& res) override
             {
                 if (auto p = mesh->textureProperties.Find(res.name);
                     p && p->value.Count() > 0)
@@ -448,7 +448,7 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
                 }
                 return {};
             }
-            SamplerArray SamplerResource(const DKShaderResource& res)
+            SamplerArray SamplerResource(const DKShaderResource& res) override
             {
                 if (auto p = mesh->samplerProperties.Find(res.name);
                     p && p->value.Count() > 0)
@@ -463,7 +463,7 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
                                             const DKShaderResourceStructMember& element,
                                             const DKShaderResource& resource,
                                             uint32_t resourceArrayIndex,
-                                            BufferWriter* writer)
+                                            BufferWriter* writer) override
              {
                  if (auto p = mesh->structElementProperties.Find(keyPath); p)
                  {
