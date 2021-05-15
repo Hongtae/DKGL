@@ -1,7 +1,7 @@
 #pragma once
 #include "DKInclude.h"
 
-/// @brief 
+/// @brief
 ///  Classes for linear math, 3D graphics, animation, physics and collision
 ///  detection, 3D audio, font and glyphs and application utilities.
 ///

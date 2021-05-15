@@ -21,7 +21,7 @@ namespace DKFramework
     {
         DKVertexStream streamId;
         DKVertexFormat format;
-        size_t offset; // where the data begins, in bytes
+        uint32_t offset; // where the data begins, in bytes
         DKString name;
     };
     /// vertex buffer, a buffer can have multiple declarations (multiple stream data)
@@ -29,9 +29,9 @@ namespace DKFramework
     {
         DKArray<DKVertexStreamDeclaration> declarations;
         DKObject<DKGpuBuffer> buffer;
-        size_t offset; // first vertex index
-        size_t count; // num vertices
-        size_t size; // vertex size
+        uint32_t offset; // first vertex index
+        uint32_t count; // num vertices
+        uint32_t size; // vertex size
     };
 
     class DKSceneState;
