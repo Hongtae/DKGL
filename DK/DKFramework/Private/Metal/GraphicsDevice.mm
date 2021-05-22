@@ -431,12 +431,23 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                 {
                     NSLog(@"MTLLibrary: %@", library);
 
-					DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, library);
+                    std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
+                    DKArray<ShaderModule::NameConversion> nameConversions;
+                    nameConversions.Reserve(entryPoints.size());
+                    for (spirv_cross::EntryPoint& ep : entryPoints)
+                    {
+                        std::string cleansedName = compiler.get_cleansed_entry_point_name(ep.name, ep.execution_model);
+                        nameConversions.Add({ep.name.c_str(), cleansedName.c_str()});
+                        //NSLog(@"functions: %s (%s)", ep.name.c_str(), cleansedName.c_str());
+                    }
+
+					DKObject<ShaderModule> module = DKOBJECT_NEW ShaderModule(dev, library, nameConversions);
                     module->workgroupSize = MTLSizeMake(workgroupSize.x, workgroupSize.y, workgroupSize.z);
 
                     DKASSERT_DEBUG(bindings1.Count() == bindings2.Count());
 
                     StageResourceBindingMap bindingMap = {};
+                    bindingMap.pushConstantIndex = ~(0u); // mark as no push constant
                     bindingMap.resourceBindings.Reserve(bindings1.Count());
                     for (size_t i = 0, n = bindings1.Count(); i < n; ++i)
                     {
@@ -449,7 +460,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                                 b1.binding == spirv_cross::kPushConstBinding)
                             {
                                 // Only one push-constant binding is allowed.
-                                DKASSERT_DEBUG(bindingMap.pushConstantIndex == 0);
+                                DKASSERT_DEBUG(bindingMap.pushConstantIndex == ~(0u));
                                 DKASSERT_DEBUG(bindingMap.pushConstantOffset == 0);
 
                                 const DKShaderPushConstantLayout& layout = shader->PushConstantBufferLayouts().Value(0);
@@ -525,8 +536,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     case DKFrontFace::CW:   frontFacingWinding = MTLWindingClockwise; break;
     case DKFrontFace::CCW:  frontFacingWinding = MTLWindingCounterClockwise; break;
     default:
-        DKLogE("ERROR: Unknown FrontFace-Mode"); break;
+        DKLogE("ERROR: Unknown FrontFace-Mode");
         frontFacingWinding = MTLWindingCounterClockwise;
+        break;
     }
     MTLCullMode cullMode;
     switch (desc.cullMode)
@@ -535,8 +547,9 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     case DKCullMode::Front:	cullMode = MTLCullModeFront; break;
     case DKCullMode::Back:	cullMode = MTLCullModeBack; break;
     default:
-        DKLogE("ERROR: Unknown Cull-Mode"); break;
-        cullMode = MTLCullModeNone; break;
+        DKLogE("ERROR: Unknown Cull-Mode");
+        cullMode = MTLCullModeNone;
+        break;
     }
 
     if (desc.vertexFunction)
@@ -797,7 +810,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
                 DKArray<DKShaderPushConstantLayout> pushConstants;
 
                 if (vertexFunction)
-                    inputAttrs = vertexFunction->stageInputAttributes;
+                    inputAttrs = vertexFunction->stageInputAttributes; // copy all inputAttributes
 
                 inputAttrs.Reserve(pipelineReflection.vertexArguments.count);
                 resources.Reserve(pipelineReflection.vertexArguments.count + pipelineReflection.fragmentArguments.count);
@@ -813,16 +826,11 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
                         if (arg.type == MTLArgumentTypeBuffer && arg.index >= bindingMap.inputAttributeIndexOffset)
                         {
-                            for (const DKShaderAttribute& attr : vertexFunction->stageInputAttributes)
-                            {
-                                if (attr.location == (arg.index - bindingMap.inputAttributeIndexOffset))
-                                {
-                                    DKShaderAttribute attr2 = attr;
-                                    attr2.enabled = true;
-                                    inputAttrs.Add(attr2);
-                                    break;
-                                }
-                            }
+                            // This can be skipped.
+                            // We copied all inputAttrs from above.
+
+                            // The Metal pipeline-reflection provides single vertex-buffer information,
+                            // rather than separated vertex-stream component informations.
                         }
                         else if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
                         {

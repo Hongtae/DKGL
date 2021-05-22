@@ -19,7 +19,7 @@ namespace DKFramework::Private::Metal
 	class ShaderFunction : public DKShaderFunction
 	{
 	public:
-		ShaderFunction(DKShaderModule*, id<MTLFunction>, MTLSize);
+		ShaderFunction(DKShaderModule*, id<MTLFunction>, MTLSize, const DKString& name);
 		~ShaderFunction();
 
 		const DKArray<DKShaderAttribute>& StageInputAttributes() const override { return stageInputAttributes; }
@@ -31,6 +31,7 @@ namespace DKFramework::Private::Metal
 
 		DKGraphicsDevice* Device() override { return module->Device(); }
 
+        DKString name; // spir-v name (not MSL)
 		id<MTLFunction> function;
 		DKObject<DKShaderModule> module;
 

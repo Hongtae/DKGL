@@ -15,9 +15,10 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize wgSize)
+ShaderFunction::ShaderFunction(DKShaderModule* sm, id<MTLFunction> func, MTLSize wgSize, const DKString& spirvName)
 : module(sm)
 , function(nil)
+, name(spirvName)
 , workgroupSize(wgSize)
 {
 	DKASSERT_DEBUG(func != nil);
@@ -56,11 +57,6 @@ ShaderFunction::~ShaderFunction()
 
 DKString ShaderFunction::FunctionName() const 
 {
-	DKString name;
-	@autoreleasepool
-	{
-		name = function.name.UTF8String;
-	}
 	return name;
 }
 

@@ -38,7 +38,12 @@ namespace DKFramework::Private::Metal
 	class ShaderModule : public DKShaderModule
 	{
 	public:
-		ShaderModule(DKGraphicsDevice*, id<MTLLibrary>);
+        struct NameConversion
+        {
+            DKString originalName;
+            DKString cleansedName;
+        };
+		ShaderModule(DKGraphicsDevice*, id<MTLLibrary>, const DKArray<NameConversion>& functionNames);
 		~ShaderModule();
 
 		const DKArray<DKString>& FunctionNames() const override { return functionNames; }
@@ -50,7 +55,8 @@ namespace DKFramework::Private::Metal
 
 		id<MTLLibrary> library;
 		DKObject<DKGraphicsDevice> device;
-		DKArray<DKString> functionNames;
+		DKArray<DKString> functionNames; // name from spirv
+        DKMap<DKString, DKString> functionNameMap; // spirv to msl table
 
         MTLSize workgroupSize;
 

@@ -15,7 +15,8 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Metal;
 
-ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib)
+ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib,
+                           const DKArray<NameConversion>& names)
 : library(nil)
 , device(dev)
 , workgroupSize({1,1,1})
@@ -24,14 +25,27 @@ ShaderModule::ShaderModule(DKGraphicsDevice* dev, id<MTLLibrary> lib)
 	DKASSERT_DEBUG(lib != nil);
 	library = [lib retain];
 
-	@autoreleasepool {
-		NSArray<NSString*> *names = [library functionNames];
-		this->functionNames.Reserve(names.count);
+    this->functionNames.Reserve(names.Count());
+    this->functionNameMap.Clear();
 
-		for (NSString* name in names)
-		{
-			this->functionNames.Add(name.UTF8String);
-		}
+    for (const NameConversion& nc : names)
+    {
+        this->functionNames.Add(nc.originalName);
+        this->functionNameMap.Update(nc.originalName, nc.cleansedName);
+    }
+
+	@autoreleasepool {
+		NSArray<NSString*> *fnNames = [library functionNames];
+
+        for (const NameConversion& nc : names)
+        {
+            NSString* functionName = [NSString stringWithUTF8String:(const char*)DKStringU8(nc.cleansedName)];
+            if ([fnNames indexOfObject:functionName] == NSNotFound)
+            {
+                NSLog(@"Error: MTLLibrary function not found: %@", functionName);
+                //DKASSERT_DEBUG(false);
+            }
+        }
 	}
 }
 
@@ -43,11 +57,16 @@ ShaderModule::~ShaderModule()
 DKObject<DKShaderFunction> ShaderModule::CreateFunction(const DKString& name) const
 {
 	@autoreleasepool {
-		NSString* functionName = [NSString stringWithUTF8String:(const char*)DKStringU8(name)];
+        NSString* functionName = nil;
+        if (auto p = functionNameMap.Find(name); p)
+            functionName = [NSString stringWithUTF8String:(const char*)DKStringU8(p->value)];
+        else
+            return NULL;
+
 		id<MTLFunction> func = [library newFunctionWithName:functionName];
 		if (func)
 		{
-			return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func, workgroupSize);
+			return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func, workgroupSize, name);
 		}
 	}
 	return NULL;
@@ -59,7 +78,13 @@ DKObject<DKShaderFunction> ShaderModule::CreateSpecializedFunction(const DKStrin
 	{
 		@autoreleasepool {
 			NSError* error = nil;
-			NSString* funcName = [NSString stringWithUTF8String:(const char *)DKStringU8(name)];
+
+            NSString* functionName = nil;
+            if (auto p = functionNameMap.Find(name); p)
+                functionName = [NSString stringWithUTF8String:(const char*)DKStringU8(p->value)];
+            else
+                return NULL;
+
 			MTLFunctionConstantValues* constantValues = [[[MTLFunctionConstantValues alloc] init] autorelease];
 			for (size_t i = 0; i < numValues; ++i)
 			{
@@ -69,7 +94,7 @@ DKObject<DKShaderFunction> ShaderModule::CreateSpecializedFunction(const DKStrin
 										withRange:NSMakeRange(sp.index, sp.size)];
 			}
 
-			id<MTLFunction> func = [library newFunctionWithName:funcName
+			id<MTLFunction> func = [library newFunctionWithName:functionName
 												 constantValues:constantValues
 														  error:&error];
 			if (error)
@@ -78,7 +103,7 @@ DKObject<DKShaderFunction> ShaderModule::CreateSpecializedFunction(const DKStrin
 			}
 			if (func)
 			{
-				return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func, workgroupSize);
+				return DKOBJECT_NEW ShaderFunction(const_cast<ShaderModule*>(this), func, workgroupSize, name);
 			}
 		}
 	}
