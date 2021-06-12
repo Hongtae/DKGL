@@ -1059,6 +1059,10 @@
 		8470A687229C45240032915A /* Event.h in Headers */ = {isa = PBXBuildFile; fileRef = 8470A681229C45240032915A /* Event.h */; };
 		8470A688229C45240032915A /* Event.h in Headers */ = {isa = PBXBuildFile; fileRef = 8470A681229C45240032915A /* Event.h */; };
 		8470A689229C45240032915A /* Event.h in Headers */ = {isa = PBXBuildFile; fileRef = 8470A681229C45240032915A /* Event.h */; };
+		8472A761273C0EF800E311AD /* liblzma_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8472A75E273C0ED100E311AD /* liblzma_iOS.a */; };
+		8472A762273C0F0800E311AD /* liblzma_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8472A760273C0ED100E311AD /* liblzma_macOS.a */; };
+		8472A763273C0F1700E311AD /* liblzma_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8472A75E273C0ED100E311AD /* liblzma_iOS.a */; };
+		8472A764273C0F2700E311AD /* liblzma_macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8472A760273C0ED100E311AD /* liblzma_macOS.a */; };
 		847567231F00008500DDCED3 /* Types.h in Headers */ = {isa = PBXBuildFile; fileRef = 847567211F00008500DDCED3 /* Types.h */; };
 		84768FD61B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
 		84768FD71B1D981D0006DD7C /* DKBitArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 84768FD51B1D981D0006DD7C /* DKBitArray.h */; };
@@ -2172,6 +2176,48 @@
 			remoteGlobalIDString = 84A4099C1DA3F25400E5A725;
 			remoteInfo = zlib_macOS;
 		};
+		8472A75D273C0ED100E311AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 84A409651DA3F21200E5A725;
+			remoteInfo = lzma_iOS;
+		};
+		8472A75F273C0ED100E311AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 84A4095C1DA3F20600E5A725;
+			remoteInfo = lzma_macOS;
+		};
+		8472A765273C0F4200E311AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 84A409641DA3F21200E5A725;
+			remoteInfo = lzma_iOS;
+		};
+		8472A767273C0F5200E311AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 84A4095B1DA3F20600E5A725;
+			remoteInfo = lzma_macOS;
+		};
+		8472A769273C0F6400E311AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 84A409641DA3F21200E5A725;
+			remoteInfo = lzma_iOS;
+		};
+		8472A76B273C0F7300E311AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 84A4095B1DA3F20600E5A725;
+			remoteInfo = lzma_macOS;
+		};
 		849B23D71EB4C1E60033C44C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */;
@@ -2370,6 +2416,7 @@
 		8470A677229C44D10032915A /* Semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Semaphore.cpp; sourceTree = "<group>"; };
 		8470A680229C45240032915A /* Event.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Event.mm; sourceTree = "<group>"; };
 		8470A681229C45240032915A /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
+		8472A758273C0ED100E311AD /* lzma.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lzma.xcodeproj; path = lzma/lzma.xcodeproj; sourceTree = "<group>"; };
 		847567211F00008500DDCED3 /* Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		84768FD51B1D981D0006DD7C /* DKBitArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKBitArray.h; sourceTree = "<group>"; };
 		84798B7119E51CBA009378A6 /* DK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2734,6 +2781,7 @@
 				66DA129D1DADFD5A00B3056E /* liblibvorbis_macOS.a in Frameworks */,
 				66DA129E1DADFD5A00B3056E /* liblibxml2_macOS.a in Frameworks */,
 				66DA129F1DADFD5A00B3056E /* liblz4_macOS.a in Frameworks */,
+				8472A764273C0F2700E311AD /* liblzma_macOS.a in Frameworks */,
 				66DA12A01DADFD5A00B3056E /* libzlib_macOS.a in Frameworks */,
 				84A81DC6224B57950060BCBB /* libzstd_macOS.a in Frameworks */,
 			);
@@ -2758,6 +2806,7 @@
 				66DA13061DAE060E00B3056E /* liblibvorbis_iOS.a in Frameworks */,
 				66DA13071DAE060E00B3056E /* liblibxml2_iOS.a in Frameworks */,
 				66DA13081DAE060E00B3056E /* liblz4_iOS.a in Frameworks */,
+				8472A763273C0F1700E311AD /* liblzma_iOS.a in Frameworks */,
 				66DA13091DAE060E00B3056E /* libzlib_iOS.a in Frameworks */,
 				84A81DC7224B57AF0060BCBB /* libzstd_iOS.a in Frameworks */,
 			);
@@ -2778,6 +2827,7 @@
 				66DA12F91DAE05EF00B3056E /* liblibvorbis_iOS.a in Frameworks */,
 				66DA12FA1DAE05EF00B3056E /* liblibxml2_iOS.a in Frameworks */,
 				66DA12FB1DAE05EF00B3056E /* liblz4_iOS.a in Frameworks */,
+				8472A761273C0EF800E311AD /* liblzma_iOS.a in Frameworks */,
 				66DA12FC1DAE05EF00B3056E /* libzlib_iOS.a in Frameworks */,
 				84A81DC9224B57F30060BCBB /* libzstd_iOS.a in Frameworks */,
 			);
@@ -2798,6 +2848,7 @@
 				66DA132D1DAE063B00B3056E /* liblibvorbis_macOS.a in Frameworks */,
 				66DA132E1DAE063B00B3056E /* liblibxml2_macOS.a in Frameworks */,
 				66DA132F1DAE063B00B3056E /* liblz4_macOS.a in Frameworks */,
+				8472A762273C0F0800E311AD /* liblzma_macOS.a in Frameworks */,
 				66DA13301DAE063B00B3056E /* libzlib_macOS.a in Frameworks */,
 				84A81DC8224B57DA0060BCBB /* libzstd_macOS.a in Frameworks */,
 			);
@@ -3050,7 +3101,6 @@
 		8405D34F15BEF5E300E91EEF /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				84A81DBD224B57820060BCBB /* zstd.xcodeproj */,
 				8405EBDB15BEF75400E91EEF /* BulletPhysics.xcodeproj */,
 				66DA11E31DAC7C4E00B3056E /* bzip2.xcodeproj */,
 				66DA11F51DAC7C6A00B3056E /* FreeType.xcodeproj */,
@@ -3061,8 +3111,10 @@
 				66DA122B1DAC7C9900B3056E /* libvorbis.xcodeproj */,
 				66DA12341DAC7CA100B3056E /* libxml2.xcodeproj */,
 				66DA123D1DAC7CA800B3056E /* lz4.xcodeproj */,
+				8472A758273C0ED100E311AD /* lzma.xcodeproj */,
 				849B23D21EB4C1E60033C44C /* SPIRV-Cross.xcodeproj */,
 				66DA12461DAC7CB300B3056E /* zlib.xcodeproj */,
+				84A81DBD224B57820060BCBB /* zstd.xcodeproj */,
 			);
 			path = Libs;
 			sourceTree = "<group>";
@@ -3163,6 +3215,15 @@
 				846B296B1921FE6300918B1B /* DK.h */,
 			);
 			name = "Header Files";
+			sourceTree = "<group>";
+		};
+		8472A759273C0ED100E311AD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8472A75E273C0ED100E311AD /* liblzma_iOS.a */,
+				8472A760273C0ED100E311AD /* liblzma_macOS.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		8482B7301DCE27230079FD84 /* AudioStream */ = {
@@ -4523,6 +4584,7 @@
 				66DA12B51DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12B71DAE005A00B3056E /* PBXTargetDependency */,
 				66DA12B91DAE005A00B3056E /* PBXTargetDependency */,
+				8472A76C273C0F7300E311AD /* PBXTargetDependency */,
 				66DA12BB1DAE005A00B3056E /* PBXTargetDependency */,
 				84A81DCF224B58410060BCBB /* PBXTargetDependency */,
 			);
@@ -4555,6 +4617,7 @@
 				66DA12CF1DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12D11DAE05B800B3056E /* PBXTargetDependency */,
 				66DA12D31DAE05B800B3056E /* PBXTargetDependency */,
+				8472A76A273C0F6400E311AD /* PBXTargetDependency */,
 				66DA12D51DAE05B800B3056E /* PBXTargetDependency */,
 				84A81DD1224B58620060BCBB /* PBXTargetDependency */,
 			);
@@ -4585,6 +4648,7 @@
 				66DA12E91DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12EB1DAE05D900B3056E /* PBXTargetDependency */,
 				66DA12ED1DAE05D900B3056E /* PBXTargetDependency */,
+				8472A766273C0F4200E311AD /* PBXTargetDependency */,
 				66DA12EF1DAE05D900B3056E /* PBXTargetDependency */,
 				84A81DCD224B58120060BCBB /* PBXTargetDependency */,
 			);
@@ -4615,6 +4679,7 @@
 				66DA131D1DAE062700B3056E /* PBXTargetDependency */,
 				66DA131F1DAE062700B3056E /* PBXTargetDependency */,
 				66DA13211DAE062700B3056E /* PBXTargetDependency */,
+				8472A768273C0F5200E311AD /* PBXTargetDependency */,
 				66DA13231DAE062700B3056E /* PBXTargetDependency */,
 				84A81DCB224B58040060BCBB /* PBXTargetDependency */,
 			);
@@ -4689,6 +4754,10 @@
 				{
 					ProductGroup = 66DA123E1DAC7CA800B3056E /* Products */;
 					ProjectRef = 66DA123D1DAC7CA800B3056E /* lz4.xcodeproj */;
+				},
+				{
+					ProductGroup = 8472A759273C0ED100E311AD /* Products */;
+					ProjectRef = 8472A758273C0ED100E311AD /* lzma.xcodeproj */;
 				},
 				{
 					ProductGroup = 849B23D31EB4C1E60033C44C /* Products */;
@@ -4866,6 +4935,20 @@
 			fileType = archive.ar;
 			path = libzlib_macOS.a;
 			remoteRef = 66DA124D1DAC7CB300B3056E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8472A75E273C0ED100E311AD /* liblzma_iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblzma_iOS.a;
+			remoteRef = 8472A75D273C0ED100E311AD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		8472A760273C0ED100E311AD /* liblzma_macOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblzma_macOS.a;
+			remoteRef = 8472A75F273C0ED100E311AD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		849B23D81EB4C1E60033C44C /* libSPIRV-Cross_macOS.a */ = {
@@ -5881,6 +5964,26 @@
 			isa = PBXTargetDependency;
 			name = zlib_macOS;
 			targetProxy = 66DA13221DAE062700B3056E /* PBXContainerItemProxy */;
+		};
+		8472A766273C0F4200E311AD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = lzma_iOS;
+			targetProxy = 8472A765273C0F4200E311AD /* PBXContainerItemProxy */;
+		};
+		8472A768273C0F5200E311AD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = lzma_macOS;
+			targetProxy = 8472A767273C0F5200E311AD /* PBXContainerItemProxy */;
+		};
+		8472A76A273C0F6400E311AD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = lzma_iOS;
+			targetProxy = 8472A769273C0F6400E311AD /* PBXContainerItemProxy */;
+		};
+		8472A76C273C0F7300E311AD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = lzma_macOS;
+			targetProxy = 8472A76B273C0F7300E311AD /* PBXContainerItemProxy */;
 		};
 		849B24051EB4C2B20033C44C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

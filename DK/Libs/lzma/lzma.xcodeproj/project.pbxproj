@@ -1,0 +1,718 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8472A6CF273C0A0400E311AD /* Delta.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A67E273C0A0000E311AD /* Delta.c */; };
+		8472A6D0273C0A0400E311AD /* Delta.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A67E273C0A0000E311AD /* Delta.c */; };
+		8472A6D1273C0A0400E311AD /* AesOpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A67F273C0A0000E311AD /* AesOpt.c */; };
+		8472A6D2273C0A0400E311AD /* AesOpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A67F273C0A0000E311AD /* AesOpt.c */; };
+		8472A6D5273C0A0400E311AD /* BraIA64.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A682273C0A0000E311AD /* BraIA64.c */; };
+		8472A6D6273C0A0400E311AD /* BraIA64.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A682273C0A0000E311AD /* BraIA64.c */; };
+		8472A6D9273C0A0400E311AD /* XzIn.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A685273C0A0000E311AD /* XzIn.c */; };
+		8472A6DA273C0A0400E311AD /* XzIn.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A685273C0A0000E311AD /* XzIn.c */; };
+		8472A6DD273C0A0400E311AD /* XzDec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A688273C0A0000E311AD /* XzDec.c */; };
+		8472A6DE273C0A0400E311AD /* XzDec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A688273C0A0000E311AD /* XzDec.c */; };
+		8472A6DF273C0A0400E311AD /* LzFind.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A689273C0A0000E311AD /* LzFind.c */; };
+		8472A6E0273C0A0400E311AD /* LzFind.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A689273C0A0000E311AD /* LzFind.c */; };
+		8472A6E1273C0A0400E311AD /* 7zAlloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68A273C0A0000E311AD /* 7zAlloc.c */; };
+		8472A6E2273C0A0400E311AD /* 7zAlloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68A273C0A0000E311AD /* 7zAlloc.c */; };
+		8472A6E3273C0A0400E311AD /* 7zBuf2.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68B273C0A0000E311AD /* 7zBuf2.c */; };
+		8472A6E4273C0A0400E311AD /* 7zBuf2.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68B273C0A0000E311AD /* 7zBuf2.c */; };
+		8472A6E7273C0A0400E311AD /* Bra86.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68E273C0A0100E311AD /* Bra86.c */; };
+		8472A6E8273C0A0400E311AD /* Bra86.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68E273C0A0100E311AD /* Bra86.c */; };
+		8472A6E9273C0A0400E311AD /* 7zCrcOpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68F273C0A0100E311AD /* 7zCrcOpt.c */; };
+		8472A6EA273C0A0400E311AD /* 7zCrcOpt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A68F273C0A0100E311AD /* 7zCrcOpt.c */; };
+		8472A6ED273C0A0400E311AD /* 7zCrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A692273C0A0100E311AD /* 7zCrc.c */; };
+		8472A6EE273C0A0400E311AD /* 7zCrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A692273C0A0100E311AD /* 7zCrc.c */; };
+		8472A6EF273C0A0400E311AD /* Ppmd7Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A693273C0A0100E311AD /* Ppmd7Enc.c */; };
+		8472A6F0273C0A0400E311AD /* Ppmd7Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A693273C0A0100E311AD /* Ppmd7Enc.c */; };
+		8472A6F2273C0A0400E311AD /* CpuArch.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A695273C0A0100E311AD /* CpuArch.c */; };
+		8472A6F3273C0A0400E311AD /* CpuArch.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A695273C0A0100E311AD /* CpuArch.c */; };
+		8472A6F4273C0A0400E311AD /* Lzma2Dec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A696273C0A0100E311AD /* Lzma2Dec.c */; };
+		8472A6F5273C0A0400E311AD /* Lzma2Dec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A696273C0A0100E311AD /* Lzma2Dec.c */; };
+		8472A6FB273C0A0400E311AD /* LzmaDec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A69C273C0A0100E311AD /* LzmaDec.c */; };
+		8472A6FC273C0A0400E311AD /* LzmaDec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A69C273C0A0100E311AD /* LzmaDec.c */; };
+		8472A700273C0A0400E311AD /* Bcj2Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A69F273C0A0100E311AD /* Bcj2Enc.c */; };
+		8472A701273C0A0400E311AD /* Bcj2Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A69F273C0A0100E311AD /* Bcj2Enc.c */; };
+		8472A702273C0A0400E311AD /* Sort.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A0273C0A0100E311AD /* Sort.c */; };
+		8472A703273C0A0400E311AD /* Sort.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A0273C0A0100E311AD /* Sort.c */; };
+		8472A704273C0A0400E311AD /* LzmaEnc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A1273C0A0100E311AD /* LzmaEnc.c */; };
+		8472A705273C0A0400E311AD /* LzmaEnc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A1273C0A0100E311AD /* LzmaEnc.c */; };
+		8472A707273C0A0400E311AD /* Ppmd7.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A3273C0A0200E311AD /* Ppmd7.c */; };
+		8472A708273C0A0400E311AD /* Ppmd7.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A3273C0A0200E311AD /* Ppmd7.c */; };
+		8472A709273C0A0400E311AD /* Lzma2DecMt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A4273C0A0200E311AD /* Lzma2DecMt.c */; };
+		8472A70A273C0A0400E311AD /* Lzma2DecMt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A4273C0A0200E311AD /* Lzma2DecMt.c */; };
+		8472A70B273C0A0400E311AD /* Ppmd7Dec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A5273C0A0200E311AD /* Ppmd7Dec.c */; };
+		8472A70C273C0A0400E311AD /* Ppmd7Dec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A5273C0A0200E311AD /* Ppmd7Dec.c */; };
+		8472A70E273C0A0400E311AD /* Aes.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A7273C0A0200E311AD /* Aes.c */; };
+		8472A70F273C0A0400E311AD /* Aes.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A7273C0A0200E311AD /* Aes.c */; };
+		8472A711273C0A0400E311AD /* 7zStream.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A9273C0A0200E311AD /* 7zStream.c */; };
+		8472A712273C0A0400E311AD /* 7zStream.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6A9273C0A0200E311AD /* 7zStream.c */; };
+		8472A719273C0A0400E311AD /* Lzma2Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6AE273C0A0200E311AD /* Lzma2Enc.c */; };
+		8472A71A273C0A0400E311AD /* Lzma2Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6AE273C0A0200E311AD /* Lzma2Enc.c */; };
+		8472A71B273C0A0400E311AD /* 7zArcIn.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6AF273C0A0200E311AD /* 7zArcIn.c */; };
+		8472A71C273C0A0400E311AD /* 7zArcIn.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6AF273C0A0200E311AD /* 7zArcIn.c */; };
+		8472A71D273C0A0400E311AD /* Bcj2.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B0273C0A0200E311AD /* Bcj2.c */; };
+		8472A71E273C0A0400E311AD /* Bcj2.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B0273C0A0200E311AD /* Bcj2.c */; };
+		8472A71F273C0A0400E311AD /* 7zFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B1273C0A0200E311AD /* 7zFile.c */; };
+		8472A720273C0A0400E311AD /* 7zFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B1273C0A0200E311AD /* 7zFile.c */; };
+		8472A721273C0A0400E311AD /* Lzma86Dec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B2273C0A0200E311AD /* Lzma86Dec.c */; };
+		8472A722273C0A0400E311AD /* Lzma86Dec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B2273C0A0200E311AD /* Lzma86Dec.c */; };
+		8472A723273C0A0400E311AD /* Xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B3273C0A0200E311AD /* Xz.c */; };
+		8472A724273C0A0400E311AD /* Xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B3273C0A0200E311AD /* Xz.c */; };
+		8472A727273C0A0400E311AD /* Sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B6273C0A0300E311AD /* Sha256.c */; };
+		8472A728273C0A0400E311AD /* Sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B6273C0A0300E311AD /* Sha256.c */; };
+		8472A72A273C0A0400E311AD /* XzCrc64.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B8273C0A0300E311AD /* XzCrc64.c */; };
+		8472A72B273C0A0400E311AD /* XzCrc64.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B8273C0A0300E311AD /* XzCrc64.c */; };
+		8472A72C273C0A0400E311AD /* XzCrc64Opt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B9273C0A0300E311AD /* XzCrc64Opt.c */; };
+		8472A72D273C0A0400E311AD /* XzCrc64Opt.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6B9273C0A0300E311AD /* XzCrc64Opt.c */; };
+		8472A733273C0A0400E311AD /* XzEnc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6BE273C0A0300E311AD /* XzEnc.c */; };
+		8472A734273C0A0400E311AD /* XzEnc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6BE273C0A0300E311AD /* XzEnc.c */; };
+		8472A735273C0A0400E311AD /* Alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6BF273C0A0300E311AD /* Alloc.c */; };
+		8472A736273C0A0400E311AD /* Alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6BF273C0A0300E311AD /* Alloc.c */; };
+		8472A73A273C0A0400E311AD /* Lzma86Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6C3273C0A0300E311AD /* Lzma86Enc.c */; };
+		8472A73B273C0A0400E311AD /* Lzma86Enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6C3273C0A0300E311AD /* Lzma86Enc.c */; };
+		8472A73E273C0A0400E311AD /* 7zDec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6C6273C0A0300E311AD /* 7zDec.c */; };
+		8472A73F273C0A0400E311AD /* 7zDec.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6C6273C0A0300E311AD /* 7zDec.c */; };
+		8472A744273C0A0400E311AD /* LzmaLib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6CA273C0A0400E311AD /* LzmaLib.c */; };
+		8472A745273C0A0400E311AD /* LzmaLib.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6CA273C0A0400E311AD /* LzmaLib.c */; };
+		8472A746273C0A0400E311AD /* Bra.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6CB273C0A0400E311AD /* Bra.c */; };
+		8472A747273C0A0400E311AD /* Bra.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6CB273C0A0400E311AD /* Bra.c */; };
+		8472A748273C0A0400E311AD /* 7zBuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6CC273C0A0400E311AD /* 7zBuf.c */; };
+		8472A749273C0A0400E311AD /* 7zBuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 8472A6CC273C0A0400E311AD /* 7zBuf.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		84A409631DA3F21200E5A725 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8472A67B273C099000E311AD /* DOC */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DOC; sourceTree = "<group>"; };
+		8472A67D273C0A0000E311AD /* LzmaEnc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LzmaEnc.h; sourceTree = "<group>"; };
+		8472A67E273C0A0000E311AD /* Delta.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Delta.c; sourceTree = "<group>"; };
+		8472A67F273C0A0000E311AD /* AesOpt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AesOpt.c; sourceTree = "<group>"; };
+		8472A681273C0A0000E311AD /* LzmaDec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LzmaDec.h; sourceTree = "<group>"; };
+		8472A682273C0A0000E311AD /* BraIA64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BraIA64.c; sourceTree = "<group>"; };
+		8472A683273C0A0000E311AD /* RotateDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotateDefs.h; sourceTree = "<group>"; };
+		8472A684273C0A0000E311AD /* Lzma2Dec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lzma2Dec.h; sourceTree = "<group>"; };
+		8472A685273C0A0000E311AD /* XzIn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XzIn.c; sourceTree = "<group>"; };
+		8472A686273C0A0000E311AD /* Delta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delta.h; sourceTree = "<group>"; };
+		8472A687273C0A0000E311AD /* Bra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bra.h; sourceTree = "<group>"; };
+		8472A688273C0A0000E311AD /* XzDec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XzDec.c; sourceTree = "<group>"; };
+		8472A689273C0A0000E311AD /* LzFind.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LzFind.c; sourceTree = "<group>"; };
+		8472A68A273C0A0000E311AD /* 7zAlloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zAlloc.c; sourceTree = "<group>"; };
+		8472A68B273C0A0000E311AD /* 7zBuf2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zBuf2.c; sourceTree = "<group>"; };
+		8472A68C273C0A0000E311AD /* 7zCrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7zCrc.h; sourceTree = "<group>"; };
+		8472A68D273C0A0000E311AD /* Lzma86.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lzma86.h; sourceTree = "<group>"; };
+		8472A68E273C0A0100E311AD /* Bra86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Bra86.c; sourceTree = "<group>"; };
+		8472A68F273C0A0100E311AD /* 7zCrcOpt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zCrcOpt.c; sourceTree = "<group>"; };
+		8472A690273C0A0100E311AD /* Precomp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Precomp.h; sourceTree = "<group>"; };
+		8472A691273C0A0100E311AD /* 7zFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7zFile.h; sourceTree = "<group>"; };
+		8472A692273C0A0100E311AD /* 7zCrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zCrc.c; sourceTree = "<group>"; };
+		8472A693273C0A0100E311AD /* Ppmd7Enc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Ppmd7Enc.c; sourceTree = "<group>"; };
+		8472A694273C0A0100E311AD /* Sha256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sha256.h; sourceTree = "<group>"; };
+		8472A695273C0A0100E311AD /* CpuArch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CpuArch.c; sourceTree = "<group>"; };
+		8472A696273C0A0100E311AD /* Lzma2Dec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Lzma2Dec.c; sourceTree = "<group>"; };
+		8472A697273C0A0100E311AD /* CpuArch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CpuArch.h; sourceTree = "<group>"; };
+		8472A699273C0A0100E311AD /* Xz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Xz.h; sourceTree = "<group>"; };
+		8472A69A273C0A0100E311AD /* 7zVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7zVersion.h; sourceTree = "<group>"; };
+		8472A69B273C0A0100E311AD /* LzHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LzHash.h; sourceTree = "<group>"; };
+		8472A69C273C0A0100E311AD /* LzmaDec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LzmaDec.c; sourceTree = "<group>"; };
+		8472A69F273C0A0100E311AD /* Bcj2Enc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Bcj2Enc.c; sourceTree = "<group>"; };
+		8472A6A0273C0A0100E311AD /* Sort.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Sort.c; sourceTree = "<group>"; };
+		8472A6A1273C0A0100E311AD /* LzmaEnc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LzmaEnc.c; sourceTree = "<group>"; };
+		8472A6A2273C0A0100E311AD /* XzCrc64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XzCrc64.h; sourceTree = "<group>"; };
+		8472A6A3273C0A0200E311AD /* Ppmd7.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Ppmd7.c; sourceTree = "<group>"; };
+		8472A6A4273C0A0200E311AD /* Lzma2DecMt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Lzma2DecMt.c; sourceTree = "<group>"; };
+		8472A6A5273C0A0200E311AD /* Ppmd7Dec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Ppmd7Dec.c; sourceTree = "<group>"; };
+		8472A6A7273C0A0200E311AD /* Aes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Aes.c; sourceTree = "<group>"; };
+		8472A6A8273C0A0200E311AD /* Ppmd7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ppmd7.h; sourceTree = "<group>"; };
+		8472A6A9273C0A0200E311AD /* 7zStream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zStream.c; sourceTree = "<group>"; };
+		8472A6AD273C0A0200E311AD /* Sort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sort.h; sourceTree = "<group>"; };
+		8472A6AE273C0A0200E311AD /* Lzma2Enc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Lzma2Enc.c; sourceTree = "<group>"; };
+		8472A6AF273C0A0200E311AD /* 7zArcIn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zArcIn.c; sourceTree = "<group>"; };
+		8472A6B0273C0A0200E311AD /* Bcj2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Bcj2.c; sourceTree = "<group>"; };
+		8472A6B1273C0A0200E311AD /* 7zFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zFile.c; sourceTree = "<group>"; };
+		8472A6B2273C0A0200E311AD /* Lzma86Dec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Lzma86Dec.c; sourceTree = "<group>"; };
+		8472A6B3273C0A0200E311AD /* Xz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Xz.c; sourceTree = "<group>"; };
+		8472A6B4273C0A0200E311AD /* Aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Aes.h; sourceTree = "<group>"; };
+		8472A6B5273C0A0200E311AD /* Lzma2Enc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lzma2Enc.h; sourceTree = "<group>"; };
+		8472A6B6273C0A0300E311AD /* Sha256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Sha256.c; sourceTree = "<group>"; };
+		8472A6B7273C0A0300E311AD /* Alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alloc.h; sourceTree = "<group>"; };
+		8472A6B8273C0A0300E311AD /* XzCrc64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XzCrc64.c; sourceTree = "<group>"; };
+		8472A6B9273C0A0300E311AD /* XzCrc64Opt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XzCrc64Opt.c; sourceTree = "<group>"; };
+		8472A6BA273C0A0300E311AD /* 7zAlloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7zAlloc.h; sourceTree = "<group>"; };
+		8472A6BB273C0A0300E311AD /* Lzma2DecMt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lzma2DecMt.h; sourceTree = "<group>"; };
+		8472A6BD273C0A0300E311AD /* 7z.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7z.h; sourceTree = "<group>"; };
+		8472A6BE273C0A0300E311AD /* XzEnc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XzEnc.c; sourceTree = "<group>"; };
+		8472A6BF273C0A0300E311AD /* Alloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Alloc.c; sourceTree = "<group>"; };
+		8472A6C0273C0A0300E311AD /* LzmaLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LzmaLib.h; sourceTree = "<group>"; };
+		8472A6C1273C0A0300E311AD /* 7zBuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7zBuf.h; sourceTree = "<group>"; };
+		8472A6C2273C0A0300E311AD /* LzFind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LzFind.h; sourceTree = "<group>"; };
+		8472A6C3273C0A0300E311AD /* Lzma86Enc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Lzma86Enc.c; sourceTree = "<group>"; };
+		8472A6C4273C0A0300E311AD /* Bcj2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bcj2.h; sourceTree = "<group>"; };
+		8472A6C5273C0A0300E311AD /* XzEnc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XzEnc.h; sourceTree = "<group>"; };
+		8472A6C6273C0A0300E311AD /* 7zDec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zDec.c; sourceTree = "<group>"; };
+		8472A6C7273C0A0300E311AD /* Compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Compiler.h; sourceTree = "<group>"; };
+		8472A6C9273C0A0400E311AD /* Ppmd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ppmd.h; sourceTree = "<group>"; };
+		8472A6CA273C0A0400E311AD /* LzmaLib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LzmaLib.c; sourceTree = "<group>"; };
+		8472A6CB273C0A0400E311AD /* Bra.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Bra.c; sourceTree = "<group>"; };
+		8472A6CC273C0A0400E311AD /* 7zBuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 7zBuf.c; sourceTree = "<group>"; };
+		8472A6CD273C0A0400E311AD /* 7zTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 7zTypes.h; sourceTree = "<group>"; };
+		84A4095C1DA3F20600E5A725 /* liblzma_macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblzma_macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		84A409651DA3F21200E5A725 /* liblzma_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblzma_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		84A409591DA3F20600E5A725 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84A409621DA3F21200E5A725 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		66DA0C8B1DA3502600B3056E = {
+			isa = PBXGroup;
+			children = (
+				8472A67C273C09A200E311AD /* C */,
+				8472A67B273C099000E311AD /* DOC */,
+				84A4095D1DA3F20600E5A725 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8472A67C273C09A200E311AD /* C */ = {
+			isa = PBXGroup;
+			children = (
+				8472A6BD273C0A0300E311AD /* 7z.h */,
+				8472A68A273C0A0000E311AD /* 7zAlloc.c */,
+				8472A6BA273C0A0300E311AD /* 7zAlloc.h */,
+				8472A6AF273C0A0200E311AD /* 7zArcIn.c */,
+				8472A6CC273C0A0400E311AD /* 7zBuf.c */,
+				8472A6C1273C0A0300E311AD /* 7zBuf.h */,
+				8472A68B273C0A0000E311AD /* 7zBuf2.c */,
+				8472A692273C0A0100E311AD /* 7zCrc.c */,
+				8472A68C273C0A0000E311AD /* 7zCrc.h */,
+				8472A68F273C0A0100E311AD /* 7zCrcOpt.c */,
+				8472A6C6273C0A0300E311AD /* 7zDec.c */,
+				8472A6B1273C0A0200E311AD /* 7zFile.c */,
+				8472A691273C0A0100E311AD /* 7zFile.h */,
+				8472A6A9273C0A0200E311AD /* 7zStream.c */,
+				8472A6CD273C0A0400E311AD /* 7zTypes.h */,
+				8472A69A273C0A0100E311AD /* 7zVersion.h */,
+				8472A6A7273C0A0200E311AD /* Aes.c */,
+				8472A6B4273C0A0200E311AD /* Aes.h */,
+				8472A67F273C0A0000E311AD /* AesOpt.c */,
+				8472A6BF273C0A0300E311AD /* Alloc.c */,
+				8472A6B7273C0A0300E311AD /* Alloc.h */,
+				8472A6B0273C0A0200E311AD /* Bcj2.c */,
+				8472A6C4273C0A0300E311AD /* Bcj2.h */,
+				8472A69F273C0A0100E311AD /* Bcj2Enc.c */,
+				8472A6CB273C0A0400E311AD /* Bra.c */,
+				8472A687273C0A0000E311AD /* Bra.h */,
+				8472A68E273C0A0100E311AD /* Bra86.c */,
+				8472A682273C0A0000E311AD /* BraIA64.c */,
+				8472A6C7273C0A0300E311AD /* Compiler.h */,
+				8472A695273C0A0100E311AD /* CpuArch.c */,
+				8472A697273C0A0100E311AD /* CpuArch.h */,
+				8472A67E273C0A0000E311AD /* Delta.c */,
+				8472A686273C0A0000E311AD /* Delta.h */,
+				8472A689273C0A0000E311AD /* LzFind.c */,
+				8472A6C2273C0A0300E311AD /* LzFind.h */,
+				8472A69B273C0A0100E311AD /* LzHash.h */,
+				8472A696273C0A0100E311AD /* Lzma2Dec.c */,
+				8472A684273C0A0000E311AD /* Lzma2Dec.h */,
+				8472A6A4273C0A0200E311AD /* Lzma2DecMt.c */,
+				8472A6BB273C0A0300E311AD /* Lzma2DecMt.h */,
+				8472A6AE273C0A0200E311AD /* Lzma2Enc.c */,
+				8472A6B5273C0A0200E311AD /* Lzma2Enc.h */,
+				8472A68D273C0A0000E311AD /* Lzma86.h */,
+				8472A6B2273C0A0200E311AD /* Lzma86Dec.c */,
+				8472A6C3273C0A0300E311AD /* Lzma86Enc.c */,
+				8472A69C273C0A0100E311AD /* LzmaDec.c */,
+				8472A681273C0A0000E311AD /* LzmaDec.h */,
+				8472A6A1273C0A0100E311AD /* LzmaEnc.c */,
+				8472A67D273C0A0000E311AD /* LzmaEnc.h */,
+				8472A6CA273C0A0400E311AD /* LzmaLib.c */,
+				8472A6C0273C0A0300E311AD /* LzmaLib.h */,
+				8472A6C9273C0A0400E311AD /* Ppmd.h */,
+				8472A6A3273C0A0200E311AD /* Ppmd7.c */,
+				8472A6A8273C0A0200E311AD /* Ppmd7.h */,
+				8472A6A5273C0A0200E311AD /* Ppmd7Dec.c */,
+				8472A693273C0A0100E311AD /* Ppmd7Enc.c */,
+				8472A690273C0A0100E311AD /* Precomp.h */,
+				8472A683273C0A0000E311AD /* RotateDefs.h */,
+				8472A6B6273C0A0300E311AD /* Sha256.c */,
+				8472A694273C0A0100E311AD /* Sha256.h */,
+				8472A6A0273C0A0100E311AD /* Sort.c */,
+				8472A6AD273C0A0200E311AD /* Sort.h */,
+				8472A6B3273C0A0200E311AD /* Xz.c */,
+				8472A699273C0A0100E311AD /* Xz.h */,
+				8472A6B8273C0A0300E311AD /* XzCrc64.c */,
+				8472A6A2273C0A0100E311AD /* XzCrc64.h */,
+				8472A6B9273C0A0300E311AD /* XzCrc64Opt.c */,
+				8472A688273C0A0000E311AD /* XzDec.c */,
+				8472A6BE273C0A0300E311AD /* XzEnc.c */,
+				8472A6C5273C0A0300E311AD /* XzEnc.h */,
+				8472A685273C0A0000E311AD /* XzIn.c */,
+			);
+			path = C;
+			sourceTree = "<group>";
+		};
+		84A4095D1DA3F20600E5A725 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84A4095C1DA3F20600E5A725 /* liblzma_macOS.a */,
+				84A409651DA3F21200E5A725 /* liblzma_iOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		84A4095A1DA3F20600E5A725 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		84A4095B1DA3F20600E5A725 /* lzma_macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84A409601DA3F20600E5A725 /* Build configuration list for PBXNativeTarget "lzma_macOS" */;
+			buildPhases = (
+				84A409581DA3F20600E5A725 /* Sources */,
+				84A409591DA3F20600E5A725 /* Frameworks */,
+				84A4095A1DA3F20600E5A725 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lzma_macOS;
+			productName = lz4_macOS;
+			productReference = 84A4095C1DA3F20600E5A725 /* liblzma_macOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		84A409641DA3F21200E5A725 /* lzma_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84A4096B1DA3F21300E5A725 /* Build configuration list for PBXNativeTarget "lzma_iOS" */;
+			buildPhases = (
+				84A409611DA3F21200E5A725 /* Sources */,
+				84A409621DA3F21200E5A725 /* Frameworks */,
+				84A409631DA3F21200E5A725 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lzma_iOS;
+			productName = lz4_iOS;
+			productReference = 84A409651DA3F21200E5A725 /* liblzma_iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		66DA0C8C1DA3502600B3056E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1250;
+				ORGANIZATIONNAME = "";
+				TargetAttributes = {
+					84A4095B1DA3F20600E5A725 = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+					84A409641DA3F21200E5A725 = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 66DA0C8F1DA3502600B3056E /* Build configuration list for PBXProject "lzma" */;
+			compatibilityVersion = "Xcode 11.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 66DA0C8B1DA3502600B3056E;
+			productRefGroup = 84A4095D1DA3F20600E5A725 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				84A409641DA3F21200E5A725 /* lzma_iOS */,
+				84A4095B1DA3F20600E5A725 /* lzma_macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		84A409581DA3F20600E5A725 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8472A71C273C0A0400E311AD /* 7zArcIn.c in Sources */,
+				8472A70F273C0A0400E311AD /* Aes.c in Sources */,
+				8472A6DA273C0A0400E311AD /* XzIn.c in Sources */,
+				8472A701273C0A0400E311AD /* Bcj2Enc.c in Sources */,
+				8472A6F3273C0A0400E311AD /* CpuArch.c in Sources */,
+				8472A6EE273C0A0400E311AD /* 7zCrc.c in Sources */,
+				8472A73B273C0A0400E311AD /* Lzma86Enc.c in Sources */,
+				8472A722273C0A0400E311AD /* Lzma86Dec.c in Sources */,
+				8472A6E4273C0A0400E311AD /* 7zBuf2.c in Sources */,
+				8472A70A273C0A0400E311AD /* Lzma2DecMt.c in Sources */,
+				8472A72B273C0A0400E311AD /* XzCrc64.c in Sources */,
+				8472A73F273C0A0400E311AD /* 7zDec.c in Sources */,
+				8472A6DE273C0A0400E311AD /* XzDec.c in Sources */,
+				8472A728273C0A0400E311AD /* Sha256.c in Sources */,
+				8472A6FC273C0A0400E311AD /* LzmaDec.c in Sources */,
+				8472A703273C0A0400E311AD /* Sort.c in Sources */,
+				8472A6E8273C0A0400E311AD /* Bra86.c in Sources */,
+				8472A734273C0A0400E311AD /* XzEnc.c in Sources */,
+				8472A6D6273C0A0400E311AD /* BraIA64.c in Sources */,
+				8472A6F5273C0A0400E311AD /* Lzma2Dec.c in Sources */,
+				8472A71E273C0A0400E311AD /* Bcj2.c in Sources */,
+				8472A6D0273C0A0400E311AD /* Delta.c in Sources */,
+				8472A6E0273C0A0400E311AD /* LzFind.c in Sources */,
+				8472A712273C0A0400E311AD /* 7zStream.c in Sources */,
+				8472A72D273C0A0400E311AD /* XzCrc64Opt.c in Sources */,
+				8472A705273C0A0400E311AD /* LzmaEnc.c in Sources */,
+				8472A724273C0A0400E311AD /* Xz.c in Sources */,
+				8472A736273C0A0400E311AD /* Alloc.c in Sources */,
+				8472A720273C0A0400E311AD /* 7zFile.c in Sources */,
+				8472A6D2273C0A0400E311AD /* AesOpt.c in Sources */,
+				8472A708273C0A0400E311AD /* Ppmd7.c in Sources */,
+				8472A747273C0A0400E311AD /* Bra.c in Sources */,
+				8472A6F0273C0A0400E311AD /* Ppmd7Enc.c in Sources */,
+				8472A749273C0A0400E311AD /* 7zBuf.c in Sources */,
+				8472A6E2273C0A0400E311AD /* 7zAlloc.c in Sources */,
+				8472A71A273C0A0400E311AD /* Lzma2Enc.c in Sources */,
+				8472A6EA273C0A0400E311AD /* 7zCrcOpt.c in Sources */,
+				8472A70C273C0A0400E311AD /* Ppmd7Dec.c in Sources */,
+				8472A745273C0A0400E311AD /* LzmaLib.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84A409611DA3F21200E5A725 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8472A71B273C0A0400E311AD /* 7zArcIn.c in Sources */,
+				8472A70E273C0A0400E311AD /* Aes.c in Sources */,
+				8472A6D9273C0A0400E311AD /* XzIn.c in Sources */,
+				8472A700273C0A0400E311AD /* Bcj2Enc.c in Sources */,
+				8472A6F2273C0A0400E311AD /* CpuArch.c in Sources */,
+				8472A6ED273C0A0400E311AD /* 7zCrc.c in Sources */,
+				8472A73A273C0A0400E311AD /* Lzma86Enc.c in Sources */,
+				8472A721273C0A0400E311AD /* Lzma86Dec.c in Sources */,
+				8472A6E3273C0A0400E311AD /* 7zBuf2.c in Sources */,
+				8472A709273C0A0400E311AD /* Lzma2DecMt.c in Sources */,
+				8472A72A273C0A0400E311AD /* XzCrc64.c in Sources */,
+				8472A73E273C0A0400E311AD /* 7zDec.c in Sources */,
+				8472A6DD273C0A0400E311AD /* XzDec.c in Sources */,
+				8472A727273C0A0400E311AD /* Sha256.c in Sources */,
+				8472A6FB273C0A0400E311AD /* LzmaDec.c in Sources */,
+				8472A702273C0A0400E311AD /* Sort.c in Sources */,
+				8472A6E7273C0A0400E311AD /* Bra86.c in Sources */,
+				8472A733273C0A0400E311AD /* XzEnc.c in Sources */,
+				8472A6D5273C0A0400E311AD /* BraIA64.c in Sources */,
+				8472A6F4273C0A0400E311AD /* Lzma2Dec.c in Sources */,
+				8472A71D273C0A0400E311AD /* Bcj2.c in Sources */,
+				8472A6CF273C0A0400E311AD /* Delta.c in Sources */,
+				8472A6DF273C0A0400E311AD /* LzFind.c in Sources */,
+				8472A711273C0A0400E311AD /* 7zStream.c in Sources */,
+				8472A72C273C0A0400E311AD /* XzCrc64Opt.c in Sources */,
+				8472A704273C0A0400E311AD /* LzmaEnc.c in Sources */,
+				8472A723273C0A0400E311AD /* Xz.c in Sources */,
+				8472A735273C0A0400E311AD /* Alloc.c in Sources */,
+				8472A71F273C0A0400E311AD /* 7zFile.c in Sources */,
+				8472A6D1273C0A0400E311AD /* AesOpt.c in Sources */,
+				8472A707273C0A0400E311AD /* Ppmd7.c in Sources */,
+				8472A746273C0A0400E311AD /* Bra.c in Sources */,
+				8472A6EF273C0A0400E311AD /* Ppmd7Enc.c in Sources */,
+				8472A748273C0A0400E311AD /* 7zBuf.c in Sources */,
+				8472A6E1273C0A0400E311AD /* 7zAlloc.c in Sources */,
+				8472A719273C0A0400E311AD /* Lzma2Enc.c in Sources */,
+				8472A6E9273C0A0400E311AD /* 7zCrcOpt.c in Sources */,
+				8472A70B273C0A0400E311AD /* Ppmd7Dec.c in Sources */,
+				8472A744273C0A0400E311AD /* LzmaLib.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		66DA0C901DA3502600B3056E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "_7ZIP_ST=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		66DA0C911DA3502600B3056E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "_7ZIP_ST=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+			};
+			name = Release;
+		};
+		84A4095E1DA3F20600E5A725 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		84A4095F1DA3F20600E5A725 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		84A4096C1DA3F21300E5A725 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		84A4096D1DA3F21300E5A725 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		66DA0C8F1DA3502600B3056E /* Build configuration list for PBXProject "lzma" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66DA0C901DA3502600B3056E /* Debug */,
+				66DA0C911DA3502600B3056E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		84A409601DA3F20600E5A725 /* Build configuration list for PBXNativeTarget "lzma_macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84A4095E1DA3F20600E5A725 /* Debug */,
+				84A4095F1DA3F20600E5A725 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		84A4096B1DA3F21300E5A725 /* Build configuration list for PBXNativeTarget "lzma_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84A4096C1DA3F21300E5A725 /* Debug */,
+				84A4096D1DA3F21300E5A725 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 66DA0C8C1DA3502600B3056E /* Project object */;
+}

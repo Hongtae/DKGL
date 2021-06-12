@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletPhysics", "BulletPhysics\BulletPhysics.vcxproj", "{E4C03A61-856A-4285-A734-EDE229C617F3}"
 EndProject
@@ -32,6 +32,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPIRV-Cross", "SPIRV-Cross\SPIRV-Cross.vcxproj", "{0B99AC25-F938-4A25-AEDF-67A61B21D9E8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zstd", "zstd\zstd.vcxproj", "{C6B5981B-6E15-4C49-8541-F8C891A96EC2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lzma", "lzma\lzma.vcxproj", "{C253EA8D-1608-47F8-9562-BF2550DEBEA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -161,6 +163,14 @@ Global
 		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|Win32.Build.0 = Release|Win32
 		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|x64.ActiveCfg = Release|x64
 		{C6B5981B-6E15-4C49-8541-F8C891A96EC2}.Release|x64.Build.0 = Release|x64
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Debug|Win32.Build.0 = Debug|Win32
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Debug|x64.ActiveCfg = Debug|x64
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Debug|x64.Build.0 = Debug|x64
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Release|Win32.ActiveCfg = Release|Win32
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Release|Win32.Build.0 = Release|Win32
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Release|x64.ActiveCfg = Release|x64
+		{C253EA8D-1608-47F8-9562-BF2550DEBEA4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
