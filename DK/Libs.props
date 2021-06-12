@@ -17,9 +17,8 @@ xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\
     </PostBuildEvent>
     <CustomBuildStep />
     <PreBuildEvent>
-      <Command>
-        echo Building external libraries...
-MSBuild.exe /p:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(Configuration);Platform=$(Platform);WindowsTargetPlatformVersion=$(WindowsTargetPlatformVersion);OutDir=$(OutDir)\Libs /m:$(NUMBER_OF_PROCESSORS) /t:Build Libs\Libs.sln</Command>
+      <Command>echo Building external libraries...
+MSBuild.exe -property:SolutionDir="$(SolutionDir.Replace('\', '\\'))";Configuration=$(Configuration);Platform=$(Platform);PlatformToolset=$(PlatformToolset);WindowsTargetPlatformVersion=$(WindowsTargetPlatformVersion);OutDir=$(OutDir)\Libs\ -maxCpuCount:$(NUMBER_OF_PROCESSORS) -nologo -verbosity:minimal -target:Build Libs\Libs.sln</Command>
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>Libs/FreeType/include;Libs/libxml2/include;Libs/libogg/include;Libs/zlib;Libs/bzip2;Libs/BulletPhysics/src;Libs/Vulkan/include</AdditionalIncludeDirectories>
