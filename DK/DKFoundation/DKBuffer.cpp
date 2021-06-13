@@ -430,7 +430,7 @@ DKObject<DKBuffer> DKBuffer::Decompress(const void* p, size_t len, DKAllocator& 
 		DKBufferStream outputStream(output);
 		DKDataStream inputStream(DKData::StaticData(p, len));
 
-		if (DKCompressor::Decompress(&inputStream, &outputStream))
+		if (DKCompressor().Decompress(&inputStream, &outputStream))
 			return outputStream.Buffer();
 	}
 	return NULL;

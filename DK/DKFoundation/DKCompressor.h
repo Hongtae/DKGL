@@ -22,21 +22,25 @@ namespace DKFoundation
         {
             Zlib,   	///< zlib deflate with level 5. Good compatibility.
             Zstd,       ///< Zstandard with level 3. Fast and good compression ratio. Good balance.
-            ZstdMax,    ///< Zstandard compression level 19.
+            ZstdMax,    ///< Zstandard compression level 19. fast decompression.
             LZ4,		///< fast compression, fast decompression.
             LZ4HC,		///< fast decompression, better compression ratio than LZ4.
+            Lzma,		///< LZMA default (level 5)
+            LzmaFast,	///< LZMA fastest (level 0)
+            LzmaUltra,	///< LZMA ultra (level 9)
 
             Default = Zstd,
-            BestRatio = ZstdMax,
+            BestRatio = LzmaUltra,
             Fastest = LZ4,
-		};
-		DKCompressor(Method);
+
+            Automatic,	///< Default method for compression, Auto-detected method for decompression.
+        };
+		DKCompressor(Method m = Automatic);
 		~DKCompressor();
 
 		bool Compress(DKStream* input, DKStream* output) const;
-		static bool Decompress(DKStream* input, DKStream* output);
+		bool Decompress(DKStream* input, DKStream* output) const;
 
-	private:
-		Method method;
+		const Method method;
 	};
 }
