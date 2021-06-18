@@ -51,8 +51,9 @@ DKFont::DKFont()
 	: ftFace(NULL)
 	, outline(0)
 	, embolden(0)
-	, pointSize(0)
-	, resolution(72, 72)
+	, size26d6(10 * 64)
+	, dpiX(72)
+    , dpiY(72)
 	, numGlyphsLoaded(0)
 	, forceBitmap(0)
 	, kerningEnabled(false)
@@ -93,6 +94,10 @@ DKObject<DKFont> DKFont::Create(const DKString& file)
 
 	DKObject<DKFont> font = DKObject<DKFont>::New();
 	font->ftFace = face;
+    if (FT_Set_Char_Size(face, 0, font->size26d6, font->dpiX, font->dpiY))
+    {
+        DKLogW("Failed to initialize font style, You should call DKFont::SetStyle() manually.");
+    }
 	return font;
 }
 
@@ -124,7 +129,11 @@ DKObject<DKFont> DKFont::Create(DKData* data)
 		DKObject<DKFont> font = DKObject<DKFont>::New();
 		font->ftFace = face;
 		font->fontData = data;
-		return font;
+        if (FT_Set_Char_Size(face, 0, font->size26d6, font->dpiX, font->dpiY))
+        {
+            DKLogW("Failed to initialize font style, You should call DKFont::SetStyle() manually.");
+        }
+        return font;
 	}
 	data->UnlockShared();
 	return NULL;
@@ -181,7 +190,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	FT_Int32	loadFlag = forceBitmap ? FT_LOAD_RENDER : FT_LOAD_DEFAULT;
 	if (FT_Load_Glyph(face, index, loadFlag))
 	{
-		DKLog("Failed to load glyph for char='%lc'\n", c);
+		DKLogE("Failed to load glyph for char='%lc'\n", c);
 		return NULL;
 	}
 
@@ -651,62 +660,62 @@ DKPoint	DKFont::KernAdvance(wchar_t left, wchar_t right) const
 	return ret;
 }
 
-bool DKFont::SetStyle(int point, float embolden, float outline, DKPoint dpi, bool enableKerning, bool forceBitmap)
+bool DKFont::SetStyle(float point, uint32_t resX, uint32_t resY, float embolden, float outline, bool enableKerning, bool forceBitmap)
 {
-	if (dpi.x <= 0 || dpi.y <= 0)
-		return false;
 	if (ftFace == NULL)
-		return false;
-	if (point <= 0)
 		return false;
 	if (embolden < 0)
 		embolden = 0;
 	if (outline < 0)
 		outline = 0;
+    if (resX < 1)
+        resX = 1;
+    if (resY < 1)
+        resY = 1;
 
 	//for (int i = 0; i < reinterpret_cast<FT_Face>(ftFace)->num_fixed_sizes; i++)
 	//{
 	//	DKLog("available size: %d\n",reinterpret_cast<FT_Face>(ftFace)->available_sizes[i].size);
 	//}
 
-	FT_UInt resX2 = floor(dpi.x + 0.5f);
-	FT_UInt resY2 = floor(dpi.y + 0.5f);
+    // clamp pointSize (26.6 signed-fixed) from 1/64 to 1^25-(1/64)
+    double dp = Clamp<double>(double(point) * 64.0, 1.0, double(0x7fffffffu));
+    FT_F26Dot6 charSize = floor(dp);
 
-	if (resX2 <= 0 || resY2 <= 0)
-		return false;
-
-	FT_UInt resX1 = floor(this->resolution.x + 0.5f);
-	FT_UInt resY1 = floor(this->resolution.y + 0.5f);
-
-
-	if (pointSize != point ||
+	if (size26d6 != charSize ||
 		this->embolden != embolden ||
 		this->outline != outline ||
-		resX1 != resX2 ||
-		resY1 != resY2 ||
+		dpiX != resX ||
+		dpiY != resY ||
 		this->forceBitmap != forceBitmap)
 	{
-		DKCriticalSection<DKSpinLock> guard(lock);
-		if (FT_Set_Char_Size(reinterpret_cast<FT_Face>(ftFace), 0, point * 64, resX2, resY2) == 0)
-		{
-			resolution = DKPoint(resX2, resY2);
-			pointSize = point;
+        DKCriticalSection<DKSpinLock> guard(lock);
+        if (size26d6 != charSize || dpiX != resX || dpiY != resY)
+        {
+            if (FT_Set_Char_Size(reinterpret_cast<FT_Face>(ftFace), 0, charSize, resX, resY) == 0)
+            {
+                DKLogE("FT_Set_Char_Size failed! (size:0x%x, dpi:%ux%u)",
+                    charSize, resX, resY);
+                return false;
+            }
+        }
 
-			glyphMap.Clear();
-			charIndexMap.Clear();
-			textures.Clear();
-			numGlyphsLoaded = 0;
+        size26d6 = charSize;
+        dpiX = resX;
+        dpiY = resY;
 
-			this->outline = outline;
-			this->embolden = embolden;
-			this->forceBitmap = forceBitmap;
-			this->kerningEnabled = enableKerning;
+        glyphMap.Clear();
+        charIndexMap.Clear();
+        textures.Clear();
+        numGlyphsLoaded = 0;
 
-			return true;
-		}
-		return false;
+        this->outline = outline;
+        this->embolden = embolden;
+        this->forceBitmap = forceBitmap;
+        this->kerningEnabled = enableKerning;
+
+        return true;
 	}
-	this->resolution = DKPoint(resX2, resY2);
 	this->kerningEnabled = enableKerning;
 	return true;
 }
@@ -722,7 +731,7 @@ void DKFont::ClearCache()
 
 bool DKFont::IsValid() const
 {
-	if (ftFace && pointSize > 0)
+	if (ftFace && size26d6 > 0)
 		return true;
 	return false;
 }

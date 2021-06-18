@@ -33,82 +33,84 @@ namespace DKFramework
             DKRect	frame;
         };
 
-		DKFont();
-		~DKFont();
+        DKFont();
+        ~DKFont();
 
-		/// create object from file (path)
-		static DKObject<DKFont> Create(const DKString& file);
-		/// create object from data pointer. (data will be copied inside)
-		static DKObject<DKFont> Create(void* data, size_t size);
-		/// create object from DKData object. (data must not be modified by outside)
-		static DKObject<DKFont> Create(DKData* data);
-		/// create object from stream, stream can be copied if necessary.
-		static DKObject<DKFont> Create(DKStream* stream);
+        /// create object from file (path)
+        static DKObject<DKFont> Create(const DKString& file);
+        /// create object from data pointer. (data will be copied inside)
+        static DKObject<DKFont> Create(void* data, size_t size);
+        /// create object from DKData object. (data must not be modified by outside)
+        static DKObject<DKFont> Create(DKData* data);
+        /// create object from stream, stream can be copied if necessary.
+        static DKObject<DKFont> Create(DKStream* stream);
 
-		const GlyphData* GlyphDataForChar(wchar_t c) const;
+        const GlyphData* GlyphDataForChar(wchar_t c) const;
 
-		/// text pixel-width from baseline. not includes outline.
-		float LineWidth(const DKString& str) const;
-		/// pixel-height from baseline. not includes outline.
-		float LineHeight() const;
+        /// text pixel-width from baseline. not includes outline.
+        float LineWidth(const DKString& str) const;
+        /// pixel-height from baseline. not includes outline.
+        float LineHeight() const;
 
         /// The distance from the baseline to the highest or upper grid coordinate used to place an outline point.
         float Ascender() const;
         /// The distance from the baseline to the lowest grid coordinate used to place an outline point.
         float Descender() const;
-		/// text bounding box.
-		DKRect Bounds(const DKString& str) const; 
-		/// calculate kern advance between characters.
-		DKPoint	KernAdvance(wchar_t left, wchar_t right) const;
+        /// text bounding box.
+        DKRect Bounds(const DKString& str) const;
+        /// calculate kern advance between characters.
+        DKPoint	KernAdvance(wchar_t left, wchar_t right) const;
 
-		int PointSize() const				{ return pointSize; }
-		const DKPoint& Resolution() const	{ return resolution; }
-		float Outline() const				{ return outline; }
-		float Embolden() const				{ return embolden; }
-		bool KerningEnabled() const			{ return kerningEnabled; }
-		bool ForceBitmap() const			{ return forceBitmap; }
+        float PointSize() const             { return float(size26d6 >> 6) + (float(size26d6 & 63) / 64.0f); }
+        DKPoint Resolution() const          { return DKPoint(dpiX, dpiY); }
+        float Outline() const               { return outline; }
+        float Embolden() const              { return embolden; }
+        bool KerningEnabled() const         { return kerningEnabled; }
+        bool ForceBitmap() const            { return forceBitmap; }
 
-		DKString FamilyName() const;
-		DKString StyleName() const;
+        DKString FamilyName() const;
+        DKString StyleName() const;
 
-		/// point, embolden is point-size, outline is pixel-size.
-		bool SetStyle(int point, float embolden = 0, float outline = 0, DKPoint dpi = DKPoint(72,72), bool enableKerning = true, bool forceBitmap = false);
-		bool IsValid() const;
+        /// point, embolden is point-size, outline is pixel-size.
+        /// 1/64 <= pointSize <= 0x7fffffff / 64
+        bool SetStyle(float pointSize, uint32_t dpiX = 72, uint32_t dpiY = 72, float embolden = 0, float outline = 0, bool enableKerning = true, bool forceBitmap = false);
+        bool IsValid() const;
 
-		float Height() const;	///< font pixel-height (includes outline)
-		float Width() const;	///< font pixel-width (includes outline)
+        float Height() const;	///< font pixel-height (includes outline)
+        float Width() const;	///< font pixel-width (includes outline)
 
-		void ClearCache();		///< clear glyph textures.
+        void ClearCache();		///< clear glyph textures.
 
-	private:
-		float		outline;			// 0 for no-outline
-		float		embolden;			// 0 for regular font
-		int			pointSize;			// point size based DPI
-		DKPoint		resolution;			// DPI resolution
-		bool		kerningEnabled;		// kerning on/off
-		bool		forceBitmap;		// force bitmap loads
+    private:
+        float		outline;			// 0 for no-outline
+        float		embolden;			// 0 for regular font
+        uint32_t	size26d6;			// char size (26.6 fixed point)
+        uint32_t    dpiX;   			// DPI resolution X-axis
+        uint32_t    dpiY;               // DPI resolution Y-axis
+        bool		kerningEnabled;		// kerning on/off
+        bool		forceBitmap;		// force bitmap loads
 
-		struct GlyphTextureAtlas
-		{
-			DKObject<DKTexture>	texture;
+        struct GlyphTextureAtlas
+        {
+            DKObject<DKTexture>	texture;
 
             uint32_t filledVertical;
             uint32_t currentLineWidth;
             uint32_t currentLineMaxHeight;
-		};
+        };
 
-		typedef DKMap<wchar_t, GlyphData>		GlyphDataMap;
-		typedef DKMap<wchar_t, unsigned int>	CharIndexMap;
-		
-		mutable GlyphDataMap				glyphMap;
-		mutable CharIndexMap				charIndexMap;
-		mutable DKArray<GlyphTextureAtlas> 	textures;
-		mutable unsigned int				numGlyphsLoaded;
+        typedef DKMap<wchar_t, GlyphData>   GlyphDataMap;
+        typedef DKMap<wchar_t, uint32_t>    CharIndexMap;
 
-		void* ftFace;
-		DKSpinLock lock;
-		DKObject<DKData> fontData;
+        mutable GlyphDataMap                glyphMap;
+        mutable CharIndexMap                charIndexMap;
+        mutable DKArray<GlyphTextureAtlas>  textures;
+        mutable uint32_t                    numGlyphsLoaded;
 
-		DKTexture* CacheGlyphTexture(int width, int height, const void* data, DKRect& rect) const;
-	};
+        void* ftFace;
+        DKSpinLock lock;
+        DKObject<DKData> fontData;
+
+        DKTexture* CacheGlyphTexture(int width, int height, const void* data, DKRect& rect) const;
+    };
 }
