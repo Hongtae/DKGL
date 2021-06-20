@@ -67,28 +67,28 @@ DK interfaces to use DK library with other GUI OSes.
 > You can see implementations for other OSes in `DKFramework/Private`
 
 ## Build Environments
-- Visual Studio 2015 for Windows
+- Visual Studio 2019 for Windows
 - Xcode7 for Mac, iOS
-- C\++11 compiler
+- C\++17 compiler
 
 ## Included External Libraries
-- OpenAL-soft-1.15.1
+- [OpenAL-soft-1.15.1](https://github.com/kcat/openal-soft)
     - This is LGPL licensed, configured to build **dynamic-library**.
     - Win32, Android only.
     - Mac OS X, iOS use Apple's OpenAL framework.
 - [BulletPhysics-2.82](https://github.com/bulletphysics/bullet3)
-- FreeType-2.9
-- bzip2-1.0.6
-- jpeg-9
-- libFLAC-1.2.1
-- libogg-1.3.1
-- libpng-1.5.10
-- libtiff-4.0.3
-- libvorbis-1.3.3
-- libxml2-2.9.0
+- [FreeType-2.9](https://freetype.org/)
+- [bzip2-1.0.6](http://sourceware.org/bzip2/)
+- [jpeg-9](https://ijg.org/)
+- [libFLAC-1.2.1](https://xiph.org/flac/)
+- [libogg-1.3.1](https://xiph.org/ogg/)
+- [libpng-1.5.10](https://github.com/glennrp/libpng)
+- [libvorbis-1.3.3](https://xiph.org/vorbis/)
+- [libxml2-2.9.0](http://www.xmlsoft.org/)
 - [lz4-r131](https://github.com/lz4/lz4)
 - [zlib-1.2.7](https://github.com/madler/zlib)
 - [Zstd-1.3.8](https://github.com/facebook/zstd)
+- [LZMA-19.00](https://www.7-zip.org/sdk.html)
 
 ## Author
 Hongtae Kim, (tiff2766@gmail.com)  
