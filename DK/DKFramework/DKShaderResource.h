@@ -95,7 +95,7 @@ namespace DKFramework
         uint32_t rows;
         uint32_t columns;
 
-        size_t Bytes() const noexcept { return width * rows * columns; }
+        uint32_t Bytes() const noexcept { return width * rows * columns; }
 
         constexpr DKShaderDataTypeSize(uint32_t w, uint32_t r, uint32_t c)
             : width(w), rows(r), columns(c) {}
@@ -204,7 +204,7 @@ namespace DKFramework
 	struct DKShaderResourceBuffer
 	{
 		DKShaderDataType dataType;
-		//uint32_t alignment;
+		uint32_t alignment;
 		uint32_t size;
 	};
 	/**
@@ -235,14 +235,7 @@ namespace DKFramework
 		uint32_t count; // array length
 		uint32_t stride; // stride between array elements
 
-		DKString typeInfoKey; // structType key
-	};
-	/**
-	 Shader reflection data for struct type.
-	 */
-	struct DKShaderResourceStruct
-	{
-		DKArray<DKShaderResourceStructMember> members;
+        DKArray<DKShaderResourceStructMember> members;
 	};
 	/**
 	 Shader reflection data for resource descriptor.
@@ -283,10 +276,8 @@ namespace DKFramework
 			DKShaderResourceThreadgroup threadgroup;
 		} typeInfo;
 
-		DKString typeInfoKey; // structType key
-
-		// type data for struct members
-		DKMap<DKString, DKShaderResourceStruct> structTypeMemberMap;
+        // struct members (struct only)
+        DKArray<DKShaderResourceStructMember> members;
 	};
     /**
     Shader reflection data for push constants.
@@ -297,6 +288,6 @@ namespace DKFramework
 		uint32_t offset;
 		uint32_t size;
 		uint32_t stages;
-		DKArray<DKShaderPushConstantLayout> memberLayouts;
+		DKArray<DKShaderResourceStructMember> members;
 	};
 }

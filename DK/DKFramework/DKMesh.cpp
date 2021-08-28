@@ -459,11 +459,11 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
             }
 
             // bind struct element separately.
-             bool WriteStructElement(const DKString& keyPath,
-                                            const DKShaderResourceStructMember& element,
-                                            const DKShaderResource& resource,
-                                            uint32_t resourceArrayIndex,
-                                            BufferWriter* writer) override
+            bool WriteStructElement(const DKString& keyPath,
+                                    const DKShaderResourceStructMember& element,
+                                    const DKShaderResource& resource,
+                                    uint32_t resourceArrayIndex,
+                                    BufferWriter* writer) override
              {
                  if (auto p = mesh->structElementProperties.Find(keyPath); p)
                  {

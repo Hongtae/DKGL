@@ -220,20 +220,16 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
         uint8_t* buffer;
         size_t bufferLength;
 
-        bool Bind(const DKShaderResourceStruct& str)
+        bool Bind(const DKShaderResourceStructMember& str)
         {
             DKASSERT_DEBUG(base.type == DKShaderResource::TypeBuffer);
 
-            bool result = true;
-            for (const DKShaderResourceStructMember& mem : str.members)
-            {
-                const DKString keyPath = DKString(parentKeyPath).Append(".").Append(mem.name);
+            const DKString keyPath = DKString(parentKeyPath).Append(".").Append(str.name);
+            const DKShaderDataType type = str.dataType;
+            const uint32_t memberOffset = str.offset + offset;
 
-                const DKShaderDataType type = mem.dataType;
-                const uint32_t memberOffset = mem.offset + offset;
-
-                DKObject<ResourceBinder::BufferWriter> bufferWriter = 
-                    DKFunction([&](const void* data, size_t length)
+            DKObject<ResourceBinder::BufferWriter> bufferWriter = DKFunction(
+                [&](const void* data, size_t length)
                 {
                     if (length + memberOffset <= bufferLength)
                     {
@@ -241,42 +237,32 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
                         return true;
                     }
                     return false;
-                });
-
-                // find resource with keyPath
-                bool bound = binder->WriteStructElement(keyPath,
-                                                        mem,
-                                                        base,
-                                                        arrayIndex,
-                                                        bufferWriter);
-
-                if (!bound)
-                {
-                    if (type == DKShaderDataType::Struct)
-                    {
-                        if (auto p = base.structTypeMemberMap.Find(mem.typeInfoKey); p)
-                        {
-                            bound = StructElementEnumerator{
-                                binder,
-                                base,
-                                keyPath,
-                                arrayIndex,
-                                memberOffset,
-                                buffer,
-                                bufferLength,
-                            }.Bind(p->value);
-                        }
-                    }
                 }
-                if (!bound)
+            );
+
+            // find resource with keyPath
+            bool bound = binder->WriteStructElement(keyPath,
+                                                    str,
+                                                    base,
+                                                    arrayIndex,
+                                                    bufferWriter);
+
+            if (!bound && str.members.Count() > 0)
+            {
+                for (const DKShaderResourceStructMember& member : str.members)
                 {
-                    result = false;
-                    DKLogW("ERROR: Resource:(%ls, set:%d, bind:%d, offset:%d) failed to bind.",
-                           (const wchar_t*)keyPath,
-                           base.set, base.binding, memberOffset);
+                    if (!StructElementEnumerator{ binder,
+                                                  base,
+                                                  keyPath,
+                                                  arrayIndex,
+                                                  offset + member.offset,
+                                                  buffer,
+                                                  bufferLength }.Bind(member))
+                        return false;
                 }
+                return true;
             }
-            return result;
+            return true;
         }
     };
 
@@ -369,30 +355,35 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
                     {
                         size_t resourceSize = res.typeInfo.buffer.size;
 
-                        if (auto p = res.structTypeMemberMap.Find(res.typeInfoKey); p)
+                        if (uint8_t* ptr = reinterpret_cast<uint8_t*>(bi.buffer->Contents());
+                            ptr)
                         {
-                            if (uint8_t* ptr = reinterpret_cast<uint8_t*>(bi.buffer->Contents());
-                                ptr)
+                            bool bound = true;
+                            for (const DKShaderResourceStructMember& member : res.members)
                             {
-                                if (StructElementEnumerator{
-                                    binder,
-                                    res,
-                                    res.name,
-                                    index,  // buffer array index
-                                    0,
-                                    &ptr[bi.offset],
-                                    bi.length
-                                    }.Bind(p->value))
+                                if (!StructElementEnumerator{ binder,
+                                                              res,
+                                                              res.name,
+                                                              index,
+                                                              0,
+                                                              &ptr[bi.offset],
+                                                              bi.length }.Bind(member))
                                 {
-                                    bi.buffer->Flush();
+                                    bound = false;
+                                    const DKString keyPath = DKString(res.name).Append(".").Append(member.name);
+                                    DKLogE("ERROR: Cannot bind struct resource:%ls", (const wchar_t*)keyPath);
                                 }
                             }
-                            else
+                            if (bound)
                             {
-                                DKLogE("ERROR: Cannot map buffer for resource:%ls, check StorageMode!",
-                                       (const wchar_t*)res.name);
-                                // TODO: Create host buffer (StorageModeShared) and copy
+                                bi.buffer->Flush();
                             }
+                        }
+                        else
+                        {
+                            DKLogE("ERROR: Cannot map buffer for resource:%ls, check StorageMode!",
+                                   (const wchar_t*)res.name);
+                            // TODO: Create host buffer (StorageModeShared) and copy
                         }
                         bufferInfos.Add({bi.buffer, bi.offset, bi.length});
                     }

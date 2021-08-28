@@ -269,11 +269,57 @@ bool DKShader::Rebuild(const DKData* d)
                     this->threadgroupSize.z = Max(localSizeZ, 1U);
                 }
 
-                auto active = compiler.get_active_interface_variables();
-                spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+                auto getStructMembers = [&compiler](const spirv_cross::SPIRType& spType)->DKArray<DKShaderResourceStructMember>
+                {
+                    struct StructMemberExtractor
+                    {
+                        spirv_cross::Compiler& compiler;
+                        auto operator () (const spirv_cross::SPIRType& spType) -> DKArray<DKShaderResourceStructMember>
+                        {
+                            DKArray<DKShaderResourceStructMember> members;
+                            members.Reserve(spType.member_types.size());
+                            for (uint32_t i = 0; i < spType.member_types.size(); ++i)
+                            {
+                                DKShaderResourceStructMember member = {};
 
-				uint32_t stage = static_cast<uint32_t>(this->stage);
-                auto getResource = [&compiler, &active, stage](const spirv_cross::Resource& resource, bool writable)->DKShaderResource
+                                uint32_t type = spType.member_types[i];
+                                const spirv_cross::SPIRType& memberType = compiler.get_type(type);
+
+                                member.dataType = Private::ShaderDataTypeFromSPIRType(memberType);
+                                DKASSERT_DEBUG(member.dataType != DKShaderDataType::Unknown);
+                                DKASSERT_DEBUG(member.dataType != DKShaderDataType::None);
+
+                                member.name = compiler.get_member_name(spType.self, i).c_str();
+                                // member offset within this struct.
+                                member.offset = compiler.type_struct_member_offset(spType, i);
+                                //member.size = compiler.get_declared_struct_member_size(spType, i);
+                                //DKASSERT_DEBUG(member.size > 0);
+
+                                if (member.dataType == DKShaderDataType::Struct)
+                                {
+                                    member.members = StructMemberExtractor{ compiler }(memberType);
+                                    member.members.ShrinkToFit();
+                                }
+
+                                member.count = 1;
+                                for (auto n : memberType.array)
+                                    member.count = member.count * n;
+
+                                if (member.count > 1)
+                                    member.stride = compiler.type_struct_member_array_stride(spType, i);
+                                else
+                                    member.stride = 0;
+                                members.Add(member);
+                            }
+                            return members;
+                        }
+                    };
+                    return StructMemberExtractor{ compiler }(spType);
+                };
+
+                auto active = compiler.get_active_interface_variables();
+                uint32_t stage = static_cast<uint32_t>(this->stage);
+                auto getResource = [&compiler, &active, stage, &getStructMembers](const spirv_cross::Resource& resource, DKShaderResource::Access access)->DKShaderResource
                 {
                     DKShaderResource out = {};
                     out.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -282,10 +328,7 @@ bool DKShader::Rebuild(const DKData* d)
                     out.stride = compiler.get_decoration(resource.id, spv::DecorationArrayStride);
                     out.enabled = active.find(resource.id) != active.end();
 					out.stages = stage;
-                    if (writable)
-                        out.access = DKShaderResource::AccessReadWrite;
-                    else
-                        out.access = DKShaderResource::AccessReadOnly;
+                    out.access = access;
 
                     const spirv_cross::SPIRType& type = compiler.get_type(resource.type_id);
                     out.count = 1;
@@ -306,8 +349,8 @@ bool DKShader::Rebuild(const DKData* d)
                     case spirv_cross::SPIRType::Struct:
                         out.type = DKShaderResource::TypeBuffer;
                         out.typeInfo.buffer.dataType = DKShaderDataType::Struct;
-                        //out.typeInfo.buffer.alignment = compiler.get_decoration(resource.id, spv::DecorationAlignment);
-                        out.typeInfo.buffer.size = compiler.get_declared_struct_size(type);
+                        out.typeInfo.buffer.alignment = compiler.get_decoration(resource.id, spv::DecorationAlignment);
+                        out.typeInfo.buffer.size = (uint32_t)compiler.get_declared_struct_size(type);
                         break;
                     default:
                         DKASSERT_DESC_DEBUG(0, "Should implement this!");
@@ -318,13 +361,12 @@ bool DKShader::Rebuild(const DKData* d)
                     {
                         struct GetStructMembers
                         {
-                            DKShaderResource& base; // buffer resource (base)
                             spirv_cross::Compiler& compiler;
-                            auto operator () (const DKString& name, const spirv_cross::SPIRType& spType) -> DKShaderResourceStruct
+                            auto operator () (const spirv_cross::SPIRType& spType) -> DKArray<DKShaderResourceStructMember>
                             {
-                                DKShaderResourceStruct rst = {};
+                                DKArray<DKShaderResourceStructMember> members;
                                 // get struct members!
-                                rst.members.Reserve(spType.member_types.size());
+                                members.Reserve(spType.member_types.size());
                                 for (uint32_t i = 0; i < spType.member_types.size(); ++i)
                                 {
                                     DKShaderResourceStructMember member;
@@ -341,10 +383,8 @@ bool DKShader::Rebuild(const DKData* d)
 
                                     if (member.dataType == DKShaderDataType::Struct)
                                     {
-                                        member.typeInfoKey = DKString(name).Append(".").Append(member.name);
-                                        GetStructMembers getMembers = { base, compiler };
-                                        DKShaderResourceStruct memberStruct = getMembers(member.typeInfoKey, memberType);
-                                        base.structTypeMemberMap.Update(member.typeInfoKey, memberStruct);
+                                        member.members = GetStructMembers{ compiler }(memberType);
+                                        member.members.ShrinkToFit();
                                     }
 
                                     member.count = 1;
@@ -355,16 +395,13 @@ bool DKShader::Rebuild(const DKData* d)
                                         member.stride = compiler.type_struct_member_array_stride(spType, i);
                                     else
                                         member.stride = 0;
-                                    rst.members.Add(member);
+                                    members.Add(member);
                                 }
-                                rst.members.ShrinkToFit();
-                                return rst;
+                                return members;
                             }
                         };
-                        out.typeInfoKey = out.name;
-                        GetStructMembers getMembers = { out, compiler };
-                        DKShaderResourceStruct rst = getMembers(out.typeInfoKey, compiler.get_type(resource.base_type_id));
-                        out.structTypeMemberMap.Update(out.typeInfoKey, std::move(rst));
+                        out.members = getStructMembers(compiler.get_type(resource.base_type_id));
+                        out.members.ShrinkToFit();
                     }
                     return out;
                 };
@@ -388,17 +425,18 @@ bool DKShader::Rebuild(const DKData* d)
                     return desc;
                 };
 
+                spirv_cross::ShaderResources resources = compiler.get_shader_resources();
                 // https://github.com/KhronosGroup/SPIRV-Cross/wiki/Reflection-API-user-guide
                 // uniform_buffers
                 for (const spirv_cross::Resource& resource : resources.uniform_buffers)
                 {
-                    this->resources.Add(getResource(resource, false));
+                    this->resources.Add(getResource(resource, DKShaderResource::AccessReadOnly));
                     this->descriptors.Add(getDescriptor(resource, DescriptorTypeUniformBuffer));
                 }
                 // storage_buffers
                 for (const spirv_cross::Resource& resource : resources.storage_buffers)
                 {
-                    this->resources.Add(getResource(resource, true));
+                    this->resources.Add(getResource(resource, DKShaderResource::AccessReadWrite));
                     this->descriptors.Add(getDescriptor(resource, DescriptorTypeStorageBuffer));
                 }
                 // storage_images
@@ -410,13 +448,13 @@ bool DKShader::Rebuild(const DKData* d)
                     {
                         type = DescriptorTypeStorageTexelBuffer;
                     }
-                    this->resources.Add(getResource(resource, true));
+                    this->resources.Add(getResource(resource, DKShaderResource::AccessReadWrite));
                     this->descriptors.Add(getDescriptor(resource, type));
                 }
                 // sampled_images (sampler2D)
                 for (const spirv_cross::Resource& resource : resources.sampled_images)
                 {
-                    this->resources.Add(getResource(resource, false));
+                    this->resources.Add(getResource(resource, DKShaderResource::AccessReadOnly));
                     this->descriptors.Add(getDescriptor(resource, DescriptorTypeTextureSampler));
                 }
                 // separate_images
@@ -428,13 +466,13 @@ bool DKShader::Rebuild(const DKData* d)
                     {
                         type = DescriptorTypeUniformTexelBuffer;
                     }
-                    this->resources.Add(getResource(resource, false));
+                    this->resources.Add(getResource(resource, DKShaderResource::AccessReadOnly));
                     this->descriptors.Add(getDescriptor(resource, type));
                 }
                 // separate_samplers
                 for (const spirv_cross::Resource& resource : resources.separate_samplers)
                 {
-                    this->resources.Add(getResource(resource, false));
+                    this->resources.Add(getResource(resource, DKShaderResource::AccessReadOnly));
                     this->descriptors.Add(getDescriptor(resource, DescriptorTypeSampler));
                 }
 
@@ -484,42 +522,34 @@ bool DKShader::Rebuild(const DKData* d)
                 this->pushConstantLayouts.Reserve(resources.push_constant_buffers.size());
                 for (const spirv_cross::Resource& resource : resources.push_constant_buffers)
                 {
-					spirv_cross::SmallVector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
-                    DKShaderPushConstantLayout layout = {};
-                    layout.memberLayouts.Reserve(ranges.size());
-					layout.stages = stage;
+                    spirv_cross::SmallVector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
+                    DKASSERT_DEBUG(ranges.size());
 
-                    uint32_t pushConstantOffset = (uint32_t)ranges[0].offset;
-                    uint32_t pushConstantSize = 0;
+                    size_t pushConstantOffset = ranges[0].offset;
+                    size_t pushConstantSize = 0;
 
-                    for (spirv_cross::BufferRange &range : ranges)
+                    for (spirv_cross::BufferRange& range : ranges)
                     {
-                        // get range.
-                        DKShaderPushConstantLayout memberLayout;
-                        memberLayout.name = compiler.get_member_name(resource.id, range.index).c_str();
-                        memberLayout.offset = range.offset;
-                        memberLayout.size = range.range;
-                        pushConstantSize = (memberLayout.offset - pushConstantOffset) + memberLayout.size;
-
-                        layout.memberLayouts.Add(std::move(memberLayout));
+                        pushConstantOffset = Min(range.offset, pushConstantOffset);
+                        pushConstantSize = Max(range.offset + range.range, pushConstantSize);
                     }
-
-                    if (pushConstantSize % 4)	// size must be a multiple of 4
-                    {
-                        pushConstantSize += 4 - (pushConstantSize % 4);
-                    }
-
+                    DKASSERT_DEBUG(pushConstantSize > pushConstantOffset);
                     DKASSERT_DEBUG((pushConstantOffset % 4) == 0);
                     DKASSERT_DEBUG((pushConstantSize % 4) == 0);
                     DKASSERT_DEBUG(pushConstantSize > 0);
 
-                    layout.offset = pushConstantOffset;
-                    layout.size = pushConstantSize;
+                    DKShaderPushConstantLayout layout = {};
+                    layout.stages = stage;
+                    layout.offset = uint32_t(pushConstantOffset);
+                    layout.size = uint32_t(pushConstantSize - pushConstantOffset);
                     layout.name = compiler.get_name(resource.id).c_str();
 
-                    //const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
+                    layout.members = getStructMembers(compiler.get_type(resource.base_type_id));
+                    layout.members.ShrinkToFit();
 
+                    //const spirv_cross::SPIRType& spType = compiler.get_type_from_variable(resource.id);
                     this->pushConstantLayouts.Add(std::move(layout));
+
                 }
 
                 // get module entry points

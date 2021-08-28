@@ -32,65 +32,63 @@ namespace DKFramework::Private::Metal
 		return new GraphicsDevice();
 	}
 
-    DKShaderResource ShaderResourceFromMTLArgument(MTLArgument* arg, const DKArray<ResourceBinding>& bindingMap, DKShaderStage stage)
-    {
-        struct StructTypeData
+	DKArray<DKShaderResourceStructMember>
+    ShaderResourceStructMemberArrayFromMTLStructType(MTLStructType* st)
+	{
+        DKArray<DKShaderResourceStructMember> members;
+        members.Reserve(st.members.count);
+        for (MTLStructMember* member in st.members)
         {
-            DKString name;
-            DKShaderResource& base;
-            DKString operator () (MTLStructType* st)
+            DKShaderResourceStructMember mb = {};
+            MTLDataType type = member.dataType;
+            MTLStructType* memberStruct = nil;
+
+            if (type == MTLDataTypeArray)
             {
-                DKShaderResourceStruct output;
-                output.members.Reserve(st.members.count);
-                for (MTLStructMember* member in st.members)
-                {
-                    DKShaderResourceStructMember mb;
-                    MTLDataType type = member.dataType;
-                    MTLStructType* memberStruct = nil;
+                MTLArrayType* arrayType = member.arrayType;
 
-                    if (type == MTLDataTypeArray)
-                    {
-                        MTLArrayType* arrayType = member.arrayType;
-
-                        mb.count = (uint32_t)arrayType.arrayLength;
-                        mb.stride = (uint32_t)arrayType.stride;
-                        mb.dataType = ShaderDataType(arrayType.elementType);
-                        if (arrayType.elementType == MTLDataTypeStruct)
-                            memberStruct = arrayType.elementStructType;
-                    }
-                    else
-                    {
-                        mb.count = 1;
-                        mb.dataType = ShaderDataType(type);
-                    }
-
-                    mb.name = member.name.UTF8String;
-                    mb.offset = (uint32_t)member.offset;
-
-                    if (type == MTLDataTypeStruct)
-                        memberStruct = member.structType;
-                    if (memberStruct)
-                    {
-                        DKString typeKey = DKString(this->name).Append(".").Append(mb.name);
-                        mb.typeInfoKey = StructTypeData{ typeKey, base }.operator() (memberStruct);
-                    }
-                    if (type == MTLDataTypePointer)
-                    {
-                        NSLog(@"ERROR: Pointer in struct!");
-                        DKASSERT_DESC_DEBUG(0, "Not Implemented!");
-                    }
-                    if (type == MTLDataTypeTexture)
-                    {
-                        NSLog(@"ERROR: TextureReference in struct!");
-                        DKASSERT_DESC_DEBUG(0, "Not Implemented!");
-                    }
-                    output.members.Add(mb);
-                }
-                base.structTypeMemberMap.Update(name, output);
-                return name;
+                mb.count = (uint32_t)arrayType.arrayLength;
+                mb.stride = (uint32_t)arrayType.stride;
+                mb.dataType = ShaderDataType(arrayType.elementType);
+                if (arrayType.elementType == MTLDataTypeStruct)
+                    memberStruct = arrayType.elementStructType;
             }
-        };
+            else
+            {
+                mb.count = 1;
+                mb.dataType = ShaderDataType(type);
+            }
 
+            mb.name = member.name.UTF8String;
+            mb.offset = (uint32_t)member.offset;
+
+            if (type == MTLDataTypeStruct)
+                memberStruct = member.structType;
+            if (memberStruct)
+            {
+				mb.members = ShaderResourceStructMemberArrayFromMTLStructType(memberStruct);
+            }
+            if (type == MTLDataTypePointer)
+            {
+                NSLog(@"ERROR: Pointer in struct!");
+                DKASSERT_DESC_DEBUG(0, "Not Implemented!");
+            }
+            if (type == MTLDataTypeTexture)
+            {
+                NSLog(@"ERROR: TextureReference in struct!");
+                DKASSERT_DESC_DEBUG(0, "Not Implemented!");
+            }
+            members.Add(mb);
+        }
+        members.ShrinkToFit();
+		return members;
+	}
+
+    DKShaderResource
+    ShaderResourceFromMTLArgument(MTLArgument* arg,
+                                  const DKArray<ResourceBinding>& bindingMap,
+                                  DKShaderStage stage)
+    {
         DKShaderResource res = {};
 
         res.stages = (uint32_t)stage;
@@ -116,11 +114,11 @@ namespace DKFramework::Private::Metal
             case MTLArgumentTypeBuffer:
                 res.type = DKShaderResource::TypeBuffer;
                 res.typeInfo.buffer.size = (uint32_t)arg.bufferDataSize;
-                //res.typeInfo.buffer.alignment = (uint32_t)arg.bufferAlignment;
+                res.typeInfo.buffer.alignment = (uint32_t)arg.bufferAlignment;
                 res.typeInfo.buffer.dataType = ShaderDataType(arg.bufferDataType);
                 if (arg.bufferDataType == MTLDataTypeStruct)
                 {
-                    res.typeInfoKey = StructTypeData{res.name, res}.operator()(arg.bufferStructType);
+					res.members = ShaderResourceStructMemberArrayFromMTLStructType(arg.bufferStructType);
                 }
                 else
                 {
@@ -175,15 +173,23 @@ namespace DKFramework::Private::Metal
         DKASSERT(!indexNotFound);
         return res;
     }
-    DKShaderPushConstantLayout ShaderPushConstantLayoutFromMTLArgument(MTLArgument* arg, uint32_t offset, DKShaderStage stage)
+
+    DKShaderPushConstantLayout
+    ShaderPushConstantLayoutFromMTLArgument(MTLArgument* arg,
+                                            uint32_t offset,
+                                            DKShaderStage stage)
     {
         DKShaderPushConstantLayout layout = {};
         layout.name = DKString(arg.name.UTF8String);
         layout.stages = (uint32_t)stage;
         layout.offset = offset;
         layout.size = (uint32_t)arg.bufferDataSize;
+
+		DKASSERT_DEBUG(arg.bufferDataType == MTLDataTypeStruct);
+        layout.members = ShaderResourceStructMemberArrayFromMTLStructType(arg.bufferStructType);
         return layout;
     }
+
     bool CombineShaderResource(DKArray<DKShaderResource>& resources, const DKShaderResource& res)
     {
         for (DKShaderResource& r : resources)
