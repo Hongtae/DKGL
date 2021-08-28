@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8472A7A42746767700E311AD /* spirv_cross_parsed_ir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8472A79B2746767600E311AD /* spirv_cross_parsed_ir.cpp */; };
+		8472A7A52746767700E311AD /* spirv_cross_parsed_ir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8472A79B2746767600E311AD /* spirv_cross_parsed_ir.cpp */; };
+		8472A7A82746767700E311AD /* spirv_cross_c.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8472A79E2746767600E311AD /* spirv_cross_c.cpp */; };
+		8472A7A92746767700E311AD /* spirv_cross_c.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8472A79E2746767600E311AD /* spirv_cross_c.cpp */; };
+		8472A7AA2746767700E311AD /* spirv_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8472A79F2746767600E311AD /* spirv_parser.cpp */; };
+		8472A7AB2746767700E311AD /* spirv_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8472A79F2746767600E311AD /* spirv_parser.cpp */; };
 		849B23EF1EB4C2150033C44C /* spirv_cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23DD1EB4C2150033C44C /* spirv_cfg.cpp */; };
 		849B23F31EB4C2150033C44C /* spirv_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E01EB4C2150033C44C /* spirv_cpp.cpp */; };
 		849B23F61EB4C2150033C44C /* spirv_cross.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 849B23E21EB4C2150033C44C /* spirv_cross.cpp */; };
@@ -27,7 +33,6 @@
 		84A897E3209D7275001AFDB4 /* sampler.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DD209D7274001AFDB4 /* sampler.hpp */; };
 		84A897E4209D7275001AFDB4 /* external_interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DE209D7274001AFDB4 /* external_interface.h */; };
 		84A897E5209D7275001AFDB4 /* image.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84A897DF209D7274001AFDB4 /* image.hpp */; };
-		84BDD61E2167E15B0009027E /* spirv_reflect.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 84BDD61C2167E15B0009027E /* spirv_reflect.hpp */; };
 		84BDD61F2167E15B0009027E /* spirv_reflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BDD61D2167E15B0009027E /* spirv_reflect.cpp */; };
 		84BDD6202167E15B0009027E /* spirv_reflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BDD61D2167E15B0009027E /* spirv_reflect.cpp */; };
 /* End PBXBuildFile section */
@@ -45,6 +50,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8472A7992746767600E311AD /* spirv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spirv.h; sourceTree = "<group>"; };
+		8472A79A2746767600E311AD /* spirv_cross_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spirv_cross_c.h; sourceTree = "<group>"; };
+		8472A79B2746767600E311AD /* spirv_cross_parsed_ir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_cross_parsed_ir.cpp; sourceTree = "<group>"; };
+		8472A79C2746767600E311AD /* spirv_cross_containers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cross_containers.hpp; sourceTree = "<group>"; };
+		8472A79D2746767600E311AD /* spirv_cross_error_handling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cross_error_handling.hpp; sourceTree = "<group>"; };
+		8472A79E2746767600E311AD /* spirv_cross_c.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_cross_c.cpp; sourceTree = "<group>"; };
+		8472A79F2746767600E311AD /* spirv_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_parser.cpp; sourceTree = "<group>"; };
+		8472A7A02746767600E311AD /* spirv_parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_parser.hpp; sourceTree = "<group>"; };
+		8472A7A12746767600E311AD /* spirv_cross_parsed_ir.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spirv_cross_parsed_ir.hpp; sourceTree = "<group>"; };
+		8472A7AE2746771A00E311AD /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8472A7AF2746771A00E311AD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		849B23B11EB4C1870033C44C /* libSPIRV-Cross_macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libSPIRV-Cross_macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		849B23BC1EB4C19F0033C44C /* libSPIRV-Cross_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libSPIRV-Cross_iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		849B23DB1EB4C2150033C44C /* GLSL.std.450.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSL.std.450.h; sourceTree = "<group>"; };
@@ -95,30 +111,22 @@
 		849B23A81EB4C1870033C44C = {
 			isa = PBXGroup;
 			children = (
-				84A897D8209D7274001AFDB4 /* include */,
-				84A897D7209D722F001AFDB4 /* src */,
-				849B23B21EB4C1870033C44C /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		849B23B21EB4C1870033C44C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				849B23B11EB4C1870033C44C /* libSPIRV-Cross_macOS.a */,
-				849B23BC1EB4C19F0033C44C /* libSPIRV-Cross_iOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		84A897D7209D722F001AFDB4 /* src */ = {
-			isa = PBXGroup;
-			children = (
 				849B23DB1EB4C2150033C44C /* GLSL.std.450.h */,
+				84A897D8209D7274001AFDB4 /* include */,
+				8472A7AE2746771A00E311AD /* LICENSE */,
+				849B23B21EB4C1870033C44C /* Products */,
+				8472A7AF2746771A00E311AD /* README.md */,
 				849B23DD1EB4C2150033C44C /* spirv_cfg.cpp */,
 				849B23DE1EB4C2150033C44C /* spirv_cfg.hpp */,
 				849B23DF1EB4C2150033C44C /* spirv_common.hpp */,
 				849B23E01EB4C2150033C44C /* spirv_cpp.cpp */,
 				849B23E11EB4C2150033C44C /* spirv_cpp.hpp */,
+				8472A79E2746767600E311AD /* spirv_cross_c.cpp */,
+				8472A79A2746767600E311AD /* spirv_cross_c.h */,
+				8472A79C2746767600E311AD /* spirv_cross_containers.hpp */,
+				8472A79D2746767600E311AD /* spirv_cross_error_handling.hpp */,
+				8472A79B2746767600E311AD /* spirv_cross_parsed_ir.cpp */,
+				8472A7A12746767600E311AD /* spirv_cross_parsed_ir.hpp */,
 				84A897BD209D7190001AFDB4 /* spirv_cross_util.cpp */,
 				84A897BE209D7190001AFDB4 /* spirv_cross_util.hpp */,
 				849B23E21EB4C2150033C44C /* spirv_cross.cpp */,
@@ -129,11 +137,22 @@
 				849B23E71EB4C2150033C44C /* spirv_hlsl.hpp */,
 				849B23E81EB4C2150033C44C /* spirv_msl.cpp */,
 				849B23E91EB4C2150033C44C /* spirv_msl.hpp */,
+				8472A79F2746767600E311AD /* spirv_parser.cpp */,
+				8472A7A02746767600E311AD /* spirv_parser.hpp */,
 				84BDD61D2167E15B0009027E /* spirv_reflect.cpp */,
 				84BDD61C2167E15B0009027E /* spirv_reflect.hpp */,
+				8472A7992746767600E311AD /* spirv.h */,
 				849B23EA1EB4C2150033C44C /* spirv.hpp */,
 			);
-			path = src;
+			sourceTree = "<group>";
+		};
+		849B23B21EB4C1870033C44C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				849B23B11EB4C1870033C44C /* libSPIRV-Cross_macOS.a */,
+				849B23BC1EB4C19F0033C44C /* libSPIRV-Cross_iOS.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		84A897D8209D7274001AFDB4 /* include */ = {
@@ -170,7 +189,6 @@
 				84A897E0209D7275001AFDB4 /* barrier.hpp in Headers */,
 				84A897E2209D7275001AFDB4 /* internal_interface.hpp in Headers */,
 				84A897E4209D7275001AFDB4 /* external_interface.h in Headers */,
-				84BDD61E2167E15B0009027E /* spirv_reflect.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,13 +273,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				84A897D0209D7197001AFDB4 /* spirv_hlsl.cpp in Sources */,
+				8472A7AB2746767700E311AD /* spirv_parser.cpp in Sources */,
 				84A897CA209D7197001AFDB4 /* spirv_cpp.cpp in Sources */,
 				84BDD6202167E15B0009027E /* spirv_reflect.cpp in Sources */,
 				84A897CE209D7197001AFDB4 /* spirv_glsl.cpp in Sources */,
 				84A897C3209D7197001AFDB4 /* spirv_cross_util.cpp in Sources */,
+				8472A7A52746767700E311AD /* spirv_cross_parsed_ir.cpp in Sources */,
 				84A897D2209D7197001AFDB4 /* spirv_msl.cpp in Sources */,
 				84A897C7209D7197001AFDB4 /* spirv_cfg.cpp in Sources */,
 				84A897CC209D7197001AFDB4 /* spirv_cross.cpp in Sources */,
+				8472A7A92746767700E311AD /* spirv_cross_c.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,13 +291,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				849B23FC1EB4C2150033C44C /* spirv_hlsl.cpp in Sources */,
+				8472A7AA2746767700E311AD /* spirv_parser.cpp in Sources */,
 				849B23F61EB4C2150033C44C /* spirv_cross.cpp in Sources */,
 				84BDD61F2167E15B0009027E /* spirv_reflect.cpp in Sources */,
 				849B23EF1EB4C2150033C44C /* spirv_cfg.cpp in Sources */,
 				849B23FF1EB4C2150033C44C /* spirv_msl.cpp in Sources */,
+				8472A7A42746767700E311AD /* spirv_cross_parsed_ir.cpp in Sources */,
 				849B23F31EB4C2150033C44C /* spirv_cpp.cpp in Sources */,
 				849B23F91EB4C2150033C44C /* spirv_glsl.cpp in Sources */,
 				84A897BF209D7190001AFDB4 /* spirv_cross_util.cpp in Sources */,
+				8472A7A82746767700E311AD /* spirv_cross_c.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
