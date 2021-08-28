@@ -6,8 +6,8 @@
 //
 
 #include "DKShader.h"
-#include "../../Libs/SPIRV-Cross/src/spirv_cross.hpp"
-#include "../../Libs/SPIRV-Cross/src/spirv_common.hpp"
+#include "../../Libs/SPIRV-Cross/spirv_cross.hpp"
+#include "../../Libs/SPIRV-Cross/spirv_common.hpp"
 
 namespace DKFramework::Private
 {
@@ -328,7 +328,7 @@ bool DKShader::Rebuild(const DKData* d)
                                 for (uint32_t i = 0; i < spType.member_types.size(); ++i)
                                 {
                                     DKShaderResourceStructMember member;
-                                    uint32_t type = spType.member_types.at(i);
+                                    uint32_t type = spType.member_types[i];
                                     const spirv_cross::SPIRType& memberType = compiler.get_type(type);
                                     member.dataType = Private::ShaderDataTypeFromSPIRType(memberType);
                                     DKASSERT_DEBUG(member.dataType != DKShaderDataType::Unknown);
@@ -484,7 +484,7 @@ bool DKShader::Rebuild(const DKData* d)
                 this->pushConstantLayouts.Reserve(resources.push_constant_buffers.size());
                 for (const spirv_cross::Resource& resource : resources.push_constant_buffers)
                 {
-                    std::vector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
+					spirv_cross::SmallVector<spirv_cross::BufferRange> ranges = compiler.get_active_buffer_ranges(resource.id);
                     DKShaderPushConstantLayout layout = {};
                     layout.memberLayouts.Reserve(ranges.size());
 					layout.stages = stage;
@@ -523,14 +523,14 @@ bool DKShader::Rebuild(const DKData* d)
                 }
 
                 // get module entry points
-                std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
+				spirv_cross::SmallVector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
                 for (spirv_cross::EntryPoint& ep : entryPoints)
                 {
                     functions.Add(ep.name.c_str());
                 }
 
                 // specialization constants
-                std::vector<spirv_cross::SpecializationConstant> spConsts = compiler.get_specialization_constants();
+				spirv_cross::SmallVector<spirv_cross::SpecializationConstant> spConsts = compiler.get_specialization_constants();
                 for (spirv_cross::SpecializationConstant& sc : spConsts)
                 {
                     // 

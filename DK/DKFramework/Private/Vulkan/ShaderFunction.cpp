@@ -7,7 +7,7 @@
 
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_VULKAN
-#include "../../../Libs/SPIRV-Cross/src/spirv_cross.hpp"
+#include "../../../Libs/SPIRV-Cross/spirv_cross.hpp"
 #include "Extensions.h"
 #include "ShaderFunction.h"
 #include "ShaderModule.h"

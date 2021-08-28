@@ -9,7 +9,7 @@
 #include "../GraphicsAPI.h"
 #if DKGL_ENABLE_METAL
 #include <stdexcept>
-#include "../../../Libs/SPIRV-Cross/src/spirv_msl.hpp"
+#include "../../../Libs/SPIRV-Cross/spirv_msl.hpp"
 #include "GraphicsDevice.h"
 #include "CommandQueue.h"
 #include "ShaderFunction.h"
@@ -384,10 +384,12 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
             }
 
 			using Compiler = spirv_cross::CompilerMSL;
-			Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t),
-                              nullptr, 0,
-                              bindings1, bindings1.Count());
-			std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
+            Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()),
+                              reader.Length() / sizeof(uint32_t));
+
+            for (spirv_cross::MSLResourceBinding& mslBinding : bindings1)
+                compiler.add_msl_resource_binding(mslBinding);
+			spirv_cross::SmallVector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
 			if (entryPoints.empty())
 			{
 					DKLogE("Error: No entry point function!");
@@ -402,7 +404,6 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 #endif
 			mslOptions.set_msl_version(2, 1);
             mslOptions.enable_point_size_builtin = true;
-            mslOptions.resolve_specialized_array_lengths = true;
             compiler.set_msl_options(mslOptions);
 
 //			auto commonOptions = compiler.get_common_options();
@@ -431,7 +432,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                 {
                     NSLog(@"MTLLibrary: %@", library);
 
-                    std::vector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
+                    spirv_cross::SmallVector<spirv_cross::EntryPoint> entryPoints = compiler.get_entry_points_and_stages();
                     DKArray<ShaderModule::NameConversion> nameConversions;
                     nameConversions.Reserve(entryPoints.size());
                     for (spirv_cross::EntryPoint& ep : entryPoints)
@@ -454,7 +455,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                         const spirv_cross::MSLResourceBinding& b1 = bindings1.Value(i);
                         const ResourceBinding& b2 = bindings2.Value(i);
 
-                        if (b1.used_by_shader)
+                        if (compiler.is_msl_resource_binding_used(b1.stage, b1.desc_set, b1.binding))
                         {
                             if (b1.desc_set == spirv_cross::kPushConstDescSet &&
                                 b1.binding == spirv_cross::kPushConstBinding)
