@@ -46,7 +46,7 @@ bool RenderCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
     if (renderPassDescriptor)
     {
         id<MTLRenderCommandEncoder> encoder = [buffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        EncodingState state = {};
+        EncodingState state = { this };
         for (EncoderCommand* command : commands )
         {
             command->Invoke(encoder, state);
@@ -235,6 +235,11 @@ void RenderCommandEncoder::SetRenderPipelineState(const DKRenderPipelineState* p
 	DKASSERT_DEBUG(dynamic_cast<const RenderPipelineState*>(ps));
 	DKObject<RenderPipelineState> pipeline = const_cast<RenderPipelineState*>(static_cast<const RenderPipelineState*>(ps));
 
+    if (pipeline->vertexBindings.pushConstantBufferSize > 0)
+        encoder->pushConstants.Reserve(pipeline->vertexBindings.pushConstantBufferSize);
+    if (pipeline->fragmentBindings.pushConstantBufferSize > 0)
+        encoder->pushConstants.Reserve(pipeline->fragmentBindings.pushConstantBufferSize);
+
 	DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, EncodingState& state)
 	{
 		id<MTLRenderPipelineState> pipelineState = pipeline->pipelineState;
@@ -314,6 +319,56 @@ void RenderCommandEncoder::SetIndexBuffer(const DKGpuBuffer* buffer, size_t offs
 		state.indexBufferType = indexType;
 	});
 	encoder->commands.Add(command);
+}
+
+void RenderCommandEncoder::PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void* data)
+{
+    DKASSERT_DEBUG(!IsCompleted());
+
+    uint32_t availStages = uint32_t(DKShaderStage::Vertex) | uint32_t(DKShaderStage::Fragment);
+    if ((stages & availStages) && size > 0)
+    {
+        DKASSERT_DEBUG(data);
+
+        DKObject<DKArray<uint8_t>> buffer = DKOBJECT_NEW DKArray<uint8_t>((const uint8_t*)data, size);
+
+        DKObject<EncoderCommand> command = DKFunction([=](id<MTLRenderCommandEncoder> encoder, EncodingState& state)
+        {
+            if (state.pipelineState)
+            {
+                DKArray<uint8_t>& pushConstants = state.encoder->pushConstants;
+
+                uint32_t s = offset + size;
+                if (pushConstants.Count() < s)
+                    pushConstants.Resize(s);
+                memcpy(&(pushConstants[offset]), *buffer, size);
+
+                if (stages & uint8_t(DKShaderStage::Vertex))
+                {
+                    const StageResourceBindingMap& binding = state.pipelineState->vertexBindings;
+
+                    if (binding.pushConstantBufferSize > pushConstants.Count())
+                        pushConstants.Resize(binding.pushConstantBufferSize);
+
+                    [encoder setVertexBytes:pushConstants
+                                     length:binding.pushConstantBufferSize
+                                    atIndex:binding.pushConstantIndex];
+                }
+                if (stages & uint8_t(DKShaderStage::Fragment))
+                {
+                    const StageResourceBindingMap& binding = state.pipelineState->fragmentBindings;
+
+                    if (binding.pushConstantBufferSize > pushConstants.Count())
+                        pushConstants.Resize(binding.pushConstantBufferSize);
+
+                    [encoder setFragmentBytes:pushConstants
+                                       length:binding.pushConstantBufferSize
+                                      atIndex:binding.pushConstantIndex];
+                }
+            }
+        });
+        encoder->commands.Add(command);
+    }
 }
 
 void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)

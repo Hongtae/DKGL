@@ -472,6 +472,41 @@ void RenderCommandEncoder::SetIndexBuffer(const DKGpuBuffer* indexBuffer, size_t
     encoder->buffers.Add(const_cast<DKGpuBuffer*>(indexBuffer));
 }
 
+void RenderCommandEncoder::PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void* data)
+{
+    VkShaderStageFlags stageFlags = 0;
+    for (auto& stage : {
+        std::pair(DKShaderStage::Vertex, VK_SHADER_STAGE_VERTEX_BIT),
+        std::pair(DKShaderStage::TessellationControl, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT),
+        std::pair(DKShaderStage::TessellationEvaluation, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT),
+        std::pair(DKShaderStage::Geometry, VK_SHADER_STAGE_GEOMETRY_BIT),
+        std::pair(DKShaderStage::Fragment, VK_SHADER_STAGE_FRAGMENT_BIT),
+         })
+    {
+        if (stages & (uint32_t)stage.first)
+            stageFlags |= stage.second;
+    }
+    if (stageFlags && size > 0)
+    {
+        DKASSERT_DEBUG(data);
+
+        DKObject<DKArray<uint8_t>> buffer = DKOBJECT_NEW DKArray<uint8_t>((const uint8_t*)data, size);
+
+        DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
+        {
+            if (state.pipelineState)
+            {
+                vkCmdPushConstants(commandBuffer,
+                                   state.pipelineState->layout,
+                                   stageFlags,
+                                   offset, size,
+                                   *buffer);
+            }
+        });
+        encoder->commands.Add(command);
+    }
+}
+
 void RenderCommandEncoder::Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance)
 {
     if (numInstances > 0)

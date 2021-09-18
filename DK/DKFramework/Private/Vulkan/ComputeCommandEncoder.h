@@ -64,6 +64,9 @@ namespace DKFramework::Private::Vulkan
 
         void SetResources(uint32_t set, const DKShaderBindingSet*) override;
         void SetComputePipelineState(const DKComputePipelineState*) override;
+
+        void PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void*) override;
+
         void Dispatch(uint32_t, uint32_t, uint32_t) override;
 
 		DKObject<class CommandBuffer> commandBuffer;

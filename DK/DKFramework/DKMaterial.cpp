@@ -8,7 +8,88 @@
 #include "DKMaterial.h"
 #include "DKGraphicsDevice.h"
 
+namespace DKFramework::Private
+{
+    inline DKObject<DKMaterial::ResourceBinder::BufferWriter>
+        CreateBufferWriter(uint8_t* buffer, size_t bufferLength, size_t offset,
+                           bool allowPartialWrites = true)
+    {
+        if (allowPartialWrites)
+        {
+            // write only as much as the buffer capacity.
+            return DKFunction([=](const void* data, size_t length)->size_t
+            {
+                if (bufferLength > offset && length > 0)
+                {
+                    size_t s = Min(bufferLength - offset, length);
+                    memcpy(&buffer[offset], data, s);
+                    return s;
+                }
+                return 0;
+            });
+        }
+        // buffer must have enough space!
+        return DKFunction([=](const void* data, size_t length)->size_t
+        {
+            if (length + offset <= bufferLength && length > 0)
+            {
+                memcpy(&buffer[offset], data, length);
+                return length;
+            }
+            return 0;
+        });
+    }
+    struct ShaderResourceStructMemberBinder
+    {
+        const DKShaderResourceStructMember& member;
+        DKString parentKeyPath;
+        uint32_t arrayIndex;
+        uint32_t offset;
+        uint8_t* buffer;
+        size_t bufferLength;
+
+        size_t Bind(DKMaterial::ResourceBinder* binder, bool recursive=true)
+        {
+            const DKString keyPath = DKString(parentKeyPath).Append(".").Append(member.name);
+            const DKShaderDataType type = member.dataType;
+            const uint32_t memberOffset = member.offset + offset;
+
+            if (memberOffset >= bufferLength)
+                return 0;   // Insufficient buffer!
+
+            DKObject<DKMaterial::ResourceBinder::BufferWriter>
+                bufferWriter = CreateBufferWriter(buffer, bufferLength, memberOffset);
+
+            // find resource with keyPath
+            bool bound = binder->WriteStructElement(keyPath,
+                                                    member,
+                                                    arrayIndex,
+                                                    bufferWriter);
+
+            size_t memberBounds = 0;
+            if (!bound || recursive)
+            {
+                for (const DKShaderResourceStructMember& m : member.members)
+                {
+                    memberBounds += ShaderResourceStructMemberBinder
+                    {
+                        m,
+                        keyPath,
+                        arrayIndex,
+                        offset + m.offset,
+                        buffer,
+                        bufferLength
+                    }.Bind(binder, recursive);
+                }
+            }
+            if (bound)
+                return DKShaderDataTypeSize(type).Bytes();
+            return memberBounds;
+        }
+    };
+}
 using namespace DKFramework;
+using namespace DKFramework::Private;
 
 DKMaterial::DKMaterial()
     : depthStencilAttachmentPixelFormat(DKPixelFormat::Invalid)
@@ -210,62 +291,6 @@ DKRenderPipelineDescriptor DKMaterial::RenderPipelineDescriptor() const
 
 bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, ResourceBinder* resourceBinder)
 {
-    struct StructElementEnumerator
-    {
-        ResourceBinder* binder;
-        const DKShaderResource& base;
-        DKString parentKeyPath;
-        uint32_t arrayIndex;
-        uint32_t offset;
-        uint8_t* buffer;
-        size_t bufferLength;
-
-        bool Bind(const DKShaderResourceStructMember& str)
-        {
-            DKASSERT_DEBUG(base.type == DKShaderResource::TypeBuffer);
-
-            const DKString keyPath = DKString(parentKeyPath).Append(".").Append(str.name);
-            const DKShaderDataType type = str.dataType;
-            const uint32_t memberOffset = str.offset + offset;
-
-            DKObject<ResourceBinder::BufferWriter> bufferWriter = DKFunction(
-                [&](const void* data, size_t length)
-                {
-                    if (length + memberOffset <= bufferLength)
-                    {
-                        memcpy(&buffer[memberOffset], data, length);
-                        return true;
-                    }
-                    return false;
-                }
-            );
-
-            // find resource with keyPath
-            bool bound = binder->WriteStructElement(keyPath,
-                                                    str,
-                                                    base,
-                                                    arrayIndex,
-                                                    bufferWriter);
-
-            if (!bound && str.members.Count() > 0)
-            {
-                for (const DKShaderResourceStructMember& member : str.members)
-                {
-                    if (!StructElementEnumerator{ binder,
-                                                  base,
-                                                  keyPath,
-                                                  arrayIndex,
-                                                  offset + member.offset,
-                                                  buffer,
-                                                  bufferLength }.Bind(member))
-                        return false;
-                }
-                return true;
-            }
-            return true;
-        }
-    };
-
     auto bindTextureArray = [](const DKShaderResource& res,
                                ResourceBinder* binder,
                                DKShaderBindingSet* bindingSet)
@@ -342,11 +367,12 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
             if (BufferArray buffers = binder->BufferResource(res); buffers.Count() > 0)
             {
                 DKASSERT_DEBUG(res.set == rbset.resourceIndex);
+                size_t validBufferCount = Min(buffers.Count(), res.count);
 
                 DKArray<DKShaderBindingSet::BufferInfo> bufferInfos;
-                bufferInfos.Reserve(buffers.Count());
+                bufferInfos.Reserve(validBufferCount);
 
-                for (uint32_t index = 0; index < buffers.Count(); index++)
+                for (uint32_t index = 0; index < validBufferCount; index++)
                 {
                     BufferInfo& bi = buffers.Value(index);
 
@@ -358,23 +384,32 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
                         if (uint8_t* ptr = reinterpret_cast<uint8_t*>(bi.buffer->Contents());
                             ptr)
                         {
-                            bool bound = true;
+                            bound = binder->WriteStruct(res.name,
+                                                             res.typeInfo.buffer.size,
+                                                             index,
+                                                             CreateBufferWriter(&ptr[bi.offset], bi.length, 0));
+                                
+                            size_t memberBounds = 0;
                             for (const DKShaderResourceStructMember& member : res.members)
                             {
-                                if (!StructElementEnumerator{ binder,
-                                                              res,
-                                                              res.name,
-                                                              index,
-                                                              0,
-                                                              &ptr[bi.offset],
-                                                              bi.length }.Bind(member))
+                                size_t s = ShaderResourceStructMemberBinder
                                 {
-                                    bound = false;
+                                    member,
+                                    res.name,
+                                    index,
+                                    0, // offset
+                                    &ptr[bi.offset], // buffer
+                                    bi.length
+                                }.Bind(binder, true);
+
+                                memberBounds += s;
+                                if (s == 0 && !bound)
+                                {
                                     const DKString keyPath = DKString(res.name).Append(".").Append(member.name);
                                     DKLogE("ERROR: Cannot bind struct resource:%ls", (const wchar_t*)keyPath);
                                 }
                             }
-                            if (bound)
+                            if (bound || memberBounds > 0)
                             {
                                 bi.buffer->Flush();
                             }
@@ -449,6 +484,60 @@ bool DKMaterial::BindResource(ResourceBindingSet& rbset, DKSceneState* scene, Re
     return numErrors == 0;
 }
 
+bool DKMaterial::BindResource(PushConstantData& pc, DKSceneState* scene, ResourceBinder* resourceBinder)
+{
+    DKObject<ResourceBinder> binder = this->SceneResourceBinder(scene, resourceBinder);
+    if (binder == nullptr)
+        binder = resourceBinder;
+    if (binder == nullptr)
+    {
+        DKLogE("Cannot access resource binder for material!");
+        return false;
+    }
+
+    uint32_t structSize = pc.layout.offset + pc.layout.size;
+    for (const DKShaderResourceStructMember& member : pc.layout.members)
+    {
+        structSize = Max(structSize, member.offset + member.size);
+    }
+    pc.data.Resize(structSize);
+
+    bool bound = binder->WriteStruct(pc.layout.name,
+                                     structSize,
+                                     0, // array-index
+                                     CreateBufferWriter(pc.data,
+                                                        structSize,
+                                                        0));
+
+    size_t memberBounds = 0;
+    for (const DKShaderResourceStructMember& member : pc.layout.members)
+    {
+        if (member.offset < pc.layout.offset ||
+            member.offset >= pc.layout.offset + pc.layout.size)
+            continue;
+
+        size_t s = ShaderResourceStructMemberBinder
+        {
+            member,
+            pc.layout.name,
+            0, // array index
+            0, // offset
+            pc.data,
+            structSize
+        }.Bind(binder, true);
+
+        memberBounds += s;
+        if (s == 0 && !bound)
+        {
+            const DKString keyPath = DKString(pc.layout.name).Append(".").Append(member.name);
+            DKLogE("ERROR: Cannot bind struct resource:%ls", (const wchar_t*)keyPath);
+        }
+    }
+    if (memberBounds == pc.layout.size)
+        bound = true;
+    return bound;
+}
+
 DKObject<DKMaterial::ResourceBinder> DKMaterial::SceneResourceBinder(DKSceneState* scene, ResourceBinder* binder)
 {
     struct ProxyBinder : public ResourceBinder
@@ -520,7 +609,6 @@ DKObject<DKMaterial::ResourceBinder> DKMaterial::SceneResourceBinder(DKSceneStat
         }
         bool WriteStructElement(const DKString& keyPath,
                                 const DKShaderResourceStructMember& element,
-                                const DKShaderResource& resource,
                                 uint32_t resourceArrayIndex,
                                 BufferWriter* writer) override
         {
@@ -528,34 +616,58 @@ DKObject<DKMaterial::ResourceBinder> DKMaterial::SceneResourceBinder(DKSceneStat
             {
                 if (customBinder->WriteStructElement(keyPath,
                                                      element,
-                                                     resource,
                                                      resourceArrayIndex,
                                                      writer))
                     return true;
 
             }
-            if (auto p = material->structElementProperties.Find(keyPath); p)
+            if (auto p = material->structProperties.Find(keyPath); p)
             {
-                DKShaderDataTypeSize elementSize = element.dataType;
-                if (elementSize.Bytes() == p->value.typeSize.Bytes())
+                DKASSERT_DEBUG(element.size > 0);
+
+                size_t elementSize = size_t(element.size);
+                size_t offset = elementSize * resourceArrayIndex;
+
+                StructProperty& prop = p->value;
+
+                if (prop.data.Count() > offset)
                 {
-                    size_t arraySize = element.count;
-                    size_t numItems = p->value.data.Count() / elementSize.Bytes();
-
-                    size_t numBounds = 0;
-                    size_t itemsToBind = Min(arraySize, numItems);
-
-                    size_t offset = 0;
-                    while (numBounds < itemsToBind)
-                    {
-                        const uint8_t* ptr = p->value.data;
-                        if (!writer->Invoke(&ptr[offset], elementSize.Bytes()))
-                            break;
-
-                        offset += element.stride;
-                        numBounds++;
-                    }
+                    const uint8_t* ptr = prop.data;
+                    size_t size = Min(prop.data.Count() - offset, elementSize);
+                    if (writer->Invoke(&ptr[offset], size) == size)
+                        return true;
+                }
+            }
+            return false;
+        }
+        bool WriteStruct(const DKString& keyPath,
+                         uint32_t structSize,
+                         uint32_t arrayIndex,
+                         BufferWriter* writer) override
+        {
+            if (customBinder)
+            {
+                if (customBinder->WriteStruct(keyPath,
+                                              structSize,
+                                              arrayIndex,
+                                              writer))
                     return true;
+
+            }
+            if (auto p = material->structProperties.Find(keyPath); p)
+            {
+                DKASSERT_DEBUG(structSize > 0);
+
+                size_t offset = size_t(structSize) * arrayIndex;
+
+                StructProperty& prop = p->value;
+
+                if (prop.data.Count() > offset)
+                {
+                    const uint8_t* ptr = prop.data;
+                    size_t size = Min(prop.data.Count() - offset, structSize);
+                    if (writer->Invoke(&ptr[offset], size) == size)
+                        return true;
                 }
             }
             return false;

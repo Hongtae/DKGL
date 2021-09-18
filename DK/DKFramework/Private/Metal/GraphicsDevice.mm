@@ -67,6 +67,21 @@ namespace DKFramework::Private::Metal
             if (memberStruct)
             {
 				mb.members = ShaderResourceStructMemberArrayFromMTLStructType(memberStruct);
+                uint32_t size = 0;
+                for (const DKShaderResourceStructMember& m : mb.members)
+                {
+                    size = Max(size, m.offset + m.size);
+                }
+                if (size & 0x3)
+                    size = (size | 0x3) + 1; // 4-bytes align
+                mb.size = size;
+            }
+            else
+            {
+                if (mb.count > 1)
+                    mb.size = mb.stride * mb.count;
+                else
+                    mb.size = DKShaderDataTypeSize(mb.dataType).Bytes();
             }
             if (type == MTLDataTypePointer)
             {
@@ -177,13 +192,14 @@ namespace DKFramework::Private::Metal
     DKShaderPushConstantLayout
     ShaderPushConstantLayoutFromMTLArgument(MTLArgument* arg,
                                             uint32_t offset,
+                                            uint32_t size,
                                             DKShaderStage stage)
     {
         DKShaderPushConstantLayout layout = {};
         layout.name = DKString(arg.name.UTF8String);
         layout.stages = (uint32_t)stage;
         layout.offset = offset;
-        layout.size = (uint32_t)arg.bufferDataSize;
+        layout.size = size;
 
 		DKASSERT_DEBUG(arg.bufferDataType == MTLDataTypeStruct);
         layout.members = ShaderResourceStructMemberArrayFromMTLStructType(arg.bufferStructType);
@@ -368,7 +384,8 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                         break;
                 }
             }
-            if (const DKArray<DKShaderPushConstantLayout>& layouts = shader->PushConstantBufferLayouts(); layouts.Count() > 0)
+            if (const DKArray<DKShaderPushConstantLayout>& layouts = shader->PushConstantBufferLayouts();
+                layouts.Count() > 0)
             {
                 DKASSERT_DESC_DEBUG(layouts.Count() == 1, "There can be only one push constant block!");
 
@@ -474,6 +491,11 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
                                 bindingMap.pushConstantIndex = b1.msl_buffer;
                                 // MTLArgument doesn't have an offset, save info for later use. (pipeline-reflection)
                                 bindingMap.pushConstantOffset = layout.offset;
+                                bindingMap.pushConstantSize = layout.size;
+                                bindingMap.pushConstantBufferSize = layout.size;
+                                for (const DKShaderResourceStructMember& member : layout.members)
+                                    bindingMap.pushConstantBufferSize = Max(bindingMap.pushConstantBufferSize,
+                                                                            member.offset + member.size);
                             }
                             else
                                 bindingMap.resourceBindings.Add(b2);
@@ -841,7 +863,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
                         }
                         else if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
                         {
-                            DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg, bindingMap.pushConstantOffset, DKShaderStage::Vertex);
+                            DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg,
+                                                                                                        bindingMap.pushConstantOffset,
+                                                                                                        bindingMap.pushConstantSize,
+                                                                                                        DKShaderStage::Vertex);
                             pushConstants.Add(layout);
                         }
                         else
@@ -865,7 +890,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
                         if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
                         {
-                            DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg, bindingMap.pushConstantOffset, DKShaderStage::Fragment);
+                            DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg,
+                                                                                                        bindingMap.pushConstantOffset,
+                                                                                                        bindingMap.pushConstantSize,
+                                                                                                        DKShaderStage::Fragment);
                             bool exist = false;
                             for (DKShaderPushConstantLayout& l2 : pushConstants)
                             {
@@ -965,7 +993,10 @@ DKObject<DKComputePipelineState> GraphicsDevice::CreateComputePipeline(DKGraphic
             {
                 if (arg.type == MTLArgumentTypeBuffer && arg.index == bindingMap.pushConstantIndex)
                 {
-                    DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg, bindingMap.pushConstantOffset, DKShaderStage::Compute);
+                    DKShaderPushConstantLayout layout = ShaderPushConstantLayoutFromMTLArgument(arg,
+                                                                                                bindingMap.pushConstantOffset,
+                                                                                                bindingMap.pushConstantSize,
+                                                                                                DKShaderStage::Compute);
                     pushConstants.Add(layout);
                 }
                 else

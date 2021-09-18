@@ -192,6 +192,37 @@ void ComputeCommandEncoder::SetComputePipelineState(const DKComputePipelineState
     encoder->pipelineStateObjects.Add(const_cast<ComputePipelineState*>(pipeline));
 }
 
+void ComputeCommandEncoder::PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void* data)
+{
+    VkShaderStageFlags stageFlags = 0;
+    for (auto& stage : {
+        std::pair(DKShaderStage::Compute, VK_SHADER_STAGE_COMPUTE_BIT),
+         })
+    {
+        if (stages & (uint32_t)stage.first)
+            stageFlags |= stage.second;
+    }
+    if (stageFlags && size > 0)
+    {
+        DKASSERT_DEBUG(data);
+
+        DKObject<DKArray<uint8_t>> buffer = DKOBJECT_NEW DKArray<uint8_t>((const uint8_t*)data, size);
+
+        DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
+        {
+            if (state.pipelineState)
+            {
+                vkCmdPushConstants(commandBuffer,
+                                   state.pipelineState->layout,
+                                   stageFlags,
+                                   offset, size,
+                                   *buffer);
+            }
+        });
+        encoder->commands.Add(command);
+    }
+}
+
 void ComputeCommandEncoder::Dispatch(uint32_t numGroupsX, uint32_t numGroupsY, uint32_t numGroupsZ)
 {
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState & state) mutable

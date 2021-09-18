@@ -231,7 +231,7 @@ namespace DKFramework
 		DKShaderDataType dataType;
 		DKString name;
         uint32_t offset;
-        //uint32_t size;
+        uint32_t size;  // declared size
 		uint32_t count; // array length
 		uint32_t stride; // stride between array elements
 

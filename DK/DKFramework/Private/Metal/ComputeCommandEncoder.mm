@@ -29,7 +29,7 @@ bool ComputeCommandEncoder::Encoder::Encode(id<MTLCommandBuffer> buffer)
     });
 
     id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
-    EncodingState state = {};
+    EncodingState state = { this };
     for (EncoderCommand* command : commands )
     {
         command->Invoke(encoder, state);
@@ -170,6 +170,9 @@ void ComputeCommandEncoder::SetComputePipelineState(const DKComputePipelineState
     DKASSERT_DEBUG(dynamic_cast<const ComputePipelineState*>(ps));
     DKObject<ComputePipelineState> pipeline = const_cast<ComputePipelineState*>(static_cast<const ComputePipelineState*>(ps));
 
+    if (pipeline->bindings.pushConstantBufferSize > 0)
+        encoder->pushConstants.Reserve(pipeline->bindings.pushConstantBufferSize);
+
     DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
     {
         id<MTLComputePipelineState> pipelineState = pipeline->pipelineState;
@@ -177,6 +180,45 @@ void ComputeCommandEncoder::SetComputePipelineState(const DKComputePipelineState
         state.pipelineState = pipeline;
     });
     encoder->commands.Add(command);
+}
+
+void ComputeCommandEncoder::PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void* data)
+{
+    DKASSERT_DEBUG(!IsCompleted());
+
+    uint32_t availStages = uint32_t(DKShaderStage::Compute);
+    if ((stages & availStages) && size > 0)
+    {
+        DKASSERT_DEBUG(data);
+
+        DKObject<DKArray<uint8_t>> buffer = DKOBJECT_NEW DKArray<uint8_t>((const uint8_t*)data, size);
+
+        DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
+        {
+            if (state.pipelineState)
+            {
+                DKArray<uint8_t>& pushConstants = state.encoder->pushConstants;
+
+                uint32_t s = offset + size;
+                if (pushConstants.Count() < s)
+                    pushConstants.Resize(s);
+                memcpy(&(pushConstants[offset]), *buffer, size);
+
+                if (stages & uint8_t(DKShaderStage::Compute))
+                {
+                    const StageResourceBindingMap& binding = state.pipelineState->bindings;
+
+                    if (binding.pushConstantBufferSize > pushConstants.Count())
+                        pushConstants.Resize(binding.pushConstantBufferSize);
+
+                    [encoder setBytes:pushConstants
+                               length:binding.pushConstantBufferSize
+                              atIndex:binding.pushConstantIndex];
+                }
+            }
+        });
+        encoder->commands.Add(command);
+    }
 }
 
 void ComputeCommandEncoder::Dispatch(uint32_t numGroupsX, uint32_t numGroupsY, uint32_t numGroupsZ)

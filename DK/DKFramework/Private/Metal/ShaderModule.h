@@ -33,6 +33,8 @@ namespace DKFramework::Private::Metal
         uint32_t inputAttributeIndexOffset;
         uint32_t pushConstantIndex;
         uint32_t pushConstantOffset;
+        uint32_t pushConstantSize;
+        uint32_t pushConstantBufferSize; // buffer size in MSL (not spir-v)
     };
 
 	class ShaderModule : public DKShaderModule

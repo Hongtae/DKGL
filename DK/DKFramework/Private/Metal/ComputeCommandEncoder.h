@@ -37,11 +37,16 @@ namespace DKFramework::Private::Metal
 
         void SetResources(uint32_t set, const DKShaderBindingSet*) override;
         void SetComputePipelineState(const DKComputePipelineState*) override;
+
+        void PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void*) override;
+
         void Dispatch(uint32_t, uint32_t, uint32_t) override;
         
 	private:
+        class Encoder;
         struct EncodingState
         {
+            Encoder* encoder;
             DKObject<ComputePipelineState> pipelineState;
         };
 		using EncoderCommand = DKFunctionSignature<void(id<MTLComputeCommandEncoder>, EncodingState&)>;
@@ -58,6 +63,8 @@ namespace DKFramework::Private::Metal
             DKSet<Event*> signalEvents;
             DKMap<Semaphore*, uint64_t> waitSemaphores;
             DKMap<Semaphore*, uint64_t> signalSemaphores;
+
+            DKArray<uint8_t> pushConstants;
 		};
 		DKObject<Encoder> encoder;
 		DKObject<class CommandBuffer> commandBuffer;

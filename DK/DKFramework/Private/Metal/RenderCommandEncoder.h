@@ -43,12 +43,16 @@ namespace DKFramework::Private::Metal
 		void SetVertexBuffers(const DKGpuBuffer** buffers, const size_t* offsets, uint32_t index, size_t count) override;
 		void SetIndexBuffer(const DKGpuBuffer* indexBuffer, size_t offset, DKIndexType type) override;
 
+        void PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void*) override;
+
 		void Draw(uint32_t numVertices, uint32_t numInstances, uint32_t baseVertex, uint32_t baseInstance) override;
 		void DrawIndexed(uint32_t numIndices, uint32_t numInstances, uint32_t indexOffset, int32_t vertexOffset, uint32_t baseInstance) override;
 
 	private:
+        class Encoder;
 		struct EncodingState
 		{
+            Encoder* encoder;
 			DKObject<RenderPipelineState> pipelineState;
 			DKObject<Buffer> indexBuffer;
 			size_t indexBufferOffset;
@@ -72,6 +76,8 @@ namespace DKFramework::Private::Metal
             DKSet<Event*> signalEvents;
             DKMap<Semaphore*, uint64_t> waitSemaphores;
             DKMap<Semaphore*, uint64_t> signalSemaphores;
+
+            DKArray<uint8_t> pushConstants;
 		};
 
 		DKObject<Encoder> encoder;

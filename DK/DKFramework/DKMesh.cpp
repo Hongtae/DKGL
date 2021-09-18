@@ -205,10 +205,19 @@ bool DKMesh::BuildPipelineStateObject(DKGraphicsDevice* device)
             return false;
         }
     }
+    DKArray<PushConstantData> pushConstants;
+    pushConstants.Reserve(reflection.pushConstantLayouts.Count());
+    for (const DKShaderPushConstantLayout& layout : reflection.pushConstantLayouts)
+    {
+        PushConstantData pcd = {};
+        pcd.layout = layout;
+        pushConstants.Add(pcd);
+    }
 
     this->renderPipelineState = pso;
     this->pipelineReflection = reflection;
     this->resourceBindings = std::move(resourceBindings);
+    this->pushConstants = std::move(pushConstants);
     return true;
 }
 
@@ -461,40 +470,40 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
             // bind struct element separately.
             bool WriteStructElement(const DKString& keyPath,
                                     const DKShaderResourceStructMember& element,
-                                    const DKShaderResource& resource,
                                     uint32_t resourceArrayIndex,
                                     BufferWriter* writer) override
-             {
-                 if (auto p = mesh->structElementProperties.Find(keyPath); p)
-                 {
-                     DKShaderDataTypeSize elementSize = element.dataType;
-                     if (elementSize.Bytes() == p->value.typeSize.Bytes())
-                     {
-                         size_t arraySize = element.count;
-                         size_t numItems = p->value.data.Count() / elementSize.Bytes();
+            {
+                return this->WriteStruct(keyPath, element.size, resourceArrayIndex, writer);
+            }
+            bool WriteStruct(const DKString& keyPath,
+                             uint32_t structSize,
+                             uint32_t arrayIndex,
+                             BufferWriter* writer) override
+            {
+                if (auto p = mesh->structProperties.Find(keyPath); p)
+                {
+                    DKASSERT_DEBUG(structSize > 0);
 
-                         size_t numBounds = 0;
-                         size_t itemsToBind = Min(arraySize, numItems);
+                    size_t offset = size_t(structSize) * arrayIndex;
 
-                         size_t offset = 0;
-                         while (numBounds < itemsToBind)
-                         {
-                             const uint8_t* ptr = p->value.data;
-                             if (!writer->Invoke(&ptr[offset], elementSize.Bytes()))
-                                 break;
+                    StructProperty& prop = p->value;
 
-                             offset += element.stride;
-                             numBounds++;
-                         }
-                         return true;
-                     }
-                 }
-                 return false;
-             }
+                    if (prop.data.Count() > offset)
+                    {
+                        const uint8_t* ptr = prop.data;
+                        size_t size = Min(prop.data.Count() - offset, structSize);
+                        if (writer->Invoke(&ptr[offset], size) == size)
+                            return true;
+                    }
+                }
+                return false;
+            }
         } binder(this);
 
         for (ResourceBindingSet& rbs : resourceBindings)
             material->BindResource(rbs, scene, &binder);
+        for (PushConstantData& pc : pushConstants)
+            material->BindResource(pc, scene, &binder);
     }
 }
 
@@ -508,6 +517,18 @@ bool DKMesh::EncodeRenderCommand(DKRenderCommandEncoder* encoder,
         for (const ResourceBindingSet& rset : resourceBindings)
         {
             encoder->SetResources(rset.resourceIndex, rset.bindings);
+        }
+        for (const PushConstantData& pc : pushConstants)
+        {
+            uint32_t size = pc.layout.offset + pc.layout.size;
+            if (size > pc.data.Count())
+                size = pc.data.Count();
+             
+            if (size > pc.layout.offset)
+                encoder->PushConstant(pc.layout.stages,
+                                      pc.layout.offset,
+                                      size - pc.layout.offset,
+                                      &pc.data[pc.layout.offset]);
         }
 
         for (uint32_t index = 0; index < vertexBuffers.Count(); index++)

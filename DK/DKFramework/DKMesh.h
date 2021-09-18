@@ -83,12 +83,12 @@ namespace DKFramework
         using TextureArray = DKMaterial::TextureArray;
         using BufferArray = DKMaterial::BufferArray;
         using SamplerArray = DKMaterial::SamplerArray;
-        using StructElementProperty = DKMaterial::StructElementProperty;
+        using StructProperty = DKMaterial::StructProperty;
 
         DKMap<DKString, BufferArray> bufferProperties;
         DKMap<DKString, TextureArray> textureProperties;
         DKMap<DKString, SamplerArray> samplerProperties;
-        DKMap<DKString, StructElementProperty> structElementProperties;
+        DKMap<DKString, StructProperty> structProperties;
 
         const DKPipelineReflection* PipelineReflection() const;
     private:
@@ -97,7 +97,10 @@ namespace DKFramework
 
         using ResourceBinding = DKMaterial::ResourceBinding;
         using ResourceBindingSet = DKMaterial::ResourceBindingSet;
+        using PushConstantData = DKMaterial::PushConstantData;
+
         DKArray<ResourceBindingSet> resourceBindings;
+        DKArray<PushConstantData> pushConstants;
 
         bool BuildPipelineStateObject(DKGraphicsDevice* device);
     };

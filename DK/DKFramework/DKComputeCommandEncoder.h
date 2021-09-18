@@ -21,6 +21,9 @@ namespace DKFramework
 
         virtual void SetResources(uint32_t set, const DKShaderBindingSet*) = 0;
         virtual void SetComputePipelineState(const DKComputePipelineState*) = 0;
+
+        virtual void PushConstant(uint32_t stages, uint32_t offset, uint32_t size, const void*) = 0;
+
         virtual void Dispatch(uint32_t numGroupsX, uint32_t numGroupsY, uint32_t numGroupsZ) = 0;
 	};
 }

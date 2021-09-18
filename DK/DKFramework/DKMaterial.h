@@ -110,12 +110,33 @@ namespace DKFramework
         DKMap<DKString, TextureArray> textureProperties;
         DKMap<DKString, SamplerArray> samplerProperties;
 
-        struct StructElementProperty
+        struct StructProperty
         {
-            DKShaderDataTypeSize typeSize;
             DKArray<uint8_t> data; // typeSize.Bytes() * arrayLength
+            template <typename Scalar, int Num>
+            void Set(const Scalar(&val)[Num])
+            {
+                data.Clear();
+                data.Add(reinterpret_cast<const uint8_t*>(&val[0]),
+                         sizeof(Scalar[Num]));
+            }
+            template <typename Scalar, int Num>
+            void Add(const Scalar(&val)[Num])
+            {
+                data.Add(reinterpret_cast<const uint8_t*>(&val[0]),
+                         sizeof(Scalar[Num]));
+            }
+            void Set(const void* value, size_t size)
+            {
+                data.Clear();
+                data.Add(reinterpret_cast<const uint8_t*>(value), size);
+            }
+            void Add(const void* value, size_t size)
+            {
+                data.Add(reinterpret_cast<const uint8_t*>(value), size);
+            }
         };
-        DKMap<DKString, StructElementProperty> structElementProperties;
+        DKMap<DKString, StructProperty> structProperties;
 
         DKRenderPipelineDescriptor RenderPipelineDescriptor() const;
         DKShaderUniform ShaderUniformForResource(ResourceIndex, uint32_t) const;
@@ -130,7 +151,7 @@ namespace DKFramework
 
         struct ResourceBinder
         {
-            using BufferWriter = DKFunctionSignature<bool(const void* data, size_t length)>;
+            using BufferWriter = DKFunctionSignature<size_t (const void* data, size_t length)>;
 
             virtual ~ResourceBinder() {}
 
@@ -142,9 +163,12 @@ namespace DKFramework
             // bind struct element separately.
             virtual bool WriteStructElement(const DKString& keyPath,
                                             const DKShaderResourceStructMember& element,
-                                            const DKShaderResource& resource,
-                                            uint32_t resourceArrayIndex,
+                                            uint32_t arrayIndex,
                                             BufferWriter*) = 0;
+            virtual bool WriteStruct(const DKString& keyPath,
+                                     uint32_t structSize, // (offset + size)
+                                     uint32_t arrayIndex,
+                                     BufferWriter*) = 0;
         };
 
         struct ResourceBinding
@@ -158,8 +182,14 @@ namespace DKFramework
             DKObject<DKShaderBindingSet> bindings;
             DKArray<ResourceBinding> resources;
         };
+        struct PushConstantData
+        {
+            DKShaderPushConstantLayout layout;
+            DKArray<uint8_t> data;
+        };
 
         bool BindResource(ResourceBindingSet&, DKSceneState*, ResourceBinder*);
+        bool BindResource(PushConstantData&, DKSceneState*,ResourceBinder*);
 
         // rasterazation properties...
         DKArray<DKRenderPipelineColorAttachmentDescriptor> colorAttachments;

@@ -292,8 +292,8 @@ bool DKShader::Rebuild(const DKData* d)
                                 member.name = compiler.get_member_name(spType.self, i).c_str();
                                 // member offset within this struct.
                                 member.offset = compiler.type_struct_member_offset(spType, i);
-                                //member.size = compiler.get_declared_struct_member_size(spType, i);
-                                //DKASSERT_DEBUG(member.size > 0);
+                                member.size = (uint32_t)compiler.get_declared_struct_member_size(spType, i);
+                                DKASSERT_DEBUG(member.size > 0);
 
                                 if (member.dataType == DKShaderDataType::Struct)
                                 {
@@ -307,8 +307,7 @@ bool DKShader::Rebuild(const DKData* d)
 
                                 if (member.count > 1)
                                     member.stride = compiler.type_struct_member_array_stride(spType, i);
-                                else
-                                    member.stride = 0;
+
                                 members.Add(member);
                             }
                             return members;
@@ -359,47 +358,6 @@ bool DKShader::Rebuild(const DKData* d)
 
                     if (out.type == DKShaderResource::TypeBuffer)
                     {
-                        struct GetStructMembers
-                        {
-                            spirv_cross::Compiler& compiler;
-                            auto operator () (const spirv_cross::SPIRType& spType) -> DKArray<DKShaderResourceStructMember>
-                            {
-                                DKArray<DKShaderResourceStructMember> members;
-                                // get struct members!
-                                members.Reserve(spType.member_types.size());
-                                for (uint32_t i = 0; i < spType.member_types.size(); ++i)
-                                {
-                                    DKShaderResourceStructMember member;
-                                    uint32_t type = spType.member_types[i];
-                                    const spirv_cross::SPIRType& memberType = compiler.get_type(type);
-                                    member.dataType = Private::ShaderDataTypeFromSPIRType(memberType);
-                                    DKASSERT_DEBUG(member.dataType != DKShaderDataType::Unknown);
-                                    DKASSERT_DEBUG(member.dataType != DKShaderDataType::None);
-
-                                    member.name = compiler.get_member_name(spType.self, i).c_str();
-                                    member.offset = compiler.type_struct_member_offset(spType, i);
-                                    //member.size = compiler.get_declared_struct_member_size(spType, i);
-                                    //DKASSERT_DEBUG(member.size > 0);
-
-                                    if (member.dataType == DKShaderDataType::Struct)
-                                    {
-                                        member.members = GetStructMembers{ compiler }(memberType);
-                                        member.members.ShrinkToFit();
-                                    }
-
-                                    member.count = 1;
-                                    for (auto n : memberType.array)
-                                        member.count = member.count * n;
-
-                                    if (member.count > 1)
-                                        member.stride = compiler.type_struct_member_array_stride(spType, i);
-                                    else
-                                        member.stride = 0;
-                                    members.Add(member);
-                                }
-                                return members;
-                            }
-                        };
                         out.members = getStructMembers(compiler.get_type(resource.base_type_id));
                         out.members.ShrinkToFit();
                     }
