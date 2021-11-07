@@ -48,7 +48,7 @@ namespace DKFramework
 using namespace DKFramework;
 
 DKFont::DKFont()
-	: ftFace(NULL)
+	: ftFace(nullptr)
 	, outline(0)
 	, embolden(0)
 	, size26d6(10 * 64)
@@ -57,6 +57,7 @@ DKFont::DKFont()
 	, numGlyphsLoaded(0)
 	, forceBitmap(0)
 	, kerningEnabled(false)
+    , device(nullptr)
 {
 }
 
@@ -67,32 +68,39 @@ DKFont::~DKFont()
 	if (fontData)
 	{
 		fontData->UnlockShared();
-		fontData = NULL;
+		fontData = nullptr;
 	}
 }
 
-DKObject<DKFont> DKFont::Create(const DKString& file)
+void DKFont::SetDevice(DKGraphicsDeviceContext* device)
+{
+    this->device = device;
+    ClearCache();
+}
+
+DKObject<DKFont> DKFont::Create(const DKString& file, DKGraphicsDeviceContext* device)
 {
 	if (file.Length() == 0)
-		return NULL;
+		return nullptr;
 
 	DKStringU8 filename(file);
 	if (filename.Bytes() == 0)
-		return NULL;
+		return nullptr;
 
-	FT_Face	face = NULL;
+	FT_Face	face = nullptr;
 	FT_Error err = FT_New_Face(Private::FTLibrary::GetLibrary(), (const char*)filename, 0, &face);
 	if (err)
 	{
-		return NULL;
+		return nullptr;
 	}
-	if (face->charmap == NULL)
+	if (face->charmap == nullptr)
 	{
 		if (FT_Set_Charmap(face, face->charmaps[0]))
-			return NULL;
+			return nullptr;
 	}
 
 	DKObject<DKFont> font = DKObject<DKFont>::New();
+    font->device = device;
 	font->ftFace = face;
     if (FT_Set_Char_Size(face, 0, font->size26d6, font->dpiX, font->dpiY))
     {
@@ -101,32 +109,33 @@ DKObject<DKFont> DKFont::Create(const DKString& file)
 	return font;
 }
 
-DKObject<DKFont> DKFont::Create(void* data, size_t size)
+DKObject<DKFont> DKFont::Create(const void* data, size_t size, DKGraphicsDeviceContext* device)
 {
 	if (data && size > 0)
 	{
-		return Create(DKBuffer::Create(data, size));
+		return Create(DKBuffer::Create(data, size), device);
 	}
-	return NULL;
+	return nullptr;
 }
 
-DKObject<DKFont> DKFont::Create(DKData* data)
+DKObject<DKFont> DKFont::Create(DKData* data, DKGraphicsDeviceContext* device)
 {
-	if (data == NULL)
-		return NULL;
+	if (data == nullptr)
+		return nullptr;
 
 	const void* ptr = data->LockShared();
-	FT_Face	face = NULL;
+	FT_Face	face = nullptr;
 	FT_Error err = FT_New_Memory_Face(Private::FTLibrary::GetLibrary(), (const FT_Byte*)ptr, data->Length(), 0, &face);
 	if (err == 0)
 	{
-		if (face->charmap == NULL)
+		if (face->charmap == nullptr)
 		{
 			if (FT_Set_Charmap(face, face->charmaps[0]))
-				return NULL;
+				return nullptr;
 		}
 
 		DKObject<DKFont> font = DKObject<DKFont>::New();
+        font->device = device;
 		font->ftFace = face;
 		font->fontData = data;
         if (FT_Set_Char_Size(face, 0, font->size26d6, font->dpiX, font->dpiY))
@@ -136,10 +145,10 @@ DKObject<DKFont> DKFont::Create(DKData* data)
         return font;
 	}
 	data->UnlockShared();
-	return NULL;
+	return nullptr;
 }
 
-DKObject<DKFont> DKFont::Create(DKStream* stream)
+DKObject<DKFont> DKFont::Create(DKStream* stream, DKGraphicsDeviceContext* device)
 {
 	if (stream && stream->IsReadable())
 	{
@@ -149,26 +158,26 @@ DKObject<DKFont> DKFont::Create(DKStream* stream)
 			DKDataStream* ds = DKObject<DKStream>(stream).SafeCast<DKDataStream>();
 			if (file)
 			{
-				DKObject<DKFont> font = Create(file->Path());
+				DKObject<DKFont> font = Create(file->Path(), device);
 				if (font)
 					return font;
 			}
 			else if (ds)
 			{
-				DKObject<DKFont> font = Create(const_cast<DKData*>(ds->Data()));
+				DKObject<DKFont> font = Create(const_cast<DKData*>(ds->Data()), device);
 				if (font)
 					return font;
 			}
 		}
-		return Create(DKBuffer::Create(stream));
+		return Create(DKBuffer::Create(stream), device);
 	}
-	return NULL;
+	return nullptr;
 }
 
 const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 {
 	if (c == 0 || IsValid() == false)
-		return NULL;
+		return nullptr;
 
 	DKCriticalSection<DKSpinLock> guard(lock);
 	const GlyphDataMap::Pair* p = glyphMap.Find(c);
@@ -182,7 +191,7 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	GlyphData	data;
 	data.advance = DKSize(0,0);
 	data.position = DKPoint(0,0);
-	data.texture = NULL;
+	data.texture = nullptr;
 	data.frame = DKRect(0,0,0,0);
 
 	unsigned int index = FT_Get_Char_Index(face, c);
@@ -190,8 +199,8 @@ const DKFont::GlyphData* DKFont::GlyphDataForChar(wchar_t c) const
 	FT_Int32	loadFlag = forceBitmap ? FT_LOAD_RENDER : FT_LOAD_DEFAULT;
 	if (FT_Load_Glyph(face, index, loadFlag))
 	{
-		DKLogE("Failed to load glyph for char='%lc'\n", c);
-		return NULL;
+		DKLogE("Failed to load glyph for char='%lc'(0x%x)", c, uint32_t(c));
+		return nullptr;
 	}
 
 	float ascender = this->Ascender();
@@ -343,21 +352,40 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
 
     FT_Face face = reinterpret_cast<FT_Face>(ftFace);
 
+    DKObject<DKGraphicsDevice> device = this->device->Device();
+    DKObject<DKCommandQueue> queue = this->device->TransferQueue();
+
     DKObject<DKTexture> tex = nullptr;
 
-    auto updateTexture = [](DKTexture* texture, const DKRect& rect, const void* data)
+    auto updateTexture = [](DKCommandQueue* queue, DKTexture* texture, const DKRect& rect, const void* data)
     {
+        uint32_t x = floorf(rect.origin.x + 0.5f);
+        uint32_t y = floorf(rect.origin.y + 0.5f);
         uint32_t width = floorf(rect.size.width + 0.5f);
         uint32_t height = floorf(rect.size.height + 0.5f);
 
-        char* buff = (char*)DKMalloc(width * height);
-        for (int i = 0; i < height; i++)
-        {
-            memcpy(&buff[i * width], &((char*)data)[(height - i - 1) * width], width);
-        }
-		// upload to texture! (rect)
+        size_t bufferLength = size_t(width) * size_t(height);
 
-		DKFree(buff);
+        DKGraphicsDevice* device = queue->Device();
+        DKObject<DKGpuBuffer> stagingBuffer = device->CreateBuffer(bufferLength, DKGpuBuffer::StorageModeShared, DKCpuCacheModeReadWrite);
+        if (stagingBuffer)
+        {
+            uint8_t* buff = reinterpret_cast<uint8_t*>(stagingBuffer->Contents());
+            for (int i = 0; i < height; i++)
+            {
+                memcpy(&buff[i * width], &((char*)data)[(height - i - 1) * width], width);
+            }
+
+            DKObject<DKCommandBuffer> cb = queue->CreateCommandBuffer();
+            DKObject<DKCopyCommandEncoder> encoder = cb->CreateCopyCommandEncoder();
+            encoder->CopyFromBufferToTexture(stagingBuffer,
+                                             { 0, width, height },
+                                             texture,
+                                             { 0, 0, x, y, 0 },
+                                             { width, height, 1 });
+            encoder->EndEncoding();
+            cb->Commit();
+        }
     };
 
     auto haveEnoughSpace = [](const GlyphTextureAtlas& atlas, int width, int height)
@@ -398,7 +426,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
                 gta.currentLineMaxHeight = 0;
             }
             rect = DKRect(gta.currentLineWidth + leftMargin, gta.filledVertical + topMargin, width, height);
-            updateTexture(gta.texture, rect, data);
+            updateTexture(queue, gta.texture, rect, data);
 
             gta.currentLineWidth += width + hPadding;
             if (height + vPadding > gta.currentLineMaxHeight)
@@ -438,17 +466,25 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
                 break;
         }
         DKLog("Create new texture atlas with resolution: %d x %d", desiredWidth, desiredHeight);
-
-        tex = [](int width, int height)->DKObject<DKTexture>
+        
+        tex = [](int width, int height, DKGraphicsDevice* device)->DKObject<DKTexture>
         {
-			DKObject<DKTexture> tex = nullptr;
-			// create texture object..
-
-			return tex;
-        }(desiredWidth, desiredHeight);
+            // create texture object..
+            DKTextureDescriptor desc = {};
+            desc.textureType = DKTexture::Type2D;
+            desc.pixelFormat = DKPixelFormat::RGBA8Unorm;
+            desc.width = width;
+            desc.height = height;
+            desc.depth = 1;
+            desc.mipmapLevels = 1;
+            desc.sampleCount = 1;
+            desc.arrayLength = 1;
+            desc.usage = DKTexture::UsageCopyDestination | DKTexture::UsageSampled;
+			return device->CreateTexture(desc);
+        }(desiredWidth, desiredHeight, device);
 
         rect = DKRect(leftMargin, topMargin, width, height);
-        updateTexture(tex, rect, data);
+        updateTexture(queue, tex, rect, data);
 
         GlyphTextureAtlas gta = {
             tex,

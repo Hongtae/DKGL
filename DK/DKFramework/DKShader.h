@@ -52,7 +52,7 @@ namespace DKFramework
         const DKData* Data() const  { return data; }
         DKData* Data()              { return data; }
 
-        bool Rebuild(const DKData*);
+        bool Compile(const DKData*);
         bool Validate() override    { return stage != DKShaderStage::Unknown && data; }
 
         // entry point functions

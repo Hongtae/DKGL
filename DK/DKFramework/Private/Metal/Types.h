@@ -273,8 +273,8 @@ namespace DKFramework::Private::Metal
             case MTLPixelFormatRGBA8Snorm:              return DKPixelFormat::RGBA8Snorm;
             case MTLPixelFormatRGBA8Uint:               return DKPixelFormat::RGBA8Uint;
             case MTLPixelFormatRGBA8Sint:               return DKPixelFormat::RGBA8Sint;
-            case MTLPixelFormatBGRA8Unorm:              return DKPixelFormat::RGBA8Unorm;
-            case MTLPixelFormatBGRA8Unorm_sRGB:         return DKPixelFormat::RGBA8Unorm_sRGB;
+            case MTLPixelFormatBGRA8Unorm:              return DKPixelFormat::BGRA8Unorm;
+            case MTLPixelFormatBGRA8Unorm_sRGB:         return DKPixelFormat::BGRA8Unorm_sRGB;
             case MTLPixelFormatRGB10A2Unorm:            return DKPixelFormat::RGB10A2Unorm;
             case MTLPixelFormatRGB10A2Uint:             return DKPixelFormat::RGB10A2Uint;
             case MTLPixelFormatRG11B10Float:            return DKPixelFormat::RG11B10Float;

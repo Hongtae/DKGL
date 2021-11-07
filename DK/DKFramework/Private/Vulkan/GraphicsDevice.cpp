@@ -1983,7 +1983,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		attachmentDesc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		attachmentDescriptions.Add(attachmentDesc);
 
-		VkPipelineColorBlendAttachmentState blendState;
+        VkPipelineColorBlendAttachmentState blendState = {};
 		blendState.blendEnable = attachment.blendState.enabled;
 		blendState.srcColorBlendFactor = blendFactor(attachment.blendState.sourceRGBBlendFactor);
 		blendState.dstColorBlendFactor = blendFactor(attachment.blendState.destinationRGBBlendFactor);
@@ -1993,10 +1993,10 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 		blendState.alphaBlendOp = blendOperation(attachment.blendState.alphaBlendOperation);
 
 		blendState.colorWriteMask = 0;
-		if (attachment.blendState.writeMask & DKColorWriteMaskRed)  blendState.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
-		if (attachment.blendState.writeMask & DKColorWriteMaskGreen)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
-		if (attachment.blendState.writeMask & DKColorWriteMaskBlue)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
-		if (attachment.blendState.writeMask & DKColorWriteMaskAlpha)	blendState.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskRed)   blendState.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskGreen) blendState.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskBlue)  blendState.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
+		if (attachment.blendState.writeMask & DKColorWriteMaskAlpha) blendState.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
 		colorBlendAttachmentStates.Add(blendState);
 
 		DKASSERT_DEBUG(subpassColorAttachmentRefs.Count() > attachment.index);

@@ -197,14 +197,14 @@ DKShader::DKShader()
 DKShader::DKShader(const DKData* d)
     : DKShader()
 {
-    Rebuild(d);
+    Compile(d);
 }
 
 DKShader::~DKShader()
 {
 }
 
-bool DKShader::Rebuild(const DKData* d)
+bool DKShader::Compile(const DKData* d)
 {
     if (d)
     {

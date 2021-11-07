@@ -32,13 +32,13 @@ namespace DKFramework
         {
             uint32_t layer;
             uint32_t level;
-            uint32_t x, y, z;       /// pixel offset
+            uint32_t x, y, z;       ///< pixel offset
         };
         struct BufferImageOrigin
         {
-            size_t bufferOffset;    /// buffer offset (bytes)
-            uint32_t imageWidth;    /// buffer image's width (pixels)
-            uint32_t imageHeight;   /// buffer image's height (pixels)
+            size_t bufferOffset;    ///< buffer offset (bytes)
+            uint32_t imageWidth;    ///< buffer image's width (pixels)
+            uint32_t imageHeight;   ///< buffer image's height (pixels)
         };
 
         virtual ~DKCopyCommandEncoder() {}

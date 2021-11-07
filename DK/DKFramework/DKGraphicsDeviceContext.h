@@ -15,10 +15,23 @@ namespace DKFramework
     class DKGL_API DKGraphicsDeviceContext
     {
     public:
-        DKGraphicsDeviceContext();
+        DKGraphicsDeviceContext(DKGraphicsDevice*);
         virtual ~DKGraphicsDeviceContext();
 
+        DKGraphicsDevice* Device();
+
+        // cached command queue.
+        DKCommandQueue* GraphicsQueue();
+        DKCommandQueue* ComputeQueue();
+        DKCommandQueue* TransferQueue();
+
+        DKMap<DKString, DKObject<DKUnknown>> cachedDeviceResources;
+
+    private:
         DKObject<DKGraphicsDevice> device;
-        DKObject<DKCommandQueue> transferQueue;
+
+        DKArray<DKObject<DKCommandQueue>> graphicsQueues;
+        DKArray<DKObject<DKCommandQueue>> computeQueues;
+        DKArray<DKObject<DKCommandQueue>> transferQueues;
     };
 }

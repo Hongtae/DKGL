@@ -771,7 +771,8 @@ bool DKFrame::DrawInternal()
                     canvas->DrawRect(DKRect(0, 0, 1, 1), frame->Transform(),
                                      DKRect(0, 0, 1, 1), DKMatrix3::identity,
                                      texture,
-                                     frame->color);
+                                     frame->color,
+                                     frame->blendState);
                 }
             }
             // draw overlay

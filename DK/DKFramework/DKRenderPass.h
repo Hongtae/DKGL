@@ -31,8 +31,6 @@ namespace DKFramework
 		uint32_t mipmapLevel = 0;
 		LoadAction loadAction = LoadActionDontCare;
 		StoreAction storeAction = StoreActionDontCare;
-
-		virtual ~DKRenderPassAttachmentDescriptor() {}
 	};
 
 	struct DKRenderPassColorAttachmentDescriptor : public DKRenderPassAttachmentDescriptor

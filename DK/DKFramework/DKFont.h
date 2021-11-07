@@ -11,6 +11,7 @@
 #include "DKSize.h"
 #include "DKRect.h"
 #include "DKTexture.h"
+#include "DKGraphicsDeviceContext.h"
 
 namespace DKFramework
 {
@@ -36,14 +37,16 @@ namespace DKFramework
         DKFont();
         ~DKFont();
 
+        void SetDevice(DKGraphicsDeviceContext*);
+
         /// create object from file (path)
-        static DKObject<DKFont> Create(const DKString& file);
+        static DKObject<DKFont> Create(const DKString& file, DKGraphicsDeviceContext*);
         /// create object from data pointer. (data will be copied inside)
-        static DKObject<DKFont> Create(void* data, size_t size);
+        static DKObject<DKFont> Create(const void* data, size_t size, DKGraphicsDeviceContext*);
         /// create object from DKData object. (data must not be modified by outside)
-        static DKObject<DKFont> Create(DKData* data);
+        static DKObject<DKFont> Create(DKData* data, DKGraphicsDeviceContext*);
         /// create object from stream, stream can be copied if necessary.
-        static DKObject<DKFont> Create(DKStream* stream);
+        static DKObject<DKFont> Create(DKStream* stream, DKGraphicsDeviceContext*);
 
         const GlyphData* GlyphDataForChar(wchar_t c) const;
 
@@ -110,6 +113,7 @@ namespace DKFramework
         void* ftFace;
         DKSpinLock lock;
         DKObject<DKData> fontData;
+        mutable DKObject<DKGraphicsDeviceContext> device;
 
         DKTexture* CacheGlyphTexture(int width, int height, const void* data, DKRect& rect) const;
     };

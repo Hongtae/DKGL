@@ -23,8 +23,8 @@ namespace DKFramework
 	public:
 		enum TypeFlags : uint32_t
 		{
-			Graphics = 1,		// Graphics and Copy(Blit) commands
-			Compute = 1 << 1,	// Compute and Copy(Blit) commands
+			Graphics = 1,		///< Graphics and Copy(Blit) commands
+			Compute = 1 << 1,	///< Compute and Copy(Blit) commands
 		};
 
 		virtual ~DKCommandQueue() {}
