@@ -9,10 +9,9 @@
 #include "../DKFoundation.h"
 #include "DKWindow.h"
 #include "DKFrame.h"
-#include "DKCommandQueue.h"
-#include "DKGraphicsDevice.h"
 #include "DKAudioDevice.h"
 #include "DKCanvas.h"
+#include "DKGraphicsDeviceContext.h"
 
 namespace DKFramework
 {
@@ -23,7 +22,7 @@ namespace DKFramework
 	class DKGL_API DKScreen
 	{
 	public:
-		DKScreen(DKCommandQueue*, DKOperationQueue*);
+		DKScreen(DKGraphicsDeviceContext*, DKDispatchQueue*);
 		~DKScreen();
 
 		/// Create rendering thread and start event-loop
@@ -77,19 +76,16 @@ namespace DKFramework
         DKRect WindowToScreen(const DKRect& rect) const;
         DKRect ScreenToWindow(const DKRect& rect) const;
 
-        /// main command queue (load gpu-resources, not for rendering)
-        DKCommandQueue* CommandQueue() { return commandQueue; }
-        /// command queue for parallelized (unordered) tasks
-        DKOperationQueue* OperationQueue() { return operationQueue; }
-
         bool ProcessKeyboardEvent(const DKWindow::KeyboardEvent&);
         bool ProcessMouseEvent(const DKWindow::MouseEvent&);
         bool ProcessWindowEvent(const DKWindow::WindowEvent&);
 
+        DKGraphicsDeviceContext* GraphicsDevice();
+
 	private:
         void Draw() const;
 
-        DKObject<DKOperationQueue> operationQueue;
+        DKObject<DKDispatchQueue> dispatchQueue;
         DKObject<DKWindow> window;
         DKObject<DKFrame> rootFrame;
 
@@ -98,8 +94,7 @@ namespace DKFramework
         struct FrameMouseDevice { DKFrame* frame; DKWindow::MouseEvent::Device device; };
         DKMap<int, FrameMouseDevice> hoverFrames; // mouse hover frames
 
-        DKObject<DKCommandQueue> commandQueue;
-        DKObject<DKGraphicsDevice> graphicsDevice;
+        DKObject<DKGraphicsDeviceContext> graphicsDevice;
         DKObject<DKAudioDevice> audioDevice;
 
         DKSize screenResolution;

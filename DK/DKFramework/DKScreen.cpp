@@ -10,29 +10,29 @@
 
 using namespace DKFramework;
 
-DKScreen::DKScreen(DKCommandQueue* cq, DKOperationQueue* oq)
+DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
     : window(nullptr)
     , rootFrame(nullptr)
     , screenResolution(DKSize(0, 0))
+    , graphicsDevice(dc)
+    , dispatchQueue(dq)
 {
 	audioDevice = DKAudioDevice::SharedInstance();
-    commandQueue = cq;
-    if (commandQueue == nullptr)
+    if (graphicsDevice == nullptr)
     {
-        DKObject<DKGraphicsDevice> graphicsDevice = DKGraphicsDevice::SharedInstance();
-        commandQueue = graphicsDevice->CreateCommandQueue(0);
+        DKObject<DKGraphicsDevice> device = DKGraphicsDevice::SharedInstance();
+        graphicsDevice = DKOBJECT_NEW DKGraphicsDeviceContext(device);
     }
-    operationQueue = oq;
-    if (operationQueue == nullptr)
+
+    if (dispatchQueue == nullptr)
     {
-        operationQueue = DKOBJECT_NEW DKOperationQueue();
-        operationQueue->SetMaxConcurrentOperations(1);
+        // create new dispatch queue
     }
 }
 
 DKScreen::~DKScreen()
 {
-    operationQueue->WaitForCompletion();
+    //dispatchQueue->WaitQueue();
 }
 
 void DKScreen::Start()
@@ -460,4 +460,9 @@ bool DKScreen::ProcessMouseEvent(const DKWindow::MouseEvent& event)
 bool DKScreen::ProcessWindowEvent(const DKWindow::WindowEvent&)
 {
     return false;
+}
+
+DKGraphicsDeviceContext* DKScreen::GraphicsDevice()
+{
+    return graphicsDevice;
 }

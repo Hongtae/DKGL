@@ -30,7 +30,7 @@ DKFrame::DKFrame()
     , blendState(DKBlendState::defaultOpaque)
     , hidden(false)
     , enabled(true)
-    , depthFormat(DKPixelFormat::D32Float)
+    , pixelFormat(DKPixelFormat::RGBA8Unorm)
 {
 }
 
@@ -733,15 +733,35 @@ bool DKFrame::DrawInternal()
             if (screen)
             {
                 DKASSERT_DEBUG(screen->RootFrame() != this);
-            }
 
-            // create render target
-            int width = floor(this->contentResolution.width + 0.5f);
-            int height = floor(this->contentResolution.height + 0.5f);
-            //DKObject<DKTexture> rt = ...
-            this->renderTarget = nullptr;
-            this->drawSurface = true;
-            DKLogI("Create render-target (%dx%d) for DKFrame:0x%x", width, height, this);
+                DKGraphicsDeviceContext* deviceContext = screen->GraphicsDevice();
+                DKASSERT_DEBUG(deviceContext);
+
+                // create render target
+                int width = floor(this->contentResolution.width + 0.5f);
+                int height = floor(this->contentResolution.height + 0.5f);
+
+                DKASSERT_DEBUG(DKPixelFormatIsColorFormat(this->pixelFormat));
+
+                DKTextureDescriptor desc = {};
+                desc.textureType = DKTexture::Type2D;
+                desc.pixelFormat = this->pixelFormat;
+                desc.width = width;
+                desc.height = height;
+                desc.depth = 1;
+                desc.mipmapLevels = 1;
+                desc.sampleCount = 1;
+                desc.arrayLength = 1;
+                desc.usage = DKTexture::UsageSampled | DKTexture::UsageRenderTarget;
+
+                this->renderTarget = deviceContext->Device()->CreateTexture(desc);
+                this->drawSurface = true;
+                DKLogI("Create render-target (%dx%d) for DKFrame:0x%x", width, height, this);
+            }
+            else
+            {
+                DKLogE("Cannot create render-target, Screen is null");
+            }
         }
         if (canvas == nullptr)
         {
@@ -1078,26 +1098,30 @@ bool DKFrame::IsVisibleOnScreen() const
     return false;
 }
 
-void DKFrame::SetDepthFormat(DKPixelFormat fmt)
+void DKFrame::SetPixelFormat(DKPixelFormat fmt)
 {
     if (screen && screen->RootFrame() == this)
     {
-        DKLog("RootFrame's depth format cannot be changed.\n");
+        DKLogE("The pixel format setting of the root frame has not yet been implemented.");
     }
-    else
+    else if (pixelFormat != fmt)
     {
-        if (depthFormat != fmt)
+        if (DKPixelFormatIsColorFormat(fmt))
         {
-            depthFormat = fmt;
+            pixelFormat = fmt;
             renderTarget = nullptr;		// create on render
             SetRedraw();
+        }
+        else
+        {
+            DKLogE("PixelFormat: 0x%x is not a valid color format", (uint32_t)fmt);
         }
     }
 }
 
-DKPixelFormat DKFrame::DepthFormat() const
+DKPixelFormat DKFrame::PixelFormat() const
 {
-    return depthFormat;
+    return pixelFormat;
 }
 
 void DKFrame::OnDraw(DKCanvas* canvas) const

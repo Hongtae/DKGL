@@ -224,11 +224,9 @@ namespace DKFramework
         /// allow user input event for local frame (does not affect hierarchical propagation)
         virtual bool UserInputEventEnabled() const      { return true; }
 
-        /// depth-buffer format. (see DKRenderTarget.h)
-        /// If frame don't need to render 3D objects,
-        /// depth-format can be 'DKRenderTarget::DepthFormatNone'.
-        void SetDepthFormat(DKPixelFormat fmt);
-        DKPixelFormat DepthFormat() const;
+        /// setting render-target color format.
+        void SetPixelFormat(DKPixelFormat fmt);
+        DKPixelFormat PixelFormat() const;
 
     protected:
         // frame events
@@ -279,7 +277,7 @@ namespace DKFramework
         DKBlendState blendState;
 
         DKObject<DKTexture> renderTarget;
-        DKPixelFormat depthFormat;
+        DKPixelFormat pixelFormat;
 
         bool loaded : 1;
         bool hidden : 1;
