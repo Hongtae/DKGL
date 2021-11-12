@@ -511,10 +511,9 @@ using namespace DKFramework::Private;
 
 const float DKCanvas::minimumScaleFactor = 0.000001f;
 
-DKCanvas::DKCanvas(DKCommandBuffer* cb, DKTexture* color, DKTexture* depth)
+DKCanvas::DKCanvas(DKCommandBuffer* cb, DKTexture* rt)
     : commandBuffer(cb)
-    , colorAttachment(color)
-    , depthAttachment(depth)
+    , renderTarget(rt)
     , viewport(0, 0, 1, 1)
     , contentBounds(0, 0, 1, 1)
     , contentTransform(DKMatrix3::identity)
@@ -530,19 +529,14 @@ DKCanvas::DKCanvas(DKCommandBuffer* cb, DKTexture* color, DKTexture* depth)
             pipelineStates = states.SafeCast<DKUnknown>();
 
             if (pipelineStates &&
-                colorAttachment &&
-                DKPixelFormatIsColorFormat(colorAttachment->PixelFormat()))
+                renderTarget &&
+                DKPixelFormatIsColorFormat(renderTarget->PixelFormat()))
             {
                 drawable = true;
             }
         }
     }
-    if (depthAttachment &&
-        DKPixelFormatIsDepthFormat(depthAttachment->PixelFormat()) == false)
-    {
-        DKLogE("ERROR: Invalid depth texture format!");
-        drawable = false;
-    }
+
     UpdateTransform();
 }
 
@@ -624,7 +618,7 @@ void DKCanvas::Clear(const DKColor& color)
 {
     DKRenderPassColorAttachmentDescriptor colorAttachmentDesc =
     {
-        colorAttachment,
+        renderTarget,
         0,
         DKRenderPassAttachmentDescriptor::LoadActionClear,
         DKRenderPassAttachmentDescriptor::StoreActionStore,
@@ -1518,12 +1512,8 @@ void DKCanvas::EncodeDrawCommand(uint32_t materialIndex,
         return;
     }
 
-    desc.colorFormat = colorAttachment->PixelFormat();
-    if (depthAttachment)
-        desc.depthFormat = depthAttachment->PixelFormat();
-    else
-        desc.depthFormat = DKPixelFormat::Invalid;
-
+    desc.colorFormat = renderTarget->PixelFormat();
+    desc.depthFormat = DKPixelFormat::Invalid;
     desc.SetBlendState(blendState);
 
     DKRenderPipelineState* pso = states->StateForDescriptor(desc);
@@ -1531,7 +1521,7 @@ void DKCanvas::EncodeDrawCommand(uint32_t materialIndex,
     {
         DKRenderPassColorAttachmentDescriptor colorAttachmentDesc =
         {
-            colorAttachment,
+            renderTarget,
             0,
             DKRenderPassAttachmentDescriptor::LoadActionLoad,
             DKRenderPassAttachmentDescriptor::StoreActionStore,

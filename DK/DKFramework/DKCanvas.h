@@ -41,7 +41,7 @@ namespace DKFramework
         };
 #pragma pack(pop)
 
-        DKCanvas(DKCommandBuffer*, DKTexture*, DKTexture* = nullptr);
+        DKCanvas(DKCommandBuffer*, DKTexture*);
         ~DKCanvas();
 
         void SetViewport(const DKRect&);
@@ -166,9 +166,7 @@ namespace DKFramework
         void UpdateTransform();
 
         DKObject<DKCommandBuffer> commandBuffer;
-        DKObject<DKTexture> colorAttachment;
-        DKObject<DKTexture> depthAttachment;
-        //DKObject<DKUnknown> sharedResources;
+        DKObject<DKTexture> renderTarget;
 
         DKRect	  viewport;
         DKRect	  contentBounds;
