@@ -26,14 +26,14 @@ namespace DKFramework::Private::Vulkan
 		bool Update();
 		void SetupFrame();
 
-		void SetColorPixelFormat(DKPixelFormat) override;
-		void SetDepthStencilPixelFormat(DKPixelFormat) override;
+		void SetPixelFormat(DKPixelFormat) override;
+		DKPixelFormat PixelFormat() const override;
+
 		DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
+        size_t MaximumBufferCount() const override;
 
 		bool Present(DKGpuEvent**, size_t) override;
 
-		DKPixelFormat ColorPixelFormat() const override;
-		DKPixelFormat DepthStencilPixelFormat() const override;
 
 		bool enableVSync;
 		VkSurfaceFormatKHR surfaceFormat;

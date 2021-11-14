@@ -27,11 +27,9 @@ SwapChain::SwapChain(CommandQueue* q, DKWindow* w)
 , window(w)
 , metalLayer(nil)
 , currentDrawable(nil)
-, colorPixelFormat(DKPixelFormat::BGRA8Unorm)
-, depthStencilPixelFormat(DKPixelFormat::Invalid)
+, pixelFormat(DKPixelFormat::BGRA8Unorm)
 {
 	window->AddEventHandler(this, DKFunction(this, &SwapChain::OnWindowEvent), nullptr, nullptr);
-
 }
 
 SwapChain::~SwapChain()
@@ -93,7 +91,7 @@ bool SwapChain::Setup()
 	if (this->metalLayer)
 	{
 		this->metalLayer.device = this->queue->queue.device;
-		this->metalLayer.pixelFormat = PixelFormat(colorPixelFormat);
+		this->metalLayer.pixelFormat = Metal::PixelFormat(pixelFormat);
 
 		return true;
 	}
@@ -101,7 +99,7 @@ bool SwapChain::Setup()
 }
 
 
-void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
+void SwapChain::SetPixelFormat(DKPixelFormat pf)
 {
 	switch (pf)
 	{
@@ -114,24 +112,18 @@ void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
 			break;
 	}
 
-	if (colorPixelFormat != pf)
+	if (pixelFormat != pf)
 	{
-		colorPixelFormat = pf;
+		pixelFormat = pf;
 		if (currentDrawable)
 			[currentDrawable release];
 		currentDrawable = nil;
 	}
 }
 
-void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
+DKPixelFormat SwapChain::PixelFormat() const 
 {
-	if (depthStencilPixelFormat != pf)
-	{
-		depthStencilPixelFormat = pf;
-		if (currentDrawable)
-			[currentDrawable release];
-		currentDrawable = nil;
-	}
+    return pixelFormat; 
 }
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
@@ -145,6 +137,11 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 	}
 
 	return renderPassDescriptor;
+}
+
+size_t SwapChain::MaximumBufferCount() const 
+{
+    return this->metalLayer.maximumDrawableCount;
 }
 
 bool SwapChain::Present(DKGpuEvent** waitEvents, size_t numEvents)
@@ -190,7 +187,7 @@ void SwapChain::SetupFrame()
 		renderPassDescriptor.colorAttachments.Clear();
 		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 
-		this->metalLayer.pixelFormat = PixelFormat(colorPixelFormat);
+		this->metalLayer.pixelFormat = Metal::PixelFormat(pixelFormat);
 
         CGRect frame = this->metalLayer.frame;
         DKASSERT_DEBUG(frame.size.width > 0 && frame.size.height > 0);
@@ -218,35 +215,8 @@ void SwapChain::SetupFrame()
 		renderPassDescriptor.colorAttachments.Clear();
 		renderPassDescriptor.colorAttachments.Add(colorAttachment);
 
-		// setup depth-stencil attachment
-		MTLPixelFormat dsFormat = MTLPixelFormatInvalid;
-		switch (depthStencilPixelFormat)
-		{
-			case DKPixelFormat::D32Float:
-			case DKPixelFormat::D32FloatS8:
-            case DKPixelFormat::S8:
-				dsFormat = PixelFormat(depthStencilPixelFormat);
-				break;
-		}
-		DKObject<Texture> depthStencilRT = nullptr;
-		if (dsFormat != MTLPixelFormatInvalid)
-		{
-			NSUInteger width = texture.width;
-			NSUInteger height = texture.height;
-
-			MTLTextureDescriptor* depthTextureDesc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:dsFormat
-																										width:width
-																									   height:height
-																									mipmapped:NO];
-			id<MTLDevice> device = this->queue->queue.device;
-			id<MTLTexture> depthTexture = [device newTextureWithDescriptor:depthTextureDesc];
-			if (depthTexture)
-			{
-				depthStencilRT = DKOBJECT_NEW Texture(this->queue->Device(), depthTexture);
-				[depthTexture autorelease];
-			}
-		}
-		renderPassDescriptor.depthStencilAttachment.renderTarget = depthStencilRT;
+        // no depth stencil attachment
+		renderPassDescriptor.depthStencilAttachment.renderTarget = nullptr;
 		renderPassDescriptor.depthStencilAttachment.clearDepth = 1.0;	// default clear-depth value
 		renderPassDescriptor.depthStencilAttachment.clearStencil = 0;	// default clear-stencil value
 		renderPassDescriptor.depthStencilAttachment.loadAction = DKRenderPassAttachmentDescriptor::LoadActionClear;

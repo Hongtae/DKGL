@@ -18,11 +18,11 @@ namespace DKFramework
 	public:
 		virtual ~DKSwapChain() {}
 
-		virtual DKPixelFormat ColorPixelFormat() const = 0;
-		virtual DKPixelFormat DepthStencilPixelFormat() const = 0;
-		virtual void SetColorPixelFormat(DKPixelFormat) = 0;
-		virtual void SetDepthStencilPixelFormat(DKPixelFormat) = 0;
+		virtual DKPixelFormat PixelFormat() const = 0;
+		virtual void SetPixelFormat(DKPixelFormat) = 0;
+
 		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor() = 0;
+        virtual size_t MaximumBufferCount() const = 0;
 
 		virtual bool Present(DKGpuEvent** waitEvents, size_t numEvents) = 0;
 

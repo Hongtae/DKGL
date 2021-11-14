@@ -403,10 +403,10 @@ bool SwapChain::Update()
 	return true;
 }
 
-void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
+void SwapChain::SetPixelFormat(DKPixelFormat pf)
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
-	VkFormat format = PixelFormat(pf);
+	VkFormat format = Vulkan::PixelFormat(pf);
 
 	if (format != this->surfaceFormat.format)
 	{
@@ -448,22 +448,10 @@ void SwapChain::SetColorPixelFormat(DKPixelFormat pf)
 	}
 }
 
-void SwapChain::SetDepthStencilPixelFormat(DKPixelFormat pf)
-{
-	DKLogW("SwapChain::SetDepthStencilPixelFormat not implemented!");
-}
-
-DKPixelFormat SwapChain::ColorPixelFormat() const
+DKPixelFormat SwapChain::PixelFormat() const
 {
 	DKCriticalSection<DKSpinLock> guard(lock);
-	return PixelFormat(this->surfaceFormat.format);
-}
-
-DKPixelFormat SwapChain::DepthStencilPixelFormat() const
-{
-	// not implemented yet..
-    DKASSERT_DESC(false, "Not implemented yet!");
-	return DKPixelFormat::Invalid;
+	return Vulkan::PixelFormat(this->surfaceFormat.format);
 }
 
 DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
@@ -472,6 +460,12 @@ DKRenderPassDescriptor SwapChain::CurrentRenderPassDescriptor()
 		this->SetupFrame();
 
 	return renderPassDescriptor;
+}
+
+size_t SwapChain::MaximumBufferCount() const
+{
+    DKCriticalSection<DKSpinLock> guard(lock);
+    return imageViews.Count();
 }
 
 void SwapChain::SetupFrame()

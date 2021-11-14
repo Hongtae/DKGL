@@ -25,14 +25,11 @@ namespace DKFramework::Private::Metal
 
 		bool Setup();
 
-		void SetColorPixelFormat(DKPixelFormat) override;
-		void SetDepthStencilPixelFormat(DKPixelFormat) override;
-
-		DKPixelFormat ColorPixelFormat() const override { return colorPixelFormat; }
-		DKPixelFormat DepthStencilPixelFormat() const override { return depthStencilPixelFormat; }
-
+		void SetPixelFormat(DKPixelFormat) override;
+        DKPixelFormat PixelFormat() const override;
 
 		DKRenderPassDescriptor CurrentRenderPassDescriptor() override;
+        size_t MaximumBufferCount() const override;
 
         bool Present(DKGpuEvent**, size_t) override;
 
@@ -43,8 +40,7 @@ namespace DKFramework::Private::Metal
 
 		CAMetalLayer* metalLayer;
 
-		DKPixelFormat colorPixelFormat;
-		DKPixelFormat depthStencilPixelFormat;
+		DKPixelFormat pixelFormat;
 		id<CAMetalDrawable> currentDrawable;
 		DKRenderPassDescriptor renderPassDescriptor;
 
