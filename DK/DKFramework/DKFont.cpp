@@ -714,7 +714,7 @@ bool DKFont::SetStyle(float point, uint32_t resX, uint32_t resY, float embolden,
 	//	DKLog("available size: %d\n",reinterpret_cast<FT_Face>(ftFace)->available_sizes[i].size);
 	//}
 
-    // clamp pointSize (26.6 signed-fixed) from 1/64 to 1^25-(1/64)
+    // clamp pointSize (26.6 signed-fixed) from 1/64 to 2^25-(1/64)
     double dp = Clamp<double>(double(point) * 64.0, 1.0, double(0x7fffffffu));
     FT_F26Dot6 charSize = floor(dp);
 
