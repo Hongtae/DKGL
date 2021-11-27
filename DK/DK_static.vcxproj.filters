@@ -1326,5 +1326,8 @@
     <ClInclude Include="DKFramework\Private\GraphicsAPI.h">
       <Filter>DKFramework\Private</Filter>
     </ClInclude>
+    <ClInclude Include="DKFoundation\DKCallableRef.h">
+      <Filter>DKFoundation</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

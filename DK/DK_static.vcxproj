@@ -373,6 +373,7 @@
     <ClInclude Include="DKFoundation\DKBitArray.h" />
     <ClInclude Include="DKFoundation\DKBuffer.h" />
     <ClInclude Include="DKFoundation\DKBufferStream.h" />
+    <ClInclude Include="DKFoundation\DKCallableRef.h" />
     <ClInclude Include="DKFoundation\DKCircularQueue.h" />
     <ClInclude Include="DKFoundation\DKCompressor.h" />
     <ClInclude Include="DKFoundation\DKCondition.h" />
