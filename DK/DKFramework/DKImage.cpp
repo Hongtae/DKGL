@@ -160,13 +160,15 @@ namespace DKFramework::Private
             }
             if (s >= 8)
             {
-                const png_byte png_signature[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
+                constexpr png_byte png_signature[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
                 bool png = true;
                 for (int i = 0; i < 8; ++i)
                 {
                     if (png_signature[i] != p[i])
+                    {
                         png = false;
-                    break;
+                        break;
+                    }
                 }
                 if (png)
                 {
@@ -1341,18 +1343,19 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 			{
 				cinfo.input_components = 3;
 				cinfo.in_color_space = JCS_RGB;
-			}
-			else
+                rowStride = this->width * 3; // bytesPerPixel = 3
+            }
+			else // R8
 			{
 				cinfo.input_components = 1;
 				cinfo.in_color_space = JCS_GRAYSCALE;
-			}
+                rowStride = this->width * 1; // bytesPerPixel = 1
+            }
 
 			jpeg_set_defaults(&cinfo);
 			//jpeg_set_quality(&cinfo, 75, true);
 
 			jpeg_start_compress(&cinfo, TRUE);
-			rowStride = this->width * 3; // bytesPerPixel = 3
 			buffer = (JSAMPLE*)(this->data);
 			JSAMPROW row[1];
 			while (cinfo.next_scanline < cinfo.image_height)
