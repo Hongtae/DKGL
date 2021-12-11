@@ -18,46 +18,42 @@ using namespace DKFoundation;
 
 DKAtomicNumber32::Value DKAtomicNumber32::Increment()
 {
-	Value prev;
+	Value value;
 #ifdef _WIN32
-	prev = ::InterlockedIncrement((LONG*)&atomic);
-	prev--;
+    value = ::InterlockedIncrement((LONG*)&atomic);
 #elif defined(__APPLE__) && defined(__MACH__)
-	prev = ::OSAtomicIncrement32(&atomic);
-	prev--;
+    value = ::OSAtomicIncrement32(&atomic);
 #else
-	prev = __sync_fetch_and_add(&atomic, 1);
+    value = __sync_add_and_fetch(&atomic, 1);
 #endif
-	return prev;
+	return value;
 }
 
 DKAtomicNumber32::Value DKAtomicNumber32::Decrement()
 {
-	Value prev;
+	Value value;
 #ifdef _WIN32
-	prev = ::InterlockedDecrement((LONG*)&atomic);
-	prev++;
+    value = ::InterlockedDecrement((LONG*)&atomic);
 #elif defined(__APPLE__) && defined(__MACH__)
-	prev = ::OSAtomicDecrement32(&atomic);
-	prev++;
+    value = ::OSAtomicDecrement32(&atomic);
 #else
-	prev = __sync_fetch_and_sub(&atomic, 1);
+    value = __sync_sub_and_fetch(&atomic, 1);
 #endif
-	return prev;
+	return value;
 }
 
 DKAtomicNumber32::Value DKAtomicNumber32::Add(Value addend)
 {
-	Value prev;
+	Value value;
 #ifdef _WIN32
-	prev = ::InterlockedExchangeAdd((LONG*)&atomic, addend);
+    value = ::InterlockedExchangeAdd((LONG*)&atomic, addend);
+    value += addend;
 #elif defined(__APPLE__) && defined(__MACH__)
-	prev = ::OSAtomicAdd32(addend, &atomic);
-	prev += addend;
+    value = ::OSAtomicAdd32(addend, &atomic);
 #else
-	prev = __sync_fetch_and_add(&atomic, addend);
+    value = __sync_fetch_and_add(&atomic, addend);
 #endif
-	return prev;
+	return value;
 }
 
 DKAtomicNumber32::Value DKAtomicNumber32::Exchange(Value value)

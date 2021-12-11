@@ -20,9 +20,9 @@ namespace DKFoundation
 		DKAtomicNumber64(Value initialValue = 0);
 		~DKAtomicNumber64();
 
-		Value Increment();			///< +1, returns previous value.
-		Value Decrement();			///< -1, returns previous value.
-		Value Add(Value addend);		///< +addend, returns previous value.
+		Value Increment();			///< +1, returns new value.
+		Value Decrement();			///< -1, returns new value.
+		Value Add(Value addend);		///< +addend, returns new value.
 		Value Exchange(Value value);	///< set value, returns previous value.
 
 		/// compare and set when equal. return true when operation succeeded.
