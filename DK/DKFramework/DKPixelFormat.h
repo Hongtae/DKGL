@@ -106,7 +106,7 @@ namespace DKFramework
         {
         case DKPixelFormat::S8:
         case DKPixelFormat::D32FloatS8:
-            return false;
+            return true;
         }
         return false;
     }
