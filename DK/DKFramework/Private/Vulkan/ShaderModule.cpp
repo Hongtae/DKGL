@@ -57,7 +57,7 @@ ShaderModule::ShaderModule(DKGraphicsDevice* d, VkShaderModule m, const DKShader
 ShaderModule::~ShaderModule()
 {
 	GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
-	vkDestroyShaderModule(dev->device, module, 0);
+	vkDestroyShaderModule(dev->device, module, dev->allocationCallbacks);
 }
 
 DKObject<DKShaderFunction> ShaderModule::CreateFunction(const DKString& name) const
