@@ -297,7 +297,7 @@ namespace DKFramework::Private
         DKBlendState BlendState() const
         {
             DKBlendState state = {};
-            state.sourceAlphaBlendFactor = sourceRGBBlendFactor;
+            state.sourceRGBBlendFactor = sourceRGBBlendFactor;
             state.sourceAlphaBlendFactor = sourceAlphaBlendFactor;
             state.destinationRGBBlendFactor = destinationRGBBlendFactor;
             state.destinationAlphaBlendFactor = destinationAlphaBlendFactor;

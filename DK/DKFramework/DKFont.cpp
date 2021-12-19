@@ -373,7 +373,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
             uint8_t* buff = reinterpret_cast<uint8_t*>(stagingBuffer->Contents());
             for (int i = 0; i < height; i++)
             {
-                memcpy(&buff[i * width], &((char*)data)[(height - i - 1) * width], width);
+                memcpy(&buff[i * width], &((char*)data)[i * width], width);
             }
 
             DKObject<DKCommandBuffer> cb = queue->CreateCommandBuffer();
@@ -472,7 +472,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
             // create texture object..
             DKTextureDescriptor desc = {};
             desc.textureType = DKTexture::Type2D;
-            desc.pixelFormat = DKPixelFormat::RGBA8Unorm;
+            desc.pixelFormat = DKPixelFormat::R8Unorm;
             desc.width = width;
             desc.height = height;
             desc.depth = 1;
@@ -728,7 +728,7 @@ bool DKFont::SetStyle(float point, uint32_t resX, uint32_t resY, float embolden,
         DKCriticalSection<DKSpinLock> guard(lock);
         if (size26d6 != charSize || dpiX != resX || dpiY != resY)
         {
-            if (FT_Set_Char_Size(reinterpret_cast<FT_Face>(ftFace), 0, charSize, resX, resY) == 0)
+            if (FT_Set_Char_Size(reinterpret_cast<FT_Face>(ftFace), 0, charSize, resX, resY))
             {
                 DKLogE("FT_Set_Char_Size failed! (size:0x%x, dpi:%ux%u)",
                     charSize, resX, resY);
