@@ -3,7 +3,7 @@
 //  Platform: Win32
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -192,6 +192,7 @@ bool Window::Create(const DKString& title, uint32_t style)
 	instance->PostWindowEvent(
 	{
 		WindowEvent::WindowCreated,
+        instance,
 		windowRect,
 		contentRect,
 		contentScaleFactor
@@ -220,6 +221,7 @@ bool Window::CreateProxy(void* systemHandle)
 		instance->PostWindowEvent(
 		{
 			WindowEvent::WindowCreated,
+            instance,
 			windowRect,
 			contentRect,
 			contentScaleFactor
@@ -260,6 +262,7 @@ void Window::UpdateProxy()
 			instance->PostWindowEvent(
 			{
 				WindowEvent::WindowResized,
+                instance,
 				windowRect,
 				contentRect,
 				contentScaleFactor
@@ -278,6 +281,7 @@ void Window::Destroy()
 			instance->PostWindowEvent(
 			{
 				WindowEvent::WindowClosed,
+                instance,
 				windowRect,
 				contentRect,
 				contentScaleFactor
@@ -309,6 +313,7 @@ void Window::Destroy()
 			instance->PostWindowEvent(
 			{
 				WindowEvent::WindowClosed,
+                instance,
 				windowRect,
 				contentRect,
 				contentScaleFactor
@@ -552,11 +557,11 @@ void Window::UpdateKeyboard()
 		{
 			if (keyStateCurrent[i] & 0x80)
 			{
-				instance->PostKeyboardEvent({ KeyboardEvent::KeyDown, 0,lKey, "" });
+				instance->PostKeyboardEvent({ KeyboardEvent::KeyDown, instance, 0,lKey, ""});
 			}
 			else
 			{
-				instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, lKey, "" });
+				instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, instance, 0, lKey, ""});
 			}
 		}
 	}
@@ -564,11 +569,11 @@ void Window::UpdateKeyboard()
 	{
 		if (keyStateCurrent[VK_CAPITAL] & 0x01)
 		{
-			instance->PostKeyboardEvent({ KeyboardEvent::KeyDown, 0, DKVirtualKey::Capslock, "" });
+			instance->PostKeyboardEvent({ KeyboardEvent::KeyDown, instance, 0, DKVirtualKey::Capslock, ""});
 		}
 		else
 		{
-			instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, DKVirtualKey::Capslock, "" });
+			instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, instance, 0, DKVirtualKey::Capslock, ""});
 		}
 	}
 	memcpy(keyboardStates, keyStateCurrent, 256);
@@ -606,13 +611,13 @@ void Window::ResetKeyboard()
 
 		if (keyboardStates[i] & 0x80)
 		{
-			instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, lKey, "" });
+			instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, instance, 0, lKey, "" });
 		}
 	}
 
 	if (keyboardStates[VK_CAPITAL] & 0x01)
 	{
-		instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, 0, DKVirtualKey::Capslock, "" });
+		instance->PostKeyboardEvent({ KeyboardEvent::KeyUp, instance, 0, DKVirtualKey::Capslock, ""});
 	}
 
 	::GetKeyboardState(keyboardStates);	// to empty keyboard queue
@@ -643,7 +648,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						numActiveWindows.Increment();
 						window->activated = true;
-						window->instance->PostWindowEvent({ WindowEvent::WindowActivated, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowActivated,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 						window->ResetKeyboard();
 						window->ResetMouse();  // to prevent mouse cursor popped.
 					}
@@ -656,7 +667,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						window->ResetKeyboard();	// release all keys
 						window->ResetMouse();
 						window->activated = false;
-						window->instance->PostWindowEvent({ WindowEvent::WindowInactivated, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowInactivated,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 				}
 				return 0;
@@ -667,7 +684,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						window->visible = true;
 						window->minimized = false;
-						window->instance->PostWindowEvent({ WindowEvent::WindowShown, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowShown,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 				}
 				else
@@ -675,7 +698,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (window->visible)
 					{
 						window->visible = false;
-						window->instance->PostWindowEvent({ WindowEvent::WindowHidden, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowHidden,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 				}
 				return 0;
@@ -704,9 +733,21 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						window->windowRect = DKRect(rcWindow.left, rcWindow.top, rcWindow.right - rcWindow.left, rcWindow.bottom - rcWindow.top);
 						window->contentRect = DKRect(rcClient.left, rcClient.top, rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
 						if (resized)
-							window->instance->PostWindowEvent({ WindowEvent::WindowResized, window->windowRect, window->contentRect, window->contentScaleFactor });
+							window->instance->PostWindowEvent({
+                                WindowEvent::WindowResized,
+                                window->instance,
+                                window->windowRect,
+                                window->contentRect,
+                                window->contentScaleFactor
+                            });
 						if (moved)
-							window->instance->PostWindowEvent({ WindowEvent::WindowMoved, window->windowRect, window->contentRect, window->contentScaleFactor });
+							window->instance->PostWindowEvent({
+                                WindowEvent::WindowMoved,
+                                window->instance,
+                                window->windowRect,
+                                window->contentRect,
+                                window->contentScaleFactor
+                            });
 					}
 				}
 				return 0;
@@ -716,7 +757,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (window->visible)
 					{
 						window->visible = false;
-						window->instance->PostWindowEvent({ WindowEvent::WindowHidden, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowHidden,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 				}
 				else if (wParam == SIZE_MINIMIZED)
@@ -724,7 +771,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (!window->minimized)
 					{
 						window->minimized = true;
-						window->instance->PostWindowEvent({ WindowEvent::WindowMinimized, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowMinimized,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 				}
 				else
@@ -733,7 +786,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						window->minimized = false;
 						window->visible = true;
-						window->instance->PostWindowEvent({ WindowEvent::WindowShown, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowShown,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 					else
 					{
@@ -746,7 +805,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						::GetWindowRect(hWnd, &rc);
 						window->windowRect = DKRect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 
-						window->instance->PostWindowEvent({ WindowEvent::WindowResized, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowResized,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor
+                        });
 					}
 				}
 				return 0;
@@ -756,7 +821,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					int x = (int)(short)LOWORD(lParam);   // horizontal position 
 					int y = (int)(short)HIWORD(lParam);   // vertical position 
 					window->windowRect.origin = DKPoint(x, y);
-					window->instance->PostWindowEvent({ WindowEvent::WindowMoved, window->windowRect, window->contentRect, window->contentScaleFactor });
+					window->instance->PostWindowEvent({
+                        WindowEvent::WindowMoved,
+                        window->instance,
+                        window->windowRect,
+                        window->contentRect,
+                        window->contentScaleFactor
+                    });
 				}
 				return 0;
 			case WM_DPICHANGED:
@@ -782,7 +853,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 					else
 					{
-						window->instance->PostWindowEvent({ WindowEvent::WindowResized, window->windowRect, window->contentRect, window->contentScaleFactor });
+						window->instance->PostWindowEvent({
+                            WindowEvent::WindowResized,
+                            window->instance,
+                            window->windowRect,
+                            window->contentRect,
+                            window->contentScaleFactor,
+                        });
 					}
 				}
 				return 0;
@@ -872,7 +949,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 						if (postEvent)
 						{
-							window->instance->PostMouseEvent({ MouseEvent::Move, MouseEvent::GenericMouse, 0, 0, window->mousePosition, delta, 0, 0 });
+							window->instance->PostMouseEvent({
+                                MouseEvent::Move,
+                                window->instance,
+                                MouseEvent::GenericMouse,
+                                0,
+                                0,
+                                window->mousePosition,
+                                delta,
+                                0,
+                                0});
 						}
 					}
 				}
@@ -882,7 +968,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					window->mouseButtonDown.button1 = true;
 					DKPoint pt(MAKEPOINTS(lParam).x, MAKEPOINTS(lParam).y);
-					window->instance->PostMouseEvent({ MouseEvent::ButtonDown, MouseEvent::GenericMouse, 0, 0, pt, DKVector2(0,0), 0, 0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::ButtonDown,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        0,
+                        pt,
+                        DKVector2(0,0),
+                        0,
+                        0});
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
 				return 0;
@@ -891,7 +986,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					window->mouseButtonDown.button1 = false;
 					DKPoint pt(MAKEPOINTS(lParam).x, MAKEPOINTS(lParam).y);
-					window->instance->PostMouseEvent({ MouseEvent::ButtonUp, MouseEvent::GenericMouse, 0, 0, pt, DKVector2(0,0), 0, 0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::ButtonUp,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        0,
+                        pt,
+                        DKVector2(0,0),
+                        0,
+                        0});
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
 				return 0;
@@ -900,7 +1004,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					window->mouseButtonDown.button2 = true;
 					DKPoint pt(MAKEPOINTS(lParam).x, MAKEPOINTS(lParam).y);
-					window->instance->PostMouseEvent({ MouseEvent::ButtonDown, MouseEvent::GenericMouse, 0, 1, pt, DKVector2(0, 0), 0, 0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::ButtonDown,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        1,
+                        pt,
+                        DKVector2(0, 0),
+                        0,
+                        0});
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
 				return 0;
@@ -909,7 +1022,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					window->mouseButtonDown.button2 = false;
 					DKPoint pt(MAKEPOINTS(lParam).x, MAKEPOINTS(lParam).y);
-					window->instance->PostMouseEvent({ MouseEvent::ButtonUp, MouseEvent::GenericMouse, 0, 1, pt, DKVector2(0, 0), 0,0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::ButtonUp,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        1,
+                        pt,
+                        DKVector2(0, 0),
+                        0,
+                        0});
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
 				return 0;
@@ -918,7 +1040,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					window->mouseButtonDown.button3 = true;
 					DKPoint pt(MAKEPOINTS(lParam).x, MAKEPOINTS(lParam).y);
-					window->instance->PostMouseEvent({ MouseEvent::ButtonDown, MouseEvent::GenericMouse, 0, 2, pt, DKVector2(0,0), 0, 0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::ButtonDown,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        2,
+                        pt,
+                        DKVector2(0,0),
+                        0,
+                        0});
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
 				return 0;
@@ -927,7 +1058,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					window->mouseButtonDown.button3 = false;
 					DKPoint pt(MAKEPOINTS(lParam).x, MAKEPOINTS(lParam).y);
-					window->instance->PostMouseEvent({ MouseEvent::ButtonUp, MouseEvent::GenericMouse, 0, 2, pt, DKVector2(0, 0), 0,0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::ButtonUp,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        2,
+                        pt,
+                        DKVector2(0, 0),
+                        0,
+                        0});
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
 				return 0;
@@ -939,12 +1079,30 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (button == XBUTTON1)
 					{
 						window->mouseButtonDown.button4 = true;
-						window->instance->PostMouseEvent({ MouseEvent::ButtonDown, MouseEvent::GenericMouse, 0, 3, pt, DKVector2(0, 0), 0,0 });
+						window->instance->PostMouseEvent({
+                            MouseEvent::ButtonDown,
+                            window->instance,
+                            MouseEvent::GenericMouse,
+                            0,
+                            3,
+                            pt,
+                            DKVector2(0, 0),
+                            0,
+                            0});
 					}
 					else if (button == XBUTTON2)
 					{
 						window->mouseButtonDown.button5 = true;
-						window->instance->PostMouseEvent({ MouseEvent::ButtonDown, MouseEvent::GenericMouse, 0, 4, pt, DKVector2(0, 0), 0,0 });
+						window->instance->PostMouseEvent({
+                            MouseEvent::ButtonDown,
+                            window->instance,
+                            MouseEvent::GenericMouse,
+                            0,
+                            4,
+                            pt,
+                            DKVector2(0, 0),
+                            0,
+                            0});
 					}
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
@@ -957,12 +1115,30 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (button == XBUTTON1)
 					{
 						window->mouseButtonDown.button4 = false;
-						window->instance->PostMouseEvent({ MouseEvent::ButtonUp, MouseEvent::GenericMouse, 0, 3, pt, DKVector2(0, 0), 0,0 });
+						window->instance->PostMouseEvent({
+                            MouseEvent::ButtonUp,
+                            window->instance,
+                            MouseEvent::GenericMouse,
+                            0,
+                            3,
+                            pt,
+                            DKVector2(0, 0),
+                            0,
+                            0});
 					}
 					else if (button == XBUTTON2)
 					{
 						window->mouseButtonDown.button5 = false;
-						window->instance->PostMouseEvent({ MouseEvent::ButtonUp, MouseEvent::GenericMouse, 0, 4, pt, DKVector2(0, 0), 0,0 });
+						window->instance->PostMouseEvent({
+                            MouseEvent::ButtonUp,
+                            window->instance,
+                            MouseEvent::GenericMouse,
+                            0,
+                            4,
+                            pt,
+                            DKVector2(0, 0),
+                            0,
+                            0});
 					}
 					::PostMessageW(hWnd, WM_DKWINDOW_UPDATEMOUSECAPTURE, 0, 0);
 				}
@@ -980,7 +1156,16 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						delta.y = 1;
 					else if (nDelta < 0)
 						delta.y = -1;
-					window->instance->PostMouseEvent({ MouseEvent::Wheel, MouseEvent::GenericMouse, 0, 2, pt, delta, 0,0 });
+					window->instance->PostMouseEvent({
+                        MouseEvent::Wheel,
+                        window->instance,
+                        MouseEvent::GenericMouse,
+                        0,
+                        2,
+                        pt,
+                        delta,
+                        0,
+                        0});
 				}
 				return 0;
 			case WM_CHAR:
@@ -989,7 +1174,7 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					wchar_t c = (wchar_t)wParam;
 					DKString text(c);
-					window->instance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, text });
+					window->instance->PostKeyboardEvent({ KeyboardEvent::TextInput, window->instance, 0, DKVirtualKey::None, text });
 				}
 				return 0;
 			case WM_IME_STARTCOMPOSITION:
@@ -1003,7 +1188,7 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					// Result characters will be received via WM_CHAR,
 					// reset input-candidate characters here.
-					window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
+					window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, window->instance, 0, DKVirtualKey::None, "" });
 				}
 				if (lParam & GCS_COMPSTR)		// composition in progress.
 				{
@@ -1022,12 +1207,12 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								DKString compositionText((const wchar_t*)tmp);
 								DKFree(tmp);
 
-								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, compositionText });
+								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, window->instance, 0, DKVirtualKey::None, compositionText });
 								//	DKLog("WM_IME_COMPOSITION: '%ls'\n", strInputCandidate));
 							}
 							else	// composition character's length become 0. (erased)
 							{
-								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
+								window->instance->PostKeyboardEvent({ KeyboardEvent::TextComposition, window->instance, 0, DKVirtualKey::None, "" });
 							}
 						}
 						else	// not text-input mode.
@@ -1042,7 +1227,13 @@ LRESULT Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			case WM_PAINT:
 				if (!window->resizing)
 				{
-					window->instance->PostWindowEvent({ WindowEvent::WindowUpdate, window->windowRect, window->contentRect, window->contentScaleFactor });
+					window->instance->PostWindowEvent({
+                        WindowEvent::WindowUpdate,
+                        window->instance,
+                        window->windowRect,
+                        window->contentRect,
+                        window->contentScaleFactor,
+                    });
 				}
 				break;
 			case WM_CLOSE:

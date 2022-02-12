@@ -3,7 +3,7 @@
 //  Platform: macOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2022 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -136,6 +136,7 @@ bool Window::Create(const DKString& title, uint32_t style)
 
 		instance->PostWindowEvent({
 			WindowEvent::WindowCreated,
+            instance,
 			WindowRect(),
 			ContentRect(),
 			(float)window.backingScaleFactor
@@ -175,6 +176,7 @@ void Window::UpdateProxy()
 
 			instance->PostWindowEvent({
 				WindowEvent::WindowResized,
+                instance,
 				WindowRect(),
 				ContentRect(),
 				(float)backingScaleFactor
@@ -266,6 +268,7 @@ void Window::Show()
 
 			instance->PostWindowEvent({
 				WindowEvent::WindowShown,
+                instance,
 				WindowRect(),
 				ContentRect(),
 				(float)view.window.backingScaleFactor
@@ -284,6 +287,7 @@ void Window::Hide()
 
 			instance->PostWindowEvent({
 				WindowEvent::WindowHidden,
+                instance,
 				WindowRect(),
 				ContentRect(),
 				(float)view.window.backingScaleFactor
@@ -301,12 +305,14 @@ void Window::Activate()
 
 			instance->PostWindowEvent({
 				WindowEvent::WindowShown,
+                instance,
 				WindowRect(),
 				ContentRect(),
 				(float)view.window.backingScaleFactor
 			});
 			instance->PostWindowEvent({
 				WindowEvent::WindowActivated,
+                instance,
 				WindowRect(),
 				ContentRect(),
 				(float)view.window.backingScaleFactor
