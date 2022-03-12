@@ -2,7 +2,7 @@
 //  File: DKShader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKShader.h"
@@ -220,11 +220,9 @@ bool DKShader::Compile(const DKData* d)
     {
         if (DKObject<DKData> data = d->ImmutableData(); data)
         {
-            DKDataReader reader(data);
-
             try
             {
-                spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+                spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(data->Contents()), data->Length() / sizeof(uint32_t));
 
                 switch (spv::ExecutionModel exec = compiler.get_execution_model(); exec)
                 {

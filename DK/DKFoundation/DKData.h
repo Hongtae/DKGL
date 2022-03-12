@@ -51,102 +51,15 @@ namespace DKFoundation
 		/// Write content to a stream object
 		bool WriteToStream(DKStream* stream) const;
 
-		/// shared lock. (read-only)
-		/// multiple-threads can be locked with this method simultaneously.
-		virtual const void* LockShared() const = 0;
-		virtual bool TryLockShared(const void**) const = 0;
-		virtual void UnlockShared() const = 0;
-
-		/// exclusive lock. (read-write)
-		/// only one thread can be locked.
-		virtual void* LockExclusive()		{ return NULL; }
-		virtual bool TryLockExclusive(void**)	{ return false; }
-		virtual void UnlockExclusive()		{}
+        virtual const void* Contents() const = 0;
+        virtual void* MutableContents() { return nullptr; }
 
 		/// Clone immutable data object.
 		virtual DKObject<DKData> ImmutableData() const;
-
 
 		DKData(DKData&&) = delete;
 		DKData(const DKData&) = delete;
 		DKData& operator = (DKData&&) = delete;
 		DKData& operator = (const DKData&) = delete;
-	};
-
-	/// @brief scoped read accessor for DKData
-	///
-	/// Data objects must implement shared locks.
-	class DKDataReader
-	{
-	public:
-		DKDataReader(DKData* p) : source(p), data(NULL)
-		{
-			if (source)
-				data = source->LockShared();
-		}
-		DKDataReader(const DKDataReader& r) : source(r.source), data(NULL)
-		{
-			if (source)
-				data = source->LockShared();
-		}
-		~DKDataReader()
-		{
-			if (source)
-				source->UnlockShared();
-		}
-		DKDataReader& operator = (const DKDataReader& r)
-		{
-			if (this->source != r.source)
-			{
-				if (source)
-					source->UnlockShared();
-				data = NULL;
-				this->source = r.source;
-				if (source)
-					data = source->LockShared();
-			}
-			return *this;
-		}
-		size_t Length() const
-		{
-			if (source)
-				return source->Length();
-			return 0;
-		}
-		const void* Bytes() const		{return data;}
-		operator const void* () const	{return data;}
-	private:
-		DKObject<DKData> source;
-		const void* data;
-	};
-	/// @brief scoped write accessor for DKData
-	/// 
-	/// Data objects must implement exclusive locks.
-	class DKDataWriter
-	{
-	public:
-		DKDataWriter(DKData* p) : source(p), data(NULL)
-		{
-			if (source)
-				data = source->LockExclusive();
-		}
-		~DKDataWriter()
-		{
-			if (source)
-				source->UnlockExclusive();
-		}
-		size_t Length() const
-		{
-			if (source)
-				return source->Length();
-			return 0;
-		}
-		void* Bytes() const		{return data;}
-		operator void* ()		{return data;}
-	private:
-		DKObject<DKData> source;
-		void* data;
-		DKDataWriter(const DKDataWriter&) = delete;
-		DKDataWriter& operator = (const DKDataWriter&) = delete;
 	};
 }

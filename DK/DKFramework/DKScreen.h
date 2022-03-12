@@ -2,7 +2,7 @@
 //  File: DKScreen.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -22,14 +22,13 @@ namespace DKFramework
 	class DKGL_API DKScreen
 	{
 	public:
+        DKScreen();
 		DKScreen(DKGraphicsDeviceContext*, DKDispatchQueue*);
 		~DKScreen();
 
-		/// Create rendering thread and start event-loop
-		void Start();
+		/// Pause/Resume thread
 		void Pause();
 		void Resume();
-		void Stop();
 
         void SetWindow(DKWindow*);
 		DKWindow* Window()		{ return window; }
@@ -37,8 +36,9 @@ namespace DKFramework
 		DKFrame* RootFrame()	{ return rootFrame; }
 
         /// create canvas object for root frame (screen-surface, non-render-target)
-		DKObject<DKCanvas> CreateCanvas() const;
+		DKObject<DKCanvas> CreateCanvas();
 		DKSize Resolution() const;
+        float ContentScaleFactor() const;
 
 		/// make specified frame can access keyboard device exclusively.
         bool SetKeyFrame(int deviceId, DKFrame* frame);
@@ -83,8 +83,6 @@ namespace DKFramework
         DKGraphicsDeviceContext* GraphicsDevice();
 
 	private:
-        void Draw() const;
-
         DKObject<DKDispatchQueue> dispatchQueue;
         DKObject<DKWindow> window;
         DKObject<DKFrame> rootFrame;
@@ -96,7 +94,19 @@ namespace DKFramework
 
         DKObject<DKGraphicsDeviceContext> graphicsDevice;
         DKObject<DKAudioDevice> audioDevice;
+        DKObject<DKCommandQueue> commandQueue;
+        DKObject<DKSwapChain> swapChain;
 
         DKSize screenResolution;
+
+        float frameInterval;
+        DKObject<DKThread> thread;
+        DKCondition condition;
+        bool running;
+        bool paused;
+        DKLock frameGuard;
+
+        DKScreen(const DKScreen&) = delete;
+        DKScreen& operator = (const DKScreen&) = delete;
 	};
 }

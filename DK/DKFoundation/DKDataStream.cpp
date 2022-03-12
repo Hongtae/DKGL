@@ -2,7 +2,7 @@
 //  File: DKDataStream.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <memory.h>
@@ -78,7 +78,7 @@ size_t DKDataStream::Read(void* p, size_t s)
 	if (this->data)
 	{
 		size_t bytesRead = 0;
-		const char* ptr = reinterpret_cast<const char*>(this->data->LockShared());
+		const char* ptr = reinterpret_cast<const char*>(this->data->Contents());
 		size_t contentSize = this->data->Length();
 		if (this->offset > contentSize)
 		{
@@ -90,7 +90,6 @@ size_t DKDataStream::Read(void* p, size_t s)
 			memcpy(p, &ptr[this->offset], bytesRead);
 			this->offset = this->offset + bytesRead;
 		}
-		this->data->UnlockShared();
 		return bytesRead;
 	}
 	else

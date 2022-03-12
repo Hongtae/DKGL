@@ -2,7 +2,7 @@
 //  File: GraphicsDevice.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2020 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -1046,12 +1046,11 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
             return NULL;
         }
 
-		DKDataReader reader(data);
-		if (reader.Length() > 0)
+		if (data->Length() > 0)
 		{
 			VkShaderModuleCreateInfo shaderModuleCreateInfo = { VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
-			shaderModuleCreateInfo.codeSize = reader.Length();
-			shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(reader.Bytes());
+			shaderModuleCreateInfo.codeSize = data->Length();
+			shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(data->Contents());
 
 			VkShaderModule shaderModule;
 			VkResult res = vkCreateShaderModule(device, &shaderModuleCreateInfo, allocationCallbacks, &shaderModule);
@@ -1076,7 +1075,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 			return module.SafeCast<DKShaderModule>();
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 DKObject<DKShaderBindingSet> GraphicsDevice::CreateShaderBindingSet(DKGraphicsDevice* dev, const DKShaderBindingSetLayout& layout)
@@ -2240,10 +2239,9 @@ void GraphicsDevice::LoadPipelineCache()
 			buffer.Clear();
 			if (data.Length() > 0)
 			{
-				const void* p = data.LockShared();
+				const void* p = data.Contents();
 				buffer.Resize(data.Length());
 				memcpy((void*)buffer, p, data.Length());
-				data.UnlockShared();
 
 				pipelineCreateInfo.initialDataSize = buffer.Count();
 				pipelineCreateInfo.pInitialData = buffer;

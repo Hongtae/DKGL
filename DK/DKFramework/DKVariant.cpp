@@ -2,7 +2,7 @@
 //  File: DKVariant.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKVariant.h"
@@ -118,7 +118,7 @@ namespace DKFramework
 				len = sd.data->Length();
 			if (bo != DKRuntimeByteOrder() && sd.elementSize > 0 && sd.elementSize <= len && sd.layout.Count() > 0)
 			{
-				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data->LockExclusive());
+				uint8_t* p = reinterpret_cast<uint8_t*>(sd.data->MutableContents());
 				if (p)
 				{
 					size_t pos = 0;
@@ -153,7 +153,6 @@ namespace DKFramework
 						}
 						pos += sd.elementSize;
 					}
-					sd.data->UnlockExclusive();
 					return true;
 				}
 				return false;
@@ -520,9 +519,8 @@ DKObject<DKXmlElement> DKVariant::ExportXML() const
 	{
 		DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
 		const VData& data = this->Data();
-		const void* p = data.LockShared();
+		const void* p = data.Contents();
 		DKObject<DKBuffer> compressed = DKBuffer::Compress(DKCompressor::Default, p, data.Length());
-		data.UnlockShared();
 		if (compressed)
 			compressed->Base64Encode(cdata->value);
 		e->nodes.Add(cdata.SafeCast<DKXmlCData>());
@@ -566,9 +564,8 @@ DKObject<DKXmlElement> DKVariant::ExportXML() const
 		if (stData.data)
 		{
 			DKObject<DKXmlCData> cdata = DKObject<DKXmlCData>::New();
-			const void* p = stData.data->LockShared();
+			const void* p = stData.data->Contents();
 			DKObject<DKBuffer> compressed = DKBuffer::Compress(DKCompressor::Default, p, stData.data->Length());
-			stData.data->UnlockShared();
 			if (compressed)
 			{
 				compressed->Base64Encode(cdata->value);
@@ -1239,21 +1236,18 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 		}
 		else if (valueType == TypeData)
 		{
-			const void* ptr = this->Data().LockShared();
+			const void* ptr = this->Data().Contents();
 			uint64_t len = this->Data().Length();
 			if (!output.Write(len))
 			{
-				this->Data().UnlockShared();
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
 			if (len > 0 && stream->Write(ptr, len) != len)
 			{
-				this->Data().UnlockShared();
 				errorDesc = L"Failed to write to stream.";
 				goto FAILED;
 			}
-			this->Data().UnlockShared();
 		}
 		else if (valueType == TypeStructData)
 		{
@@ -1277,7 +1271,7 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 			}
 			if (length > 0)
 			{
-				const uint8_t* dataPtr = reinterpret_cast<const uint8_t*>(stData.data->LockShared());
+				const uint8_t* dataPtr = reinterpret_cast<const uint8_t*>(stData.data->Contents());
 				bool succeeded = true;
 
 				if (byteOrder != DKRuntimeByteOrder())
@@ -1330,7 +1324,6 @@ bool DKVariant::ExportStream(DKStream* stream, DKByteOrder byteOrder) const
 					succeeded = stream->Write(dataPtr, length) == length;
 				}
 
-				stData.data->UnlockShared();
 				if (!succeeded)
 				{
 					errorDesc = L"Failed to write to stream.";
@@ -1731,15 +1724,13 @@ bool DKVariant::ImportStream(DKStream* stream)
 						if (stream->RemainLength() >= len)
 						{
 							DKBuffer val;
-							val.SetContent(0, len);
-							void* p = val.LockExclusive();
+							val.SetContents(0, len);
+							void* p = val.MutableContents();
 							if (stream->Read(p, len) != len)
 							{
-								val.UnlockExclusive();
 								errorDesc = L"Failed to read from stream.";
 								goto FAILED;
 							}
-							val.UnlockExclusive();
 							this->SetData(val);
 						}
 						else
@@ -1798,14 +1789,12 @@ bool DKVariant::ImportStream(DKStream* stream)
 						if (stream->RemainLength() >= stInfo.dataLength)
 						{
 							stData.data = DKOBJECT_NEW DKBuffer(0, stInfo.dataLength);
-							void* p = stData.data->LockExclusive();
+							void* p = stData.data->MutableContents();
 							if (stream->Read(p, stInfo.dataLength) != stInfo.dataLength)
 							{
-								stData.data->UnlockExclusive();
 								errorDesc = L"Failed to read from stream.";
 								goto FAILED;
 							}
-							stData.data->UnlockExclusive();
 						}
 						else
 						{
@@ -2371,13 +2360,10 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 			else if (this->Data().Length() == v.Data().Length())
 			{
 				size_t length = this->Data().Length();
-				const void* ptr1 = this->Data().LockShared();
-				const void* ptr2 = v.Data().LockShared();
+				const void* ptr1 = this->Data().Contents();
+				const void* ptr2 = v.Data().Contents();
 
 				result = memcmp(ptr1, ptr2, length) == 0;
-
-				this->Data().UnlockShared();
-				v.Data().UnlockShared();
 			}
 			break;
 		case TypeStructData:
@@ -2401,13 +2387,10 @@ bool DKVariant::IsEqual(const DKVariant& v) const
 					if (result)
 					{
 						size_t length = s1.data->Length();
-						const void* ptr1 = s1.data->LockShared();
-						const void* ptr2 = s2.data->LockShared();
+						const void* ptr1 = s1.data->Contents();
+						const void* ptr2 = s2.data->Contents();
 
 						result = memcmp(ptr1, ptr2, length) == 0;
-
-						s1.data->UnlockShared();
-						s2.data->UnlockShared();
 					}
 				}
 			}

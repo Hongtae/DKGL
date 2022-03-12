@@ -2,7 +2,7 @@
 //  File: DKPropertySet.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2017 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKPropertySet.h"
@@ -159,8 +159,7 @@ int DKPropertySet::Export(DKStream* stream, bool exportXML) const
 			DKObject<DKData> buffer = DKXmlDocument(NULL, e).Export(DKStringEncoding::UTF8);
 			if (buffer && buffer->Length() > 0)
 			{
-				stream->Write(buffer->LockShared(), buffer->Length());
-				buffer->UnlockShared();
+				stream->Write(buffer->Contents(), buffer->Length());
 				return exported;
 			}
 		}

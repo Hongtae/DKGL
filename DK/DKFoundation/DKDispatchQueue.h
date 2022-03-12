@@ -91,5 +91,8 @@ namespace DKFoundation
     private:
         struct Context;
         Context* context;
+
+        DKDispatchQueue(const DKDispatchQueue&) = delete;
+        DKDispatchQueue& operator = (const DKDispatchQueue&) = delete;
     };
 }

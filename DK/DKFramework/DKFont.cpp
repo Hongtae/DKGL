@@ -2,7 +2,7 @@
 //  File: DKFont.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2020 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <ft2build.h>
@@ -65,11 +65,6 @@ DKFont::~DKFont()
 {
 	if (ftFace)
 		FT_Done_Face(reinterpret_cast<FT_Face>(ftFace));
-	if (fontData)
-	{
-		fontData->UnlockShared();
-		fontData = nullptr;
-	}
 }
 
 void DKFont::SetDevice(DKGraphicsDeviceContext* device)
@@ -123,7 +118,9 @@ DKObject<DKFont> DKFont::Create(DKData* data, DKGraphicsDeviceContext* device)
 	if (data == nullptr)
 		return nullptr;
 
-	const void* ptr = data->LockShared();
+    data = data->ImmutableData();
+	const void* ptr = data->Contents();
+
 	FT_Face	face = nullptr;
 	FT_Error err = FT_New_Memory_Face(Private::FTLibrary::GetLibrary(), (const FT_Byte*)ptr, data->Length(), 0, &face);
 	if (err == 0)
@@ -144,7 +141,6 @@ DKObject<DKFont> DKFont::Create(DKData* data, DKGraphicsDeviceContext* device)
         }
         return font;
 	}
-	data->UnlockShared();
 	return nullptr;
 }
 

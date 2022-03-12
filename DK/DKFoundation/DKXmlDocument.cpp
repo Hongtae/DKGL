@@ -2,7 +2,7 @@
 //  File: DKXmlDocument.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKXmlDocument.h"
@@ -384,12 +384,11 @@ size_t DKXmlDocument::Export(DKStringEncoding e, DKStream* output) const
 		DKObject<DKData> d = Export(e);
 		if (d)
 		{
-			const void* p = d->LockShared();
+			const void* p = d->Contents();
 			if (p)
 			{
 				s = output->Write(p, d->Length());
 			}
-			d->UnlockShared();
 		}
 	}
 	return s;
