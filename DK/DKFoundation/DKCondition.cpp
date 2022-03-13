@@ -2,7 +2,7 @@
 //  File: DKCondition.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #ifdef _WIN32
@@ -16,6 +16,8 @@
 #include "DKCondition.h"
 #include "DKLog.h"
 
+#define WIN32_COND_SWRLOCK
+
 namespace DKFoundation::Private
 {
 #ifdef _WIN32
@@ -24,46 +26,120 @@ namespace DKFoundation::Private
     public:
         ConditionImpl()
         {
-            ::InitializeCriticalSectionAndSpinCount(&section, 1024);
-            ::InitializeConditionVariable(&cond);
+#ifdef WIN32_COND_SWRLOCK
+            InitializeSRWLock(&lock);
+#ifdef DKGL_DEBUG_ENABLED
+            owningThreadId = 0;
+#endif
+#else
+            InitializeCriticalSectionAndSpinCount(&section, 1024);
+#endif
+            InitializeConditionVariable(&cond);
         }
         ~ConditionImpl()
         {
-            ::DeleteCriticalSection(&section);
+#ifdef WIN32_COND_SWRLOCK
+            DKASSERT_DEBUG(owningThreadId == 0);
+#else
+            DeleteCriticalSection(&section);
+#endif
         }
         void Wait() const
         {
-            DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock.");
-            ::SleepConditionVariableCS(&cond, &section, INFINITE);
+#ifdef WIN32_COND_SWRLOCK
+#ifdef DKGL_DEBUG_ENABLED
+            DKASSERT_DESC_DEBUG(owningThreadId == GetCurrentThreadId(), "The current thread does not hold a lock.");
+            auto tmp = owningThreadId;
+            owningThreadId = 0;
+#endif
+            SleepConditionVariableSRW(&cond, &lock, INFINITE, 0);
+#ifdef DKGL_DEBUG_ENABLED
+            owningThreadId = tmp;
+#endif
+#else
+            DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)GetCurrentThreadId(), "The current thread does not hold a lock.");
+            SleepConditionVariableCS(&cond, &section, INFINITE);
+#endif
         }
         bool WaitTimeout(double t) const
         {
-            DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock.");
-            return ::SleepConditionVariableCS(&cond, &section, static_cast<DWORD>(t * 1000)) != 0;
+#ifdef WIN32_COND_SWRLOCK
+#ifdef DKGL_DEBUG_ENABLED
+            DKASSERT_DESC_DEBUG(owningThreadId == GetCurrentThreadId(), "The current thread does not hold a lock.");
+            auto tmp = owningThreadId;
+            owningThreadId = 0;
+#endif
+            bool r = SleepConditionVariableSRW(&cond, &lock, static_cast<DWORD>(t * 1000), 0) != 0;
+#ifdef DKGL_DEBUG_ENABLED
+            owningThreadId = tmp;
+#endif
+            return r;
+#else
+            DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)GetCurrentThreadId(), "The current thread does not hold a lock.");
+            return SleepConditionVariableCS(&cond, &section, static_cast<DWORD>(t * 1000)) != 0;
+#endif
         }
         void Signal() const
         {
-            ::WakeConditionVariable(&cond);
+            WakeConditionVariable(&cond);
         }
         void Broadcast() const
         {
-            ::WakeAllConditionVariable(&cond);
+            WakeAllConditionVariable(&cond);
         }
         void Lock() const
         {
-            ::EnterCriticalSection(&section);
+#ifdef WIN32_COND_SWRLOCK
+#ifdef DKGL_DEBUG_ENABLED
+            DKASSERT_DESC_DEBUG(owningThreadId != GetCurrentThreadId(), "The current thread already hold a lock.");
+#endif
+            AcquireSRWLockExclusive(&lock);
+#ifdef DKGL_DEBUG_ENABLED
+            DKASSERT_DESC_DEBUG(owningThreadId == 0, "The lock must not belong to another thread.");
+            owningThreadId = GetCurrentThreadId();
+#endif
+#else
+            EnterCriticalSection(&section);
             DKASSERT_DESC_DEBUG(section.RecursionCount == 1, "dead lock detected.");
+#endif
         }
         bool TryLock() const
         {
-            return ::TryEnterCriticalSection(&section) != 0;
+#ifdef WIN32_COND_SWRLOCK
+            if (TryAcquireSRWLockExclusive(&lock))
+            {
+#ifdef DKGL_DEBUG_ENABLED
+                DKASSERT_DESC_DEBUG(owningThreadId == 0, "The lock mut not belong to anoother thread.");
+                owningThreadId = GetCurrentThreadId();
+#endif
+                return true;
+            }
+            return false;
+#else
+            return TryEnterCriticalSection(&section) != 0;
+#endif
         }
         void Unlock() const
         {
-            DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)::GetCurrentThreadId(), "The current thread does not hold a lock.");
-            ::LeaveCriticalSection(&section);
+#ifdef WIN32_COND_SWRLOCK
+#ifdef DKGL_DEBUG_ENABLED
+            DKASSERT_DESC_DEBUG(owningThreadId == GetCurrentThreadId(), "The current thread does not hold a lock.");
+            owningThreadId = 0;
+#endif
+            ReleaseSRWLockExclusive(&lock);
+#else
+            DKASSERT_DESC_DEBUG(section.OwningThread == (HANDLE)GetCurrentThreadId(), "The current thread does not hold a lock.");
+            LeaveCriticalSection(&section);
+#endif
         }
+#ifdef WIN32_COND_SWRLOCK
+        mutable SRWLOCK lock;
+#ifdef DKGL_DEBUG_ENABLED
+        mutable DWORD owningThreadId;
+#endif
+#else
         mutable CRITICAL_SECTION section;
+#endif
         mutable CONDITION_VARIABLE cond;
     };
 #else
