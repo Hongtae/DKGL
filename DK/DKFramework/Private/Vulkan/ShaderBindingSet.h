@@ -32,32 +32,9 @@ namespace DKFramework::Private::Vulkan
         VkDescriptorSetLayout descriptorSetLayout;
         VkDescriptorSetLayoutCreateFlags layoutFlags;
 
-        DKObject<DescriptorSet> descriptorSet;
         DKObject<DKGraphicsDevice> device;
 
-        using BufferViewObject = DKObject<BufferView>;
-        using ImageViewObject = DKObject<ImageView>;
-        using SamplerObject = DKObject<Sampler>;
-
-        struct DescriptorBinding
-        {
-            const VkDescriptorSetLayoutBinding layoutBinding;
-
-            // hold resource object ownership
-            DKArray<BufferViewObject> bufferViews;
-            DKArray<ImageViewObject> imageViews;
-            DKArray<SamplerObject> samplers;
-
-            // descriptor infos (for storage of VkWriteDescriptorSets)
-            DKArray<VkDescriptorImageInfo> imageInfos;
-            DKArray<VkDescriptorBufferInfo> bufferInfos;
-            DKArray<VkBufferView> texelBufferViews;
-
-            // pending updates (vkUpdateDescriptorSets)
-            DKArray<VkWriteDescriptorSet> descriptorWrites;
-
-            bool dirty;
-        };
+        using DescriptorBinding = DescriptorSet::Binding;
         DKArray<DescriptorBinding> bindings;
 
         void SetBuffer(uint32_t binding, DKGpuBuffer*, uint64_t, uint64_t) override;
@@ -67,13 +44,9 @@ namespace DKFramework::Private::Vulkan
         void SetSamplerState(uint32_t binding, DKSamplerState*) override;
         void SetSamplerStateArray(uint32_t binding, uint32_t numSamplers, DKSamplerState**) override;
 
-        using ImageLayoutMap = DKMap<Image*, VkImageLayout>;
-        using ImageViewLayoutMap = DKMap<VkImageView, VkImageLayout>;
+        DKObject<DescriptorSet> CreateDescriptorSet() const;
 
-        void CollectImageViewLayouts(ImageLayoutMap&, ImageViewLayoutMap&);
-
-        DKObject<DescriptorSet> CreateDescriptorSet(const ImageViewLayoutMap& imageLayouts);
-        bool FindDescriptorBinding(uint32_t binding, DescriptorBinding**);
+        DescriptorBinding* FindDescriptorBinding(uint32_t binding);
     };
 }
 #endif //#if DKGL_ENABLE_VULKAN

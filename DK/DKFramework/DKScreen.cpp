@@ -78,9 +78,10 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
             do {
                 if (!dispatchQueue->Execute())
                 {
-                    dispatchQueue->WaitQueue(frameInterval - timer.Elapsed());
+                    //dispatchQueue->WaitQueue(frameInterval - timer.Elapsed());
+                    DKThread::Yield();
                 }
-            } while (timer.Elapsed() < frameInterval);
+            } while (frameInterval - timer.Elapsed() > 0);
 
             tickDelta = timer.Reset();
             tick = DKTimer::SystemTick();

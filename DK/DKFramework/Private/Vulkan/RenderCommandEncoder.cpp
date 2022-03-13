@@ -244,9 +244,9 @@ bool RenderCommandEncoder::Encoder::Encode(VkCommandBuffer commandBuffer)
 
  
     // collect image layout transition
-    for (ShaderBindingSet* bs : shaderBindingSets)
+    for (DescriptorSet* ds : descriptorSets)
     {
-        bs->CollectImageViewLayouts(state.imageLayoutMap, state.imageViewLayoutMap);
+        ds->CollectImageViewLayouts(state.imageLayoutMap, state.imageViewLayoutMap);
     }
     // process pre-renderpass commands
     for (EncoderCommand* c : setupCommands)
@@ -533,30 +533,21 @@ void RenderCommandEncoder::DrawIndexed(uint32_t numIndices, uint32_t numInstance
 
 void RenderCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSet* set)
 {
-    DKObject<ShaderBindingSet> bindingSet = nullptr;
+    DKObject<DescriptorSet> descriptorSet = nullptr;
     if (set)
     {
         DKASSERT_DEBUG(dynamic_cast<const ShaderBindingSet*>(set) != nullptr);
-        auto p = static_cast<const ShaderBindingSet*>(set);
-        bindingSet = const_cast<ShaderBindingSet*>(p);
-        encoder->shaderBindingSets.Add(bindingSet);
+        const ShaderBindingSet* bindingSet = static_cast<const ShaderBindingSet*>(set);
+        descriptorSet = bindingSet->CreateDescriptorSet();
+        DKASSERT_DEBUG(descriptorSet);
+        encoder->descriptorSets.Add(descriptorSet);
     }
+    if (descriptorSet == nullptr)
+        return;
 
     DKObject<EncoderCommand> preCommand = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        if (bindingSet)
-        {
-            DKObject<DescriptorSet> ds = bindingSet->CreateDescriptorSet(state.imageViewLayoutMap);
-            DKASSERT_DEBUG(ds);
-
-            if (ds)
-            {
-                state.bindingSetMap.Update(bindingSet, ds);
-
-                // keep ownership 
-                state.encoder->descriptorSets.Add(ds);
-            }
-        }
+        descriptorSet->UpdateImageViewLayout(state.imageViewLayoutMap);
     });
     encoder->setupCommands.Add(preCommand);
 
@@ -564,23 +555,15 @@ void RenderCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSet
     {
         if (state.pipelineState)
         {
-            VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-
-            if (bindingSet)
-            {
-                if (auto p = state.bindingSetMap.Find(bindingSet); p)
-                {
-                    descriptorSet = p->value->descriptorSet;
-                    DKASSERT_DEBUG(descriptorSet != VK_NULL_HANDLE);
-                }
-            }
+            VkDescriptorSet ds = descriptorSet->descriptorSet;
+            DKASSERT_DEBUG(ds != VK_NULL_HANDLE);
 
             vkCmdBindDescriptorSets(commandBuffer,
                                     VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     state.pipelineState->layout,
                                     index,
                                     1,
-                                    &descriptorSet,
+                                    &ds,
                                     0,      // dynamic offsets
                                     0);
         }

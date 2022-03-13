@@ -27,9 +27,34 @@ namespace DKFramework::Private::Vulkan
         using ImageViewObject = DKObject<ImageView>;
         using SamplerObject = DKObject<Sampler>;
 
-        DKArray<BufferViewObject> bufferViews;
-        DKArray<ImageViewObject> imageViews;
-        DKArray<SamplerObject> samplers;
+        using ImageLayoutMap = DKMap<Image*, VkImageLayout>;
+        using ImageViewLayoutMap = DKMap<VkImageView, VkImageLayout>;
+
+        struct Binding
+        {
+            const VkDescriptorSetLayoutBinding layoutBinding;
+
+            // hold resource object ownership
+            DKArray<BufferViewObject> bufferViews;
+            DKArray<ImageViewObject> imageViews;
+            DKArray<SamplerObject> samplers;
+
+            // descriptor infos (for storage of VkWriteDescriptorSets)
+            DKArray<VkDescriptorImageInfo> imageInfos;
+            DKArray<VkDescriptorBufferInfo> bufferInfos;
+            DKArray<VkBufferView> texelBufferViews;
+
+            // pending updates (vkUpdateDescriptorSets)
+            VkWriteDescriptorSet write;
+            bool valueSet;
+        };
+        DKArray<Binding> bindings;
+
+        using ImageLayoutMap = DKMap<Image*, VkImageLayout>;
+        using ImageViewLayoutMap = DKMap<VkImageView, VkImageLayout>;
+
+        void CollectImageViewLayouts(ImageLayoutMap&, ImageViewLayoutMap&);
+        void UpdateImageViewLayout(const ImageViewLayoutMap&);
 
         VkDescriptorSet descriptorSet;
         DKObject<DescriptorPool> descriptorPool;
