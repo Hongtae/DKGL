@@ -437,7 +437,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
     {
         // create new texture.
         uint32_t desiredArea = (Width() + hPadding) * (Height() + vPadding) * (face->num_glyphs - numGlyphsLoaded);
-        const uint32_t maxTextureSize = 2048;// 8192;
+        const uint32_t maxTextureSize = 1024;// 8192;
         const uint32_t minTextureSize = [maxTextureSize](uint32_t minReq) ->uint32_t
         {
 			DKASSERT_DEBUG(maxTextureSize > minReq);
