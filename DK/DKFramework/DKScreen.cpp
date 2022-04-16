@@ -2,7 +2,7 @@
 //  File: DKScreen.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKScreen.h"
@@ -16,6 +16,12 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
     , screenResolution(DKSize(0, 0))
     , graphicsDevice(dc)
     , dispatchQueue(dq)
+    , paused(false)
+    , running(true)
+    , activated(false)
+    , visible(false)
+    , frameInterval(1.0/60.0)
+    , inactiveFrameInterval(1.0/60.0)
 {
 	audioDevice = DKAudioDevice::SharedInstance();
     if (graphicsDevice == nullptr)
@@ -27,36 +33,157 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
     if (dispatchQueue == nullptr)
     {
         // create new dispatch queue
+        dispatchQueue = DKOBJECT_NEW DKDispatchQueue();
     }
+
+    commandQueue = graphicsDevice->GraphicsQueue();
+
+    DKCanvas::CachePipelineContext(graphicsDevice);
+
+    thread = DKThread::Create(DKFunction([this]() {
+        DKTimer timer;
+        timer.Reset();
+
+        float tickDelta = 0.0;
+        DKTimeTick tick = DKTimer::SystemTick();
+        DKDateTime tickDate = DKDateTime::Now();
+
+        bool activated = false;
+        bool visible = false;
+        float interval = 0.0;
+
+        while (true)
+        {
+            if (true)
+            {
+                DKCriticalSection cs(condition);
+                while (this->paused && this->running)
+                    condition.Wait();
+
+                if (this->running == false)
+                    break;
+
+                activated = this->activated;
+                visible = this->visible;
+                interval = activated ? frameInterval : inactiveFrameInterval;
+            }
+
+            if (tickDelta > 0.0001)
+            {
+                DKCriticalSection cs(frameGuard);
+
+                DKObject<DKFrame> frame = this->rootFrame;
+                DKObject<DKSwapChain> swapChain = this->swapChain;
+
+                if (frame && swapChain)
+                {
+                    if (!frame->IsLoaded())
+                        frame->Load(this, this->Resolution());
+
+                    frame->Update(tickDelta, tick, tickDate);
+                    if (visible)
+                    {
+                        frame->Draw();
+                        swapChain->Present();
+                    }
+                }
+            }
+
+            do {
+                if (!dispatchQueue->Execute())
+                {
+                    if (activated && visible)
+                        DKThread::Yield();
+                    else
+                        dispatchQueue->WaitQueue(interval - timer.Elapsed());
+                }
+            } while (interval - timer.Elapsed() > 0);
+
+            tickDelta = timer.Reset();
+            tick = DKTimer::SystemTick();
+            tickDate = DKDateTime::Now();
+        }
+
+        if (this->rootFrame && this->rootFrame->IsLoaded())
+            this->rootFrame->Unload();
+
+    })->Invocation());
+}
+
+DKScreen::DKScreen()
+    : DKScreen(nullptr, nullptr)
+{
 }
 
 DKScreen::~DKScreen()
 {
-    //dispatchQueue->WaitQueue();
-}
-
-void DKScreen::Start()
-{
-
+    if (this->running)
+    {
+        DKCriticalSection cs(condition);
+        this->running = false;
+        condition.Broadcast();
+    }
+    thread->WaitTerminate();
 }
 
 void DKScreen::Pause()
 {
+    DKCriticalSection cs(condition);
+    if (!paused)
+    {
+        paused = true;
+        condition.Broadcast();
+    }
 }
 
 void DKScreen::Resume()
 {
-}
-
-void DKScreen::Stop()
-{
+    DKCriticalSection cs(condition);
+    if (paused)
+    {
+        paused = false;
+        condition.Broadcast();
+    }
 }
 
 void DKScreen::SetWindow(DKWindow* window)
 {
     if (this->window != window)
     {
+        if (this->window)
+        {
+            this->window->RemoveEventHandler(this);
+        }
+        DKCriticalSection guard(frameGuard);
+
         this->window = window;
+        this->swapChain = nullptr;
+        if (this->window)
+        {
+            this->swapChain = commandQueue->CreateSwapChain(window);
+            this->window->AddEventHandler(
+                this, DKFunction([this](const DKWindow::WindowEvent& e)
+            {
+                if (e.window == this->window)
+                    this->ProcessWindowEvent(e);
+            }), DKFunction([this](const DKWindow::KeyboardEvent& e)
+            {
+                if (e.window == this->window)
+                    this->ProcessKeyboardEvent(e);
+            }), DKFunction([this](const DKWindow::MouseEvent& e)
+            {
+                if (e.window == this->window)
+                    this->ProcessMouseEvent(e);
+            }));
+
+            this->activated = true;
+            this->visible = true;
+        }
+        else
+        {
+            this->activated = false;
+            this->visible = false;
+        }
     }
 }
 
@@ -64,6 +191,8 @@ void DKScreen::SetRootFrame(DKFrame* frame)
 {
     if (rootFrame != frame)
     {
+        DKCriticalSection cs(frameGuard);
+
         bool loaded = false;
         if (rootFrame)
             loaded = rootFrame->IsLoaded();
@@ -73,20 +202,50 @@ void DKScreen::SetRootFrame(DKFrame* frame)
 
         if (loaded)
         {
-            frame->Load(this, this->Resolution());
-            oldFrame->Unload();
+            this->dispatchQueue->DispatchAsync([=]() mutable {
+                frame->Load(this, this->Resolution());
+                oldFrame->Unload();
+            });
         }
     }
 }
 
-DKObject<DKCanvas> DKScreen::CreateCanvas() const
+DKObject<DKCanvas> DKScreen::CreateCanvas()
 {
-	return nullptr;
+    DKObject<DKCanvas> canvas = nullptr;
+    if (swapChain)
+    {
+        DKRenderPassDescriptor rpd = swapChain->CurrentRenderPassDescriptor();
+        DKTexture* renderTarget = rpd.colorAttachments.Value(0).renderTarget;
+
+        int width = renderTarget->Width();
+        int height = renderTarget->Height();
+        const DKRect viewport(0, 0, width, height);
+
+        canvas = DKOBJECT_NEW DKCanvas(commandQueue->CreateCommandBuffer(), renderTarget);
+        canvas->SetViewport(viewport);
+        canvas->SetContentBounds(viewport);
+    }
+	return canvas;
 }
 
 DKSize DKScreen::Resolution() const
 {
-	return {};
+    if (this->window)
+    {
+        DKRect rc = this->window->ContentRect();
+        float scale = this->window->ContentScaleFactor();
+
+        return rc.size * scale;
+    }
+	return {0, 0};
+}
+
+float DKScreen::ContentScaleFactor() const
+{
+    if (this->window)
+        return this->window->ContentScaleFactor();
+    return 1.0;
 }
 
 bool DKScreen::SetKeyFrame(int deviceId, DKFrame* frame)
@@ -339,10 +498,6 @@ DKRect DKScreen::ScreenToWindow(const DKRect& rect) const
     return DKRect(ScreenToWindow(rect.origin), ScreenToWindow(rect.size));
 }
 
-void DKScreen::Draw() const
-{
-}
-
 bool DKScreen::ProcessKeyboardEvent(const DKWindow::KeyboardEvent& event)
 {
     DKFrame* keyFrame = KeyFrame(event.deviceId);
@@ -457,8 +612,17 @@ bool DKScreen::ProcessMouseEvent(const DKWindow::MouseEvent& event)
     return false;
 }
 
-bool DKScreen::ProcessWindowEvent(const DKWindow::WindowEvent&)
+bool DKScreen::ProcessWindowEvent(const DKWindow::WindowEvent& e)
 {
+    if (e.type == DKWindow::WindowEvent::WindowResized)
+    {
+        this->dispatchQueue->DispatchAsync([this]() {
+            if (rootFrame && rootFrame->IsLoaded())
+            {
+                rootFrame->UpdateContentResolution();
+            }
+        });
+    }
     return false;
 }
 

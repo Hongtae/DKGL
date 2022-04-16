@@ -3,7 +3,7 @@
 //  Platform: macOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2022 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -317,31 +317,31 @@ using MouseEvent = DKWindow::MouseEvent;
 - (void)postWindowEventType:(WindowEvent::Type)type
 {
 	if (userInstance)
-		userInstance->PostWindowEvent({type, self.windowRect, self.contentRect, (float)self.contentScaleFactor});
+		userInstance->PostWindowEvent({type, userInstance, self.windowRect, self.contentRect, (float)self.contentScaleFactor});
 }
 
 - (void)postKeyboardEventType:(KeyboardEvent::Type)type keyCode:(unsigned short)keyCode
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({type, 0, [self convertVKey:keyCode], ""});
+		userInstance->PostKeyboardEvent({type, userInstance, 0, [self convertVKey:keyCode], ""});
 }
 
 - (void)postKeyboardEventType:(KeyboardEvent::Type)type mappedVKey:(DKVirtualKey)vKey
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({type, 0, vKey, ""});
+		userInstance->PostKeyboardEvent({type, userInstance, 0, vKey, ""});
 }
 
 - (void)postTextInputEvent:(NSString*)text
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({KeyboardEvent::TextInput, 0, DKVirtualKey::None, text.UTF8String});
+		userInstance->PostKeyboardEvent({KeyboardEvent::TextInput, userInstance, 0, DKVirtualKey::None, text.UTF8String});
 }
 
 - (void)postTextCompositingEvent:(NSString*)text
 {
 	if (userInstance)
-		userInstance->PostKeyboardEvent({KeyboardEvent::TextComposition, 0, DKVirtualKey::None, text.UTF8String});
+		userInstance->PostKeyboardEvent({KeyboardEvent::TextComposition, userInstance, 0, DKVirtualKey::None, text.UTF8String});
 }
 
 - (void)postMouseEvent:(NSEvent*)event
@@ -434,6 +434,7 @@ using MouseEvent = DKWindow::MouseEvent;
 #endif
 		userInstance->PostMouseEvent({
 			eventType,
+            userInstance,
 			device,
 			deviceId,
 			buttonId,

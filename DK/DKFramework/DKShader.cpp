@@ -2,7 +2,7 @@
 //  File: DKShader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKShader.h"
@@ -40,12 +40,22 @@ namespace DKFramework::Private
             }
             break;
         case spirv_cross::SPIRType::Char:
+        case spirv_cross::SPIRType::SByte:
             switch (spType.vecsize)
             {
-            case 2:		dataType = DKShaderDataType::Char2;		break;
-            case 3:		dataType = DKShaderDataType::Char3;		break;
-            case 4:		dataType = DKShaderDataType::Char4;		break;
-            default:	dataType = DKShaderDataType::Char;		break;
+            case 2:		dataType = DKShaderDataType::Char2;     break;
+            case 3:		dataType = DKShaderDataType::Char3;     break;
+            case 4:		dataType = DKShaderDataType::Char4;     break;
+            default:	dataType = DKShaderDataType::Char;      break;
+            }
+            break;
+        case spirv_cross::SPIRType::UByte:
+            switch (spType.vecsize)
+            {
+            case 2:		dataType = DKShaderDataType::UChar2;    break;
+            case 3:		dataType = DKShaderDataType::UChar3;    break;
+            case 4:		dataType = DKShaderDataType::UChar4;    break;
+            default:	dataType = DKShaderDataType::UChar;     break;
             }
             break;
         case spirv_cross::SPIRType::Int:
@@ -210,11 +220,9 @@ bool DKShader::Compile(const DKData* d)
     {
         if (DKObject<DKData> data = d->ImmutableData(); data)
         {
-            DKDataReader reader(data);
-
             try
             {
-                spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()), reader.Length() / sizeof(uint32_t));
+                spirv_cross::Compiler compiler(reinterpret_cast<const uint32_t*>(data->Contents()), data->Length() / sizeof(uint32_t));
 
                 switch (spv::ExecutionModel exec = compiler.get_execution_model(); exec)
                 {
@@ -334,13 +342,30 @@ bool DKShader::Compile(const DKData* d)
                     for (auto n : type.array)
                         out.count = out.count * n;
 
+                    auto getTextureType = [](spv::Dim dim) {
+                        switch (dim) {
+                        case spv::Dim1D:    return DKTexture::Type1D;
+                        case spv::Dim2D:    return DKTexture::Type2D;
+                        case spv::Dim3D:    return DKTexture::Type3D;
+                        case spv::DimCube:  return DKTexture::TypeCube;
+                        default:
+                            DKLogW("Unknown texture type!");
+                            break;
+                        }
+                        return DKTexture::TypeUnknown;
+                    };
+
                     switch (type.basetype)
                     {
                     case spirv_cross::SPIRType::Image:
                         out.type = DKShaderResource::TypeTexture;
+                        out.typeInfo.texture.dataType = DKShaderDataType::Texture;
+                        out.typeInfo.texture.textureType = getTextureType(type.image.dim);
                         break;
                     case spirv_cross::SPIRType::SampledImage:
                         out.type = DKShaderResource::TypeTextureSampler;
+                        out.typeInfo.texture.dataType = DKShaderDataType::Texture;
+                        out.typeInfo.texture.textureType = getTextureType(type.image.dim);
                         break;
                     case spirv_cross::SPIRType::Sampler:
                         out.type = DKShaderResource::TypeSampler;

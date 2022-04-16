@@ -198,7 +198,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 	else
 	{
 		handlerLock.Lock();
-		DKArray<DKObject<MouseEventHandler>> callbacks;
+		DKArray<MouseEventHandler> callbacks;
 		callbacks.Reserve(mouseEventHandlers.Count());
 		mouseEventHandlers.EnumerateForward([&callbacks](decltype(mouseEventHandlers)::Pair& pair) {
 			if (pair.value)
@@ -206,7 +206,7 @@ void DKWindow::PostMouseEvent(const MouseEvent& event)
 		});
 		handlerLock.Unlock();
 
-		for (MouseEventHandler* handler : callbacks)
+		for (MouseEventHandler& handler : callbacks)
 			handler->Invoke(event);
 	}
 }
@@ -262,7 +262,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 	else
 	{
 		handlerLock.Lock();
-		DKArray<DKObject<KeyboardEventHandler>> callbacks;
+		DKArray<KeyboardEventHandler> callbacks;
 		callbacks.Reserve(keyboardEventHandlers.Count());
 		keyboardEventHandlers.EnumerateForward([&callbacks](decltype(keyboardEventHandlers)::Pair& pair) {
 			if (pair.value)
@@ -270,7 +270,7 @@ void DKWindow::PostKeyboardEvent(const KeyboardEvent& event)
 		});
 		handlerLock.Unlock();
 
-		for (KeyboardEventHandler* handler : callbacks)
+		for (KeyboardEventHandler& handler : callbacks)
 			handler->Invoke(event);
 	}
 }
@@ -363,7 +363,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 	else
 	{
 		handlerLock.Lock();
-		DKArray<DKObject<WindowEventHandler>> callbacks;
+		DKArray<WindowEventHandler> callbacks;
 		callbacks.Reserve(windowEventHandlers.Count());
 		windowEventHandlers.EnumerateForward([&callbacks](decltype(windowEventHandlers)::Pair& pair)
         {
@@ -372,7 +372,7 @@ void DKWindow::PostWindowEvent(const WindowEvent& event)
 		});
 		handlerLock.Unlock();
 
-		for (WindowEventHandler* handler : callbacks)
+		for (WindowEventHandler& handler : callbacks)
 			handler->Invoke(event);
 	}
 }
@@ -505,16 +505,16 @@ DKString DKWindow::Title() const
 }
 
 void DKWindow::AddEventHandler(EventHandlerContext context,
-							   WindowEventHandler* windowProc,
-							   KeyboardEventHandler* keyboardProc,
-							   MouseEventHandler* mouseProc)
+							   WindowEventHandler windowHandler,
+							   KeyboardEventHandler keyboardHandler,
+							   MouseEventHandler mouseHandler)
 {
 	if (context)
 	{
 		DKCriticalSection<DKSpinLock> guard(handlerLock);
-		windowEventHandlers.Update(context, windowProc);
-		keyboardEventHandlers.Update(context, keyboardProc);
-		mouseEventHandlers.Update(context, mouseProc);
+		windowEventHandlers.Update(context, windowHandler);
+		keyboardEventHandlers.Update(context, keyboardHandler);
+		mouseEventHandlers.Update(context, mouseHandler);
 	}
 }
 	

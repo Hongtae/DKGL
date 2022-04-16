@@ -13,7 +13,10 @@ xcopy /Y /D /R /Q "$(ProjectDir)LICENSE*" "$(OutDir)include\DK\"
 xcopy /Y /D /R /Q "$(ProjectDir)*.h" "$(OutDir)include\DK\"
 xcopy /Y /D /R /Q "$(ProjectDir)DKFoundation\*.h" "$(OutDir)include\DK\DKFoundation\"
 xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\*.h" "$(OutDir)include\DK\DKFramework\"
-xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"</Command>
+xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
+xcopy /Y /D /R /Q "$(ProjectDir)DKFramework\Interface\*.h" "$(OutDir)include\DK\DKFramework\Interface\"
+xcopy /Y /D /R /Q "$(OutDir)\Libs\*.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
     <CustomBuildStep />
     <PreBuildEvent>

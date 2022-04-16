@@ -505,6 +505,10 @@ namespace DKFoundation
 			}
 			return false;
 		}
+        void Sort(const DKCallableRef<bool (const VALUE&, const VALUE&)>& cmp)
+        {
+            Sort(0, count, cmp);
+        }
 		void Sort(const DKFunctionSignature<bool (const VALUE&, const VALUE&)>* cmp)
 		{
 			Sort(0, count, cmp);

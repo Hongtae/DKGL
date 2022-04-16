@@ -2,7 +2,7 @@
 //  File: DKStringUE.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <stdio.h>
@@ -495,7 +495,7 @@ namespace DKFoundation
 			DKStringEncoding outputEnc = getEncoding(to);
 			if (inputEnc == outputEnc)
 			{
-				output->SetContent(p, len);
+				output->SetContents(p, len);
 				return true;
 			}
 
@@ -596,7 +596,7 @@ namespace DKFoundation
 				}
 				if (result)
 				{
-					output->SetContent( (char*)buffer, buffer.Count() );						
+					output->SetContents( (char*)buffer, buffer.Count() );						
 				}
 				return result;
 			}
@@ -1013,7 +1013,7 @@ namespace DKFoundation
 	{
 		if (output && !Private::EncodeString((const DKUniChar8*)input, input.Bytes(), DKStringEncoding::UTF8, e, output))
 		{
-			output->SetContent(0,0);
+			output->SetContents(0,0);
 		}
 	}
 
@@ -1021,7 +1021,7 @@ namespace DKFoundation
 	{
 		if (output && !Private::EncodeString((const DKUniCharW*)input, input.Bytes(), Private::StringWTraits::encoding, e, output))
 		{
-			output->SetContent(0,0);
+			output->SetContents(0,0);
 		}
 	}
 
@@ -1035,8 +1035,7 @@ namespace DKFoundation
 		DKBuffer buffer;
 		if (Private::EncodeString(p, bytes, e, DKStringEncoding::UTF8, &buffer))
 		{
-			strOut.SetValue(reinterpret_cast<const DKUniChar8*>(buffer.LockShared()), buffer.Length() / sizeof(DKUniChar8));
-			buffer.UnlockShared();
+			strOut.SetValue(reinterpret_cast<const DKUniChar8*>(buffer.Contents()), buffer.Length() / sizeof(DKUniChar8));
 			return true;
 		}		
 		return false;
@@ -1054,8 +1053,7 @@ namespace DKFoundation
 			DKBuffer buffer;
 			if (Private::EncodeString(p, bytes, e, Private::StringWTraits::encoding, &buffer))
 			{
-				strOut.SetValue(reinterpret_cast<const DKUniCharW*>(buffer.LockShared()), buffer.Length() / sizeof(DKUniCharW));
-				buffer.UnlockShared();
+				strOut.SetValue(reinterpret_cast<const DKUniCharW*>(buffer.Contents()), buffer.Length() / sizeof(DKUniCharW));
 				return true;
 			}
 		}

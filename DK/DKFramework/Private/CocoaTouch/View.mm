@@ -3,7 +3,7 @@
 //  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2015 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -123,7 +123,12 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.appActivated)
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowActivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowActivated,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor});
 		}
 		return YES;
 	}
@@ -137,7 +142,12 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.appActivated)
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowInactivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowInactivated,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 		}
 		return YES;
 	}
@@ -164,9 +174,19 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (!CGPointEqualToPoint(frame.origin, old.origin) || !CGSizeEqualToSize(frame.size, old.size))
 		{
 			if (CGSizeEqualToSize(frame.size, old.size))
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowMoved, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowMoved,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 			else
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowResized, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowResized,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 		}
 	}
 	else
@@ -180,12 +200,22 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (flag)
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowHidden, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowHidden,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 		}
 		else
 		{
 			if (self.userInstance)
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowShown, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowShown,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 		}
 	}
 	[super setHidden:flag];
@@ -231,6 +261,7 @@ using MouseEvent = DKWindow::MouseEvent;
 			CGPoint pos = [touch locationInView:self];
 			self.userInstance->PostMouseEvent({
 				MouseEvent::ButtonDown,
+                self.userInstance,
 				device,
 				static_cast<int>(index), 0,
 				DKPoint(pos.x, pos.y),
@@ -260,6 +291,7 @@ using MouseEvent = DKWindow::MouseEvent;
 
 					self.userInstance->PostMouseEvent({
 						MouseEvent::Move,
+                        self.userInstance,
 						device,
 						static_cast<int>(index), 0,
 						DKPoint(pos.x, pos.y),
@@ -294,6 +326,7 @@ using MouseEvent = DKWindow::MouseEvent;
 
 					self.userInstance->PostMouseEvent({
 						MouseEvent::ButtonUp,
+                        self.userInstance,
 						device,
 						static_cast<int>(index), 0,
 						DKPoint(pos.x, pos.y),
@@ -392,9 +425,9 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.userInstance)
 		{
 			if ([textField.text length] > 0)
-				self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, textField.text.UTF8String });
-			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, "\e" });
-			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
+				self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, self.userInstance, 0, DKVirtualKey::None, textField.text.UTF8String });
+			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, self.userInstance, 0, DKVirtualKey::None, "\e"});
+			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, self.userInstance, 0, DKVirtualKey::None, ""});
 		}
 		self.textInput = NO;
 	}
@@ -408,13 +441,13 @@ using MouseEvent = DKWindow::MouseEvent;
 - (void)updateTextField:(UITextField *)textField
 {
 	if (self.userInstance)
-		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, textField.text.UTF8String });
+		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, self.userInstance, 0, DKVirtualKey::None, textField.text.UTF8String });
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
 	if (self.userInstance)
-		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, 0, DKVirtualKey::None, "" });
+		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextComposition, self.userInstance, 0, DKVirtualKey::None, ""});
 	return YES;
 }
 
@@ -423,8 +456,8 @@ using MouseEvent = DKWindow::MouseEvent;
 	if (self.userInstance)
 	{
 		if ([textField.text length] > 0)
-			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, textField.text.UTF8String });
-		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, 0, DKVirtualKey::None, "\n" });
+			self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, self.userInstance, 0, DKVirtualKey::None, textField.text.UTF8String });
+		self.userInstance->PostKeyboardEvent({ KeyboardEvent::TextInput, self.userInstance, 0, DKVirtualKey::None, "\n" });
 	}
 	textField.text = @"";
 	return YES;
@@ -464,9 +497,19 @@ using MouseEvent = DKWindow::MouseEvent;
 		if (self.userInstance)
 		{
 			if ([self isFirstResponder])
-				self.userInstance->PostWindowEvent({ WindowEvent::WindowInactivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+				self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowInactivated,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 
-			self.userInstance->PostWindowEvent({ WindowEvent::WindowHidden, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+			self.userInstance->PostWindowEvent({
+                    WindowEvent::WindowHidden,
+                    self.userInstance,
+                    self.windowRect,
+                    self.contentRect,
+                    (float)self.contentScaleFactor });
 		}
 	}
 	self.appActivated = NO;
@@ -478,10 +521,20 @@ using MouseEvent = DKWindow::MouseEvent;
 	{
 		if (self.userInstance)
 		{
-			self.userInstance->PostWindowEvent({ WindowEvent::WindowShown, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+			self.userInstance->PostWindowEvent({
+                WindowEvent::WindowShown,
+                self.userInstance,
+                self.windowRect,
+                self.contentRect,
+                (float)self.contentScaleFactor });
 
 		if ([self isFirstResponder])
-			self.userInstance->PostWindowEvent({ WindowEvent::WindowActivated, self.windowRect, self.contentRect, (float)self.contentScaleFactor });
+			self.userInstance->PostWindowEvent({
+                WindowEvent::WindowActivated,
+                self.userInstance,
+                self.windowRect,
+                self.contentRect,
+                (float)self.contentScaleFactor });
 		}
 	}
 	self.appActivated = YES;

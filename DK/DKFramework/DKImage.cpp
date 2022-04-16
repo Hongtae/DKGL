@@ -2,7 +2,7 @@
 //  File: DKImage.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "../Libs/libpng/png.h"
@@ -339,9 +339,7 @@ DKObject<DKImage> DKImage::Create(DKStream* stream)
 
 DKObject<DKImage> DKImage::Create(DKData* data)
 {
-	DKObject<DKData> d2 = data;
-	DKDataReader reader(data);
-	return Create(reader.Bytes(), reader.Length());
+	return Create(data->Contents(), data->Length());
 }
 
 DKObject<DKImage> DKImage::Create(const void *p, size_t s)
@@ -1239,9 +1237,8 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 				DKObject<DKBuffer> output = DKBuffer::Create(0, bufferSize);
 				if (output)
 				{
-					DKDataWriter writer(output);
-					bufferSize = writer.Length();
-					if (png_image_write_to_memory(&image, writer.Bytes(), &bufferSize, 0, this->data, 0, nullptr))
+					bufferSize = output->Length();
+					if (png_image_write_to_memory(&image, output->MutableContents(), &bufferSize, 0, this->data, 0, nullptr))
 					{
 						return output.SafeCast<DKData>();
 					}
@@ -1408,8 +1405,7 @@ DKObject<DKData> DKImage::EncodeData(const DKString& str, DKOperationQueue* queu
 			{
 				uint16_t bitCount = uint16_t(bytesPerPixel) * 8;
 
-				DKDataWriter writer(output);
-				uint8_t* buffer = reinterpret_cast<uint8_t*>(writer.Bytes());
+				uint8_t* buffer = reinterpret_cast<uint8_t*>(output->MutableContents());
 				BMPFileHeader* header = reinterpret_cast<BMPFileHeader*>(buffer);	buffer += sizeof(BMPFileHeader);
 				BMPInfoHeader* info = reinterpret_cast<BMPInfoHeader*>(buffer);		buffer += sizeof(BMPInfoHeader);
 
@@ -1609,18 +1605,16 @@ DKObject<DKSerializer> DKImage::Serializer()
 						   if (v.ValueType() == DKVariant::TypeData)
 						   {
 							   DKVariant::VData& data = v.Data();
-							   DKDataReader reader(&data);
-							   target->data = DKMalloc(reader.Length());
+							   target->data = DKMalloc(data.Length());
 							   if (target->data)
-								   memcpy(target->data, reader.Bytes(), reader.Length());
+								   memcpy(target->data, data.Contents(), data.Length());
 						   }
 						   else if (v.ValueType() == DKVariant::TypeStructData)
 						   {
 							   DKVariant::VStructuredData& st = v.StructuredData();
-							   DKDataReader reader(st.data);
-							   target->data = DKMalloc(reader.Length());
+							   target->data = DKMalloc(st.data->Length());
 							   if (target->data)
-								   memcpy(target->data, reader.Bytes(), reader.Length());
+								   memcpy(target->data, st.data->Contents(), st.data->Length());
 						   }
 					   }),
 					   DKFunction([this](const DKVariant& v)

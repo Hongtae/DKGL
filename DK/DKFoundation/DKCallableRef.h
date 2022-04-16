@@ -23,6 +23,7 @@ namespace DKFoundation
 
         DKCallableRef(Signature* s = nullptr) : fn(s) {}
         DKCallableRef(const DKCallableRef& r) : fn(r.fn) {}
+        DKCallableRef(const DKObject<Signature>& s) : fn(s) {}
 
         template <typename T> inline constexpr
         static bool isFunctionType =
@@ -44,6 +45,8 @@ namespace DKFoundation
 
         operator Signature* () { return fn; }
         operator const Signature* () const { return fn; }
+
+        operator bool () const { return fn != nullptr; }
 
     private:
         DKObject<DKFunctionSignature<Function>> fn;

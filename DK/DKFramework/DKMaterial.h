@@ -151,7 +151,7 @@ namespace DKFramework
 
         struct ResourceBinder
         {
-            using BufferWriter = DKFunctionSignature<size_t (const void* data, size_t length)>;
+            using BufferWriter = DKCallableRef<size_t (const void* data, size_t length)>;
 
             virtual ~ResourceBinder() {}
 
@@ -164,11 +164,11 @@ namespace DKFramework
             virtual bool WriteStructElement(const DKString& keyPath,
                                             const DKShaderResourceStructMember& element,
                                             uint32_t arrayIndex,
-                                            BufferWriter*) = 0;
+                                            const BufferWriter&) = 0;
             virtual bool WriteStruct(const DKString& keyPath,
                                      uint32_t structSize, // (offset + size)
                                      uint32_t arrayIndex,
-                                     BufferWriter*) = 0;
+                                     const BufferWriter&) = 0;
         };
 
         struct ResourceBinding

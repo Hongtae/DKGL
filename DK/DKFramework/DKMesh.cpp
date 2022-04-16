@@ -471,14 +471,14 @@ void DKMesh::UpdateMaterialProperties(DKSceneState* scene)
             bool WriteStructElement(const DKString& keyPath,
                                     const DKShaderResourceStructMember& element,
                                     uint32_t resourceArrayIndex,
-                                    BufferWriter* writer) override
+                                    const BufferWriter& writer) override
             {
                 return this->WriteStruct(keyPath, element.size, resourceArrayIndex, writer);
             }
             bool WriteStruct(const DKString& keyPath,
                              uint32_t structSize,
                              uint32_t arrayIndex,
-                             BufferWriter* writer) override
+                             const BufferWriter& writer) override
             {
                 if (auto p = mesh->structProperties.Find(keyPath); p)
                 {

@@ -8,7 +8,8 @@
 #pragma once
 #include "../DKInclude.h"
 #include "DKTypeTraits.h"
-#include "DKFunction.h"
+#include "DKCallableRef.h"
+
 
 #ifndef DKSTATICARRAY_USE_STL_SORT
 /// Set 1 if you want to use stl sort (std::sort) as your default sort function.
@@ -214,6 +215,10 @@ namespace DKFoundation
 				Swap(v1, v2, SwapMethod());
 			}
 		}
+        void Sort(const DKCallableRef<bool (const VALUE&, const VALUE&)>& cmp)
+        {
+            Sort<const Comparator&>(Comparator(cmp));
+        }
 		void Sort(const DKFunctionSignature<bool (const VALUE&, const VALUE&)>* cmp)
 		{
 			Sort<const Comparator&>(Comparator(cmp));

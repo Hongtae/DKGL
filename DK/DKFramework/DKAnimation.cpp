@@ -2,7 +2,7 @@
 //  File: DKAnimation.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKMath.h"
@@ -662,9 +662,8 @@ DKObject<DKSerializer> DKAnimation::Serializer()
 					if (frameData)
 					{
 						auto numFrames = frameData->Length() / sizeof(DKTransformUnit);
-						const DKTransformUnit* transforms = reinterpret_cast<const DKTransformUnit*>(frameData->LockShared());
+						const DKTransformUnit* transforms = reinterpret_cast<const DKTransformUnit*>(frameData->Contents());
 						sn.frames.Add(transforms, numFrames);
-						frameData->UnlockShared();
 						sn.name = pName->value.String();
 						return true;
 					}
@@ -734,13 +733,9 @@ DKObject<DKSerializer> DKAnimation::Serializer()
 
 					if (scaleData && rotationData && translationData)
 					{
-						kn.scaleKeys.Add((const KeyframeNode::ScaleKey*)scaleData->LockShared(), scaleData->Length() / sizeof(KeyframeNode::ScaleKey));
-						kn.rotationKeys.Add((const KeyframeNode::RotationKey*)rotationData->LockShared(), rotationData->Length() / sizeof(KeyframeNode::RotationKey));
-						kn.translationKeys.Add((const KeyframeNode::TranslationKey*)translationData->LockShared(), translationData->Length() / sizeof(KeyframeNode::TranslationKey));
-
-						scaleData->UnlockShared();
-						rotationData->UnlockShared();
-						translationData->UnlockShared();
+						kn.scaleKeys.Add((const KeyframeNode::ScaleKey*)scaleData->Contents(), scaleData->Length() / sizeof(KeyframeNode::ScaleKey));
+						kn.rotationKeys.Add((const KeyframeNode::RotationKey*)rotationData->Contents(), rotationData->Length() / sizeof(KeyframeNode::RotationKey));
+						kn.translationKeys.Add((const KeyframeNode::TranslationKey*)translationData->Contents(), translationData->Length() / sizeof(KeyframeNode::TranslationKey));
 
 						kn.name = pName->value.String();
 						return true;

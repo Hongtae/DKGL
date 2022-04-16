@@ -2,7 +2,7 @@
 //  File: DKFileMap.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -53,21 +53,14 @@ namespace DKFoundation
 		bool IsTransient() const override;
 		size_t Length() const override;
 
-		const void* LockShared() const override;
-		bool TryLockShared(const void** ptr) const override;
-		void UnlockShared() const override;
-
-		void* LockExclusive() override;
-		bool TryLockExclusive(void** ptr) override;
-		void UnlockExclusive() override;
+		const void* Contents() const override;
+		void* MutableContents() override;
 
 	private:
-		void* MapContent() const;
-		void UnmapContent() const;
-		mutable void* mappedPtr;
+		void* MapContents() const;
+		void UnmapContents() const;
 
 		void* mapContext;
-		DKSharedLock lock;
 		DKSpinLock spinLock;
 
 		DKFileMap(const DKFileMap&) = delete;

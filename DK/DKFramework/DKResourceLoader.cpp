@@ -2,7 +2,7 @@
 //  File: DKResourceLoader.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKResource.h"
@@ -228,7 +228,7 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 		DKObject<ResourceLoader> loader = FindExtLoader(name.LowercaseString());
 		if (loader)
 		{
-			const void* p = data->LockShared();
+			const void* p = data->Contents();
 			size_t len = data->Length();
 			if (p && len > 0)
 			{
@@ -246,7 +246,6 @@ DKObject<DKResource> DKResourceLoader::ResourceFromData(const DKData* data, cons
 					}
 				}
 			}
-			data->UnlockShared();
 		}
 		if (res == nullptr)
 		{

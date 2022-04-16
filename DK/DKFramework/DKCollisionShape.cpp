@@ -2,7 +2,7 @@
 //  File: DKCollisionShape.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "Private/BulletPhysics.h"
@@ -574,14 +574,12 @@ DKObject<DKSerializer> DKCollisionShape::SerializeHelper::Serializer()
 								{
 									if (idxSize == 4)
 										*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-										(const DKVector3*)vertexData.data->LockShared(), numVerts,
-										(const unsigned int*)indexData.data->LockShared(), numIndices, aabb);
+										(const DKVector3*)vertexData.data->Contents(), numVerts,
+										(const unsigned int*)indexData.data->Contents(), numIndices, aabb);
 									else
 										*p = DKOBJECT_NEW DKStaticTriangleMeshShape(
-										(const DKVector3*)vertexData.data->LockShared(), numVerts,
-										(const unsigned short*)indexData.data->LockShared(), numIndices, aabb);
-									vertexData.data->UnlockShared();
-									indexData.data->UnlockShared();
+										(const DKVector3*)vertexData.data->Contents(), numVerts,
+										(const unsigned short*)indexData.data->Contents(), numIndices, aabb);
 								}
 							}
 							break;

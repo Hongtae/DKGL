@@ -2,7 +2,7 @@
 //  File: DKFile.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <fcntl.h>
@@ -375,13 +375,13 @@ DKFile::Position DKFile::TotalLength() const
 DKObject<DKBuffer> DKFile::Read(size_t s, DKAllocator& alloc) const
 {
 	if (this->file == DKFILE_INVALID_FILE_HANDLE)
-		return NULL;
+		return nullptr;
 
-	DKObject<DKBuffer> data = DKBuffer::Create(NULL, s, alloc);
+	DKObject<DKBuffer> data = DKBuffer::Create(nullptr, s, alloc);
 
 	if (s > 0)
 	{
-		char* tmp = reinterpret_cast<char*>(data->LockExclusive());
+		char* tmp = reinterpret_cast<char*>(data->MutableContents());
 		size_t bytesRead = 0;
 		while (bytesRead < s)
 		{
@@ -401,21 +401,19 @@ DKObject<DKBuffer> DKFile::Read(size_t s, DKAllocator& alloc) const
 #endif
 			bytesRead += numRead;
 		}
-		data->UnlockExclusive();
 
 		if (bytesRead > 0)
 		{
 			if (bytesRead < s)
 			{
-				void* tmp2 = data->LockExclusive();
+				void* tmp2 = data->MutableContents();
 				DKObject<DKBuffer> data2 = DKBuffer::Create(tmp2, bytesRead, alloc);
-				data->UnlockExclusive();
 				data = data2;
 			}
 		}
 		else
 		{
-			data->SetContent(0, 0);
+			data->SetContents(0, 0);
 		}
 	}
 	return data;
@@ -536,9 +534,8 @@ size_t DKFile::Write(const DKData *p)
 	if (p == NULL)
 		return 0;
 
-	const void* ptr = p->LockShared();
+	const void* ptr = p->Contents();
 	size_t numWritten = Write(ptr, p->Length());
-	p->UnlockShared();
 	return numWritten;
 }
 
@@ -765,9 +762,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 	if (this->file != DKFILE_INVALID_FILE_HANDLE)
 	{
 #ifdef _WIN32
-		struct MappedContent : public DKData
+		struct MappedContents : public DKData
 		{
-			~MappedContent()
+			~MappedContents()
 			{
 				if (::UnmapViewOfFile(ptr) == 0)
 				{
@@ -785,31 +782,8 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			bool IsExcutable() const override { return false; }
 			bool IsTransient() const override { return false; }
 
-			const void* LockShared() const override { lock.LockShared(); return &ptr[offset]; }
-			bool TryLockShared(const void** ptr) const override
-			{
-				if (lock.TryLockShared())
-				{
-					if (ptr)
-						*ptr = &ptr[offset];
-					return true;
-				}
-				return false;
-			}
-			void UnlockShared() const override { lock.UnlockShared(); }
-
-			void* LockExclusive() override { lock.Lock(); return &ptr[offset]; }
-			bool TryLockExclusive(void** ptr)
-			{
-				if (lock.TryLock())
-				{
-					if (ptr)
-						*ptr = &ptr[offset];
-					return true;
-				}
-				return false;
-			}
-			void UnlockExclusive() override { lock.Unlock(); }
+			const void* Contents() const override { return &ptr[offset]; }
+			void* MutableContents() override { return &ptr[offset]; }
 
 			size_t length;
 			size_t offset;
@@ -817,7 +791,6 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			bool writable;
 			HANDLE hMap;
 			unsigned char* ptr;
-			DKSharedLock lock;
 		};
 
 		bool readable = false;
@@ -852,7 +825,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			LPVOID ptr = ::MapViewOfFile(hMap, access, mapOffset.HighPart, mapOffset.LowPart, mapLength);
 			if (ptr)
 			{
-				DKObject<MappedContent> data = DKObject<MappedContent>::New();
+				DKObject<MappedContents> data = DKObject<MappedContents>::New();
 				data->length = length;
 				data->offset = offset - mapOffset.QuadPart;
 				data->readable = readable;
@@ -872,9 +845,9 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			DKLog("CreateFileMapping failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 		}
 #else
-		struct MappedContent : public DKData
+		struct MappedContents : public DKData
 		{
-			~MappedContent()
+			~MappedContents()
 			{
 				if (::munmap(ptr, length + offset) != 0)
 				{
@@ -888,37 +861,13 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 			bool IsExcutable() const override { return false; }
 			bool IsTransient() const override { return false; }
 
-			const void* LockShared() const override { lock.LockShared(); return &ptr[offset]; }
-			bool TryLockShared(const void** ptr) const
-			{
-				if (lock.TryLockShared())
-				{
-					if (ptr)
-						*ptr = &ptr[offset];
-					return true;
-				}
-				return false;
-			}
-			void UnlockShared() const override { lock.UnlockShared(); }
-
-			void* LockExclusive() override { lock.Lock(); return &ptr[offset]; }
-			bool TryLockExclusive(void** ptr) override
-			{
-				if (lock.TryLock())
-				{
-					if (ptr)
-						*ptr = &ptr[offset];
-					return true;
-				}
-				return false;
-			}
-			void UnlockExclusive() override { lock.Unlock(); }
+			const void* Contents() const override { return &ptr[offset]; }
+			void* MutableContents() override { return &ptr[offset]; }
 
 			int prot;
 			size_t length;
 			size_t offset;
 			unsigned char* ptr;
-			DKSharedLock lock;
 		};
 
 		int prot = PROT_NONE;
@@ -939,7 +888,7 @@ DKObject<DKData> DKFile::MapContentRange(size_t offset, size_t length)
 		}
 		else
 		{
-			DKObject<MappedContent> data = DKObject<MappedContent>::New();
+			DKObject<MappedContents> data = DKObject<MappedContents>::New();
 			data->prot = prot;
 			data->offset = (offset - mapOffset);
 			data->length = length;

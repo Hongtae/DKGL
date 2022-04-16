@@ -2,7 +2,7 @@
 //  File: DKBuffer.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
@@ -35,7 +35,7 @@ namespace DKFoundation
 		~DKBuffer();
 		
 		size_t Length() const override;
-		size_t CopyContent(void* p, size_t offset, size_t length) const;
+		size_t CopyContents(void* p, size_t offset, size_t length) const;
 
 		bool SetLength(size_t);
 
@@ -57,8 +57,8 @@ namespace DKFoundation
 		static DKObject<DKBuffer> Create(const DKData* p, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		static DKObject<DKBuffer> Create(DKStream* s, DKAllocator& alloc = DKAllocator::DefaultAllocator());
 		
-		size_t SetContent(const void* p, size_t s); ///< create zero-fill buffer if p is NULL.
-		size_t SetContent(const DKData* p);
+		size_t SetContents(const void* p, size_t s); ///< create zero-fill buffer if p is NULL.
+		size_t SetContents(const DKData* p);
 		
 		DKBuffer& operator = (const DKBuffer&);
 		DKBuffer& operator = (DKBuffer&&);
@@ -71,22 +71,12 @@ namespace DKFoundation
 		void SwitchAllocator(DKAllocator& alloc);
 		DKAllocator& Allocator() const;
 
-		const void* LockShared() const override;
-		bool TryLockShared(const void**) const override;
-		void UnlockShared() const override;
-
-		void* LockExclusive() override;
-		bool TryLockExclusive(void**) override;
-		void UnlockExclusive() override;
-
-	protected:
-		void* LockContent();
-		void UnlockContent();
+		const void* Contents() const override;
+		void* MutableContents() override;
 
 	private:
-		void*	contentPtr;
-		size_t	contentLength;
-		DKSharedLock sharedLock;
+		void*	contentsPtr;
+		size_t	contentsLength;
 		DKAllocator* allocator;
 	};
 }

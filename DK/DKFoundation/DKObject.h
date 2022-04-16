@@ -92,16 +92,16 @@ namespace DKFoundation
 		class Ref
 		{
 		public:
-			Ref() : ptr(NULL), refId(0) {}
-			Ref(const Ref& r) : ptr(r.ptr), refId(r.refId) {}
+			Ref() : base(nullptr), refId(0) {}
+			Ref(const Ref& r) : base(r.base), refId(r.refId) {}
 			Ref& operator = (const Ref& ref)
 			{
-				ptr = ref.ptr;
+                base = ref.base;
 				refId = ref.refId;
 				return *this;
 			}
 		private:
-			T* ptr;
+            void* base;
 			RefCounter::RefIdValue refId;
 			friend class DKObject;
 		};
@@ -182,7 +182,7 @@ namespace DKFoundation
 		}
 		DKObject& operator = (const Ref& ref)
 		{
-			if (_target != ref.ptr)
+			if (BaseAddress(_target) != ref.base)
 			{
 				T* old = _target;
 				_target = _RetainObject(ref);
@@ -195,9 +195,10 @@ namespace DKFoundation
 		{
 			Ref ref;
 			RefCounter::RefIdValue refId;
-			if (_target && RefCounter::RefId(BaseAddress(_target), &refId))
+            void* base = BaseAddress(_target);
+			if (base && RefCounter::RefId(base, &refId))
 			{
-				ref.ptr = _target;
+				ref.base = base;
 				ref.refId = refId;
 			}
 			return ref;
@@ -246,9 +247,9 @@ namespace DKFoundation
 	private:
 		static T* _RetainObject(const Ref& ref)
 		{
-			if (ref.ptr && RefCounter::IncrementRefCount(BaseAddress(ref.ptr), ref.refId))
-				return ref.ptr;
-			return NULL;
+			if (ref.base && RefCounter::IncrementRefCount(ref.base, ref.refId))
+				return static_cast<T*>(ref.base);
+			return nullptr;
 		}
 		static T* _RetainObject(T* p)
 		{
@@ -280,7 +281,7 @@ namespace DKFoundation
 		}
 		static void* BaseAddress(T* p)
 		{
-			return DKTypeBaseAddressCast<T>(p);
+    		return DKTypeBaseAddressCast<T>(p);
 		}
 		T* _target;
 	};

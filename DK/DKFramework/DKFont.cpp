@@ -2,7 +2,7 @@
 //  File: DKFont.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2020 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <ft2build.h>
@@ -65,11 +65,6 @@ DKFont::~DKFont()
 {
 	if (ftFace)
 		FT_Done_Face(reinterpret_cast<FT_Face>(ftFace));
-	if (fontData)
-	{
-		fontData->UnlockShared();
-		fontData = nullptr;
-	}
 }
 
 void DKFont::SetDevice(DKGraphicsDeviceContext* device)
@@ -123,7 +118,9 @@ DKObject<DKFont> DKFont::Create(DKData* data, DKGraphicsDeviceContext* device)
 	if (data == nullptr)
 		return nullptr;
 
-	const void* ptr = data->LockShared();
+    data = data->ImmutableData();
+	const void* ptr = data->Contents();
+
 	FT_Face	face = nullptr;
 	FT_Error err = FT_New_Memory_Face(Private::FTLibrary::GetLibrary(), (const FT_Byte*)ptr, data->Length(), 0, &face);
 	if (err == 0)
@@ -144,7 +141,6 @@ DKObject<DKFont> DKFont::Create(DKData* data, DKGraphicsDeviceContext* device)
         }
         return font;
 	}
-	data->UnlockShared();
 	return nullptr;
 }
 
@@ -373,7 +369,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
             uint8_t* buff = reinterpret_cast<uint8_t*>(stagingBuffer->Contents());
             for (int i = 0; i < height; i++)
             {
-                memcpy(&buff[i * width], &((char*)data)[(height - i - 1) * width], width);
+                memcpy(&buff[i * width], &((char*)data)[i * width], width);
             }
 
             DKObject<DKCommandBuffer> cb = queue->CreateCommandBuffer();
@@ -441,7 +437,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
     {
         // create new texture.
         uint32_t desiredArea = (Width() + hPadding) * (Height() + vPadding) * (face->num_glyphs - numGlyphsLoaded);
-        const uint32_t maxTextureSize = 2048;// 8192;
+        const uint32_t maxTextureSize = 1024;// 8192;
         const uint32_t minTextureSize = [maxTextureSize](uint32_t minReq) ->uint32_t
         {
 			DKASSERT_DEBUG(maxTextureSize > minReq);
@@ -472,7 +468,7 @@ DKTexture* DKFont::CacheGlyphTexture(int width, int height, const void* data, DK
             // create texture object..
             DKTextureDescriptor desc = {};
             desc.textureType = DKTexture::Type2D;
-            desc.pixelFormat = DKPixelFormat::RGBA8Unorm;
+            desc.pixelFormat = DKPixelFormat::R8Unorm;
             desc.width = width;
             desc.height = height;
             desc.depth = 1;
@@ -728,7 +724,7 @@ bool DKFont::SetStyle(float point, uint32_t resX, uint32_t resY, float embolden,
         DKCriticalSection<DKSpinLock> guard(lock);
         if (size26d6 != charSize || dpiX != resX || dpiY != resY)
         {
-            if (FT_Set_Char_Size(reinterpret_cast<FT_Face>(ftFace), 0, charSize, resX, resY) == 0)
+            if (FT_Set_Char_Size(reinterpret_cast<FT_Face>(ftFace), 0, charSize, resX, resY))
             {
                 DKLogE("FT_Set_Char_Size failed! (size:0x%x, dpi:%ux%u)",
                     charSize, resX, resY);

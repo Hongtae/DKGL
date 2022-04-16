@@ -2,7 +2,7 @@
 //  File: DKSerializer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "DKSerializer.h"
@@ -1117,7 +1117,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 			{
 				if (ctype == 'hash' || compress)
 				{
-					const void* ptr = rawData->LockShared();
+					const void* ptr = rawData->Contents();
 					size_t length = rawData->Length();
 
 					if (ctype == 'hash')
@@ -1126,8 +1126,6 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					DKObject<DKData> compressedData = NULL;
 					if (compress)
 						compressedData = DKBuffer::Compress(DKCompressor::Default, ptr, length).SafeCast<DKData>();
-
-					rawData->UnlockShared();
 
 					if (compress)
 						this->data = compressedData;
@@ -1442,7 +1440,7 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 						break;
 					}
 					// data (size, bytes)
-					const void* ptr = chunk.data->LockShared();
+					const void* ptr = chunk.data->Contents();
 					uint64_t dataLen = chunk.data->Length();
 					wrote = output->Write(&dataLen, sizeof(dataLen));
 					numBytesWritten += wrote;
@@ -1455,7 +1453,6 @@ size_t DKSerializer::SerializeBinary(SerializeForm sf, DKStream* output) const
 					}
 					else
 						proceed = false;
-					chunk.data->UnlockShared();
 
 					if (!proceed)
 						break;
@@ -1599,9 +1596,8 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			if (type == 'varc' || type == 'serc' || type == 'extc')
 			{
 				// uncompress data
-				const void* p = d->LockShared();
+				const void* p = d->Contents();
 				data = DKBuffer::Decompress(p, d->Length()).SafeCast<DKData>();
-				d->UnlockShared();
 			}
 			else
 			{
@@ -1613,9 +1609,8 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 				unsigned int crc = 0;
 				if (type == 'varc' || type == 'vars')
 				{
-					const void* ptr = data->LockShared();
+					const void* ptr = data->Contents();
 					crc = DKHashCRC32(ptr, data->Length()).digest[0];
-					data->UnlockShared();
 					if (crc == ctype)
 					{
 						DKDataStream stream(data);
@@ -1653,9 +1648,8 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 					DKObject<DKResource> resource = NULL;
 					if (type == 'extn')
 					{
-						const char* p = (const char*)d->LockShared();
+						const char* p = (const char*)d->Contents();
 						DKString filename(p, d->Length());
-						d->UnlockShared();
 						size_t len = filename.Length();
 						if (len > 0 && loader)
 						{
@@ -1745,9 +1739,8 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			if (data)
 			{
 				DKStream::Position pos = s->CurrentPosition();
-				const char* ptr = (const char*)data->LockShared();
+				const char* ptr = (const char*)data->Contents();
 				objectKey.SetValue(&ptr[pos], keyLen);
-				data->UnlockShared();
 				pos += keyLen;
 				s->SetCurrentPosition(pos);
 			}
@@ -1774,9 +1767,8 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			if (data)
 			{
 				DKStream::Position pos = s->CurrentPosition();
-				const char* ptr = (const char*)data->LockShared();
+				const char* ptr = (const char*)data->Contents();
 				containerKey.SetValue(&ptr[pos], cKeyLen);
-				data->UnlockShared();
 				pos += cKeyLen;
 				s->SetCurrentPosition(pos);
 			}
@@ -1807,21 +1799,19 @@ bool DKSerializer::DeserializeBinaryOperations(DKStream* s, DKArray<DKObject<Des
 			if (data)
 			{
 				DKStream::Position pos = s->CurrentPosition();
-				const char* ptr = (const char*)data->LockShared();
+				const char* ptr = (const char*)data->Contents();
 				const void* p = &ptr[pos];
 
 				entityLoader(objectKey, containerKey, type, ctype, unpackedSize, DKData::StaticData(p, dataLength), loader, restoreEntities, this->entityMap);
 
-				data->UnlockShared();
 				pos += dataLength;
 				s->SetCurrentPosition(pos);
 			}
 			else
 			{
 				DKObject<DKBuffer> buffer = DKBuffer::Create(NULL, dataLength);
-				void* tmp = buffer->LockExclusive();
+				void* tmp = buffer->MutableContents();
 				size_t numRead = s->Read(tmp, dataLength);
-				buffer->UnlockExclusive();
 				if (numRead == dataLength)
 					entityLoader(objectKey, containerKey, type, ctype, unpackedSize, buffer, loader, restoreEntities, this->entityMap);
 				else
@@ -1912,7 +1902,7 @@ bool DKSerializer::Deserialize(const DKData* d, DKResourceLoader* p) const
 	if (d)
 	{
 		// determine file type, binary or XML.
-		const char* ptr = (const char*)d->LockShared();
+		const char* ptr = (const char*)d->Contents();
 		size_t len = d->Length();
 		size_t headerLen = strlen(DKSERIALIZER_HEADER_STRING);
 		bool validHeader = false;
@@ -1922,16 +1912,14 @@ bool DKSerializer::Deserialize(const DKData* d, DKResourceLoader* p) const
 				strncmp(ptr, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0)
 				validHeader = true;
 		}
-		d->UnlockShared();
 
 		if (validHeader)		// format is binary
 		{
-			const void* ptr = d->LockShared();
+			const void* ptr = d->Contents();
 			DKObject<DKData> data = DKData::StaticData(ptr, d->Length());
 			DKDataStream stream(data);
 			bool ret = DeserializeBinary(&stream, p);
-			data = NULL;
-			d->UnlockShared();
+			data = nullptr;
 			return ret;
 		}
 		else // try to open with XMLParser.
@@ -2080,7 +2068,7 @@ bool DKSerializer::RestoreObject(const DKData* d, DKResourceLoader* p, Selector*
 	if (d && sel)
 	{
 		// determine file type, binary or XML.
-		const char* ptr = (const char*)d->LockShared();
+		const char* ptr = (const char*)d->Contents();
 		size_t len = d->Length();
 		size_t headerLen = strlen(DKSERIALIZER_HEADER_STRING);
 		bool validHeader = false;
@@ -2090,16 +2078,14 @@ bool DKSerializer::RestoreObject(const DKData* d, DKResourceLoader* p, Selector*
 			validHeader = (strncmp(ptr, DKSERIALIZER_HEADER_STRING_BIG_ENDIAN, headerLen) == 0 ||
 						   strncmp(ptr, DKSERIALIZER_HEADER_STRING_LITTLE_ENDIAN, headerLen) == 0);
 		}
-		d->UnlockShared();
 
 		if (validHeader)
 		{
-			const void* ptr2 = d->LockShared();
+			const void* ptr2 = d->Contents();
 			DKObject<DKData> data = DKData::StaticData(ptr2, d->Length());
 			DKDataStream stream(data);
 			bool ret = DeserializeBinary(&stream, p, sel);
-			data = NULL;
-			d->UnlockShared();
+			data = nullptr;
 			return ret;
 		}
 		else

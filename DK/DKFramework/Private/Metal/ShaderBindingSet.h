@@ -42,8 +42,23 @@ namespace DKFramework::Private::Metal
         using BufferObject = struct { DKObject<Buffer> buffer; uint64_t offset; };
         using TextureObject = DKObject<Texture>;
         using SamplerObject = DKObject<SamplerState>;
-        
+
         // take ownership of bound resources.
+        DKMap<uint32_t, DKArray<BufferObject>> buffers;
+        DKMap<uint32_t, DKArray<TextureObject>> textures;
+        DKMap<uint32_t, DKArray<SamplerObject>> samplers;
+    };
+
+    struct ShaderBindingSetResource
+    {
+        ShaderBindingSetResource(const ShaderBindingSet* bs)
+        : buffers(bs->buffers), textures(bs->textures), samplers(bs->samplers)
+        {
+        }
+        using BufferObject = ShaderBindingSet::BufferObject;
+        using TextureObject = ShaderBindingSet::TextureObject;
+        using SamplerObject = ShaderBindingSet::SamplerObject;
+
         DKMap<uint32_t, DKArray<BufferObject>> buffers;
         DKMap<uint32_t, DKArray<TextureObject>> textures;
         DKMap<uint32_t, DKArray<SamplerObject>> samplers;
@@ -62,7 +77,7 @@ namespace DKFramework::Private::Metal
                     {
                         if (auto p = this->buffers.Find(binding.binding); p)
                         {
-                            const ShaderBindingSet::BufferObject* bufferObjects = p->value;
+                            const BufferObject* bufferObjects = p->value;
                             size_t numBuffers = p->value.Count();
                             if (numBuffers > 0)
                                 bindBuffers(bufferObjects, binding.bufferIndex, numBuffers);
@@ -75,7 +90,7 @@ namespace DKFramework::Private::Metal
                         {
                             if (auto p = this->textures.Find(binding.binding); p)
                             {
-                                const ShaderBindingSet::TextureObject* textureObjects = p->value;
+                                const TextureObject* textureObjects = p->value;
                                 size_t numTextures = p->value.Count();
                                 if (numTextures > 0)
                                     bindTextures(textureObjects, binding.textureIndex, numTextures);
@@ -86,7 +101,7 @@ namespace DKFramework::Private::Metal
                         {
                             if (auto p = this->samplers.Find(binding.binding); p)
                             {
-                                const ShaderBindingSet::SamplerObject* samplerObjects = p->value;
+                                const SamplerObject* samplerObjects = p->value;
                                 size_t numSamplers = p->value.Count();
                                 if (numSamplers > 0)
                                     bindSamplers(samplerObjects, binding.samplerIndex, numSamplers);

@@ -2,7 +2,7 @@
 //  File: DKFileMap.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <fcntl.h>
@@ -50,15 +50,12 @@ using namespace DKFoundation;
 using namespace DKFoundation::Private;
 
 DKFileMap::DKFileMap()
-	: mapContext(NULL)
-	, mappedPtr(NULL)
+	: mapContext(nullptr)
 {
 }
 
 DKFileMap::~DKFileMap()
 {
-	DKASSERT_DEBUG(mappedPtr == NULL);
-
 	FileMapContext* ctxt = reinterpret_cast<FileMapContext*>(this->mapContext);
 	if (ctxt)
 	{
@@ -70,7 +67,7 @@ DKFileMap::~DKFileMap()
 				DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
 			}
 		}
-		DKASSERT_DEBUG(ctxt->map != NULL);
+		DKASSERT_DEBUG(ctxt->map != nullptr);
 		if (::CloseHandle(ctxt->map) == FALSE)
 		{
 			DKLog("CloseHandle failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
@@ -102,127 +99,75 @@ DKFileMap::~DKFileMap()
 	}
 }
 
-const void* DKFileMap::LockShared() const
+const void* DKFileMap::Contents() const
 {
-	lock.LockShared();
-	DKCriticalSection<DKSpinLock> guard(spinLock);
-	if (mappedPtr == NULL)
-		mappedPtr = MapContent();
-	return mappedPtr;
+    return MapContents();
 }
 
-bool DKFileMap::TryLockShared(const void** ptr) const
+void* DKFileMap::MutableContents()
 {
-	if (lock.TryLockShared())
-	{
-		DKCriticalSection<DKSpinLock> guard(spinLock);
-		if (mappedPtr == NULL)
-			mappedPtr = MapContent();
-
-		if (ptr)
-			*ptr = mappedPtr;
-		return true;
-	}
-	return false;
+    if (IsWritable())
+        return MapContents();
+    return nullptr;
 }
 
-void DKFileMap::UnlockShared() const
-{
-	lock.UnlockShared();
-
-	if (lock.TryLock())
-	{
-		DKCriticalSection<DKSpinLock> guard(spinLock);
-		if (mappedPtr)
-			UnmapContent();
-		mappedPtr = NULL;
-		lock.Unlock();
-	}
-}
-
-void* DKFileMap::LockExclusive()
-{
-	lock.Lock();
-	DKCriticalSection<DKSpinLock> guard(spinLock);
-	if (mappedPtr == NULL)
-		mappedPtr = MapContent();
-	return mappedPtr;
-}
-
-bool DKFileMap::TryLockExclusive(void** ptr)
-{
-	if (lock.TryLock())
-	{
-		DKCriticalSection<DKSpinLock> guard(spinLock);
-		if (mappedPtr == NULL)
-			mappedPtr = MapContent();
-		if (ptr)
-			*ptr = mappedPtr;
-		return true;
-	}
-	return false;
-}
-
-void DKFileMap::UnlockExclusive()
-{
-	DKCriticalSection<DKSpinLock> guard(spinLock);
-	if (mappedPtr)
-		UnmapContent();
-	mappedPtr = NULL;
-	lock.Unlock();
-}
-
-void* DKFileMap::MapContent() const
+void* DKFileMap::MapContents() const
 {
 	// map, commit
 	FileMapContext* ctxt = reinterpret_cast<FileMapContext*>(this->mapContext);
 	if (ctxt)
 	{
-		DKASSERT_DEBUG(ctxt->baseAddress == NULL);
-		DKASSERT_DEBUG(ctxt->length != 0);
+        DKCriticalSection<DKSpinLock> guard(spinLock);
+        if (ctxt->baseAddress == nullptr)
+        {
+            DKASSERT_DEBUG(ctxt->length != 0);
 
 #ifdef _WIN32
-		DKASSERT_DEBUG(ctxt->map != NULL);
-		ctxt->baseAddress = ::MapViewOfFile(ctxt->map, ctxt->access, 0, 0, ctxt->length);
-		if (ctxt->baseAddress == NULL)
-		{
-			DKLog("MapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
-		}
+            DKASSERT_DEBUG(ctxt->map != nullptr);
+            ctxt->baseAddress = ::MapViewOfFile(ctxt->map, ctxt->access, 0, 0, ctxt->length);
+            if (ctxt->baseAddress == nullptr)
+            {
+                DKLog("MapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
+            }
 #else
-		ctxt->baseAddress = ::mmap(0, ctxt->length, ctxt->prot, ctxt->flags, ctxt->file, 0);
-		if (ctxt->baseAddress == MAP_FAILED)
-		{
-			ctxt->baseAddress = NULL;
-			DKLog("mmap failed:%s\n", strerror(errno));
-		}
+            ctxt->baseAddress = ::mmap(0, ctxt->length, ctxt->prot, ctxt->flags, ctxt->file, 0);
+            if (ctxt->baseAddress == MAP_FAILED)
+            {
+                ctxt->baseAddress = nullptr;
+                DKLog("mmap failed:%s\n", strerror(errno));
+            }
 #endif
+        }
 		return ctxt->baseAddress;
 	}
-	return NULL;
+	return nullptr;
 }
 
-void DKFileMap::UnmapContent() const
+void DKFileMap::UnmapContents() const
 {
 	// unmap, decommit
 	FileMapContext* ctxt = reinterpret_cast<FileMapContext*>(this->mapContext);
-	DKASSERT_DEBUG(ctxt != NULL);
+	DKASSERT_DEBUG(ctxt != nullptr);
 	if (ctxt)
 	{
-		DKASSERT_DEBUG(ctxt->baseAddress != NULL);
+        DKCriticalSection<DKSpinLock> guard(spinLock);
+        if (ctxt->baseAddress != nullptr)
+        {
 #ifdef _WIN32
-		if (::UnmapViewOfFile(ctxt->baseAddress) == FALSE)
-		{
-			DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
-			DKERROR_THROW_DEBUG("UnmapViewOfFile failed");
-		}
+            if (::UnmapViewOfFile(ctxt->baseAddress) == FALSE)
+            {
+                DKLog("UnmapViewOfFile failed:%ls\n", (const wchar_t*)GetWin32ErrorString(::GetLastError()));
+                DKERROR_THROW_DEBUG("UnmapViewOfFile failed");
+            }
 #else
-		if (::munmap(ctxt->baseAddress, ctxt->length) != 0)
-		{
-			DKLog("munmap failed:%s\n", strerror(errno));
-			DKERROR_THROW_DEBUG("munmap failed");
-		}
+            if (::munmap(ctxt->baseAddress, ctxt->length) != 0)
+            {
+                DKLog("munmap failed:%s\n", strerror(errno));
+                DKERROR_THROW_DEBUG("munmap failed");
+            }
 #endif
-		ctxt->baseAddress = NULL;
+            ctxt->baseAddress = nullptr;
+        }
 	}
 }
 
@@ -291,13 +236,13 @@ bool DKFileMap::IsTransient() const
 DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writable)
 {
 	if (file.Length() == 0)
-		return NULL;
+		return nullptr;
 
 #ifdef _WIN32
 	DKString path(file.FilePathString());
 	DWORD dwAccess = writable ? (GENERIC_READ | GENERIC_WRITE) : GENERIC_READ;
 	DWORD dwShare = writable ? 0 : FILE_SHARE_READ;
-	HANDLE hFile = ::CreateFileW((const wchar_t*)path, dwAccess, dwShare, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = ::CreateFileW((const wchar_t*)path, dwAccess, dwShare, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		LARGE_INTEGER fs;
@@ -311,14 +256,14 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 				LARGE_INTEGER mapLength;
 				mapLength.QuadPart = size;
 				DWORD flProtect = writable ? PAGE_READWRITE : PAGE_READONLY;
-				HANDLE hMap = ::CreateFileMappingW(hFile, NULL, flProtect, mapLength.HighPart, mapLength.LowPart, NULL);
+				HANDLE hMap = ::CreateFileMappingW(hFile, nullptr, flProtect, mapLength.HighPart, mapLength.LowPart, nullptr);
 				if (hMap)
 				{
 					FileMapContext* ctxt = new FileMapContext();
 					ctxt->file = hFile;
 					ctxt->map = hMap;
 					ctxt->access = writable ? FILE_MAP_ALL_ACCESS : FILE_MAP_READ;
-					ctxt->baseAddress = NULL;
+					ctxt->baseAddress = nullptr;
 					ctxt->length = size;
 
 					DKLog("DKFileMap created. (file:%ls, length:%lu, file-size:%lld, %s)\n", (const wchar_t*)path, size, fs.QuadPart, (writable ? "writable" : "readonly"));
@@ -380,7 +325,7 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 					ctxt->file = fd;
 					ctxt->prot = writable ? (PROT_READ|PROT_WRITE) : PROT_READ;
 					ctxt->flags = mmapFlags;
-					ctxt->baseAddress = NULL;
+					ctxt->baseAddress = nullptr;
 					ctxt->length = size;
 
 					DKLog("DKFileMap created. (file:%s, length:%lu, file-size:%lld, %s)\n", (const char*)path, size, st.st_size, (writable ? "writable" : "readonly"));
@@ -396,7 +341,7 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 						ctxt->file = fd;
 						ctxt->prot = PROT_READ|PROT_WRITE;
 						ctxt->flags = mmapFlags;
-						ctxt->baseAddress = NULL;
+						ctxt->baseAddress = nullptr;
 						ctxt->length = size;
 
 						DKLog("DKFileMap created. (file:%s, length:%lu, file-size:%lld (before expand), writable)\n", (const char*)path, size, st.st_size);
@@ -431,30 +376,30 @@ DKObject<DKFileMap> DKFileMap::Open(const DKString &file, size_t size, bool writ
 		DKLog("open(%s) failed: %s\n", (const char*)path, strerror(errno));
 	}
 #endif
-	return NULL;
+	return nullptr;
 }
 
 DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool overwrite)
 {
 	if (size == 0)
-		return NULL;
+		return nullptr;
 
 #ifdef _WIN32
 	DKString path(file.FilePathString());
 	DWORD dwCreationDisposition = overwrite ? CREATE_ALWAYS : CREATE_NEW;
-	HANDLE hFile = ::CreateFileW((const wchar_t*)path, GENERIC_READ | GENERIC_WRITE, 0, NULL, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = ::CreateFileW((const wchar_t*)path, GENERIC_READ | GENERIC_WRITE, 0, nullptr, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		LARGE_INTEGER mapLength;
 		mapLength.QuadPart = size;
-		HANDLE hMap = ::CreateFileMappingW(hFile, NULL, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, NULL);
+		HANDLE hMap = ::CreateFileMappingW(hFile, nullptr, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, nullptr);
 		if (hMap)
 		{
 			FileMapContext* ctxt = new FileMapContext();
 			ctxt->file = hFile;
 			ctxt->map = hMap;
 			ctxt->access = FILE_MAP_ALL_ACCESS;
-			ctxt->baseAddress = NULL;
+			ctxt->baseAddress = nullptr;
 			ctxt->length = size;
 
 			DKLog("DKFileMap created. (file:%ls, length:%lu (file created), writable)\n", (const wchar_t*)path, size);
@@ -499,7 +444,7 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 			ctxt->file = fd;
 			ctxt->prot = PROT_READ|PROT_WRITE;
 			ctxt->flags = mmapFlags;
-			ctxt->baseAddress = NULL;
+			ctxt->baseAddress = nullptr;
 			ctxt->length = size;
 
 			DKLog("DKFileMap created. (file:%s, length:%lu (file created), writable)\n", (const char*)path, size);
@@ -519,13 +464,13 @@ DKObject<DKFileMap> DKFileMap::Create(const DKString& file, size_t size, bool ov
 		DKLog("open(%s) failed: %s\n", (const char*)path, strerror(errno));
 	}
 #endif
-	return NULL;
+	return nullptr;
 }
 
 DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 {
 	if (size == 0)
-		return NULL;
+		return nullptr;
 
 	DKString tmpPath = DKTemporaryDirectory();
 #ifdef _WIN32
@@ -539,8 +484,8 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 			break;
 		}
 
-		hFile = ::CreateFileW((const wchar_t*)filePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW,
-			FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_FLAG_DELETE_ON_CLOSE, NULL);
+		hFile = ::CreateFileW((const wchar_t*)filePath, GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_NEW,
+			FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_NOT_CONTENT_INDEXED | FILE_FLAG_DELETE_ON_CLOSE, nullptr);
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
 			DWORD err = ::GetLastError();
@@ -554,14 +499,14 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 		{
 			LARGE_INTEGER mapLength;
 			mapLength.QuadPart = size;
-			HANDLE hMap = ::CreateFileMappingW(hFile, NULL, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, NULL);
+			HANDLE hMap = ::CreateFileMappingW(hFile, nullptr, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, nullptr);
 			if (hMap)
 			{
 				FileMapContext* ctxt = new FileMapContext();
 				ctxt->file = hFile;
 				ctxt->map = hMap;
 				ctxt->access = FILE_MAP_ALL_ACCESS;
-				ctxt->baseAddress = NULL;
+				ctxt->baseAddress = nullptr;
 				ctxt->length = size;
 
 				DKLog("DKFileMap created. (file:%ls, length:%lu (file created), writable)\n", (const wchar_t*)filePath, size);
@@ -618,7 +563,7 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 					ctxt->file = fd;
 					ctxt->prot = PROT_READ|PROT_WRITE;
 					ctxt->flags = mmapFlags;
-					ctxt->baseAddress = NULL;
+					ctxt->baseAddress = nullptr;
 					ctxt->length = size;
 					
 					DKLog("DKFileMap created. (file:%s, length:%lu (file created), writable)\n", (const char*)filePath, size);
@@ -643,7 +588,7 @@ DKObject<DKFileMap> DKFileMap::Temporary(size_t size)
 		}
 	}
 #endif
-	return NULL;
+	return nullptr;
 }
 
 DKObject<DKFileMap> DKFileMap::Virtual(size_t size)
@@ -653,14 +598,14 @@ DKObject<DKFileMap> DKFileMap::Virtual(size_t size)
 #ifdef _WIN32
 		LARGE_INTEGER mapLength;
 		mapLength.QuadPart = size;
-		HANDLE hMap = ::CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, NULL);
+		HANDLE hMap = ::CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, mapLength.HighPart, mapLength.LowPart, nullptr);
 		if (hMap)
 		{
 			FileMapContext* ctxt = new FileMapContext();
 			ctxt->file = INVALID_HANDLE_VALUE;
 			ctxt->map = hMap;
 			ctxt->access = FILE_MAP_ALL_ACCESS;
-			ctxt->baseAddress = NULL;
+			ctxt->baseAddress = nullptr;
 			ctxt->length = size;
 
 			DKLog("DKFileMap created. (length:%lu, writable, virtual)\n", size);
@@ -677,7 +622,7 @@ DKObject<DKFileMap> DKFileMap::Virtual(size_t size)
 		ctxt->file = -1;
 		ctxt->prot = PROT_READ|PROT_WRITE;
 		ctxt->flags = MAP_ANON|MAP_PRIVATE;
-		ctxt->baseAddress = NULL;
+		ctxt->baseAddress = nullptr;
 		ctxt->length = size;
 
 		DKLog("DKFileMap created. (length:%lu, writable, virtual)\n", size);
@@ -686,5 +631,5 @@ DKObject<DKFileMap> DKFileMap::Virtual(size_t size)
 		return fileMap;
 #endif
 	}
-	return NULL;
+	return nullptr;
 }

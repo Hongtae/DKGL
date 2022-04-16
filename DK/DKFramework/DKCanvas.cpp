@@ -39,14 +39,14 @@ namespace DKFramework::Private
     }
     */
     const char* vsSpvCompressedBase64 =
-        "XQAAAATABAAAAAAAAAABgJdesntsONM6MGcxLKsQZjMqZyK9s+I5F9rVJqCzj9BrRuMFcP"
+        "XQAAAASwBAAAAAAAAAABgJdesntsONM6MGcxLKsQZjMqZyK9s+I5F9rVJqCzj9BrRuMFcP"
         "pPjJTufO2GnekV4S/IzcItw0iVP+X5oQW6csvuo5GS2Ihrgt9U/0k7XYsDg2hWLwWyNRd2"
         "i5M7LA80mBfTGUL9qSH5IFJp2HmzlKr7mK0KjEZMHymQ2d17sbqWysevCH7QwIrKiTJ6X6"
         "7R3nygYevfIGd9/G1/mYy9LVUDz8qDF5yRF1XvNLB2eRYmsICZnTd8UzfX6FkcWANoWXkm"
         "8lJzw7/smwtoZ0shMDC+fR5ikvCX052fx7xhfmsNbuFO6YHWvgq/Mj+UA3LCin/xaDjXR2"
         "19dyOxOJlxm67UUTY2NJuf8NA6EK7djXgF1hRy2FRcwVTgmX8iY8VnvCXs+Q4ITlnxTBjR"
         "aKUUDxfL2Jb9nN2WefrCzIjnYM/PRYF/aCv7qXfdLT56ToL+MPguij1J7zOPSJiPi//03P"
-        "JkFAwhjUgkAo2wQdwPtFLRCUvtLgfG7JWDflgWmrwEA/jsZeeg6dkiwpTC0ld0P6zuHAA="
+        "JkFAwhjUgkApaaAwscDAVqDQ/YpX876Q5J1FDKuHkIc1XbdTpf8lygzFQmW+4b38wA"
         ;
 
     /* //fragment-shader: vertex color
@@ -70,6 +70,7 @@ namespace DKFramework::Private
         "ooN+cYIQNr5N/zMd3m2O7cPoMu2fZGV9swxtT3y+umjWnu2em3LxwYLtSFak8FfL5JUx14"
         "v+OoioDBuElhe+DpDeo/UDLsl5HSSjUdWAeWXFGcRgA="
         ;
+
     /* //fragment-shader: vertex color, uniform texture
     #version 450
 
@@ -120,16 +121,16 @@ namespace DKFramework::Private
     }
     */
     const char* fsEllipseSpvCompressedBase64 = 
-        "XQAAAAToBQAAAAAAAAABgJdesntsONM6MGc3MEApKl6gOKaOiphx2TUpKi7V15R/VQuLn+"
-        "KjvLo9ofgVgb40F/wOpzAAj5D4LefT647kouue3zFWqIW7pUYAIv+ki1qJ39xQTICjx0Ip"
-        "TOBta/ZLW7g8AlzwKsoJyNt9ksrWefdG7vvwgcYUHAAOTnUw3CR5BjQqVd5+SNoBepNDaw"
-        "HTdjdm0jw4Rx/oZGql67aEw4IBOS9WrFuGJbwil1gV5b4Sz5ke9hx3jGHkGBj+yKhKzdJn"
-        "vnpo4hUWhgDjqhY/HBtKqk9mphpApJ/wouwoF2rx2ys5Il+StupOCeWqHWhiGOnItAV/Ja"
-        "LcElcCMwZ56wHB6JaomnMF+vbO5B6930KIxxRz+9SCXakeHeYoUsVa7qIvUH/BIWwbm/j+"
-        "RjIA7dMEn+gj/KP1KxBcnxGxNXecwnYsRNgWE3qwHqr7ampT9FJUscECI6DB9dp/gYk8+g"
-        "5WNhsfkW0AomVWCS8eEFVHeQxyQMslUWG9oYpAnqO1BQ2+ccZal6ma7rks2lljmpD0IcN+"
-        "ZCrToC10MUbUv5tpzj1/2MEE68eocMWYoqD8+RI5ietq1xqbfhOZASRNh/msOnAWJx+PjP"
-        "DyR6jEEl1z8A5Br6u3SJWSMDoUm6hNoPlHvT/Npdz0eRAR5pNTh24IAA==";
+        "XQAAAAT8BAAAAAAAAAABgJdesntsONM6MGc3MEApKl6gOKaOiphx2TUpKi7V15R/VQuLn+"
+        "KjvLo9ofgVgb40F/wOpzAAj5D4LefT647kouue3zFWqIW7pUYAIv+ki1qJ39xQTnZoUFBo"
+        "Ki8dyDOHF9/BQJD/8T4+qaLtGBo3q058zqkfOg1rWcMASaIzlPUtv384TEmI3x+sh2rvq8"
+        "MF1ABamMcbjB/ro/b/RICDpUeY3KmmnfTWY8336iFSPjwIvowCwv9bA8G2WF2Wwtv4wgTC"
+        "5lCWcZ6hpsKqb4EbV3+HCgPw3bxlv16bLNHjZOXumR4YMzYfvIK87IF5nz3jG9W7L3pOvv"
+        "yaWXnRABsV5GPmmeb7j+eqs70ZI9LlmCwWwxfqtdYmvQkrWyAo0kDFPpWdzgpysiWYFZHN"
+        "L9DJ3FxnxvZmL/2yS0aXKUwylFjxEkw7NyVq1cS0Pm/ynme/ZZu4+VboXJIo/IPx8oYvam"
+        "BEXRvv3GwWb7YkZZsrrJXPQh9toXih9BDNiqaZjpkYLfRhG94L6BKV3gyKuODagMegRc6s"
+        "pvKViBXGe/KWUOFQpGNSnkdsnF7DdWBOefAd8oORj04mKCoAjCERGrpFawA="
+        ;
 
     /* //fragment-shader: vertex color ellipse with inner hole
     #version 450
@@ -164,17 +165,16 @@ namespace DKFramework::Private
     }
     */
     const char* fsEllipseHoleSpvCompressedBase64 = 
-        "XQAAAASgBgAAAAAAAAABgJdesntsONM6MGc5Nh9bzUJKYSZtr/HmTOO3q0we73pfWtE2WY"
-        "tgJOm/qvdgX3ek2zUGzNqWjozNjWHktaqHPDu6k96ZB/XsYBiGM+lW/BlRFL+Bw4zwEmv5"
-        "ob9qzfy8s4/0oypdRTfaQdrdZa1hNMF1KFPv4q3X/d1EnVNSsUok/1P+7KajhIpZ7U7yiE"
-        "1KzyACzpu+doxSRNOsN7hsdxzu9Wklpu0Jmxr78Mtckr/69i9twGwu3ApmzqjVA26B04b4"
-        "fxC1SIorx86O7TcifOrljQoJuic91J2SE/hUCLfLQ1UxO+4u7f6wLMD/X1wxuapWYfihXj"
-        "Z+U0d7620TOEp/vV0Jy6YLGFqjoaRNPekah5h73fZ3Omjzb9KHazbiDBt8+iTglrqhzOQD"
-        "0QXg3FdPlCmKmUL5tABZXsSjudL9fw9NzOMQfGfkAZ4KeYb9r4eCRYw7OTPsD/VsWZcaKx"
-        "F/R6mZU4vs1aGNXQjxcO4cFTzdOnVyJSrXTVR7X4miQ2M0ItJIkpOubcVwgGu6NE8u0MAy"
-        "4xmWpJzu8g9fpQsIANr8FGHfmmF5lwvbWUWdFRB4/taoaoN8cfNvDjyueUXS5R48r3YzE6"
-        "bvQJNA9pqyxJDmf+t+ViKu70ZaTjknZEnGbA3yx7zCIps1PaJBnCuXdmqcu4S4wWm+HruG"
-        "h475/OcTSzIX8IHapndp1AhJhdwlgLIA";
+        "XQAAAAQwBQAAAAAAAAABgJdesntsONM6MGc5Nh9bzUJKYSZtr/HmTOO3q0we73pfWtE2WY"
+        "tgJOm/qvdgX3ek2zUGzNqWjozNjWHktaqHPDu6k96ZB/XsYBiGM+lW/BlRFL+BxFhu9G0i"
+        "lggok3ioK53HbVFOjbADtg/s4cHxMheKPcm8fsQPO+niU1q8wMO7xazU0dM5CPDE6qZ+1f"
+        "bCV7XzOpCe04G7hstWeU0VR/RTZafdq0Me9DtLWCt6TVY99fUvvf/CzHz/rXBovU4djv2B"
+        "umGsYpoHuvTefJqzSRXBHcp5fgcf/3ConXkXvPNooi6ut+05u2TqehZqVLH5TsbPRzcXP4"
+        "gOj2sbDvrnEO6v3+y6JJ1nD9pgKLUfLIrg+HZVoh6BfvQ2ed0qOhCOgelLhG38ruCLE9jr"
+        "yc6JMfnMOvXyGFDKPRYhXvmfDoRzxWsSiUDKGHZ7E6l48edmKkv+uf1Pb7GbAVSIDhVK6F"
+        "PUkDDjZBsdxvDpcUBRDrqn43NTPpgDE8babfuQwsAByZZT9q8S0wfir89hTi8qs16wo1pw"
+        "iiSISYJwPPPLoNjub5hOdWUSxMcjy4SP9jyXLRjfBxNEJf7274JGqtvlo8AqjqLvAA=="
+        ;
 
     /* //fragment-shader: vertex color, uniform texture ellipse
     #version 450
@@ -204,17 +204,17 @@ namespace DKFramework::Private
     }
     */
     const char* fsTextureEllipseSpvCompressedBase64 =
-        "XQAAAASwBgAAAAAAAAABgJdesntsONM6MGc5AxVbzUJKYSZtr/HmTOO3q0we73pfWtE2WY"
-        "tgJOm/qvdgX3ek2zUGzNqWjozNjWHktMZeH4El3hNjzurD8LARAo6TjbRD5m2db3NGyw0k"
-        "c2BbpBrZgWt+Di2oFNnhKiwzh6PTKymMty1tkLzVNwNnZt5tJQGcDWVkuqNoitvYyifKWw"
-        "wC4DAn67n+BCqTeGxmNHDEndOCe7wlEOBYn7JSga1eLboG0K032YXIsoyCReMn97dAKxK5"
-        "XuAETMLLAmuUrFHD7HIRVYx2oVtF67+xNNB5kJ3v5qH2lkrDddTYMsnX5HI33mnkJPnl6r"
-        "8Lqi29gyk7cmcVC1C7g5dLoAp8mq9B3C9hc6FfZsRbsa9f8eA67srLYLEkPI5iPXbqSYfM"
-        "cI6rGijdCqiAnZRK07d/6aTzEafRaEUwKx1MfmMQzo52UeQYa+fXjiYgTkCgR3ZJpSHMY5"
-        "MDAN3Xt5ebfelwmtAYP7hDkih2Ss2qC5BqvxyoDCAJpXxZZk0cOrZ6E90uddUC6rgvG72K"
-        "WCRoCRg6ihxBQp6LktPAJgK5iQFVzH+Nn0k+emqPFRm+qcuFv+RhEIY2o7iHDp0adiqWSL"
-        "1tzLPVg2onjvj9PKwyp66IbNv719sI4C2swl0ldiwNz2FmPqjJyulPdUObpeMNiMsFrL+8"
-        "qpzpEnskU9KoeDTqyHeEuy7X98iiH8su3EBP+62us3kT63I98zqVr64eAA==";
+        "XQAAAATEBQAAAAAAAAABgJdesntsONM6MGc5AxVbzUJKYSZtr/HmTOO3q0we73pfWtE2WY"
+        "tgJOm/qvdgX3ek2zUGzNqWjozNjWHktMZeH4El3hNjzurD8LARAo6TjbRD5m2dcF4abd7U"
+        "F1Axz9RmJNpZ2uVwtLoOtdWJlTc3P/+HTq/ySsXSCLGpFxWJ26clENesBi05UxNoVgcWJZ"
+        "smibV1pdgOvSFaGyHG60tnzAIIYoEWzp7x3BH3T6pRz5Zy3gA+fLPHgXsXLUUbdFxWSLNI"
+        "9BWWcl6vxbXlGXswTqhXV6Z0EJ60+zfi9ObwGB3WxZPXm2T0k3lkmAhDd6TLsQLPop5vfd"
+        "nA8Hi3Y0y6qupsgZyDBmZ/s11gP0qKuL+wpsfeq8ugpitMm0OZxR2+IG6+5iSJIxA4ZU4h"
+        "ZPCGSm9vqpaKdiKH4aVy2R9JoBWKn1zUhLwu8yh4IxzdwZ/tv4N0/gs4FLLt6Jo2GPjPaY"
+        "q8pIArADT6jNN6nvF7mQcR5m2d1YCso1+scM8RivaLFA1Uky6Jjnno//SvM+RHFHqUi/+W"
+        "e7dIGzGd/uYGS6oYvQuAUILUyS0qSZr9WuSZiEuK1maun111gdf3LuiJYdHHXOyy+eN0Pg"
+        "yo/47Pdughx+TQXwcRmi58FYO0xZwZ4GbNDKhqAxAiC2VL/V6u4WqjgAA="
+        ;
 
     /* //fragment-shader: vertex color, uniform texture alpha (r8)
     #version 450
@@ -233,14 +233,13 @@ namespace DKFramework::Private
     }
     */
     const char* fsAlphaTextureSpvCompressedBase64 =
-        "XQAAAATUAwAAAAAAAAABgJdesntsONM6MGcxcoMSBeaqbZCSM/1LXfg6AGNgofxumxOEb8"
+        "XQAAAASUAwAAAAAAAAABgJdesntsONM6MGcxcoMSBeaqbZCSM/1LXfg6AGNgofxumxOEb8"
         "b615/PtnqMfm/XWlm6+YN+BmCRldMPqKzeHyGTCvtXjSGTE/R59f4ITWJxQxQ2jpntrZGM"
         "+h2a2cA1ClEKyd6JekmlZv1J2/H56RGAYWG91/hL5cHNzd1V85upoxe2/2bUWjbCtzvULQ"
         "nY3L6Nxy7SJx2le0r6QBFVnrTnu5xrChvOHTmN6r+Jnt12HzXZ2bNgFrS8SEFA30Sbv/Bm"
-        "9hv2EVePLpjkVC00a6II2O11Sb+VPBeQp+P+rwS9xKGxTg7niRc7jkfxfGioU3YyD5BBOH"
-        "hcuk4P5w9jdcDpLI+7nws+5Tp4IuZmqM9qEqFnCqtVfnnMwDuTUJmMWk6sVkWQOVIqqgMa"
-        "EueCzUTn3BOQ65MZcfYCP9dvHl0Aw+DLHG3MKJ4OY7EBBxVGX5z0lE0gM1fvyWib1a/Vnk"
-        "A6r84A"
+        "9hv2EHOEMwczX2+Crjq9tL0Fiuzouw1TolIEJ/bXUMJTpN1PBHTTus7hBxkOmGkwC/GIeL"
+        "J/l+Bq187SedQRz9zWyKfo1UgnMo2LOtuc/V50ujE14A5R5sau6RNxh40RSF67eBahuEC5"
+        "TWYNZckWtKxwY0icr0gZ5LKhJsWwNspes4qNS9cXn/IMfuvMZO4A"
         ;
 
 
@@ -297,7 +296,7 @@ namespace DKFramework::Private
         DKBlendState BlendState() const
         {
             DKBlendState state = {};
-            state.sourceAlphaBlendFactor = sourceRGBBlendFactor;
+            state.sourceRGBBlendFactor = sourceRGBBlendFactor;
             state.sourceAlphaBlendFactor = sourceAlphaBlendFactor;
             state.destinationRGBBlendFactor = destinationRGBBlendFactor;
             state.destinationAlphaBlendFactor = destinationAlphaBlendFactor;

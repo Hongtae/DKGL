@@ -2,13 +2,14 @@
 //  File: DKDispatchQueue.h
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2020 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #pragma once
 #include "../DKInclude.h"
 #include "DKObject.h"
 #include "DKOperation.h"
+#include "DKCallableRef.h"
 
 namespace DKFoundation
 {
@@ -62,6 +63,15 @@ namespace DKFoundation
                 InvokeOperation(op);
             Submit(op);
         }
+
+        bool DispatchSync(const DKCallableRef<void ()>& callable)
+        {
+            return DispatchSync((DKOperation*)callable->Invocation());
+        }
+        void DispatchAsync(const DKCallableRef<void ()>& callable)
+        {
+            return DispatchAsync((DKOperation*)callable->Invocation());
+        }
         /// Submits a single job to the dispatch queue with a specific delay time.
         virtual DKObject<ExecutionState> Submit(DKOperation*, double delay = 0.0);
         /// Submit repetitive task at specific time intervals
@@ -91,5 +101,8 @@ namespace DKFoundation
     private:
         struct Context;
         Context* context;
+
+        DKDispatchQueue(const DKDispatchQueue&) = delete;
+        DKDispatchQueue& operator = (const DKDispatchQueue&) = delete;
     };
 }

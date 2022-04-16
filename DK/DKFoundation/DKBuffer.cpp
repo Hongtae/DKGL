@@ -2,7 +2,7 @@
 //  File: DKBuffer.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <ctype.h>
@@ -142,13 +142,13 @@ namespace DKFoundation::Private
         }
         if (result.Count())
         {
-            output->SetContent((const char*)result, result.Count());
+            output->SetContents((const char*)result, result.Count());
             return true;
         }
         return false;
     }
 
-    static DKObject<DKBuffer> GetHTTPContent(const DKString& url, DKAllocator& alloc)
+    static DKObject<DKBuffer> GetHTTPContents(const DKString& url, DKAllocator& alloc)
     {
         if (url.Length() == 0)
             return NULL;
@@ -184,7 +184,7 @@ namespace DKFoundation::Private
         return data;
     }
 
-    static DKObject<DKBuffer> GetFTPContent(const DKString& url, DKAllocator& alloc)
+    static DKObject<DKBuffer> GetFTPContents(const DKString& url, DKAllocator& alloc)
     {
         if (url.Length() == 0)
             return NULL;
@@ -242,81 +242,69 @@ namespace DKFoundation::Private
 using namespace DKFoundation;
 
 DKBuffer::DKBuffer(DKAllocator& alloc)
-	: contentPtr(NULL)
-	, contentLength(0)
+	: contentsPtr(nullptr)
+	, contentsLength(0)
 	, allocator(&alloc)
 {
 }
 
 DKBuffer::DKBuffer(const void* p, size_t s, DKAllocator& alloc)
-	: contentPtr(NULL)
-	, contentLength(0)
+	: contentsPtr(nullptr)
+	, contentsLength(0)
 	, allocator(&alloc)
 {
-	SetContent(p, s);
+	SetContents(p, s);
 }
 
 DKBuffer::DKBuffer(const DKData* buff, DKAllocator& alloc)
-	: contentPtr(NULL)
-	, contentLength(0)
+	: contentsPtr(nullptr)
+	, contentsLength(0)
 	, allocator(&alloc)
 {
-	SetContent(buff);
+	SetContents(buff);
 }
 
 DKBuffer::DKBuffer(const DKBuffer& b)
-	: contentPtr(NULL)
-	, contentLength(0)
+	: contentsPtr(NULL)
+	, contentsLength(0)
 	, allocator(b.allocator)
 {
-	SetContent(b.contentPtr, b.contentLength);
+	SetContents(b.contentsPtr, b.contentsLength);
 }
 
 DKBuffer::DKBuffer(DKBuffer&& b)
-	: contentPtr(NULL)
-	, contentLength(0)
+	: contentsPtr(NULL)
+	, contentsLength(0)
 	, allocator(b.allocator)
 {
-	this->contentPtr = b.contentPtr;
-	this->contentLength = b.contentLength;
-	b.contentPtr = NULL;
-	b.contentLength = 0;
+	this->contentsPtr = b.contentsPtr;
+	this->contentsLength = b.contentsLength;
+	b.contentsPtr = NULL;
+	b.contentsLength = 0;
 }
 
 DKBuffer::~DKBuffer()
 {
-#ifdef DKGL_DEBUG_ENABLED
-	if (sharedLock.TryLock())
-	{
-		sharedLock.Unlock();
-	}
-	else
-	{
-		DKERROR_THROW("Data Locked!");
-	}
-#endif
-
-	if (contentPtr)
-		allocator->Dealloc(contentPtr);
+	if (contentsPtr)
+		allocator->Dealloc(contentsPtr);
 }
 
 size_t DKBuffer::Length() const
 {
-	return contentLength;
+	return contentsLength;
 }
 
 bool DKBuffer::SetLength(size_t len)
 {
-	if (contentLength != len)
+	if (contentsLength != len)
 	{
-		DKCriticalSection<DKSharedLock> guard(this->sharedLock);
 		if (len > 0)
 		{
-			void* p = this->allocator->Realloc(contentPtr, len);
+			void* p = this->allocator->Realloc(contentsPtr, len);
 			if (p)
 			{
-				contentPtr = p;
-				contentLength = len;
+				contentsPtr = p;
+				contentsLength = len;
 			}
 			else
 			{
@@ -326,10 +314,10 @@ bool DKBuffer::SetLength(size_t len)
 		}
 		else
 		{
-			if (contentPtr)
-				allocator->Dealloc(contentPtr);
-			contentPtr = NULL;
-			contentLength = 0;
+			if (contentsPtr)
+				allocator->Dealloc(contentsPtr);
+			contentsPtr = NULL;
+			contentsLength = 0;
 		}
 	}
 	return true;
@@ -338,7 +326,7 @@ bool DKBuffer::SetLength(size_t len)
 bool DKBuffer::Base64Encode(DKStringU8& strOut) const
 {
 	bool ret = false;
-	const void* p = this->LockShared();
+	const void* p = this->Contents();
 	size_t inputLength = this->Length();
 	if (p && inputLength > 0)
 	{	
@@ -350,14 +338,13 @@ bool DKBuffer::Base64Encode(DKStringU8& strOut) const
 			ret = true;
 		}
 	}
-	this->UnlockShared();
 	return ret;
 }
 
 bool DKBuffer::Base64Encode(DKStringW& strOut) const
 {
 	bool ret = false;
-	const void* p = this->LockShared();
+	const void* p = this->Contents();
 	size_t inputLength = this->Length();
 	if (p && inputLength > 0)
 	{
@@ -369,7 +356,6 @@ bool DKBuffer::Base64Encode(DKStringW& strOut) const
 			ret = true;
 		}
 	}
-	this->UnlockShared();
 	return ret;
 }
 
@@ -391,10 +377,9 @@ DKObject<DKBuffer> DKBuffer::Base64Decode(const DKStringW& str, DKAllocator& all
 
 DKObject<DKBuffer> DKBuffer::Compress(const DKCompressor& compressor, DKAllocator& alloc) const
 {
-	const void* p = this->LockShared();
+	const void* p = this->Contents();
 	size_t inputLength = this->Length();
 	DKObject<DKBuffer> result = Compress(compressor, p, inputLength, alloc);
-	this->UnlockShared();
 	return result;
 }
 
@@ -415,10 +400,9 @@ DKObject<DKBuffer> DKBuffer::Compress(const DKCompressor& compressor, const void
 
 DKObject<DKBuffer> DKBuffer::Decompress(DKAllocator& alloc) const
 {
-	const void* p = this->LockShared();
+	const void* p = this->Contents();
 	size_t len = this->Length();
 	DKObject<DKBuffer> result = Decompress(p, len, alloc);
-	this->UnlockShared();
 	return result;
 }
 
@@ -441,9 +425,9 @@ DKObject<DKBuffer> DKBuffer::Create(const DKString& url, DKAllocator& alloc)
 	DKString filename;
 
 	if (url.Left(7).CompareNoCase(L"http://") == 0)
-		return Private::GetHTTPContent(url, alloc);
+		return Private::GetHTTPContents(url, alloc);
 	else if (url.Left(6).CompareNoCase(L"ftp://") == 0)
-		return Private::GetFTPContent(url, alloc);
+		return Private::GetFTPContents(url, alloc);
 	else if (url.Left(7).CompareNoCase(L"file://") == 0)
 	{
 		filename = url.Right(7);
@@ -478,14 +462,14 @@ DKObject<DKBuffer> DKBuffer::Create(const DKString& url, DKAllocator& alloc)
 DKObject<DKBuffer> DKBuffer::Create(const void* p, size_t s, DKAllocator& alloc)
 {
 	DKObject<DKBuffer> data = DKObject<DKBuffer>::Alloc(alloc);
-	data->SetContent(p, s);
+	data->SetContents(p, s);
 	return data;
 }
 
 DKObject<DKBuffer> DKBuffer::Create(const DKData* p, DKAllocator& alloc)
 {
 	DKObject<DKBuffer> data = DKObject<DKBuffer>::Alloc(alloc);
-	data->SetContent(p);
+	data->SetContents(p);
 	return data;
 }
 
@@ -500,9 +484,8 @@ DKObject<DKBuffer> DKBuffer::Create(DKStream* s, DKAllocator& alloc)
 		DKObject<DKBuffer> p = DKBuffer::Create(NULL, len, alloc);
 		if (p)
 		{
-			void* buff = p->LockExclusive();
+			void* buff = p->MutableContents();
 			size_t bytesRead = s->Read(buff, len);
-			p->UnlockExclusive();
 
 			if (bytesRead == len)
 				return p;
@@ -511,19 +494,17 @@ DKObject<DKBuffer> DKBuffer::Create(DKStream* s, DKAllocator& alloc)
 	return NULL;
 }
 
-size_t DKBuffer::SetContent(const void* p, size_t s)
+size_t DKBuffer::SetContents(const void* p, size_t s)
 {
-	DKCriticalSection<DKSharedLock> guard(this->sharedLock);
-
-	if (contentLength == s)
+	if (contentsLength == s)
 	{
 		if (s > 0 && p)
 		{
-			memcpy(contentPtr, p, s);
+			memcpy(contentsPtr, p, s);
 		}
 		else if (s > 0)
 		{
-			memset(contentPtr, 0, s);
+			memset(contentsPtr, 0, s);
 		}
 	}
 	else
@@ -537,43 +518,42 @@ size_t DKBuffer::SetContent(const void* p, size_t s)
 			else
 				memset(ptr, 0, s);
 
-			if (contentPtr)
-				allocator->Dealloc(contentPtr);
+			if (contentsPtr)
+				allocator->Dealloc(contentsPtr);
 
-			this->contentPtr = ptr;
-			this->contentLength = s;
+			this->contentsPtr = ptr;
+			this->contentsLength = s;
 		}
 		else
 		{
-			if (contentPtr)
-				allocator->Dealloc(contentPtr);
+			if (contentsPtr)
+				allocator->Dealloc(contentsPtr);
 
-			contentPtr = NULL;
-			contentLength = 0;
+			contentsPtr = NULL;
+			contentsLength = 0;
 		}
 	}
-	return contentLength;
+	return contentsLength;
 }
 
-size_t DKBuffer::SetContent(const DKData* buff)
+size_t DKBuffer::SetContents(const DKData* buff)
 {
 	size_t ret = 0;
 	if (buff)
 	{
-		const void* p = buff->LockShared();
-		ret = SetContent(p, buff->Length());
-		buff->UnlockShared();
+		const void* p = buff->Contents();
+		ret = SetContents(p, buff->Length());
 	}
 	else
 	{
-		ret = SetContent(0, 0);
+		ret = SetContents(0, 0);
 	}
 	return ret;
 }
 
 DKBuffer& DKBuffer::operator = (const DKBuffer& b)
 {
-	SetContent(&b);
+	SetContents(&b);
 	return *this;
 }
 
@@ -581,23 +561,21 @@ DKBuffer& DKBuffer::operator = (DKBuffer&& b)
 {
 	if (this != &b)
 	{
-		DKCriticalSection<DKSharedLock> guard(this->sharedLock);
+		if (this->contentsPtr)
+			this->allocator->Dealloc(this->contentsPtr);
 
-		if (this->contentPtr)
-			this->allocator->Dealloc(this->contentPtr);
-
-		this->contentPtr = b.contentPtr;
-		this->contentLength = b.contentLength;
+		this->contentsPtr = b.contentsPtr;
+		this->contentsLength = b.contentsLength;
 		this->allocator = b.allocator;
-		b.contentPtr = NULL;
-		b.contentLength = 0;
+		b.contentsPtr = nullptr;
+		b.contentsLength = 0;
 	}
 	return *this;
 }
 
-size_t DKBuffer::CopyContent(void* p, size_t offset, size_t length) const
+size_t DKBuffer::CopyContents(void* p, size_t offset, size_t length) const
 {
-	const char* ptr = reinterpret_cast<const char*>(this->LockShared());
+	const char* ptr = reinterpret_cast<const char*>(this->Contents());
 	size_t contentLength = this->Length();
 	size_t ret = 0;
 	if (p && offset < contentLength)
@@ -606,7 +584,6 @@ size_t DKBuffer::CopyContent(void* p, size_t offset, size_t length) const
 		memcpy(p, &ptr[offset], length);
 		ret = length;
 	}
-	this->UnlockShared();
 	return ret;
 }
 
@@ -614,15 +591,13 @@ void DKBuffer::SwitchAllocator(DKAllocator& alloc)
 {
 	if (&alloc != this->allocator)
 	{
-		DKCriticalSection<DKSharedLock> guard(this->sharedLock);
-
-		if (contentLength > 0)
+		if (contentsLength > 0)
 		{
-			void* p = alloc.Alloc(contentLength);
-			memcpy(p, contentPtr, contentLength);
+			void* p = alloc.Alloc(contentsLength);
+			memcpy(p, contentsPtr, contentsLength);
 
-			this->contentPtr = p;
-			this->allocator->Dealloc(contentPtr);
+			this->contentsPtr = p;
+			this->allocator->Dealloc(contentsPtr);
 		}
 		this->allocator = &alloc;
 	}
@@ -633,55 +608,12 @@ DKAllocator& DKBuffer::Allocator() const
 	return *this->allocator;
 }
 
-void* DKBuffer::LockContent()
+const void* DKBuffer::Contents() const
 {
-	return contentPtr;
+	return contentsPtr;
 }
 
-void DKBuffer::UnlockContent()
+void* DKBuffer::MutableContents()
 {
-}
-
-const void* DKBuffer::LockShared() const
-{
-	sharedLock.LockShared();
-	return contentPtr;
-}
-
-bool DKBuffer::TryLockShared(const void ** ptr) const
-{
-	if (sharedLock.TryLockShared())
-	{
-		if (ptr)
-			*ptr = contentPtr;
-		return true;
-	}
-	return false;
-}
-
-void DKBuffer::UnlockShared() const
-{
-	sharedLock.UnlockShared();
-}
-
-void* DKBuffer::LockExclusive()
-{
-	sharedLock.Lock();
-	return contentPtr;
-}
-
-bool DKBuffer::TryLockExclusive(void ** ptr)
-{
-	if (sharedLock.TryLock())
-	{
-		if (ptr)
-			*ptr = contentPtr;
-		return true;
-	}
-	return false;
-}
-
-void DKBuffer::UnlockExclusive()
-{
-	sharedLock.Unlock();
+	return contentsPtr;
 }

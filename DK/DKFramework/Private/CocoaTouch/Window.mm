@@ -3,7 +3,7 @@
 //  Platform: iOS
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2015-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2015-2022 Hongtae Kim. All rights reserved.
 //
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -112,6 +112,7 @@ bool Window::Create(const DKString& title, uint32_t style)
 
 		instance->PostWindowEvent({
 			WindowEvent::WindowCreated,
+            instance,
 			WindowRect(),
 			ContentRect(),
 			(float)view.contentScaleFactor
@@ -153,6 +154,7 @@ void Window::UpdateProxy()
 
 			instance->PostWindowEvent({
 				WindowEvent::WindowResized,
+                instance,
 				WindowRect(),
 				ContentRect(),
 				(float)contentScaleFactor

@@ -2,7 +2,7 @@
 //  File: DKXmlParser.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2004-2016 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2004-2022 Hongtae Kim. All rights reserved.
 //
 
 #include <string.h>
@@ -559,7 +559,7 @@ bool DKXmlParser::BeginHtml(const DKData* data)
 	bool result = false;
 	if (data)
 	{
-		const void* buffer = data->LockShared();
+		const void* buffer = data->Contents();
 		size_t bufferSize = data->Length();
 
 		if (buffer && bufferSize > 0)
@@ -603,7 +603,6 @@ bool DKXmlParser::BeginHtml(const DKData* data)
 				}
 			}
 		}
-		data->UnlockShared();
 	}
 	return result;
 }
@@ -644,7 +643,7 @@ bool DKXmlParser::BeginXml(const DKData* data)
 {
 	if (data)
 	{
-		const char* buffer = reinterpret_cast<const char*>(data->LockShared());
+		const char* buffer = reinterpret_cast<const char*>(data->Contents());
 		size_t bufferSize = data->Length();
 
 		bool result = false;
@@ -662,7 +661,6 @@ bool DKXmlParser::BeginXml(const DKData* data)
 				result = false;
 			}			
 		}
-		data->UnlockShared();
 
 		return result;
 	}
