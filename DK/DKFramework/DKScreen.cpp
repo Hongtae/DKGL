@@ -18,7 +18,10 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
     , dispatchQueue(dq)
     , paused(false)
     , running(true)
+    , activated(false)
+    , visible(false)
     , frameInterval(1.0/60.0)
+    , inactiveFrameInterval(1.0/60.0)
 {
 	audioDevice = DKAudioDevice::SharedInstance();
     if (graphicsDevice == nullptr)
@@ -45,6 +48,10 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
         DKTimeTick tick = DKTimer::SystemTick();
         DKDateTime tickDate = DKDateTime::Now();
 
+        bool activated = false;
+        bool visible = false;
+        float interval = 0.0;
+
         while (true)
         {
             if (true)
@@ -55,6 +62,10 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
 
                 if (this->running == false)
                     break;
+
+                activated = this->activated;
+                visible = this->visible;
+                interval = activated ? frameInterval : inactiveFrameInterval;
             }
 
             if (tickDelta > 0.0001)
@@ -70,18 +81,23 @@ DKScreen::DKScreen(DKGraphicsDeviceContext* dc, DKDispatchQueue* dq)
                         frame->Load(this, this->Resolution());
 
                     frame->Update(tickDelta, tick, tickDate);
-                    frame->Draw();
-                    swapChain->Present();
+                    if (visible)
+                    {
+                        frame->Draw();
+                        swapChain->Present();
+                    }
                 }
             }
 
             do {
                 if (!dispatchQueue->Execute())
                 {
-                    //dispatchQueue->WaitQueue(frameInterval - timer.Elapsed());
-                    DKThread::Yield();
+                    if (activated && visible)
+                        DKThread::Yield();
+                    else
+                        dispatchQueue->WaitQueue(interval - timer.Elapsed());
                 }
-            } while (frameInterval - timer.Elapsed() > 0);
+            } while (interval - timer.Elapsed() > 0);
 
             tickDelta = timer.Reset();
             tick = DKTimer::SystemTick();
@@ -159,6 +175,14 @@ void DKScreen::SetWindow(DKWindow* window)
                 if (e.window == this->window)
                     this->ProcessMouseEvent(e);
             }));
+
+            this->activated = true;
+            this->visible = true;
+        }
+        else
+        {
+            this->activated = false;
+            this->visible = false;
         }
     }
 }
@@ -167,6 +191,8 @@ void DKScreen::SetRootFrame(DKFrame* frame)
 {
     if (rootFrame != frame)
     {
+        DKCriticalSection cs(frameGuard);
+
         bool loaded = false;
         if (rootFrame)
             loaded = rootFrame->IsLoaded();
@@ -176,8 +202,10 @@ void DKScreen::SetRootFrame(DKFrame* frame)
 
         if (loaded)
         {
-            frame->Load(this, this->Resolution());
-            oldFrame->Unload();
+            this->dispatchQueue->DispatchAsync([=]() mutable {
+                frame->Load(this, this->Resolution());
+                oldFrame->Unload();
+            });
         }
     }
 }
@@ -588,12 +616,12 @@ bool DKScreen::ProcessWindowEvent(const DKWindow::WindowEvent& e)
 {
     if (e.type == DKWindow::WindowEvent::WindowResized)
     {
-        this->dispatchQueue->DispatchAsync(DKFunction([this]() {
+        this->dispatchQueue->DispatchAsync([this]() {
             if (rootFrame && rootFrame->IsLoaded())
             {
                 rootFrame->UpdateContentResolution();
             }
-        })->Invocation());
+        });
     }
     return false;
 }

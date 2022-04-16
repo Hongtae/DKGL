@@ -158,6 +158,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // useful templates (C++ only)
 #ifdef __cplusplus
+#   include <utility>
 #	include <stdexcept>
 #	include <type_traits>
 namespace DKFoundation

@@ -122,13 +122,9 @@ namespace DKFramework
 		};
 
 		// function or function object type for event handlers.
-		typedef void WindowProc(const WindowEvent&); ///< Window event handler function type
-		typedef void KeyboardProc(const KeyboardEvent&); ///< Keyboard event handler function type
-		typedef void MouseProc(const MouseEvent&); ///< Mouse event handler function type
-
-		typedef DKFunctionSignature<WindowProc> WindowEventHandler;
-		typedef DKFunctionSignature<KeyboardProc> KeyboardEventHandler;
-		typedef DKFunctionSignature<MouseProc> MouseEventHandler;
+        using WindowEventHandler = DKCallableRef<void (const WindowEvent&)>;
+        using KeyboardEventHandler = DKCallableRef<void (const KeyboardEvent&)>;
+        using MouseEventHandler = DKCallableRef<void (const MouseEvent&)>;
 
 		/// drag and drop (files only)
 		enum DraggingState 
@@ -197,7 +193,7 @@ namespace DKFramework
 		/// Add event handler.
 		/// (a event that can be processed asynchronously, and dont need to response)
 		using EventHandlerContext = const void*;
-		void AddEventHandler(EventHandlerContext context, WindowEventHandler*, KeyboardEventHandler*, MouseEventHandler*);
+		void AddEventHandler(EventHandlerContext context, WindowEventHandler, KeyboardEventHandler, MouseEventHandler);
 		/// Removes the event handler and any associated pending events.
 		void RemoveEventHandler(EventHandlerContext context);
 
@@ -240,9 +236,9 @@ namespace DKFramework
 
 	private:
 		DKSpinLock handlerLock;
-		DKMap<EventHandlerContext, DKObject<WindowEventHandler>> windowEventHandlers;
-		DKMap<EventHandlerContext, DKObject<KeyboardEventHandler>> keyboardEventHandlers;
-		DKMap<EventHandlerContext, DKObject<MouseEventHandler>> mouseEventHandlers;
+		DKMap<EventHandlerContext, WindowEventHandler> windowEventHandlers;
+		DKMap<EventHandlerContext, KeyboardEventHandler> keyboardEventHandlers;
+		DKMap<EventHandlerContext, MouseEventHandler> mouseEventHandlers;
 		struct PendingEvent
 		{
 			EventHandlerContext context;

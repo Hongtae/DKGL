@@ -118,47 +118,50 @@ void ComputeCommandEncoder::SetResources(uint32_t set, const DKShaderBindingSet*
 {
     DKASSERT_DEBUG(!IsCompleted());
     DKASSERT_DEBUG(dynamic_cast<const ShaderBindingSet*>(binds));
-    DKObject<ShaderBindingSet> bs = const_cast<ShaderBindingSet*>(static_cast<const ShaderBindingSet*>(binds));
+    ShaderBindingSet* bs = const_cast<ShaderBindingSet*>(static_cast<const ShaderBindingSet*>(binds));
+    DKObject<ShaderBindingSetResource> res = DKOBJECT_NEW ShaderBindingSetResource(bs);
 
     DKObject<EncoderCommand> command = DKFunction([=](id<MTLComputeCommandEncoder> encoder, EncodingState& state)
     {
         if (state.pipelineState)
         {
+            auto bindBuffers = [&](const ShaderBindingSet::BufferObject* bufferObjects, uint32_t index, size_t numBuffers)
+            {
+                 id<MTLBuffer>* buffers = new id<MTLBuffer>[numBuffers];
+                 NSUInteger* offsets = new NSUInteger[numBuffers];
+                 for (size_t i = 0; i < numBuffers; ++i)
+                 {
+                     buffers[i] = bufferObjects[i].buffer->buffer;
+                     offsets[i] = bufferObjects[i].offset;
+                 }
+                 [encoder setBuffers:buffers
+                             offsets:offsets
+                           withRange:NSMakeRange(index, numBuffers)];
+                 delete[] buffers;
+                 delete[] offsets;
+            };
+            auto bindTextures = [&](const ShaderBindingSet::TextureObject* textureObjects, uint32_t index, size_t numTextures)
+            {
+                 id<MTLTexture>* textures = new id<MTLTexture>[numTextures];
+                 for (size_t i = 0; i < numTextures; ++i)
+                     textures[i] = textureObjects[i]->texture;
+                 [encoder setTextures:textures
+                            withRange:NSMakeRange(index, numTextures)];
+                 delete[] textures;
+            };
+            auto bindSamplers = [&](const ShaderBindingSet::SamplerObject* samplerObjects, uint32_t index, size_t numSamplers)
+            {
+                 id<MTLSamplerState>* samplers = new id<MTLSamplerState>[numSamplers];
+                 for (size_t i = 0; i < numSamplers; ++i)
+                     samplers[i] = samplerObjects[i]->sampler;
+                 [encoder setSamplerStates:samplers
+                                 withRange:NSMakeRange(index, numSamplers)];
+                 delete[] samplers;
+            };
+
             // bind resources
-            bs->BindResources(set, state.pipelineState->bindings.resourceBindings,
-                [&](const ShaderBindingSet::BufferObject* bufferObjects, uint32_t index, size_t numBuffers)
-                {
-                    id<MTLBuffer>* buffers = new id<MTLBuffer>[numBuffers];
-                    NSUInteger* offsets = new NSUInteger[numBuffers];
-                    for (size_t i = 0; i < numBuffers; ++i)
-                    {
-                        buffers[i] = bufferObjects[i].buffer->buffer;
-                        offsets[i] = bufferObjects[i].offset;
-                    }
-                    [encoder setBuffers:buffers
-                                offsets:offsets
-                            withRange:NSMakeRange(index, numBuffers)];
-                    delete[] buffers;
-                    delete[] offsets;
-                },
-                [&](const ShaderBindingSet::TextureObject* textureObjects, uint32_t index, size_t numTextures)
-                {
-                    id<MTLTexture>* textures = new id<MTLTexture>[numTextures];
-                    for (size_t i = 0; i < numTextures; ++i)
-                        textures[i] = textureObjects[i]->texture;
-                    [encoder setTextures:textures
-                                withRange:NSMakeRange(index, numTextures)];
-                    delete[] textures;
-                },
-                [&](const ShaderBindingSet::SamplerObject* samplerObjects, uint32_t index, size_t numSamplers)
-                {
-                    id<MTLSamplerState>* samplers = new id<MTLSamplerState>[numSamplers];
-                    for (size_t i = 0; i < numSamplers; ++i)
-                        samplers[i] = samplerObjects[i]->sampler;
-                    [encoder setSamplerStates:samplers
-                                    withRange:NSMakeRange(index, numSamplers)];
-                    delete[] samplers;
-                });
+            res->BindResources(set, state.pipelineState->bindings.resourceBindings,
+                               bindBuffers, bindTextures, bindSamplers);
         }
     });
     encoder->commands.Add(command);

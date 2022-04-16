@@ -99,11 +99,16 @@ namespace DKFramework
 
         DKSize screenResolution;
 
-        float frameInterval;
-        DKObject<DKThread> thread;
-        DKCondition condition;
+        bool activated;
+        bool visible;
+
         bool running;
         bool paused;
+
+        float frameInterval;
+        float inactiveFrameInterval;
+        DKObject<DKThread> thread;
+        DKCondition condition;
         DKLock frameGuard;
 
         DKScreen(const DKScreen&) = delete;

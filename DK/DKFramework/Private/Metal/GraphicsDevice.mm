@@ -322,8 +322,7 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
 
     if (DKData* data = shader->Data(); data)
     {
-        DKDataReader reader(data);
-        if (reader.Length() > 0)
+        if (data->Length() > 0)
         {
             spv::ExecutionModel stage;
 			switch (shader->Stage())
@@ -407,8 +406,8 @@ DKObject<DKShaderModule> GraphicsDevice::CreateShaderModule(DKGraphicsDevice* de
             }
 
 			using Compiler = spirv_cross::CompilerMSL;
-            Compiler compiler(reinterpret_cast<const uint32_t*>(reader.Bytes()),
-                              reader.Length() / sizeof(uint32_t));
+            Compiler compiler(reinterpret_cast<const uint32_t*>(data->Contents()),
+                              data->Length() / sizeof(uint32_t));
 
             for (spirv_cross::MSLResourceBinding& mslBinding : bindings1)
                 compiler.add_msl_resource_binding(mslBinding);

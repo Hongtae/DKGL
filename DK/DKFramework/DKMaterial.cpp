@@ -10,14 +10,14 @@
 
 namespace DKFramework::Private
 {
-    inline DKObject<DKMaterial::ResourceBinder::BufferWriter>
+    inline DKMaterial::ResourceBinder::BufferWriter
         CreateBufferWriter(uint8_t* buffer, size_t bufferLength, size_t offset,
                            bool allowPartialWrites = true)
     {
         if (allowPartialWrites)
         {
             // write only as much as the buffer capacity.
-            return DKFunction([=](const void* data, size_t length)->size_t
+            return [=](const void* data, size_t length)->size_t
             {
                 if (bufferLength > offset && length > 0)
                 {
@@ -26,10 +26,10 @@ namespace DKFramework::Private
                     return s;
                 }
                 return 0;
-            });
+            };
         }
         // buffer must have enough space!
-        return DKFunction([=](const void* data, size_t length)->size_t
+        return [=](const void* data, size_t length)->size_t
         {
             if (length + offset <= bufferLength && length > 0)
             {
@@ -37,7 +37,7 @@ namespace DKFramework::Private
                 return length;
             }
             return 0;
-        });
+        };
     }
     struct ShaderResourceStructMemberBinder
     {
@@ -57,7 +57,7 @@ namespace DKFramework::Private
             if (memberOffset >= bufferLength)
                 return 0;   // Insufficient buffer!
 
-            DKObject<DKMaterial::ResourceBinder::BufferWriter>
+            DKMaterial::ResourceBinder::BufferWriter
                 bufferWriter = CreateBufferWriter(buffer, bufferLength, memberOffset);
 
             // find resource with keyPath
@@ -610,7 +610,7 @@ DKObject<DKMaterial::ResourceBinder> DKMaterial::SceneResourceBinder(DKSceneStat
         bool WriteStructElement(const DKString& keyPath,
                                 const DKShaderResourceStructMember& element,
                                 uint32_t resourceArrayIndex,
-                                BufferWriter* writer) override
+                                const BufferWriter& writer) override
         {
             if (customBinder)
             {
@@ -643,7 +643,7 @@ DKObject<DKMaterial::ResourceBinder> DKMaterial::SceneResourceBinder(DKSceneStat
         bool WriteStruct(const DKString& keyPath,
                          uint32_t structSize,
                          uint32_t arrayIndex,
-                         BufferWriter* writer) override
+                         const BufferWriter& writer) override
         {
             if (customBinder)
             {
