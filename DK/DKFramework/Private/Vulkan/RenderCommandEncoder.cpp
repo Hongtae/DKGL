@@ -547,7 +547,7 @@ void RenderCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSet
 
     DKObject<EncoderCommand> preCommand = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        descriptorSet->UpdateImageViewLayout(state.imageViewLayoutMap);
+        descriptorSet->UpdateImageViewLayouts(state.imageViewLayoutMap);
     });
     encoder->setupCommands.Add(preCommand);
 

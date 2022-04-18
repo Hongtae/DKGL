@@ -2,7 +2,7 @@
 //  File: DescriptorSet.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -85,7 +85,7 @@ void DescriptorSet::CollectImageViewLayouts(ImageLayoutMap& imageLayouts, ImageV
     }
 }
 
-void DescriptorSet::UpdateImageViewLayout(const ImageViewLayoutMap& imageLayouts)
+void DescriptorSet::UpdateImageViewLayouts(const ImageViewLayoutMap& imageLayouts)
 {
     DKArray<VkWriteDescriptorSet> descriptorWrites;
     descriptorWrites.Reserve(bindings.Count());
@@ -99,24 +99,33 @@ void DescriptorSet::UpdateImageViewLayout(const ImageViewLayoutMap& imageLayouts
         DKASSERT_DEBUG(write.dstSet == descriptorSet);
         DKASSERT_DEBUG(write.dstBinding == binding.layoutBinding.binding);
 
-        VkDescriptorImageInfo* imageInfo = (VkDescriptorImageInfo*)write.pImageInfo;
-        if (imageInfo && imageInfo->imageView != VK_NULL_HANDLE)
+        if (write.pImageInfo)
         {
-            if (auto p = imageLayouts.Find(imageInfo->imageView); p)
+            bool update = false;
+            for (int i = 0; i < write.descriptorCount; ++i)
             {
-                VkImageLayout layout = p->value;
-                if (imageInfo->imageLayout != layout)
+                VkDescriptorImageInfo& imageInfo = (VkDescriptorImageInfo&)write.pImageInfo[i];
+                if (imageInfo.imageView != VK_NULL_HANDLE)
                 {
-                    // Update layout
-                    imageInfo->imageLayout = layout;
-                    descriptorWrites.Add(write);
+                    if (auto p = imageLayouts.Find(imageInfo.imageView); p)
+                    {
+                        VkImageLayout layout = p->value;
+                        if (imageInfo.imageLayout != layout)
+                        {
+                            // Update layout
+                            imageInfo.imageLayout = layout;
+                            update = true;
+                        }
+                    }
+                    else
+                    {
+                        //imageInfo->imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+                        DKLogE("ERROR! Cannot find proper image layout");
+                    }
                 }
             }
-            else
-            {
-                //imageInfo->imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-                DKLogE("ERROR! Cannot find proper image layout");
-            }
+            if (update)
+                descriptorWrites.Add(write);
         }
     }
     if (descriptorWrites.Count() > 0)

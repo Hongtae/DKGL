@@ -2,7 +2,7 @@
 //  File: ComputeCommandEncoder.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -137,7 +137,7 @@ void ComputeCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSe
 
     DKObject<EncoderCommand> preCommand = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        descriptorSet->UpdateImageViewLayout(state.imageViewLayoutMap);
+        descriptorSet->UpdateImageViewLayouts(state.imageViewLayoutMap);
     });
     encoder->setupCommands.Add(preCommand);
 
