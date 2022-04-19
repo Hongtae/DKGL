@@ -92,8 +92,8 @@ namespace DKFramework
         struct BufferInfo
         {
             DKObject<DKGpuBuffer> buffer;
-            uint64_t offset;
-            uint64_t length;
+            size_t offset;
+            size_t length;
         };
         // default shader binding objects (parameters)
         using TextureArray = DKArray<DKObject<DKTexture>>;

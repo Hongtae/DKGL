@@ -658,7 +658,7 @@ GraphicsDevice::GraphicsDevice()
 			for (size_t j = 0; j < desc.queueFamilyProperties.Count(); ++j)
 			{
                 const VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
-                DKLog(" -- Queue-Family[%llu] Flags:0x%04x (SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c), Queues:%d",
+                DKLog(" -- Queue-Family[%zu] Flags:0x%04x (SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c), Queues:%d",
                       j,
                       prop.queueFlags,
                       prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? 'Y' : 'N',
@@ -671,7 +671,7 @@ GraphicsDevice::GraphicsDevice()
             for (size_t j = 0; j < desc.extensionProperties.Count(); ++j)
             {
                 const VkExtensionProperties& prop = desc.extensionProperties.Value(j);
-                DKLog(" -- Device-Extension[%llu]: %s (Version:%u)\n", j, prop.extensionName, prop.specVersion);
+                DKLog(" -- Device-Extension[%zu]: %s (Version:%u)\n", j, prop.extensionName, prop.specVersion);
             }
 #endif
 			deviceList.Array().Add(desc.properties.deviceName);

@@ -532,7 +532,7 @@ DKObject<DKXmlElement> DKVariant::ExportXML() const
 		byteorder.name = "byteorder";
 		byteorder.value = (DKRuntimeByteOrder() == DKByteOrder::BigEndian) ? "BE" : "LE";
 		elementSize.name = "elementSize";
-		elementSize.value = DKString::Format("%llu", stData.elementSize);
+		elementSize.value = DKString::Format("%zu", stData.elementSize);
 
 		DKObject<DKXmlElement> layout = DKObject<DKXmlElement>::New();
 		layout->name = "layout";
