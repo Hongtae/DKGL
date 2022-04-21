@@ -459,7 +459,7 @@ bool DKShader::Compile(const DKData* d)
                     this->descriptors.Add(getDescriptor(resource, DescriptorTypeSampler));
                 }
 
-                auto getAttributes = [&compiler](const spirv_cross::Resource& resource)->DKShaderAttribute
+                auto getAttributes = [&compiler, &active](const spirv_cross::Resource& resource)->DKShaderAttribute
                 {
                     uint32_t location = compiler.get_decoration(resource.id, spv::DecorationLocation);
                     DKStringU8 name = "";
@@ -485,7 +485,7 @@ bool DKShader::Compile(const DKData* d)
                     attr.location = location;
                     attr.name = name;
                     attr.type = dataType;
-                    attr.enabled = true;
+                    attr.enabled = active.find(resource.id) != active.end();
                     return attr;
                 };
                 // stage inputs
