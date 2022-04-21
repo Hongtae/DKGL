@@ -24,74 +24,94 @@ namespace DKFramework::Private::Metal
             case DKShaderDataType::Texture:     return MTLDataTypeTexture;
             case DKShaderDataType::Sampler:     return MTLDataTypeSampler;
 
-            case DKShaderDataType::Float:       return MTLDataTypeFloat;
-            case DKShaderDataType::Float2:      return MTLDataTypeFloat2;
-            case DKShaderDataType::Float3:      return MTLDataTypeFloat3;
-            case DKShaderDataType::Float4:      return MTLDataTypeFloat4;
-
-            case DKShaderDataType::Float2x2:    return MTLDataTypeFloat2x2;
-            case DKShaderDataType::Float2x3:    return MTLDataTypeFloat2x3;
-            case DKShaderDataType::Float2x4:    return MTLDataTypeFloat2x4;
-
-            case DKShaderDataType::Float3x2:    return MTLDataTypeFloat3x2;
-            case DKShaderDataType::Float3x3:    return MTLDataTypeFloat3x3;
-            case DKShaderDataType::Float3x4:    return MTLDataTypeFloat3x4;
-
-            case DKShaderDataType::Float4x2:    return MTLDataTypeFloat4x2;
-            case DKShaderDataType::Float4x3:    return MTLDataTypeFloat4x3;
-            case DKShaderDataType::Float4x4:    return MTLDataTypeFloat4x4;
-
-            case DKShaderDataType::Half:        return MTLDataTypeHalf;
-            case DKShaderDataType::Half2:       return MTLDataTypeHalf2;
-            case DKShaderDataType::Half3:       return MTLDataTypeHalf3;
-            case DKShaderDataType::Half4:       return MTLDataTypeHalf4;
-
-            case DKShaderDataType::Half2x2:     return MTLDataTypeHalf2x2;
-            case DKShaderDataType::Half2x3:     return MTLDataTypeHalf2x3;
-            case DKShaderDataType::Half2x4:     return MTLDataTypeHalf2x4;
-
-            case DKShaderDataType::Half3x2:     return MTLDataTypeHalf3x2;
-            case DKShaderDataType::Half3x3:     return MTLDataTypeHalf3x3;
-            case DKShaderDataType::Half3x4:     return MTLDataTypeHalf3x4;
-
-            case DKShaderDataType::Half4x2:     return MTLDataTypeHalf4x2;
-            case DKShaderDataType::Half4x3:     return MTLDataTypeHalf4x3;
-            case DKShaderDataType::Half4x4:     return MTLDataTypeHalf4x4;
-
-            case DKShaderDataType::Int:         return MTLDataTypeInt;
-            case DKShaderDataType::Int2:        return MTLDataTypeInt2;
-            case DKShaderDataType::Int3:        return MTLDataTypeInt3;
-            case DKShaderDataType::Int4:        return MTLDataTypeInt4;
-
-            case DKShaderDataType::UInt:        return MTLDataTypeUInt;
-            case DKShaderDataType::UInt2:       return MTLDataTypeUInt2;
-            case DKShaderDataType::UInt3:       return MTLDataTypeUInt3;
-            case DKShaderDataType::UInt4:       return MTLDataTypeUInt4;
-
-            case DKShaderDataType::Short:       return MTLDataTypeShort;
-            case DKShaderDataType::Short2:      return MTLDataTypeShort2;
-            case DKShaderDataType::Short3:      return MTLDataTypeShort3;
-            case DKShaderDataType::Short4:      return MTLDataTypeShort4;
-
-            case DKShaderDataType::UShort:      return MTLDataTypeUShort;
-            case DKShaderDataType::UShort2:     return MTLDataTypeUShort2;
-            case DKShaderDataType::UShort3:     return MTLDataTypeUShort3;
-            case DKShaderDataType::UShort4:     return MTLDataTypeUShort4;
-
-            case DKShaderDataType::Char:        return MTLDataTypeChar;
-            case DKShaderDataType::Char2:       return MTLDataTypeChar2;
-            case DKShaderDataType::Char3:       return MTLDataTypeChar3;
-            case DKShaderDataType::Char4:       return MTLDataTypeChar4;
-
-            case DKShaderDataType::UChar:       return MTLDataTypeUChar;
-            case DKShaderDataType::UChar2:      return MTLDataTypeUChar2;
-            case DKShaderDataType::UChar3:      return MTLDataTypeUChar3;
-            case DKShaderDataType::UChar4:      return MTLDataTypeUChar4;
-
             case DKShaderDataType::Bool:        return MTLDataTypeBool;
-            case DKShaderDataType::Bool2:       return MTLDataTypeBool2;
-            case DKShaderDataType::Bool3:       return MTLDataTypeBool3;
-            case DKShaderDataType::Bool4:       return MTLDataTypeBool4;
+            case DKShaderDataType::BoolV2:      return MTLDataTypeBool2;
+            case DKShaderDataType::BoolV3:      return MTLDataTypeBool3;
+            case DKShaderDataType::BoolV4:      return MTLDataTypeBool4;
+
+            case DKShaderDataType::Int8:        return MTLDataTypeChar;
+            case DKShaderDataType::Int8V2:      return MTLDataTypeChar2;
+            case DKShaderDataType::Int8V3:      return MTLDataTypeChar3;
+            case DKShaderDataType::Int8V4:      return MTLDataTypeChar4;
+
+            case DKShaderDataType::UInt8:       return MTLDataTypeUChar;
+            case DKShaderDataType::UInt8V2:     return MTLDataTypeUChar2;
+            case DKShaderDataType::UInt8V3:     return MTLDataTypeUChar3;
+            case DKShaderDataType::UInt8V4:     return MTLDataTypeUChar4;
+
+            case DKShaderDataType::Int16:       return MTLDataTypeShort;
+            case DKShaderDataType::Int16V2:     return MTLDataTypeShort2;
+            case DKShaderDataType::Int16V3:     return MTLDataTypeShort3;
+            case DKShaderDataType::Int16V4:     return MTLDataTypeShort4;
+
+            case DKShaderDataType::UInt16:      return MTLDataTypeUShort;
+            case DKShaderDataType::UInt16V2:    return MTLDataTypeUShort2;
+            case DKShaderDataType::UInt16V3:    return MTLDataTypeUShort3;
+            case DKShaderDataType::UInt16V4:    return MTLDataTypeUShort4;
+
+            case DKShaderDataType::Int32:       return MTLDataTypeInt;
+            case DKShaderDataType::Int32V2:     return MTLDataTypeInt2;
+            case DKShaderDataType::Int32V3:     return MTLDataTypeInt3;
+            case DKShaderDataType::Int32V4:     return MTLDataTypeInt4;
+
+            case DKShaderDataType::UInt32:      return MTLDataTypeUInt;
+            case DKShaderDataType::UInt32V2:    return MTLDataTypeUInt2;
+            case DKShaderDataType::UInt32V3:    return MTLDataTypeUInt3;
+            case DKShaderDataType::UInt32V4:    return MTLDataTypeUInt4;
+
+            case DKShaderDataType::Int64:       return MTLDataTypeLong;
+            case DKShaderDataType::Int64V2:     return MTLDataTypeLong2;
+            case DKShaderDataType::Int64V3:     return MTLDataTypeLong3;
+            case DKShaderDataType::Int64V4:     return MTLDataTypeLong4;
+
+            case DKShaderDataType::UInt64:      return MTLDataTypeULong;
+            case DKShaderDataType::UInt64V2:    return MTLDataTypeULong2;
+            case DKShaderDataType::UInt64V3:    return MTLDataTypeULong3;
+            case DKShaderDataType::UInt64V4:    return MTLDataTypeULong4;
+
+            case DKShaderDataType::Float16:     return MTLDataTypeHalf;
+            case DKShaderDataType::Float16V2:   return MTLDataTypeHalf2;
+            case DKShaderDataType::Float16V3:   return MTLDataTypeHalf3;
+            case DKShaderDataType::Float16V4:   return MTLDataTypeHalf4;
+            case DKShaderDataType::Float16M2x2: return MTLDataTypeHalf2x2;
+            case DKShaderDataType::Float16M3x2: return MTLDataTypeHalf3x2;
+            case DKShaderDataType::Float16M4x2: return MTLDataTypeHalf4x2;
+            case DKShaderDataType::Float16M2x3: return MTLDataTypeHalf2x3;
+            case DKShaderDataType::Float16M3x3: return MTLDataTypeHalf3x3;
+            case DKShaderDataType::Float16M4x3: return MTLDataTypeHalf4x3;
+            case DKShaderDataType::Float16M2x4: return MTLDataTypeHalf2x4;
+            case DKShaderDataType::Float16M3x4: return MTLDataTypeHalf3x4;
+            case DKShaderDataType::Float16M4x4: return MTLDataTypeHalf4x4;
+
+            case DKShaderDataType::Float32:     return MTLDataTypeFloat;
+            case DKShaderDataType::Float32V2:   return MTLDataTypeFloat2;
+            case DKShaderDataType::Float32V3:   return MTLDataTypeFloat3;
+            case DKShaderDataType::Float32V4:   return MTLDataTypeFloat4;
+            case DKShaderDataType::Float32M2x2: return MTLDataTypeFloat2x2;
+            case DKShaderDataType::Float32M3x2: return MTLDataTypeFloat3x2;
+            case DKShaderDataType::Float32M4x2: return MTLDataTypeFloat4x2;
+            case DKShaderDataType::Float32M2x3: return MTLDataTypeFloat2x3;
+            case DKShaderDataType::Float32M3x3: return MTLDataTypeFloat3x3;
+            case DKShaderDataType::Float32M4x3: return MTLDataTypeFloat4x3;
+            case DKShaderDataType::Float32M2x4: return MTLDataTypeFloat2x4;
+            case DKShaderDataType::Float32M3x4: return MTLDataTypeFloat3x4;
+            case DKShaderDataType::Float32M4x4: return MTLDataTypeFloat4x4;
+
+            case DKShaderDataType::Float64:
+            case DKShaderDataType::Float64V2:
+            case DKShaderDataType::Float64V3:
+            case DKShaderDataType::Float64V4:
+            case DKShaderDataType::Float64M2x2:
+            case DKShaderDataType::Float64M3x2:
+            case DKShaderDataType::Float64M4x2:
+            case DKShaderDataType::Float64M2x3:
+            case DKShaderDataType::Float64M3x3:
+            case DKShaderDataType::Float64M4x3:
+            case DKShaderDataType::Float64M2x4:
+            case DKShaderDataType::Float64M3x4:
+            case DKShaderDataType::Float64M4x4:
+                DKERROR_THROW("Unsupported data type: Float64");
+                break;
         }
         return MTLDataTypeNone;
     }
@@ -104,74 +124,68 @@ namespace DKFramework::Private::Metal
             case MTLDataTypeTexture:    return DKShaderDataType::Texture;
             case MTLDataTypeSampler:    return DKShaderDataType::Sampler;
 
-            case MTLDataTypeFloat:      return DKShaderDataType::Float;
-            case MTLDataTypeFloat2:     return DKShaderDataType::Float2;
-            case MTLDataTypeFloat3:     return DKShaderDataType::Float3;
-            case MTLDataTypeFloat4:     return DKShaderDataType::Float4;
-
-            case MTLDataTypeFloat2x2:   return DKShaderDataType::Float2x2;
-            case MTLDataTypeFloat2x3:   return DKShaderDataType::Float2x3;
-            case MTLDataTypeFloat2x4:   return DKShaderDataType::Float2x4;
-
-            case MTLDataTypeFloat3x2:   return DKShaderDataType::Float3x2;
-            case MTLDataTypeFloat3x3:   return DKShaderDataType::Float3x3;
-            case MTLDataTypeFloat3x4:   return DKShaderDataType::Float3x4;
-
-            case MTLDataTypeFloat4x2:   return DKShaderDataType::Float4x2;
-            case MTLDataTypeFloat4x3:   return DKShaderDataType::Float4x3;
-            case MTLDataTypeFloat4x4:   return DKShaderDataType::Float4x4;
-
-            case MTLDataTypeHalf:       return DKShaderDataType::Half;
-            case MTLDataTypeHalf2:      return DKShaderDataType::Half2;
-            case MTLDataTypeHalf3:      return DKShaderDataType::Half3;
-            case MTLDataTypeHalf4:      return DKShaderDataType::Half4;
-
-            case MTLDataTypeHalf2x2:    return DKShaderDataType::Half2x2;
-            case MTLDataTypeHalf2x3:    return DKShaderDataType::Half2x3;
-            case MTLDataTypeHalf2x4:    return DKShaderDataType::Half2x4;
-
-            case MTLDataTypeHalf3x2:    return DKShaderDataType::Half3x2;
-            case MTLDataTypeHalf3x3:    return DKShaderDataType::Half3x3;
-            case MTLDataTypeHalf3x4:    return DKShaderDataType::Half3x4;
-
-            case MTLDataTypeHalf4x2:    return DKShaderDataType::Half4x2;
-            case MTLDataTypeHalf4x3:    return DKShaderDataType::Half4x3;
-            case MTLDataTypeHalf4x4:    return DKShaderDataType::Half4x4;
-
-            case MTLDataTypeInt:        return DKShaderDataType::Int;
-            case MTLDataTypeInt2:       return DKShaderDataType::Int2;
-            case MTLDataTypeInt3:       return DKShaderDataType::Int3;
-            case MTLDataTypeInt4:       return DKShaderDataType::Int4;
-
-            case MTLDataTypeUInt:       return DKShaderDataType::UInt;
-            case MTLDataTypeUInt2:      return DKShaderDataType::UInt2;
-            case MTLDataTypeUInt3:      return DKShaderDataType::UInt3;
-            case MTLDataTypeUInt4:      return DKShaderDataType::UInt4;
-
-            case MTLDataTypeShort:      return DKShaderDataType::Short;
-            case MTLDataTypeShort2:     return DKShaderDataType::Short2;
-            case MTLDataTypeShort3:     return DKShaderDataType::Short3;
-            case MTLDataTypeShort4:     return DKShaderDataType::Short4;
-
-            case MTLDataTypeUShort:     return DKShaderDataType::UShort;
-            case MTLDataTypeUShort2:    return DKShaderDataType::UShort2;
-            case MTLDataTypeUShort3:    return DKShaderDataType::UShort3;
-            case MTLDataTypeUShort4:    return DKShaderDataType::UShort4;
-
-            case MTLDataTypeChar:       return DKShaderDataType::Char;
-            case MTLDataTypeChar2:      return DKShaderDataType::Char2;
-            case MTLDataTypeChar3:      return DKShaderDataType::Char3;
-            case MTLDataTypeChar4:      return DKShaderDataType::Char4;
-
-            case MTLDataTypeUChar:      return DKShaderDataType::UChar;
-            case MTLDataTypeUChar2:     return DKShaderDataType::UChar2;
-            case MTLDataTypeUChar3:     return DKShaderDataType::UChar3;
-            case MTLDataTypeUChar4:     return DKShaderDataType::UChar4;
-
             case MTLDataTypeBool:       return DKShaderDataType::Bool;
-            case MTLDataTypeBool2:      return DKShaderDataType::Bool2;
-            case MTLDataTypeBool3:      return DKShaderDataType::Bool3;
-            case MTLDataTypeBool4:      return DKShaderDataType::Bool4;
+            case MTLDataTypeBool2:      return DKShaderDataType::BoolV2;
+            case MTLDataTypeBool3:      return DKShaderDataType::BoolV3;
+            case MTLDataTypeBool4:      return DKShaderDataType::BoolV4;
+
+            case MTLDataTypeChar:       return DKShaderDataType::Int8;
+            case MTLDataTypeChar2:      return DKShaderDataType::Int8V2;
+            case MTLDataTypeChar3:      return DKShaderDataType::Int8V3;
+            case MTLDataTypeChar4:      return DKShaderDataType::Int8V4;
+
+            case MTLDataTypeUChar:      return DKShaderDataType::UInt8;
+            case MTLDataTypeUChar2:     return DKShaderDataType::UInt8V2;
+            case MTLDataTypeUChar3:     return DKShaderDataType::UInt8V3;
+            case MTLDataTypeUChar4:     return DKShaderDataType::UInt8V4;
+
+            case MTLDataTypeShort:      return DKShaderDataType::Int16;
+            case MTLDataTypeShort2:     return DKShaderDataType::Int16V2;
+            case MTLDataTypeShort3:     return DKShaderDataType::Int16V3;
+            case MTLDataTypeShort4:     return DKShaderDataType::Int16V4;
+
+            case MTLDataTypeUShort:     return DKShaderDataType::UInt16;
+            case MTLDataTypeUShort2:    return DKShaderDataType::UInt16V2;
+            case MTLDataTypeUShort3:    return DKShaderDataType::UInt16V3;
+            case MTLDataTypeUShort4:    return DKShaderDataType::UInt16V4;
+
+            case MTLDataTypeInt:        return DKShaderDataType::Int32;
+            case MTLDataTypeInt2:       return DKShaderDataType::Int32V2;
+            case MTLDataTypeInt3:       return DKShaderDataType::Int32V3;
+            case MTLDataTypeInt4:       return DKShaderDataType::Int32V4;
+
+            case MTLDataTypeUInt:       return DKShaderDataType::UInt32;
+            case MTLDataTypeUInt2:      return DKShaderDataType::UInt32V2;
+            case MTLDataTypeUInt3:      return DKShaderDataType::UInt32V3;
+            case MTLDataTypeUInt4:      return DKShaderDataType::UInt32V4;
+
+            case MTLDataTypeHalf:       return DKShaderDataType::Float16;
+            case MTLDataTypeHalf2:      return DKShaderDataType::Float16V2;
+            case MTLDataTypeHalf3:      return DKShaderDataType::Float16V3;
+            case MTLDataTypeHalf4:      return DKShaderDataType::Float16V4;
+            case MTLDataTypeHalf2x2:    return DKShaderDataType::Float16M2x2;
+            case MTLDataTypeHalf3x2:    return DKShaderDataType::Float16M3x2;
+            case MTLDataTypeHalf4x2:    return DKShaderDataType::Float16M4x2;
+            case MTLDataTypeHalf2x3:    return DKShaderDataType::Float16M2x3;
+            case MTLDataTypeHalf3x3:    return DKShaderDataType::Float16M3x3;
+            case MTLDataTypeHalf4x3:    return DKShaderDataType::Float16M4x3;
+            case MTLDataTypeHalf2x4:    return DKShaderDataType::Float16M2x4;
+            case MTLDataTypeHalf3x4:    return DKShaderDataType::Float16M3x4;
+            case MTLDataTypeHalf4x4:    return DKShaderDataType::Float16M4x4;
+
+            case MTLDataTypeFloat:       return DKShaderDataType::Float32;
+            case MTLDataTypeFloat2:      return DKShaderDataType::Float32V2;
+            case MTLDataTypeFloat3:      return DKShaderDataType::Float32V3;
+            case MTLDataTypeFloat4:      return DKShaderDataType::Float32V4;
+            case MTLDataTypeFloat2x2:    return DKShaderDataType::Float32M2x2;
+            case MTLDataTypeFloat3x2:    return DKShaderDataType::Float32M3x2;
+            case MTLDataTypeFloat4x2:    return DKShaderDataType::Float32M4x2;
+            case MTLDataTypeFloat2x3:    return DKShaderDataType::Float32M2x3;
+            case MTLDataTypeFloat3x3:    return DKShaderDataType::Float32M3x3;
+            case MTLDataTypeFloat4x3:    return DKShaderDataType::Float32M4x3;
+            case MTLDataTypeFloat2x4:    return DKShaderDataType::Float32M2x4;
+            case MTLDataTypeFloat3x4:    return DKShaderDataType::Float32M3x4;
+            case MTLDataTypeFloat4x4:    return DKShaderDataType::Float32M4x4;
         }
         return DKShaderDataType::None;
     }

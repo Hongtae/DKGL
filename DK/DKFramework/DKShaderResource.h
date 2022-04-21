@@ -13,81 +13,99 @@ namespace DKFramework
 {
 	enum class DKShaderDataType
 	{
-		Unknown = -1,
-		None = 0,
+        Unknown = -1,
+        None = 0,
 
-		Struct,
-		Texture,
-		Sampler,
+        Struct,
+        Texture,
+        Sampler,
 
-		Float,
-		Float2,
-		Float3,
-		Float4,
+        Bool,
+        BoolV2,
+        BoolV3,
+        BoolV4,
 
-		Float2x2,
-		Float2x3,
-		Float2x4,
+        Int8,
+        Int8V2,
+        Int8V3,
+        Int8V4,
 
-		Float3x2,
-		Float3x3,
-		Float3x4,
+        UInt8,
+        UInt8V2,
+        UInt8V3,
+        UInt8V4,
 
-		Float4x2,
-		Float4x3,
-		Float4x4,
+        Int16,
+        Int16V2,
+        Int16V3,
+        Int16V4,
 
-		Half,
-		Half2,
-		Half3,
-		Half4,
+        UInt16,
+        UInt16V2,
+        UInt16V3,
+        UInt16V4,
 
-		Half2x2,
-		Half2x3,
-		Half2x4,
+        Int32,
+        Int32V2,
+        Int32V3,
+        Int32V4,
 
-		Half3x2,
-		Half3x3,
-		Half3x4,
+        UInt32,
+        UInt32V2,
+        UInt32V3,
+        UInt32V4,
 
-		Half4x2,
-		Half4x3,
-		Half4x4,
+        Int64,
+        Int64V2,
+        Int64V3,
+        Int64V4,
 
-		Int,
-		Int2,
-		Int3,
-		Int4,
+        UInt64,
+        UInt64V2,
+        UInt64V3,
+        UInt64V4,
 
-		UInt,
-		UInt2,
-		UInt3,
-		UInt4,
+        Float16,
+        Float16V2,
+        Float16V3,
+        Float16V4,
+        Float16M2x2,
+        Float16M3x2,
+        Float16M4x2,
+        Float16M2x3,
+        Float16M3x3,
+        Float16M4x3,
+        Float16M2x4,
+        Float16M3x4,
+        Float16M4x4,
 
-		Short,
-		Short2,
-		Short3,
-		Short4,
+        Float32,
+        Float32V2,
+        Float32V3,
+        Float32V4,
+        Float32M2x2,
+        Float32M3x2,
+        Float32M4x2,
+        Float32M2x3,
+        Float32M3x3,
+        Float32M4x3,
+        Float32M2x4,
+        Float32M3x4,
+        Float32M4x4,
 
-		UShort,
-		UShort2,
-		UShort3,
-		UShort4,
-
-		Char,
-		Char2,
-		Char3,
-		Char4,
-
-		UChar,
-		UChar2,
-		UChar3,
-		UChar4,
-
-		Bool,
-		Bool2,
-		Bool3,
-		Bool4,
+        Float64,
+        Float64V2,
+        Float64V3,
+        Float64V4,
+        Float64M2x2,
+        Float64M3x2,
+        Float64M4x2,
+        Float64M2x3,
+        Float64M3x3,
+        Float64M4x3,
+        Float64M2x4,
+        Float64M3x4,
+        Float64M4x4,
 	};
     struct DKShaderDataTypeSize
     {
@@ -111,74 +129,92 @@ namespace DKFramework
             case DKShaderDataType::Sampler:
                 return { 0, 0, 0 };
 
-            case DKShaderDataType::Float:       return { 4, 1, 1 };
-            case DKShaderDataType::Float2:      return { 4, 2, 1 };
-            case DKShaderDataType::Float3:      return { 4, 3, 1 };
-            case DKShaderDataType::Float4:      return { 4, 4, 1 };
-
-            case DKShaderDataType::Float2x2:    return { 4, 2, 2 };
-            case DKShaderDataType::Float2x3:    return { 4, 2, 3 };
-            case DKShaderDataType::Float2x4:    return { 4, 2, 4 };
-
-            case DKShaderDataType::Float3x2:    return { 4, 3, 2 };
-            case DKShaderDataType::Float3x3:    return { 4, 3, 3 };
-            case DKShaderDataType::Float3x4:    return { 4, 3, 4 };
-
-            case DKShaderDataType::Float4x2:    return { 4, 4, 2 };
-            case DKShaderDataType::Float4x3:    return { 4, 4, 3 };
-            case DKShaderDataType::Float4x4:    return { 4, 4, 4 };
-
-            case DKShaderDataType::Half:        return { 2, 1, 1 };
-            case DKShaderDataType::Half2:       return { 2, 2, 1 };
-            case DKShaderDataType::Half3:       return { 2, 3, 1 };
-            case DKShaderDataType::Half4:       return { 2, 4, 1 };
-
-            case DKShaderDataType::Half2x2:     return { 2, 2, 2 };
-            case DKShaderDataType::Half2x3:     return { 2, 2, 3 };
-            case DKShaderDataType::Half2x4:     return { 2, 2, 4 };
-
-            case DKShaderDataType::Half3x2:     return { 2, 3, 2 };
-            case DKShaderDataType::Half3x3:     return { 2, 3, 3 };
-            case DKShaderDataType::Half3x4:     return { 2, 3, 4 };
-
-            case DKShaderDataType::Half4x2:     return { 2, 4, 2 };
-            case DKShaderDataType::Half4x3:     return { 2, 4, 3 };
-            case DKShaderDataType::Half4x4:     return { 2, 4, 4 };
-
-            case DKShaderDataType::Int:         return { 4, 1, 1 };
-            case DKShaderDataType::Int2:        return { 4, 2, 1 };
-            case DKShaderDataType::Int3:        return { 4, 3, 1 };
-            case DKShaderDataType::Int4:        return { 4, 4, 1 };
-
-            case DKShaderDataType::UInt:        return { 4, 1, 1 };
-            case DKShaderDataType::UInt2:       return { 4, 2, 1 };
-            case DKShaderDataType::UInt3:       return { 4, 3, 1 };
-            case DKShaderDataType::UInt4:       return { 4, 4, 1 };
-
-            case DKShaderDataType::Short:       return { 2, 1, 1 };
-            case DKShaderDataType::Short2:      return { 2, 2, 1 };
-            case DKShaderDataType::Short3:      return { 2, 3, 1 };
-            case DKShaderDataType::Short4:      return { 2, 4, 1 };
-
-            case DKShaderDataType::UShort:      return { 2, 1, 1 };
-            case DKShaderDataType::UShort2:     return { 2, 2, 1 };
-            case DKShaderDataType::UShort3:     return { 2, 3, 1 };
-            case DKShaderDataType::UShort4:     return { 2, 4, 1 };
-
-            case DKShaderDataType::Char:        return { 1, 1, 1 };
-            case DKShaderDataType::Char2:       return { 1, 2, 1 };
-            case DKShaderDataType::Char3:       return { 1, 3, 1 };
-            case DKShaderDataType::Char4:       return { 1, 4, 1 };
-
-            case DKShaderDataType::UChar:       return { 1, 1, 1 };
-            case DKShaderDataType::UChar2:      return { 1, 2, 1 };
-            case DKShaderDataType::UChar3:      return { 1, 3, 1 };
-            case DKShaderDataType::UChar4:      return { 1, 4, 1 };
-
             case DKShaderDataType::Bool:        return { 1, 1, 1 };
-            case DKShaderDataType::Bool2:       return { 1, 2, 1 };
-            case DKShaderDataType::Bool3:       return { 1, 3, 1 };
-            case DKShaderDataType::Bool4:       return { 1, 4, 1 };
+            case DKShaderDataType::BoolV2:      return { 1, 2, 1 };
+            case DKShaderDataType::BoolV3:      return { 1, 3, 1 };
+            case DKShaderDataType::BoolV4:      return { 1, 4, 1 };
+
+            case DKShaderDataType::Int8:        return { 1, 1, 1 };
+            case DKShaderDataType::Int8V2:      return { 1, 2, 1 };
+            case DKShaderDataType::Int8V3:      return { 1, 3, 1 };
+            case DKShaderDataType::Int8V4:      return { 1, 4, 1 };
+
+            case DKShaderDataType::UInt8:       return { 1, 1, 1 };
+            case DKShaderDataType::UInt8V2:     return { 1, 2, 1 };
+            case DKShaderDataType::UInt8V3:     return { 1, 3, 1 };
+            case DKShaderDataType::UInt8V4:     return { 1, 4, 1 };
+
+            case DKShaderDataType::Int16:       return { 2, 1, 1 };
+            case DKShaderDataType::Int16V2:     return { 2, 2, 1 };
+            case DKShaderDataType::Int16V3:     return { 2, 3, 1 };
+            case DKShaderDataType::Int16V4:     return { 2, 4, 1 };
+
+            case DKShaderDataType::UInt16:      return { 2, 1, 1 };
+            case DKShaderDataType::UInt16V2:    return { 2, 2, 1 };
+            case DKShaderDataType::UInt16V3:    return { 2, 3, 1 };
+            case DKShaderDataType::UInt16V4:    return { 2, 4, 1 };
+
+            case DKShaderDataType::Int32:       return { 4, 1, 1 };
+            case DKShaderDataType::Int32V2:     return { 4, 2, 1 };
+            case DKShaderDataType::Int32V3:     return { 4, 3, 1 };
+            case DKShaderDataType::Int32V4:     return { 4, 4, 1 };
+
+            case DKShaderDataType::UInt32:      return { 4, 1, 1 };
+            case DKShaderDataType::UInt32V2:    return { 4, 2, 1 };
+            case DKShaderDataType::UInt32V3:    return { 4, 3, 1 };
+            case DKShaderDataType::UInt32V4:    return { 4, 4, 1 };
+
+            case DKShaderDataType::Int64:       return { 8, 1, 1 };
+            case DKShaderDataType::Int64V2:     return { 8, 2, 1 };
+            case DKShaderDataType::Int64V3:     return { 8, 3, 1 };
+            case DKShaderDataType::Int64V4:     return { 8, 4, 1 };
+
+            case DKShaderDataType::UInt64:      return { 8, 1, 1 };
+            case DKShaderDataType::UInt64V2:    return { 8, 2, 1 };
+            case DKShaderDataType::UInt64V3:    return { 8, 3, 1 };
+            case DKShaderDataType::UInt64V4:    return { 8, 4, 1 };
+
+            case DKShaderDataType::Float16:     return { 2, 1, 1 };
+            case DKShaderDataType::Float16V2:   return { 2, 2, 1 };
+            case DKShaderDataType::Float16V3:   return { 2, 3, 1 };
+            case DKShaderDataType::Float16V4:   return { 2, 4, 1 };
+            case DKShaderDataType::Float16M2x2: return { 2, 2, 2 };
+            case DKShaderDataType::Float16M3x2: return { 2, 3, 2 };
+            case DKShaderDataType::Float16M4x2: return { 2, 4, 2 };
+            case DKShaderDataType::Float16M2x3: return { 2, 2, 3 };
+            case DKShaderDataType::Float16M3x3: return { 2, 3, 3 };
+            case DKShaderDataType::Float16M4x3: return { 2, 4, 3 };
+            case DKShaderDataType::Float16M2x4: return { 2, 2, 4 };
+            case DKShaderDataType::Float16M3x4: return { 2, 3, 4 };
+            case DKShaderDataType::Float16M4x4: return { 2, 4, 4 };
+
+            case DKShaderDataType::Float32:     return { 4, 1, 1 };
+            case DKShaderDataType::Float32V2:   return { 4, 2, 1 };
+            case DKShaderDataType::Float32V3:   return { 4, 3, 1 };
+            case DKShaderDataType::Float32V4:   return { 4, 4, 1 };
+            case DKShaderDataType::Float32M2x2: return { 4, 2, 2 };
+            case DKShaderDataType::Float32M3x2: return { 4, 3, 2 };
+            case DKShaderDataType::Float32M4x2: return { 4, 4, 2 };
+            case DKShaderDataType::Float32M2x3: return { 4, 2, 3 };
+            case DKShaderDataType::Float32M3x3: return { 4, 3, 3 };
+            case DKShaderDataType::Float32M4x3: return { 4, 4, 3 };
+            case DKShaderDataType::Float32M2x4: return { 4, 2, 4 };
+            case DKShaderDataType::Float32M3x4: return { 4, 3, 4 };
+            case DKShaderDataType::Float32M4x4: return { 4, 4, 4 };
+
+            case DKShaderDataType::Float64:     return { 8, 1, 1 };
+            case DKShaderDataType::Float64V2:   return { 8, 2, 1 };
+            case DKShaderDataType::Float64V3:   return { 8, 3, 1 };
+            case DKShaderDataType::Float64V4:   return { 8, 4, 1 };
+            case DKShaderDataType::Float64M2x2: return { 8, 2, 2 };
+            case DKShaderDataType::Float64M3x2: return { 8, 3, 2 };
+            case DKShaderDataType::Float64M4x2: return { 8, 4, 2 };
+            case DKShaderDataType::Float64M2x3: return { 8, 2, 3 };
+            case DKShaderDataType::Float64M3x3: return { 8, 3, 3 };
+            case DKShaderDataType::Float64M4x3: return { 8, 4, 3 };
+            case DKShaderDataType::Float64M2x4: return { 8, 2, 4 };
+            case DKShaderDataType::Float64M3x4: return { 8, 3, 4 };
+            case DKShaderDataType::Float64M4x4: return { 8, 4, 4 };
 
             default:
                 DKASSERT_DESC_DEBUG(0, "Unknown data type");
