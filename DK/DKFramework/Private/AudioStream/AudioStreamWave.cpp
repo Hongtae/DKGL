@@ -231,7 +231,7 @@ bool AudioStreamWave::Open(DKStream* stream)
 			{
 				context->stream = stream;
 				SetChannels(context->formatExt.format.channels);
-				SetFrequency(context->formatExt.format.samplesPerSec);
+				SetSampleRate(context->formatExt.format.samplesPerSec);
 				SetBits(context->formatExt.format.bitsPerSample);
 				SetSeekable(true);
 				return true;

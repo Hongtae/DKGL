@@ -41,7 +41,7 @@ namespace DKFramework
 
 		int Channels() const;
 		int Bits() const;
-		int Frequency() const;
+		int SampleRate() const;
 		double Duration() const;
 
 		double TimePosition() const;

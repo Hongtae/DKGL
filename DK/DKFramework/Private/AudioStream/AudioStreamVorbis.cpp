@@ -100,7 +100,7 @@ bool AudioStreamVorbis::Open(const DKString& file)
 		if (pInfo)
 		{
 			SetChannels(pInfo->channels);
-			SetFrequency(pInfo->rate);
+			SetSampleRate(pInfo->rate);
 			SetSeekable((bool)ov_seekable(&context->vorbis));
 			SetBits(16);
 			return true;
@@ -135,7 +135,7 @@ bool AudioStreamVorbis::Open(DKStream* stream)
 		if (pInfo)
 		{
 			SetChannels(pInfo->channels);
-			SetFrequency(pInfo->rate);
+			SetSampleRate(pInfo->rate);
 			SetSeekable((bool)ov_seekable(&context->vorbis));
 			SetBits(16);
 			context->stream = pSource;

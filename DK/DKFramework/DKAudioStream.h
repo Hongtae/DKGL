@@ -36,7 +36,7 @@ namespace DKFramework
 
 		// media info.
 		bool IsSeekable() const				{return seekable;}
-		unsigned int Frequency() const		{return frequency;} ///< bitrate
+		unsigned int SampleRate() const		{return sampleRate;} ///< sample rate
 		unsigned int Channels() const		{return channels;}  ///< audio channels
 		unsigned int Bits() const			{return bits;}      ///< format bits
 		FileType MediaType() const			{return type;}
@@ -59,14 +59,14 @@ namespace DKFramework
 
 	protected:
 		void SetSeekable(bool s)					{seekable = s;}
-		void SetFrequency(unsigned int freq)		{frequency = freq;}
+		void SetSampleRate(unsigned int rate)		{sampleRate = rate;}
 		void SetChannels(unsigned int c)			{channels = c;}
 		void SetBits(unsigned int b)				{bits = b;}
 
 	private:
 		static FileType DetermineAudioType(char* data, size_t len);
 		bool seekable;
-		unsigned int frequency;
+		unsigned int sampleRate;
 		unsigned int channels;
 		unsigned int bits;
 		const FileType type;
