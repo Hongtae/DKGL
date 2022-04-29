@@ -88,7 +88,7 @@ void ComputeCommandEncoder::WaitEvent(const DKGpuEvent* event)
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
-    encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages, semaphore->NextWaitValue());
+    encoder->AddWaitSemaphore(semaphore->semaphore, semaphore->NextWaitValue(), pipelineStages);
     encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
