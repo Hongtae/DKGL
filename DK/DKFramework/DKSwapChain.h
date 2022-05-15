@@ -24,6 +24,8 @@ namespace DKFramework
 		virtual DKRenderPassDescriptor CurrentRenderPassDescriptor() = 0;
         virtual size_t MaximumBufferCount() const = 0;
 
+        virtual DKCommandQueue* Queue() = 0;
+
 		virtual bool Present(DKGpuEvent** waitEvents, size_t numEvents) = 0;
 
         bool Present() { return Present(nullptr, 0); }

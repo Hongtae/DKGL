@@ -71,14 +71,21 @@ DKAudioDevice::DKAudioDevice()
 	// cleate context
 	//device = (void*)alcOpenDevice("Generic Software");
 	device = (void*)alcOpenDevice(NULL);
+    if (device == nullptr)
+    {
+        DKLogE("alcOpenDevice failed. - NO SOUND DEVICE!");
+    }
+    else
+    {
+        context = (void*)alcCreateContext((ALCdevice*)device, NULL);
 
-	context = (void*)alcCreateContext((ALCdevice*)device, NULL);
-
-	if (context == NULL)	// failed.
-	{
-		DKERROR_THROW_DEBUG("alcCreateContext failed.");
-	}
-	DKLog("DKAudioDevice:0x%x Created.\n", this);
+        if (context == NULL)	// failed.
+        {
+            //DKERROR_THROW_DEBUG("alcCreateContext failed.");
+            DKLogE("alcCreateContext failed.");
+        }
+    }
+	DKLog("DKAudioDevice:0x%x Created. (Device: 0x%x)\n", this, device);
 }
 
 DKAudioDevice::~DKAudioDevice()

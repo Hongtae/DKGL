@@ -34,6 +34,7 @@ namespace DKFramework::Private::Vulkan
 
 		bool Present(DKGpuEvent**, size_t) override;
 
+        DKCommandQueue* Queue() override { return queue; }
 
 		bool enableVSync;
 		VkSurfaceFormatKHR surfaceFormat;

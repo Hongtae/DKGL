@@ -33,6 +33,8 @@ namespace DKFramework::Private::Metal
 
         bool Present(DKGpuEvent**, size_t) override;
 
+        DKCommandQueue* Queue() override { return queue; }
+
 		void SetupFrame();
 
 		DKObject<DKWindow> window;
