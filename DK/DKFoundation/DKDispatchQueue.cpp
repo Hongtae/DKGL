@@ -21,7 +21,8 @@ namespace DKFoundation::Private
 
     struct DispatchQueueItemState : public DKDispatchQueue::ExecutionState
     {
-        DispatchQueueItemState(DKCondition& c) : cond(c), state(StatePending) {}
+        DispatchQueueItemState(DKDispatchQueue* q, DKCondition& c) : queue(q), cond(c), state(StatePending) {}
+        DKDispatchQueue* queue;
         DKCondition& cond;
         mutable enum State state;
 
@@ -34,10 +35,20 @@ namespace DKFoundation::Private
         {
             DKCriticalSection guard(cond);
             while (state == StatePending || state == StateProcessing)
-                cond.Wait();
-
-            return
-                state == StateCompleted || state == StateCompletedWithError;
+            {
+                if (queue->IsDispatchThread())
+                {
+                    cond.Unlock();
+                    if (!queue->Execute())
+                        queue->WaitQueue();
+                    cond.Lock();
+                }
+                else
+                {
+                    cond.Wait();
+                }
+            }
+            return state == StateCompleted || state == StateCompletedWithError;
         }
         bool Revoke() const override
         {
@@ -105,7 +116,7 @@ DKObject<DKDispatchQueue::ExecutionState> DKDispatchQueue::Submit(DKOperation* o
 
     DispatchQueueItem item = { fire };
     item.op = op;
-    item.state = DKOBJECT_NEW DispatchQueueItemState(context->cond);
+    item.state = DKOBJECT_NEW DispatchQueueItemState(this, context->cond);
 
     DKCriticalSection guard(context->cond);
     auto pos = context->queue.UpperBound(fire, [](DKTimer::Tick tick, const DispatchQueueItem& rhs)

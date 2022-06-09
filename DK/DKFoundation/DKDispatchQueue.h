@@ -53,14 +53,10 @@ namespace DKFoundation
 
         virtual bool DispatchSync(DKOperation* op)
         {
-            if (IsDispatchThread())
-                return InvokeOperation(op);
             return Submit(op)->WaitUntilCompleted();
         }
         virtual void DispatchAsync(DKOperation* op)
         {
-            if (IsDispatchThread())
-                InvokeOperation(op);
             Submit(op);
         }
 
@@ -94,7 +90,7 @@ namespace DKFoundation
 
         /// If this function can correctly identify the dispatch thread, 
         /// the DispatchSync(), DispatchAsync() functions can execute the task directly.
-        virtual bool IsDispatchThread() const { return false; }
+        virtual bool IsDispatchThread() const { return true; }
 
         virtual bool InvokeOperation(DKOperation*) const;
 
