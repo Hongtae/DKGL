@@ -630,3 +630,8 @@ DKGraphicsDeviceContext* DKScreen::GraphicsDevice()
 {
     return graphicsDevice;
 }
+
+DKCommandQueue* DKScreen::CommandQueue()
+{
+    return commandQueue;
+}

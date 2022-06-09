@@ -1548,7 +1548,7 @@ void DKCanvas::EncodeDrawCommand(uint32_t materialIndex,
         }
         else
         {
-            DKLogE("ERROR: Cannot create GPU-Buffer object with length:%llu", bufferLength);
+            DKLogE("ERROR: Cannot create GPU-Buffer object with length:%zu", bufferLength);
             return;
         }
 

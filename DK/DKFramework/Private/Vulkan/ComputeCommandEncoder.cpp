@@ -2,7 +2,7 @@
 //  File: ComputeCommandEncoder.cpp
 //  Author: Hongtae Kim (tiff2766@gmail.com)
 //
-//  Copyright (c) 2016-2019 Hongtae Kim. All rights reserved.
+//  Copyright (c) 2016-2022 Hongtae Kim. All rights reserved.
 //
 
 #include "../GraphicsAPI.h"
@@ -88,7 +88,7 @@ void ComputeCommandEncoder::WaitEvent(const DKGpuEvent* event)
 
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
-    encoder->AddWaitSemaphore(semaphore->semaphore, pipelineStages, semaphore->NextWaitValue());
+    encoder->AddWaitSemaphore(semaphore->semaphore, semaphore->NextWaitValue(), pipelineStages);
     encoder->events.Add(const_cast<DKGpuEvent*>(event));
 }
 
@@ -137,7 +137,7 @@ void ComputeCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSe
 
     DKObject<EncoderCommand> preCommand = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        descriptorSet->UpdateImageViewLayout(state.imageViewLayoutMap);
+        descriptorSet->UpdateImageViewLayouts(state.imageViewLayoutMap);
     });
     encoder->setupCommands.Add(preCommand);
 

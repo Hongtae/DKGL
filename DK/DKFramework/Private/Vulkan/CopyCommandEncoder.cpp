@@ -366,7 +366,7 @@ void CopyCommandEncoder::CopyFromTextureToTexture(const DKTexture* src,
 
     imageMemoryBarriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     imageMemoryBarriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    imageMemoryBarriers[1].image = srcImage->image;
+    imageMemoryBarriers[1].image = dstImage->image;
     SetupSubresource(dstOffset, 1, 1, dstPixelFormat, imageMemoryBarriers[1].subresourceRange);
 
     DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable

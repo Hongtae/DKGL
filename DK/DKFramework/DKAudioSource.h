@@ -34,7 +34,7 @@ namespace DKFramework
 		bool Pause();
 
 		/// enqueue audio stream buffer
-		bool EnqueueBuffer(int frequency, int bits, int channels, const void* data, size_t bytes, double timeStamp);
+		bool EnqueueBuffer(int sampleRate, int bits, int channels, const void* data, size_t bytes, double timeStamp);
 		void UnqueueBuffers() const;
 		size_t QueuedBuffers() const;
 

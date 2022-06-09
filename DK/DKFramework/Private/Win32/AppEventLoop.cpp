@@ -108,12 +108,12 @@ bool AppEventLoop::Run()
 		}
 
         // Setup thread DPI
-        static DPI_AWARENESS_CONTEXT(*setThreadDpiAwarenessContext)(DPI_AWARENESS_CONTEXT) = []
+        static DPI_AWARENESS_CONTEXT(WINAPI *setThreadDpiAwarenessContext)(DPI_AWARENESS_CONTEXT) = []
         {
             HMODULE module = ::LoadLibraryW(L"User32.dll");
             if (module)
-                return reinterpret_cast<DPI_AWARENESS_CONTEXT(*)(DPI_AWARENESS_CONTEXT)>(::GetProcAddress(module, "SetThreadDpiAwarenessContext"));
-            return (DPI_AWARENESS_CONTEXT(*)(DPI_AWARENESS_CONTEXT))nullptr;
+                return reinterpret_cast<DPI_AWARENESS_CONTEXT(WINAPI*)(DPI_AWARENESS_CONTEXT)>(::GetProcAddress(module, "SetThreadDpiAwarenessContext"));
+            return (DPI_AWARENESS_CONTEXT(WINAPI*)(DPI_AWARENESS_CONTEXT))nullptr;
         }();
         if (setThreadDpiAwarenessContext)
             setThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);

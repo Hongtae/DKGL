@@ -37,12 +37,12 @@ namespace DKFramework::Private::Win32
 
 	float DPIScaleForWindow(HWND hwnd)
 	{
-		static UINT (*getDpiForWindow)(HWND) = []
+		static UINT (WINAPI *getDpiForWindow)(HWND) = []
 		{
 			HMODULE module = ::LoadLibraryW(L"User32.dll");
 			if (module)
-				return reinterpret_cast<UINT(*)(HWND)>(::GetProcAddress(module, "GetDpiForWindow"));
-			return (UINT(*)(HWND))nullptr;
+				return reinterpret_cast<UINT(WINAPI*)(HWND)>(::GetProcAddress(module, "GetDpiForWindow"));
+			return (UINT(WINAPI*)(HWND))nullptr;
 		}();
 
         float scale = 1.0f;

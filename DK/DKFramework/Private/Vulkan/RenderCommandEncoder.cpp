@@ -421,13 +421,13 @@ void RenderCommandEncoder::SetVertexBuffers(const DKGpuBuffer** buffers, const s
 
             encoder->buffers.Add(const_cast<DKGpuBuffer*>(bufferObject));
         }
+        size_t numBuffers = bufferObjects.Count();
+        size_t numOffsets = bufferOffsets.Count();
+        DKASSERT_DEBUG(numBuffers == count);
+        DKASSERT_DEBUG(numOffsets == count);
+
         DKObject<EncoderCommand> command = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
         {
-            size_t numBuffers = bufferObjects.Count();
-            size_t numOffsets = bufferOffsets.Count();
-            DKASSERT_DEBUG(numBuffers == count);
-            DKASSERT_DEBUG(numBuffers == count);
-
             vkCmdBindVertexBuffers(commandBuffer, index, count, (VkBuffer*)bufferObjects, (VkDeviceSize*)bufferOffsets);
         });
         encoder->commands.Add(command);
@@ -547,7 +547,7 @@ void RenderCommandEncoder::SetResources(uint32_t index, const DKShaderBindingSet
 
     DKObject<EncoderCommand> preCommand = DKFunction([=](VkCommandBuffer commandBuffer, EncodingState& state) mutable
     {
-        descriptorSet->UpdateImageViewLayout(state.imageViewLayoutMap);
+        descriptorSet->UpdateImageViewLayouts(state.imageViewLayoutMap);
     });
     encoder->setupCommands.Add(preCommand);
 

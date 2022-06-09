@@ -14,7 +14,7 @@
 using namespace DKFramework;
 using namespace DKFramework::Private::Vulkan;
 
-DeviceMemory::DeviceMemory(DKGraphicsDevice* dev, VkDeviceMemory mem, VkMemoryType t, size_t s)
+DeviceMemory::DeviceMemory(DKGraphicsDevice* dev, VkDeviceMemory mem, VkMemoryType t, VkDeviceSize s)
     : device(dev)
     , memory(mem)
     , type(t)
@@ -26,8 +26,8 @@ DeviceMemory::DeviceMemory(DKGraphicsDevice* dev, VkDeviceMemory mem, VkMemoryTy
 
     if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
     {
-        size_t offset = 0;
-        size_t size = VK_WHOLE_SIZE;
+        VkDeviceSize offset = 0;
+        VkDeviceSize size = VK_WHOLE_SIZE;
 
         GraphicsDevice* dev = (GraphicsDevice*)DKGraphicsDeviceInterface::Instance(device);
         VkResult result = vkMapMemory(dev->device, memory, offset, size, 0, &mapped);
@@ -49,7 +49,7 @@ DeviceMemory::~DeviceMemory()
     vkFreeMemory(dev->device, memory, dev->allocationCallbacks);
 }
 
-bool DeviceMemory::Invalidate(size_t offset, size_t size)
+bool DeviceMemory::Invalidate(uint64_t offset, uint64_t size)
 {
     DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
 
@@ -84,7 +84,7 @@ bool DeviceMemory::Invalidate(size_t offset, size_t size)
     return false;
 }
 
-bool DeviceMemory::Flush(size_t offset, size_t size)
+bool DeviceMemory::Flush(uint64_t offset, uint64_t size)
 {
     DKASSERT_DEBUG(memory != VK_NULL_HANDLE);
 

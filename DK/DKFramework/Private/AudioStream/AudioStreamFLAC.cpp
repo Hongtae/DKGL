@@ -244,7 +244,7 @@ bool AudioStreamFLAC::InitMetadata()
 			(context->totalSamples > 0 && context->sampleRate > 0 && context->channels > 0))
 		{
 			SetChannels(context->channels);
-			SetFrequency(context->sampleRate);
+			SetSampleRate(context->sampleRate);
 			SetSeekable(context->stream->IsSeekable());
 
 			switch (context->bps)

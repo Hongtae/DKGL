@@ -658,7 +658,7 @@ GraphicsDevice::GraphicsDevice()
 			for (size_t j = 0; j < desc.queueFamilyProperties.Count(); ++j)
 			{
                 const VkQueueFamilyProperties& prop = desc.queueFamilyProperties.Value(j);
-                DKLog(" -- Queue-Family[%llu] Flags:0x%04x (SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c), Queues:%d",
+                DKLog(" -- Queue-Family[%zu] Flags:0x%04x (SparseBinding:%c, Transfer:%c, Compute:%c, Graphics:%c), Queues:%d",
                       j,
                       prop.queueFlags,
                       prop.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT ? 'Y' : 'N',
@@ -671,7 +671,7 @@ GraphicsDevice::GraphicsDevice()
             for (size_t j = 0; j < desc.extensionProperties.Count(); ++j)
             {
                 const VkExtensionProperties& prop = desc.extensionProperties.Value(j);
-                DKLog(" -- Device-Extension[%llu]: %s (Version:%u)\n", j, prop.extensionName, prop.specVersion);
+                DKLog(" -- Device-Extension[%zu]: %s (Version:%u)\n", j, prop.extensionName, prop.specVersion);
             }
 #endif
 			deviceList.Array().Add(desc.properties.deviceName);
@@ -1767,7 +1767,6 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
 
 	// rasterization state
 	VkPipelineRasterizationStateCreateInfo rasterizationState = { VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO };
-	rasterizationState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizationState.polygonMode = VK_POLYGON_MODE_FILL;
 	if (desc.triangleFillMode == DKTriangleFillMode::Lines)
 	{
@@ -1783,8 +1782,8 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     case DKCullMode::Front: rasterizationState.cullMode = VK_CULL_MODE_FRONT_BIT; break;
     case DKCullMode::Back:  rasterizationState.cullMode = VK_CULL_MODE_BACK_BIT; break;
     default:
-        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown Cull-Mode"); break;
-        rasterizationState.cullMode = VK_CULL_MODE_FRONT_AND_BACK; break;
+        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown Cull-Mode");
+        rasterizationState.cullMode = VK_CULL_MODE_FRONT_AND_BACK;
     }
 
     switch (desc.frontFace)
@@ -1792,7 +1791,7 @@ DKObject<DKRenderPipelineState> GraphicsDevice::CreateRenderPipeline(DKGraphicsD
     case DKFrontFace::CW:   rasterizationState.frontFace = VK_FRONT_FACE_CLOCKWISE; break;
     case DKFrontFace::CCW:  rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE; break;
     default:
-        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown FrontFace-Mode"); break;
+        DKLogE("ERROR: DKGraphicsDevice::CreateRenderPipiline: Unknown FrontFace-Mode");
         rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     }
 

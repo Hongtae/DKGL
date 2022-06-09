@@ -109,7 +109,7 @@ private:
 
 					if (ss.streamCallback)
 						ss.streamCallback->Invoke(buff, bytesRead, ss.bufferPos);
-					if (ss.source->EnqueueBuffer(ss.stream->Frequency(), ss.stream->Bits(), ss.stream->Channels(), buff, bytesRead, ss.bufferPos))
+					if (ss.source->EnqueueBuffer(ss.stream->SampleRate(), ss.stream->Bits(), ss.stream->Channels(), buff, bytesRead, ss.bufferPos))
 					{
 						if (ss.source->State() != DKAudioSource::StatePlaying)
 							ss.source->Play();
@@ -332,7 +332,7 @@ void DKAudioPlayer::PlayLoop(double pos, int loops)
 
 			if (!ss.playing)
 			{
-				size_t oneSecLength = stream->Frequency() * stream->Channels() * (stream->Bits() / 8);
+				size_t oneSecLength = stream->SampleRate() * stream->Channels() * (stream->Bits() / 8);
 				size_t baseAlignment = stream->Channels() * (stream->Bits() / 8);
 
 				size_t desiredLength = static_cast<size_t>(static_cast<double>(oneSecLength)* bufferingTime);
@@ -374,7 +374,7 @@ void DKAudioPlayer::Play()
 
 			if (!ss.playing)
 			{
-				size_t oneSecLength = stream->Frequency() * stream->Channels() * (stream->Bits() / 8);
+				size_t oneSecLength = stream->SampleRate() * stream->Channels() * (stream->Bits() / 8);
 				size_t baseAlignment = stream->Channels() * (stream->Bits() / 8);
 
 				size_t desiredLength = static_cast<size_t>(static_cast<double>(oneSecLength)* bufferingTime);
@@ -458,10 +458,10 @@ int DKAudioPlayer::Bits() const
 	return 0;
 }
 
-int DKAudioPlayer::Frequency() const
+int DKAudioPlayer::SampleRate() const
 {
 	if (stream)
-		return stream->Frequency();
+		return stream->SampleRate();
 	return 0;
 }
 

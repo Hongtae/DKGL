@@ -16,18 +16,18 @@ namespace DKFramework::Private::Vulkan
     class DeviceMemory final
     {
     public:
-        DeviceMemory(DKGraphicsDevice*, VkDeviceMemory, VkMemoryType, size_t);
+        DeviceMemory(DKGraphicsDevice*, VkDeviceMemory, VkMemoryType, VkDeviceSize);
         ~DeviceMemory();
 
         VkDeviceMemory memory;
         VkMemoryType type;
-        size_t length;
+        VkDeviceSize length;
         void* mapped;
 
         DKObject<DKGraphicsDevice> device;
 
-        bool Invalidate(size_t offset, size_t size);
-        bool Flush(size_t offset, size_t size);
+        bool Invalidate(uint64_t offset, uint64_t size);
+        bool Flush(uint64_t offset, uint64_t size);
     };
 }
 

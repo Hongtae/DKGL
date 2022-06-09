@@ -108,11 +108,11 @@ bool DKAudioSource::Pause()
 	return false;
 }
 
-bool DKAudioSource::EnqueueBuffer(int frequency, int bits, int channels, const void* data, size_t bytes, double timeStamp)
+bool DKAudioSource::EnqueueBuffer(int sampleRate, int bits, int channels, const void* data, size_t bytes, double timeStamp)
 {
 	DKASSERT_DEBUG(this->sourceId != 0);
 
-	if (data && bytes > 0 && frequency > 0)
+	if (data && bytes > 0 && sampleRate > 0)
 	{
 		int format = Format(bits, channels);
 		if (format != 0)
@@ -164,12 +164,12 @@ bool DKAudioSource::EnqueueBuffer(int frequency, int bits, int channels, const v
 				alGenBuffers(1, &bufferId);
 			}
 			// enqueue buffer.
-			alBufferData(bufferId, format, data, (ALsizei)bytes, frequency);
+			alBufferData(bufferId, format, data, (ALsizei)bytes, sampleRate);
 			alSourceQueueBuffers(sourceId, 1, &bufferId);
 
 			if (true)
 			{
-				size_t bytesSecond = frequency * channels * (bits / 8);
+				size_t bytesSecond = sampleRate * channels * (bits / 8);
 				BufferInfo info = {timeStamp, bytes, bytesSecond, bufferId};
 				this->buffers.Add(info);
 

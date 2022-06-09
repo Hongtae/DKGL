@@ -728,45 +728,55 @@ bool DKFrame::DrawInternal()
             DKASSERT_DEBUG(canvas != nullptr);
             this->renderTarget = nullptr;
         }
-        else if (renderTarget == nullptr)
+        else
         {
-            if (screen)
+            if (renderTarget == nullptr)
             {
-                DKASSERT_DEBUG(screen->RootFrame() != this);
+                if (screen)
+                {
+                    DKASSERT_DEBUG(screen->RootFrame() != this);
 
-                DKGraphicsDeviceContext* deviceContext = screen->GraphicsDevice();
-                DKASSERT_DEBUG(deviceContext);
+                    DKGraphicsDeviceContext* deviceContext = screen->GraphicsDevice();
+                    DKASSERT_DEBUG(deviceContext);
 
-                // create render target
-                int width = floor(this->contentResolution.width + 0.5f);
-                int height = floor(this->contentResolution.height + 0.5f);
+                    // create render target
+                    int width = floor(this->contentResolution.width + 0.5f);
+                    int height = floor(this->contentResolution.height + 0.5f);
 
-                DKASSERT_DEBUG(DKPixelFormatIsColorFormat(this->pixelFormat));
+                    DKASSERT_DEBUG(DKPixelFormatIsColorFormat(this->pixelFormat));
 
-                DKTextureDescriptor desc = {};
-                desc.textureType = DKTexture::Type2D;
-                desc.pixelFormat = this->pixelFormat;
-                desc.width = width;
-                desc.height = height;
-                desc.depth = 1;
-                desc.mipmapLevels = 1;
-                desc.sampleCount = 1;
-                desc.arrayLength = 1;
-                desc.usage = DKTexture::UsageSampled | DKTexture::UsageRenderTarget;
+                    DKTextureDescriptor desc = {};
+                    desc.textureType = DKTexture::Type2D;
+                    desc.pixelFormat = this->pixelFormat;
+                    desc.width = width;
+                    desc.height = height;
+                    desc.depth = 1;
+                    desc.mipmapLevels = 1;
+                    desc.sampleCount = 1;
+                    desc.arrayLength = 1;
+                    desc.usage = DKTexture::UsageSampled | DKTexture::UsageRenderTarget;
 
-                this->renderTarget = deviceContext->Device()->CreateTexture(desc);
-                this->drawSurface = true;
-                DKLogI("Create render-target (%dx%d) for DKFrame:0x%x", width, height, this);
+                    this->renderTarget = deviceContext->Device()->CreateTexture(desc);
+                    this->drawSurface = true;
+                    DKLogI("Create render-target (%dx%d) for DKFrame:0x%x", width, height, this);
+                }
+                else
+                {
+                    DKLogE("Cannot create render-target, Screen is null");
+                }
             }
-            else
+            if (renderTarget && canvas == nullptr)
             {
-                DKLogE("Cannot create render-target, Screen is null");
+                DKCommandQueue* queue = nullptr;
+                if (screen)
+                    queue = screen->CommandQueue();
+                if (queue)
+                {
+                    // create canvas from renderTarget..
+                    DKCommandBuffer* buffer = queue->CreateCommandBuffer();
+                    canvas = DKOBJECT_NEW DKCanvas(buffer, renderTarget);
+                }
             }
-        }
-        if (canvas == nullptr)
-        {
-            // create canvas from renderTarget..
-            DKASSERT_DEBUG(canvas != nullptr);
         }
         if (canvas)
         {

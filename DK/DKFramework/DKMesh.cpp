@@ -255,8 +255,8 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
     {
         DKMap<DKString, BufferArray> bufferResourceMap;
 
-        uint64_t bufferOffset = 0;
-        uint64_t bufferLength = 0;
+        size_t bufferOffset = 0;
+        size_t bufferLength = 0;
         for (const ResourceBindingSet& bset : resourceBindings)
         {
             for (const ResourceBinding& rb : bset.resources)
@@ -289,7 +289,7 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
                                                                 DKCpuCacheMode::DKCpuCacheModeWriteOnly);
             if (!buffer)
             {
-                DKLogE("ERROR: Cannot create GPU buffer! (length:%llu)", bufferLength);
+                DKLogE("ERROR: Cannot create GPU buffer! (length:%zu)", bufferLength);
                 return false;
             }
             numBuffersGenerated++;
@@ -312,8 +312,8 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
 
         for (const ResourceBindingSet& bset : resourceBindings)
         {
-            uint64_t bufferOffset = 0;
-            uint64_t bufferLength = 0;
+            size_t bufferOffset = 0;
+            size_t bufferLength = 0;
 
             for (const ResourceBinding& rb : bset.resources)
             {
@@ -345,7 +345,7 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
                                                                     DKCpuCacheMode::DKCpuCacheModeWriteOnly);
                 if (!buffer)
                 {
-                    DKLogE("ERROR: Cannot create GPU buffer! (length:%llu)", bufferLength);
+                    DKLogE("ERROR: Cannot create GPU buffer! (length:%zu)", bufferLength);
                     return false;
                 }
                 numBuffersGenerated++;
@@ -377,8 +377,8 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
             {
                 if (rb.resource.type == DKShaderResource::TypeBuffer)
                 {
-                    uint64_t bufferOffset = 0;
-                    uint64_t bufferLength = 0;
+                    size_t bufferOffset = 0;
+                    size_t bufferLength = 0;
 
                     BufferArray buffers = {};
 
@@ -402,7 +402,7 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
                                                                             DKCpuCacheMode::DKCpuCacheModeWriteOnly);
                         if (!buffer)
                         {
-                            DKLogE("ERROR: Cannot create GPU buffer! (length:%llu)", bufferLength);
+                            DKLogE("ERROR: Cannot create GPU buffer! (length:%zu)", bufferLength);
                             return false;
                         }
                         numBuffersGenerated++;
@@ -426,7 +426,7 @@ bool DKMesh::InitResources(DKGraphicsDevice* device, ResourceBufferUsagePolicy b
     else
     {
     }
-    DKLog("DKMesh::InitResources() generated %llu buffers, %llu bytes",
+    DKLog("DKMesh::InitResources() generated %zu buffers, %zu bytes",
           numBuffersGenerated, totalBytesAllocated);
     return true;
 }

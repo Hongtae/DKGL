@@ -81,7 +81,7 @@ namespace DKFramework
         bool ProcessWindowEvent(const DKWindow::WindowEvent&);
 
         DKGraphicsDeviceContext* GraphicsDevice();
-
+        DKCommandQueue* CommandQueue();
 	private:
         DKObject<DKDispatchQueue> dispatchQueue;
         DKObject<DKWindow> window;

@@ -33,161 +33,185 @@ namespace DKFramework::Private
         case spirv_cross::SPIRType::Boolean:
             switch (spType.vecsize)
             {
-            case 2:		dataType = DKShaderDataType::Bool2;		break;
-            case 3:		dataType = DKShaderDataType::Bool3;		break;
-            case 4:		dataType = DKShaderDataType::Bool4;		break;
-            default:	dataType = DKShaderDataType::Bool;		break;
+            case 2:		dataType = DKShaderDataType::BoolV2;    break;
+            case 3:		dataType = DKShaderDataType::BoolV3;    break;
+            case 4:		dataType = DKShaderDataType::BoolV4;    break;
+            default:	dataType = DKShaderDataType::Bool;      break;
             }
             break;
-        case spirv_cross::SPIRType::Char:
+        //case spirv_cross::SPIRType::Char:
         case spirv_cross::SPIRType::SByte:
             switch (spType.vecsize)
             {
-            case 2:		dataType = DKShaderDataType::Char2;     break;
-            case 3:		dataType = DKShaderDataType::Char3;     break;
-            case 4:		dataType = DKShaderDataType::Char4;     break;
-            default:	dataType = DKShaderDataType::Char;      break;
+            case 2:		dataType = DKShaderDataType::Int8V2;    break;
+            case 3:		dataType = DKShaderDataType::Int8V3;    break;
+            case 4:		dataType = DKShaderDataType::Int8V4;    break;
+            default:	dataType = DKShaderDataType::Int8;      break;
             }
             break;
         case spirv_cross::SPIRType::UByte:
             switch (spType.vecsize)
             {
-            case 2:		dataType = DKShaderDataType::UChar2;    break;
-            case 3:		dataType = DKShaderDataType::UChar3;    break;
-            case 4:		dataType = DKShaderDataType::UChar4;    break;
-            default:	dataType = DKShaderDataType::UChar;     break;
+            case 2:		dataType = DKShaderDataType::UInt8V2;   break;
+            case 3:		dataType = DKShaderDataType::UInt8V3;   break;
+            case 4:		dataType = DKShaderDataType::UInt8V4;   break;
+            default:	dataType = DKShaderDataType::UInt8;     break;
+            }
+            break;
+        case spirv_cross::SPIRType::Short:
+            switch (spType.vecsize)
+            {
+            case 2:		dataType = DKShaderDataType::Int16V2;   break;
+            case 3:		dataType = DKShaderDataType::Int16V3;   break;
+            case 4:		dataType = DKShaderDataType::Int16V4;   break;
+            default:	dataType = DKShaderDataType::Int16;     break;
+            }
+            break;
+        case spirv_cross::SPIRType::UShort:
+            switch (spType.vecsize)
+            {
+            case 2:		dataType = DKShaderDataType::UInt16V2;   break;
+            case 3:		dataType = DKShaderDataType::UInt16V3;   break;
+            case 4:		dataType = DKShaderDataType::UInt16V4;   break;
+            default:	dataType = DKShaderDataType::UInt16;     break;
             }
             break;
         case spirv_cross::SPIRType::Int:
-        case spirv_cross::SPIRType::Int64:
-            if (spType.width == 16)
+            switch (spType.vecsize)
             {
-                switch (spType.vecsize)
-                {
-                case 2:		dataType = DKShaderDataType::Short2;	break;
-                case 3:		dataType = DKShaderDataType::Short3;	break;
-                case 4:		dataType = DKShaderDataType::Short4;	break;
-                default:	dataType = DKShaderDataType::Short;		break;
-                }
-            }
-            else if (spType.width == 32)
-            {
-                switch (spType.vecsize)
-                {
-                case 2:		dataType = DKShaderDataType::Int2;		break;
-                case 3:		dataType = DKShaderDataType::Int3;		break;
-                case 4:		dataType = DKShaderDataType::Int4;		break;
-                default:	dataType = DKShaderDataType::Int;		break;
-                }
-            }
-            else
-            {
-                DKLogE("ERROR: DKShader Unsupported stage input attribute type! (Int %d bit)", spType.width);
+            case 2:		dataType = DKShaderDataType::Int32V2;   break;
+            case 3:		dataType = DKShaderDataType::Int32V3;   break;
+            case 4:		dataType = DKShaderDataType::Int32V4;   break;
+            default:	dataType = DKShaderDataType::Int32;     break;
             }
             break;
         case spirv_cross::SPIRType::UInt:
+            switch (spType.vecsize)
+            {
+            case 2:		dataType = DKShaderDataType::UInt32V2;  break;
+            case 3:		dataType = DKShaderDataType::UInt32V3;  break;
+            case 4:		dataType = DKShaderDataType::UInt32V4;  break;
+            default:	dataType = DKShaderDataType::UInt32;    break;
+            }
+            break;
+        case spirv_cross::SPIRType::Int64:
+            switch (spType.vecsize)
+            {
+            case 2:		dataType = DKShaderDataType::Int64V2;   break;
+            case 3:		dataType = DKShaderDataType::Int64V3;   break;
+            case 4:		dataType = DKShaderDataType::Int64V4;   break;
+            default:	dataType = DKShaderDataType::Int64;     break;
+            }
+            break;
         case spirv_cross::SPIRType::UInt64:
-            if (spType.width == 16)
+            switch (spType.vecsize)
             {
-                switch (spType.vecsize)
-                {
-                case 2:		dataType = DKShaderDataType::UShort2;	break;
-                case 3:		dataType = DKShaderDataType::UShort3;	break;
-                case 4:		dataType = DKShaderDataType::UShort4;	break;
-                default:	dataType = DKShaderDataType::UShort;	break;
-                }
-            }
-            else if (spType.width == 32)
-            {
-                switch (spType.vecsize)
-                {
-                case 2:		dataType = DKShaderDataType::UInt2;		break;
-                case 3:		dataType = DKShaderDataType::UInt3;		break;
-                case 4:		dataType = DKShaderDataType::UInt4;		break;
-                default:	dataType = DKShaderDataType::UInt;		break;
-                }
-            }
-            else
-            {
-                DKLogE("ERROR: DKShader Unsupported stage input attribute type! (Int %d bit)", spType.width);
+            case 2:		dataType = DKShaderDataType::UInt64V2;  break;
+            case 3:		dataType = DKShaderDataType::UInt64V3;  break;
+            case 4:		dataType = DKShaderDataType::UInt64V4;  break;
+            default:	dataType = DKShaderDataType::UInt64;    break;
             }
             break;
         case spirv_cross::SPIRType::Half:
+            switch (spType.vecsize)
+            {
+            case 2:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float16M2x2;   break;
+                case 3:     dataType = DKShaderDataType::Float16M2x3;   break;
+                case 4:     dataType = DKShaderDataType::Float16M2x4;   break;
+                default:    dataType = DKShaderDataType::Float16V2;     break;
+                }
+                break;
+            case 3:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float16M3x2;   break;
+                case 3:     dataType = DKShaderDataType::Float16M3x3;   break;
+                case 4:     dataType = DKShaderDataType::Float16M3x4;   break;
+                default:    dataType = DKShaderDataType::Float16V3;     break;
+                }
+                break;
+            case 4:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float16M4x2;   break;
+                case 3:     dataType = DKShaderDataType::Float16M4x3;   break;
+                case 4:     dataType = DKShaderDataType::Float16M4x4;   break;
+                default:    dataType = DKShaderDataType::Float16V4;     break;
+                }
+                break;
+            default:
+                dataType = DKShaderDataType::Float16;                   break;
+            }
+            break;
         case spirv_cross::SPIRType::Float:
+            switch (spType.vecsize)
+            {
+            case 2:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float32M2x2;   break;
+                case 3:     dataType = DKShaderDataType::Float32M2x3;   break;
+                case 4:     dataType = DKShaderDataType::Float32M2x4;   break;
+                default:    dataType = DKShaderDataType::Float32V2;     break;
+                }
+                break;
+            case 3:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float32M3x2;   break;
+                case 3:     dataType = DKShaderDataType::Float32M3x3;   break;
+                case 4:     dataType = DKShaderDataType::Float32M3x4;   break;
+                default:    dataType = DKShaderDataType::Float32V3;     break;
+                }
+                break;
+            case 4:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float32M4x2;   break;
+                case 3:     dataType = DKShaderDataType::Float32M4x3;   break;
+                case 4:     dataType = DKShaderDataType::Float32M4x4;   break;
+                default:    dataType = DKShaderDataType::Float32V4;     break;
+                }
+                break;
+            default:
+                dataType = DKShaderDataType::Float32;                   break;
+            }
+            break;
         case spirv_cross::SPIRType::Double:
-            if (spType.width == 16)
+            switch (spType.vecsize)
             {
-                switch (spType.vecsize)
+            case 2:
+                switch (spType.columns)
                 {
-                case 2:
-                    switch (spType.columns)
-                    {
-                    case 2:		dataType = DKShaderDataType::Half2x2;	break;
-                    case 3:		dataType = DKShaderDataType::Half2x3;	break;
-                    case 4:		dataType = DKShaderDataType::Half2x4;	break;
-                    default:	dataType = DKShaderDataType::Half2;		break;
-                    }
-                    break;
-                case 3:
-                    switch (spType.columns)
-                    {
-                    case 2:		dataType = DKShaderDataType::Half3x2;	break;
-                    case 3:		dataType = DKShaderDataType::Half3x3;	break;
-                    case 4:		dataType = DKShaderDataType::Half3x4;	break;
-                    default:	dataType = DKShaderDataType::Half3;		break;
-                    }
-                    break;
-                case 4:
-                    switch (spType.columns)
-                    {
-                    case 2:		dataType = DKShaderDataType::Half4x2;	break;
-                    case 3:		dataType = DKShaderDataType::Half4x3;	break;
-                    case 4:		dataType = DKShaderDataType::Half4x4;	break;
-                    default:	dataType = DKShaderDataType::Half4;		break;
-                    }
-                    break;
-                default:
-                    dataType = DKShaderDataType::Half;		break;
+                case 2:     dataType = DKShaderDataType::Float64M2x2;   break;
+                case 3:     dataType = DKShaderDataType::Float64M2x3;   break;
+                case 4:     dataType = DKShaderDataType::Float64M2x4;   break;
+                default:    dataType = DKShaderDataType::Float64V2;     break;
                 }
-            }
-            else if (spType.width == 32)
-            {
-                switch (spType.vecsize)
+                break;
+            case 3:
+                switch (spType.columns)
                 {
-                case 2:
-                    switch (spType.columns)
-                    {
-                    case 2:		dataType = DKShaderDataType::Float2x2;	break;
-                    case 3:		dataType = DKShaderDataType::Float2x3;	break;
-                    case 4:		dataType = DKShaderDataType::Float2x4;	break;
-                    default:	dataType = DKShaderDataType::Float2;	break;
-                    }
-                    break;
-                case 3:
-                    switch (spType.columns)
-                    {
-                    case 2:		dataType = DKShaderDataType::Float3x2;	break;
-                    case 3:		dataType = DKShaderDataType::Float3x3;	break;
-                    case 4:		dataType = DKShaderDataType::Float3x4;	break;
-                    default:	dataType = DKShaderDataType::Float3;	break;
-                    }
-                    break;
-                case 4:
-                    switch (spType.columns)
-                    {
-                    case 2:		dataType = DKShaderDataType::Float4x2;	break;
-                    case 3:		dataType = DKShaderDataType::Float4x3;	break;
-                    case 4:		dataType = DKShaderDataType::Float4x4;	break;
-                    default:	dataType = DKShaderDataType::Float4;	break;
-                    }
-                    break;
-                default:
-                    dataType = DKShaderDataType::Float;		break;
+                case 2:     dataType = DKShaderDataType::Float64M3x2;   break;
+                case 3:     dataType = DKShaderDataType::Float64M3x3;   break;
+                case 4:     dataType = DKShaderDataType::Float64M3x4;   break;
+                default:    dataType = DKShaderDataType::Float64V3;     break;
                 }
-            }
-            else
-            {
-                DKLogE("ERROR: DKShader Unsupported stage input attribute type! (Float %d bit)", spType.width);
+                break;
+            case 4:
+                switch (spType.columns)
+                {
+                case 2:     dataType = DKShaderDataType::Float64M4x2;   break;
+                case 3:     dataType = DKShaderDataType::Float64M4x3;   break;
+                case 4:     dataType = DKShaderDataType::Float64M4x4;   break;
+                default:    dataType = DKShaderDataType::Float64V4;     break;
+                }
+                break;
+            default:
+                dataType = DKShaderDataType::Float64;                   break;
             }
             break;
         default:
@@ -459,7 +483,7 @@ bool DKShader::Compile(const DKData* d)
                     this->descriptors.Add(getDescriptor(resource, DescriptorTypeSampler));
                 }
 
-                auto getAttributes = [&compiler](const spirv_cross::Resource& resource)->DKShaderAttribute
+                auto getAttributes = [&compiler, &active](const spirv_cross::Resource& resource)->DKShaderAttribute
                 {
                     uint32_t location = compiler.get_decoration(resource.id, spv::DecorationLocation);
                     DKStringU8 name = "";
@@ -485,7 +509,7 @@ bool DKShader::Compile(const DKData* d)
                     attr.location = location;
                     attr.name = name;
                     attr.type = dataType;
-                    attr.enabled = true;
+                    attr.enabled = active.find(resource.id) != active.end();
                     return attr;
                 };
                 // stage inputs

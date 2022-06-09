@@ -859,12 +859,12 @@ void DKXmlParser::OnComment(const DKString& comment)
 
 void DKXmlParser::OnCharacters(const char* ch, size_t len)
 {
-	DKLog("[DKXmlParser::OnCharacters] %llu bytes\n", len);
+	DKLog("[DKXmlParser::OnCharacters] %zu bytes\n", len);
 }
 
 void DKXmlParser::OnCharacterDataBlock(const char* ch, size_t len)
 {
-	DKLog("[DKXmlParser::OnCDataBlock] %llu bytes\n", len);
+	DKLog("[DKXmlParser::OnCDataBlock] %zu bytes\n", len);
 }
 
 void DKXmlParser::OnWarning(const DKString& mesg)
