@@ -13,6 +13,7 @@
 
 namespace DKFramework
 {
+    class DKCommandQueue;
 	class DKSwapChain
 	{
 	public:
