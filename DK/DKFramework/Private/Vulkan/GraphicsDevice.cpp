@@ -766,23 +766,52 @@ GraphicsDevice::GraphicsDevice()
 			deviceCreateInfo.enabledExtensionCount = (uint32_t)deviceExtensions.Count();
 			deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions;
 		}
-#ifdef VK_EXT_extended_dynamic_state
-        DKArray<VkPhysicalDeviceExtendedDynamicStateFeaturesEXT> extendedDynamicStateFeatures;
-        //extendedDynamicStateFeatures.Add({ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT, nullptr, VK_DYNAMIC_STATE_CULL_MODE_EXT });
-        //extendedDynamicStateFeatures.Add({ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT, nullptr, VK_DYNAMIC_STATE_FRONT_FACE_EXT });
-        //extendedDynamicStateFeatures.Add({ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT, nullptr, VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY_EXT });
 
-        if (extendedDynamicStateFeatures.Count() > 0)
+        auto appendNextChain = [&deviceCreateInfo](void* next)
         {
-            for (size_t i = 0; (i + 1) < extendedDynamicStateFeatures.Count(); ++i)
-            {
-                VkPhysicalDeviceExtendedDynamicStateFeaturesEXT& a = extendedDynamicStateFeatures.Value(i);
-                VkPhysicalDeviceExtendedDynamicStateFeaturesEXT& b = extendedDynamicStateFeatures.Value(i+1);
-                a.pNext = &b;
+            struct VkDummyType {
+                VkStructureType sType;
+                VkDummyType* pNext;
+            };
+            VkDummyType* p = reinterpret_cast<VkDummyType*>(&deviceCreateInfo);
+            while (p && p->pNext)   p = p->pNext;
+            p->pNext = reinterpret_cast<VkDummyType*>(next);
+        };
+        auto hasExtension = [&deviceExtensions](const char* name)
+        {
+            for (const char* ext : deviceExtensions) {
+                if (strcmp(ext, name) == 0)
+                    return true;
             }
-            deviceCreateInfo.pNext = (VkPhysicalDeviceExtendedDynamicStateFeaturesEXT*)extendedDynamicStateFeatures;
+            return false;
+        };
+#ifdef VK_EXT_extended_dynamic_state
+        VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeatures = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT };
+        if (hasExtension(VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME))
+        {
+            extendedDynamicStateFeatures.extendedDynamicState = VK_TRUE;
+            appendNextChain(&extendedDynamicStateFeatures);
         }
 #endif
+#ifdef VK_EXT_extended_dynamic_state2
+        VkPhysicalDeviceExtendedDynamicState2FeaturesEXT extendedDynamicState2Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT };
+        if (hasExtension(VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME))
+        {
+            extendedDynamicState2Features.extendedDynamicState2 = VK_TRUE;
+            appendNextChain(&extendedDynamicState2Features);
+        }
+#endif
+#ifdef VK_EXT_extended_dynamic_state3
+        VkPhysicalDeviceExtendedDynamicState3FeaturesEXT extendedDynamicState3Features = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT };
+        if (hasExtension(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME))
+        {
+            extendedDynamicState3Features.extendedDynamicState3DepthClampEnable = VK_TRUE
+            extendedDynamicState3Features.extendedDynamicState3PolygonMode = VK_TRUE
+            extendedDynamicState3Features.extendedDynamicState3DepthClipEnable = VK_TRUE
+            appendNextChain(&extendedDynamicState3Features);
+        }
+#endif
+
 		VkDevice logicalDevice = nullptr;
 		err = vkCreateDevice(desc.physicalDevice, &deviceCreateInfo, allocationCallbacks, &logicalDevice);
 		if (err == VK_SUCCESS)
