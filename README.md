@@ -1,3 +1,11 @@
+> [!IMPORTANT]
+> This project is no longer under active development or maintenance.  
+> For a more improved Vulkan library, please refer to the following repositories.
+> - For C++ [FTVoxelEngine](https://github.com/Hongtae/FTVoxelEngine)  
+> - For Swift, Cross-platform [SwiftVVD](https://github.com/Hongtae/SwiftVVD)
+
+---
+
 # Project DK, DKLib
 Game Library for C++ and Python  
 This project contains two modules, DK and PyDK.  
